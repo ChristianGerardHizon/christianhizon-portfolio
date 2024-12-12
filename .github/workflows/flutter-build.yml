@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  workflows: write
+
 jobs:
   build:
     name: Build Flutter App for Windows and APK
@@ -17,6 +21,11 @@ jobs:
       # Step 1: Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v3
+
+      - name: Authenticate with GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHTOKEN }}
+        run: echo "Authenticated successfully"
 
       # Step 2: Set up Flutter environment
       - name: Setup Flutter
