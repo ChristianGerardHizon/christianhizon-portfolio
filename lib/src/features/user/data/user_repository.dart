@@ -1,9 +1,7 @@
 import 'package:cross_file/cross_file.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:gym_system/src/core/common_widgets/app_root.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
-import 'package:gym_system/src/core/strings/endpoints.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
@@ -19,8 +17,8 @@ part 'user_repository.g.dart';
 abstract class UserRepository {
   TaskResult<PageResults<User>> list({
     String? query,
-    int? pageNo,
-    int? pageSize,
+    required int pageNo,
+    required int pageSize,
   });
   TaskResult<User> get(String id);
   TaskResult<void> delete(String id);
@@ -57,7 +55,11 @@ class UserRepositoryImpl implements UserRepository {
           (xFile, index) async {
             final key = updateMap.keys.toList()[index];
             final bytes = await xFile.readAsBytes();
-            return await MultipartFile.fromBytes(key, bytes);
+            return await MultipartFile.fromBytes(
+              key,
+              bytes,
+              filename: xFile.name,
+            );
           },
         ).toList();
 
@@ -81,12 +83,8 @@ class UserRepositoryImpl implements UserRepository {
   TaskResult<User> create(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(
       () async {
-        final response = await _dio.post(
-          EndPoints.users,
-          data: payload,
-        );
-        final map = Map<String, dynamic>.from(response.data);
-        return User.fromMap(map);
+        final response = await collection.create(body: payload);
+        return User.fromMap(response.toJson());
       },
       Failure.tryCatchData,
     );
@@ -96,7 +94,7 @@ class UserRepositoryImpl implements UserRepository {
   TaskResult<void> delete(String id) {
     return TaskResult.tryCatch(
       () async {
-        final response = await _dio.delete('${EndPoints.users}/$id');
+        await collection.delete(id);
       },
       Failure.tryCatchData,
     );
@@ -106,30 +104,34 @@ class UserRepositoryImpl implements UserRepository {
   TaskResult<User> get(String id) {
     return TaskResult.tryCatch(
       () async {
-        final response = await _dio.get('${EndPoints.users}/$id');
-        final map = Map<String, dynamic>.from(response.data);
-        return User.fromMap(map);
+        final result = await collection.getOne(id);
+        return User.fromMap(result.toJson());
       },
       Failure.tryCatchData,
     );
   }
 
   @override
-  TaskResult<PageResults<User>> list(
-      {String? query, int? pageNo, int? pageSize}) {
+  TaskResult<PageResults<User>> list({
+    String? query,
+    required int pageNo,
+    required int pageSize,
+  }) {
     return TaskResult.tryCatch(
       () async {
-        final response = await _dio.get(EndPoints.users);
-        final map = Map<String, dynamic>.from(response.data);
+        final result = await collection.getList(
+          page: pageNo,
+          perPage: pageSize,
+        );
+
         return PageResults<User>(
-          items: map['items']?.map<User>((e) {
-                return User.fromMap(e);
-              }).toList() ??
-              [],
-          page: map['page'],
-          perPage: map['perPage'],
-          totalItems: map['totalItems'],
-          totalPages: map['totalPages'],
+          items: result.items.map<User>((e) {
+            return User.fromMap(e.toJson());
+          }).toList(),
+          page: result.page,
+          perPage: result.perPage,
+          totalItems: result.totalItems,
+          totalPages: result.totalPages,
         );
       },
       Failure.tryCatchData,

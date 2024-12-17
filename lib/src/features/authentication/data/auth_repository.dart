@@ -46,29 +46,19 @@ class AuthRepository {
         final email = payload['email'];
         final password = payload['password'];
 
-        final response = await dio.post(
-          EndPoints.login,
-          // options: Options(
-          //   headers: {'ignore_auth': true},
-          // ),
-          data: {
-            'identity': email.trim(),
-            'password': password.trim(),
-          },
-        );
+        final response =
+            await collection.authWithPassword(email.trim(), password.trim());
 
-        final map = Map<String, dynamic>.from(response.data);
         await storage.write(
           key: tokenKey,
-          value: map['token'],
+          value: response.token,
         );
-        final record = Map<String, dynamic>.from(map['record']);
         await storage.write(
           key: idKey,
-          value: record['id'],
+          value: response.record.id,
         );
 
-        final user = User.fromMap(record);
+        final user = User.fromMap(response.record.toJson());
 
         return user;
       },
@@ -105,17 +95,16 @@ class AuthRepository {
   TaskResult<void> _refreshTokenAndSaveToLocal() {
     return TaskResult.tryCatch(
       () async {
-        final response = await dio.post(EndPoints.refreshToken);
-        final result = Map<String, dynamic>.from(response.data);
+        final result = await collection.authRefresh();
         await storage.write(
           key: tokenKey,
-          value: result['token'],
+          value: result.token,
         );
 
-        final record = result['record'];
+        final id = result.record.id;
         await storage.write(
           key: idKey,
-          value: record['id'],
+          value: id,
         );
       },
       Failure.tryCatchData,
@@ -171,25 +160,20 @@ class AuthRepository {
           throw Failure('Password must be min 8 chars', StackTrace.current);
         }
 
-        final response = await dio.post(
-          EndPoints.users,
-          data: {
-            'email': email.trim(),
-            'name': name.trim(),
-            'password': password.trim(),
-            'isStoreOwner': false,
-            'passwordConfirm': passwordConfirm,
-            'storeLimit': 1,
-            'contactNumber': '+63$contactNumber',
-          },
-        );
+        final payload = {
+          'email': email.trim(),
+          'name': name.trim(),
+          'password': password.trim(),
+          'isStoreOwner': false,
+          'passwordConfirm': passwordConfirm,
+          'storeLimit': 1,
+          'contactNumber': '+63$contactNumber',
+        };
+
+        final result = await collection.create(body: payload);
 
         /// append email since its not returned by the api
-        final map = Map<String, dynamic>.from({
-          ...response.data,
-          'email': email,
-        });
-        return User.fromMap(map);
+        return User.fromMap(result.toJson());
       },
       Failure.tryCatchData,
     );
