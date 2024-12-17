@@ -1,12 +1,15 @@
 import 'package:cross_file/cross_file.dart';
-import 'package:dio/dio.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:gym_system/src/core/common_widgets/app_root.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/packages/dio.dart';
+import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/strings/endpoints.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/user/domain/user.dart';
+import 'package:http/http.dart';
+import 'package:pocketbase/pocketbase.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -28,15 +31,16 @@ abstract class UserRepository {
 @Riverpod(keepAlive: true)
 UserRepository userRepository(Ref ref) {
   return UserRepositoryImpl(
-    dio: ref.read(dioProvider),
+    pb: ref.read(pocketbaseProvider),
   );
 }
 
 class UserRepositoryImpl implements UserRepository {
-  final Dio _dio;
+  final PocketBase pb;
 
-  UserRepositoryImpl({required Dio dio}) : _dio = dio;
+  RecordService get collection => pb.collection('users');
 
+  UserRepositoryImpl({required this.pb});
   @override
   TaskResult<User> update(User user, Map<String, dynamic> update) {
     return TaskResult.tryCatch(
@@ -48,22 +52,23 @@ class UserRepositoryImpl implements UserRepository {
 
         final updateMap = {...update};
 
-        ///
-        /// convert XFile to MultipartFile
-        ///
-        final photo = updateMap[UserField.profilePhoto];
-        if (photo is XFile) {
-          final multipartFile = await MultipartFile.fromFile(
-            photo.path,
-            filename: photo.name,
-          );
-          updateMap[UserField.profilePhoto] = multipartFile;
-        }
+        /// convert the XFiles in updateMap to a list of MultipartFile
+        final futureFiles = updateMap.values.whereType<XFile>().mapWithIndex(
+          (xFile, index) async {
+            final key = updateMap.keys.toList()[index];
+            final bytes = await xFile.readAsBytes();
+            return await MultipartFile.fromBytes(key, bytes);
+          },
+        ).toList();
 
-        final payload = FormData.fromMap(updateMap);
-        final response = await _dio.patch(
-          '${EndPoints.users}/${user.id}',
-          data: payload,
+        final body = updateMap..removeWhere((key, value) => value is XFile);
+
+        final files = await Future.wait(futureFiles);
+
+        final response = await collection.update(
+          user.id,
+          body: body,
+          files: files,
         );
         final map = Map<String, dynamic>.from(response.data);
         return User.fromMap(map);

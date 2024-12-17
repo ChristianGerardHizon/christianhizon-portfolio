@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/packages/dio.dart';
 import 'package:gym_system/src/core/packages/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/strings/endpoints.dart';
@@ -20,7 +19,6 @@ part 'auth_repository.g.dart';
 AuthRepository authRepository(Ref ref) {
   return AuthRepository(
     storage: ref.read(flutterSecureStorageProvider),
-    dio: ref.read(dioProvider),
     idKey: 'AUTH_ID',
     tokenKey: 'AUTH_TOKEN',
     pb: ref.read(pocketbaseProvider),
@@ -30,24 +28,23 @@ AuthRepository authRepository(Ref ref) {
 class AuthRepository {
   final FlutterSecureStorage storage;
   final PocketBase pb;
-  final Dio dio;
   final String idKey;
   final String tokenKey;
 
   AuthRepository({
     required this.pb,
     required this.storage,
-    required this.dio,
     required this.idKey,
     required this.tokenKey,
   });
+
+  RecordService get collection => pb.collection('users');
 
   TaskResult<User> login(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(
       () async {
         final email = payload['email'];
         final password = payload['password'];
-
 
         final response = await dio.post(
           EndPoints.login,
