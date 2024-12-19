@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/common_widgets/image_missing_view.dart';
+import 'package:gym_system/src/core/widgets/image_missing_view.dart';
 import 'package:gym_system/src/features/settings/presentation/image_viewer.dart';
 import 'package:gym_system/src/features/user/domain/user.dart';
 

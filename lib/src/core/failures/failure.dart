@@ -1,5 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:dio/dio.dart';
+import 'package:pocketbase/pocketbase.dart';
 
 part 'failure.mapper.dart';
 
@@ -73,13 +74,10 @@ class Failure with FailureMappable {
     final error = message;
     var returnMessage = 'Something went wrong';
 
-    ///
-    ///  error message for network errors.
-    ///
-    if (error is DioException) {
-      final dioMessage = 'Server Request has failed';
-      final data = error.response?.data;
-      returnMessage = data?['message'] ?? dioMessage;
+    if (error is ClientException) {
+      final defaultMessage = 'Server Request has failed';
+      final data = error.response;
+      returnMessage = data['message'] ?? defaultMessage;
     }
 
     if (error is String) {

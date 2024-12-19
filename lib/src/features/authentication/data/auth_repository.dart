@@ -1,3 +1,4 @@
+import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
@@ -16,7 +17,7 @@ part 'auth_repository.g.dart';
 AuthRepository authRepository(Ref ref) {
   return AuthRepositoryImpl(
     storage: ref.read(flutterSecureStorageProvider),
-    idKey: 'AUTH_ID',
+    recordModelKey: 'AUTH_MODEL_KEY',
     tokenKey: 'AUTH_TOKEN',
     pb: ref.read(pocketbaseProvider),
   );
@@ -38,13 +39,13 @@ abstract class AuthRepository {
 class AuthRepositoryImpl implements AuthRepository {
   final FlutterSecureStorage storage;
   final PocketBase pb;
-  final String idKey;
+  final String recordModelKey;
   final String tokenKey;
 
   AuthRepositoryImpl({
     required this.pb,
     required this.storage,
-    required this.idKey,
+    required this.recordModelKey,
     required this.tokenKey,
   });
 
@@ -56,14 +57,21 @@ class AuthRepositoryImpl implements AuthRepository {
     return TaskResult.tryCatch(
       () async {
         final user = User.fromMap(record.toJson());
+
+        ///
+        /// store token
+        ///
         await storage.write(
           key: tokenKey,
           value: token,
         );
 
+        ///
+        /// store record model
+        ///
         await storage.write(
-          key: idKey,
-          value: token,
+          key: recordModelKey,
+          value: jsonEncode(record.toJson()),
         );
 
         authStore.save(token, record);
@@ -92,7 +100,7 @@ class AuthRepositoryImpl implements AuthRepository {
   TaskResult<void> logout() {
     return TaskResult.tryCatch(() async {
       authStore.clear();
-      await storage.delete(key: idKey);
+      await storage.delete(key: recordModelKey);
       await storage.delete(key: tokenKey);
     }, Failure.tryCatchData);
   }
@@ -105,6 +113,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }) {
     return TaskResult.tryCatch(
       () async {
+        ///
         /// check if fields are valid
         ///
         if (email.isEmpty) {
@@ -122,6 +131,7 @@ class AuthRepositoryImpl implements AuthRepository {
           throw Failure('Password confirmation is missing', StackTrace.current);
         }
 
+        ///
         /// check if email is valid format
         ///
         final emailReg = RegExp(
@@ -130,13 +140,16 @@ class AuthRepositoryImpl implements AuthRepository {
           throw Failure('Email is invalid', StackTrace.current);
         }
 
+        ///
         /// passwords must match
         ///
         if (password != passwordConfirm) {
           throw Failure('Passwords do not match', StackTrace.current);
         }
 
+        ///
         /// passwords must be min 8 characters
+        ///
         if (password.length < 8) {
           throw Failure('Password must be min 8 chars', StackTrace.current);
         }
@@ -167,7 +180,27 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   TaskResult<User> getSavedUser() {
-    // TODO: implement getSavedUser
-    throw UnimplementedError();
+    return TaskResult.tryCatch(
+      () async {
+        ///
+        /// token
+        ///
+        final token = await storage.read(key: tokenKey);
+
+        ///
+        /// record model
+        ///
+        final modelString = await storage.read(key: recordModelKey);
+
+        final recordModel = RecordModel.fromJson(json.decode(modelString!));
+
+        if (token == null) throw Failure('token is null', StackTrace.current);
+
+        authStore.save(token, recordModel);
+
+        return User.fromMap(recordModel.toJson());
+      },
+      Failure.tryCatchData,
+    );
   }
 }

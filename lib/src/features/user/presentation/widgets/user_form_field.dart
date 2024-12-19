@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:gym_system/src/core/common_widgets/form_builders/custom_form_field.dart';
+import 'package:gym_system/src/core/widgets/form_builders/custom_form_field.dart';
 import 'package:gym_system/src/features/user/data/user_repository.dart';
 import 'package:gym_system/src/features/user/domain/user.dart';
 import 'package:gym_system/src/features/user/presentation/widgets/user_image.dart';

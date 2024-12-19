@@ -9,13 +9,10 @@ part 'auth_controller.g.dart';
 @Riverpod(keepAlive: true)
 class AuthController extends _$AuthController {
   ///
-  ///
+  /// default no user failure
   ///
   final _noUserFailure = Failure.presentation('User not found');
 
-  ///
-  /// once nag start ang controller
-  ///
   @override
   Future<User> build() async {
     final result = await ref

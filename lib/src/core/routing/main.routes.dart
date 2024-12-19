@@ -1,31 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/common_pages/home_page.dart';
-import 'package:gym_system/src/core/common_pages/not_found_page.dart';
-import 'package:gym_system/src/core/common_pages/splash_page.dart';
-import 'package:gym_system/src/core/common_widgets/app_root.dart';
+import 'package:gym_system/src/core/pages/home_page.dart';
+import 'package:gym_system/src/core/pages/not_found_page.dart';
+import 'package:gym_system/src/core/pages/splash_page.dart';
+import 'package:gym_system/src/core/pages/app_root.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_recovery_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/login_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/registration_page.dart';
 import 'package:gym_system/src/features/settings/presentation/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/settings_page.dart';
+import 'package:gym_system/src/features/user/presentation/pages/user_page.dart';
 import 'package:gym_system/src/features/user/presentation/pages/user_update_page.dart';
-
 
 part 'main.routes.g.dart';
 part 'routes/authentication.routes.dart';
 part 'routes/user.routes.dart';
 part 'routes/settings.routes.dart';
-
-///
-/// Just the same ussage for the basic go router but with generated routes so no need to recreate routes every time
-///
-/// taken from this same with setup for bottom nav bar
-/// https://medium.com/@zahidulislam.pubalibank/go-router-an-efficient-way-to-manage-flutter-navigation-development-process-8a4c03e69066
-///
-///
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
@@ -67,20 +59,18 @@ class HomePageRoute extends GoRouteData {
 
   @override
   String? redirect(BuildContext context, GoRouterState state) {
-    return null;
+    return YourUserPageRoute.path;
   }
 }
 
 @TypedStatefulShellRoute<RootRouteData>(
   branches: <TypedStatefulShellBranch<StatefulShellBranchData>>[
-
     ///
-    /// Account
     ///
-    TypedStatefulShellBranch<SettingsBranchData>(
+    ///
+    TypedStatefulShellBranch<UserBranchData>(
       routes: <TypeRouteData>[
-        // home
-        TypedGoRoute<SettingsPageRoute>(path: SettingsPageRoute.path),
+        TypedGoRoute<YourUserPageRoute>(path: YourUserPageRoute.path),
       ],
     ),
   ],
