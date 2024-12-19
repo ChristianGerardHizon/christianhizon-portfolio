@@ -52,7 +52,6 @@ class UserFormField extends HookConsumerWidget {
           ),
         ),
         title: Text(p0.name),
-        subtitle: Text(p0.contactNumber ?? 'no contact number'),
         trailing: !enabled
             ? SizedBox()
             : IconButton(

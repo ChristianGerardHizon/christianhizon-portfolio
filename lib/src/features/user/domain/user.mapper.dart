@@ -30,9 +30,6 @@ class UserMapper extends ClassMapperBase<User> {
   static String? _$profilePhoto(User v) => v.profilePhoto;
   static const Field<User, String> _f$profilePhoto =
       Field('profilePhoto', _$profilePhoto, opt: true);
-  static String? _$contactNumber(User v) => v.contactNumber;
-  static const Field<User, String> _f$contactNumber =
-      Field('contactNumber', _$contactNumber, opt: true);
   static bool _$isDeleted(User v) => v.isDeleted;
   static const Field<User, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
@@ -43,7 +40,6 @@ class UserMapper extends ClassMapperBase<User> {
     #name: _f$name,
     #email: _f$email,
     #profilePhoto: _f$profilePhoto,
-    #contactNumber: _f$contactNumber,
     #isDeleted: _f$isDeleted,
   };
 
@@ -53,7 +49,6 @@ class UserMapper extends ClassMapperBase<User> {
         name: data.dec(_f$name),
         email: data.dec(_f$email),
         profilePhoto: data.dec(_f$profilePhoto),
-        contactNumber: data.dec(_f$contactNumber),
         isDeleted: data.dec(_f$isDeleted));
   }
 
@@ -108,7 +103,6 @@ abstract class UserCopyWith<$R, $In extends User, $Out>
       String? name,
       String? email,
       String? profilePhoto,
-      String? contactNumber,
       bool? isDeleted});
   UserCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
@@ -125,14 +119,12 @@ class _UserCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, User, $Out>
           String? name,
           String? email,
           Object? profilePhoto = $none,
-          Object? contactNumber = $none,
           bool? isDeleted}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (email != null) #email: email,
         if (profilePhoto != $none) #profilePhoto: profilePhoto,
-        if (contactNumber != $none) #contactNumber: contactNumber,
         if (isDeleted != null) #isDeleted: isDeleted
       }));
   @override
@@ -141,7 +133,6 @@ class _UserCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, User, $Out>
       name: data.get(#name, or: $value.name),
       email: data.get(#email, or: $value.email),
       profilePhoto: data.get(#profilePhoto, or: $value.profilePhoto),
-      contactNumber: data.get(#contactNumber, or: $value.contactNumber),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted));
 
   @override
