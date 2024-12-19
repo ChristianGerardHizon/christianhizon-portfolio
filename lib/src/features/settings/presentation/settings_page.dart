@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/common_widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/routing/router.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/authentication/presentation/widgets/auth_builder.dart';
 import 'package:gym_system/src/features/user/presentation/widgets/user_image.dart';

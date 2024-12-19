@@ -1,6 +1,5 @@
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/features/authentication/application/auth_application.dart';
 import 'package:gym_system/src/features/authentication/data/auth_repository.dart';
 import 'package:gym_system/src/features/user/domain/user.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,7 +19,7 @@ class AuthController extends _$AuthController {
   @override
   Future<User> build() async {
     final result = await ref
-        .read(authApplicationProvider)
+        .read(authRepositoryProvider)
         .getSavedUser()
         .run()
         .timeout(const Duration(minutes: 1));
@@ -47,7 +46,7 @@ class AuthController extends _$AuthController {
   }
 
   TaskResult<User> refresh() {
-    return ref.read(authApplicationProvider).getSavedUser().chainFirst(setUser);
+    return ref.read(authRepositoryProvider).refresh().chainFirst(setUser);
   }
 
   TaskResult<User> login(Map<String, dynamic> map) {
@@ -60,7 +59,6 @@ class AuthController extends _$AuthController {
     required String name,
     required String password,
     required String passwordConfirm,
-    required String contactNumber,
   }) {
     final repo = ref.read(authRepositoryProvider);
 
@@ -70,7 +68,6 @@ class AuthController extends _$AuthController {
           name: name,
           password: password,
           passwordConfirm: passwordConfirm,
-          contactNumber: contactNumber,
         )
         .chainFirst(setUser);
   }

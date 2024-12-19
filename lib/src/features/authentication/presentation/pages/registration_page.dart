@@ -1,13 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/common_widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 
 class RegistrationPage extends HookConsumerWidget {
   const RegistrationPage({super.key});
@@ -19,7 +17,6 @@ class RegistrationPage extends HookConsumerWidget {
     final nameController = useTextEditingController();
     final passwordController = useTextEditingController();
     final passwordConfirmController = useTextEditingController();
-    final contactNumberController = useTextEditingController();
     final isLoading = useState(false);
 
     onRegister() async {
@@ -30,7 +27,6 @@ class RegistrationPage extends HookConsumerWidget {
             password: passwordController.text,
             name: nameController.text,
             passwordConfirm: passwordConfirmController.text,
-            contactNumber: contactNumberController.text,
           )
           .run();
       isLoading.value = false;
@@ -76,20 +72,6 @@ class RegistrationPage extends HookConsumerWidget {
                 title: const Text('Name'),
                 subtitle: TextField(
                   controller: nameController,
-                ),
-              ),
-              ListTile(
-                title: const Text('Contact Number'),
-                subtitle: TextField(
-                  controller: contactNumberController,
-                  keyboardType: TextInputType.phone,
-                  maxLength: 10,
-                  decoration: const InputDecoration(
-                    prefixText: '+63',
-                  ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
                 ),
               ),
               ListTile(

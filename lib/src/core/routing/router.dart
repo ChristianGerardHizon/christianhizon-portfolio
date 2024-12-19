@@ -21,7 +21,7 @@ GoRouter router(Ref ref) {
     DomainPageRoute.path,
   ];
 
-  final storeOwnerRoutes = <String>[];
+  // final storeOwnerRoutes = <String>[];
 
   return GoRouter(
     initialLocation: RootRoute.path,

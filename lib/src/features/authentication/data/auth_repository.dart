@@ -1,11 +1,8 @@
-import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
-import 'package:gym_system/src/core/strings/endpoints.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/user/domain/user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -17,7 +14,7 @@ part 'auth_repository.g.dart';
 
 @Riverpod(keepAlive: true)
 AuthRepository authRepository(Ref ref) {
-  return AuthRepository(
+  return AuthRepositoryImpl(
     storage: ref.read(flutterSecureStorageProvider),
     idKey: 'AUTH_ID',
     tokenKey: 'AUTH_TOKEN',
@@ -25,13 +22,26 @@ AuthRepository authRepository(Ref ref) {
   );
 }
 
-class AuthRepository {
+abstract class AuthRepository {
+  TaskResult<User> login(Map<String, dynamic> payload);
+  TaskResult<void> logout();
+  TaskResult<User> refresh();
+  TaskResult<User> getSavedUser();
+  TaskResult<User> register({
+    required String email,
+    required String name,
+    required String password,
+    required String passwordConfirm,
+  });
+}
+
+class AuthRepositoryImpl implements AuthRepository {
   final FlutterSecureStorage storage;
   final PocketBase pb;
   final String idKey;
   final String tokenKey;
 
-  AuthRepository({
+  AuthRepositoryImpl({
     required this.pb,
     required this.storage,
     required this.idKey,
@@ -40,25 +50,23 @@ class AuthRepository {
 
   RecordService get collection => pb.collection('users');
 
-  TaskResult<User> login(Map<String, dynamic> payload) {
+  AuthStore get authStore => pb.authStore;
+
+  TaskResult<User> _saveToStorage(String token, RecordModel record) {
     return TaskResult.tryCatch(
       () async {
-        final email = payload['email'];
-        final password = payload['password'];
-
-        final response =
-            await collection.authWithPassword(email.trim(), password.trim());
-
+        final user = User.fromMap(record.toJson());
         await storage.write(
           key: tokenKey,
-          value: response.token,
-        );
-        await storage.write(
-          key: idKey,
-          value: response.record.id,
+          value: token,
         );
 
-        final user = User.fromMap(response.record.toJson());
+        await storage.write(
+          key: idKey,
+          value: token,
+        );
+
+        authStore.save(token, record);
 
         return user;
       },
@@ -66,57 +74,34 @@ class AuthRepository {
     );
   }
 
+  TaskResult<User> login(Map<String, dynamic> payload) {
+    return TaskResult.tryCatch(
+      () async {
+        final email = payload['email'];
+        final password = payload['password'];
+
+        return await collection.authWithPassword(
+          email.trim(),
+          password.trim(),
+        );
+      },
+      Failure.tryCatchData,
+    ).flatMap((r) => _saveToStorage(r.token, r.record));
+  }
+
   TaskResult<void> logout() {
     return TaskResult.tryCatch(() async {
+      authStore.clear();
       await storage.delete(key: idKey);
       await storage.delete(key: tokenKey);
     }, Failure.tryCatchData);
   }
 
-  Map<String, dynamic> parse(String data) {
-    int attempts = 0;
-    var result = jsonDecode(data);
-    while (attempts < 5) {
-      try {
-        result = Map<String, dynamic>.from(jsonDecode(result));
-        if (result is Map) {
-          return Map<String, dynamic>.from(result);
-        }
-      } catch (e) {
-        // Handle the error if necessary or continue to retry
-      }
-      attempts++;
-    }
-    throw Failure(
-      'Failed to parse data into a Map<String, dynamic> after 5 attempts ${result.runtimeType}',
-    );
-  }
-
-  TaskResult<void> _refreshTokenAndSaveToLocal() {
-    return TaskResult.tryCatch(
-      () async {
-        final result = await collection.authRefresh();
-        await storage.write(
-          key: tokenKey,
-          value: result.token,
-        );
-
-        final id = result.record.id;
-        await storage.write(
-          key: idKey,
-          value: id,
-        );
-      },
-      Failure.tryCatchData,
-    );
-  }
-
-  TaskResult<User> _createUser({
+  TaskResult<User> register({
     required String email,
     required String name,
     required String password,
     required String passwordConfirm,
-    required String contactNumber,
   }) {
     return TaskResult.tryCatch(
       () async {
@@ -135,10 +120,6 @@ class AuthRepository {
         }
         if (passwordConfirm.isEmpty) {
           throw Failure('Password confirmation is missing', StackTrace.current);
-        }
-
-        if (contactNumber.isEmpty) {
-          throw Failure('Contact number is missing', StackTrace.current);
         }
 
         /// check if email is valid format
@@ -164,65 +145,29 @@ class AuthRepository {
           'email': email.trim(),
           'name': name.trim(),
           'password': password.trim(),
-          'isStoreOwner': false,
           'passwordConfirm': passwordConfirm,
-          'storeLimit': 1,
-          'contactNumber': '+63$contactNumber',
         };
 
         final result = await collection.create(body: payload);
 
-        /// append email since its not returned by the api
-        return User.fromMap(result.toJson());
+        return result;
       },
       Failure.tryCatchData,
-    );
+    ).flatMap((f) => login({'email': email, 'password': password}));
   }
 
-  TaskResult<User> register({
-    required String email,
-    required String name,
-    required String password,
-    required String passwordConfirm,
-    required String contactNumber,
-  }) {
-    return TaskResult.Do(($) async {
-      final user = await $(_createUser(
-        email: email,
-        name: name,
-        password: password,
-        passwordConfirm: passwordConfirm,
-        contactNumber: contactNumber,
-      ));
-      return await $(login({
-        'email': email,
-        'password': password,
-      }));
-    });
+  TaskResult<User> refresh() {
+    return TaskResult.tryCatch(
+      () async {
+        return await collection.authRefresh();
+      },
+      Failure.tryCatchData,
+    ).flatMap((r) => _saveToStorage(r.token, r.record));
   }
 
-  TaskResult<void> refresh() {
-    return _refreshTokenAndSaveToLocal();
-  }
-
-  /// Returns the stored token in the storage.
-  TaskResult<String> getToken() {
-    return TaskResult.tryCatch(() async {
-      final token = await storage.read(key: tokenKey);
-      if (token == null) {
-        throw 'token is null';
-      }
-      return token;
-    }, Failure.tryCatchData);
-  }
-
-  TaskResult<String> getId() {
-    return TaskResult.tryCatch(() async {
-      final id = await storage.read(key: idKey);
-      if (id == null) {
-        throw 'id is null';
-      }
-      return id;
-    }, Failure.tryCatchData);
+  @override
+  TaskResult<User> getSavedUser() {
+    // TODO: implement getSavedUser
+    throw UnimplementedError();
   }
 }
