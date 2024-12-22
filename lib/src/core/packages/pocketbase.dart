@@ -8,5 +8,5 @@ part 'pocketbase.g.dart';
 
 @Riverpod(keepAlive: true)
 PocketBase pocketbase(Ref ref) {
-  return PocketBase('http://localhost:8090');
+  return PocketBase('http://127.0.0.1:8090');
 }
