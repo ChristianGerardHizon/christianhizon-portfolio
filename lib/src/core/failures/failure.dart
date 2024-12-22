@@ -1,5 +1,4 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:dio/dio.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 part 'failure.mapper.dart';
