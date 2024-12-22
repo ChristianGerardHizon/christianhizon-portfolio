@@ -57,7 +57,7 @@ class AccountPage extends HookConsumerWidget {
                       ImageViewer(
                         id: user.id,
                         feature: 'users',
-                        file: user.profilePhoto ?? '',
+                        file: user.avatar ?? '',
                         builder: (url) => CircleAvatar(
                           child: CachedNetworkImage(
                             height: 120,

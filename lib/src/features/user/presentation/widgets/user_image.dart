@@ -13,7 +13,7 @@ class UserImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
-      final value = user.profilePhoto;
+      final value = user.avatar;
       if (value is String && value.isNotEmpty) {
         return ImageViewer(
           builder: (url) => CachedNetworkImage(

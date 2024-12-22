@@ -40,7 +40,7 @@ class SettingsPage extends HookConsumerWidget {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (user.hasPicture)
+                    if (user.hasAvatar)
                       ClipOval(
                         child: CircleAvatar(
                           maxRadius: 60,

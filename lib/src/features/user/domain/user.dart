@@ -8,19 +8,19 @@ class User with UserMappable {
 
   final String name;
   final String email;
-  final String? profilePhoto;
+  final String? avatar;
   final bool isDeleted;
 
   User({
     required this.id,
     required this.name,
     this.email = '',
-    this.profilePhoto,
+    this.avatar,
     this.isDeleted = false,
   });
 
   static const fromMap = UserMapper.fromMap;
   static const fromJson = UserMapper.fromJson;
 
-  bool get hasPicture => profilePhoto is String && profilePhoto!.isNotEmpty;
+  bool get hasAvatar => avatar is String && avatar!.isNotEmpty;
 }

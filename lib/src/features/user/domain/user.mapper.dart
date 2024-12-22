@@ -27,9 +27,9 @@ class UserMapper extends ClassMapperBase<User> {
   static String _$email(User v) => v.email;
   static const Field<User, String> _f$email =
       Field('email', _$email, opt: true, def: '');
-  static String? _$profilePhoto(User v) => v.profilePhoto;
-  static const Field<User, String> _f$profilePhoto =
-      Field('profilePhoto', _$profilePhoto, opt: true);
+  static String? _$avatar(User v) => v.avatar;
+  static const Field<User, String> _f$avatar =
+      Field('avatar', _$avatar, opt: true);
   static bool _$isDeleted(User v) => v.isDeleted;
   static const Field<User, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
@@ -39,7 +39,7 @@ class UserMapper extends ClassMapperBase<User> {
     #id: _f$id,
     #name: _f$name,
     #email: _f$email,
-    #profilePhoto: _f$profilePhoto,
+    #avatar: _f$avatar,
     #isDeleted: _f$isDeleted,
   };
 
@@ -48,7 +48,7 @@ class UserMapper extends ClassMapperBase<User> {
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         email: data.dec(_f$email),
-        profilePhoto: data.dec(_f$profilePhoto),
+        avatar: data.dec(_f$avatar),
         isDeleted: data.dec(_f$isDeleted));
   }
 
@@ -102,7 +102,7 @@ abstract class UserCopyWith<$R, $In extends User, $Out>
       {String? id,
       String? name,
       String? email,
-      String? profilePhoto,
+      String? avatar,
       bool? isDeleted});
   UserCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
@@ -118,13 +118,13 @@ class _UserCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, User, $Out>
           {String? id,
           String? name,
           String? email,
-          Object? profilePhoto = $none,
+          Object? avatar = $none,
           bool? isDeleted}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (email != null) #email: email,
-        if (profilePhoto != $none) #profilePhoto: profilePhoto,
+        if (avatar != $none) #avatar: avatar,
         if (isDeleted != null) #isDeleted: isDeleted
       }));
   @override
@@ -132,7 +132,7 @@ class _UserCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, User, $Out>
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       email: data.get(#email, or: $value.email),
-      profilePhoto: data.get(#profilePhoto, or: $value.profilePhoto),
+      avatar: data.get(#avatar, or: $value.avatar),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted));
 
   @override
