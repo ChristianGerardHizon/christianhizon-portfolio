@@ -133,10 +133,6 @@ RouteBase get $loginPageRoute => GoRouteData.$route(
           path: 'recovery',
           factory: $AccountRecoveryPageRouteExtension._fromState,
         ),
-        GoRouteData.$route(
-          path: 'registration',
-          factory: $RegistrationPageRouteExtension._fromState,
-        ),
       ],
     );
 
@@ -164,24 +160,6 @@ extension $AccountRecoveryPageRouteExtension on AccountRecoveryPageRoute {
 
   String get location => GoRouteData.$location(
         '/authentication/recovery',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
-
-extension $RegistrationPageRouteExtension on RegistrationPageRoute {
-  static RegistrationPageRoute _fromState(GoRouterState state) =>
-      const RegistrationPageRoute();
-
-  String get location => GoRouteData.$location(
-        '/authentication/registration',
       );
 
   void go(BuildContext context) => context.go(location);

@@ -8,7 +8,6 @@ import 'package:gym_system/src/core/pages/app_root.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_recovery_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/login_page.dart';
-import 'package:gym_system/src/features/authentication/presentation/pages/registration_page.dart';
 import 'package:gym_system/src/features/settings/presentation/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/settings_page.dart';
 import 'package:gym_system/src/features/user/presentation/pages/user_page.dart';
@@ -87,7 +86,5 @@ class RootRouteData extends StatefulShellRouteData {
     BuildContext context,
     GoRouterState state,
     StatefulNavigationShell navigationShell,
-  ) {
-    return AppRoot(shell: navigationShell, state: state);
-  }
+  ) => AppRoot(shell: navigationShell, state: state);
 }

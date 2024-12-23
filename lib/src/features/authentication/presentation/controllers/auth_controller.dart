@@ -1,6 +1,7 @@
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/authentication/data/auth_repository.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:gym_system/src/features/user/domain/user.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,10 +15,10 @@ class AuthController extends _$AuthController {
   final _noUserFailure = Failure.presentation('User not found');
 
   @override
-  Future<User> build() async {
+  Future<AuthUser> build() async {
     final result = await ref
         .read(authRepositoryProvider)
-        .getSavedUser()
+        .initialize()
         .run()
         .timeout(const Duration(minutes: 1));
 
@@ -32,41 +33,22 @@ class AuthController extends _$AuthController {
     );
   }
 
-  TaskResult<User> setUser(User? user) {
+  TaskResult<AuthUser> setUser(AuthUser? user) {
     if (user == null) {
       state = AsyncValue.error(_noUserFailure, StackTrace.current);
       return TaskResult.left(Failure.presentation('No User Failure'));
     }
-
     state = AsyncData(user);
-    return TaskResult<User>.right(user);
+    return TaskResult<AuthUser>.right(user);
   }
 
-  TaskResult<User> refresh() {
+  TaskResult<AuthUser> refresh() {
     return ref.read(authRepositoryProvider).refresh().chainFirst(setUser);
   }
 
-  TaskResult<User> login(Map<String, dynamic> map) {
+  TaskResult<AuthUser> login(AuthUserType type, Map<String, dynamic> map) {
     final repo = ref.read(authRepositoryProvider);
-    return repo.login(map).chainFirst(setUser);
-  }
-
-  TaskResult<User> register({
-    required String email,
-    required String name,
-    required String password,
-    required String passwordConfirm,
-  }) {
-    final repo = ref.read(authRepositoryProvider);
-
-    return repo
-        .register(
-          email: email,
-          name: name,
-          password: password,
-          passwordConfirm: passwordConfirm,
-        )
-        .chainFirst(setUser);
+    return repo.login(type, map).chainFirst(setUser);
   }
 
   TaskResult<void> logout() {

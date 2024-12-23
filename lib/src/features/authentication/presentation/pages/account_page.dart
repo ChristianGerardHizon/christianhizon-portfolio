@@ -48,88 +48,39 @@ class AccountPage extends HookConsumerWidget {
         child: CustomScrollView(
           slivers: [
             authState.when(
-                skipError: false,
-                skipLoadingOnRefresh: false,
-                skipLoadingOnReload: false,
-                data: (user) {
-                  return SliverList.list(
-                    children: [
-                      ImageViewer(
-                        id: user.id,
-                        feature: 'users',
-                        file: user.avatar ?? '',
-                        builder: (url) => CircleAvatar(
-                          child: CachedNetworkImage(
-                            height: 120,
-                            width: 120,
-                            imageUrl: url,
-                            fit: BoxFit.fitWidth,
-                            placeholder: (context, url) =>
-                                CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
-                        ),
+              skipError: false,
+              skipLoadingOnRefresh: false,
+              skipLoadingOnReload: false,
+              data: (user) {
+                return SliverList.list(
+                  children: [
+                    ///
+                    /// logout
+                    ///
+                    ListTile(
+                      leading: Icon(
+                        MIcons.logout,
+                        color: Theme.of(context).colorScheme.error,
                       ),
-
-                      ///
-                      /// user info
-                      ///
-                      ListTile(
-                        title: const Text('Name'),
-                        subtitle: Text(user.name),
-                      ),
-
-                      ListTile(
-                        title: const Text('Email'),
-                        subtitle: Text(user.email),
-                      ),
-
-                      ListTile(
-                        title: const Text('Date Joined'),
-                        // subtitle: Text(user.created.toLocal().toString()),
-                      ),
-
-                      ListTile(
-                        title: const Text('Date Updated'),
-                        // subtitle: Text(user.updated.toLocal().toString()),
-                      ),
-
-                      ///
-                      /// Edit Account
-                      ///
-                      ListTile(
-                        leading: Icon(MIcons.accountEditOutline),
-                        title: const Text('Account Edit'),
-                        onTap: () => onAccountUpdate(user),
-                      ),
-
-                      ///
-                      /// logout
-                      ///
-                      ListTile(
-                        leading: Icon(
-                          MIcons.logout,
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                        title: const Text('Logout'),
-                        onTap: onLogout,
-                      ),
-                    ],
-                  );
-                },
-                error: (error, stack) => SliverFillRemaining(
-                      child: Center(
-                        child: Text(error.toString()),
-                      ),
+                      title: const Text('Logout'),
+                      onTap: onLogout,
                     ),
-                loading: () {
-                  return const SliverFillRemaining(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                })
+                  ],
+                );
+              },
+              error: (error, stack) => SliverFillRemaining(
+                child: Center(
+                  child: Text(error.toString()),
+                ),
+              ),
+              loading: () {
+                return const SliverFillRemaining(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              },
+            )
           ],
         ),
       ),

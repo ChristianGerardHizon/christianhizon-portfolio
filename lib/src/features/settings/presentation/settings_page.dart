@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
-import 'package:gym_system/src/features/authentication/presentation/widgets/auth_builder.dart';
 import 'package:gym_system/src/features/user/presentation/widgets/user_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -28,60 +27,6 @@ class SettingsPage extends HookConsumerWidget {
       ),
       body: Column(
         children: [
-          ///
-          /// User Profile
-          ///
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: 205,
-            ),
-            child: AuthBuilder(
-              builder: (user) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (user.hasAvatar)
-                      ClipOval(
-                        child: CircleAvatar(
-                          maxRadius: 60,
-                          minRadius: 50,
-                          backgroundColor: Colors.transparent,
-                          child: UserImage(user: user),
-                        ),
-                      ),
-                    SizedBox(height: 20),
-                    Text(
-                      user.email,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Text(user.name),
-                  ],
-                );
-              },
-            ),
-          ),
-
-          ///
-          ///
-          ///
-          // ListTile(
-          //   title: const Text('Server URL'),
-          //   onTap: () => const DomainPageRoute().push(context),
-          //   trailing: const Icon(Icons.chevron_right),
-          // ),
-          AuthBuilder(
-            builder: (user) {
-              return Column(
-                children: [
-                  ListTile(
-                    title: const Text('Update Your Profile'),
-                    onTap: () => UserUpdatePageRoute(user.id).push(context),
-                    trailing: const Icon(Icons.chevron_right),
-                  ),
-                ],
-              );
-            },
-          ),
           ListTile(
             leading: Icon(
               Icons.logout,

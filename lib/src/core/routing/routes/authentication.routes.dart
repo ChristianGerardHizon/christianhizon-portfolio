@@ -6,7 +6,6 @@ part of '../main.routes.dart';
 
 @TypedGoRoute<LoginPageRoute>(path: LoginPageRoute.path, routes: [
   TypedGoRoute<AccountRecoveryPageRoute>(path: AccountRecoveryPageRoute.path),
-  TypedGoRoute<RegistrationPageRoute>(path: RegistrationPageRoute.path),
 ])
 class LoginPageRoute extends GoRouteData {
   const LoginPageRoute();
@@ -28,15 +27,6 @@ class AccountRecoveryPageRoute extends GoRouteData {
   }
 }
 
-class RegistrationPageRoute extends GoRouteData {
-  const RegistrationPageRoute();
-  static const path = 'registration';
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const RegistrationPage();
-  }
-}
 
 ///
 /// Account

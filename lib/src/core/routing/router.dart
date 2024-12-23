@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/user/domain/user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -17,7 +18,6 @@ GoRouter router(Ref ref) {
   ///
   final ignoredRoutes = <String>[
     LoginPageRoute.path,
-    RegistrationPageRoute.path,
     DomainPageRoute.path,
   ];
 
@@ -30,7 +30,7 @@ GoRouter router(Ref ref) {
     redirect: (context, state) {
       final auth = ref.read(authControllerProvider);
 
-      final isAuthenticated = auth.valueOrNull is User;
+      final isAuthenticated = auth.valueOrNull is AuthUser;
       final isLoading = auth is AsyncLoading;
 
       ///

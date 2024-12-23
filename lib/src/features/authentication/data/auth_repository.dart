@@ -5,7 +5,7 @@ import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/features/user/domain/user.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pocketbase/pocketbase.dart';
 
@@ -17,188 +17,127 @@ part 'auth_repository.g.dart';
 AuthRepository authRepository(Ref ref) {
   return AuthRepositoryImpl(
     storage: ref.read(flutterSecureStorageProvider),
-    recordModelKey: 'AUTH_MODEL_KEY',
-    tokenKey: 'AUTH_TOKEN',
+    authKey: 'AUTH_KEY',
     pb: ref.read(pocketbaseProvider),
   );
 }
 
 abstract class AuthRepository {
-  TaskResult<User> login(Map<String, dynamic> payload);
+  TaskResult<AuthUser> login(AuthUserType type, Map<String, dynamic> payload);
   TaskResult<void> logout();
-  TaskResult<User> refresh();
-  TaskResult<User> getSavedUser();
-  TaskResult<User> register({
-    required String email,
-    required String name,
-    required String password,
-    required String passwordConfirm,
-  });
+  TaskResult<AuthUser> refresh();
+  TaskResult<AuthUser> initialize();
 }
 
 class AuthRepositoryImpl implements AuthRepository {
   final FlutterSecureStorage storage;
   final PocketBase pb;
-  final String recordModelKey;
-  final String tokenKey;
+  final String authKey;
 
   AuthRepositoryImpl({
     required this.pb,
     required this.storage,
-    required this.recordModelKey,
-    required this.tokenKey,
+    required this.authKey,
   });
-
-  RecordService get collection => pb.collection('users');
 
   AuthStore get authStore => pb.authStore;
 
-  TaskResult<User> _saveToStorage(String token, RecordModel record) {
+  TaskResult<AuthUser> _saveToStorage(RecordAuth recordAuth) {
     return TaskResult.tryCatch(
       () async {
-        final user = User.fromMap(record.toJson());
+        final token = recordAuth.token;
+        final record = recordAuth.record;
 
-        ///
-        /// store token
-        ///
-        await storage.write(
-          key: tokenKey,
-          value: token,
+        final appUser = AuthUser(
+          collectionId: record.collectionId,
+          collectionName: record.collectionName,
+          id: record.id,
+          token: token,
+          type: AuthUserTypeMapper.fromValue(record.collectionName),
         );
 
         ///
-        /// store record model
+        /// store
         ///
         await storage.write(
-          key: recordModelKey,
-          value: jsonEncode(record.toJson()),
+          key: authKey,
+          value: appUser.toJson(),
         );
 
         authStore.save(token, record);
 
-        return user;
+        return appUser;
       },
       Failure.tryCatchData,
     );
   }
 
-  TaskResult<User> login(Map<String, dynamic> payload) {
+  TaskResult<AuthUser> login(AuthUserType type, Map<String, dynamic> payload) {
     return TaskResult.tryCatch(
       () async {
         final email = payload['email'];
         final password = payload['password'];
 
-        return await collection.authWithPassword(
-          email.trim(),
-          password.trim(),
-        );
+        return await pb.collection(type.name).authWithPassword(email, password);
       },
       Failure.tryCatchData,
-    ).flatMap((r) => _saveToStorage(r.token, r.record));
+    ).flatMap(_saveToStorage);
   }
 
   TaskResult<void> logout() {
     return TaskResult.tryCatch(() async {
       authStore.clear();
-      await storage.delete(key: recordModelKey);
-      await storage.delete(key: tokenKey);
+      await storage.delete(key: authKey);
     }, Failure.tryCatchData);
   }
 
-  TaskResult<User> register({
-    required String email,
-    required String name,
-    required String password,
-    required String passwordConfirm,
-  }) {
+  TaskResult<AuthUser> refresh() {
     return TaskResult.tryCatch(
       () async {
-        ///
-        /// check if fields are valid
-        ///
-        if (email.isEmpty) {
-          throw Failure('Email is missing', StackTrace.current);
+        final id = authStore.record?.id;
+
+        if (id == null) {
+          throw Failure('collectionId is null', StackTrace.current);
         }
 
-        if (name.isEmpty) {
-          throw Failure('Name is missing', StackTrace.current);
-        }
-
-        if (password.isEmpty) {
-          throw Failure('Password is missing', StackTrace.current);
-        }
-        if (passwordConfirm.isEmpty) {
-          throw Failure('Password confirmation is missing', StackTrace.current);
-        }
-
-        ///
-        /// check if email is valid format
-        ///
-        final emailReg = RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-        if (!emailReg.hasMatch(email)) {
-          throw Failure('Email is invalid', StackTrace.current);
-        }
-
-        ///
-        /// passwords must match
-        ///
-        if (password != passwordConfirm) {
-          throw Failure('Passwords do not match', StackTrace.current);
-        }
-
-        ///
-        /// passwords must be min 8 characters
-        ///
-        if (password.length < 8) {
-          throw Failure('Password must be min 8 chars', StackTrace.current);
-        }
-
-        final payload = {
-          'email': email.trim(),
-          'name': name.trim(),
-          'password': password.trim(),
-          'passwordConfirm': passwordConfirm,
-        };
-
-        final result = await collection.create(body: payload);
-
-        return result;
+        return await pb.collection(id).authRefresh();
       },
       Failure.tryCatchData,
-    ).flatMap((f) => login({'email': email, 'password': password}));
-  }
-
-  TaskResult<User> refresh() {
-    return TaskResult.tryCatch(
-      () async {
-        return await collection.authRefresh();
-      },
-      Failure.tryCatchData,
-    ).flatMap((r) => _saveToStorage(r.token, r.record));
+    ).flatMap(_saveToStorage);
   }
 
   @override
-  TaskResult<User> getSavedUser() {
+  TaskResult<AuthUser> initialize() {
     return TaskResult.tryCatch(
       () async {
         ///
         /// token
         ///
-        final token = await storage.read(key: tokenKey);
+        final authUserString = await storage.read(key: authKey);
 
-        ///
-        /// record model
-        ///
-        final modelString = await storage.read(key: recordModelKey);
+        if (authUserString == null) {
+          throw Failure('authUserString is null', StackTrace.current);
+        }
 
-        final recordModel = RecordModel.fromJson(json.decode(modelString!));
+        final authUser = AuthUser.fromJson(authUserString);
 
-        if (token == null) throw Failure('token is null', StackTrace.current);
+        authStore.save(authUser.token, null);
 
-        authStore.save(token, recordModel);
+        final authModel =
+            await pb.collection(authUser.collectionId).authRefresh();
 
-        return User.fromMap(recordModel.toJson());
+        authStore.save(authModel.token, authModel.record);
+
+        final token = authModel.token;
+        final record = authModel.record;
+
+        return AuthUser(
+          id: record.id,
+          type: authUser.type,
+          collectionId: record.collectionId,
+          collectionName: record.collectionName,
+          token: token,
+        );
       },
       Failure.tryCatchData,
     );

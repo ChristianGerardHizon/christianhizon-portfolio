@@ -9,9 +9,9 @@ import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/utils/form_utils.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 
 class LoginPage extends HookConsumerWidget {
   const LoginPage({super.key});
@@ -29,27 +29,23 @@ class LoginPage extends HookConsumerWidget {
       final result = await TaskResult.Do(($) async {
         final form = await $(FormUtils.getFormState(formKey.currentState));
         final values = await $(FormUtils.getFormValues(form));
-        log('Form Values');
-        log(values.toString());
         return $(
-          ref.read(authControllerProvider.notifier).login(values),
+          ref
+              .read(authControllerProvider.notifier)
+              .login(AuthUserType.users, values),
         );
       }).run();
       isLoading.value = false;
 
       result.fold(
         (l) {
-          log('Failed to login');
-          log(l.toString());
           // make sure yung page is still open.
           if (context.mounted) isLoading.value = false;
           AppSnackBar.rootFailure(l);
         },
         (r) {
-          log('Successfully logged in');
-          log(r.toString());
           if (context.mounted) const RootRoute().go(context);
-          AppSnackBar.root(message: 'Welcome ${r.name}!');
+          AppSnackBar.root(message: 'Logged In!');
         },
       );
     }
@@ -116,15 +112,6 @@ class LoginPage extends HookConsumerWidget {
               showText: false,
               isLoading: isLoading.value,
               child: const Text('Login'),
-            ),
-
-            ///
-            /// register button
-            ///
-            const SizedBox(height: 20),
-            TextButton(
-              child: const Text('Register Account'),
-              onPressed: () => const RegistrationPageRoute().go(context),
             ),
           ],
         ),
