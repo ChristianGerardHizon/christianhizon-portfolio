@@ -3,54 +3,54 @@ import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/features/users/domain/user.dart';
+import 'package:gym_system/src/features/admins/domain/admin.dart';
 import 'package:http/http.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-part 'user_repository.g.dart';
+part 'admin_repository.g.dart';
 
-abstract class UserRepository {
-  TaskResult<PageResults<User>> list({
+abstract class AdminRepository {
+  TaskResult<PageResults<Admin>> list({
     String? query,
     required int pageNo,
     required int pageSize,
   });
-  TaskResult<User> get(String id);
+  TaskResult<Admin> get(String id);
   TaskResult<void> delete(String id);
-  TaskResult<User> update(
-    User user, {
+  TaskResult<Admin> update(
+    Admin admin, {
     Map<String, dynamic> params = const {},
     List<MultipartFile> files = const [],
   });
-  TaskResult<User> create({
+  TaskResult<Admin> create({
     required Map<String, dynamic> params,
     List<MultipartFile> files = const [],
   });
 }
 
 @Riverpod(keepAlive: true)
-UserRepository userRepository(Ref ref) {
-  return UserRepositoryImpl(
+AdminRepository adminRepository(Ref ref) {
+  return AdminRepositoryImpl(
     pb: ref.read(pocketbaseProvider),
   );
 }
 
-class UserRepositoryImpl implements UserRepository {
+class AdminRepositoryImpl implements AdminRepository {
   final PocketBase pb;
 
-  RecordService get collection => pb.collection('users');
+  RecordService get collection => pb.collection('admins');
 
-  UserRepositoryImpl({required this.pb});
+  AdminRepositoryImpl({required this.pb});
 
   ///
-  /// Update an user
+  /// Update an admin
   ///
   @override
-  TaskResult<User> update(
-    User user, {
+  TaskResult<Admin> update(
+    Admin admin, {
     Map<String, dynamic> params = const {},
     List<MultipartFile> files = const [],
   }) {
@@ -60,22 +60,22 @@ class UserRepositoryImpl implements UserRepository {
         final body = updateMap..removeWhere((key, value) => value is XFile);
 
         final response = await collection.update(
-          user.id,
+          admin.id,
           body: body,
           files: files,
         );
         final map = Map<String, dynamic>.from(response.data);
-        return User.fromMap(map);
+        return Admin.fromMap(map);
       },
       Failure.tryCatchData,
     );
   }
 
   ///
-  /// Create a new user
+  /// Create a new admin
   ///
   @override
-  TaskResult<User> create({
+  TaskResult<Admin> create({
     required Map<String, dynamic> params,
     List<MultipartFile> files = const [],
   }) {
@@ -85,14 +85,14 @@ class UserRepositoryImpl implements UserRepository {
           body: params,
           files: files,
         );
-        return User.fromMap(response.toJson());
+        return Admin.fromMap(response.toJson());
       },
       Failure.tryCatchData,
     );
   }
 
   ///
-  /// Delete an user
+  /// Delete an admin
   ///
   @override
   TaskResult<void> delete(String id) {
@@ -105,24 +105,24 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   ///
-  /// Get an user
+  /// Get an admin
   ///
   @override
-  TaskResult<User> get(String id) {
+  TaskResult<Admin> get(String id) {
     return TaskResult.tryCatch(
       () async {
         final result = await collection.getOne(id);
-        return User.fromMap(result.toJson());
+        return Admin.fromMap(result.toJson());
       },
       Failure.tryCatchData,
     );
   }
 
   ///
-  /// List users
+  /// List admins
   ///
   @override
-  TaskResult<PageResults<User>> list({
+  TaskResult<PageResults<Admin>> list({
     String? query,
     required int pageNo,
     required int pageSize,
@@ -134,9 +134,9 @@ class UserRepositoryImpl implements UserRepository {
           perPage: pageSize,
         );
 
-        return PageResults<User>(
-          items: result.items.map<User>((e) {
-            return User.fromMap(e.toJson());
+        return PageResults<Admin>(
+          items: result.items.map<Admin>((e) {
+            return Admin.fromMap(e.toJson());
           }).toList(),
           page: result.page,
           perPage: result.perPage,

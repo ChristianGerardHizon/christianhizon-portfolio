@@ -4,17 +4,19 @@ import 'package:gym_system/src/core/pages/home_page.dart';
 import 'package:gym_system/src/core/pages/not_found_page.dart';
 import 'package:gym_system/src/core/pages/splash_page.dart';
 import 'package:gym_system/src/core/pages/app_root.dart';
+import 'package:gym_system/src/features/admins/presentation/pages/admins_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_recovery_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/login_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
-import 'package:gym_system/src/features/settings/presentation/domain_page.dart';
-import 'package:gym_system/src/features/settings/presentation/settings_page.dart';
+import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
+import 'package:gym_system/src/features/settings/presentation/pages/settings_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_update_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/users_page.dart';
 
 part 'main.routes.g.dart';
+part 'routes/admins.routes.dart';
 part 'routes/authentication.routes.dart';
 part 'routes/users.routes.dart';
 part 'routes/settings.routes.dart';
@@ -82,6 +84,15 @@ class HomePageRoute extends GoRouteData {
     TypedStatefulShellBranch<PatientsBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<PatientsPageRoute>(path: PatientsPageRoute.path),
+      ],
+    ),
+
+    ///
+    /// admins
+    ///
+    TypedStatefulShellBranch<AdminsBranchData>(
+      routes: <TypeRouteData>[
+        TypedGoRoute<AdminsPageRoute>(path: AdminsPageRoute.path),
       ],
     ),
   ],

@@ -2,7 +2,6 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
-import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';

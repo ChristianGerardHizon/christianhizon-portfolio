@@ -4,12 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/form_builders/cutom_image_field.dart';
-import 'package:gym_system/src/core/widgets/form_builders/hidden_form_field.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/utils/form_utils.dart';
-import 'package:gym_system/src/features/settings/presentation/image_viewer.dart';
+import 'package:gym_system/src/features/settings/presentation/widgets/image_viewer.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:gym_system/src/features/users/presentation/controllers/user_controller.dart';
@@ -39,7 +38,7 @@ class UserUpdatePage extends HookConsumerWidget {
         final values = await $(FormUtils.getFormValues(form));
         final repo = ref.read(userRepositoryProvider);
         final user = await $(repo.get(id));
-        return $(repo.update(user, values));
+        return $(repo.update(user, params: values));
       }).run();
 
       result.fold(
@@ -69,10 +68,6 @@ class UserUpdatePage extends HookConsumerWidget {
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     sliver: SliverList.list(children: [
-                      ///
-                      /// change to hidden
-                      ///
-                      HiddenFormField(name: UserField.isStoreOwner),
 
                       ///
                       /// Change Profile Picture

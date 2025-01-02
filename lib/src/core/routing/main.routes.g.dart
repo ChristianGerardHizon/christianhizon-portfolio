@@ -11,6 +11,8 @@ List<RouteBase> get $appRoutes => [
       $splashPageRoute,
       $homePageRoute,
       $rootRouteData,
+      $adminsPageRoute,
+      $adminPageRoute,
       $loginPageRoute,
       $accountPageRoute,
       $userPageRoute,
@@ -114,6 +116,14 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             ),
           ],
         ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/admins',
+              factory: $AdminsPageRouteExtension._fromState,
+            ),
+          ],
+        ),
       ],
     );
 
@@ -162,6 +172,53 @@ extension $PatientsPageRouteExtension on PatientsPageRoute {
 
   String get location => GoRouteData.$location(
         '/patients',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $AdminsPageRouteExtension on AdminsPageRoute {
+  static AdminsPageRoute _fromState(GoRouterState state) =>
+      const AdminsPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/admins',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $adminsPageRoute => GoRouteData.$route(
+      path: '/admins',
+      factory: $AdminsPageRouteExtension._fromState,
+    );
+
+RouteBase get $adminPageRoute => GoRouteData.$route(
+      path: '/admin/:id',
+      factory: $AdminPageRouteExtension._fromState,
+    );
+
+extension $AdminPageRouteExtension on AdminPageRoute {
+  static AdminPageRoute _fromState(GoRouterState state) => AdminPageRoute(
+        id: state.pathParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/admin/${Uri.encodeComponent(id)}',
       );
 
   void go(BuildContext context) => context.go(location);
