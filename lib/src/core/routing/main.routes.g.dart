@@ -124,6 +124,14 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             ),
           ],
         ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/settings',
+              factory: $SettingsPageRouteExtension._fromState,
+            ),
+          ],
+        ),
       ],
     );
 
@@ -190,6 +198,24 @@ extension $AdminsPageRouteExtension on AdminsPageRoute {
 
   String get location => GoRouteData.$location(
         '/admins',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $SettingsPageRouteExtension on SettingsPageRoute {
+  static SettingsPageRoute _fromState(GoRouterState state) =>
+      const SettingsPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/settings',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -363,24 +389,6 @@ RouteBase get $settingsPageRoute => GoRouteData.$route(
       path: '/settings',
       factory: $SettingsPageRouteExtension._fromState,
     );
-
-extension $SettingsPageRouteExtension on SettingsPageRoute {
-  static SettingsPageRoute _fromState(GoRouterState state) =>
-      const SettingsPageRoute();
-
-  String get location => GoRouteData.$location(
-        '/settings',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
 
 RouteBase get $domainPageRoute => GoRouteData.$route(
       path: '/domain',

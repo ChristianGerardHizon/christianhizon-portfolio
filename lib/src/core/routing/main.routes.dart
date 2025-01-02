@@ -95,6 +95,15 @@ class HomePageRoute extends GoRouteData {
         TypedGoRoute<AdminsPageRoute>(path: AdminsPageRoute.path),
       ],
     ),
+
+    ///
+    /// Settings
+    ///
+    TypedStatefulShellBranch<SettingsBranchData>(
+      routes: <TypeRouteData>[
+        TypedGoRoute<SettingsPageRoute>(path: SettingsPageRoute.path),
+      ],
+    ),
   ],
 )
 class RootRouteData extends StatefulShellRouteData {
