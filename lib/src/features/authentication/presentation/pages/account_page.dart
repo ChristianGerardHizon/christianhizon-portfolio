@@ -5,7 +5,7 @@ import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/settings/presentation/image_viewer.dart';
-import 'package:gym_system/src/features/user/domain/user.dart';
+import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AccountPage extends HookConsumerWidget {

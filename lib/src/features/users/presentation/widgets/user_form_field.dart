@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gym_system/src/core/widgets/form_builders/custom_form_field.dart';
-import 'package:gym_system/src/features/user/data/user_repository.dart';
-import 'package:gym_system/src/features/user/domain/user.dart';
-import 'package:gym_system/src/features/user/presentation/widgets/user_image.dart';
+import 'package:gym_system/src/features/users/data/user_repository.dart';
+import 'package:gym_system/src/features/users/domain/user.dart';
+import 'package:gym_system/src/features/users/presentation/widgets/user_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:searchfield/searchfield.dart';

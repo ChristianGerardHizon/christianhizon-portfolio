@@ -10,9 +10,9 @@ import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/utils/form_utils.dart';
 import 'package:gym_system/src/features/settings/presentation/image_viewer.dart';
-import 'package:gym_system/src/features/user/data/user_repository.dart';
-import 'package:gym_system/src/features/user/domain/user.dart';
-import 'package:gym_system/src/features/user/presentation/controllers/user_controller.dart';
+import 'package:gym_system/src/features/users/data/user_repository.dart';
+import 'package:gym_system/src/features/users/domain/user.dart';
+import 'package:gym_system/src/features/users/presentation/controllers/user_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 

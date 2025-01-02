@@ -5,7 +5,7 @@ import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/features/user/domain/user.dart';
+import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:http/http.dart';
 import 'package:pocketbase/pocketbase.dart';
 

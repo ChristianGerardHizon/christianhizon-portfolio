@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
-import 'package:gym_system/src/features/user/presentation/widgets/user_image.dart';
+import 'package:gym_system/src/features/users/presentation/widgets/user_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SettingsPage extends HookConsumerWidget {

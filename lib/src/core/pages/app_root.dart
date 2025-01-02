@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/type_defs/custom_navbar_item.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/widgets/app_version.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -31,16 +32,20 @@ class AppRoot extends HookConsumerWidget {
     ///
     final items = <int, CustomNavigationBarItem>{
       0: CustomNavigationBarItem(
-        route: UserPageRoute.path,
+        route: UsersPageRoute.path,
         icon: Icon(MIcons.homeOutline),
         label: 'Home',
-        onTap: () {},
+        onTap: () {
+          UsersPageRoute().go(context);
+        },
       ),
       1: CustomNavigationBarItem(
-        route: UserPageRoute.path,
+        route: PatientsPageRoute.path,
         icon: Icon(MIcons.accountGroupOutline),
         label: 'Patients',
-        onTap: () {},
+        onTap: () {
+          PatientsPageRoute().go(context);
+        },
       ),
       2: CustomNavigationBarItem(
         route: UserPageRoute.path,
@@ -120,7 +125,7 @@ class AppRoot extends HookConsumerWidget {
                       icon: e.icon,
                     );
                   }).toList(),
-                  footer: const Text('Footer'),
+                  footer: AppVersion(),
                 ),
               ),
               Expanded(child: shell),

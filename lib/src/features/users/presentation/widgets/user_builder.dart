@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/features/user/domain/user.dart';
-import 'package:gym_system/src/features/user/presentation/controllers/user_controller.dart';
+import 'package:gym_system/src/features/users/domain/user.dart';
+import 'package:gym_system/src/features/users/presentation/controllers/user_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 

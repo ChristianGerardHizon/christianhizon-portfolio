@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/application.dart';
 import 'package:gym_system/src/core/utils/window_utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
+import 'package:package_info_plus/package_info_plus.dart';
 
 Future<void> main() async {
   ///

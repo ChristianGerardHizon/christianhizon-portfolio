@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/pages/home_page.dart';
 import 'package:gym_system/src/core/pages/not_found_page.dart';
@@ -8,15 +7,18 @@ import 'package:gym_system/src/core/pages/app_root.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_recovery_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/login_page.dart';
+import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
 import 'package:gym_system/src/features/settings/presentation/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/settings_page.dart';
-import 'package:gym_system/src/features/user/presentation/pages/user_page.dart';
-import 'package:gym_system/src/features/user/presentation/pages/user_update_page.dart';
+import 'package:gym_system/src/features/users/presentation/pages/user_page.dart';
+import 'package:gym_system/src/features/users/presentation/pages/user_update_page.dart';
+import 'package:gym_system/src/features/users/presentation/pages/users_page.dart';
 
 part 'main.routes.g.dart';
 part 'routes/authentication.routes.dart';
-part 'routes/user.routes.dart';
+part 'routes/users.routes.dart';
 part 'routes/settings.routes.dart';
+part 'routes/patients.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
@@ -58,18 +60,28 @@ class HomePageRoute extends GoRouteData {
 
   @override
   String? redirect(BuildContext context, GoRouterState state) {
-    return YourUserPageRoute.path;
+    return UsersPageRoute.path;
   }
 }
 
 @TypedStatefulShellRoute<RootRouteData>(
   branches: <TypedStatefulShellBranch<StatefulShellBranchData>>[
     ///
+    /// users
     ///
-    ///
-    TypedStatefulShellBranch<UserBranchData>(
+    TypedStatefulShellBranch<UsersBranchData>(
       routes: <TypeRouteData>[
-        TypedGoRoute<YourUserPageRoute>(path: YourUserPageRoute.path),
+        TypedGoRoute<UsersPageRoute>(path: UsersPageRoute.path),
+        TypedGoRoute<UserPageRoute>(path: UserPageRoute.path),
+      ],
+    ),
+
+    ///
+    /// patients
+    ///
+    TypedStatefulShellBranch<PatientsBranchData>(
+      routes: <TypeRouteData>[
+        TypedGoRoute<PatientsPageRoute>(path: PatientsPageRoute.path),
       ],
     ),
   ],
@@ -86,5 +98,6 @@ class RootRouteData extends StatefulShellRouteData {
     BuildContext context,
     GoRouterState state,
     StatefulNavigationShell navigationShell,
-  ) => AppRoot(shell: navigationShell, state: state);
+  ) =>
+      AppRoot(shell: navigationShell, state: state);
 }

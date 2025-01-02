@@ -1,7 +1,7 @@
 part of '../main.routes.dart';
 
-class UserBranchData extends StatefulShellBranchData {
-  const UserBranchData();
+class UsersBranchData extends StatefulShellBranchData {
+  const UsersBranchData();
 }
 
 @TypedGoRoute<UserPageRoute>(path: UserPageRoute.path)
@@ -15,6 +15,17 @@ class UserPageRoute extends GoRouteData {
   }
 }
 
+@TypedGoRoute<UsersPageRoute>(path: UsersPageRoute.path)
+class UsersPageRoute extends GoRouteData {
+  const UsersPageRoute();
+  static const path = '/users';
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return UsersPage();
+  }
+}
+
 @TypedGoRoute<YourUserPageRoute>(path: YourUserPageRoute.path)
 class YourUserPageRoute extends GoRouteData {
   const YourUserPageRoute();
@@ -22,7 +33,7 @@ class YourUserPageRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const UserPage();
+    return const Scaffold();
   }
 }
 

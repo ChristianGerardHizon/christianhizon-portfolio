@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
@@ -80,7 +79,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
         return await pb.collection(type.name).authWithPassword(email, password);
       },
-      Failure.tryCatchData,
+      (error, stack) {
+        return Failure.tryCatchData(error, stack);
+      },
     ).flatMap(_saveToStorage);
   }
 
