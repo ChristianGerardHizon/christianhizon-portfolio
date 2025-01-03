@@ -3,7 +3,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 part 'patient.mapper.dart';
 
 @MappableClass()
-class Patient {
+class Patient with PatientMappable {
   final String id;
 
   final String name;

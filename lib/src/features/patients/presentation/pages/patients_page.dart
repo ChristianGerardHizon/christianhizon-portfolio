@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/routing/router.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -16,6 +17,10 @@ class PatientsPage extends HookConsumerWidget {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.invalidate(patientsControllerProvider),
+          ),
+          IconButton(
+            icon: Icon(MIcons.plusCircle),
+            onPressed: () => PatientCreatePageRoute().go(context),
           )
         ],
       ),

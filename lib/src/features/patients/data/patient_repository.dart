@@ -95,9 +95,11 @@ class PatientRepositoryImpl extends PatientRepository {
     List<XFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
+      final patientMap = patient.toMap();
+      final combinedMap = {...patientMap, ...update};
       final result = await collection.update(
         patient.id,
-        body: update,
+        body: combinedMap,
       );
       return Patient.fromMap(result.toJson());
     }, Failure.tryCatchData);

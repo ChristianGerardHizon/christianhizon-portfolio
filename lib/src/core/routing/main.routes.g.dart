@@ -23,6 +23,8 @@ List<RouteBase> get $appRoutes => [
       $domainPageRoute,
       $patientsPageRoute,
       $patientPageRoute,
+      $patientCreatePageRoute,
+      $patientUpdatePageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -119,6 +121,14 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               path: '/patient/:id',
               factory: $PatientPageRouteExtension._fromState,
             ),
+            GoRouteData.$route(
+              path: '/patient/update/:id',
+              factory: $PatientUpdatePageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/patient/create',
+              factory: $PatientCreatePageRouteExtension._fromState,
+            ),
           ],
         ),
         StatefulShellBranchData.$branch(
@@ -204,6 +214,44 @@ extension $PatientPageRouteExtension on PatientPageRoute {
 
   String get location => GoRouteData.$location(
         '/patient/${Uri.encodeComponent(id)}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $PatientUpdatePageRouteExtension on PatientUpdatePageRoute {
+  static PatientUpdatePageRoute _fromState(GoRouterState state) =>
+      PatientUpdatePageRoute(
+        state.pathParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/patient/update/${Uri.encodeComponent(id)}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $PatientCreatePageRouteExtension on PatientCreatePageRoute {
+  static PatientCreatePageRoute _fromState(GoRouterState state) =>
+      const PatientCreatePageRoute();
+
+  String get location => GoRouteData.$location(
+        '/patient/create',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -445,4 +493,14 @@ RouteBase get $patientsPageRoute => GoRouteData.$route(
 RouteBase get $patientPageRoute => GoRouteData.$route(
       path: '/patient/:id',
       factory: $PatientPageRouteExtension._fromState,
+    );
+
+RouteBase get $patientCreatePageRoute => GoRouteData.$route(
+      path: '/patient/create',
+      factory: $PatientCreatePageRouteExtension._fromState,
+    );
+
+RouteBase get $patientUpdatePageRoute => GoRouteData.$route(
+      path: '/patient/update/:id',
+      factory: $PatientUpdatePageRouteExtension._fromState,
     );

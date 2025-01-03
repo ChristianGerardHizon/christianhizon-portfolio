@@ -27,3 +27,27 @@ class PatientPageRoute extends GoRouteData {
     return PatientPage(id);
   }
 }
+
+@TypedGoRoute<PatientCreatePageRoute>(path: PatientCreatePageRoute.path)
+class PatientCreatePageRoute extends GoRouteData {
+  const PatientCreatePageRoute();
+  static const path = '/patient/create';
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return PatientCreatePage();
+  }
+}
+
+@TypedGoRoute<PatientUpdatePageRoute>(path: PatientUpdatePageRoute.path)
+class PatientUpdatePageRoute extends GoRouteData {
+  const PatientUpdatePageRoute(this.id);
+  static const path = '/patient/update/:id';
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return PatientUpdatePage(id);
+  }
+}

@@ -27,6 +27,7 @@ class PatientUpdatePage extends HookConsumerWidget {
           .read(patientRepositoryProvider)
           .update(patient, formKey.currentState!.value)
           .run();
+      if (!context.mounted) return;
       isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
@@ -42,12 +43,12 @@ class PatientUpdatePage extends HookConsumerWidget {
         data: (patient) {
           return FormBuilder(
             key: formKey,
+            initialValue: patient.toMap(),
             child: Column(
               children: [
                 ///
                 /// name
                 ///
-
                 FormBuilderTextField(name: PatientField.name),
 
                 ///
