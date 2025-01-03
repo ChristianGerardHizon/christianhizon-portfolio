@@ -8,6 +8,7 @@ import 'package:gym_system/src/features/admins/presentation/pages/admins_page.da
 import 'package:gym_system/src/features/authentication/presentation/pages/account_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_recovery_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/login_page.dart';
+import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/settings_page.dart';
@@ -84,6 +85,7 @@ class HomePageRoute extends GoRouteData {
     TypedStatefulShellBranch<PatientsBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<PatientsPageRoute>(path: PatientsPageRoute.path),
+        TypedGoRoute<PatientPageRoute>(path: PatientPageRoute.path),
       ],
     ),
 

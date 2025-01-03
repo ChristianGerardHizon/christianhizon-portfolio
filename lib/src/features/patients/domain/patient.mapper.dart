@@ -25,15 +25,27 @@ class PatientMapper extends ClassMapperBase<Patient> {
   static String _$name(Patient v) => v.name;
   static const Field<Patient, String> _f$name =
       Field('name', _$name, opt: true, def: '');
+  static DateTime _$created(Patient v) => v.created;
+  static const Field<Patient, DateTime> _f$created =
+      Field('created', _$created);
+  static DateTime _$updated(Patient v) => v.updated;
+  static const Field<Patient, DateTime> _f$updated =
+      Field('updated', _$updated);
 
   @override
   final MappableFields<Patient> fields = const {
     #id: _f$id,
     #name: _f$name,
+    #created: _f$created,
+    #updated: _f$updated,
   };
 
   static Patient _instantiate(DecodingData data) {
-    return Patient(id: data.dec(_f$id), name: data.dec(_f$name));
+    return Patient(
+        id: data.dec(_f$id),
+        name: data.dec(_f$name),
+        created: data.dec(_f$created),
+        updated: data.dec(_f$updated));
   }
 
   @override
@@ -85,7 +97,7 @@ extension PatientValueCopy<$R, $Out> on ObjectCopyWith<$R, Patient, $Out> {
 
 abstract class PatientCopyWith<$R, $In extends Patient, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call({String? id, String? name});
+  $R call({String? id, String? name, DateTime? created, DateTime? updated});
   PatientCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -98,11 +110,19 @@ class _PatientCopyWithImpl<$R, $Out>
   late final ClassMapperBase<Patient> $mapper =
       PatientMapper.ensureInitialized();
   @override
-  $R call({String? id, String? name}) => $apply(FieldCopyWithData(
-      {if (id != null) #id: id, if (name != null) #name: name}));
+  $R call({String? id, String? name, DateTime? created, DateTime? updated}) =>
+      $apply(FieldCopyWithData({
+        if (id != null) #id: id,
+        if (name != null) #name: name,
+        if (created != null) #created: created,
+        if (updated != null) #updated: updated
+      }));
   @override
   Patient $make(CopyWithData data) => Patient(
-      id: data.get(#id, or: $value.id), name: data.get(#name, or: $value.name));
+      id: data.get(#id, or: $value.id),
+      name: data.get(#name, or: $value.name),
+      created: data.get(#created, or: $value.created),
+      updated: data.get(#updated, or: $value.updated));
 
   @override
   PatientCopyWith<$R2, Patient, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

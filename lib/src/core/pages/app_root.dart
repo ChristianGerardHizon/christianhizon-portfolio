@@ -17,7 +17,9 @@ class AppRoot extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ///
     /// theme of the app.
+    ///
     final theme = Theme.of(context);
 
     ///
@@ -114,12 +116,12 @@ class AppRoot extends HookConsumerWidget {
               SideMenu(
                 minWidth: 80,
                 maxWidth: 200,
-                mode: SideMenuMode.open,
+                mode: SideMenuMode.compact,
                 builder: (data) => SideMenuData(
                   header: SizedBox(height: 20),
-                  items: items.values.map((e) {
+                  items: items.values.mapWithIndex((e, index) {
                     return SideMenuItemDataTile(
-                      isSelected: false,
+                      isSelected: shell.currentIndex == index,
                       onTap: () => e.onTap?.call(),
                       title: e.label,
                       icon: e.icon,

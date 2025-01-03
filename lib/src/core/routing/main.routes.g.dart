@@ -22,6 +22,7 @@ List<RouteBase> get $appRoutes => [
       $settingsPageRoute,
       $domainPageRoute,
       $patientsPageRoute,
+      $patientPageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -114,6 +115,10 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               path: '/patients',
               factory: $PatientsPageRouteExtension._fromState,
             ),
+            GoRouteData.$route(
+              path: '/patient/:id',
+              factory: $PatientPageRouteExtension._fromState,
+            ),
           ],
         ),
         StatefulShellBranchData.$branch(
@@ -180,6 +185,25 @@ extension $PatientsPageRouteExtension on PatientsPageRoute {
 
   String get location => GoRouteData.$location(
         '/patients',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $PatientPageRouteExtension on PatientPageRoute {
+  static PatientPageRoute _fromState(GoRouterState state) => PatientPageRoute(
+        state.pathParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/patient/${Uri.encodeComponent(id)}',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -416,4 +440,9 @@ extension $DomainPageRouteExtension on DomainPageRoute {
 RouteBase get $patientsPageRoute => GoRouteData.$route(
       path: '/patients',
       factory: $PatientsPageRouteExtension._fromState,
+    );
+
+RouteBase get $patientPageRoute => GoRouteData.$route(
+      path: '/patient/:id',
+      factory: $PatientPageRouteExtension._fromState,
     );

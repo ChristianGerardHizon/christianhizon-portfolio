@@ -2,6 +2,7 @@ import 'package:cross_file/cross_file.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
+import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,14 +13,17 @@ part 'patient_repository.g.dart';
 
 abstract class PatientRepository {
   TaskResult<Patient> get(String id);
-  TaskResult<List<Patient>> list({
+  TaskResult<PageResults<Patient>> list({
     String? query,
     required int pageNo,
     required int pageSize,
   });
   TaskResult<void> delete(String id);
   TaskResult<Patient> update(
-      Patient patient, Map<String, dynamic> update, List<XFile> files);
+    Patient patient,
+    Map<String, dynamic> update, {
+    List<XFile> files = const [],
+  });
 
   TaskResult<Patient> create(Map<String, dynamic> payload);
 }
@@ -62,7 +66,7 @@ class PatientRepositoryImpl extends PatientRepository {
   }
 
   @override
-  TaskResult<List<Patient>> list({
+  TaskResult<PageResults<Patient>> list({
     String? query,
     required int pageNo,
     required int pageSize,
@@ -72,18 +76,24 @@ class PatientRepositoryImpl extends PatientRepository {
         page: pageNo,
         perPage: pageSize,
       );
-      return result.items.map<Patient>((e) {
-        return Patient.fromMap(e.toJson());
-      }).toList();
+      return PageResults(
+        page: result.page,
+        perPage: result.perPage,
+        totalItems: result.totalItems,
+        totalPages: result.totalPages,
+        items: result.items.map<Patient>((e) {
+          return Patient.fromMap(e.toJson());
+        }).toList(),
+      );
     }, Failure.tryCatchData);
   }
 
   @override
   TaskResult<Patient> update(
     Patient patient,
-    Map<String, dynamic> update,
-    List<XFile> files,
-  ) {
+    Map<String, dynamic> update, {
+    List<XFile> files = const [],
+  }) {
     return TaskResult.tryCatch(() async {
       final result = await collection.update(
         patient.id,

@@ -10,7 +10,7 @@
 	<true/>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)com.example.gymSystem</string>
+		<string>$(AppIdentifierPrefix)com.2doit.dev</string>
 	</array>
 </dict>
 </plist>
