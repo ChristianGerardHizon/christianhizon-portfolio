@@ -31,7 +31,7 @@ class PatientPageRoute extends GoRouteData {
 @TypedGoRoute<PatientCreatePageRoute>(path: PatientCreatePageRoute.path)
 class PatientCreatePageRoute extends GoRouteData {
   const PatientCreatePageRoute();
-  static const path = '/patient/create';
+  static const path = '/newPatient';
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
@@ -42,7 +42,7 @@ class PatientCreatePageRoute extends GoRouteData {
 @TypedGoRoute<PatientUpdatePageRoute>(path: PatientUpdatePageRoute.path)
 class PatientUpdatePageRoute extends GoRouteData {
   const PatientUpdatePageRoute(this.id);
-  static const path = '/patient/update/:id';
+  static const path = '/updatePatient/:id';
 
   final String id;
 
