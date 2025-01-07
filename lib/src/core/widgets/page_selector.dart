@@ -34,6 +34,7 @@ class PageSelector extends HookWidget {
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
             ),
+            textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
             onSubmitted: (value) {
               final tryParse = int.tryParse(value);

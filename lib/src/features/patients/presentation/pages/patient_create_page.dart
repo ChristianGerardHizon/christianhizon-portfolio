@@ -31,12 +31,17 @@ class PatientCreatePage extends HookConsumerWidget {
         return;
       }
 
+      /// separate the xFiles and convert it to MultipartFile
+
       final result =
           await ref.read(patientRepositoryProvider).create(form.value).run();
       isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
-        (r) => PatientsPageRoute().go(context),
+        (r) {
+          AppSnackBar.root(message: 'Success');
+          PatientsPageRoute().go(context);
+        },
       );
     }
 
@@ -51,6 +56,8 @@ class PatientCreatePage extends HookConsumerWidget {
             ///
             /// name
             ///
+            FormBuilderTextField(name: PatientField.name),
+
             FormBuilderTextField(name: PatientField.name),
 
             ///
