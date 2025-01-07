@@ -6,6 +6,7 @@ import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/type_defs/custom_navbar_item.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_version.dart';
+import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -21,6 +22,8 @@ class AppRoot extends HookConsumerWidget {
     /// theme of the app.
     ///
     final theme = Theme.of(context);
+
+    ref.watch(settingsControllerProvider);
 
     ///
     /// these are the bottom navigation items. ex. home, bids, orders, account.

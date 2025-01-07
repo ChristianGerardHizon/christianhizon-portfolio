@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
@@ -31,7 +29,10 @@ class PatientCreatePage extends HookConsumerWidget {
         return;
       }
 
-      /// separate the xFiles and convert it to MultipartFile
+      ///
+      /// separate the List<xFiles> and convert it to List<MultipartFile>
+      ///
+      final files = form.value[PatientField.images];
 
       final result =
           await ref.read(patientRepositoryProvider).create(form.value).run();
@@ -58,7 +59,10 @@ class PatientCreatePage extends HookConsumerWidget {
             ///
             FormBuilderTextField(name: PatientField.name),
 
-            FormBuilderTextField(name: PatientField.name),
+            ///
+            /// Image
+            ///
+            // XFileFormField(name: PatientField.images),
 
             ///
             /// save button

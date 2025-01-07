@@ -7,7 +7,7 @@ part of 'patient_update_controller.dart';
 // **************************************************************************
 
 String _$patientUpdateControllerHash() =>
-    r'9ed408f49664f7683ac9922f59f8c9f69b1673ed';
+    r'16c41e9019aa097696530ddc21ceb69f9b8ae975';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,10 +31,10 @@ class _SystemHash {
 }
 
 abstract class _$PatientUpdateController
-    extends BuildlessAutoDisposeAsyncNotifier<Patient> {
+    extends BuildlessAutoDisposeAsyncNotifier<PatientUpdateState> {
   late final String id;
 
-  FutureOr<Patient> build(
+  FutureOr<PatientUpdateState> build(
     String id,
   );
 }
@@ -44,7 +44,8 @@ abstract class _$PatientUpdateController
 const patientUpdateControllerProvider = PatientUpdateControllerFamily();
 
 /// See also [PatientUpdateController].
-class PatientUpdateControllerFamily extends Family<AsyncValue<Patient>> {
+class PatientUpdateControllerFamily
+    extends Family<AsyncValue<PatientUpdateState>> {
   /// See also [PatientUpdateController].
   const PatientUpdateControllerFamily();
 
@@ -84,7 +85,7 @@ class PatientUpdateControllerFamily extends Family<AsyncValue<Patient>> {
 /// See also [PatientUpdateController].
 class PatientUpdateControllerProvider
     extends AutoDisposeAsyncNotifierProviderImpl<PatientUpdateController,
-        Patient> {
+        PatientUpdateState> {
   /// See also [PatientUpdateController].
   PatientUpdateControllerProvider(
     String id,
@@ -115,7 +116,7 @@ class PatientUpdateControllerProvider
   final String id;
 
   @override
-  FutureOr<Patient> runNotifierBuild(
+  FutureOr<PatientUpdateState> runNotifierBuild(
     covariant PatientUpdateController notifier,
   ) {
     return notifier.build(
@@ -140,8 +141,8 @@ class PatientUpdateControllerProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<PatientUpdateController, Patient>
-      createElement() {
+  AutoDisposeAsyncNotifierProviderElement<PatientUpdateController,
+      PatientUpdateState> createElement() {
     return _PatientUpdateControllerProviderElement(this);
   }
 
@@ -162,14 +163,14 @@ class PatientUpdateControllerProvider
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin PatientUpdateControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<Patient> {
+    on AutoDisposeAsyncNotifierProviderRef<PatientUpdateState> {
   /// The parameter `id` of this provider.
   String get id;
 }
 
 class _PatientUpdateControllerProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<PatientUpdateController,
-        Patient> with PatientUpdateControllerRef {
+        PatientUpdateState> with PatientUpdateControllerRef {
   _PatientUpdateControllerProviderElement(super.provider);
 
   @override

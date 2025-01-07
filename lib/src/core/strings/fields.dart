@@ -12,4 +12,5 @@ class AdminField {
 
 class PatientField {
   static const String name = 'name';
+  static const String images = 'images';
 }

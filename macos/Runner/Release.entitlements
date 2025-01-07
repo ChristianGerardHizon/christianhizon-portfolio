@@ -12,5 +12,7 @@
 	<array>
 		<string>$(AppIdentifierPrefix)com.2doit.dev</string>
 	</array>
+	<key>com.apple.security.files.user-selected.read-write</key>
+	<true/>
 </dict>
 </plist>

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/form_builders/images_form_field.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
@@ -31,16 +33,24 @@ class PatientUpdatePage extends HookConsumerWidget {
       isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
-        (r) => context.pop(),
+        (r) {
+          AppSnackBar.root(message: "Success");
+          PatientPageRoute(id).go(context);
+        },
       );
     }
 
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(
+          onPressed: () => PatientPageRoute(id).go(context),
+        ),
         title: Text('Patient Update Page'),
       ),
       body: state.when(
-        data: (patient) {
+        data: (updateState) {
+          final patient = updateState.patient;
+          final settings = updateState.settings;
           return FormBuilder(
             key: formKey,
             initialValue: patient.toMap(),
@@ -50,6 +60,11 @@ class PatientUpdatePage extends HookConsumerWidget {
                 /// name
                 ///
                 FormBuilderTextField(name: PatientField.name),
+
+                ImagesFormField(
+                  domain: settings.domain,
+                  name: PatientField.images,
+                ),
 
                 ///
                 /// save button

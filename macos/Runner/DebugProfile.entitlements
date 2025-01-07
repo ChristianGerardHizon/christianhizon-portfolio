@@ -14,5 +14,7 @@
 	<array>
 		<string>$(AppIdentifierPrefix)com.2doit.dev</string>
 	</array>
+	<key>com.apple.security.files.user-selected.read-only</key>
+  	<true/>
 </dict>
 </plist>
