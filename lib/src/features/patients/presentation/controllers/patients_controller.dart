@@ -7,9 +7,9 @@ part 'patients_controller.g.dart';
 @riverpod
 class PatientsController extends _$PatientsController {
   @override
-  Future<List<Patient>> build() async {
+  Future<List<Patient>> build(int page, {int pageSize = 50}) async {
     final repo = ref.read(patientRepositoryProvider);
-    final result = await repo.list(pageNo: 1, pageSize: 1).run();
+    final result = await repo.list(pageNo: page, pageSize: 50).run();
     return result.fold(Future.error, (x) => Future.value(x.items));
   }
 }
