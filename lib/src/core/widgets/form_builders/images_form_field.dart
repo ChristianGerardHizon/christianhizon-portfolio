@@ -32,7 +32,10 @@ class ImagesFormField extends HookConsumerWidget {
                     ///
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
-                      child: Image.network('$domain/$fieldValue'),
+                      child: Image.network(
+                        '$domain/$fieldValue',
+                        height: 100,
+                      ),
                     ),
 
                     ///

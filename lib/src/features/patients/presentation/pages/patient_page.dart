@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/widgets/photo_viewer.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -67,6 +68,8 @@ class PatientPage extends HookConsumerWidget {
                           scrollDirection: Axis.horizontal,
                           itemCount: patient.images.length,
                           itemBuilder: (context, index) {
+                            final imageUrl =
+                                '${settings.domain}/api/files/${PocketBaseCollections.patients}/$id/${patient.images[index]}';
                             return Stack(
                               children: [
                                 ///
@@ -75,9 +78,9 @@ class PatientPage extends HookConsumerWidget {
                                 Padding(
                                   padding: EdgeInsets.only(right: 15, top: 15),
                                   child: InkWell(
-                                    onTap: () => print('test'),
-                                    child: Image.network(
-                                        '${settings.domain}/api/files/${PocketBaseCollections.patients}/$id/${patient.images[index]}'),
+                                    onTap: () =>
+                                        PhotoViewer.show(context, imageUrl),
+                                    child: Image.network(imageUrl),
                                   ),
                                 ),
 

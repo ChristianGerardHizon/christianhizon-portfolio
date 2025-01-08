@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
@@ -61,10 +62,15 @@ class PatientUpdatePage extends HookConsumerWidget {
                 ///
                 FormBuilderTextField(name: PatientField.name),
 
+                SizedBox(height: 10),
+
                 ImagesFormField(
-                  domain: settings.domain,
+                  domain:
+                      '${settings.domain}/api/files/${PocketBaseCollections.patients}/$id',
                   name: PatientField.images,
                 ),
+
+                SizedBox(height: 10),
 
                 ///
                 /// save button
