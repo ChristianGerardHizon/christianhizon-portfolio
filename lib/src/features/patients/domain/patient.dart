@@ -9,6 +9,11 @@ class Patient with PatientMappable {
   final String name;
   final List<String> images;
 
+  final String? parent;
+  final String? contactNumber;
+  final String? email;
+  final String? address;
+
   final DateTime created;
   final DateTime updated;
 
@@ -16,6 +21,10 @@ class Patient with PatientMappable {
     required this.id,
     this.name = '',
     this.images = const [],
+    this.parent,
+    this.contactNumber,
+    this.email,
+    this.address,
     required this.created,
     required this.updated,
   });

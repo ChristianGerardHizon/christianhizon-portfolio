@@ -28,6 +28,18 @@ class PatientMapper extends ClassMapperBase<Patient> {
   static List<String> _$images(Patient v) => v.images;
   static const Field<Patient, List<String>> _f$images =
       Field('images', _$images, opt: true, def: const []);
+  static String? _$parent(Patient v) => v.parent;
+  static const Field<Patient, String> _f$parent =
+      Field('parent', _$parent, opt: true);
+  static String? _$contactNumber(Patient v) => v.contactNumber;
+  static const Field<Patient, String> _f$contactNumber =
+      Field('contactNumber', _$contactNumber, opt: true);
+  static String? _$email(Patient v) => v.email;
+  static const Field<Patient, String> _f$email =
+      Field('email', _$email, opt: true);
+  static String? _$address(Patient v) => v.address;
+  static const Field<Patient, String> _f$address =
+      Field('address', _$address, opt: true);
   static DateTime _$created(Patient v) => v.created;
   static const Field<Patient, DateTime> _f$created =
       Field('created', _$created);
@@ -40,6 +52,10 @@ class PatientMapper extends ClassMapperBase<Patient> {
     #id: _f$id,
     #name: _f$name,
     #images: _f$images,
+    #parent: _f$parent,
+    #contactNumber: _f$contactNumber,
+    #email: _f$email,
+    #address: _f$address,
     #created: _f$created,
     #updated: _f$updated,
   };
@@ -49,6 +65,10 @@ class PatientMapper extends ClassMapperBase<Patient> {
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         images: data.dec(_f$images),
+        parent: data.dec(_f$parent),
+        contactNumber: data.dec(_f$contactNumber),
+        email: data.dec(_f$email),
+        address: data.dec(_f$address),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated));
   }
@@ -107,6 +127,10 @@ abstract class PatientCopyWith<$R, $In extends Patient, $Out>
       {String? id,
       String? name,
       List<String>? images,
+      String? parent,
+      String? contactNumber,
+      String? email,
+      String? address,
       DateTime? created,
       DateTime? updated});
   PatientCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
@@ -129,12 +153,20 @@ class _PatientCopyWithImpl<$R, $Out>
           {String? id,
           String? name,
           List<String>? images,
+          Object? parent = $none,
+          Object? contactNumber = $none,
+          Object? email = $none,
+          Object? address = $none,
           DateTime? created,
           DateTime? updated}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (images != null) #images: images,
+        if (parent != $none) #parent: parent,
+        if (contactNumber != $none) #contactNumber: contactNumber,
+        if (email != $none) #email: email,
+        if (address != $none) #address: address,
         if (created != null) #created: created,
         if (updated != null) #updated: updated
       }));
@@ -143,6 +175,10 @@ class _PatientCopyWithImpl<$R, $Out>
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       images: data.get(#images, or: $value.images),
+      parent: data.get(#parent, or: $value.parent),
+      contactNumber: data.get(#contactNumber, or: $value.contactNumber),
+      email: data.get(#email, or: $value.email),
+      address: data.get(#address, or: $value.address),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated));
 
