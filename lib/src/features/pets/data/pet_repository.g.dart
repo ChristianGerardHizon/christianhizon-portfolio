@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'patient_repository.dart';
+part of 'pet_repository.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$patientRepositoryHash() => r'9eb9e90b6bc82c14003dedaac001c42c695f032e';
+String _$petRepositoryHash() => r'c5d86181e070298f2feade857a6bcc3baed227b0';
 
-/// See also [patientRepository].
-@ProviderFor(patientRepository)
-final patientRepositoryProvider = Provider<PatientRepository>.internal(
-  patientRepository,
-  name: r'patientRepositoryProvider',
+/// See also [petRepository].
+@ProviderFor(petRepository)
+final petRepositoryProvider = Provider<PetRepository>.internal(
+  petRepository,
+  name: r'petRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$patientRepositoryHash,
+      : _$petRepositoryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef PatientRepositoryRef = ProviderRef<PatientRepository>;
+typedef PetRepositoryRef = ProviderRef<PetRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

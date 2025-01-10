@@ -3,30 +3,30 @@ import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
+import 'package:gym_system/src/features/pets/presentation/controllers/pet_controller.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PatientPage extends HookConsumerWidget {
-  const PatientPage(this.id, {super.key});
+class PetPage extends HookConsumerWidget {
+  const PetPage(this.id, {super.key});
 
   final String id;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = patientControllerProvider(id);
+    final provider = petControllerProvider(id);
     final state = ref.watch(provider);
 
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
-          onPressed: () => PatientsPageRoute().go(context),
+          onPressed: () => PetsPageRoute().go(context),
         ),
-        title: Text('Patient'),
+        title: Text('Pet'),
         actions: [
           IconButton(
             icon: const Icon(Icons.update),
-            onPressed: () => PatientUpdatePageRoute(id).go(context),
+            onPressed: () => PetUpdatePageRoute(id).go(context),
           ),
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -40,14 +40,14 @@ class PatientPage extends HookConsumerWidget {
         skipLoadingOnReload: false,
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text(error.toString())),
-        data: (patient) {
+        data: (pet) {
           return ListView(
             children: [
               ///
               /// name
               ///
               ListTile(
-                title: Text(patient.name),
+                title: Text(pet.name),
               ),
 
               ///
@@ -66,10 +66,10 @@ class PatientPage extends HookConsumerWidget {
                         height: 100,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: patient.images.length,
+                          itemCount: pet.images.length,
                           itemBuilder: (context, index) {
                             final imageUrl =
-                                '${settings.domain}/api/files/${PocketBaseCollections.patients}/$id/${patient.images[index]}';
+                                '${settings.domain}/api/files/${PocketBaseCollections.pets}/$id/${pet.images[index]}';
                             return Stack(
                               children: [
                                 ///
@@ -121,17 +121,45 @@ class PatientPage extends HookConsumerWidget {
                   ),
 
               ///
+              /// breed
+              ///
+              ListTile(
+                title: Text(pet.breed ?? '-'),
+              ),
+
+              ///
+              /// owner
+              ///
+              ListTile(
+                title: Text(pet.owner ?? '-'),
+              ),
+
+              ///
+              /// address
+              ///
+              ListTile(
+                title: Text(pet.address ?? '-'),
+              ),
+
+              ///
+              /// date of birth
+              ///
+              ListTile(
+                title: Text(pet.dateOfBirth?.toLocal().toString() ?? '-'),
+              ),
+
+              ///
               /// created
               ///
               ListTile(
-                title: Text(patient.created.toIso8601String()),
+                title: Text(pet.created?.toLocal().toString() ?? '-'),
               ),
 
               ///
               /// updated
               ///
               ListTile(
-                title: Text(patient.created.toIso8601String()),
+                title: Text(pet.created?.toLocal().toString() ?? '-'),
               ),
             ],
           );

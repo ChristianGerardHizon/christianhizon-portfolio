@@ -3,28 +3,28 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
+import 'package:gym_system/src/features/pets/presentation/controllers/pets_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PatientsPage extends HookConsumerWidget {
-  const PatientsPage({super.key});
+class PetsPage extends HookConsumerWidget {
+  const PetsPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final page = useState(1);
 
-    final state = ref.watch(patientsControllerProvider(page.value));
+    final state = ref.watch(petsControllerProvider(page.value));
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patients'),
+        title: Text('Pets'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => ref.invalidate(patientsControllerProvider),
+            onPressed: () => ref.invalidate(petsControllerProvider),
           ),
           IconButton(
             icon: Icon(MIcons.plusCircle),
-            onPressed: () => PatientCreatePageRoute().go(context),
+            onPressed: () => PetCreatePageRoute().go(context),
           )
         ],
       ),
@@ -53,7 +53,7 @@ class PatientsPage extends HookConsumerWidget {
                 itemCount: data.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    onTap: () => PatientPageRoute(data[index].id).go(context),
+                    onTap: () => PetPageRoute(data[index].id).go(context),
                     title: Text(data[index].name),
                   );
                 },

@@ -1,13 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'patients_controller.dart';
+part of 'pets_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$patientsControllerHash() =>
-    r'9cd02bc1145d9a0619ac4b112141de760db4725a';
+String _$petsControllerHash() => r'622d9aa2ea12ba6377e744b14db9971bea9df247';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,40 +29,40 @@ class _SystemHash {
   }
 }
 
-abstract class _$PatientsController
-    extends BuildlessAutoDisposeAsyncNotifier<List<Patient>> {
+abstract class _$PetsController
+    extends BuildlessAutoDisposeAsyncNotifier<List<Pet>> {
   late final int page;
   late final int pageSize;
 
-  FutureOr<List<Patient>> build(
+  FutureOr<List<Pet>> build(
     int page, {
     int pageSize = 50,
   });
 }
 
-/// See also [PatientsController].
-@ProviderFor(PatientsController)
-const patientsControllerProvider = PatientsControllerFamily();
+/// See also [PetsController].
+@ProviderFor(PetsController)
+const petsControllerProvider = PetsControllerFamily();
 
-/// See also [PatientsController].
-class PatientsControllerFamily extends Family<AsyncValue<List<Patient>>> {
-  /// See also [PatientsController].
-  const PatientsControllerFamily();
+/// See also [PetsController].
+class PetsControllerFamily extends Family<AsyncValue<List<Pet>>> {
+  /// See also [PetsController].
+  const PetsControllerFamily();
 
-  /// See also [PatientsController].
-  PatientsControllerProvider call(
+  /// See also [PetsController].
+  PetsControllerProvider call(
     int page, {
     int pageSize = 50,
   }) {
-    return PatientsControllerProvider(
+    return PetsControllerProvider(
       page,
       pageSize: pageSize,
     );
   }
 
   @override
-  PatientsControllerProvider getProviderOverride(
-    covariant PatientsControllerProvider provider,
+  PetsControllerProvider getProviderOverride(
+    covariant PetsControllerProvider provider,
   ) {
     return call(
       provider.page,
@@ -83,34 +82,34 @@ class PatientsControllerFamily extends Family<AsyncValue<List<Patient>>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'patientsControllerProvider';
+  String? get name => r'petsControllerProvider';
 }
 
-/// See also [PatientsController].
-class PatientsControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    PatientsController, List<Patient>> {
-  /// See also [PatientsController].
-  PatientsControllerProvider(
+/// See also [PetsController].
+class PetsControllerProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<PetsController, List<Pet>> {
+  /// See also [PetsController].
+  PetsControllerProvider(
     int page, {
     int pageSize = 50,
   }) : this._internal(
-          () => PatientsController()
+          () => PetsController()
             ..page = page
             ..pageSize = pageSize,
-          from: patientsControllerProvider,
-          name: r'patientsControllerProvider',
+          from: petsControllerProvider,
+          name: r'petsControllerProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$patientsControllerHash,
-          dependencies: PatientsControllerFamily._dependencies,
+                  : _$petsControllerHash,
+          dependencies: PetsControllerFamily._dependencies,
           allTransitiveDependencies:
-              PatientsControllerFamily._allTransitiveDependencies,
+              PetsControllerFamily._allTransitiveDependencies,
           page: page,
           pageSize: pageSize,
         );
 
-  PatientsControllerProvider._internal(
+  PetsControllerProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -125,8 +124,8 @@ class PatientsControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
   final int pageSize;
 
   @override
-  FutureOr<List<Patient>> runNotifierBuild(
-    covariant PatientsController notifier,
+  FutureOr<List<Pet>> runNotifierBuild(
+    covariant PetsController notifier,
   ) {
     return notifier.build(
       page,
@@ -135,10 +134,10 @@ class PatientsControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  Override overrideWith(PatientsController Function() create) {
+  Override overrideWith(PetsController Function() create) {
     return ProviderOverride(
       origin: this,
-      override: PatientsControllerProvider._internal(
+      override: PetsControllerProvider._internal(
         () => create()
           ..page = page
           ..pageSize = pageSize,
@@ -154,14 +153,14 @@ class PatientsControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<PatientsController, List<Patient>>
+  AutoDisposeAsyncNotifierProviderElement<PetsController, List<Pet>>
       createElement() {
-    return _PatientsControllerProviderElement(this);
+    return _PetsControllerProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is PatientsControllerProvider &&
+    return other is PetsControllerProvider &&
         other.page == page &&
         other.pageSize == pageSize;
   }
@@ -178,8 +177,7 @@ class PatientsControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin PatientsControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<List<Patient>> {
+mixin PetsControllerRef on AutoDisposeAsyncNotifierProviderRef<List<Pet>> {
   /// The parameter `page` of this provider.
   int get page;
 
@@ -187,15 +185,15 @@ mixin PatientsControllerRef
   int get pageSize;
 }
 
-class _PatientsControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<PatientsController,
-        List<Patient>> with PatientsControllerRef {
-  _PatientsControllerProviderElement(super.provider);
+class _PetsControllerProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<PetsController, List<Pet>>
+    with PetsControllerRef {
+  _PetsControllerProviderElement(super.provider);
 
   @override
-  int get page => (origin as PatientsControllerProvider).page;
+  int get page => (origin as PetsControllerProvider).page;
   @override
-  int get pageSize => (origin as PatientsControllerProvider).pageSize;
+  int get pageSize => (origin as PetsControllerProvider).pageSize;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

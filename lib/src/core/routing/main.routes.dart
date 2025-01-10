@@ -8,10 +8,10 @@ import 'package:gym_system/src/features/admins/presentation/pages/admins_page.da
 import 'package:gym_system/src/features/authentication/presentation/pages/account_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_recovery_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/login_page.dart';
-import 'package:gym_system/src/features/patients/presentation/pages/patient_create_page.dart';
-import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
-import 'package:gym_system/src/features/patients/presentation/pages/patient_update_page.dart';
-import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
+import 'package:gym_system/src/features/pets/presentation/pages/pet_create_page.dart';
+import 'package:gym_system/src/features/pets/presentation/pages/pet_page.dart';
+import 'package:gym_system/src/features/pets/presentation/pages/pet_update_page.dart';
+import 'package:gym_system/src/features/pets/presentation/pages/pets_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/settings_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_page.dart';
@@ -23,7 +23,7 @@ part 'routes/admins.routes.dart';
 part 'routes/authentication.routes.dart';
 part 'routes/users.routes.dart';
 part 'routes/settings.routes.dart';
-part 'routes/patients.routes.dart';
+part 'routes/pets.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
@@ -82,14 +82,14 @@ class HomePageRoute extends GoRouteData {
     ),
 
     ///
-    /// patients
+    /// pets
     ///
-    TypedStatefulShellBranch<PatientsBranchData>(
+    TypedStatefulShellBranch<PetsBranchData>(
       routes: <TypeRouteData>[
-        TypedGoRoute<PatientsPageRoute>(path: PatientsPageRoute.path),
-        TypedGoRoute<PatientPageRoute>(path: PatientPageRoute.path),
-        TypedGoRoute<PatientUpdatePageRoute>(path: PatientUpdatePageRoute.path),
-        TypedGoRoute<PatientCreatePageRoute>(path: PatientCreatePageRoute.path),
+        TypedGoRoute<PetsPageRoute>(path: PetsPageRoute.path),
+        TypedGoRoute<PetPageRoute>(path: PetPageRoute.path),
+        TypedGoRoute<PetUpdatePageRoute>(path: PetUpdatePageRoute.path),
+        TypedGoRoute<PetCreatePageRoute>(path: PetCreatePageRoute.path),
       ],
     ),
 

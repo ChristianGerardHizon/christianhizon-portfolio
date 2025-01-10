@@ -1,12 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'patient_controller.dart';
+part of 'pet_update_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$patientControllerHash() => r'bd17935155298b4102dd46a6e10753388089c9b4';
+String _$petUpdateControllerHash() =>
+    r'da64c53c52ac7e293d4ce1618699b2efe722c7e1';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,36 +30,36 @@ class _SystemHash {
   }
 }
 
-abstract class _$PatientController
-    extends BuildlessAutoDisposeAsyncNotifier<Patient> {
+abstract class _$PetUpdateController
+    extends BuildlessAutoDisposeAsyncNotifier<PetUpdateState> {
   late final String id;
 
-  FutureOr<Patient> build(
+  FutureOr<PetUpdateState> build(
     String id,
   );
 }
 
-/// See also [PatientController].
-@ProviderFor(PatientController)
-const patientControllerProvider = PatientControllerFamily();
+/// See also [PetUpdateController].
+@ProviderFor(PetUpdateController)
+const petUpdateControllerProvider = PetUpdateControllerFamily();
 
-/// See also [PatientController].
-class PatientControllerFamily extends Family<AsyncValue<Patient>> {
-  /// See also [PatientController].
-  const PatientControllerFamily();
+/// See also [PetUpdateController].
+class PetUpdateControllerFamily extends Family<AsyncValue<PetUpdateState>> {
+  /// See also [PetUpdateController].
+  const PetUpdateControllerFamily();
 
-  /// See also [PatientController].
-  PatientControllerProvider call(
+  /// See also [PetUpdateController].
+  PetUpdateControllerProvider call(
     String id,
   ) {
-    return PatientControllerProvider(
+    return PetUpdateControllerProvider(
       id,
     );
   }
 
   @override
-  PatientControllerProvider getProviderOverride(
-    covariant PatientControllerProvider provider,
+  PetUpdateControllerProvider getProviderOverride(
+    covariant PetUpdateControllerProvider provider,
   ) {
     return call(
       provider.id,
@@ -77,30 +78,30 @@ class PatientControllerFamily extends Family<AsyncValue<Patient>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'patientControllerProvider';
+  String? get name => r'petUpdateControllerProvider';
 }
 
-/// See also [PatientController].
-class PatientControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<PatientController, Patient> {
-  /// See also [PatientController].
-  PatientControllerProvider(
+/// See also [PetUpdateController].
+class PetUpdateControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
+    PetUpdateController, PetUpdateState> {
+  /// See also [PetUpdateController].
+  PetUpdateControllerProvider(
     String id,
   ) : this._internal(
-          () => PatientController()..id = id,
-          from: patientControllerProvider,
-          name: r'patientControllerProvider',
+          () => PetUpdateController()..id = id,
+          from: petUpdateControllerProvider,
+          name: r'petUpdateControllerProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$patientControllerHash,
-          dependencies: PatientControllerFamily._dependencies,
+                  : _$petUpdateControllerHash,
+          dependencies: PetUpdateControllerFamily._dependencies,
           allTransitiveDependencies:
-              PatientControllerFamily._allTransitiveDependencies,
+              PetUpdateControllerFamily._allTransitiveDependencies,
           id: id,
         );
 
-  PatientControllerProvider._internal(
+  PetUpdateControllerProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -113,8 +114,8 @@ class PatientControllerProvider
   final String id;
 
   @override
-  FutureOr<Patient> runNotifierBuild(
-    covariant PatientController notifier,
+  FutureOr<PetUpdateState> runNotifierBuild(
+    covariant PetUpdateController notifier,
   ) {
     return notifier.build(
       id,
@@ -122,10 +123,10 @@ class PatientControllerProvider
   }
 
   @override
-  Override overrideWith(PatientController Function() create) {
+  Override overrideWith(PetUpdateController Function() create) {
     return ProviderOverride(
       origin: this,
-      override: PatientControllerProvider._internal(
+      override: PetUpdateControllerProvider._internal(
         () => create()..id = id,
         from: from,
         name: null,
@@ -138,14 +139,14 @@ class PatientControllerProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<PatientController, Patient>
+  AutoDisposeAsyncNotifierProviderElement<PetUpdateController, PetUpdateState>
       createElement() {
-    return _PatientControllerProviderElement(this);
+    return _PetUpdateControllerProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is PatientControllerProvider && other.id == id;
+    return other is PetUpdateControllerProvider && other.id == id;
   }
 
   @override
@@ -159,18 +160,19 @@ class PatientControllerProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin PatientControllerRef on AutoDisposeAsyncNotifierProviderRef<Patient> {
+mixin PetUpdateControllerRef
+    on AutoDisposeAsyncNotifierProviderRef<PetUpdateState> {
   /// The parameter `id` of this provider.
   String get id;
 }
 
-class _PatientControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<PatientController, Patient>
-    with PatientControllerRef {
-  _PatientControllerProviderElement(super.provider);
+class _PetUpdateControllerProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<PetUpdateController,
+        PetUpdateState> with PetUpdateControllerRef {
+  _PetUpdateControllerProviderElement(super.provider);
 
   @override
-  String get id => (origin as PatientControllerProvider).id;
+  String get id => (origin as PetUpdateControllerProvider).id;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
