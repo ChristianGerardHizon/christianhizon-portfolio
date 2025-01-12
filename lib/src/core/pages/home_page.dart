@@ -11,7 +11,7 @@ class HomePage extends HookConsumerWidget {
     ///
     ///
     ref.listen(authControllerProvider, (previous, current) {
-      if (current is AsyncError) const LoginPageRoute().go(context);
+      if (current is AsyncError) const RootRoute().go(context);
     });
 
     return Scaffold(

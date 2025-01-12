@@ -9,7 +9,6 @@ part of 'main.routes.dart';
 List<RouteBase> get $appRoutes => [
       $notFoundRoute,
       $splashPageRoute,
-      $homePageRoute,
       $rootRouteData,
       $adminsPageRoute,
       $adminPageRoute,
@@ -25,6 +24,7 @@ List<RouteBase> get $appRoutes => [
       $petPageRoute,
       $petCreatePageRoute,
       $petUpdatePageRoute,
+      $dashboardPageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -72,28 +72,6 @@ extension $SplashPageRouteExtension on SplashPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-RouteBase get $homePageRoute => GoRouteData.$route(
-      path: '/',
-      factory: $HomePageRouteExtension._fromState,
-    );
-
-extension $HomePageRouteExtension on HomePageRoute {
-  static HomePageRoute _fromState(GoRouterState state) => const HomePageRoute();
-
-  String get location => GoRouteData.$location(
-        '/',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
-
 RouteBase get $rootRouteData => StatefulShellRouteData.$route(
       parentNavigatorKey: RootRouteData.$parentNavigatorKey,
       restorationScopeId: RootRouteData.$restorationScopeId,
@@ -102,12 +80,8 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
-              path: '/users',
-              factory: $UsersPageRouteExtension._fromState,
-            ),
-            GoRouteData.$route(
-              path: '/user',
-              factory: $UserPageRouteExtension._fromState,
+              path: '/',
+              factory: $DashboardPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -154,29 +128,12 @@ extension $RootRouteDataExtension on RootRouteData {
   static RootRouteData _fromState(GoRouterState state) => const RootRouteData();
 }
 
-extension $UsersPageRouteExtension on UsersPageRoute {
-  static UsersPageRoute _fromState(GoRouterState state) =>
-      const UsersPageRoute();
+extension $DashboardPageRouteExtension on DashboardPageRoute {
+  static DashboardPageRoute _fromState(GoRouterState state) =>
+      const DashboardPageRoute();
 
   String get location => GoRouteData.$location(
-        '/users',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
-
-extension $UserPageRouteExtension on UserPageRoute {
-  static UserPageRoute _fromState(GoRouterState state) => const UserPageRoute();
-
-  String get location => GoRouteData.$location(
-        '/user',
+        '/',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -403,10 +360,45 @@ RouteBase get $userPageRoute => GoRouteData.$route(
       factory: $UserPageRouteExtension._fromState,
     );
 
+extension $UserPageRouteExtension on UserPageRoute {
+  static UserPageRoute _fromState(GoRouterState state) => const UserPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/user',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
 RouteBase get $usersPageRoute => GoRouteData.$route(
       path: '/users',
       factory: $UsersPageRouteExtension._fromState,
     );
+
+extension $UsersPageRouteExtension on UsersPageRoute {
+  static UsersPageRoute _fromState(GoRouterState state) =>
+      const UsersPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/users',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
 
 RouteBase get $yourUserPageRoute => GoRouteData.$route(
       path: '/your-account',
@@ -502,4 +494,9 @@ RouteBase get $petCreatePageRoute => GoRouteData.$route(
 RouteBase get $petUpdatePageRoute => GoRouteData.$route(
       path: '/updatePet/:id',
       factory: $PetUpdatePageRouteExtension._fromState,
+    );
+
+RouteBase get $dashboardPageRoute => GoRouteData.$route(
+      path: '/',
+      factory: $DashboardPageRouteExtension._fromState,
     );

@@ -13,7 +13,7 @@ class SplashPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     goToRootPage() {
       Future.delayed(const Duration(seconds: 3), () {
-        if (context.mounted) const HomePageRoute().go(context);
+        if (context.mounted) const RootRoute().go(context);
       });
     }
 

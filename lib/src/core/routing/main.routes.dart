@@ -8,6 +8,7 @@ import 'package:gym_system/src/features/admins/presentation/pages/admins_page.da
 import 'package:gym_system/src/features/authentication/presentation/pages/account_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_recovery_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/login_page.dart';
+import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:gym_system/src/features/pets/presentation/pages/pet_create_page.dart';
 import 'package:gym_system/src/features/pets/presentation/pages/pet_page.dart';
 import 'package:gym_system/src/features/pets/presentation/pages/pet_update_page.dart';
@@ -24,10 +25,11 @@ part 'routes/authentication.routes.dart';
 part 'routes/users.routes.dart';
 part 'routes/settings.routes.dart';
 part 'routes/pets.routes.dart';
+part 'routes/dashboard.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
-typedef RootRoute = HomePageRoute;
+typedef RootRoute = DashboardPageRoute;
 
 final rootKey = GlobalKey<NavigatorState>(debugLabel: 'routerKey');
 
@@ -53,31 +55,30 @@ class SplashPageRoute extends GoRouteData {
   }
 }
 
-@TypedGoRoute<HomePageRoute>(path: HomePageRoute.path)
-class HomePageRoute extends GoRouteData {
-  const HomePageRoute();
-  static const path = '/';
+// @TypedGoRoute<HomePageRoute>(path: HomePageRoute.path)
+// class HomePageRoute extends GoRouteData {
+//   const HomePageRoute();
+//   static const path = '/';
 
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const HomePage();
-  }
+//   @override
+//   Widget build(BuildContext context, GoRouterState state) {
+//     return const HomePage();
+//   }
 
-  @override
-  String? redirect(BuildContext context, GoRouterState state) {
-    return UsersPageRoute.path;
-  }
-}
+//   @override
+//   String? redirect(BuildContext context, GoRouterState state) {
+//     return UsersPageRoute.path;
+//   }
+// }
 
 @TypedStatefulShellRoute<RootRouteData>(
   branches: <TypedStatefulShellBranch<StatefulShellBranchData>>[
     ///
     /// users
     ///
-    TypedStatefulShellBranch<UsersBranchData>(
+    TypedStatefulShellBranch<DashboardBranchData>(
       routes: <TypeRouteData>[
-        TypedGoRoute<UsersPageRoute>(path: UsersPageRoute.path),
-        TypedGoRoute<UserPageRoute>(path: UserPageRoute.path),
+        TypedGoRoute<DashboardPageRoute>(path: DashboardPageRoute.path),
       ],
     ),
 
@@ -94,14 +95,14 @@ class HomePageRoute extends GoRouteData {
     ),
 
     ///
-    /// admins
+    /// Staffs
     ///
     TypedStatefulShellBranch<AdminsBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<AdminsPageRoute>(path: AdminsPageRoute.path),
       ],
     ),
-
+    
     ///
     /// Settings
     ///

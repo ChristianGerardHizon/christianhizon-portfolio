@@ -37,11 +37,11 @@ class AppRoot extends HookConsumerWidget {
     ///
     final items = <int, CustomNavigationBarItem>{
       0: CustomNavigationBarItem(
-        route: UsersPageRoute.path,
-        icon: Icon(MIcons.homeOutline),
-        label: 'Home',
+        route: RootRoute.path,
+        icon: Icon(MIcons.viewDashboard),
+        label: 'Dashboard',
         onTap: () {
-          UsersPageRoute().go(context);
+          RootRoute().go(context);
         },
       ),
       1: CustomNavigationBarItem(
@@ -65,10 +65,12 @@ class AppRoot extends HookConsumerWidget {
         onTap: () {},
       ),
       4: CustomNavigationBarItem(
-        route: YourUserPageRoute.path,
+        route: SettingsPageRoute.path,
         icon: Icon(MIcons.accountOutline),
         label: 'Account',
-        onTap: () {},
+        onTap: () {
+          SettingsPageRoute().go(context);
+        },
       ),
     };
 
