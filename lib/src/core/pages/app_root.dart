@@ -121,9 +121,13 @@ class AppRoot extends HookConsumerWidget {
                 maxWidth: 200,
                 mode: SideMenuMode.compact,
                 builder: (data) => SideMenuData(
-                  header: SizedBox(height: 20),
+                  header: SizedBox(
+                    height: 100,
+                    child: FlutterLogo(),
+                  ),
                   items: items.values.mapWithIndex((e, index) {
                     return SideMenuItemDataTile(
+                      hasSelectedLine: false,
                       isSelected: shell.currentIndex == index,
                       onTap: () => e.onTap?.call(),
                       title: e.label,

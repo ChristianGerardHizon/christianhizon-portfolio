@@ -15,7 +15,7 @@ class Application extends HookConsumerWidget {
     }, []);
 
     final theme = ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Color(0x093e3a)),
+      colorScheme: ColorScheme.fromSeed(seedColor: Color(0x2F887C)),
       useMaterial3: true,
     );
 

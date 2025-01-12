@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
+import 'package:gym_system/src/features/pets/data/pet_repository.dart';
 import 'package:gym_system/src/features/pets/presentation/controllers/pet_controller.dart';
+import 'package:gym_system/src/features/pets/presentation/controllers/pets_controller.dart';
+import 'package:gym_system/src/features/pets/presentation/controllers/pets_page_controller.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -17,6 +22,22 @@ class PetPage extends HookConsumerWidget {
     final provider = petControllerProvider(id);
     final state = ref.watch(provider);
 
+    onDelete() async {
+      final confirm = await ConfirmModal.show(context);
+      if (confirm != true) return;
+      final repo = ref.read(petRepositoryProvider);
+      repo.delete(id).run().then((result) {
+        result.fold(
+          (l) => AppSnackBar.rootFailure(l),
+          (r) {
+            ref.invalidate(petsControllerProvider);
+            AppSnackBar.root(message: 'Successfully Deleted');
+            PetsPageRoute().go(context);
+          },
+        );
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -27,6 +48,10 @@ class PetPage extends HookConsumerWidget {
           IconButton(
             icon: const Icon(Icons.update),
             onPressed: () => PetUpdatePageRoute(id).go(context),
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () => onDelete(),
           ),
           IconButton(
             icon: const Icon(Icons.refresh),

@@ -61,7 +61,7 @@ class PetRepositoryImpl extends PetRepository {
   @override
   TaskResult<void> delete(String id) {
     return TaskResult.tryCatch(() async {
-      throw UnimplementedError();
+      await collection.delete(id);
     }, Failure.tryCatchData);
   }
 
