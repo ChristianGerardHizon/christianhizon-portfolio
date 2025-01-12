@@ -116,6 +116,14 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
+              path: '/admins',
+              factory: $AdminsPageRouteExtension._fromState,
+            ),
+          ],
+        ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
               path: '/settings',
               factory: $SettingsPageRouteExtension._fromState,
             ),

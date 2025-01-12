@@ -102,7 +102,16 @@ class SplashPageRoute extends GoRouteData {
         TypedGoRoute<AdminsPageRoute>(path: AdminsPageRoute.path),
       ],
     ),
-    
+
+    ///
+    /// Staffs
+    ///
+    TypedStatefulShellBranch<AdminsBranchData>(
+      routes: <TypeRouteData>[
+        TypedGoRoute<AdminsPageRoute>(path: AdminsPageRoute.path),
+      ],
+    ),
+
     ///
     /// Settings
     ///
