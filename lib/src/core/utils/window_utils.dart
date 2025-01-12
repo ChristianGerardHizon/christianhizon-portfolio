@@ -23,7 +23,7 @@ class WindowUtils {
     WindowOptions windowOptions = const WindowOptions(
       title: AppStrings.appName,
       minimumSize: Size(380, 700),
-      size: Size(380, 700),
+      size: Size(1200, 1000),
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
     );
