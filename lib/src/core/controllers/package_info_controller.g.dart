@@ -7,7 +7,7 @@ part of 'package_info_controller.dart';
 // **************************************************************************
 
 String _$packageInfoControllerHash() =>
-    r'd9c4f16753cd52e884c1e5532a801b5f8c258596';
+    r'dccead9de940f756ea41360e4578f5095d36ea45';
 
 /// See also [PackageInfoController].
 @ProviderFor(PackageInfoController)

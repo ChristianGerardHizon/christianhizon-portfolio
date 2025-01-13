@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/routing/router.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
 import 'package:gym_system/src/features/pets/data/pet_repository.dart';
 import 'package:gym_system/src/features/pets/presentation/controllers/pet_controller.dart';
 import 'package:gym_system/src/features/pets/presentation/controllers/pets_controller.dart';
-import 'package:gym_system/src/features/pets/presentation/controllers/pets_page_controller.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

@@ -2,7 +2,6 @@ import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/authentication/data/auth_repository.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
-import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_controller.g.dart';

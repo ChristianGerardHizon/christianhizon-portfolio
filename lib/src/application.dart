@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/strings.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 class Application extends HookConsumerWidget {
   const Application({super.key});
@@ -23,6 +22,7 @@ class Application extends HookConsumerWidget {
       debugShowCheckedModeBanner: false,
       title: AppStrings.appName,
       theme: theme.copyWith(
+        appBarTheme: theme.appBarTheme.copyWith(backgroundColor: Colors.white),
         cardTheme: theme.cardTheme.copyWith(
           color: Colors.white,
           surfaceTintColor: Colors.white,

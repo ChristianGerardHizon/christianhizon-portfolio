@@ -8,6 +8,5 @@ class PackageInfoController extends _$PackageInfoController {
   @override
   Future<PackageInfo> build() async {
     return await PackageInfo.fromPlatform();
-    ;
   }
 }

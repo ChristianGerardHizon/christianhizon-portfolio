@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/type_defs/custom_navbar_item.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/core/widgets/app_version.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -24,6 +24,8 @@ class AppRoot extends HookConsumerWidget {
     final theme = Theme.of(context);
 
     ref.watch(settingsControllerProvider);
+
+    final sideMenuCtrl = useMemoized(() => SideMenuController());
 
     ///
     /// these are the bottom navigation items. ex. home, bids, orders, account.
@@ -121,12 +123,27 @@ class AppRoot extends HookConsumerWidget {
               SideMenu(
                 minWidth: 80,
                 maxWidth: 200,
+                controller: sideMenuCtrl,
                 mode: SideMenuMode.compact,
                 builder: (data) => SideMenuData(
-                  header: SizedBox(
-                    height: 100,
-                    child: FlutterLogo(),
-                  ),
+                  header: sideMenuCtrl.isCollapsed()
+                      ? SizedBox(
+                          height: 100,
+                          child: FlutterLogo(),
+                        )
+                      : SizedBox(
+                          height: 100,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 30),
+                            child: Row(
+                              children: [
+                                FlutterLogo(),
+                                SizedBox(width: 10),
+                                Text('Sample System'),
+                              ],
+                            ),
+                          ),
+                        ),
                   items: items.values.mapWithIndex((e, index) {
                     return SideMenuItemDataTile(
                       hasSelectedLine: false,
@@ -136,7 +153,39 @@ class AppRoot extends HookConsumerWidget {
                       icon: e.icon,
                     );
                   }).toList(),
-                  footer: AppVersion(),
+                  footer: sideMenuCtrl.isCollapsed()
+                      ? Column(
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(MIcons.accountCircleOutline),
+                            ),
+                            SizedBox(height: 5),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(MIcons.logout),
+                            ),
+                            SizedBox(height: 10),
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            TextButton.icon(
+                              onPressed: () {},
+                              icon: Icon(MIcons.accountCircleOutline),
+                              label: Text('Sample Name'),
+                            ),
+                            SizedBox(height: 5),
+                            TextButton.icon(
+                              onPressed: () {},
+                              icon: Icon(MIcons.logout),
+                              label: Text('Logout'),
+                            ),
+                            SizedBox(height: 10),
+                          ],
+                        ),
                 ),
               ),
               Expanded(child: shell),
