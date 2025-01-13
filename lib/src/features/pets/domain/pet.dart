@@ -9,6 +9,8 @@ class Pet with PetMappable {
   final String name;
   final List<String> images;
 
+  final String? displayImage;
+
   final String? species;
   final String? owner;
   final String? contactNumber;
@@ -27,6 +29,7 @@ class Pet with PetMappable {
     this.name = '',
     this.images = const [],
     this.owner,
+    this.displayImage,
     this.species,
     this.breed,
     this.sex,

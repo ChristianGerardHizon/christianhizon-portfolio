@@ -3,12 +3,10 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/form_builders/cutom_image_field.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/utils/form_utils.dart';
-import 'package:gym_system/src/features/settings/presentation/widgets/image_viewer.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:gym_system/src/features/users/presentation/controllers/user_controller.dart';
@@ -72,24 +70,24 @@ class UserUpdatePage extends HookConsumerWidget {
                       ///
                       /// Change Profile Picture
                       ///
-                      CustomImageField(
-                        feature: 'users',
-                        id: id,
-                        name: UserField.profilePhoto,
-                        stringBuilder: (context, value) {
-                          return ImageViewer(
-                            builder: (url) => Image.network(
-                              url,
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
-                            ),
-                            feature: 'users',
-                            file: value,
-                            id: id,
-                          );
-                        },
-                      ),
+                      // CustomImageField(
+                      //   feature: 'users',
+                      //   id: id,
+                      //   name: UserField.profilePhoto,
+                      //   stringBuilder: (context, value) {
+                      //     return ImageViewer(
+                      //       builder: (url) => Image.network(
+                      //         url,
+                      //         width: 100,
+                      //         height: 100,
+                      //         fit: BoxFit.cover,
+                      //       ),
+                      //       feature: 'users',
+                      //       file: value,
+                      //       id: id,
+                      //     );
+                      //   },
+                      // ),
 
                       ///
                       /// name

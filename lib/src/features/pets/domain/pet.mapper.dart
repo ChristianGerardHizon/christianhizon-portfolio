@@ -30,6 +30,9 @@ class PetMapper extends ClassMapperBase<Pet> {
       Field('images', _$images, opt: true, def: const []);
   static String? _$owner(Pet v) => v.owner;
   static const Field<Pet, String> _f$owner = Field('owner', _$owner, opt: true);
+  static String? _$displayImage(Pet v) => v.displayImage;
+  static const Field<Pet, String> _f$displayImage =
+      Field('displayImage', _$displayImage, opt: true);
   static String? _$species(Pet v) => v.species;
   static const Field<Pet, String> _f$species =
       Field('species', _$species, opt: true);
@@ -63,6 +66,7 @@ class PetMapper extends ClassMapperBase<Pet> {
     #name: _f$name,
     #images: _f$images,
     #owner: _f$owner,
+    #displayImage: _f$displayImage,
     #species: _f$species,
     #breed: _f$breed,
     #sex: _f$sex,
@@ -81,6 +85,7 @@ class PetMapper extends ClassMapperBase<Pet> {
         name: data.dec(_f$name),
         images: data.dec(_f$images),
         owner: data.dec(_f$owner),
+        displayImage: data.dec(_f$displayImage),
         species: data.dec(_f$species),
         breed: data.dec(_f$breed),
         sex: data.dec(_f$sex),
@@ -145,6 +150,7 @@ abstract class PetCopyWith<$R, $In extends Pet, $Out>
       String? name,
       List<String>? images,
       String? owner,
+      String? displayImage,
       String? species,
       String? breed,
       String? sex,
@@ -174,6 +180,7 @@ class _PetCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Pet, $Out>
           String? name,
           List<String>? images,
           Object? owner = $none,
+          Object? displayImage = $none,
           Object? species = $none,
           Object? breed = $none,
           Object? sex = $none,
@@ -189,6 +196,7 @@ class _PetCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Pet, $Out>
         if (name != null) #name: name,
         if (images != null) #images: images,
         if (owner != $none) #owner: owner,
+        if (displayImage != $none) #displayImage: displayImage,
         if (species != $none) #species: species,
         if (breed != $none) #breed: breed,
         if (sex != $none) #sex: sex,
@@ -206,6 +214,7 @@ class _PetCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Pet, $Out>
       name: data.get(#name, or: $value.name),
       images: data.get(#images, or: $value.images),
       owner: data.get(#owner, or: $value.owner),
+      displayImage: data.get(#displayImage, or: $value.displayImage),
       species: data.get(#species, or: $value.species),
       breed: data.get(#breed, or: $value.breed),
       sex: data.get(#sex, or: $value.sex),

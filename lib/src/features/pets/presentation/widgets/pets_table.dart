@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gym_system/src/core/strings/strings.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/pets/domain/pet.dart';
 import 'package:material_table_view/material_table_view.dart';
@@ -52,12 +53,12 @@ class PetsTable extends HookWidget {
 
     return SliverTableView.builder(
       columns: [
-        const TableColumn(
-          width: 56.0,
-          freezePriority: 100,
-        ),
-        const TableColumn(width: 64, maxResizeWidth: 10),
-        const TableColumn(width: 64, maxResizeWidth: 10 ),
+        const TableColumn(width: 56.0, freezePriority: 100),
+        const TableColumn(width: 150),
+        const TableColumn(width: 120),
+        const TableColumn(width: 120),
+        const TableColumn(width: 120),
+        const TableColumn(width: 120),
         TableColumn(width: 56.0, freezePriority: 100),
       ],
       headerBuilder: (context, contentBuilder) {
@@ -73,16 +74,35 @@ class PetsTable extends HookWidget {
                 );
               case 1:
                 return Align(
-                    alignment: Alignment.centerLeft, child: const Text('Name'));
+                    alignment: Alignment.centerLeft,
+                    child: const Text('Name',
+                        style: TextStyle(fontWeight: FontWeight.w600)));
               case 2:
                 return Align(
                     alignment: Alignment.centerLeft,
-                    child: const Text('Address'));
+                    child: const Text(
+                      'Owner',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ));
               case 3:
+                return Align(
+                    alignment: Alignment.centerLeft,
+                    child: const Text('Contact Number',
+                        style: TextStyle(fontWeight: FontWeight.w600)));
+              case 4:
+                return Align(
+                    alignment: Alignment.centerLeft,
+                    child: const Text('Email',
+                        style: TextStyle(fontWeight: FontWeight.w600)));
+              case 5:
+                return Align(
+                    alignment: Alignment.centerLeft,
+                    child: const Text('Species',
+                        style: TextStyle(fontWeight: FontWeight.w600)));
+
+              default:
                 return SizedBox();
             }
-            return Align(
-                alignment: Alignment.centerLeft, child: const Text(''));
           },
         );
       },
@@ -110,12 +130,54 @@ class PetsTable extends HookWidget {
                 case 1:
                   return Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(pet.name),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircleAvatar(),
+                        SizedBox(width: 8),
+                        Text(
+                          pet.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   );
                 case 2:
                   return Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(pet.address ?? '-'),
+                    child: Text(
+                      pet.address ?? AppStrings.placeholderText,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                case 3:
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      pet.contactNumber ?? AppStrings.placeholderText,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                case 4:
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      pet.email ?? AppStrings.placeholderText,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                case 5:
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      pet.species ?? AppStrings.placeholderText,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   );
                 default:
                   return Align(

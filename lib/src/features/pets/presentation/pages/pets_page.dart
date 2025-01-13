@@ -15,16 +15,14 @@ class PetsPage extends HookConsumerWidget {
     final pageState = ref.watch(petsPageControllerProvider);
     final state = ref.watch(petsControllerProvider);
     final selected = useState<List<int>>([]);
+    final searchCtrl = useTextEditingController();
 
     final hasNext = useState(false);
 
     useEffect(() {
-
-
-      ref.listen(petsControllerProvider, (prev,next) {
+      ref.listen(petsControllerProvider, (prev, next) {
         final value = next.value;
-        if(value != null) {
-          
+        if (value != null) {
           hasNext.value = value.items.length == value.perPage;
         }
       });
@@ -48,6 +46,45 @@ class PetsPage extends HookConsumerWidget {
       ),
       body: CustomScrollView(
         slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: TextField(
+                onSubmitted: (x) {
+                  searchCtrl.clear();
+                },
+                controller: searchCtrl,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FilledButton(
+                        child: Text('Search'),
+                        onPressed: () {},
+                      ),
+                      SizedBox(width: 14),
+                      TextButton(
+                        child: Text('Clear'),
+                        onPressed: () {
+                          searchCtrl.clear();
+                        },
+                      ),
+                      SizedBox(width: 8),
+                    ],
+                  ),
+                  hintText: 'Search term here',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                  fillColor: Theme.of(context).primaryColor.withOpacity(.1),
+                  filled: true,
+                ),
+              ),
+            ),
+          ),
+
           ///
           /// list
           ///
@@ -58,22 +95,23 @@ class PetsPage extends HookConsumerWidget {
             orElse: () => SliverToBoxAdapter(),
             data: (data) {
               final list = data.items;
+
+              if (list.isEmpty) {
+                return SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 100,
+                    child: Center(
+                      child: Text('No pets found'),
+                    ),
+                  ),
+                );
+              }
               return PetsTable(
                 list: list,
                 selected: selected.value,
                 onSelected: (p0) => selected.value = p0,
-                onRowTap: (row) => PetPageRoute(data.items[row].id).go(context),
+                onRowTap: (row) => PetPageRoute(list[row].id).go(context),
               );
-
-              // return SliverList.builder(
-              //   itemCount: data.items.length,
-              //   itemBuilder: (context, index) {
-              //     return ListTile(
-              //       onTap: () => PetPageRoute(data.items[index].id).go(context),
-              //       title: Text(data.items[index].name),
-              //     );
-              //   },
-              // );
             },
           ),
 
