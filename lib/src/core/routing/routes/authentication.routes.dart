@@ -4,16 +4,25 @@ part of '../main.routes.dart';
 /// Authentication
 ///
 
-@TypedGoRoute<LoginPageRoute>(path: LoginPageRoute.path, routes: [
-  TypedGoRoute<AccountRecoveryPageRoute>(path: AccountRecoveryPageRoute.path),
-])
+@TypedGoRoute<LoginPageRoute>(path: LoginPageRoute.path)
 class LoginPageRoute extends GoRouteData {
   const LoginPageRoute();
-  static const path = '/authentication';
+  static const path = '/login/staff';
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const LoginPage();
+    return const StaffLoginPage();
+  }
+}
+
+@TypedGoRoute<AdminLoginPageRoute>(path: AdminLoginPageRoute.path)
+class AdminLoginPageRoute extends GoRouteData {
+  const AdminLoginPageRoute();
+  static const path = '/login/admin';
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const AdminLoginPage();
   }
 }
 
@@ -26,7 +35,6 @@ class AccountRecoveryPageRoute extends GoRouteData {
     return const AccountRecoveryPage();
   }
 }
-
 
 ///
 /// Account

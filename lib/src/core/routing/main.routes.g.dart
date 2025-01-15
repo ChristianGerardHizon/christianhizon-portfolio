@@ -13,6 +13,7 @@ List<RouteBase> get $appRoutes => [
       $adminsPageRoute,
       $adminPageRoute,
       $loginPageRoute,
+      $adminLoginPageRoute,
       $accountPageRoute,
       $userPageRoute,
       $usersPageRoute,
@@ -294,14 +295,8 @@ extension $AdminPageRouteExtension on AdminPageRoute {
 }
 
 RouteBase get $loginPageRoute => GoRouteData.$route(
-      path: '/authentication',
+      path: '/login/staff',
       factory: $LoginPageRouteExtension._fromState,
-      routes: [
-        GoRouteData.$route(
-          path: 'recovery',
-          factory: $AccountRecoveryPageRouteExtension._fromState,
-        ),
-      ],
     );
 
 extension $LoginPageRouteExtension on LoginPageRoute {
@@ -309,7 +304,7 @@ extension $LoginPageRouteExtension on LoginPageRoute {
       const LoginPageRoute();
 
   String get location => GoRouteData.$location(
-        '/authentication',
+        '/login/staff',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -322,12 +317,17 @@ extension $LoginPageRouteExtension on LoginPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $AccountRecoveryPageRouteExtension on AccountRecoveryPageRoute {
-  static AccountRecoveryPageRoute _fromState(GoRouterState state) =>
-      const AccountRecoveryPageRoute();
+RouteBase get $adminLoginPageRoute => GoRouteData.$route(
+      path: '/login/admin',
+      factory: $AdminLoginPageRouteExtension._fromState,
+    );
+
+extension $AdminLoginPageRouteExtension on AdminLoginPageRoute {
+  static AdminLoginPageRoute _fromState(GoRouterState state) =>
+      const AdminLoginPageRoute();
 
   String get location => GoRouteData.$location(
-        '/authentication/recovery',
+        '/login/admin',
       );
 
   void go(BuildContext context) => context.go(location);

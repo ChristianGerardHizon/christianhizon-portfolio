@@ -17,6 +17,7 @@ GoRouter router(Ref ref) {
   ///
   final ignoredRoutes = <String>[
     LoginPageRoute.path,
+    AdminLoginPageRoute.path,
     DomainPageRoute.path,
   ];
 

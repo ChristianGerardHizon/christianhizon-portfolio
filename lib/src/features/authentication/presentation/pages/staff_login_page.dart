@@ -10,14 +10,14 @@ import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/utils/form_utils.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
+import 'package:gym_system/src/features/authentication/presentation/pages/admin_login_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class LoginPage extends HookConsumerWidget {
-  const LoginPage({super.key});
+class StaffLoginPage extends HookConsumerWidget {
+  const StaffLoginPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref.read(authControllerProvider.notifier);
 
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
@@ -56,6 +56,7 @@ class LoginPage extends HookConsumerWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         actions: [
           IconButton(
             icon: Icon(MIcons.earth),
@@ -118,6 +119,24 @@ class LoginPage extends HookConsumerWidget {
                   isLoading: isLoading.value,
                   child: const Text('Login'),
                 ),
+
+                SizedBox(height: 20),
+
+                TextButton(
+                  onPressed: () => const AdminLoginPageRoute().push(context),
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'Not a staff? ',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      children:  <TextSpan>[
+                        TextSpan(
+                          text: 'Login as admin here',
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.primary),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
               ],
             ),
           ),

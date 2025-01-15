@@ -5,8 +5,6 @@ import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-
-
 class SplashPage extends HookConsumerWidget {
   const SplashPage({super.key});
   @override
@@ -30,12 +28,13 @@ class SplashPage extends HookConsumerWidget {
     });
 
     return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: SizedBox(
-          width: 250,
-          height: 250,
-          child: Assets.icons.appIconTransparent.image(),
+      body: SafeArea(
+        child: Center(
+          child: SizedBox(
+            width: 250,
+            height: 250,
+            child: Assets.icons.appIconTransparent.image(),
+          ),
         ),
       ),
     );
