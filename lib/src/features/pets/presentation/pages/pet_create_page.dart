@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
@@ -55,109 +56,278 @@ class PetCreatePage extends HookConsumerWidget {
       ),
       body: FormBuilder(
         key: formKey,
-        child: ListView(
-          padding: EdgeInsets.only(left: 10, right: 10),
-          children: [
+        child: CustomScrollView(
+          slivers: [
             ///
-            /// name
+            /// Pet Details
             ///
-            FormBuilderTextField(
-              name: PetField.name,
-              decoration: InputDecoration(labelText: 'Pet Name'),
+            SliverPadding(
+              padding: EdgeInsets.only(left: 10, right: 10),
+              sliver: SliverList.list(
+                children: [
+                  SizedBox(height: 10),
+
+                  ListTile(
+                    contentPadding: EdgeInsets.all(0),
+                    title: Text(
+                      'Pet Info',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  ///
+                  /// name
+                  ///
+                  FormBuilderTextField(
+                    name: PetField.name,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(
+                          bottom: 10, right: 8, left: 8, top: 30),
+                      labelText: 'Pet Name',
+                      filled: true,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  ///
+                  /// Species
+                  ///
+                  FormBuilderTextField(
+                    name: PetField.species,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(
+                          bottom: 10, right: 8, left: 8, top: 30),
+                      labelText: 'Species',
+                      filled: true,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  ///
+                  /// Breed
+                  ///
+                  FormBuilderTypeAhead(
+                    suggestionsCallback: (p0) => ['test'],
+                    itemBuilder: (context, suggestion) {
+                      return ListTile(
+                        title: Text('test'),
+                      );
+                    },
+                    name: PetField.breed,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(
+                          bottom: 10, right: 8, left: 8, top: 30),
+                      labelText: 'Breed',
+                      filled: true,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  ///
+                  /// Color
+                  ///
+                  FormBuilderTextField(
+                    name: PetField.color,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(
+                          bottom: 10, right: 8, left: 8, top: 30),
+                      labelText: 'Color',
+                      filled: true,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  ///
+                  /// Sex
+                  ///
+                  FormBuilderDropdown<String>(
+                    name: PetField.sex,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(
+                          bottom: 10, right: 8, left: 8, top: 30),
+                      labelText: 'Sex',
+                      filled: true,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    items: ['male', 'female']
+                        .map((sex) => DropdownMenuItem(
+                              value: sex,
+                              child: Text(sex),
+                            ))
+                        .toList(),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  ///
+                  /// Date Of Birth
+                  ///
+                  FormBuilderDateTimePicker(
+                    initialEntryMode: DatePickerEntryMode.inputOnly,
+                    inputType: InputType.date,
+                    name: PetField.dateOfBirth,
+                    decoration: InputDecoration(
+                      suffixIcon: Icon(Icons.calendar_month),
+                      contentPadding: EdgeInsets.only(
+                          bottom: 10, right: 8, left: 8, top: 30),
+                      labelText: 'Date of Birth',
+                      filled: true,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    valueTransformer: (dateTime) {
+                      if (dateTime == null) return null;
+                      return dateTime.toUtc().toIso8601String();
+                    },
+                  ),
+                ],
+              ),
             ),
 
             ///
-            /// address
+            /// Owner Details
             ///
-            FormBuilderTextField(
-              name: PetField.address,
-              decoration: InputDecoration(labelText: 'Address'),
-            ),
+            SliverPadding(
+                padding: EdgeInsets.only(left: 10, right: 10, top: 35),
+                sliver: SliverList.list(children: [
+                  ///
+                  ///
+                  ///
+                  ListTile(
+                    contentPadding: EdgeInsets.all(0),
+                    title: Text(
+                      'Owner Details',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  ///
+                  /// Owner
+                  ///
+                  FormBuilderTextField(
+                    name: PetField.owner,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(
+                          bottom: 10, right: 8, left: 8, top: 30),
+                      labelText: 'Owner',
+                      filled: true,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  ///
+                  /// address
+                  ///
+                  FormBuilderTextField(
+                    name: PetField.address,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(
+                          bottom: 10, right: 8, left: 8, top: 30),
+                      labelText: 'Address',
+                      filled: true,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  ///
+                  /// ContactNumber
+                  ///
+                  FormBuilderTextField(
+                    name: PetField.contactNumber,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(
+                          bottom: 10, right: 8, left: 8, top: 30),
+                      labelText: 'Contact Number',
+                      filled: true,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  ///
+                  /// Email
+                  ///
+                  FormBuilderTextField(
+                    name: PetField.email,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(
+                          bottom: 10, right: 8, left: 8, top: 30),
+                      labelText: 'Email',
+                      filled: true,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ])),
 
             ///
-            /// Owner
+            /// Save Button
             ///
-            FormBuilderTextField(
-              name: PetField.owner,
-              decoration: InputDecoration(labelText: 'Owner'),
-            ),
-
-            ///
-            /// ContactNumber
-            ///
-            FormBuilderTextField(
-              name: PetField.contactNumber,
-              decoration: InputDecoration(labelText: 'Contact Number'),
-            ),
-
-            ///
-            /// Email
-            ///
-            FormBuilderTextField(
-              name: PetField.email,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-
-            ///
-            /// Species
-            ///
-            FormBuilderTextField(
-              name: PetField.species,
-              decoration: InputDecoration(labelText: 'Species'),
-            ),
-
-            ///
-            /// Breed
-            ///
-            FormBuilderTextField(
-              name: PetField.breed,
-              decoration: InputDecoration(labelText: 'Breed'),
-            ),
-
-            ///
-            /// Color
-            ///
-            FormBuilderTextField(
-              name: PetField.color,
-              decoration: InputDecoration(labelText: 'Color'),
-            ),
-
-            ///
-            /// Sex
-            ///
-            FormBuilderDropdown<String>(
-              name: PetField.sex,
-              decoration: InputDecoration(labelText: 'Sex'),
-              items: ['male', 'female']
-                  .map((sex) => DropdownMenuItem(
-                        value: sex,
-                        child: Text(sex),
-                      ))
-                  .toList(),
-            ),
-
-            ///
-            /// Date Of Birth
-            ///
-            FormBuilderDateTimePicker(
-              initialEntryMode: DatePickerEntryMode.inputOnly,
-              inputType: InputType.date,
-              name: PetField.dateOfBirth,
-              valueTransformer: (dateTime) {
-                if (dateTime == null) return null;
-                return dateTime.toUtc().toIso8601String();
-              },
-            ),
-
-            SizedBox(height: 20),
-
-            ///
-            /// save button
-            ///
-            LoadingFilledButton(
-              isLoading: isLoading.value,
-              child: Text('Save'),
-              onPressed: onSubmit,
+            SliverPadding(
+              padding: const EdgeInsets.only(
+                  left: 10, right: 10, top: 30, bottom: 20),
+              sliver: SliverToBoxAdapter(
+                child: LoadingFilledButton(
+                  isLoading: isLoading.value,
+                  child: Text('Save'),
+                  onPressed: onSubmit,
+                ),
+              ),
             ),
           ],
         ),
