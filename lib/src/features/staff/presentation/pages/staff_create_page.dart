@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class StaffPage extends HookConsumerWidget {
-  final String id;
-
-  const StaffPage(this.id, {super.key});
+class StaffCreatePage extends HookConsumerWidget {
+  const StaffCreatePage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold();

@@ -47,11 +47,11 @@ class AppRoot extends HookConsumerWidget {
         },
       ),
       1: CustomNavigationBarItem(
-        route: PetsPageRoute.path,
+        route: PatientsPageRoute.path,
         icon: Icon(MIcons.dogSide),
-        label: 'Pets',
+        label: 'Patients',
         onTap: () {
-          PetsPageRoute().go(context);
+          PatientsPageRoute().go(context);
         },
       ),
       2: CustomNavigationBarItem(

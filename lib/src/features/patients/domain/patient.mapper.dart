@@ -4,64 +4,68 @@
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
-part of 'pet.dart';
+part of 'patient.dart';
 
-class PetMapper extends ClassMapperBase<Pet> {
-  PetMapper._();
+class PatientMapper extends ClassMapperBase<Patient> {
+  PatientMapper._();
 
-  static PetMapper? _instance;
-  static PetMapper ensureInitialized() {
+  static PatientMapper? _instance;
+  static PatientMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = PetMapper._());
+      MapperContainer.globals.use(_instance = PatientMapper._());
     }
     return _instance!;
   }
 
   @override
-  final String id = 'Pet';
+  final String id = 'Patient';
 
-  static String _$id(Pet v) => v.id;
-  static const Field<Pet, String> _f$id = Field('id', _$id);
-  static String _$name(Pet v) => v.name;
-  static const Field<Pet, String> _f$name =
+  static String _$id(Patient v) => v.id;
+  static const Field<Patient, String> _f$id = Field('id', _$id);
+  static String _$name(Patient v) => v.name;
+  static const Field<Patient, String> _f$name =
       Field('name', _$name, opt: true, def: '');
-  static List<String> _$images(Pet v) => v.images;
-  static const Field<Pet, List<String>> _f$images =
+  static List<String> _$images(Patient v) => v.images;
+  static const Field<Patient, List<String>> _f$images =
       Field('images', _$images, opt: true, def: const []);
-  static String? _$owner(Pet v) => v.owner;
-  static const Field<Pet, String> _f$owner = Field('owner', _$owner, opt: true);
-  static String? _$displayImage(Pet v) => v.displayImage;
-  static const Field<Pet, String> _f$displayImage =
+  static String? _$owner(Patient v) => v.owner;
+  static const Field<Patient, String> _f$owner =
+      Field('owner', _$owner, opt: true);
+  static String? _$displayImage(Patient v) => v.displayImage;
+  static const Field<Patient, String> _f$displayImage =
       Field('displayImage', _$displayImage, opt: true);
-  static String? _$species(Pet v) => v.species;
-  static const Field<Pet, String> _f$species =
+  static String? _$species(Patient v) => v.species;
+  static const Field<Patient, String> _f$species =
       Field('species', _$species, opt: true);
-  static String? _$breed(Pet v) => v.breed;
-  static const Field<Pet, String> _f$breed = Field('breed', _$breed, opt: true);
-  static String? _$sex(Pet v) => v.sex;
-  static const Field<Pet, String> _f$sex = Field('sex', _$sex, opt: true);
-  static String? _$color(Pet v) => v.color;
-  static const Field<Pet, String> _f$color = Field('color', _$color, opt: true);
-  static String? _$contactNumber(Pet v) => v.contactNumber;
-  static const Field<Pet, String> _f$contactNumber =
+  static String? _$breed(Patient v) => v.breed;
+  static const Field<Patient, String> _f$breed =
+      Field('breed', _$breed, opt: true);
+  static String? _$sex(Patient v) => v.sex;
+  static const Field<Patient, String> _f$sex = Field('sex', _$sex, opt: true);
+  static String? _$color(Patient v) => v.color;
+  static const Field<Patient, String> _f$color =
+      Field('color', _$color, opt: true);
+  static String? _$contactNumber(Patient v) => v.contactNumber;
+  static const Field<Patient, String> _f$contactNumber =
       Field('contactNumber', _$contactNumber, opt: true);
-  static String? _$email(Pet v) => v.email;
-  static const Field<Pet, String> _f$email = Field('email', _$email, opt: true);
-  static String? _$address(Pet v) => v.address;
-  static const Field<Pet, String> _f$address =
+  static String? _$email(Patient v) => v.email;
+  static const Field<Patient, String> _f$email =
+      Field('email', _$email, opt: true);
+  static String? _$address(Patient v) => v.address;
+  static const Field<Patient, String> _f$address =
       Field('address', _$address, opt: true);
-  static DateTime? _$dateOfBirth(Pet v) => v.dateOfBirth;
-  static const Field<Pet, DateTime> _f$dateOfBirth =
+  static DateTime? _$dateOfBirth(Patient v) => v.dateOfBirth;
+  static const Field<Patient, DateTime> _f$dateOfBirth =
       Field('dateOfBirth', _$dateOfBirth, opt: true);
-  static DateTime? _$created(Pet v) => v.created;
-  static const Field<Pet, DateTime> _f$created =
+  static DateTime? _$created(Patient v) => v.created;
+  static const Field<Patient, DateTime> _f$created =
       Field('created', _$created, opt: true);
-  static DateTime? _$updated(Pet v) => v.updated;
-  static const Field<Pet, DateTime> _f$updated =
+  static DateTime? _$updated(Patient v) => v.updated;
+  static const Field<Patient, DateTime> _f$updated =
       Field('updated', _$updated, opt: true);
 
   @override
-  final MappableFields<Pet> fields = const {
+  final MappableFields<Patient> fields = const {
     #id: _f$id,
     #name: _f$name,
     #images: _f$images,
@@ -79,8 +83,8 @@ class PetMapper extends ClassMapperBase<Pet> {
     #updated: _f$updated,
   };
 
-  static Pet _instantiate(DecodingData data) {
-    return Pet(
+  static Patient _instantiate(DecodingData data) {
+    return Patient(
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         images: data.dec(_f$images),
@@ -101,48 +105,51 @@ class PetMapper extends ClassMapperBase<Pet> {
   @override
   final Function instantiate = _instantiate;
 
-  static Pet fromMap(Map<String, dynamic> map) {
-    return ensureInitialized().decodeMap<Pet>(map);
+  static Patient fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<Patient>(map);
   }
 
-  static Pet fromJson(String json) {
-    return ensureInitialized().decodeJson<Pet>(json);
+  static Patient fromJson(String json) {
+    return ensureInitialized().decodeJson<Patient>(json);
   }
 }
 
-mixin PetMappable {
+mixin PatientMappable {
   String toJson() {
-    return PetMapper.ensureInitialized().encodeJson<Pet>(this as Pet);
+    return PatientMapper.ensureInitialized()
+        .encodeJson<Patient>(this as Patient);
   }
 
   Map<String, dynamic> toMap() {
-    return PetMapper.ensureInitialized().encodeMap<Pet>(this as Pet);
+    return PatientMapper.ensureInitialized()
+        .encodeMap<Patient>(this as Patient);
   }
 
-  PetCopyWith<Pet, Pet, Pet> get copyWith =>
-      _PetCopyWithImpl(this as Pet, $identity, $identity);
+  PatientCopyWith<Patient, Patient, Patient> get copyWith =>
+      _PatientCopyWithImpl(this as Patient, $identity, $identity);
   @override
   String toString() {
-    return PetMapper.ensureInitialized().stringifyValue(this as Pet);
+    return PatientMapper.ensureInitialized().stringifyValue(this as Patient);
   }
 
   @override
   bool operator ==(Object other) {
-    return PetMapper.ensureInitialized().equalsValue(this as Pet, other);
+    return PatientMapper.ensureInitialized()
+        .equalsValue(this as Patient, other);
   }
 
   @override
   int get hashCode {
-    return PetMapper.ensureInitialized().hashValue(this as Pet);
+    return PatientMapper.ensureInitialized().hashValue(this as Patient);
   }
 }
 
-extension PetValueCopy<$R, $Out> on ObjectCopyWith<$R, Pet, $Out> {
-  PetCopyWith<$R, Pet, $Out> get $asPet =>
-      $base.as((v, t, t2) => _PetCopyWithImpl(v, t, t2));
+extension PatientValueCopy<$R, $Out> on ObjectCopyWith<$R, Patient, $Out> {
+  PatientCopyWith<$R, Patient, $Out> get $asPatient =>
+      $base.as((v, t, t2) => _PatientCopyWithImpl(v, t, t2));
 }
 
-abstract class PetCopyWith<$R, $In extends Pet, $Out>
+abstract class PatientCopyWith<$R, $In extends Patient, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>> get images;
   $R call(
@@ -161,15 +168,17 @@ abstract class PetCopyWith<$R, $In extends Pet, $Out>
       DateTime? dateOfBirth,
       DateTime? created,
       DateTime? updated});
-  PetCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  PatientCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _PetCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Pet, $Out>
-    implements PetCopyWith<$R, Pet, $Out> {
-  _PetCopyWithImpl(super.value, super.then, super.then2);
+class _PatientCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, Patient, $Out>
+    implements PatientCopyWith<$R, Patient, $Out> {
+  _PatientCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<Pet> $mapper = PetMapper.ensureInitialized();
+  late final ClassMapperBase<Patient> $mapper =
+      PatientMapper.ensureInitialized();
   @override
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>> get images =>
       ListCopyWith($value.images, (v, t) => ObjectCopyWith(v, $identity, t),
@@ -209,7 +218,7 @@ class _PetCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Pet, $Out>
         if (updated != $none) #updated: updated
       }));
   @override
-  Pet $make(CopyWithData data) => Pet(
+  Patient $make(CopyWithData data) => Patient(
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       images: data.get(#images, or: $value.images),
@@ -227,6 +236,6 @@ class _PetCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Pet, $Out>
       updated: data.get(#updated, or: $value.updated));
 
   @override
-  PetCopyWith<$R2, Pet, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _PetCopyWithImpl($value, $cast, t);
+  PatientCopyWith<$R2, Patient, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _PatientCopyWithImpl($value, $cast, t);
 }

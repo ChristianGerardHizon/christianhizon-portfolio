@@ -3,24 +3,24 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
-import 'package:gym_system/src/features/pets/presentation/controllers/pets_controller.dart';
-import 'package:gym_system/src/features/pets/presentation/controllers/pets_page_controller.dart';
-import 'package:gym_system/src/features/pets/presentation/widgets/pets_table.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patients_page_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patients_table.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PetsPage extends HookConsumerWidget {
-  const PetsPage({super.key});
+class PatientsPage extends HookConsumerWidget {
+  const PatientsPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pageState = ref.watch(petsPageControllerProvider);
-    final state = ref.watch(petsControllerProvider);
+    final pageState = ref.watch(patientsPageControllerProvider);
+    final state = ref.watch(patientsControllerProvider);
     final selected = useState<List<int>>([]);
     final searchCtrl = useTextEditingController();
 
     final hasNext = useState(false);
 
     useEffect(() {
-      ref.listen(petsControllerProvider, (prev, next) {
+      ref.listen(patientsControllerProvider, (prev, next) {
         final value = next.value;
         if (value != null) {
           hasNext.value = value.items.length == value.perPage;
@@ -32,15 +32,15 @@ class PetsPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pets'),
+        title: Text('Patients'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => ref.invalidate(petsControllerProvider),
+            onPressed: () => ref.invalidate(patientsControllerProvider),
           ),
           IconButton(
             icon: Icon(MIcons.plusCircle),
-            onPressed: () => PetCreatePageRoute().go(context),
+            onPressed: () => PatientCreatePageRoute().go(context),
           )
         ],
       ),
@@ -101,16 +101,16 @@ class PetsPage extends HookConsumerWidget {
                   child: SizedBox(
                     height: 100,
                     child: Center(
-                      child: Text('No pets found'),
+                      child: Text('No patients found'),
                     ),
                   ),
                 );
               }
-              return PetsTable(
+              return PatientsTable(
                 list: list,
                 selected: selected.value,
                 onSelected: (p0) => selected.value = p0,
-                onRowTap: (row) => PetPageRoute(list[row].id).go(context),
+                onRowTap: (row) => PatientPageRoute(list[row].id).go(context),
               );
             },
           ),
@@ -131,7 +131,7 @@ class PetsPage extends HookConsumerWidget {
                 page: pageState.page,
                 onPageChange: (value) {
                   ref
-                      .read(petsPageControllerProvider.notifier)
+                      .read(patientsPageControllerProvider.notifier)
                       .changePage(value);
                 },
               ),

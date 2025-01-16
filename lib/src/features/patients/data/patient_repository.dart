@@ -4,57 +4,57 @@ import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/features/pets/domain/pet.dart';
+import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'pet_repository.g.dart';
+part 'patient_repository.g.dart';
 
-abstract class PetRepository {
-  TaskResult<Pet> get(String id);
-  TaskResult<PageResults<Pet>> list({
+abstract class PatientRepository {
+  TaskResult<Patient> get(String id);
+  TaskResult<PageResults<Patient>> list({
     String? query,
     required int pageNo,
     required int pageSize,
   });
   TaskResult<void> delete(String id);
-  TaskResult<Pet> update(
-    Pet pet,
+  TaskResult<Patient> update(
+    Patient patient,
     Map<String, dynamic> update, {
     List<XFile> files = const [],
   });
 
-  TaskResult<Pet> create(Map<String, dynamic> payload);
+  TaskResult<Patient> create(Map<String, dynamic> payload);
 }
 
 @Riverpod(keepAlive: true)
-PetRepository petRepository(Ref ref) {
-  return PetRepositoryImpl(
+PatientRepository patientRepository(Ref ref) {
+  return PatientRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class PetRepositoryImpl extends PetRepository {
+class PatientRepositoryImpl extends PatientRepository {
   final PocketBase pb;
 
-  PetRepositoryImpl({required this.pb});
+  PatientRepositoryImpl({required this.pb});
 
-  RecordService get collection => pb.collection(PocketBaseCollections.pets);
+  RecordService get collection => pb.collection(PocketBaseCollections.patients);
 
   @override
-  TaskResult<Pet> get(String id) {
+  TaskResult<Patient> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
-      return Pet.customFromMap(result.toJson());
+      return Patient.customFromMap(result.toJson());
     }, Failure.tryCatchData);
   }
 
   @override
-  TaskResult<Pet> create(Map<String, dynamic> payload) {
+  TaskResult<Patient> create(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload);
-      return Pet.customFromMap(response.toJson());
+      return Patient.customFromMap(response.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -66,7 +66,7 @@ class PetRepositoryImpl extends PetRepository {
   }
 
   @override
-  TaskResult<PageResults<Pet>> list({
+  TaskResult<PageResults<Patient>> list({
     String? query,
     required int pageNo,
     required int pageSize,
@@ -82,27 +82,27 @@ class PetRepositoryImpl extends PetRepository {
         perPage: result.perPage,
         totalItems: result.totalItems,
         totalPages: result.totalPages,
-        items: result.items.map<Pet>((e) {
-          return Pet.customFromMap(e.toJson());
+        items: result.items.map<Patient>((e) {
+          return Patient.customFromMap(e.toJson());
         }).toList(),
       );
     }, Failure.tryCatchData);
   }
 
   @override
-  TaskResult<Pet> update(
-    Pet pet,
+  TaskResult<Patient> update(
+    Patient patient,
     Map<String, dynamic> update, {
     List<XFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
-      final petMap = pet.toMap();
-      final combinedMap = {...petMap, ...update};
+      final patientMap = patient.toMap();
+      final combinedMap = {...patientMap, ...update};
       final result = await collection.update(
-        pet.id,
+        patient.id,
         body: combinedMap,
       );
-      return Pet.customFromMap(result.toJson());
+      return Patient.customFromMap(result.toJson());
     }, Failure.tryCatchData);
   }
 }

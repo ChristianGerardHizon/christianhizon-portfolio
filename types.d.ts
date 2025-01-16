@@ -2786,7 +2786,7 @@ namespace filepath {
  * Instead, if the usual path algorithms would result in that answer,
  * these functions return an error err satisfying errors.Is(err, ErrDot).
  * 
- * For example, consider these two program snippets:
+ * For example, consider these two program snippatients:
  * 
  * ```
  * 	path, err := exec.LookPath("prog")
@@ -9818,7 +9818,7 @@ namespace http {
  * Instead, if the usual path algorithms would result in that answer,
  * these functions return an error err satisfying errors.Is(err, ErrDot).
  * 
- * For example, consider these two program snippets:
+ * For example, consider these two program snippatients:
  * 
  * ```
  * 	path, err := exec.LookPath("prog")

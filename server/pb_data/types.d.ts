@@ -2841,7 +2841,7 @@ namespace filepath {
  * Instead, if the usual path algorithms would result in that answer,
  * these functions return an error err satisfying [errors.Is](err, [ErrDot]).
  * 
- * For example, consider these two program snippets:
+ * For example, consider these two program snippatients:
  * 
  * ```
  * 	path, err := exec.LookPath("prog")
@@ -16437,7 +16437,7 @@ namespace http {
  * 	x|y            x or y (prefer x)
  * ```
  * 
- * Repetitions:
+ * Repatientitions:
  * 
  * ```
  * 	x*             zero or more x, prefer more
@@ -16455,8 +16455,8 @@ namespace http {
  * ```
  * 
  * Implementation restriction: The counting forms x{n,m}, x{n,}, and x{n}
- * reject forms that create a minimum or maximum repetition count above 1000.
- * Unlimited repetitions are not subject to this restriction.
+ * reject forms that create a minimum or maximum repatientition count above 1000.
+ * Unlimited repatientitions are not subject to this restriction.
  * 
  * Grouping:
  * 
@@ -16930,7 +16930,7 @@ namespace hook {
  * Instead, if the usual path algorithms would result in that answer,
  * these functions return an error err satisfying [errors.Is](err, [ErrDot]).
  * 
- * For example, consider these two program snippets:
+ * For example, consider these two program snippatients:
  * 
  * ```
  * 	path, err := exec.LookPath("prog")

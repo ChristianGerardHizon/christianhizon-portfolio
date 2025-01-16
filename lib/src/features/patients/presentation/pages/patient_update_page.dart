@@ -7,27 +7,27 @@ import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/form_builders/images_form_field.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
-import 'package:gym_system/src/features/pets/data/pet_repository.dart';
-import 'package:gym_system/src/features/pets/domain/pet.dart';
-import 'package:gym_system/src/features/pets/presentation/controllers/pet_update_controller.dart';
+import 'package:gym_system/src/features/patients/data/patient_repository.dart';
+import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patient_update_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PetUpdatePage extends HookConsumerWidget {
-  const PetUpdatePage(this.id, {super.key});
+class PatientUpdatePage extends HookConsumerWidget {
+  const PatientUpdatePage(this.id, {super.key});
 
   final String id;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(petUpdateControllerProvider(id));
+    final state = ref.watch(patientUpdateControllerProvider(id));
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
 
-    void onSubmit(Pet pet) async {
+    void onSubmit(Patient patient) async {
       isLoading.value = true;
       final result = await ref
-          .read(petRepositoryProvider)
-          .update(pet, formKey.currentState!.value)
+          .read(patientRepositoryProvider)
+          .update(patient, formKey.currentState!.value)
           .run();
       if (!context.mounted) return;
       isLoading.value = false;
@@ -35,7 +35,7 @@ class PetUpdatePage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: "Success");
-          PetPageRoute(id).go(context);
+          PatientPageRoute(id).go(context);
         },
       );
     }
@@ -43,30 +43,30 @@ class PetUpdatePage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
-          onPressed: () => PetPageRoute(id).go(context),
+          onPressed: () => PatientPageRoute(id).go(context),
         ),
-        title: Text('Pet Update Page'),
+        title: Text('Patient Update Page'),
       ),
       body: state.when(
         data: (updateState) {
-          final pet = updateState.pet;
+          final patient = updateState.patient;
           final settings = updateState.settings;
           return FormBuilder(
             key: formKey,
-            initialValue: pet.toMap(),
+            initialValue: patient.toMap(),
             child: Column(
               children: [
                 ///
                 /// name
                 ///
-                FormBuilderTextField(name: PetField.name),
+                FormBuilderTextField(name: PatientField.name),
 
                 SizedBox(height: 10),
 
                 ImagesFormField(
                   domain:
-                      '${settings.domain}/api/files/${PocketBaseCollections.pets}/$id',
-                  name: PetField.images,
+                      '${settings.domain}/api/files/${PocketBaseCollections.patients}/$id',
+                  name: PatientField.images,
                 ),
 
                 SizedBox(height: 10),
@@ -77,7 +77,7 @@ class PetUpdatePage extends HookConsumerWidget {
                 LoadingFilledButton(
                   isLoading: isLoading.value,
                   child: Text('Save'),
-                  onPressed: () => onSubmit(pet),
+                  onPressed: () => onSubmit(patient),
                 ),
               ],
             ),

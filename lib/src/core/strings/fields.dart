@@ -10,7 +10,7 @@ class AdminField {
   static const String contactNumber = 'contactNumber';
 }
 
-class PetField {
+class PatientField {
   static const String name = 'name';
   static const String address = 'address';
   static const String owner = 'owner';

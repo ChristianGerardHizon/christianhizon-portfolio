@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'pet_repository.dart';
+part of 'patients_page_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$petRepositoryHash() => r'c5d86181e070298f2feade857a6bcc3baed227b0';
+String _$patientsPageControllerHash() =>
+    r'7d7acbf79ed79f8337f52dbb516cc9f2612461f6';
 
-/// See also [petRepository].
-@ProviderFor(petRepository)
-final petRepositoryProvider = Provider<PetRepository>.internal(
-  petRepository,
-  name: r'petRepositoryProvider',
+/// See also [PatientsPageController].
+@ProviderFor(PatientsPageController)
+final patientsPageControllerProvider = AutoDisposeNotifierProvider<
+    PatientsPageController, PatientsPageState>.internal(
+  PatientsPageController.new,
+  name: r'patientsPageControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$petRepositoryHash,
+      : _$patientsPageControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef PetRepositoryRef = ProviderRef<PetRepository>;
+typedef _$PatientsPageController = AutoDisposeNotifier<PatientsPageState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

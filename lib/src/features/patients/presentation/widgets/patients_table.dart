@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/strings/strings.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/features/pets/domain/pet.dart';
+import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:material_table_view/material_table_view.dart';
 import 'package:material_table_view/sliver_table_view.dart';
 
-class PetsTable extends HookWidget {
-  final List<Pet> list;
+class PatientsTable extends HookWidget {
+  final List<Patient> list;
   final List<int> selected;
   final Function(List<int>)? onSelected;
   final Function(int)? onRowTap;
-  const PetsTable({
+  const PatientsTable({
     super.key,
     required this.list,
     required this.selected,
@@ -21,7 +21,7 @@ class PetsTable extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool? mainCheckboxStatus(List<Pet> list, List<int> selected) {
+    bool? mainCheckboxStatus(List<Patient> list, List<int> selected) {
       if (selected.isEmpty) {
         return false;
       }
@@ -113,7 +113,7 @@ class PetsTable extends HookWidget {
         //   return null; // to use a placeholder
         // }
 
-        final pet = list[row];
+        final patient = list[row];
 
         return InkWell(
           onTap: () {
@@ -136,7 +136,7 @@ class PetsTable extends HookWidget {
                         CircleAvatar(),
                         SizedBox(width: 8),
                         Text(
-                          pet.name,
+                          patient.name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -147,7 +147,7 @@ class PetsTable extends HookWidget {
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      pet.address ?? AppStrings.placeholderText,
+                      patient.address ?? AppStrings.placeholderText,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -156,7 +156,7 @@ class PetsTable extends HookWidget {
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      pet.contactNumber ?? AppStrings.placeholderText,
+                      patient.contactNumber ?? AppStrings.placeholderText,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -165,7 +165,7 @@ class PetsTable extends HookWidget {
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      pet.email ?? AppStrings.placeholderText,
+                      patient.email ?? AppStrings.placeholderText,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -174,7 +174,7 @@ class PetsTable extends HookWidget {
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      pet.species ?? AppStrings.placeholderText,
+                      patient.species ?? AppStrings.placeholderText,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

@@ -9,12 +9,16 @@ import 'package:gym_system/src/features/authentication/presentation/pages/accoun
 import 'package:gym_system/src/features/authentication/presentation/pages/admin_login_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/staff_login_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:gym_system/src/features/pets/presentation/pages/pet_create_page.dart';
-import 'package:gym_system/src/features/pets/presentation/pages/pet_page.dart';
-import 'package:gym_system/src/features/pets/presentation/pages/pet_update_page.dart';
-import 'package:gym_system/src/features/pets/presentation/pages/pets_page.dart';
+import 'package:gym_system/src/features/patients/presentation/pages/patient_create_page.dart';
+import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
+import 'package:gym_system/src/features/patients/presentation/pages/patient_update_page.dart';
+import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/settings_page.dart';
+import 'package:gym_system/src/features/staff/presentation/pages/staff_create_page.dart';
+import 'package:gym_system/src/features/staff/presentation/pages/staff_page.dart';
+import 'package:gym_system/src/features/staff/presentation/pages/staff_update_page.dart';
+import 'package:gym_system/src/features/staff/presentation/pages/staffs_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_update_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/users_page.dart';
@@ -24,8 +28,9 @@ part 'routes/admins.routes.dart';
 part 'routes/authentication.routes.dart';
 part 'routes/users.routes.dart';
 part 'routes/settings.routes.dart';
-part 'routes/pets.routes.dart';
+part 'routes/patients.routes.dart';
 part 'routes/dashboard.routes.dart';
+part 'routes/staff.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
@@ -83,14 +88,14 @@ class SplashPageRoute extends GoRouteData {
     ),
 
     ///
-    /// pets
+    /// patients
     ///
-    TypedStatefulShellBranch<PetsBranchData>(
+    TypedStatefulShellBranch<PatientsBranchData>(
       routes: <TypeRouteData>[
-        TypedGoRoute<PetsPageRoute>(path: PetsPageRoute.path),
-        TypedGoRoute<PetPageRoute>(path: PetPageRoute.path),
-        TypedGoRoute<PetUpdatePageRoute>(path: PetUpdatePageRoute.path),
-        TypedGoRoute<PetCreatePageRoute>(path: PetCreatePageRoute.path),
+        TypedGoRoute<PatientsPageRoute>(path: PatientsPageRoute.path),
+        TypedGoRoute<PatientPageRoute>(path: PatientPageRoute.path),
+        TypedGoRoute<PatientUpdatePageRoute>(path: PatientUpdatePageRoute.path),
+        TypedGoRoute<PatientCreatePageRoute>(path: PatientCreatePageRoute.path),
       ],
     ),
 

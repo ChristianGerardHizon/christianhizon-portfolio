@@ -3,32 +3,32 @@ import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
-import 'package:gym_system/src/features/pets/data/pet_repository.dart';
-import 'package:gym_system/src/features/pets/presentation/controllers/pet_controller.dart';
-import 'package:gym_system/src/features/pets/presentation/controllers/pets_controller.dart';
+import 'package:gym_system/src/features/patients/data/patient_repository.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PetPage extends HookConsumerWidget {
-  const PetPage(this.id, {super.key});
+class PatientPage extends HookConsumerWidget {
+  const PatientPage(this.id, {super.key});
 
   final String id;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = petControllerProvider(id);
+    final provider = patientControllerProvider(id);
     final state = ref.watch(provider);
 
     onDelete() async {
       final confirm = await ConfirmModal.show(context);
       if (confirm != true) return;
-      final repo = ref.read(petRepositoryProvider);
+      final repo = ref.read(patientRepositoryProvider);
       repo.delete(id).run().then((result) {
         result.fold(
           (l) => AppSnackBar.rootFailure(l),
           (r) {
-            ref.invalidate(petsControllerProvider);
+            ref.invalidate(patientsControllerProvider);
             AppSnackBar.root(message: 'Successfully Deleted');
-            PetsPageRoute().go(context);
+            PatientsPageRoute().go(context);
           },
         );
       });
@@ -37,13 +37,13 @@ class PetPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
-          onPressed: () => PetsPageRoute().go(context),
+          onPressed: () => PatientsPageRoute().go(context),
         ),
         title: Text('d'),
         actions: [
           IconButton(
             icon: const Icon(Icons.update),
-            onPressed: () => PetUpdatePageRoute(id).go(context),
+            onPressed: () => PatientUpdatePageRoute(id).go(context),
           ),
           IconButton(
             icon: const Icon(Icons.delete),
@@ -61,7 +61,7 @@ class PetPage extends HookConsumerWidget {
         skipLoadingOnReload: false,
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text(error.toString())),
-        data: (pet) {
+        data: (patient) {
           return CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
@@ -76,8 +76,9 @@ class PetPage extends HookConsumerWidget {
                   child: Row(
                     children: [
                       InkWell(
-                        onTap: () => PhotoViewer.show(context, 'https://s3.amazonaws.com/files.prod.dpreview.com/sample_galleries/1330372094/1693761761.jpg?X-Amz-Expires=3600&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUIXIAMA3N436PSEA/20250113/us-east-1/s3/aws4_request&X-Amz-Date=20250113T134714Z&X-Amz-SignedHeaders=host&X-Amz-Signature=f36e23ba70efe10d60f06b5fba8fc4c8a01918b499e73ac2aac60510214a5763'),
-                        child: CircleAvatar(radius: 60)),
+                          onTap: () => PhotoViewer.show(context,
+                              'https://s3.amazonaws.com/files.prod.dpreview.com/sample_galleries/1330372094/1693761761.jpg?X-Amz-Expires=3600&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUIXIAMA3N436PSEA/20250113/us-east-1/s3/aws4_request&X-Amz-Date=20250113T134714Z&X-Amz-SignedHeaders=host&X-Amz-Signature=f36e23ba70efe10d60f06b5fba8fc4c8a01918b499e73ac2aac60510214a5763'),
+                          child: CircleAvatar(radius: 60)),
                       Spacer(),
                       FilledButton.icon(
                           onPressed: () {},
@@ -103,46 +104,47 @@ class PetPage extends HookConsumerWidget {
                   /// name
                   ///
                   ListTile(
-                    title: Text(pet.name),
+                    title: Text(patient.name),
                   ),
 
                   ListTile(
-                    title: Text(pet.breed ?? '-'),
+                    title: Text(patient.breed ?? '-'),
                   ),
 
                   ///
                   /// owner
                   ///
                   ListTile(
-                    title: Text(pet.owner ?? '-'),
+                    title: Text(patient.owner ?? '-'),
                   ),
 
                   ///
                   /// address
                   ///
                   ListTile(
-                    title: Text(pet.address ?? '-'),
+                    title: Text(patient.address ?? '-'),
                   ),
 
                   ///
                   /// date of birth
                   ///
                   ListTile(
-                    title: Text(pet.dateOfBirth?.toLocal().toString() ?? '-'),
+                    title:
+                        Text(patient.dateOfBirth?.toLocal().toString() ?? '-'),
                   ),
 
                   ///
                   /// created
                   ///
                   ListTile(
-                    title: Text(pet.created?.toLocal().toString() ?? '-'),
+                    title: Text(patient.created?.toLocal().toString() ?? '-'),
                   ),
 
                   ///
                   /// updated
                   ///
                   ListTile(
-                    title: Text(pet.created?.toLocal().toString() ?? '-'),
+                    title: Text(patient.created?.toLocal().toString() ?? '-'),
                   ),
                 ]),
               ),
@@ -163,10 +165,10 @@ class PetPage extends HookConsumerWidget {
               //           height: 100,
               //           child: ListView.builder(
               //             scrollDirection: Axis.horizontal,
-              //             itemCount: pet.images.length,
+              //             itemCount: patient.images.length,
               //             itemBuilder: (context, index) {
               //               final imageUrl =
-              //                   '${settings.domain}/api/files/${PocketBaseCollections.pets}/$id/${pet.images[index]}';
+              //                   '${settings.domain}/api/files/${PocketBaseCollections.patients}/$id/${patient.images[index]}';
               //               return Stack(
               //                 children: [
               //                   ///

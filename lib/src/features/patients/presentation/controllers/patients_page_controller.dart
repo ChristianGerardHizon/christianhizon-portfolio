@@ -1,21 +1,21 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'pets_page_controller.g.dart';
+part 'patients_page_controller.g.dart';
 
-class PetsPageState {
+class PatientsPageState {
   final int page;
   final int pageSize;
 
-  PetsPageState({
+  PatientsPageState({
     required this.page,
     required this.pageSize,
   });
 
-  PetsPageState copyWith({
+  PatientsPageState copyWith({
     int? page,
     int? pageSize,
   }) {
-    return PetsPageState(
+    return PatientsPageState(
       page: page ?? this.page,
       pageSize: pageSize ?? this.pageSize,
     );
@@ -23,10 +23,10 @@ class PetsPageState {
 }
 
 @riverpod
-class PetsPageController extends _$PetsPageController {
+class PatientsPageController extends _$PatientsPageController {
   @override
-  PetsPageState build() {
-    return PetsPageState(page: 1, pageSize: 50);
+  PatientsPageState build() {
+    return PatientsPageState(page: 1, pageSize: 50);
   }
 
   changePage(int page) {

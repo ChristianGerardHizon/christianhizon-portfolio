@@ -21,11 +21,15 @@ List<RouteBase> get $appRoutes => [
       $userUpdatePageRoute,
       $settingsPageRoute,
       $domainPageRoute,
-      $petsPageRoute,
-      $petPageRoute,
-      $petCreatePageRoute,
-      $petUpdatePageRoute,
+      $patientsPageRoute,
+      $patientPageRoute,
+      $patientCreatePageRoute,
+      $patientUpdatePageRoute,
       $dashboardPageRoute,
+      $staffsPageRoute,
+      $staffPageRoute,
+      $staffCreatePageRoute,
+      $staffUpdatePageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -89,20 +93,20 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
-              path: '/pets',
-              factory: $PetsPageRouteExtension._fromState,
+              path: '/patients',
+              factory: $PatientsPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/pet/:id',
-              factory: $PetPageRouteExtension._fromState,
+              path: '/patient/:id',
+              factory: $PatientPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/updatePet/:id',
-              factory: $PetUpdatePageRouteExtension._fromState,
+              path: '/updatePatient/:id',
+              factory: $PatientUpdatePageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/newPet',
-              factory: $PetCreatePageRouteExtension._fromState,
+              path: '/newPatient',
+              factory: $PatientCreatePageRouteExtension._fromState,
             ),
           ],
         ),
@@ -155,11 +159,12 @@ extension $DashboardPageRouteExtension on DashboardPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $PetsPageRouteExtension on PetsPageRoute {
-  static PetsPageRoute _fromState(GoRouterState state) => const PetsPageRoute();
+extension $PatientsPageRouteExtension on PatientsPageRoute {
+  static PatientsPageRoute _fromState(GoRouterState state) =>
+      const PatientsPageRoute();
 
   String get location => GoRouteData.$location(
-        '/pets',
+        '/patients',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -172,13 +177,13 @@ extension $PetsPageRouteExtension on PetsPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $PetPageRouteExtension on PetPageRoute {
-  static PetPageRoute _fromState(GoRouterState state) => PetPageRoute(
+extension $PatientPageRouteExtension on PatientPageRoute {
+  static PatientPageRoute _fromState(GoRouterState state) => PatientPageRoute(
         state.pathParameters['id']!,
       );
 
   String get location => GoRouteData.$location(
-        '/pet/${Uri.encodeComponent(id)}',
+        '/patient/${Uri.encodeComponent(id)}',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -191,14 +196,14 @@ extension $PetPageRouteExtension on PetPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $PetUpdatePageRouteExtension on PetUpdatePageRoute {
-  static PetUpdatePageRoute _fromState(GoRouterState state) =>
-      PetUpdatePageRoute(
+extension $PatientUpdatePageRouteExtension on PatientUpdatePageRoute {
+  static PatientUpdatePageRoute _fromState(GoRouterState state) =>
+      PatientUpdatePageRoute(
         state.pathParameters['id']!,
       );
 
   String get location => GoRouteData.$location(
-        '/updatePet/${Uri.encodeComponent(id)}',
+        '/updatePatient/${Uri.encodeComponent(id)}',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -211,12 +216,12 @@ extension $PetUpdatePageRouteExtension on PetUpdatePageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $PetCreatePageRouteExtension on PetCreatePageRoute {
-  static PetCreatePageRoute _fromState(GoRouterState state) =>
-      const PetCreatePageRoute();
+extension $PatientCreatePageRouteExtension on PatientCreatePageRoute {
+  static PatientCreatePageRoute _fromState(GoRouterState state) =>
+      const PatientCreatePageRoute();
 
   String get location => GoRouteData.$location(
-        '/newPet',
+        '/newPatient',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -484,27 +489,122 @@ extension $DomainPageRouteExtension on DomainPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-RouteBase get $petsPageRoute => GoRouteData.$route(
-      path: '/pets',
-      factory: $PetsPageRouteExtension._fromState,
+RouteBase get $patientsPageRoute => GoRouteData.$route(
+      path: '/patients',
+      factory: $PatientsPageRouteExtension._fromState,
     );
 
-RouteBase get $petPageRoute => GoRouteData.$route(
-      path: '/pet/:id',
-      factory: $PetPageRouteExtension._fromState,
+RouteBase get $patientPageRoute => GoRouteData.$route(
+      path: '/patient/:id',
+      factory: $PatientPageRouteExtension._fromState,
     );
 
-RouteBase get $petCreatePageRoute => GoRouteData.$route(
-      path: '/newPet',
-      factory: $PetCreatePageRouteExtension._fromState,
+RouteBase get $patientCreatePageRoute => GoRouteData.$route(
+      path: '/newPatient',
+      factory: $PatientCreatePageRouteExtension._fromState,
     );
 
-RouteBase get $petUpdatePageRoute => GoRouteData.$route(
-      path: '/updatePet/:id',
-      factory: $PetUpdatePageRouteExtension._fromState,
+RouteBase get $patientUpdatePageRoute => GoRouteData.$route(
+      path: '/updatePatient/:id',
+      factory: $PatientUpdatePageRouteExtension._fromState,
     );
 
 RouteBase get $dashboardPageRoute => GoRouteData.$route(
       path: '/',
       factory: $DashboardPageRouteExtension._fromState,
     );
+
+RouteBase get $staffsPageRoute => GoRouteData.$route(
+      path: '/patients',
+      factory: $StaffsPageRouteExtension._fromState,
+    );
+
+extension $StaffsPageRouteExtension on StaffsPageRoute {
+  static StaffsPageRoute _fromState(GoRouterState state) =>
+      const StaffsPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/patients',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $staffPageRoute => GoRouteData.$route(
+      path: '/patient/:id',
+      factory: $StaffPageRouteExtension._fromState,
+    );
+
+extension $StaffPageRouteExtension on StaffPageRoute {
+  static StaffPageRoute _fromState(GoRouterState state) => StaffPageRoute(
+        state.pathParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/patient/${Uri.encodeComponent(id)}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $staffCreatePageRoute => GoRouteData.$route(
+      path: '/newStaff',
+      factory: $StaffCreatePageRouteExtension._fromState,
+    );
+
+extension $StaffCreatePageRouteExtension on StaffCreatePageRoute {
+  static StaffCreatePageRoute _fromState(GoRouterState state) =>
+      const StaffCreatePageRoute();
+
+  String get location => GoRouteData.$location(
+        '/newStaff',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $staffUpdatePageRoute => GoRouteData.$route(
+      path: '/updateStaff/:id',
+      factory: $StaffUpdatePageRouteExtension._fromState,
+    );
+
+extension $StaffUpdatePageRouteExtension on StaffUpdatePageRoute {
+  static StaffUpdatePageRoute _fromState(GoRouterState state) =>
+      StaffUpdatePageRoute(
+        state.pathParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/updateStaff/${Uri.encodeComponent(id)}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}

@@ -1,9 +1,9 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
-part 'pet.mapper.dart';
+part 'patient.mapper.dart';
 
 @MappableClass()
-class Pet with PetMappable {
+class Patient with PatientMappable {
   final String id;
 
   final String name;
@@ -24,7 +24,7 @@ class Pet with PetMappable {
   final DateTime? created;
   final DateTime? updated;
 
-  Pet({
+  Patient({
     required this.id,
     this.name = '',
     this.images = const [],
@@ -42,10 +42,10 @@ class Pet with PetMappable {
     this.updated,
   });
 
-  static const fromMap = PetMapper.fromMap;
-  static const fromJson = PetMapper.fromMap;
-  
-  static Pet customFromMap(Map<String, dynamic> raw) {
+  static const fromMap = PatientMapper.fromMap;
+  static const fromJson = PatientMapper.fromMap;
+
+  static Patient customFromMap(Map<String, dynamic> raw) {
     // if dateOfBirth is '' empty string, it will be null
     final dateOfBirth = raw['dateOfBirth'];
     final updatedDateOfBirth = dateOfBirth == '' ? null : dateOfBirth;

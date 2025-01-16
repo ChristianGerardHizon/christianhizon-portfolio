@@ -6,11 +6,11 @@ import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
-import 'package:gym_system/src/features/pets/data/pet_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PetCreatePage extends HookConsumerWidget {
-  const PetCreatePage({super.key});
+class PatientCreatePage extends HookConsumerWidget {
+  const PatientCreatePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,16 +33,16 @@ class PetCreatePage extends HookConsumerWidget {
       ///
       /// separate the List<xFiles> and convert it to List<MultipartFile>
       ///
-      final files = form.value[PetField.images];
+      final files = form.value[PatientField.images];
 
       final result =
-          await ref.read(petRepositoryProvider).create(form.value).run();
+          await ref.read(patientRepositoryProvider).create(form.value).run();
       isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          PetsPageRoute().go(context);
+          PatientsPageRoute().go(context);
         },
       );
     }
@@ -50,16 +50,16 @@ class PetCreatePage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         leading: CloseButton(
-          onPressed: () => PetsPageRoute().go(context),
+          onPressed: () => PatientsPageRoute().go(context),
         ),
-        title: Text('Pet Create Page'),
+        title: Text('Patient Create Page'),
       ),
       body: FormBuilder(
         key: formKey,
         child: CustomScrollView(
           slivers: [
             ///
-            /// Pet Details
+            /// Patient Details
             ///
             SliverPadding(
               padding: EdgeInsets.only(left: 10, right: 10),
@@ -70,7 +70,7 @@ class PetCreatePage extends HookConsumerWidget {
                   ListTile(
                     contentPadding: EdgeInsets.all(0),
                     title: Text(
-                      'Pet Info',
+                      'Patient Info',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
@@ -81,11 +81,11 @@ class PetCreatePage extends HookConsumerWidget {
                   /// name
                   ///
                   FormBuilderTextField(
-                    name: PetField.name,
+                    name: PatientField.name,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(
                           bottom: 10, right: 8, left: 8, top: 30),
-                      labelText: 'Pet Name',
+                      labelText: 'Patient Name',
                       filled: true,
                       fillColor:
                           Theme.of(context).colorScheme.surfaceContainerLow,
@@ -101,7 +101,7 @@ class PetCreatePage extends HookConsumerWidget {
                   /// Species
                   ///
                   FormBuilderTextField(
-                    name: PetField.species,
+                    name: PatientField.species,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(
                           bottom: 10, right: 8, left: 8, top: 30),
@@ -127,7 +127,7 @@ class PetCreatePage extends HookConsumerWidget {
                         title: Text('test'),
                       );
                     },
-                    name: PetField.breed,
+                    name: PatientField.breed,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(
                           bottom: 10, right: 8, left: 8, top: 30),
@@ -147,7 +147,7 @@ class PetCreatePage extends HookConsumerWidget {
                   /// Color
                   ///
                   FormBuilderTextField(
-                    name: PetField.color,
+                    name: PatientField.color,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(
                           bottom: 10, right: 8, left: 8, top: 30),
@@ -167,7 +167,7 @@ class PetCreatePage extends HookConsumerWidget {
                   /// Sex
                   ///
                   FormBuilderDropdown<String>(
-                    name: PetField.sex,
+                    name: PatientField.sex,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(
                           bottom: 10, right: 8, left: 8, top: 30),
@@ -195,7 +195,7 @@ class PetCreatePage extends HookConsumerWidget {
                   FormBuilderDateTimePicker(
                     initialEntryMode: DatePickerEntryMode.inputOnly,
                     inputType: InputType.date,
-                    name: PetField.dateOfBirth,
+                    name: PatientField.dateOfBirth,
                     decoration: InputDecoration(
                       suffixIcon: Icon(Icons.calendar_month),
                       contentPadding: EdgeInsets.only(
@@ -240,7 +240,7 @@ class PetCreatePage extends HookConsumerWidget {
                   /// Owner
                   ///
                   FormBuilderTextField(
-                    name: PetField.owner,
+                    name: PatientField.owner,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(
                           bottom: 10, right: 8, left: 8, top: 30),
@@ -260,7 +260,7 @@ class PetCreatePage extends HookConsumerWidget {
                   /// address
                   ///
                   FormBuilderTextField(
-                    name: PetField.address,
+                    name: PatientField.address,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(
                           bottom: 10, right: 8, left: 8, top: 30),
@@ -280,7 +280,7 @@ class PetCreatePage extends HookConsumerWidget {
                   /// ContactNumber
                   ///
                   FormBuilderTextField(
-                    name: PetField.contactNumber,
+                    name: PatientField.contactNumber,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(
                           bottom: 10, right: 8, left: 8, top: 30),
@@ -300,7 +300,7 @@ class PetCreatePage extends HookConsumerWidget {
                   /// Email
                   ///
                   FormBuilderTextField(
-                    name: PetField.email,
+                    name: PatientField.email,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(
                           bottom: 10, right: 8, left: 8, top: 30),
