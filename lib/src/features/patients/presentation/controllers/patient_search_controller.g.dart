@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'patients_controller.dart';
+part of 'patient_search_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$patientsControllerHash() =>
-    r'533260f68c9c5a61dae53c996927902c59d33de4';
+String _$patientSearchControllerHash() =>
+    r'f78b0e97eb141c9f4aa20e5c241924d309b013d8';
 
-/// See also [PatientsController].
-@ProviderFor(PatientsController)
-final patientsControllerProvider = AutoDisposeAsyncNotifierProvider<
-    PatientsController, PageResults<Patient>>.internal(
-  PatientsController.new,
-  name: r'patientsControllerProvider',
+/// See also [PatientSearchController].
+@ProviderFor(PatientSearchController)
+final patientSearchControllerProvider =
+    AutoDisposeNotifierProvider<PatientSearchController, String?>.internal(
+  PatientSearchController.new,
+  name: r'patientSearchControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$patientsControllerHash,
+      : _$patientSearchControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$PatientsController = AutoDisposeAsyncNotifier<PageResults<Patient>>;
+typedef _$PatientSearchController = AutoDisposeNotifier<String?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

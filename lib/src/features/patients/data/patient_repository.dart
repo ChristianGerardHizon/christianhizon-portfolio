@@ -14,11 +14,12 @@ part 'patient_repository.g.dart';
 abstract class PatientRepository {
   TaskResult<Patient> get(String id);
   TaskResult<PageResults<Patient>> list({
-    String? query,
+    String? filter,
     required int pageNo,
     required int pageSize,
   });
   TaskResult<void> delete(String id);
+  TaskResult<void> softDeleteMulti(List<String> ids);
   TaskResult<Patient> update(
     Patient patient,
     Map<String, dynamic> update, {
@@ -67,12 +68,13 @@ class PatientRepositoryImpl extends PatientRepository {
 
   @override
   TaskResult<PageResults<Patient>> list({
-    String? query,
+    String? filter,
     required int pageNo,
     required int pageSize,
   }) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getList(
+        filter: filter,
         page: pageNo,
         perPage: pageSize,
       );
@@ -103,6 +105,19 @@ class PatientRepositoryImpl extends PatientRepository {
         body: combinedMap,
       );
       return Patient.customFromMap(result.toJson());
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<void> softDeleteMulti(List<String> ids) {
+    return TaskResult.tryCatch(() async {
+      final batch = pb.createBatch();
+      final batchCollection = batch.collection(PocketBaseCollections.patients);
+      for (final id in ids) {
+        batchCollection.update(id, body: {'isDeleted': true});
+      }
+
+      await batch.send();
     }, Failure.tryCatchData);
   }
 }

@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/page_actions.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
+import 'package:gym_system/src/core/widgets/text_search_bar.dart';
+import 'package:gym_system/src/features/patients/data/patient_repository.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patient_search_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_page_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patients_table.dart';
@@ -14,12 +19,16 @@ class PatientsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pageState = ref.watch(patientsPageControllerProvider);
+    final searchNotif = ref.read(patientSearchControllerProvider.notifier);
     final state = ref.watch(patientsControllerProvider);
     final selected = useState<List<int>>([]);
     final searchCtrl = useTextEditingController();
 
     final hasNext = useState(false);
 
+    ///
+    /// on start
+    ///
     useEffect(() {
       ref.listen(patientsControllerProvider, (prev, next) {
         final value = next.value;
@@ -30,6 +39,27 @@ class PatientsPage extends HookConsumerWidget {
 
       return null;
     }, [pageState]);
+
+    ///
+    /// on Delete
+    ///
+    onDelete() async {
+      final confirm = await ConfirmModal.show(context);
+      if (confirm != true) return;
+      final repo = ref.read(patientRepositoryProvider);
+      final ids = selected.value.map((e) => state.value!.items[e].id).toList();
+      repo.softDeleteMulti(ids).run().then((result) {
+        result.fold(
+          (l) => AppSnackBar.rootFailure(l),
+          (r) {
+            selected.value = [];
+            ref.invalidate(patientsControllerProvider);
+            AppSnackBar.root(message: 'Successfully Deleted');
+            PatientsPageRoute().go(context);
+          },
+        );
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -49,42 +79,19 @@ class PatientsPage extends HookConsumerWidget {
         children: [
           CustomScrollView(
             slivers: [
+              ///
+              /// Serch Bar
+              ///
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.all(8),
-                  child: TextField(
-                    onSubmitted: (x) {
-                      searchCtrl.clear();
-                    },
-                    controller: searchCtrl,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.search),
-                      suffixIcon: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          FilledButton(
-                            child: Text('Search'),
-                            onPressed: () {},
-                          ),
-                          SizedBox(width: 14),
-                          TextButton(
-                            child: Text('Clear'),
-                            onPressed: () {
-                              searchCtrl.clear();
-                            },
-                          ),
-                          SizedBox(width: 8),
-                        ],
-                      ),
-                      hintText: 'Search term here',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                      fillColor: Theme.of(context).primaryColor.withOpacity(.1),
-                      filled: true,
-                    ),
-                  ),
+                child: TextSearchBar(
+                  controller: searchCtrl,
+                  onClear: () {
+                    searchCtrl.clear();
+                    searchNotif.change(searchCtrl.text);
+                  },
+                  onSearch: () {
+                    searchNotif.change(searchCtrl.text);
+                  },
                 ),
               ),
 
@@ -155,8 +162,12 @@ class PatientsPage extends HookConsumerWidget {
               child: selected.value.isNotEmpty
                   ? PageActions(
                       size: selected.value.length,
-                      onDelete: () {},
-                      onReset: () {},
+                      onDelete: () {
+                        onDelete();
+                      },
+                      onReset: () {
+                        selected.value = [];
+                      },
                     )
                   : SizedBox(),
             ),
