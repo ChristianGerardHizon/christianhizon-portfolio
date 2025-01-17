@@ -47,9 +47,7 @@ class PatientPage extends HookConsumerWidget {
     /// onImageDiscard
     ///
     onImageDiscard() {
-            final repo = ref.read(patientRepositoryProvider);
-
-  repo/
+      final repo = ref.read(patientRepositoryProvider);
     }
 
     return Scaffold(
