@@ -7,6 +7,7 @@ import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class PatientPage extends HookConsumerWidget {
   const PatientPage(this.id, {super.key});
@@ -18,6 +19,9 @@ class PatientPage extends HookConsumerWidget {
     final provider = patientControllerProvider(id);
     final state = ref.watch(provider);
 
+    ///
+    /// onDelete
+    ///
     onDelete() async {
       final confirm = await ConfirmModal.show(context);
       if (confirm != true) return;
@@ -34,27 +38,21 @@ class PatientPage extends HookConsumerWidget {
       });
     }
 
+    ///
+    /// onUpload
+    ///
+    onUpload() {}
+
+    ///
+    /// onImageDiscard
+    ///
+    onImageDiscard() {
+            final repo = ref.read(patientRepositoryProvider);
+
+  repo/
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(
-          onPressed: () => PatientsPageRoute().go(context),
-        ),
-        title: Text('d'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.update),
-            onPressed: () => PatientUpdatePageRoute(id).go(context),
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () => onDelete(),
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => ref.invalidate(provider),
-          )
-        ],
-      ),
       body: state.when(
         skipError: false,
         skipLoadingOnRefresh: false,
@@ -64,6 +62,28 @@ class PatientPage extends HookConsumerWidget {
         data: (patient) {
           return CustomScrollView(
             slivers: [
+              /// AppBar
+              SliverAppBar(
+                leading: BackButton(
+                  onPressed: () => PatientsPageRoute().go(context),
+                ),
+                title: Text(patient.name),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.update),
+                    onPressed: () => PatientUpdatePageRoute(id).go(context),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () => onDelete(),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () => ref.invalidate(provider),
+                  )
+                ],
+              ),
+
               SliverToBoxAdapter(
                 child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -73,28 +93,62 @@ class PatientPage extends HookConsumerWidget {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18),
-                  child: Row(
-                    children: [
-                      InkWell(
-                          onTap: () => PhotoViewer.show(context,
-                              'https://s3.amazonaws.com/files.prod.dpreview.com/sample_galleries/1330372094/1693761761.jpg?X-Amz-Expires=3600&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUIXIAMA3N436PSEA/20250113/us-east-1/s3/aws4_request&X-Amz-Date=20250113T134714Z&X-Amz-SignedHeaders=host&X-Amz-Signature=f36e23ba70efe10d60f06b5fba8fc4c8a01918b499e73ac2aac60510214a5763'),
-                          child: CircleAvatar(radius: 60)),
-                      Spacer(),
-                      FilledButton.icon(
+                  child: ResponsiveBuilder(builder: (context, si) {
+                    if (si.isMobile) {
+                      return Column(
+                        children: [
+                          InkWell(
+                              onTap: () => PhotoViewer.show(context,
+                                  'https://s3.amazonaws.com/files.prod.dpreview.com/sample_galleries/1330372094/1693761761.jpg?X-Amz-Expires=3600&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUIXIAMA3N436PSEA/20250113/us-east-1/s3/aws4_request&X-Amz-Date=20250113T134714Z&X-Amz-SignedHeaders=host&X-Amz-Signature=f36e23ba70efe10d60f06b5fba8fc4c8a01918b499e73ac2aac60510214a5763'),
+                              child: CircleAvatar(radius: 60)),
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              FilledButton.icon(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.upload),
+                                  label: Text('Upload')),
+                              SizedBox(width: 8),
+                              FilledButton.icon(
+                                onPressed: () {},
+                                style: FilledButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.error,
+                                ),
+                                icon: const Icon(Icons.delete_outline),
+                                label: Text('Delete'),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                        ],
+                      );
+                    }
+                    return Row(
+                      children: [
+                        InkWell(
+                            onTap: () => PhotoViewer.show(context,
+                                'https://s3.amazonaws.com/files.prod.dpreview.com/sample_galleries/1330372094/1693761761.jpg?X-Amz-Expires=3600&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUIXIAMA3N436PSEA/20250113/us-east-1/s3/aws4_request&X-Amz-Date=20250113T134714Z&X-Amz-SignedHeaders=host&X-Amz-Signature=f36e23ba70efe10d60f06b5fba8fc4c8a01918b499e73ac2aac60510214a5763'),
+                            child: CircleAvatar(radius: 60)),
+                        Spacer(),
+                        FilledButton.icon(
+                            onPressed: () {},
+                            icon: const Icon(Icons.upload),
+                            label: Text('Upload')),
+                        SizedBox(width: 8),
+                        FilledButton.icon(
                           onPressed: () {},
-                          icon: const Icon(Icons.upload),
-                          label: Text('Upload')),
-                      SizedBox(width: 8),
-                      FilledButton.icon(
-                        onPressed: () {},
-                        style: FilledButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.error,
+                          style: FilledButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error,
+                          ),
+                          icon: const Icon(Icons.delete_outline),
+                          label: Text('Delete'),
                         ),
-                        icon: const Icon(Icons.delete_outline),
-                        label: Text('Delete'),
-                      ),
-                    ],
-                  ),
+                      ],
+                    );
+                  }),
                 ),
               ),
               SliverPadding(
