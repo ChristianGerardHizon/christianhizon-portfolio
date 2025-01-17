@@ -17,6 +17,9 @@ class PatientCreatePage extends HookConsumerWidget {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
 
+    ///
+    /// Submit
+    ///
     void onSubmit() async {
       isLoading.value = true;
       final form = formKey.currentState;

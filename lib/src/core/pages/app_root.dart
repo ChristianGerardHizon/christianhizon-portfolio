@@ -48,7 +48,7 @@ class AppRoot extends HookConsumerWidget {
       ),
       1: CustomNavigationBarItem(
         route: PatientsPageRoute.path,
-        icon: Icon(MIcons.dogSide),
+        icon: Icon(MIcons.clipboardAccount),
         label: 'Patients',
         onTap: () {
           PatientsPageRoute().go(context);

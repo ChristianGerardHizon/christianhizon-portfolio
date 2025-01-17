@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/widgets/page_actions.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_page_controller.dart';
@@ -44,99 +45,122 @@ class PatientsPage extends HookConsumerWidget {
           )
         ],
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(8),
-              child: TextField(
-                onSubmitted: (x) {
-                  searchCtrl.clear();
-                },
-                controller: searchCtrl,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FilledButton(
-                        child: Text('Search'),
-                        onPressed: () {},
+      body: Stack(
+        children: [
+          CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: TextField(
+                    onSubmitted: (x) {
+                      searchCtrl.clear();
+                    },
+                    controller: searchCtrl,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          FilledButton(
+                            child: Text('Search'),
+                            onPressed: () {},
+                          ),
+                          SizedBox(width: 14),
+                          TextButton(
+                            child: Text('Clear'),
+                            onPressed: () {
+                              searchCtrl.clear();
+                            },
+                          ),
+                          SizedBox(width: 8),
+                        ],
                       ),
-                      SizedBox(width: 14),
-                      TextButton(
-                        child: Text('Clear'),
-                        onPressed: () {
-                          searchCtrl.clear();
-                        },
+                      hintText: 'Search term here',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
                       ),
-                      SizedBox(width: 8),
-                    ],
-                  ),
-                  hintText: 'Search term here',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Theme.of(context).primaryColor.withOpacity(.1),
-                  filled: true,
-                ),
-              ),
-            ),
-          ),
-
-          ///
-          /// list
-          ///
-          state.maybeWhen(
-            skipError: false,
-            skipLoadingOnRefresh: false,
-            skipLoadingOnReload: false,
-            orElse: () => SliverToBoxAdapter(),
-            data: (data) {
-              final list = data.items;
-
-              if (list.isEmpty) {
-                return SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 100,
-                    child: Center(
-                      child: Text('No patients found'),
+                      fillColor: Theme.of(context).primaryColor.withOpacity(.1),
+                      filled: true,
                     ),
                   ),
-                );
-              }
-              return PatientsTable(
-                list: list,
-                selected: selected.value,
-                onSelected: (p0) => selected.value = p0,
-                onRowTap: (row) => PatientPageRoute(list[row].id).go(context),
-              );
-            },
-          ),
+                ),
+              ),
 
-          ///
-          /// page
-          ///
-          SliverPadding(
-            padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 20,
-              bottom: 8,
-            ),
-            sliver: SliverToBoxAdapter(
-              child: PageSelector(
-                hasNext: hasNext.value,
-                page: pageState.page,
-                onPageChange: (value) {
-                  ref
-                      .read(patientsPageControllerProvider.notifier)
-                      .changePage(value);
+              ///
+              /// list
+              ///
+              state.maybeWhen(
+                skipError: false,
+                skipLoadingOnRefresh: false,
+                skipLoadingOnReload: false,
+                orElse: () => SliverToBoxAdapter(),
+                data: (data) {
+                  final list = data.items;
+
+                  if (list.isEmpty) {
+                    return SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 100,
+                        child: Center(
+                          child: Text('No patients found'),
+                        ),
+                      ),
+                    );
+                  }
+                  return PatientsTable(
+                    list: list,
+                    selected: selected.value,
+                    onSelected: (p0) => selected.value = p0,
+                    onRowTap: (row) =>
+                        PatientPageRoute(list[row].id).go(context),
+                  );
                 },
               ),
-            ),
+
+              ///
+              /// page
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 20,
+                  bottom: 8,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: PageSelector(
+                    hasNext: hasNext.value,
+                    page: pageState.page,
+                    onPageChange: (value) {
+                      /// clear selected after
+                      ///
+                      selected.value = [];
+                      ref
+                          .read(patientsPageControllerProvider.notifier)
+                          .changePage(value);
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
+          Positioned(
+            bottom: 30,
+            left: 20,
+            right: 20,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: selected.value.isNotEmpty
+                  ? PageActions(
+                      size: selected.value.length,
+                      onDelete: () {},
+                      onReset: () {},
+                    )
+                  : SizedBox(),
+            ),
+          )
         ],
       ),
     );
