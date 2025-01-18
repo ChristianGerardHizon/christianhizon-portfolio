@@ -61,10 +61,12 @@ class AppRoot extends HookConsumerWidget {
         onTap: () {},
       ),
       3: CustomNavigationBarItem(
-        route: YourUserPageRoute.path,
+        route: SalesPageRoute.path,
         icon: Icon(MIcons.chartLine),
         label: 'Sales',
-        onTap: () {},
+        onTap: () {
+          SalesPageRoute().go(context);
+        },
       ),
       4: CustomNavigationBarItem(
         route: SettingsPageRoute.path,
@@ -73,6 +75,12 @@ class AppRoot extends HookConsumerWidget {
         onTap: () {
           SettingsPageRoute().go(context);
         },
+      ),
+      5: CustomNavigationBarItem(
+        route: SettingsPageRoute.path,
+        icon: Icon(MIcons.menu),
+        label: 'More',
+        onTap: () {},
       ),
     };
 
@@ -153,39 +161,6 @@ class AppRoot extends HookConsumerWidget {
                       icon: e.icon,
                     );
                   }).toList(),
-                  footer: sideMenuCtrl.isCollapsed()
-                      ? Column(
-                          children: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(MIcons.accountCircleOutline),
-                            ),
-                            SizedBox(height: 5),
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(MIcons.logout),
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            TextButton.icon(
-                              onPressed: () {},
-                              icon: Icon(MIcons.accountCircleOutline),
-                              label: Text('Sample Name'),
-                            ),
-                            SizedBox(height: 5),
-                            TextButton.icon(
-                              onPressed: () {},
-                              icon: Icon(MIcons.logout),
-                              label: Text('Logout'),
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
                 ),
               ),
               Expanded(child: shell),

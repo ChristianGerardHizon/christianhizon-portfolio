@@ -30,6 +30,9 @@ List<RouteBase> get $appRoutes => [
       $staffPageRoute,
       $staffCreatePageRoute,
       $staffUpdatePageRoute,
+      $morePageRoute,
+      $salesPageRoute,
+      $productsPageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -597,6 +600,74 @@ extension $StaffUpdatePageRouteExtension on StaffUpdatePageRoute {
 
   String get location => GoRouteData.$location(
         '/updateStaff/${Uri.encodeComponent(id)}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $morePageRoute => GoRouteData.$route(
+      path: '/more',
+      factory: $MorePageRouteExtension._fromState,
+    );
+
+extension $MorePageRouteExtension on MorePageRoute {
+  static MorePageRoute _fromState(GoRouterState state) => const MorePageRoute();
+
+  String get location => GoRouteData.$location(
+        '/more',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $salesPageRoute => GoRouteData.$route(
+      path: '/sales',
+      factory: $SalesPageRouteExtension._fromState,
+    );
+
+extension $SalesPageRouteExtension on SalesPageRoute {
+  static SalesPageRoute _fromState(GoRouterState state) =>
+      const SalesPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/sales',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $productsPageRoute => GoRouteData.$route(
+      path: '/products',
+      factory: $ProductsPageRouteExtension._fromState,
+    );
+
+extension $ProductsPageRouteExtension on ProductsPageRoute {
+  static ProductsPageRoute _fromState(GoRouterState state) =>
+      const ProductsPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/products',
       );
 
   void go(BuildContext context) => context.go(location);
