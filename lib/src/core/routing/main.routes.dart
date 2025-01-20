@@ -106,20 +106,29 @@ class SplashPageRoute extends GoRouteData {
     ),
 
     ///
+    /// Products
+    ///
+    TypedStatefulShellBranch<ProductsBranchData>(
+      routes: <TypeRouteData>[
+        TypedGoRoute<ProductsPageRoute>(path: ProductsPageRoute.path),
+      ],
+    ),
+
+    ///
     /// Sales
     ///
-    TypedStatefulShellBranch<AdminsBranchData>(
+    TypedStatefulShellBranch<SalesBranchData>(
       routes: <TypeRouteData>[
-        TypedGoRoute<AdminsPageRoute>(path: AdminsPageRoute.path),
+        TypedGoRoute<SalesPageRoute>(path: SalesPageRoute.path),
       ],
     ),
 
     ///
     /// Staffs
     ///
-    TypedStatefulShellBranch<AdminsBranchData>(
+    TypedStatefulShellBranch<StaffBranchData>(
       routes: <TypeRouteData>[
-        TypedGoRoute<AdminsPageRoute>(path: AdminsPageRoute.path),
+        TypedGoRoute<StaffsPageRoute>(path: StaffsPageRoute.path),
       ],
     ),
 

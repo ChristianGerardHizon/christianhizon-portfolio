@@ -54,6 +54,7 @@ class PatientsTable extends HookWidget {
     return SliverTableView.builder(
       columns: [
         const TableColumn(width: 56.0, freezePriority: 100),
+        const TableColumn(width: 60),
         const TableColumn(width: 150),
         const TableColumn(width: 120),
         const TableColumn(width: 120),
@@ -74,27 +75,40 @@ class PatientsTable extends HookWidget {
                 );
               case 1:
                 return Align(
-                    alignment: Alignment.centerLeft,
-                    child: const Text('Name',
-                        style: TextStyle(fontWeight: FontWeight.w600)));
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    'Picture',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
               case 2:
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    'Name',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              case 3:
                 return Align(
                     alignment: Alignment.centerLeft,
                     child: const Text(
                       'Owner',
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ));
-              case 3:
+              case 4:
                 return Align(
                     alignment: Alignment.centerLeft,
                     child: const Text('Contact Number',
                         style: TextStyle(fontWeight: FontWeight.w600)));
-              case 4:
+              case 5:
                 return Align(
                     alignment: Alignment.centerLeft,
                     child: const Text('Email',
                         style: TextStyle(fontWeight: FontWeight.w600)));
-              case 5:
+              case 6:
                 return Align(
                     alignment: Alignment.centerLeft,
                     child: const Text('Species',
@@ -128,26 +142,15 @@ class PatientsTable extends HookWidget {
                       value: selected.contains(row),
                       onChanged: (value) => onCellSelect(row, value));
                 case 1:
-                  return Align(
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircleAvatar(),
-                        SizedBox(width: 8),
-                        Text(
-                          patient.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
+                  return Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Center(child: CircleAvatar()),
                   );
                 case 2:
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      patient.address ?? AppStrings.placeholderText,
+                      patient.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -156,7 +159,7 @@ class PatientsTable extends HookWidget {
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      patient.contactNumber ?? AppStrings.placeholderText,
+                      patient.address ?? AppStrings.placeholderText,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -165,12 +168,21 @@ class PatientsTable extends HookWidget {
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      patient.email ?? AppStrings.placeholderText,
+                      patient.contactNumber ?? AppStrings.placeholderText,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   );
                 case 5:
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      patient.email ?? AppStrings.placeholderText,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                case 6:
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(

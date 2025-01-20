@@ -31,7 +31,7 @@ class TextSearchBar extends HookWidget {
       padding: EdgeInsets.all(8),
       child: TextField(
         onSubmitted: (x) {
-          controller.clear();
+          onSearch?.call();
         },
         controller: controller,
         decoration: InputDecoration(

@@ -1,13 +1,13 @@
 part of '../main.routes.dart';
 
-class StaffsBranchData extends StatefulShellBranchData {
-  const StaffsBranchData();
+class StaffBranchData extends StatefulShellBranchData {
+  const StaffBranchData();
 }
 
 @TypedGoRoute<StaffsPageRoute>(path: StaffsPageRoute.path)
 class StaffsPageRoute extends GoRouteData {
   const StaffsPageRoute();
-  static const path = '/patients';
+  static const path = '/staff';
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
@@ -18,7 +18,7 @@ class StaffsPageRoute extends GoRouteData {
 @TypedGoRoute<StaffPageRoute>(path: StaffPageRoute.path)
 class StaffPageRoute extends GoRouteData {
   const StaffPageRoute(this.id);
-  static const path = '/patient/:id';
+  static const path = '/staff/:id';
 
   final String id;
 

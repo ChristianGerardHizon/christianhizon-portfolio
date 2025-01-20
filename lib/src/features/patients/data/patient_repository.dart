@@ -6,6 +6,7 @@ import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -23,7 +24,7 @@ abstract class PatientRepository {
   TaskResult<Patient> update(
     Patient patient,
     Map<String, dynamic> update, {
-    List<XFile> files = const [],
+    List<MultipartFile> files = const [],
   });
 
   TaskResult<Patient> create(Map<String, dynamic> payload);
@@ -95,7 +96,7 @@ class PatientRepositoryImpl extends PatientRepository {
   TaskResult<Patient> update(
     Patient patient,
     Map<String, dynamic> update, {
-    List<XFile> files = const [],
+    List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
       final patientMap = patient.toMap();
@@ -103,6 +104,7 @@ class PatientRepositoryImpl extends PatientRepository {
       final result = await collection.update(
         patient.id,
         body: combinedMap,
+        files: files,
       );
       return Patient.customFromMap(result.toJson());
     }, Failure.tryCatchData);

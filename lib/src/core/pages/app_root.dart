@@ -55,10 +55,12 @@ class AppRoot extends HookConsumerWidget {
         },
       ),
       2: CustomNavigationBarItem(
-        route: UserPageRoute.path,
+        route: ProductsPageRoute.path,
         icon: Icon(MIcons.shoppingOutline),
         label: 'Products',
-        onTap: () {},
+        onTap: () {
+          ProductsPageRoute().go(context);
+        },
       ),
       3: CustomNavigationBarItem(
         route: SalesPageRoute.path,
@@ -70,17 +72,19 @@ class AppRoot extends HookConsumerWidget {
       ),
       4: CustomNavigationBarItem(
         route: SettingsPageRoute.path,
-        icon: Icon(MIcons.accountOutline),
+        icon: Icon(MIcons.accountGroupOutline),
+        label: 'Staffs',
+        onTap: () {
+          StaffsPageRoute().go(context);
+        },
+      ),
+      5: CustomNavigationBarItem(
+        route: AccountPageRoute.path,
+        icon: Icon(MIcons.storeSettingsOutline),
         label: 'Account',
         onTap: () {
           SettingsPageRoute().go(context);
         },
-      ),
-      5: CustomNavigationBarItem(
-        route: SettingsPageRoute.path,
-        icon: Icon(MIcons.menu),
-        label: 'More',
-        onTap: () {},
       ),
     };
 
@@ -161,6 +165,12 @@ class AppRoot extends HookConsumerWidget {
                       icon: e.icon,
                     );
                   }).toList(),
+                  footer: Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: InkWell(
+                      child: CircleAvatar(),
+                    ),
+                  ),
                 ),
               ),
               Expanded(child: shell),

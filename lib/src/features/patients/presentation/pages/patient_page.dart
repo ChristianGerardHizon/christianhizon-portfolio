@@ -1,12 +1,17 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
+import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class PatientPage extends HookConsumerWidget {
@@ -41,7 +46,19 @@ class PatientPage extends HookConsumerWidget {
     ///
     /// onUpload
     ///
-    onUpload() {}
+    onUpload(Patient patient) async {
+      final repo = ref.read(patientRepositoryProvider);
+
+      FilePickerResult? result = await FilePicker.platform.pickFiles();
+      final xFile = result?.xFiles.firstOrNull;
+      if (xFile == null) return;
+      final mFile = await MultipartFile.fromPath(
+        'displayImage', // the name of the file field
+        xFile.path,
+        filename: xFile.name,
+      );
+      repo.update(patient, {}, files: [mFile]);
+    }
 
     ///
     /// onImageDiscard
@@ -104,7 +121,7 @@ class PatientPage extends HookConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               FilledButton.icon(
-                                  onPressed: () {},
+                                  onPressed: () => onUpload(patient),
                                   icon: const Icon(Icons.upload),
                                   label: Text('Upload')),
                               SizedBox(width: 8),
@@ -131,7 +148,7 @@ class PatientPage extends HookConsumerWidget {
                             child: CircleAvatar(radius: 60)),
                         Spacer(),
                         FilledButton.icon(
-                            onPressed: () {},
+                            onPressed: () => onUpload(patient),
                             icon: const Icon(Icons.upload),
                             label: Text('Upload')),
                         SizedBox(width: 8),
@@ -160,43 +177,46 @@ class PatientPage extends HookConsumerWidget {
                   ),
 
                   ListTile(
-                    title: Text(patient.breed ?? '-'),
+                    subtitle: Text('Breed'),
+                    title: Text(patient.breed.optional()),
                   ),
 
                   ///
                   /// owner
                   ///
                   ListTile(
-                    title: Text(patient.owner ?? '-'),
+                    title: Text(patient.owner.optional()),
                   ),
 
                   ///
                   /// address
                   ///
                   ListTile(
-                    title: Text(patient.address ?? '-'),
+                    title: Text(patient.address.optional()),
                   ),
 
                   ///
                   /// date of birth
                   ///
                   ListTile(
-                    title:
-                        Text(patient.dateOfBirth?.toLocal().toString() ?? '-'),
+                    title: Text(
+                        (patient.dateOfBirth?.toLocal().toString()).optional()),
                   ),
 
                   ///
                   /// created
                   ///
                   ListTile(
-                    title: Text(patient.created?.toLocal().toString() ?? '-'),
+                    title: Text(
+                        (patient.created?.toLocal().toString()).optional()),
                   ),
 
                   ///
                   /// updated
                   ///
                   ListTile(
-                    title: Text(patient.created?.toLocal().toString() ?? '-'),
+                    title: Text(
+                        (patient.created?.toLocal().toString()).optional()),
                   ),
                 ]),
               ),
