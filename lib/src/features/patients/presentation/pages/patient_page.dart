@@ -1,10 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/routing/router.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/utils/file_picker.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/image_viewer.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
@@ -49,15 +54,17 @@ class PatientPage extends HookConsumerWidget {
     onUpload(Patient patient) async {
       final repo = ref.read(patientRepositoryProvider);
 
-      FilePickerResult? result = await FilePicker.platform.pickFiles();
-      final xFile = result?.xFiles.firstOrNull;
-      if (xFile == null) return;
-      final mFile = await MultipartFile.fromPath(
-        'displayImage', // the name of the file field
-        xFile.path,
-        filename: xFile.name,
-      );
-      repo.update(patient, {}, files: [mFile]);
+      final result = await TaskResult<Patient?>.Do(($) async {
+        final images = await $(FilePickerUtil.getImage('displayImage'));
+        if (images == null || images.isEmpty) return $(TaskResult.right(null));
+        return $(repo.update(patient, {}, files: images));
+      }).run();
+
+      result.fold((l) => AppSnackBar.rootFailure(l), (r) {
+        if (r == null) return;
+        ref.invalidate(provider);
+        AppSnackBar.root(message: 'Successfully Updated');
+      });
     }
 
     ///
@@ -106,64 +113,77 @@ class PatientPage extends HookConsumerWidget {
               ),
               SliverToBoxAdapter(child: SizedBox(height: 20)),
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18),
-                  child: ResponsiveBuilder(builder: (context, si) {
-                    if (si.isMobile) {
-                      return Column(
-                        children: [
-                          InkWell(
-                              onTap: () => PhotoViewer.show(context,
-                                  'https://s3.amazonaws.com/files.prod.dpreview.com/sample_galleries/1330372094/1693761761.jpg?X-Amz-Expires=3600&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUIXIAMA3N436PSEA/20250113/us-east-1/s3/aws4_request&X-Amz-Date=20250113T134714Z&X-Amz-SignedHeaders=host&X-Amz-Signature=f36e23ba70efe10d60f06b5fba8fc4c8a01918b499e73ac2aac60510214a5763'),
-                              child: CircleAvatar(radius: 60)),
-                          SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                child: ImageViewer(
+                  feature: PocketBaseCollections.patients,
+                  file: patient.displayImage ?? '',
+                  id: patient.id,
+                  builder: (url) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      child: ResponsiveBuilder(builder: (context, si) {
+                        if (si.isMobile) {
+                          return Column(
                             children: [
-                              FilledButton.icon(
-                                  onPressed: () => onUpload(patient),
-                                  icon: const Icon(Icons.upload),
-                                  label: Text('Upload')),
-                              SizedBox(width: 8),
-                              FilledButton.icon(
-                                onPressed: () {},
-                                style: FilledButton.styleFrom(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.error,
-                                ),
-                                icon: const Icon(Icons.delete_outline),
-                                label: Text('Delete'),
+                              InkWell(
+                                  onTap: () => PhotoViewer.show(context, url),
+                                  child: CircleAvatar(
+                                    radius: 60,
+                                    backgroundImage:
+                                        CachedNetworkImageProvider(url),
+                                  )),
+                              SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  FilledButton.icon(
+                                      onPressed: () => onUpload(patient),
+                                      icon: const Icon(Icons.upload),
+                                      label: Text('Upload')),
+                                  SizedBox(width: 8),
+                                  FilledButton.icon(
+                                    onPressed: () {},
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
+                                    icon: const Icon(Icons.delete_outline),
+                                    label: Text('Delete'),
+                                  ),
+                                ],
                               ),
+                              SizedBox(height: 10),
                             ],
-                          ),
-                          SizedBox(height: 10),
-                        ],
-                      );
-                    }
-                    return Row(
-                      children: [
-                        InkWell(
-                            onTap: () => PhotoViewer.show(context,
-                                'https://s3.amazonaws.com/files.prod.dpreview.com/sample_galleries/1330372094/1693761761.jpg?X-Amz-Expires=3600&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUIXIAMA3N436PSEA/20250113/us-east-1/s3/aws4_request&X-Amz-Date=20250113T134714Z&X-Amz-SignedHeaders=host&X-Amz-Signature=f36e23ba70efe10d60f06b5fba8fc4c8a01918b499e73ac2aac60510214a5763'),
-                            child: CircleAvatar(radius: 60)),
-                        Spacer(),
-                        FilledButton.icon(
-                            onPressed: () => onUpload(patient),
-                            icon: const Icon(Icons.upload),
-                            label: Text('Upload')),
-                        SizedBox(width: 8),
-                        FilledButton.icon(
-                          onPressed: () {},
-                          style: FilledButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.error,
-                          ),
-                          icon: const Icon(Icons.delete_outline),
-                          label: Text('Delete'),
-                        ),
-                      ],
+                          );
+                        }
+                        return Row(
+                          children: [
+                            InkWell(
+                                onTap: () => PhotoViewer.show(context, url),
+                                child: CircleAvatar(
+                                  radius: 60,
+                                  backgroundImage:
+                                      CachedNetworkImageProvider(url),
+                                )),
+                            Spacer(),
+                            FilledButton.icon(
+                                onPressed: () => onUpload(patient),
+                                icon: const Icon(Icons.upload),
+                                label: Text('Upload')),
+                            SizedBox(width: 8),
+                            FilledButton.icon(
+                              onPressed: () {},
+                              style: FilledButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.error,
+                              ),
+                              icon: const Icon(Icons.delete_outline),
+                              label: Text('Delete'),
+                            ),
+                          ],
+                        );
+                      }),
                     );
-                  }),
+                  },
                 ),
               ),
               SliverPadding(
