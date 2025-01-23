@@ -19,6 +19,12 @@ samples, guidance on mobile development, and a full API reference.
 
 `dart run change_app_package_name:main com.it2do.dev`
 
+generate ymal icon file
+`dart run flutter_launcher_icons:generate`
+run the package
+`dart run flutter_launcher_icons`
+
+
 change package name
 
 `dart run package_rename`

@@ -5,7 +5,7 @@
     "explorer.fileNesting.expand": false,
     "outline.collapseItems": "alwaysCollapse",
     "explorer.fileNesting.patterns": {
-        "pubspec.yaml": "package_rename_config.yaml, analysis_options.yaml, build.yaml,  pubspec.lock,pubspec_overrides.yaml,.packages,.flutter-plugins,.flutter-plugins-dependencies,.metadata",
+        "pubspec.yaml": "flutter_launcher_icons.yaml,  package_rename_config.yaml, analysis_options.yaml, build.yaml,  pubspec.lock,pubspec_overrides.yaml,.packages,.flutter-plugins,.flutter-plugins-dependencies,.metadata",
         "*.dart": "${capture}.freezed.dart, ${capture}.g.dart, ${capture}.realm.dart, ${capture}.mapper.dart"
     },
     "dartBarrelFileGenerator.defaultBarrelName": "_index",
