@@ -17,6 +17,12 @@ samples, guidance on mobile development, and a full API reference.
 
 `dart run build_runner watch --delete-conflicting-outputs`
 
+`dart run change_app_package_name:main com.it2do.dev`
+
+change package name
+
+`dart run package_rename`
+
 # pocketbase
 
 `pocketbase admin create admin@test.com password101`
