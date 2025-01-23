@@ -1,23 +1,16 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/utils/file_picker.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/image_viewer.dart';
-import 'package:gym_system/src/core/widgets/photo_viewer.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_image_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:http/http.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 
 class PatientPage extends HookConsumerWidget {
   const PatientPage(this.id, {super.key});
@@ -70,8 +63,21 @@ class PatientPage extends HookConsumerWidget {
     ///
     /// onImageDiscard
     ///
-    onImageDiscard() {
+    onImageDiscard(Patient patient) async {
       final repo = ref.read(patientRepositoryProvider);
+
+      final confirm = await ConfirmModal.show(context);
+      if (confirm != true) return;
+
+      final result = await TaskResult<Patient?>.Do(($) async {
+        return $(repo.update(patient, {'displayImage': null}));
+      }).run();
+
+      result.fold((l) => AppSnackBar.rootFailure(l), (r) {
+        if (r == null) return;
+        ref.invalidate(provider);
+        AppSnackBar.root(message: 'Successfully Delete Image');
+      });
     }
 
     return Scaffold(
@@ -113,77 +119,10 @@ class PatientPage extends HookConsumerWidget {
               ),
               SliverToBoxAdapter(child: SizedBox(height: 20)),
               SliverToBoxAdapter(
-                child: ImageViewer(
-                  feature: PocketBaseCollections.patients,
-                  file: patient.displayImage ?? '',
-                  id: patient.id,
-                  builder: (url) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: ResponsiveBuilder(builder: (context, si) {
-                        if (si.isMobile) {
-                          return Column(
-                            children: [
-                              InkWell(
-                                  onTap: () => PhotoViewer.show(context, url),
-                                  child: CircleAvatar(
-                                    radius: 60,
-                                    backgroundImage:
-                                        CachedNetworkImageProvider(url),
-                                  )),
-                              SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  FilledButton.icon(
-                                      onPressed: () => onUpload(patient),
-                                      icon: const Icon(Icons.upload),
-                                      label: Text('Upload')),
-                                  SizedBox(width: 8),
-                                  FilledButton.icon(
-                                    onPressed: () {},
-                                    style: FilledButton.styleFrom(
-                                      backgroundColor:
-                                          Theme.of(context).colorScheme.error,
-                                    ),
-                                    icon: const Icon(Icons.delete_outline),
-                                    label: Text('Delete'),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                            ],
-                          );
-                        }
-                        return Row(
-                          children: [
-                            InkWell(
-                                onTap: () => PhotoViewer.show(context, url),
-                                child: CircleAvatar(
-                                  radius: 60,
-                                  backgroundImage:
-                                      CachedNetworkImageProvider(url),
-                                )),
-                            Spacer(),
-                            FilledButton.icon(
-                                onPressed: () => onUpload(patient),
-                                icon: const Icon(Icons.upload),
-                                label: Text('Upload')),
-                            SizedBox(width: 8),
-                            FilledButton.icon(
-                              onPressed: () {},
-                              style: FilledButton.styleFrom(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.error,
-                              ),
-                              icon: const Icon(Icons.delete_outline),
-                              label: Text('Delete'),
-                            ),
-                          ],
-                        );
-                      }),
-                    );
-                  },
+                child: PatientImageWidget(
+                  patient: patient,
+                  onUpload: () => onUpload(patient),
+                  onImageDiscard: () => onImageDiscard(patient),
                 ),
               ),
               SliverPadding(

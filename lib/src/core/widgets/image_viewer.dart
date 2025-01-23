@@ -7,6 +7,7 @@ class ImageViewer extends ConsumerWidget {
   const ImageViewer({
     super.key,
     required this.builder,
+    this.placeholder,
     required this.feature,
     required this.file,
     required this.id,
@@ -17,6 +18,7 @@ class ImageViewer extends ConsumerWidget {
   final String feature;
   final String id;
   final String file;
+  final Widget? placeholder;
   final Widget Function(String url) builder;
   final Widget Function()? loader;
   final Widget Function()? error;
@@ -32,6 +34,8 @@ class ImageViewer extends ConsumerWidget {
       }).run();
       return result.fold((l) => null, (r) => r);
     }
+
+    if (file.isEmpty) return placeholder ?? SizedBox();
 
     return FutureBuilder<String?>(
       future: buildUrl(),

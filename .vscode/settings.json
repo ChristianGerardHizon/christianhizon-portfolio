@@ -103,22 +103,22 @@
         "typeahead"
     ],
     // Set to nu shell
-    "terminal.integrated.defaultProfile.windows": "NuShell",
-    "terminal.integrated.defaultProfile.linux": "NuShell",
-    "terminal.integrated.defaultProfile.osx": "NuShell",
-    "terminal.integrated.profiles.windows": {
-        "NuShell": {
-            "path": "C:\\Program Files\\nu\\bin\\nu.exe"
-        }
-    },
-    "terminal.integrated.profiles.linux": {
-        "NuShell": {
-            "path": "C:\\Program Files\\nu\\bin\\nu.exe"
-        }
-    },
-    "terminal.integrated.profiles.osx": {
-        "NuShell": {
-            "path": "C:\\Program Files\\nu\\bin\\nu.exe"
-        }
-    }
+    // "terminal.integrated.defaultProfile.windows": "NuShell",
+    // "terminal.integrated.defaultProfile.linux": "NuShell",
+    // "terminal.integrated.defaultProfile.osx": "NuShell",
+    // "terminal.integrated.profiles.windows": {
+    //     "NuShell": {
+    //         "path": "C:\\Program Files\\nu\\bin\\nu.exe"
+    //     }
+    // },
+    // "terminal.integrated.profiles.linux": {
+    //     "NuShell": {
+    //         "path": "C:\\Program Files\\nu\\bin\\nu.exe"
+    //     }
+    // },
+    // "terminal.integrated.profiles.osx": {
+    //     "NuShell": {
+    //         "path": "C:\\Program Files\\nu\\bin\\nu.exe"
+    //     }
+    // }
 }
