@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/features/settings/data/setting_repository.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

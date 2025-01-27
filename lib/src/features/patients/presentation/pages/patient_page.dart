@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/core/utils/file_picker.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
-import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_image_widget.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_circle_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientPage extends HookConsumerWidget {
@@ -74,11 +71,13 @@ class PatientPage extends HookConsumerWidget {
               ),
 
               SliverToBoxAdapter(
-                child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    child: Text('Display Picture')),
-              ),
-              SliverToBoxAdapter(child: SizedBox(height: 20)),
+                  child: SizedBox(
+                height: 250,
+                child: PatientCircleImage(
+                  radius: 120,
+                  patient: patient,
+                ),
+              )),
 
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -87,18 +86,26 @@ class PatientPage extends HookConsumerWidget {
                   /// name
                   ///
                   ListTile(
+                    leading: Text('Name: '),
                     title: Text(patient.name),
                   ),
 
+                  /// Breed
                   ListTile(
-                    subtitle: Text('Breed'),
+                    leading: Text('Breed: '),
                     title: Text(patient.breed.optional()),
+                  ),
+
+                  ListTile(
+                    leading: Text('Species: '),
+                    title: Text(patient.species.optional()),
                   ),
 
                   ///
                   /// owner
                   ///
                   ListTile(
+                    leading: Text('Owner: '),
                     title: Text(patient.owner.optional()),
                   ),
 
@@ -106,6 +113,7 @@ class PatientPage extends HookConsumerWidget {
                   /// address
                   ///
                   ListTile(
+                    leading: Text('Address: '),
                     title: Text(patient.address.optional()),
                   ),
 
@@ -113,6 +121,7 @@ class PatientPage extends HookConsumerWidget {
                   /// date of birth
                   ///
                   ListTile(
+                    leading: Text('Date of Birth: '),
                     title: Text(
                         (patient.dateOfBirth?.toLocal().toString()).optional()),
                   ),
@@ -121,6 +130,7 @@ class PatientPage extends HookConsumerWidget {
                   /// created
                   ///
                   ListTile(
+                    leading: Text('Created At: '),
                     title: Text(
                         (patient.created?.toLocal().toString()).optional()),
                   ),
@@ -129,6 +139,7 @@ class PatientPage extends HookConsumerWidget {
                   /// updated
                   ///
                   ListTile(
+                    leading: Text('Updated At: '),
                     title: Text(
                         (patient.created?.toLocal().toString()).optional()),
                   ),

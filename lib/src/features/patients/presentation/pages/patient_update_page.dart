@@ -14,7 +14,7 @@ import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_update_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_image_widget.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_image_control_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientUpdatePage extends HookConsumerWidget {
@@ -106,7 +106,7 @@ class PatientUpdatePage extends HookConsumerWidget {
                   ///
                   /// Display Picture
                   ///
-                  PatientImageWidget(
+                  PatientImageControlWidget(
                     patient: patient,
                     onUpload: () => onUpload(patient),
                     onImageDiscard: () => onImageDiscard(patient),

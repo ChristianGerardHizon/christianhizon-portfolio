@@ -6,13 +6,13 @@ import 'package:gym_system/src/core/widgets/photo_viewer.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-class PatientImageWidget extends StatelessWidget {
+class PatientImageControlWidget extends StatelessWidget {
   final Patient patient;
 
   final Function() onUpload;
   final Function() onImageDiscard;
 
-  const PatientImageWidget({
+  const PatientImageControlWidget({
     super.key,
     required this.patient,
     required this.onUpload,
