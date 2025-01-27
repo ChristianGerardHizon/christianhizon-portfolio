@@ -4,12 +4,17 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/utils/file_picker.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/form_builders/images_form_field.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_update_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_image_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientUpdatePage extends HookConsumerWidget {
@@ -22,6 +27,47 @@ class PatientUpdatePage extends HookConsumerWidget {
     final state = ref.watch(patientUpdateControllerProvider(id));
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
+
+    final provider = patientControllerProvider(id);
+
+    ///
+    /// onUpload
+    ///
+    onUpload(Patient patient) async {
+      final repo = ref.read(patientRepositoryProvider);
+
+      final result = await TaskResult<Patient?>.Do(($) async {
+        final images = await $(FilePickerUtil.getImage('displayImage'));
+        if (images == null || images.isEmpty) return $(TaskResult.right(null));
+        return $(repo.update(patient, {}, files: images));
+      }).run();
+
+      result.fold((l) => AppSnackBar.rootFailure(l), (r) {
+        if (r == null) return;
+        ref.invalidate(provider);
+        AppSnackBar.root(message: 'Successfully Updated');
+      });
+    }
+
+    ///
+    /// onImageDiscard
+    ///
+    onImageDiscard(Patient patient) async {
+      final repo = ref.read(patientRepositoryProvider);
+
+      final confirm = await ConfirmModal.show(context);
+      if (confirm != true) return;
+
+      final result = await TaskResult<Patient?>.Do(($) async {
+        return $(repo.update(patient, {'displayImage': null}));
+      }).run();
+
+      result.fold((l) => AppSnackBar.rootFailure(l), (r) {
+        if (r == null) return;
+        ref.invalidate(provider);
+        AppSnackBar.root(message: 'Successfully Delete Image');
+      });
+    }
 
     void onSubmit(Patient patient) async {
       isLoading.value = true;
@@ -54,31 +100,44 @@ class PatientUpdatePage extends HookConsumerWidget {
           return FormBuilder(
             key: formKey,
             initialValue: patient.toMap(),
-            child: Column(
-              children: [
-                ///
-                /// name
-                ///
-                FormBuilderTextField(name: PatientField.name),
+            child: CustomScrollView(
+              slivers: [
+                SliverList.list(children: [
+                  ///
+                  /// Display Picture
+                  ///
+                  PatientImageWidget(
+                    patient: patient,
+                    onUpload: () => onUpload(patient),
+                    onImageDiscard: () => onImageDiscard(patient),
+                  ),
 
-                SizedBox(height: 10),
+                  ///
+                  /// name
+                  ///
+                  FormBuilderTextField(name: PatientField.name),
 
-                ImagesFormField(
-                  domain:
-                      '${settings.domain}/api/files/${PocketBaseCollections.patients}/$id',
-                  name: PatientField.images,
-                ),
+                  SizedBox(height: 10),
 
-                SizedBox(height: 10),
+                  ImagesFormField(
+                    domain:
+                        '${settings.domain}/api/files/${PocketBaseCollections.patients}/$id',
+                    name: PatientField.images,
+                  ),
+
+                  SizedBox(height: 10),
+                ]),
 
                 ///
                 /// save button
                 ///
-                LoadingFilledButton(
-                  isLoading: isLoading.value,
-                  child: Text('Save'),
-                  onPressed: () => onSubmit(patient),
-                ),
+                SliverToBoxAdapter(
+                  child: LoadingFilledButton(
+                    isLoading: isLoading.value,
+                    child: Text('Save'),
+                    onPressed: () => onSubmit(patient),
+                  ),
+                )
               ],
             ),
           );

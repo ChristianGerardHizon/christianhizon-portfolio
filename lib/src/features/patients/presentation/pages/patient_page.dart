@@ -41,45 +41,6 @@ class PatientPage extends HookConsumerWidget {
       });
     }
 
-    ///
-    /// onUpload
-    ///
-    onUpload(Patient patient) async {
-      final repo = ref.read(patientRepositoryProvider);
-
-      final result = await TaskResult<Patient?>.Do(($) async {
-        final images = await $(FilePickerUtil.getImage('displayImage'));
-        if (images == null || images.isEmpty) return $(TaskResult.right(null));
-        return $(repo.update(patient, {}, files: images));
-      }).run();
-
-      result.fold((l) => AppSnackBar.rootFailure(l), (r) {
-        if (r == null) return;
-        ref.invalidate(provider);
-        AppSnackBar.root(message: 'Successfully Updated');
-      });
-    }
-
-    ///
-    /// onImageDiscard
-    ///
-    onImageDiscard(Patient patient) async {
-      final repo = ref.read(patientRepositoryProvider);
-
-      final confirm = await ConfirmModal.show(context);
-      if (confirm != true) return;
-
-      final result = await TaskResult<Patient?>.Do(($) async {
-        return $(repo.update(patient, {'displayImage': null}));
-      }).run();
-
-      result.fold((l) => AppSnackBar.rootFailure(l), (r) {
-        if (r == null) return;
-        ref.invalidate(provider);
-        AppSnackBar.root(message: 'Successfully Delete Image');
-      });
-    }
-
     return Scaffold(
       body: state.when(
         skipError: false,
@@ -118,13 +79,7 @@ class PatientPage extends HookConsumerWidget {
                     child: Text('Display Picture')),
               ),
               SliverToBoxAdapter(child: SizedBox(height: 20)),
-              SliverToBoxAdapter(
-                child: PatientImageWidget(
-                  patient: patient,
-                  onUpload: () => onUpload(patient),
-                  onImageDiscard: () => onImageDiscard(patient),
-                ),
-              ),
+
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 sliver: SliverList.list(children: [
