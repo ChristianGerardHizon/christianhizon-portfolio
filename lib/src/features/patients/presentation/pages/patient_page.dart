@@ -56,7 +56,7 @@ class PatientPage extends HookConsumerWidget {
                 title: Text(patient.name),
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.update),
+                    icon: const Icon(Icons.edit),
                     onPressed: () => PatientUpdatePageRoute(id).go(context),
                   ),
                   IconButton(
@@ -71,17 +71,31 @@ class PatientPage extends HookConsumerWidget {
               ),
 
               SliverToBoxAdapter(
-                  child: SizedBox(
-                height: 250,
-                child: PatientCircleImage(
-                  radius: 120,
-                  patient: patient,
+                child: SizedBox(
+                  height: 250,
+                  child: PatientCircleImage(
+                    radius: 120,
+                    patient: patient,
+                  ),
                 ),
-              )),
+              ),
 
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 sliver: SliverList.list(children: [
+                  SizedBox(height: 30),
+
+                  ///
+                  /// Header
+                  ///
+                  ListTile(
+                    contentPadding: EdgeInsets.only(left: 14),
+                    title: Text(
+                      'Patient Info',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
+
                   ///
                   /// name
                   ///
@@ -145,80 +159,6 @@ class PatientPage extends HookConsumerWidget {
                   ),
                 ]),
               ),
-
-              ///
-              /// row of images scrolling horizontally
-              ///
-              // ref.watch(settingsControllerProvider).when(
-              //       skipError: false,
-              //       skipLoadingOnRefresh: false,
-              //       skipLoadingOnReload: false,
-              //       loading: () =>
-              //           const Center(child: CircularProgressIndicator()),
-              //       error: (error, stackTrace) =>
-              //           Center(child: Text(error.toString())),
-              //       data: (settings) {
-              //         return Container(
-              //           height: 100,
-              //           child: ListView.builder(
-              //             scrollDirection: Axis.horizontal,
-              //             itemCount: patient.images.length,
-              //             itemBuilder: (context, index) {
-              //               final imageUrl =
-              //                   '${settings.domain}/api/files/${PocketBaseCollections.patients}/$id/${patient.images[index]}';
-              //               return Stack(
-              //                 children: [
-              //                   ///
-              //                   /// image
-              //                   ///
-              //                   Padding(
-              //                     padding: EdgeInsets.only(right: 15, top: 15),
-              //                     child: InkWell(
-              //                       onTap: () =>
-              //                           PhotoViewer.show(context, imageUrl),
-              //                       child: Image.network(imageUrl),
-              //                     ),
-              //                   ),
-
-              //                   ///
-              //                   /// delete
-              //                   ///
-              //                   Positioned(
-              //                     right: 0,
-              //                     top: 0,
-              //                     child: Container(
-              //                       decoration: BoxDecoration(
-              //                         borderRadius: BorderRadius.circular(20),
-              //                         color: Colors.white,
-              //                         boxShadow: [
-              //                           BoxShadow(
-              //                             offset: const Offset(0, 2),
-              //                             blurRadius: 4,
-              //                             color: Colors.black12,
-              //                           ),
-              //                         ],
-              //                       ),
-              //                       child: IconButton(
-              //                         icon: const Icon(
-              //                           Icons.delete,
-              //                           color: Colors.red,
-              //                           size: 20,
-              //                         ),
-              //                         onPressed: () {},
-              //                       ),
-              //                     ),
-              //                   ),
-              //                 ],
-              //               );
-              //             },
-              //           ),
-              //         );
-              //       },
-              //     ),
-
-              ///
-              /// breed
-              ///
             ],
           );
         },

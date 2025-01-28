@@ -102,29 +102,35 @@ class PatientUpdatePage extends HookConsumerWidget {
             initialValue: patient.toMap(),
             child: CustomScrollView(
               slivers: [
-                SliverList.list(children: [
-                  ///
-                  /// Display Picture
-                  ///
-                  PatientImageControlWidget(
+                ///
+                /// image
+                ///
+                SliverToBoxAdapter(
+                  child: PatientImageControlWidget(
                     patient: patient,
                     onUpload: () => onUpload(patient),
                     onImageDiscard: () => onImageDiscard(patient),
                   ),
+                ),
 
+                SliverList.list(children: [
                   ///
                   /// name
                   ///
-                  FormBuilderTextField(name: PatientField.name),
-
-                  SizedBox(height: 10),
-
-                  ImagesFormField(
-                    domain:
-                        '${settings.domain}/api/files/${PocketBaseCollections.patients}/$id',
-                    name: PatientField.images,
+                  FormBuilderTextField(
+                    name: PatientField.name,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(
+                          bottom: 10, right: 8, left: 8, top: 30),
+                      labelText: 'Patient Name',
+                      filled: true,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
-
                   SizedBox(height: 10),
                 ]),
 
@@ -132,10 +138,15 @@ class PatientUpdatePage extends HookConsumerWidget {
                 /// save button
                 ///
                 SliverToBoxAdapter(
-                  child: LoadingFilledButton(
-                    isLoading: isLoading.value,
-                    child: Text('Save'),
-                    onPressed: () => onSubmit(patient),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 300),
+                      child: LoadingFilledButton(
+                        isLoading: isLoading.value,
+                        child: Text('Save'),
+                        onPressed: () => onSubmit(patient),
+                      ),
+                    ),
                   ),
                 )
               ],
