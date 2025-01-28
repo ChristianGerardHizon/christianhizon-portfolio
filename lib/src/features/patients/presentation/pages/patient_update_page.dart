@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
+import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/utils/file_picker.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/form_builders/images_form_field.dart';
+import 'package:gym_system/src/core/widgets/form_typeahead_custom.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
+import 'package:gym_system/src/core/widgets/responsive_two_fields.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
@@ -24,11 +26,17 @@ class PatientUpdatePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(patientUpdateControllerProvider(id));
+    final updateController = patientUpdateControllerProvider(id);
+    final state = ref.watch(updateController);
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
 
     final provider = patientControllerProvider(id);
+
+    onRefresh() {
+      ref.invalidate(updateController);
+      ref.invalidate(provider);
+    }
 
     ///
     /// onUpload
@@ -44,7 +52,7 @@ class PatientUpdatePage extends HookConsumerWidget {
 
       result.fold((l) => AppSnackBar.rootFailure(l), (r) {
         if (r == null) return;
-        ref.invalidate(provider);
+        onRefresh();
         AppSnackBar.root(message: 'Successfully Updated');
       });
     }
@@ -64,17 +72,29 @@ class PatientUpdatePage extends HookConsumerWidget {
 
       result.fold((l) => AppSnackBar.rootFailure(l), (r) {
         if (r == null) return;
-        ref.invalidate(provider);
+        onRefresh();
         AppSnackBar.root(message: 'Successfully Delete Image');
       });
     }
 
     void onSubmit(Patient patient) async {
       isLoading.value = true;
+      final form = formKey.currentState;
+      if (form == null) {
+        isLoading.value = false;
+        return;
+      }
+      final isValid = form.saveAndValidate();
+      if (!isValid) {
+        isLoading.value = false;
+        return;
+      }
+
       final result = await ref
           .read(patientRepositoryProvider)
-          .update(patient, formKey.currentState!.value)
+          .update(patient, form.value)
           .run();
+
       if (!context.mounted) return;
       isLoading.value = false;
       result.fold(
@@ -92,14 +112,24 @@ class PatientUpdatePage extends HookConsumerWidget {
           onPressed: () => PatientPageRoute(id).go(context),
         ),
         title: Text('Patient Update Page'),
+        actions: [
+          IconButton(
+            onPressed: onRefresh,
+            icon: Icon(Icons.refresh),
+          ),
+        ],
       ),
       body: state.when(
+        skipError: false,
+        skipLoadingOnRefresh: false,
+        skipLoadingOnReload: false,
         data: (updateState) {
           final patient = updateState.patient;
           final settings = updateState.settings;
+          final map = patient.toForm();
           return FormBuilder(
             key: formKey,
-            initialValue: patient.toMap(),
+            initialValue: map,
             child: CustomScrollView(
               slivers: [
                 ///
@@ -113,26 +143,250 @@ class PatientUpdatePage extends HookConsumerWidget {
                   ),
                 ),
 
-                SliverList.list(children: [
-                  ///
-                  /// name
-                  ///
-                  FormBuilderTextField(
-                    name: PatientField.name,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(
-                          bottom: 10, right: 8, left: 8, top: 30),
-                      labelText: 'Patient Name',
-                      filled: true,
-                      fillColor:
-                          Theme.of(context).colorScheme.surfaceContainerLow,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                SliverPadding(
+                  padding: EdgeInsets.only(left: 10, right: 10, top: 35),
+                  sliver: SliverList.list(children: [
+                    SizedBox(height: 10),
+
+                    ///
+                    /// name
+                    ///
+                    FormBuilderTextField(
+                      name: PatientField.name,
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(),
+                      ]),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(
+                            bottom: 10, right: 8, left: 8, top: 30),
+                        labelText: 'Patient Name',
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).colorScheme.surfaceContainerLow,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                ]),
+
+                    SizedBox(height: 10),
+
+                    ///
+                    /// Species and Breed
+                    ///
+                    ResponsiveTwoFields(
+                      verticalGap: 10,
+                      horizontalGap: 10,
+                      children: [
+                        FormTypeaheadCustom(
+                          allowCustomInput: true,
+                          suggestionsCallback: (p0) => ['test'],
+                          itemBuilder: (context, suggestion) {
+                            return ListTile(
+                              title: Text(suggestion),
+                            );
+                          },
+                          name: PatientField.species,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(
+                              bottom: 10,
+                              right: 8,
+                              left: 8,
+                              top: 30,
+                            ),
+                            labelText: 'Species',
+                            filled: true,
+                            fillColor: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerLow,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                        FormTypeaheadCustom(
+                          allowCustomInput: true,
+                          suggestionsCallback: (p0) => ['test'],
+                          itemBuilder: (context, suggestion) {
+                            return ListTile(
+                              title: Text(suggestion),
+                            );
+                          },
+                          name: PatientField.breed,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(
+                              bottom: 10,
+                              right: 8,
+                              left: 8,
+                              top: 30,
+                            ),
+                            labelText: 'Breed',
+                            filled: true,
+                            fillColor: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerLow,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+
+                    SizedBox(height: 10),
+
+                    ///
+                    /// Sex
+                    ///
+                    FormBuilderDropdown<String>(
+                      name: PatientField.sex,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(
+                            bottom: 10, right: 8, left: 8, top: 30),
+                        labelText: 'Sex',
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).colorScheme.surfaceContainerLow,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      items: ['male', 'female']
+                          .map((sex) => DropdownMenuItem(
+                                value: sex,
+                                child: Text(sex),
+                              ))
+                          .toList(),
+                    ),
+
+                    SizedBox(height: 10),
+
+                    ///
+                    /// Date of Birth
+                    ///
+                    FormBuilderDateTimePicker(
+                      initialEntryMode: DatePickerEntryMode.inputOnly,
+                      inputType: InputType.date,
+                      name: PatientField.dateOfBirth,
+                      decoration: InputDecoration(
+                        suffixIcon: Icon(Icons.calendar_month),
+                        contentPadding: EdgeInsets.only(
+                            bottom: 10, right: 8, left: 8, top: 30),
+                        labelText: 'Date of Birth',
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).colorScheme.surfaceContainerLow,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      valueTransformer: (dateTime) {
+                        if (dateTime == null) return null;
+                        return dateTime.toUtc().toIso8601String();
+                      },
+                    ),
+                  ]),
+                ),
+
+                ///
+                /// Owner Details
+                ///
+                SliverPadding(
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 35),
+                    sliver: SliverList.list(children: [
+                      ///
+                      ///
+                      ///
+                      ListTile(
+                        contentPadding: EdgeInsets.all(0),
+                        title: Text(
+                          'Owner Details',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+
+                      SizedBox(height: 10),
+
+                      ///
+                      /// Owner
+                      ///
+                      FormBuilderTextField(
+                        name: PatientField.owner,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10, right: 8, left: 8, top: 30),
+                          labelText: 'Owner',
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).colorScheme.surfaceContainerLow,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 10),
+
+                      ///
+                      /// address
+                      ///
+                      FormBuilderTextField(
+                        name: PatientField.address,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10, right: 8, left: 8, top: 30),
+                          labelText: 'Address',
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).colorScheme.surfaceContainerLow,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 10),
+
+                      ///
+                      /// ContactNumber
+                      ///
+                      FormBuilderTextField(
+                        name: PatientField.contactNumber,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10, right: 8, left: 8, top: 30),
+                          labelText: 'Contact Number',
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).colorScheme.surfaceContainerLow,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 10),
+
+                      ///
+                      /// Email
+                      ///
+                      FormBuilderTextField(
+                        name: PatientField.email,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10, right: 8, left: 8, top: 30),
+                          labelText: 'Email',
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).colorScheme.surfaceContainerLow,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 20),
+                    ])),
 
                 ///
                 /// save button
@@ -148,7 +402,9 @@ class PatientUpdatePage extends HookConsumerWidget {
                       ),
                     ),
                   ),
-                )
+                ),
+
+                SliverToBoxAdapter(child: SizedBox(height: 20))
               ],
             ),
           );

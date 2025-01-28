@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
@@ -26,16 +27,16 @@ class PatientPage extends HookConsumerWidget {
       final confirm = await ConfirmModal.show(context);
       if (confirm != true) return;
       final repo = ref.read(patientRepositoryProvider);
-      repo.delete(id).run().then((result) {
-        result.fold(
-          (l) => AppSnackBar.rootFailure(l),
-          (r) {
-            ref.invalidate(patientsControllerProvider);
-            AppSnackBar.root(message: 'Successfully Deleted');
-            PatientsPageRoute().go(context);
-          },
-        );
-      });
+      repo.softDeleteMulti([id]).run().then((result) {
+            result.fold(
+              (l) => AppSnackBar.rootFailure(l),
+              (r) {
+                ref.invalidate(patientsControllerProvider);
+                AppSnackBar.root(message: 'Successfully Deleted');
+                PatientsPageRoute().go(context);
+              },
+            );
+          });
     }
 
     return Scaffold(
@@ -70,12 +71,15 @@ class PatientPage extends HookConsumerWidget {
                 ],
               ),
 
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 250,
-                  child: PatientCircleImage(
-                    radius: 120,
-                    patient: patient,
+              SliverPadding(
+                padding: const EdgeInsets.only(top: 20, bottom: 30),
+                sliver: SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 250,
+                    child: PatientCircleImage(
+                      radius: 120,
+                      patient: patient,
+                    ),
                   ),
                 ),
               ),
@@ -83,8 +87,6 @@ class PatientPage extends HookConsumerWidget {
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 sliver: SliverList.list(children: [
-                  SizedBox(height: 30),
-
                   ///
                   /// Header
                   ///
@@ -116,6 +118,36 @@ class PatientPage extends HookConsumerWidget {
                   ),
 
                   ///
+                  /// date of birth
+                  ///
+                  ListTile(
+                    leading: Text('Date of Birth: '),
+                    title: Text(
+                        (patient.dateOfBirth?.toLocal().yyyyMMdd()).optional()),
+                  ),
+                ]),
+              ),
+
+              ///
+              /// Owner Details
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                sliver: SliverList.list(children: [
+                  SizedBox(height: 30),
+
+                  ///
+                  /// Header
+                  ///
+                  ListTile(
+                    contentPadding: EdgeInsets.only(left: 14),
+                    title: Text(
+                      'Owner Info',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
+
+                  ///
                   /// owner
                   ///
                   ListTile(
@@ -132,12 +164,40 @@ class PatientPage extends HookConsumerWidget {
                   ),
 
                   ///
-                  /// date of birth
+                  /// email
                   ///
                   ListTile(
-                    leading: Text('Date of Birth: '),
+                    leading: Text('Email: '),
+                    title: Text(patient.email.optional()),
+                  ),
+
+                  ///
+                  /// contact number
+                  ///
+                  ListTile(
+                    leading: Text('Contact Number: '),
+                    title: Text(patient.contactNumber.optional()),
+                  ),
+                ]),
+              ),
+
+              ///
+              /// Other Details
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                sliver: SliverList.list(children: [
+                  SizedBox(height: 30),
+
+                  ///
+                  /// Header
+                  ///
+                  ListTile(
+                    contentPadding: EdgeInsets.only(left: 14),
                     title: Text(
-                        (patient.dateOfBirth?.toLocal().toString()).optional()),
+                      'Other Info',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
                   ),
 
                   ///
@@ -146,7 +206,7 @@ class PatientPage extends HookConsumerWidget {
                   ListTile(
                     leading: Text('Created At: '),
                     title: Text(
-                        (patient.created?.toLocal().toString()).optional()),
+                        (patient.created?.toLocal().yyyyMMddHHmmA()).optional()),
                   ),
 
                   ///
@@ -155,10 +215,15 @@ class PatientPage extends HookConsumerWidget {
                   ListTile(
                     leading: Text('Updated At: '),
                     title: Text(
-                        (patient.created?.toLocal().toString()).optional()),
+                        (patient.created?.toLocal().yyyyMMddHHmmA()).optional()),
                   ),
                 ]),
               ),
+
+              ///
+              /// Spacer
+              ///
+              SliverToBoxAdapter(child: SizedBox(height: 50)),
             ],
           );
         },

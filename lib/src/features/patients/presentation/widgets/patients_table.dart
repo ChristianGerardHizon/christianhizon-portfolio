@@ -12,6 +12,7 @@ class PatientsTable extends HookWidget {
   final List<int> selected;
   final Function(List<int>)? onSelected;
   final Function(int)? onRowTap;
+
   const PatientsTable({
     super.key,
     required this.list,

@@ -35,7 +35,7 @@ class ResponsiveTwoFields extends StatelessWidget {
       ///
       /// One Cloumn
       ///
-      if (!si.isMobile) {
+      if (si.isMobile) {
         return Column(
           children:
               addGap(true, children, horizontalGap).map((e) => e).toList(),
