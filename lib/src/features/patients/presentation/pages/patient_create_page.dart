@@ -6,6 +6,7 @@ import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
+import 'package:gym_system/src/core/widgets/responsive_two_fields.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -80,23 +81,44 @@ class PatientCreatePage extends HookConsumerWidget {
 
                   SizedBox(height: 10),
 
+                  ResponsiveTwoFields(
+                    verticalGap: 15,
+                    horizontalGap: 10,
+                    children: [
+                      FormBuilderTextField(
+                        name: PatientField.name,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10, right: 8, left: 8, top: 30),
+                          labelText: 'Patient Name',
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).colorScheme.surfaceContainerLow,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                      FormBuilderTextField(
+                        name: 'test',
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10, right: 8, left: 8, top: 30),
+                          labelText: 'Patient Name',
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).colorScheme.surfaceContainerLow,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
                   ///
                   /// name
                   ///
-                  FormBuilderTextField(
-                    name: PatientField.name,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(
-                          bottom: 10, right: 8, left: 8, top: 30),
-                      labelText: 'Patient Name',
-                      filled: true,
-                      fillColor:
-                          Theme.of(context).colorScheme.surfaceContainerLow,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
 
                   SizedBox(height: 10),
 
