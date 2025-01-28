@@ -89,7 +89,11 @@ class PatientCreatePage extends HookConsumerWidget {
                         name: PatientField.name,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.only(
-                              bottom: 10, right: 8, left: 8, top: 30),
+                            bottom: 10,
+                            right: 8,
+                            left: 8,
+                            top: 30,
+                          ),
                           labelText: 'Patient Name',
                           filled: true,
                           fillColor:

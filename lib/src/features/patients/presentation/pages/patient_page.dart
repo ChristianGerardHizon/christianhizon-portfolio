@@ -72,9 +72,9 @@ class PatientPage extends HookConsumerWidget {
 
               SliverToBoxAdapter(
                   child: SizedBox(
-                height: 250,
+                height: 170,
                 child: PatientCircleImage(
-                  radius: 120,
+                  radius: 80,
                   patient: patient,
                 ),
               )),
