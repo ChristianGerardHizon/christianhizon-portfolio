@@ -24,7 +24,8 @@ class StaffPage extends HookConsumerWidget {
       final confirm = await ConfirmModal.show(context);
       if (confirm != true) return;
       final repo = ref.read(staffRepositoryProvider);
-      repo.softDeleteMulti([id]).run().then((result) {
+      final result =  repo.softDeleteMulti([id]).run();
+      result.then((result) {
             result.fold(
               (l) => AppSnackBar.rootFailure(l),
               (r) {
