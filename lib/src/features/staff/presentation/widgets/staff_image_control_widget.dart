@@ -4,17 +4,18 @@ import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/widgets/image_viewer.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:gym_system/src/features/staff/domain/staff.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-class PatientImageControlWidget extends StatelessWidget {
-  final Patient patient;
+class StaffImageControlWidget extends StatelessWidget {
+  final Staff staff;
 
   final Function() onUpload;
   final Function() onImageDiscard;
 
-  const PatientImageControlWidget({
+  const StaffImageControlWidget({
     super.key,
-    required this.patient,
+    required this.staff,
     required this.onUpload,
     required this.onImageDiscard,
   });
@@ -23,8 +24,8 @@ class PatientImageControlWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ImageViewer(
       feature: PocketBaseCollections.patients,
-      file: patient.avatar ?? '',
-      id: patient.id,
+      file: staff.avatar ?? '',
+      id: staff.id,
       placeholder: SizedBox(),
       builder: (url) {
         return Padding(

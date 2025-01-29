@@ -33,6 +33,12 @@ class UserMapper extends ClassMapperBase<User> {
   static bool _$isDeleted(User v) => v.isDeleted;
   static const Field<User, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
+  static DateTime? _$created(User v) => v.created;
+  static const Field<User, DateTime> _f$created =
+      Field('created', _$created, opt: true);
+  static DateTime? _$updated(User v) => v.updated;
+  static const Field<User, DateTime> _f$updated =
+      Field('updated', _$updated, opt: true);
 
   @override
   final MappableFields<User> fields = const {
@@ -41,6 +47,8 @@ class UserMapper extends ClassMapperBase<User> {
     #email: _f$email,
     #avatar: _f$avatar,
     #isDeleted: _f$isDeleted,
+    #created: _f$created,
+    #updated: _f$updated,
   };
 
   static User _instantiate(DecodingData data) {
@@ -49,7 +57,9 @@ class UserMapper extends ClassMapperBase<User> {
         name: data.dec(_f$name),
         email: data.dec(_f$email),
         avatar: data.dec(_f$avatar),
-        isDeleted: data.dec(_f$isDeleted));
+        isDeleted: data.dec(_f$isDeleted),
+        created: data.dec(_f$created),
+        updated: data.dec(_f$updated));
   }
 
   @override
@@ -103,7 +113,9 @@ abstract class UserCopyWith<$R, $In extends User, $Out>
       String? name,
       String? email,
       String? avatar,
-      bool? isDeleted});
+      bool? isDeleted,
+      DateTime? created,
+      DateTime? updated});
   UserCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -119,13 +131,17 @@ class _UserCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, User, $Out>
           String? name,
           String? email,
           Object? avatar = $none,
-          bool? isDeleted}) =>
+          bool? isDeleted,
+          Object? created = $none,
+          Object? updated = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (email != null) #email: email,
         if (avatar != $none) #avatar: avatar,
-        if (isDeleted != null) #isDeleted: isDeleted
+        if (isDeleted != null) #isDeleted: isDeleted,
+        if (created != $none) #created: created,
+        if (updated != $none) #updated: updated
       }));
   @override
   User $make(CopyWithData data) => User(
@@ -133,7 +149,9 @@ class _UserCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, User, $Out>
       name: data.get(#name, or: $value.name),
       email: data.get(#email, or: $value.email),
       avatar: data.get(#avatar, or: $value.avatar),
-      isDeleted: data.get(#isDeleted, or: $value.isDeleted));
+      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
+      created: data.get(#created, or: $value.created),
+      updated: data.get(#updated, or: $value.updated));
 
   @override
   UserCopyWith<$R2, User, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

@@ -34,6 +34,9 @@ class StaffMapper extends ClassMapperBase<Staff> {
   static DateTime? _$updated(Staff v) => v.updated;
   static const Field<Staff, DateTime> _f$updated =
       Field('updated', _$updated, opt: true);
+  static String? _$avatar(Staff v) => v.avatar;
+  static const Field<Staff, String> _f$avatar =
+      Field('avatar', _$avatar, opt: true);
 
   @override
   final MappableFields<Staff> fields = const {
@@ -42,6 +45,7 @@ class StaffMapper extends ClassMapperBase<Staff> {
     #email: _f$email,
     #created: _f$created,
     #updated: _f$updated,
+    #avatar: _f$avatar,
   };
 
   static Staff _instantiate(DecodingData data) {
@@ -50,7 +54,8 @@ class StaffMapper extends ClassMapperBase<Staff> {
         name: data.dec(_f$name),
         email: data.dec(_f$email),
         created: data.dec(_f$created),
-        updated: data.dec(_f$updated));
+        updated: data.dec(_f$updated),
+        avatar: data.dec(_f$avatar));
   }
 
   @override
@@ -104,7 +109,8 @@ abstract class StaffCopyWith<$R, $In extends Staff, $Out>
       String? name,
       String? email,
       DateTime? created,
-      DateTime? updated});
+      DateTime? updated,
+      String? avatar});
   StaffCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -120,13 +126,15 @@ class _StaffCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Staff, $Out>
           String? name,
           String? email,
           Object? created = $none,
-          Object? updated = $none}) =>
+          Object? updated = $none,
+          Object? avatar = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (email != null) #email: email,
         if (created != $none) #created: created,
-        if (updated != $none) #updated: updated
+        if (updated != $none) #updated: updated,
+        if (avatar != $none) #avatar: avatar
       }));
   @override
   Staff $make(CopyWithData data) => Staff(
@@ -134,7 +142,8 @@ class _StaffCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Staff, $Out>
       name: data.get(#name, or: $value.name),
       email: data.get(#email, or: $value.email),
       created: data.get(#created, or: $value.created),
-      updated: data.get(#updated, or: $value.updated));
+      updated: data.get(#updated, or: $value.updated),
+      avatar: data.get(#avatar, or: $value.avatar));
 
   @override
   StaffCopyWith<$R2, Staff, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

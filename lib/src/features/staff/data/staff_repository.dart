@@ -6,6 +6,7 @@ import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/staff/domain/staff.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -22,7 +23,7 @@ abstract class StaffRepository {
   TaskResult<Staff> update(
     Staff staff,
     Map<String, dynamic> update, {
-    List<XFile> files = const [],
+    List<MultipartFile> files = const [],
   });
 
   TaskResult<Staff> create(Map<String, dynamic> payload);
@@ -93,7 +94,7 @@ class StaffRepositoryImpl extends StaffRepository {
   TaskResult<Staff> update(
     Staff staff,
     Map<String, dynamic> update, {
-    List<XFile> files = const [],
+    List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
       final staffMap = staff.toMap();
@@ -101,6 +102,7 @@ class StaffRepositoryImpl extends StaffRepository {
       final result = await collection.update(
         staff.id,
         body: combinedMap,
+        files: files,
       );
       return Staff.customFromMap(result.toJson());
     }, Failure.tryCatchData);

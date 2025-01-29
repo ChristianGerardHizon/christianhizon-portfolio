@@ -121,7 +121,7 @@ class AuthRepositoryImpl implements AuthRepository {
         }
 
         final authUser = AuthUser.fromJson(authUserString);
-        authStore.clear();
+
         authStore.save(authUser.token, null);
 
         final authModel =

@@ -13,7 +13,7 @@ class PatientCircleImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final file = patient.displayImage ?? '';
+    final file = patient.avatar ?? '';
 
     if (file.isEmpty) {
       return CircleAvatar(radius: radius.toDouble());
@@ -31,9 +31,7 @@ class PatientCircleImage extends StatelessWidget {
             width: radius.toDouble(),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              image: DecorationImage(
-                image: CachedNetworkImageProvider(url )
-              ),
+              image: DecorationImage(image: CachedNetworkImageProvider(url)),
             ),
           ),
         );

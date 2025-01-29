@@ -9,7 +9,7 @@ class Patient with PatientMappable {
   final String name;
   final List<String> images;
 
-  final String? displayImage;
+  final String? avatar;
 
   final String? species;
   final String? owner;
@@ -29,7 +29,7 @@ class Patient with PatientMappable {
     this.name = '',
     this.images = const [],
     this.owner,
-    this.displayImage,
+    this.avatar,
     this.species,
     this.breed,
     this.sex,
@@ -45,7 +45,7 @@ class Patient with PatientMappable {
   static const fromMap = PatientMapper.fromMap;
   static const fromJson = PatientMapper.fromMap;
 
-  Map<String,dynamic> toForm() {
+  Map<String, dynamic> toForm() {
     return {
       ...toMap(),
       'dateOfBirth': dateOfBirth,
