@@ -4,6 +4,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/form_builders/form_hidden_fields.dart';
+import 'package:gym_system/src/core/widgets/form_builders/hidden_form_field.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/staff/data/staff_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -49,10 +51,14 @@ class StaffCreatePage extends HookConsumerWidget {
         leading: CloseButton(
           onPressed: () => PatientsPageRoute().go(context),
         ),
-        title: Text('Patient Create Page'),
+        title: Text('Staff Create Page'),
       ),
       body: FormBuilder(
         key: formKey,
+        initialValue: {
+          UserField.verified: false,
+          UserField.emailVisibility: true,
+        },
         child: CustomScrollView(
           slivers: [
             ///
@@ -74,6 +80,13 @@ class StaffCreatePage extends HookConsumerWidget {
 
                   SizedBox(height: 10),
 
+                  FormHiddenFields(
+                    ids: [
+                      UserField.verified,
+                      UserField.emailVisibility,
+                    ],
+                  ),
+
                   ///
                   /// Email
                   ///
@@ -91,6 +104,8 @@ class StaffCreatePage extends HookConsumerWidget {
                       ),
                     ),
                   ),
+
+                  SizedBox(height: 10),
 
                   ///
                   /// Name
@@ -110,6 +125,8 @@ class StaffCreatePage extends HookConsumerWidget {
                     ),
                   ),
 
+                  SizedBox(height: 10),
+
                   ///
                   /// Password
                   ///
@@ -128,15 +145,17 @@ class StaffCreatePage extends HookConsumerWidget {
                     ),
                   ),
 
+                  SizedBox(height: 10),
+
                   ///
                   /// RePassword
                   ///
                   FormBuilderTextField(
-                    name: UserField.rePassword,
+                    name: UserField.passwordConfirm,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(
                           bottom: 10, right: 8, left: 8, top: 30),
-                      labelText: 'RePassword',
+                      labelText: 'Password Confirm',
                       filled: true,
                       fillColor:
                           Theme.of(context).colorScheme.surfaceContainerLow,
@@ -145,6 +164,8 @@ class StaffCreatePage extends HookConsumerWidget {
                       ),
                     ),
                   ),
+
+                  SizedBox(height: 10),
                 ],
               ),
             ),

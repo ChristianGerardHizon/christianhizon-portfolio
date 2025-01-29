@@ -4,7 +4,9 @@ class UserField {
   static const String profilePhoto = 'profilePhoto';
   static const String contactNumber = 'contactNumber';
   static const String password = 'password';
-  static const String rePassword = 'rePassword';
+  static const String passwordConfirm = 'passwordConfirm';
+  static const String emailVisibility = 'emailVisibility';
+  static const String verified = 'verified';
 }
 
 class AdminField {

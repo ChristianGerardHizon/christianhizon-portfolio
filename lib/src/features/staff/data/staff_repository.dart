@@ -77,7 +77,6 @@ class StaffRepositoryImpl extends StaffRepository {
         page: pageNo,
         perPage: pageSize,
       );
-      print(result);
       return PageResults(
         page: result.page,
         perPage: result.perPage,

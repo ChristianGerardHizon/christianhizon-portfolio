@@ -1,4 +1,3 @@
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/flutter_secure_storage.dart';
@@ -121,7 +120,7 @@ class AuthRepositoryImpl implements AuthRepository {
         }
 
         final authUser = AuthUser.fromJson(authUserString);
-
+        authStore.clear();
         authStore.save(authUser.token, null);
 
         final authModel =
