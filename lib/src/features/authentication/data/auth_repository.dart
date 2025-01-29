@@ -2,6 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
+import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -73,8 +74,8 @@ class AuthRepositoryImpl implements AuthRepository {
   TaskResult<AuthUser> login(AuthUserType type, Map<String, dynamic> payload) {
     return TaskResult.tryCatch(
       () async {
-        final email = payload['email'];
-        final password = payload['password'];
+        final email = payload[UserField.email];
+        final password = payload[UserField.password];
 
         return await pb.collection(type.name).authWithPassword(email, password);
       },
