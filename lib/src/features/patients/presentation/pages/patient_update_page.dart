@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
@@ -125,7 +124,7 @@ class PatientUpdatePage extends HookConsumerWidget {
         skipLoadingOnReload: false,
         data: (updateState) {
           final patient = updateState.patient;
-          final settings = updateState.settings;
+          // final settings = updateState.settings;
           final map = patient.toForm();
           return FormBuilder(
             key: formKey,

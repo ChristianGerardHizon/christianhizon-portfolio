@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/strings/strings.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_circle_image.dart';
 import 'package:gym_system/src/features/staff/domain/staff.dart';
 import 'package:gym_system/src/features/staff/presentation/widgets/staff_circle_image.dart';
 import 'package:material_table_view/material_table_view.dart';
@@ -141,7 +139,7 @@ class StaffsTable extends HookWidget {
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      staff.email ?? AppStrings.placeholderText,
+                      staff.email,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
