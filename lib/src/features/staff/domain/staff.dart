@@ -6,6 +6,7 @@ part 'staff.mapper.dart';
 class Staff with StaffMappable {
   final String id;
   final String name;
+  final String email;
 
   final DateTime? created;
   final DateTime? updated;
@@ -13,6 +14,7 @@ class Staff with StaffMappable {
   Staff({
     required this.id,
     this.name = '',
+    this.email = '',
     this.created,
     this.updated,
   });

@@ -78,7 +78,6 @@ class PatientRepositoryImpl extends PatientRepository {
         page: pageNo,
         perPage: pageSize,
       );
-      print(result);
       return PageResults(
         page: result.page,
         perPage: result.perPage,
