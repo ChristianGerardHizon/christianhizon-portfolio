@@ -49,7 +49,9 @@ class PatientPage extends HookConsumerWidget {
         data: (patient) {
           return CustomScrollView(
             slivers: [
+              ///
               /// AppBar
+              ///
               SliverAppBar(
                 leading: BackButton(
                   onPressed: () => PatientsPageRoute().go(context),
@@ -71,6 +73,9 @@ class PatientPage extends HookConsumerWidget {
                 ],
               ),
 
+              ///
+              /// Picture
+              ///
               SliverPadding(
                 padding: const EdgeInsets.only(top: 20, bottom: 30),
                 sliver: SliverToBoxAdapter(
@@ -84,6 +89,9 @@ class PatientPage extends HookConsumerWidget {
                 ),
               ),
 
+              ///
+              /// Patient Infor
+              ///
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 sliver: SliverList.list(children: [
@@ -106,12 +114,17 @@ class PatientPage extends HookConsumerWidget {
                     title: Text(patient.name),
                   ),
 
+                  ///
                   /// Breed
+                  ///
                   ListTile(
                     leading: Text('Breed: '),
                     title: Text(patient.breed.optional()),
                   ),
 
+                  ///
+                  /// Species
+                  ///
                   ListTile(
                     leading: Text('Species: '),
                     title: Text(patient.species.optional()),
