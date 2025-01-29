@@ -294,7 +294,7 @@ class PatientUpdatePage extends HookConsumerWidget {
                     padding: EdgeInsets.only(left: 10, right: 10, top: 35),
                     sliver: SliverList.list(children: [
                       ///
-                      ///
+                      /// Header
                       ///
                       ListTile(
                         contentPadding: EdgeInsets.all(0),
@@ -327,7 +327,7 @@ class PatientUpdatePage extends HookConsumerWidget {
                       SizedBox(height: 10),
 
                       ///
-                      /// address
+                      /// Address
                       ///
                       FormBuilderTextField(
                         name: PatientField.address,
@@ -347,7 +347,7 @@ class PatientUpdatePage extends HookConsumerWidget {
                       SizedBox(height: 10),
 
                       ///
-                      /// ContactNumber
+                      /// Contact Number
                       ///
                       FormBuilderTextField(
                         name: PatientField.contactNumber,
@@ -388,7 +388,7 @@ class PatientUpdatePage extends HookConsumerWidget {
                     ])),
 
                 ///
-                /// save button
+                /// Save button
                 ///
                 SliverToBoxAdapter(
                   child: Center(
