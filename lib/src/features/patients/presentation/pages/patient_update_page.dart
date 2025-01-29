@@ -44,7 +44,9 @@ class PatientUpdatePage extends HookConsumerWidget {
       final repo = ref.read(patientRepositoryProvider);
 
       final result = await TaskResult<Patient?>.Do(($) async {
-        final images = await $(FilePickerUtil.getImage('displayImage'));
+        final images = await $(
+          FilePickerUtil.getImage(PatientField.displayImage),
+        );
         if (images == null || images.isEmpty) return $(TaskResult.right(null));
         return $(repo.update(patient, {}, files: images));
       }).run();
@@ -66,14 +68,17 @@ class PatientUpdatePage extends HookConsumerWidget {
       if (confirm != true) return;
 
       final result = await TaskResult<Patient?>.Do(($) async {
-        return $(repo.update(patient, {'displayImage': null}));
+        return $(repo.update(patient, {PatientField.displayImage: null}));
       }).run();
 
-      result.fold((l) => AppSnackBar.rootFailure(l), (r) {
-        if (r == null) return;
-        onRefresh();
-        AppSnackBar.root(message: 'Successfully Delete Image');
-      });
+      result.fold(
+        (l) => AppSnackBar.rootFailure(l),
+        (r) {
+          if (r == null) return;
+          onRefresh();
+          AppSnackBar.root(message: 'Successfully Delete Image');
+        },
+      );
     }
 
     void onSubmit(Patient patient) async {
