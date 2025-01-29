@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
@@ -26,16 +27,16 @@ class PatientPage extends HookConsumerWidget {
       final confirm = await ConfirmModal.show(context);
       if (confirm != true) return;
       final repo = ref.read(patientRepositoryProvider);
-      repo.delete(id).run().then((result) {
-        result.fold(
-          (l) => AppSnackBar.rootFailure(l),
-          (r) {
-            ref.invalidate(patientsControllerProvider);
-            AppSnackBar.root(message: 'Successfully Deleted');
-            PatientsPageRoute().go(context);
-          },
-        );
-      });
+      repo.softDeleteMulti([id]).run().then((result) {
+            result.fold(
+              (l) => AppSnackBar.rootFailure(l),
+              (r) {
+                ref.invalidate(patientsControllerProvider);
+                AppSnackBar.root(message: 'Successfully Deleted');
+                PatientsPageRoute().go(context);
+              },
+            );
+          });
     }
 
     return Scaffold(
@@ -56,7 +57,7 @@ class PatientPage extends HookConsumerWidget {
                 title: Text(patient.name),
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.update),
+                    icon: const Icon(Icons.edit),
                     onPressed: () => PatientUpdatePageRoute(id).go(context),
                   ),
                   IconButton(
@@ -70,18 +71,33 @@ class PatientPage extends HookConsumerWidget {
                 ],
               ),
 
-              SliverToBoxAdapter(
+              SliverPadding(
+                padding: const EdgeInsets.only(top: 20, bottom: 30),
+                sliver: SliverToBoxAdapter(
                   child: SizedBox(
-                height: 170,
-                child: PatientCircleImage(
-                  radius: 80,
-                  patient: patient,
+                    height: 250,
+                    child: PatientCircleImage(
+                      radius: 120,
+                      patient: patient,
+                    ),
+                  ),
                 ),
-              )),
+              ),
 
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 sliver: SliverList.list(children: [
+                  ///
+                  /// Header
+                  ///
+                  ListTile(
+                    contentPadding: EdgeInsets.only(left: 14),
+                    title: Text(
+                      'Patient Info',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
+
                   ///
                   /// name
                   ///
@@ -102,6 +118,36 @@ class PatientPage extends HookConsumerWidget {
                   ),
 
                   ///
+                  /// date of birth
+                  ///
+                  ListTile(
+                    leading: Text('Date of Birth: '),
+                    title: Text(
+                        (patient.dateOfBirth?.toLocal().yyyyMMdd()).optional()),
+                  ),
+                ]),
+              ),
+
+              ///
+              /// Owner Details
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                sliver: SliverList.list(children: [
+                  SizedBox(height: 30),
+
+                  ///
+                  /// Header
+                  ///
+                  ListTile(
+                    contentPadding: EdgeInsets.only(left: 14),
+                    title: Text(
+                      'Owner Info',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
+
+                  ///
                   /// owner
                   ///
                   ListTile(
@@ -118,12 +164,40 @@ class PatientPage extends HookConsumerWidget {
                   ),
 
                   ///
-                  /// date of birth
+                  /// email
                   ///
                   ListTile(
-                    leading: Text('Date of Birth: '),
+                    leading: Text('Email: '),
+                    title: Text(patient.email.optional()),
+                  ),
+
+                  ///
+                  /// contact number
+                  ///
+                  ListTile(
+                    leading: Text('Contact Number: '),
+                    title: Text(patient.contactNumber.optional()),
+                  ),
+                ]),
+              ),
+
+              ///
+              /// Other Details
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                sliver: SliverList.list(children: [
+                  SizedBox(height: 30),
+
+                  ///
+                  /// Header
+                  ///
+                  ListTile(
+                    contentPadding: EdgeInsets.only(left: 14),
                     title: Text(
-                        (patient.dateOfBirth?.toLocal().toString()).optional()),
+                      'Other Info',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
                   ),
 
                   ///
@@ -131,8 +205,8 @@ class PatientPage extends HookConsumerWidget {
                   ///
                   ListTile(
                     leading: Text('Created At: '),
-                    title: Text(
-                        (patient.created?.toLocal().toString()).optional()),
+                    title: Text((patient.created?.toLocal().yyyyMMddHHmmA())
+                        .optional()),
                   ),
 
                   ///
@@ -140,85 +214,16 @@ class PatientPage extends HookConsumerWidget {
                   ///
                   ListTile(
                     leading: Text('Updated At: '),
-                    title: Text(
-                        (patient.created?.toLocal().toString()).optional()),
+                    title: Text((patient.created?.toLocal().yyyyMMddHHmmA())
+                        .optional()),
                   ),
                 ]),
               ),
 
               ///
-              /// row of images scrolling horizontally
+              /// Spacer
               ///
-              // ref.watch(settingsControllerProvider).when(
-              //       skipError: false,
-              //       skipLoadingOnRefresh: false,
-              //       skipLoadingOnReload: false,
-              //       loading: () =>
-              //           const Center(child: CircularProgressIndicator()),
-              //       error: (error, stackTrace) =>
-              //           Center(child: Text(error.toString())),
-              //       data: (settings) {
-              //         return Container(
-              //           height: 100,
-              //           child: ListView.builder(
-              //             scrollDirection: Axis.horizontal,
-              //             itemCount: patient.images.length,
-              //             itemBuilder: (context, index) {
-              //               final imageUrl =
-              //                   '${settings.domain}/api/files/${PocketBaseCollections.patients}/$id/${patient.images[index]}';
-              //               return Stack(
-              //                 children: [
-              //                   ///
-              //                   /// image
-              //                   ///
-              //                   Padding(
-              //                     padding: EdgeInsets.only(right: 15, top: 15),
-              //                     child: InkWell(
-              //                       onTap: () =>
-              //                           PhotoViewer.show(context, imageUrl),
-              //                       child: Image.network(imageUrl),
-              //                     ),
-              //                   ),
-
-              //                   ///
-              //                   /// delete
-              //                   ///
-              //                   Positioned(
-              //                     right: 0,
-              //                     top: 0,
-              //                     child: Container(
-              //                       decoration: BoxDecoration(
-              //                         borderRadius: BorderRadius.circular(20),
-              //                         color: Colors.white,
-              //                         boxShadow: [
-              //                           BoxShadow(
-              //                             offset: const Offset(0, 2),
-              //                             blurRadius: 4,
-              //                             color: Colors.black12,
-              //                           ),
-              //                         ],
-              //                       ),
-              //                       child: IconButton(
-              //                         icon: const Icon(
-              //                           Icons.delete,
-              //                           color: Colors.red,
-              //                           size: 20,
-              //                         ),
-              //                         onPressed: () {},
-              //                       ),
-              //                     ),
-              //                   ),
-              //                 ],
-              //               );
-              //             },
-              //           ),
-              //         );
-              //       },
-              //     ),
-
-              ///
-              /// breed
-              ///
+              SliverToBoxAdapter(child: SizedBox(height: 50)),
             ],
           );
         },

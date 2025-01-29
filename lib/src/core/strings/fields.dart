@@ -1,7 +1,10 @@
 class UserField {
   static const String name = 'name';
+  static const String email = 'email';
   static const String profilePhoto = 'profilePhoto';
   static const String contactNumber = 'contactNumber';
+  static const String password = 'password';
+  static const String rePassword = 'rePassword';
 }
 
 class AdminField {

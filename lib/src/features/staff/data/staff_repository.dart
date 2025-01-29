@@ -14,7 +14,7 @@ part 'staff_repository.g.dart';
 abstract class StaffRepository {
   TaskResult<Staff> get(String id);
   TaskResult<PageResults<Staff>> list({
-    String? query,
+    String? filter,
     required int pageNo,
     required int pageSize,
   });
@@ -26,6 +26,7 @@ abstract class StaffRepository {
   });
 
   TaskResult<Staff> create(Map<String, dynamic> payload);
+  TaskResult<void> softDeleteMulti(List<String> ids);
 }
 
 @Riverpod(keepAlive: true)
@@ -67,7 +68,7 @@ class StaffRepositoryImpl extends StaffRepository {
 
   @override
   TaskResult<PageResults<Staff>> list({
-    String? query,
+    String? filter,
     required int pageNo,
     required int pageSize,
   }) {
@@ -103,6 +104,19 @@ class StaffRepositoryImpl extends StaffRepository {
         body: combinedMap,
       );
       return Staff.customFromMap(result.toJson());
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<void> softDeleteMulti(List<String> ids) {
+    return TaskResult.tryCatch(() async {
+      final batch = pb.createBatch();
+      final batchCollection = batch.collection(PocketBaseCollections.staffs);
+      for (final id in ids) {
+        batchCollection.update(id, body: {'isDeleted': true});
+      }
+
+      await batch.send();
     }, Failure.tryCatchData);
   }
 }

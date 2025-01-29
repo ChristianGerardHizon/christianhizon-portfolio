@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/strings/strings.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_circle_image.dart';
+import 'package:gym_system/src/features/staff/domain/staff.dart';
+import 'package:gym_system/src/features/staff/presentation/widgets/staff_circle_image.dart';
 import 'package:material_table_view/material_table_view.dart';
 import 'package:material_table_view/sliver_table_view.dart';
 
-class PatientsTable extends HookWidget {
-  final List<Patient> list;
+class StaffsTable extends HookWidget {
+  final List<Staff> list;
   final List<int> selected;
   final Function(List<int>)? onSelected;
   final Function(int)? onRowTap;
 
-  const PatientsTable({
+  const StaffsTable({
     super.key,
     required this.list,
     required this.selected,
@@ -23,7 +24,7 @@ class PatientsTable extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool? mainCheckboxStatus(List<Patient> list, List<int> selected) {
+    bool? mainCheckboxStatus(List<Staff> list, List<int> selected) {
       if (selected.isEmpty) {
         return false;
       }
@@ -59,9 +60,6 @@ class PatientsTable extends HookWidget {
         const TableColumn(width: 60),
         const TableColumn(width: 150),
         const TableColumn(width: 120),
-        const TableColumn(width: 120),
-        const TableColumn(width: 120),
-        const TableColumn(width: 120),
         TableColumn(width: 56.0, freezePriority: 100),
       ],
       headerBuilder: (context, contentBuilder) {
@@ -96,26 +94,8 @@ class PatientsTable extends HookWidget {
               case 3:
                 return Align(
                     alignment: Alignment.centerLeft,
-                    child: const Text(
-                      'Owner',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ));
-              case 4:
-                return Align(
-                    alignment: Alignment.centerLeft,
-                    child: const Text('Contact Number',
-                        style: TextStyle(fontWeight: FontWeight.w600)));
-              case 5:
-                return Align(
-                    alignment: Alignment.centerLeft,
                     child: const Text('Email',
                         style: TextStyle(fontWeight: FontWeight.w600)));
-              case 6:
-                return Align(
-                    alignment: Alignment.centerLeft,
-                    child: const Text('Species',
-                        style: TextStyle(fontWeight: FontWeight.w600)));
-
               default:
                 return SizedBox();
             }
@@ -129,7 +109,7 @@ class PatientsTable extends HookWidget {
         //   return null; // to use a placeholder
         // }
 
-        final patient = list[row];
+        final staff = list[row];
 
         return InkWell(
           onTap: () {
@@ -146,13 +126,13 @@ class PatientsTable extends HookWidget {
                 case 1:
                   return Padding(
                     padding: EdgeInsets.all(8),
-                    child: PatientCircleImage(radius: 120, patient: patient),
+                    child: StaffCircleImage(radius: 120, staff: staff),
                   );
                 case 2:
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      patient.name,
+                      staff.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -161,34 +141,7 @@ class PatientsTable extends HookWidget {
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      patient.address ?? AppStrings.placeholderText,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  );
-                case 4:
-                  return Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      patient.contactNumber ?? AppStrings.placeholderText,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  );
-                case 5:
-                  return Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      patient.email ?? AppStrings.placeholderText,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  );
-                case 6:
-                  return Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      patient.species ?? AppStrings.placeholderText,
+                      staff.email ?? AppStrings.placeholderText,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

@@ -45,6 +45,15 @@ class Patient with PatientMappable {
   static const fromMap = PatientMapper.fromMap;
   static const fromJson = PatientMapper.fromMap;
 
+  Map<String,dynamic> toForm() {
+    return {
+      ...toMap(),
+      'dateOfBirth': dateOfBirth,
+      'created': created,
+      'updated': created,
+    };
+  }
+
   static Patient customFromMap(Map<String, dynamic> raw) {
     // if dateOfBirth is '' empty string, it will be null
     final dateOfBirth = raw['dateOfBirth'];

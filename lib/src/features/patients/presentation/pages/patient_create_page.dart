@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/form_typeahead_custom.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/core/widgets/responsive_two_fields.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
@@ -33,11 +34,6 @@ class PatientCreatePage extends HookConsumerWidget {
         isLoading.value = false;
         return;
       }
-
-      ///
-      /// separate the List<xFiles> and convert it to List<MultipartFile>
-      ///
-      final files = form.value[PatientField.images];
 
       final result =
           await ref.read(patientRepositoryProvider).create(form.value).run();
@@ -81,12 +77,39 @@ class PatientCreatePage extends HookConsumerWidget {
 
                   SizedBox(height: 10),
 
+                  FormBuilderTextField(
+                    name: PatientField.name,
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(),
+                    ]),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(
+                          bottom: 10, right: 8, left: 8, top: 30),
+                      labelText: 'Patient Name',
+                      filled: true,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
                   ResponsiveTwoFields(
-                    verticalGap: 15,
+                    verticalGap: 10,
                     horizontalGap: 10,
                     children: [
-                      FormBuilderTextField(
-                        name: PatientField.name,
+                      FormTypeaheadCustom(
+                        allowCustomInput: true,
+                        suggestionsCallback: (p0) => ['test'],
+                        itemBuilder: (context, suggestion) {
+                          return ListTile(
+                            title: Text(suggestion),
+                          );
+                        },
+                        name: PatientField.species,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.only(
                             bottom: 10,
@@ -94,7 +117,7 @@ class PatientCreatePage extends HookConsumerWidget {
                             left: 8,
                             top: 30,
                           ),
-                          labelText: 'Patient Name',
+                          labelText: 'Species',
                           filled: true,
                           fillColor:
                               Theme.of(context).colorScheme.surfaceContainerLow,
@@ -103,12 +126,23 @@ class PatientCreatePage extends HookConsumerWidget {
                           ),
                         ),
                       ),
-                      FormBuilderTextField(
-                        name: 'test',
+                      FormTypeaheadCustom(
+                        allowCustomInput: true,
+                        suggestionsCallback: (p0) => ['test'],
+                        itemBuilder: (context, suggestion) {
+                          return ListTile(
+                            title: Text(suggestion),
+                          );
+                        },
+                        name: PatientField.breed,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.only(
-                              bottom: 10, right: 8, left: 8, top: 30),
-                          labelText: 'Patient Name',
+                            bottom: 10,
+                            right: 8,
+                            left: 8,
+                            top: 30,
+                          ),
+                          labelText: 'Breed',
                           filled: true,
                           fillColor:
                               Theme.of(context).colorScheme.surfaceContainerLow,
@@ -116,58 +150,8 @@ class PatientCreatePage extends HookConsumerWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                      ),
+                      )
                     ],
-                  ),
-
-                  ///
-                  /// name
-                  ///
-
-                  SizedBox(height: 10),
-
-                  ///
-                  /// Species
-                  ///
-                  FormBuilderTextField(
-                    name: PatientField.species,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(
-                          bottom: 10, right: 8, left: 8, top: 30),
-                      labelText: 'Species',
-                      filled: true,
-                      fillColor:
-                          Theme.of(context).colorScheme.surfaceContainerLow,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: 10),
-
-                  ///
-                  /// Breed
-                  ///
-                  FormBuilderTypeAhead(
-                    suggestionsCallback: (p0) => ['test'],
-                    itemBuilder: (context, suggestion) {
-                      return ListTile(
-                        title: Text('test'),
-                      );
-                    },
-                    name: PatientField.breed,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(
-                          bottom: 10, right: 8, left: 8, top: 30),
-                      labelText: 'Breed',
-                      filled: true,
-                      fillColor:
-                          Theme.of(context).colorScheme.surfaceContainerLow,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
                   ),
 
                   SizedBox(height: 10),
