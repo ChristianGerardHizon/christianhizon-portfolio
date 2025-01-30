@@ -25,6 +25,7 @@ import 'package:gym_system/src/features/staff/presentation/pages/staffs_page.dar
 import 'package:gym_system/src/features/users/presentation/pages/user_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_update_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/users_page.dart';
+import 'package:gym_system/src/features/users/presentation/pages/your_user_page.dart';
 
 part 'main.routes.g.dart';
 part 'routes/admins.routes.dart';
@@ -145,11 +146,11 @@ class SplashPageRoute extends GoRouteData {
     ),
 
     ///
-    /// More
+    /// Users
     ///
-    TypedStatefulShellBranch<MoreBranchData>(
+    TypedStatefulShellBranch<UsersBranchData>(
       routes: <TypeRouteData>[
-        TypedGoRoute<MorePageRoute>(path: MorePageRoute.path),
+        TypedGoRoute<YourUserPageRoute>(path: YourUserPageRoute.path),
       ],
     ),
   ],

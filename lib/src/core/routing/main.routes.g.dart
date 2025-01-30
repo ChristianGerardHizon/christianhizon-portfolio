@@ -160,8 +160,8 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
-              path: '/more',
-              factory: $MorePageRouteExtension._fromState,
+              path: '/your-account',
+              factory: $YourUserPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -375,11 +375,12 @@ extension $SettingsPageRouteExtension on SettingsPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $MorePageRouteExtension on MorePageRoute {
-  static MorePageRoute _fromState(GoRouterState state) => const MorePageRoute();
+extension $YourUserPageRouteExtension on YourUserPageRoute {
+  static YourUserPageRoute _fromState(GoRouterState state) =>
+      const YourUserPageRoute();
 
   String get location => GoRouteData.$location(
-        '/more',
+        '/your-account',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -558,24 +559,6 @@ RouteBase get $yourUserPageRoute => GoRouteData.$route(
       factory: $YourUserPageRouteExtension._fromState,
     );
 
-extension $YourUserPageRouteExtension on YourUserPageRoute {
-  static YourUserPageRoute _fromState(GoRouterState state) =>
-      const YourUserPageRoute();
-
-  String get location => GoRouteData.$location(
-        '/your-account',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
-
 RouteBase get $userUpdatePageRoute => GoRouteData.$route(
       path: '/user/:id/update',
       factory: $UserUpdatePageRouteExtension._fromState,
@@ -697,6 +680,23 @@ RouteBase get $morePageRoute => GoRouteData.$route(
       path: '/more',
       factory: $MorePageRouteExtension._fromState,
     );
+
+extension $MorePageRouteExtension on MorePageRoute {
+  static MorePageRoute _fromState(GoRouterState state) => const MorePageRoute();
+
+  String get location => GoRouteData.$location(
+        '/more',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
 
 RouteBase get $salesPageRoute => GoRouteData.$route(
       path: '/sales',

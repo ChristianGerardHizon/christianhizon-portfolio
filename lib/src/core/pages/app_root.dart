@@ -79,30 +79,10 @@ class AppRoot extends HookConsumerWidget {
           StaffsPageRoute().go(context);
         },
       ),
-      CustomNavigationBarItem(
-        route: AccountPageRoute.path,
-        icon: Icon(MIcons.accountCircle),
-        label: 'Account',
-        onTap: () {
-          AccountPageRoute().go(context);
-        },
-      ),
     ];
 
-    int checkIndex(int currentIndex, int totalItems) {
-      if (currentIndex < 0) {
-        return totalItems - 1;
-      }
-      if (currentIndex >= totalItems) {
-        return 0;
-      }
-      return currentIndex;
-    }
-
-    final index = checkIndex(shell.currentIndex, items.length);
-
     return ResponsiveBuilder(builder: (context, sizeInfo) {
-      if (!sizeInfo.isMobile) {
+      if (sizeInfo.isTablet || sizeInfo.isDesktop) {
         return Scaffold(
           body: Row(
             children: [
@@ -142,6 +122,7 @@ class AppRoot extends HookConsumerWidget {
                   footer: Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: InkWell(
+                      onTap: () => YourUserPageRoute().go(context),
                       child: CircleAvatar(),
                     ),
                   ),

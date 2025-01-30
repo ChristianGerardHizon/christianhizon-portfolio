@@ -6,11 +6,16 @@ class YourUserPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Your User Page'),
-      ),
-      body: Center(
-        child: Text('Your User Page'),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: Text('App Bar Sample'),
+          ),
+          SliverAppBar(
+            pinned: true,
+            title: Text('Contetn'),
+          )
+        ],
       ),
     );
   }

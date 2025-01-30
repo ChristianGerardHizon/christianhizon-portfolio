@@ -33,7 +33,7 @@ class YourUserPageRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const Scaffold();
+    return const YourUserPage();
   }
 }
 

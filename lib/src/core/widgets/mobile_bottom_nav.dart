@@ -22,11 +22,11 @@ class MobileBottomNav extends StatelessWidget {
     final theme = Theme.of(context);
 
     final moreWidget = CustomNavigationBarItem(
-      route: MorePageRoute.path,
-      icon: Icon(MIcons.menu),
-      label: 'More',
+      route: YourUserPageRoute.path,
+      icon: Icon(MIcons.homeCircleOutline),
+      label: 'Account',
       onTap: () {
-        MorePageRoute().go(context);
+        YourUserPageRoute().go(context);
       },
     );
 
@@ -48,7 +48,7 @@ class MobileBottomNav extends StatelessWidget {
         DashboardPageRoute.path,
         PatientsPageRoute.path,
         ProductsPageRoute.path,
-        MorePageRoute.path,
+        YourUserPageRoute.path,
       ];
       return routes.contains(path);
     }
