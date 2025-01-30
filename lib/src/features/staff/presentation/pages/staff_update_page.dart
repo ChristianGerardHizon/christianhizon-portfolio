@@ -41,7 +41,7 @@ class StaffUpdatePage extends HookConsumerWidget {
 
       final result = await TaskResult<Staff?>.Do(($) async {
         final images = await $(
-          FilePickerUtil.getImage(PatientField.displayImage),
+          FilePickerUtil.getImage(PatientField.avatar),
         );
         if (images == null || images.isEmpty) return $(TaskResult.right(null));
         return $(repo.update(patient, {}, files: images));
@@ -64,7 +64,7 @@ class StaffUpdatePage extends HookConsumerWidget {
       if (confirm != true) return;
 
       final result = await TaskResult<Staff?>.Do(($) async {
-        return $(repo.update(patient, {PatientField.displayImage: null}));
+        return $(repo.update(patient, {PatientField.avatar: null}));
       }).run();
 
       result.fold(

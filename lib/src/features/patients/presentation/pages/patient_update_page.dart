@@ -45,7 +45,7 @@ class PatientUpdatePage extends HookConsumerWidget {
 
       final result = await TaskResult<Patient?>.Do(($) async {
         final images = await $(
-          FilePickerUtil.getImage(PatientField.displayImage),
+          FilePickerUtil.getImage(PatientField.avatar),
         );
         if (images == null || images.isEmpty) return $(TaskResult.right(null));
         return $(repo.update(patient, {}, files: images));
@@ -68,7 +68,7 @@ class PatientUpdatePage extends HookConsumerWidget {
       if (confirm != true) return;
 
       final result = await TaskResult<Patient?>.Do(($) async {
-        return $(repo.update(patient, {PatientField.displayImage: null}));
+        return $(repo.update(patient, {PatientField.avatar: null}));
       }).run();
 
       result.fold(

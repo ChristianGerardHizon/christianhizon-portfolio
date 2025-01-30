@@ -27,5 +27,5 @@ class PatientField {
   static const String dateOfBirth = 'dateOfBirth';
   static const String sex = 'sex';
   static const String images = 'images';
-  static const String displayImage = 'displayImage';
+  static const String avatar = 'avatar';
 }
