@@ -1,0 +1,116 @@
+import 'package:flutter/material.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:go_router/go_router.dart';
+import 'package:gym_system/src/core/routing/main.routes.dart';
+import 'package:gym_system/src/core/type_defs/custom_navbar_item.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
+
+class MobileBottomNav extends StatelessWidget {
+  final List<CustomNavigationBarItem> list;
+  final GoRouterState state;
+  final int index;
+
+  const MobileBottomNav({
+    super.key,
+    required this.list,
+    required this.index,
+    required this.state,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final moreWidget = CustomNavigationBarItem(
+      route: MorePageRoute.path,
+      icon: Icon(MIcons.menu),
+      label: 'More',
+      onTap: () {
+        MorePageRoute().go(context);
+      },
+    );
+
+    final finalList = list
+        .mapWithIndex((item, index) {
+          if (index >= 3) return null;
+          return item;
+        })
+        .whereType<CustomNavigationBarItem>()
+        .toList()
+      ..add(moreWidget);
+
+    ///
+    ///
+    ///
+    bool shouldShowBottomNav(String? path) {
+      if (path == null) return false;
+      final routes = <String>[
+        DashboardPageRoute.path,
+        PatientsPageRoute.path,
+        ProductsPageRoute.path,
+        MorePageRoute.path,
+      ];
+      return routes.contains(path);
+    }
+
+    ///
+    ///
+    ///
+    onRouteChanged(int index, List<CustomNavigationBarItem> list) {
+      final item = list[index];
+      if (index == 3) {
+        moreWidget.onTap?.call();
+        return;
+      }
+      item.onTap?.call();
+    }
+
+    ///
+    ///
+    ///
+    int bottomNavIndeCalulator(int index) {
+      switch (index) {
+        case 0:
+          return 0;
+        case 1:
+          return 1;
+        case 2:
+          return 2;
+        case 3:
+          return 3;
+        default:
+          return 3;
+      }
+    }
+
+    ///
+    ///
+    ///
+    if (shouldShowBottomNav(state.fullPath) == false) {
+      return SizedBox();
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Divider(height: 0),
+        BottomNavigationBar(
+          elevation: 0,
+          currentIndex: bottomNavIndeCalulator(index),
+          selectedFontSize: 13,
+          unselectedFontSize: 11,
+          selectedLabelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+          selectedIconTheme: IconThemeData(
+            color: theme.colorScheme.primary,
+          ),
+          selectedItemColor: theme.colorScheme.primary,
+          type: BottomNavigationBarType.fixed,
+          items: finalList,
+          onTap: (index) => onRouteChanged(index, finalList),
+        )
+      ],
+    );
+  }
+}

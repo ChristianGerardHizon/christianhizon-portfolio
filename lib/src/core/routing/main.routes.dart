@@ -129,6 +129,9 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<StaffBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<StaffsPageRoute>(path: StaffsPageRoute.path),
+        TypedGoRoute<StaffsPageRoute>(path: StaffsPageRoute.path),
+        TypedGoRoute<StaffUpdatePageRoute>(path: StaffUpdatePageRoute.path),
+        TypedGoRoute<StaffCreatePageRoute>(path: StaffCreatePageRoute.path),
       ],
     ),
 
@@ -138,6 +141,15 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<SettingsBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<SettingsPageRoute>(path: SettingsPageRoute.path),
+      ],
+    ),
+
+    ///
+    /// More
+    ///
+    TypedStatefulShellBranch<MoreBranchData>(
+      routes: <TypeRouteData>[
+        TypedGoRoute<MorePageRoute>(path: MorePageRoute.path),
       ],
     ),
   ],

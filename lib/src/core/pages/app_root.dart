@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/type_defs/custom_navbar_item.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/widgets/mobile_bottom_nav.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -37,8 +38,8 @@ class AppRoot extends HookConsumerWidget {
     /// [onTap] -> the function that will be called when the button is tapped
     /// in this case the on tap will redirect you to the the other pages
     ///
-    final items = <int, CustomNavigationBarItem>{
-      0: CustomNavigationBarItem(
+    final items = [
+      CustomNavigationBarItem(
         route: RootRoute.path,
         icon: Icon(MIcons.viewDashboard),
         label: 'Dashboard',
@@ -46,7 +47,7 @@ class AppRoot extends HookConsumerWidget {
           RootRoute().go(context);
         },
       ),
-      1: CustomNavigationBarItem(
+      CustomNavigationBarItem(
         route: PatientsPageRoute.path,
         icon: Icon(MIcons.clipboardAccount),
         label: 'Patients',
@@ -54,7 +55,7 @@ class AppRoot extends HookConsumerWidget {
           PatientsPageRoute().go(context);
         },
       ),
-      2: CustomNavigationBarItem(
+      CustomNavigationBarItem(
         route: ProductsPageRoute.path,
         icon: Icon(MIcons.shoppingOutline),
         label: 'Products',
@@ -62,7 +63,7 @@ class AppRoot extends HookConsumerWidget {
           ProductsPageRoute().go(context);
         },
       ),
-      3: CustomNavigationBarItem(
+      CustomNavigationBarItem(
         route: SalesPageRoute.path,
         icon: Icon(MIcons.chartLine),
         label: 'Sales',
@@ -70,15 +71,15 @@ class AppRoot extends HookConsumerWidget {
           SalesPageRoute().go(context);
         },
       ),
-      4: CustomNavigationBarItem(
-        route: SettingsPageRoute.path,
+      CustomNavigationBarItem(
+        route: StaffsPageRoute.path,
         icon: Icon(MIcons.accountGroupOutline),
         label: 'Staffs',
         onTap: () {
           StaffsPageRoute().go(context);
         },
       ),
-      5: CustomNavigationBarItem(
+      CustomNavigationBarItem(
         route: AccountPageRoute.path,
         icon: Icon(MIcons.accountCircle),
         label: 'Account',
@@ -86,20 +87,7 @@ class AppRoot extends HookConsumerWidget {
           AccountPageRoute().go(context);
         },
       ),
-    };
-
-    ///
-    /// Handles the route change. In short this will be called when the button
-    /// in the bottom nav bar is tapped. Like the icon in the bottom nav bar
-    /// ex. if home is tapped it will go to the home page and this will also be
-    /// called
-    ///
-    onRouteChanged(int index) {
-      final item = items[index];
-      if (item != null) {
-        item.onTap?.call();
-      }
-    }
+    ];
 
     int checkIndex(int currentIndex, int totalItems) {
       if (currentIndex < 0) {
@@ -112,20 +100,6 @@ class AppRoot extends HookConsumerWidget {
     }
 
     final index = checkIndex(shell.currentIndex, items.length);
-
-    ///
-    /// will determine if the bottom nav bar should be visible
-    /// if true bottomNav will be shown if false it will be hidden
-    ///
-    /// will only show roots that are in the rootRoutes. if not it wont show it.
-    ///
-    bool shouldShowBottomNav(
-      Map<int, CustomNavigationBarItem> items,
-      String? path,
-    ) {
-      final routes = items.values.map((x) => x.route).toList();
-      return routes.filter((t) => t == path).isNotEmpty;
-    }
 
     return ResponsiveBuilder(builder: (context, sizeInfo) {
       if (!sizeInfo.isMobile) {
@@ -156,7 +130,7 @@ class AppRoot extends HookConsumerWidget {
                             ),
                           ),
                         ),
-                  items: items.values.mapWithIndex((e, index) {
+                  items: items.mapWithIndex((e, index) {
                     return SideMenuItemDataTile(
                       hasSelectedLine: false,
                       isSelected: shell.currentIndex == index,
@@ -180,38 +154,12 @@ class AppRoot extends HookConsumerWidget {
       }
 
       return Scaffold(
-        ///
-        /// this will be the content of your app
-        ///
         body: shell,
-
-        ///
-        /// the bottom bar. the 4 icon button in the root of the app.
-        ///
-        bottomNavigationBar: shouldShowBottomNav(items, state.fullPath)
-            ? Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Divider(height: 0),
-                  BottomNavigationBar(
-                    elevation: 0,
-                    currentIndex: index,
-                    selectedFontSize: 13,
-                    unselectedFontSize: 11,
-                    selectedLabelStyle: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                    selectedIconTheme: IconThemeData(
-                      color: theme.colorScheme.primary,
-                    ),
-                    selectedItemColor: theme.colorScheme.primary,
-                    type: BottomNavigationBarType.fixed,
-                    items: items.entries.map((e) => e.value).toList(),
-                    onTap: onRouteChanged,
-                  )
-                ],
-              )
-            : null,
+        bottomNavigationBar: MobileBottomNav(
+          index: shell.currentIndex,
+          list: items,
+          state: state,
+        ),
       );
     });
   }
