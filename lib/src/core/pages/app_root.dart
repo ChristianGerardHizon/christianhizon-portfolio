@@ -80,10 +80,10 @@ class AppRoot extends HookConsumerWidget {
       ),
       5: CustomNavigationBarItem(
         route: AccountPageRoute.path,
-        icon: Icon(MIcons.group),
+        icon: Icon(MIcons.accountCircle),
         label: 'Account',
         onTap: () {
-          SettingsPageRoute().go(context);
+          AccountPageRoute().go(context);
         },
       ),
     };
