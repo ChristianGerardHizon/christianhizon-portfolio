@@ -7,11 +7,11 @@ import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/form_builders/form_hidden_fields.dart';
 import 'package:gym_system/src/core/widgets/form_builders/hidden_form_field.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
-import 'package:gym_system/src/features/staff/data/staff_repository.dart';
+import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class StaffCreatePage extends HookConsumerWidget {
-  const StaffCreatePage({super.key});
+class UserCreatePage extends HookConsumerWidget {
+  const UserCreatePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,13 +35,13 @@ class StaffCreatePage extends HookConsumerWidget {
       }
 
       final result =
-          await ref.read(staffRepositoryProvider).create(form.value).run();
+          await ref.read(userRepositoryProvider).create(form.value).run();
       isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          StaffsPageRoute().go(context);
+          UsersPageRoute().go(context);
         },
       );
     }
@@ -51,7 +51,7 @@ class StaffCreatePage extends HookConsumerWidget {
         leading: CloseButton(
           onPressed: () => PatientsPageRoute().go(context),
         ),
-        title: Text('Staff Create Page'),
+        title: Text('User Create Page'),
       ),
       body: FormBuilder(
         key: formKey,
@@ -73,7 +73,7 @@ class StaffCreatePage extends HookConsumerWidget {
                   ListTile(
                     contentPadding: EdgeInsets.all(0),
                     title: Text(
-                      'Staff Info',
+                      'User Info',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),

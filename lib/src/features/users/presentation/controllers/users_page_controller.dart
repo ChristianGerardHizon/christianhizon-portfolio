@@ -1,21 +1,21 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'staffs_page_controller.g.dart';
+part 'users_page_controller.g.dart';
 
-class StaffsPageState {
+class UsersPageState {
   final int page;
   final int pageSize;
 
-  StaffsPageState({
+  UsersPageState({
     required this.page,
     required this.pageSize,
   });
 
-  StaffsPageState copyWith({
+  UsersPageState copyWith({
     int? page,
     int? pageSize,
   }) {
-    return StaffsPageState(
+    return UsersPageState(
       page: page ?? this.page,
       pageSize: pageSize ?? this.pageSize,
     );
@@ -23,10 +23,10 @@ class StaffsPageState {
 }
 
 @riverpod
-class StaffsPageController extends _$StaffsPageController {
+class UsersPageController extends _$UsersPageController {
   @override
-  StaffsPageState build() {
-    return StaffsPageState(page: 1, pageSize: 50);
+  UsersPageState build() {
+    return UsersPageState(page: 1, pageSize: 50);
   }
 
   changePage(int page) {

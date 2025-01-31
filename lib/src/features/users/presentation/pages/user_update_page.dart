@@ -1,149 +1,210 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
+import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/core/utils/form_utils.dart';
+import 'package:gym_system/src/core/utils/file_picker.dart';
+import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:gym_system/src/features/users/presentation/controllers/user_controller.dart';
+import 'package:gym_system/src/features/users/presentation/controllers/user_update_controller.dart';
+import 'package:gym_system/src/features/users/presentation/widgets/user_image_control_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-
 
 class UserUpdatePage extends HookConsumerWidget {
-  const UserUpdatePage({super.key, required this.id});
-
   final String id;
 
+  const UserUpdatePage(this.id, {super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isLoading = useState(false);
+    final updateController = userUpdateControllerProvider(id);
+    final state = ref.watch(updateController);
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final isLoading = useState(false);
+
     final provider = userControllerProvider(id);
 
-    /// Retrieves the current user from the auth controller
+    onRefresh() {
+      ref.invalidate(updateController);
+      ref.invalidate(provider);
+    }
 
-    /// Submits the form and if successful, pops the route with the new [Bid]
-    /// otherwise shows a snackbar with the error message.
-    void onSubmit() async {
-      isLoading.value = true;
-      final result = await TaskResult.Do(($) async {
-        final form = await $(FormUtils.getFormState(formKey.currentState));
-        final values = await $(FormUtils.getFormValues(form));
-        final repo = ref.read(userRepositoryProvider);
-        final user = await $(repo.get(id));
-        return $(repo.update(user, params: values));
+    ///
+    /// onUpload
+    ///
+    onUpload(User patient) async {
+      final repo = ref.read(userRepositoryProvider);
+
+      final result = await TaskResult<User?>.Do(($) async {
+        final images = await $(
+          FilePickerUtil.getImage(PatientField.avatar),
+        );
+        if (images == null || images.isEmpty) return $(TaskResult.right(null));
+        return $(repo.update(patient, {}, files: images));
+      }).run();
+
+      result.fold((l) => AppSnackBar.rootFailure(l), (r) {
+        if (r == null) return;
+        onRefresh();
+        AppSnackBar.root(message: 'Successfully Updated');
+      });
+    }
+
+    ///
+    /// onImageDiscard
+    ///
+    onImageDiscard(User patient) async {
+      final repo = ref.read(userRepositoryProvider);
+
+      final confirm = await ConfirmModal.show(context);
+      if (confirm != true) return;
+
+      final result = await TaskResult<User?>.Do(($) async {
+        return $(repo.update(patient, {PatientField.avatar: null}));
       }).run();
 
       result.fold(
-        (l) {
-          AppSnackBar.rootFailure(l);
-        },
+        (l) => AppSnackBar.rootFailure(l),
         (r) {
-          context.pop<User>(null);
+          if (r == null) return;
+          onRefresh();
+          AppSnackBar.root(message: 'Successfully Delete Image');
         },
       );
+    }
+
+    void onSubmit(User user) async {
+      isLoading.value = true;
+      final form = formKey.currentState;
+      if (form == null) {
+        isLoading.value = false;
+        return;
+      }
+      final isValid = form.saveAndValidate();
+      if (!isValid) {
+        isLoading.value = false;
+        return;
+      }
+
+      final result =
+          await ref.read(userRepositoryProvider).update(user, form.value).run();
+
+      if (!context.mounted) return;
       isLoading.value = false;
+      result.fold(
+        (l) => AppSnackBar.rootFailure(l),
+        (r) {
+          AppSnackBar.root(message: "Success");
+          PatientPageRoute(id).go(context);
+        },
+      );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Account Update Page'),
-      ),
-      body: ref.watch(provider).when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, s) => Center(child: Text(e.toString())),
-            data: (user) => FormBuilder(
-              key: formKey,
-              initialValue: user.toMap(),
-              enabled: isLoading.value == false,
-              child: CustomScrollView(
-                slivers: [
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    sliver: SliverList.list(children: [
-
-                      ///
-                      /// Change Profile Picture
-                      ///
-                      // CustomImageField(
-                      //   feature: 'users',
-                      //   id: id,
-                      //   name: UserField.profilePhoto,
-                      //   stringBuilder: (context, value) {
-                      //     return ImageViewer(
-                      //       builder: (url) => Image.network(
-                      //         url,
-                      //         width: 100,
-                      //         height: 100,
-                      //         fit: BoxFit.cover,
-                      //       ),
-                      //       feature: 'users',
-                      //       file: value,
-                      //       id: id,
-                      //     );
-                      //   },
-                      // ),
-
-                      ///
-                      /// name
-                      ///
-                      FormBuilderTextField(
-                        name: UserField.name,
-                        decoration: const InputDecoration(
-                          label: Text('Name'),
-                        ),
-                      ),
-
-                      FormBuilderTextField(
-                        name: UserField.contactNumber,
-                        keyboardType: TextInputType.phone,
-                        inputFormatters: [
-                          MaskTextInputFormatter(
-                            mask: '+63###-###-####',
-                            filter: {"#": RegExp(r'[0-9]')},
-                          ),
-                        ],
-                        decoration: const InputDecoration(
-                          label: Text('Contact Number'),
-                        ),
-                      ),
-
-                      ///
-                      /// Is a store owner
-                      ///
-                      // FormBuilderSwitch(
-                      //   title: const Text('Is a Store Owner'),
-                      //   name: UserField.isStoreOwner,
-                      //   decoration: const InputDecoration(
-                      //   enabled: ,
-                      //     hintText: 'for development purposes only',
-                      //   ),
-                      // ),
-
-                      ///
-                      /// Spacer
-                      ///
-                      const SizedBox(height: 20),
-
-                      ///
-                      /// Submit
-                      ///
-                      LoadingFilledButton(
-                        isLoading: isLoading.value,
-                        onPressed: onSubmit,
-                        child: const Text('Save'),
-                      ),
-                    ]),
-                  )
-                ],
-              ),
-            ),
+        leading: BackButton(
+          onPressed: () => PatientPageRoute(id).go(context),
+        ),
+        title: Text('Patient Update Page'),
+        actions: [
+          IconButton(
+            onPressed: onRefresh,
+            icon: Icon(Icons.refresh),
           ),
+        ],
+      ),
+      body: state.when(
+        skipError: false,
+        skipLoadingOnRefresh: false,
+        skipLoadingOnReload: false,
+        data: (updateState) {
+          final user = updateState.user;
+          // final settings = updateState.settings;
+          final map = user.toForm();
+          return FormBuilder(
+            key: formKey,
+            initialValue: map,
+            child: CustomScrollView(
+              slivers: [
+                ///
+                /// image
+                ///
+                SliverToBoxAdapter(
+                  child: UserImageControlWidget(
+                    user: user,
+                    onUpload: () => onUpload(user),
+                    onImageDiscard: () => onImageDiscard(user),
+                  ),
+                ),
+
+                ///
+                /// Personal Info
+                ///
+                SliverPadding(
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 35),
+                    sliver: SliverList.list(children: [
+                      ///
+                      /// Header
+                      ///
+                      ListTile(
+                        contentPadding: EdgeInsets.all(0),
+                        title: Text(
+                          'Owner Details',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+
+                      ///
+                      /// Email
+                      ///
+                      FormBuilderTextField(
+                        name: UserField.email,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10, right: 8, left: 8, top: 30),
+                          labelText: 'Email',
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).colorScheme.surfaceContainerLow,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 20),
+                    ])),
+
+                ///
+                /// Save button
+                ///
+                SliverToBoxAdapter(
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 300),
+                      child: LoadingFilledButton(
+                        isLoading: isLoading.value,
+                        child: Text('Save'),
+                        onPressed: () => onSubmit(user),
+                      ),
+                    ),
+                  ),
+                ),
+
+                SliverToBoxAdapter(child: SizedBox(height: 20))
+              ],
+            ),
+          );
+        },
+        error: (error, stack) {
+          return Text(error.toString());
+        },
+        loading: () => const CircularProgressIndicator(),
+      ),
     );
   }
 }

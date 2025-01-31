@@ -1,9 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'staff_search_controller.g.dart';
+part 'user_search_controller.g.dart';
 
 @riverpod
-class StaffSearchController extends _$StaffSearchController {
+class UserSearchController extends _$UserSearchController {
   @override
   String? build() {
     return null;

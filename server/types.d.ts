@@ -8950,7 +8950,7 @@ namespace core {
   providerName: string
   providerClient: auth.Provider
   record?: Record
-  oAuth2User?: auth.AuthUser
+  oAuth2User?: auth.AuthData
   createData: _TygojaDict
   isNewRecord: boolean
  }
@@ -19446,15 +19446,15 @@ namespace auth {
    */
   fetchRawUserInfo(token: oauth2.Token): string|Array<number>
   /**
-   * FetchAuthUser is similar to FetchRawUserInfo, but normalizes and
-   * marshalizes the user api response into a standardized AuthUser struct.
+   * FetchAuthData is similar to FetchRawUserInfo, but normalizes and
+   * marshalizes the user api response into a standardized AuthData struct.
    */
-  fetchAuthUser(token: oauth2.Token): (AuthUser)
+  fetchAuthData(token: oauth2.Token): (AuthData)
  }
  /**
-  * AuthUser defines a standardized OAuth2 user data structure.
+  * AuthData defines a standardized OAuth2 user data structure.
   */
- interface AuthUser {
+ interface AuthData {
   expiry: types.DateTime
   rawUser: _TygojaDict
   id: string
@@ -19471,7 +19471,7 @@ namespace auth {
    */
   avatarUrl: string
  }
- interface AuthUser {
+ interface AuthData {
   /**
    * MarshalJSON implements the [json.Marshaler] interface.
    * 

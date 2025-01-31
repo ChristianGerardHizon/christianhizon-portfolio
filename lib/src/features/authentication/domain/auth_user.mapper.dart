@@ -6,52 +6,6 @@
 
 part of 'auth_user.dart';
 
-class AuthUserTypeMapper extends EnumMapper<AuthUserType> {
-  AuthUserTypeMapper._();
-
-  static AuthUserTypeMapper? _instance;
-  static AuthUserTypeMapper ensureInitialized() {
-    if (_instance == null) {
-      MapperContainer.globals.use(_instance = AuthUserTypeMapper._());
-    }
-    return _instance!;
-  }
-
-  static AuthUserType fromValue(dynamic value) {
-    ensureInitialized();
-    return MapperContainer.globals.fromValue(value);
-  }
-
-  @override
-  AuthUserType decode(dynamic value) {
-    switch (value) {
-      case 'admins':
-        return AuthUserType.admins;
-      case 'users':
-        return AuthUserType.users;
-      default:
-        throw MapperException.unknownEnumValue(value);
-    }
-  }
-
-  @override
-  dynamic encode(AuthUserType self) {
-    switch (self) {
-      case AuthUserType.admins:
-        return 'admins';
-      case AuthUserType.users:
-        return 'users';
-    }
-  }
-}
-
-extension AuthUserTypeMapperExtension on AuthUserType {
-  String toValue() {
-    AuthUserTypeMapper.ensureInitialized();
-    return MapperContainer.globals.toValue<AuthUserType>(this) as String;
-  }
-}
-
 class AuthUserMapper extends ClassMapperBase<AuthUser> {
   AuthUserMapper._();
 
@@ -59,7 +13,8 @@ class AuthUserMapper extends ClassMapperBase<AuthUser> {
   static AuthUserMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = AuthUserMapper._());
-      AuthUserTypeMapper.ensureInitialized();
+      AuthDataMapper.ensureInitialized();
+      UserMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -69,33 +24,33 @@ class AuthUserMapper extends ClassMapperBase<AuthUser> {
 
   static String _$id(AuthUser v) => v.id;
   static const Field<AuthUser, String> _f$id = Field('id', _$id);
-  static AuthUserType _$type(AuthUser v) => v.type;
-  static const Field<AuthUser, AuthUserType> _f$type = Field('type', _$type);
+  static String _$token(AuthUser v) => v.token;
+  static const Field<AuthUser, String> _f$token = Field('token', _$token);
+  static User _$record(AuthUser v) => v.record;
+  static const Field<AuthUser, User> _f$record = Field('record', _$record);
   static String _$collectionId(AuthUser v) => v.collectionId;
   static const Field<AuthUser, String> _f$collectionId =
       Field('collectionId', _$collectionId);
   static String _$collectionName(AuthUser v) => v.collectionName;
   static const Field<AuthUser, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$token(AuthUser v) => v.token;
-  static const Field<AuthUser, String> _f$token = Field('token', _$token);
 
   @override
   final MappableFields<AuthUser> fields = const {
     #id: _f$id,
-    #type: _f$type,
+    #token: _f$token,
+    #record: _f$record,
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #token: _f$token,
   };
 
   static AuthUser _instantiate(DecodingData data) {
     return AuthUser(
         id: data.dec(_f$id),
-        type: data.dec(_f$type),
+        token: data.dec(_f$token),
+        record: data.dec(_f$record),
         collectionId: data.dec(_f$collectionId),
-        collectionName: data.dec(_f$collectionName),
-        token: data.dec(_f$token));
+        collectionName: data.dec(_f$collectionName));
   }
 
   @override
@@ -146,13 +101,15 @@ extension AuthUserValueCopy<$R, $Out> on ObjectCopyWith<$R, AuthUser, $Out> {
 }
 
 abstract class AuthUserCopyWith<$R, $In extends AuthUser, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+    implements AuthDataCopyWith<$R, $In, $Out> {
+  UserCopyWith<$R, User, User> get record;
+  @override
   $R call(
       {String? id,
-      AuthUserType? type,
+      String? token,
+      User? record,
       String? collectionId,
-      String? collectionName,
-      String? token});
+      String? collectionName});
   AuthUserCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -165,26 +122,29 @@ class _AuthUserCopyWithImpl<$R, $Out>
   late final ClassMapperBase<AuthUser> $mapper =
       AuthUserMapper.ensureInitialized();
   @override
+  UserCopyWith<$R, User, User> get record =>
+      $value.record.copyWith.$chain((v) => call(record: v));
+  @override
   $R call(
           {String? id,
-          AuthUserType? type,
+          String? token,
+          User? record,
           String? collectionId,
-          String? collectionName,
-          String? token}) =>
+          String? collectionName}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
-        if (type != null) #type: type,
+        if (token != null) #token: token,
+        if (record != null) #record: record,
         if (collectionId != null) #collectionId: collectionId,
-        if (collectionName != null) #collectionName: collectionName,
-        if (token != null) #token: token
+        if (collectionName != null) #collectionName: collectionName
       }));
   @override
   AuthUser $make(CopyWithData data) => AuthUser(
       id: data.get(#id, or: $value.id),
-      type: data.get(#type, or: $value.type),
+      token: data.get(#token, or: $value.token),
+      record: data.get(#record, or: $value.record),
       collectionId: data.get(#collectionId, or: $value.collectionId),
-      collectionName: data.get(#collectionName, or: $value.collectionName),
-      token: data.get(#token, or: $value.token));
+      collectionName: data.get(#collectionName, or: $value.collectionName));
 
   @override
   AuthUserCopyWith<$R2, AuthUser, $Out2> $chain<$R2, $Out2>(

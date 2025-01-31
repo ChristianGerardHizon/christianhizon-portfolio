@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/widgets/image_viewer.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
-import 'package:gym_system/src/features/staff/domain/staff.dart';
+import 'package:gym_system/src/features/users/domain/user.dart';
 
-class StaffCircleImage extends StatelessWidget {
-  final Staff staff;
+class UserCircleImage extends StatelessWidget {
+  final User user;
   final int radius;
-  const StaffCircleImage(
-      {super.key, required this.staff, this.radius = 60});
+  const UserCircleImage({super.key, required this.user, this.radius = 60});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +20,7 @@ class StaffCircleImage extends StatelessWidget {
     return ImageViewer(
       feature: PocketBaseCollections.patients,
       file: file,
-      id: staff.id,
+      id: user.id,
       placeholder: SizedBox(),
       builder: (url) {
         return GestureDetector(
@@ -31,9 +30,7 @@ class StaffCircleImage extends StatelessWidget {
             width: radius.toDouble(),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              image: DecorationImage(
-                image: CachedNetworkImageProvider(url )
-              ),
+              image: DecorationImage(image: CachedNetworkImageProvider(url)),
             ),
           ),
         );

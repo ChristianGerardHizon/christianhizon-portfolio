@@ -2,9 +2,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
+import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/features/admins/domain/admin.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
+import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pocketbase/pocketbase.dart';
 
@@ -22,10 +27,11 @@ AuthRepository authRepository(Ref ref) {
 }
 
 abstract class AuthRepository {
-  TaskResult<AuthUser> login(AuthUserType type, Map<String, dynamic> payload);
+  TaskResult<AuthAdmin> loginAsAdmin(Map<String, dynamic> payload);
+  TaskResult<AuthUser> loginAsUser(Map<String, dynamic> payload);
   TaskResult<void> logout();
-  TaskResult<AuthUser> refresh();
-  TaskResult<AuthUser> initialize();
+  TaskResult<AuthData> refresh();
+  TaskResult<AuthData> initialize();
 }
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -41,48 +47,78 @@ class AuthRepositoryImpl implements AuthRepository {
 
   AuthStore get authStore => pb.authStore;
 
-  TaskResult<AuthUser> _saveToStorage(RecordAuth recordAuth) {
+  TaskResult<T> _saveToStorage<T>(RecordAuth recordAuth) {
     return TaskResult.tryCatch(
       () async {
         final token = recordAuth.token;
         final record = recordAuth.record;
 
-        final appUser = AuthUser(
-          collectionId: record.collectionId,
-          collectionName: record.collectionName,
-          id: record.id,
-          token: token,
-          type: AuthUserTypeMapper.fromValue(record.collectionName),
-        );
+        AuthData? data;
+        if (record.collectionName == PocketBaseCollections.users) {
+          data = AuthUser(
+            collectionName: record.collectionName,
+            collectionId: record.collectionId,
+            id: record.id,
+            token: token,
+            record: User.fromMap(record.data),
+          );
+        }
+
+        if (record.collectionName == PocketBaseCollections.admins) {
+          data = AuthAdmin(
+            collectionName: record.collectionName,
+            collectionId: record.collectionId,
+            id: record.id,
+            token: token,
+            record: Admin.fromMap(record.data),
+          );
+        }
+        if (data == null) throw 'unknown user type';
 
         ///
         /// store
         ///
         await storage.write(
           key: authKey,
-          value: appUser.toJson(),
+          value: data.toJson(),
         );
-
         authStore.save(token, record);
-
-        return appUser;
+        return data as T;
       },
       Failure.tryCatchData,
     );
   }
 
-  TaskResult<AuthUser> login(AuthUserType type, Map<String, dynamic> payload) {
+  TaskResult<AuthAdmin> loginAsAdmin(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(
       () async {
         final email = payload[UserField.email];
         final password = payload[UserField.password];
 
-        return await pb.collection(type.name).authWithPassword(email, password);
+        return await pb
+            .collection(PocketBaseCollections.admins)
+            .authWithPassword(email, password);
       },
       (error, stack) {
         return Failure.tryCatchData(error, stack);
       },
-    ).flatMap(_saveToStorage);
+    ).flatMap((x) => _saveToStorage<AuthAdmin>(x));
+  }
+
+  TaskResult<AuthUser> loginAsUser(Map<String, dynamic> payload) {
+    return TaskResult.tryCatch(
+      () async {
+        final email = payload[UserField.email];
+        final password = payload[UserField.password];
+
+        return await pb
+            .collection(PocketBaseCollections.users)
+            .authWithPassword(email, password);
+      },
+      (error, stack) {
+        return Failure.tryCatchData(error, stack);
+      },
+    ).flatMap((x) => _saveToStorage<AuthUser>(x));
   }
 
   TaskResult<void> logout() {
@@ -92,7 +128,7 @@ class AuthRepositoryImpl implements AuthRepository {
     }, Failure.tryCatchData);
   }
 
-  TaskResult<AuthUser> refresh() {
+  TaskResult<AuthData> refresh() {
     return TaskResult.tryCatch(
       () async {
         final id = authStore.record?.id;
@@ -108,7 +144,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  TaskResult<AuthUser> initialize() {
+  TaskResult<AuthData> initialize() {
     return TaskResult.tryCatch(
       () async {
         ///
@@ -120,7 +156,7 @@ class AuthRepositoryImpl implements AuthRepository {
           throw Failure('authUserString is null', StackTrace.current);
         }
 
-        final authUser = AuthUser.fromJson(authUserString);
+        final authUser = AuthData.fromJson(authUserString);
 
         authStore.save(authUser.token, null);
 
@@ -132,13 +168,26 @@ class AuthRepositoryImpl implements AuthRepository {
         final token = authModel.token;
         final record = authModel.record;
 
-        return AuthUser(
-          id: record.id,
-          type: authUser.type,
-          collectionId: record.collectionId,
-          collectionName: record.collectionName,
-          token: token,
-        );
+        if (record.collectionName == PocketBaseCollections.users) {
+          return AuthUser(
+            collectionName: record.collectionName,
+            collectionId: record.collectionId,
+            id: record.id,
+            token: token,
+            record: User.fromMap(record.data),
+          );
+        }
+
+        if (record.collectionName == PocketBaseCollections.admins) {
+          return AuthAdmin(
+            collectionName: record.collectionName,
+            collectionId: record.collectionId,
+            id: record.id,
+            token: token,
+            record: Admin.fromMap(record.data),
+          );
+        }
+        throw 'unknown user type';
       },
       Failure.tryCatchData,
     );

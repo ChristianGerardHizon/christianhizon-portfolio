@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/features/staff/domain/staff.dart';
-import 'package:gym_system/src/features/staff/presentation/widgets/staff_circle_image.dart';
+import 'package:gym_system/src/features/users/domain/user.dart';
+import 'package:gym_system/src/features/users/presentation/widgets/user_circle_image.dart';
 import 'package:material_table_view/material_table_view.dart';
 import 'package:material_table_view/sliver_table_view.dart';
 
-class StaffsTable extends HookWidget {
-  final List<Staff> list;
+class UsersTable extends HookWidget {
+  final List<User> list;
   final List<int> selected;
   final Function(List<int>)? onSelected;
   final Function(int)? onRowTap;
 
-  const StaffsTable({
+  const UsersTable({
     super.key,
     required this.list,
     required this.selected,
@@ -22,7 +22,7 @@ class StaffsTable extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool? mainCheckboxStatus(List<Staff> list, List<int> selected) {
+    bool? mainCheckboxStatus(List<User> list, List<int> selected) {
       if (selected.isEmpty) {
         return false;
       }
@@ -107,7 +107,7 @@ class StaffsTable extends HookWidget {
         //   return null; // to use a placeholder
         // }
 
-        final staff = list[row];
+        final user = list[row];
 
         return InkWell(
           onTap: () {
@@ -124,13 +124,13 @@ class StaffsTable extends HookWidget {
                 case 1:
                   return Padding(
                     padding: EdgeInsets.all(8),
-                    child: StaffCircleImage(radius: 120, staff: staff),
+                    child: UserCircleImage(radius: 120, user: user),
                   );
                 case 2:
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      staff.name,
+                      user.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -139,7 +139,7 @@ class StaffsTable extends HookWidget {
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      staff.email,
+                      user.email,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

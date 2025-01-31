@@ -1,7 +1,7 @@
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/authentication/data/auth_repository.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_controller.g.dart';
@@ -14,7 +14,7 @@ class AuthController extends _$AuthController {
   final _noUserFailure = Failure.presentation('User not found');
 
   @override
-  Future<AuthUser> build() async {
+  Future<AuthData> build() async {
     final result = await ref
         .read(authRepositoryProvider)
         .initialize()
@@ -32,22 +32,26 @@ class AuthController extends _$AuthController {
     );
   }
 
-  TaskResult<AuthUser> setUser(AuthUser? user) {
+  TaskResult<AuthData> setUser(AuthData? user) {
     if (user == null) {
       state = AsyncValue.error(_noUserFailure, StackTrace.current);
       return TaskResult.left(Failure.presentation('No User Failure'));
     }
     state = AsyncData(user);
-    return TaskResult<AuthUser>.right(user);
+    return TaskResult<AuthData>.right(user);
   }
 
-  TaskResult<AuthUser> refresh() {
+  TaskResult<AuthData> refresh() {
     return ref.read(authRepositoryProvider).refresh().chainFirst(setUser);
   }
 
-  TaskResult<AuthUser> login(AuthUserType type, Map<String, dynamic> map) {
+  TaskResult<AuthData> login(AuthDataType type, Map<String, dynamic> map) {
     final repo = ref.read(authRepositoryProvider);
-    return repo.login(type, map).chainFirst(setUser);
+    if (type == AuthDataType.admins) {
+      return repo.loginAsAdmin(map).chainFirst(setUser);
+    } else {
+      return repo.loginAsUser(map).chainFirst(setUser);
+    }
   }
 
   TaskResult<void> logout() {

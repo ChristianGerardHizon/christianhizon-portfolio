@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'staff_search_controller.dart';
+part of 'users_page_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$staffSearchControllerHash() =>
-    r'6a312caf431fbbd4209b7a956635731625c09e6d';
+String _$usersPageControllerHash() =>
+    r'b1dc01bf894ad2615bb38d50a3d50711aee8ca29';
 
-/// See also [StaffSearchController].
-@ProviderFor(StaffSearchController)
-final staffSearchControllerProvider =
-    AutoDisposeNotifierProvider<StaffSearchController, String?>.internal(
-  StaffSearchController.new,
-  name: r'staffSearchControllerProvider',
+/// See also [UsersPageController].
+@ProviderFor(UsersPageController)
+final usersPageControllerProvider =
+    AutoDisposeNotifierProvider<UsersPageController, UsersPageState>.internal(
+  UsersPageController.new,
+  name: r'usersPageControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$staffSearchControllerHash,
+      : _$usersPageControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$StaffSearchController = AutoDisposeNotifier<String?>;
+typedef _$UsersPageController = AutoDisposeNotifier<UsersPageState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

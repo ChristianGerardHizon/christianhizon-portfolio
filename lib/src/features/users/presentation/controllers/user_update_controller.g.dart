@@ -1,12 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'staff_controller.dart';
+part of 'user_update_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$staffControllerHash() => r'fc39271a76386a12ca11be539d7a4b497757a7d3';
+String _$userUpdateControllerHash() =>
+    r'74f07cd799f75b0efe9b233e62a72c9144990df3';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,36 +30,36 @@ class _SystemHash {
   }
 }
 
-abstract class _$StaffController
-    extends BuildlessAutoDisposeAsyncNotifier<Staff> {
+abstract class _$UserUpdateController
+    extends BuildlessAutoDisposeAsyncNotifier<UserUpdateState> {
   late final String id;
 
-  FutureOr<Staff> build(
+  FutureOr<UserUpdateState> build(
     String id,
   );
 }
 
-/// See also [StaffController].
-@ProviderFor(StaffController)
-const staffControllerProvider = StaffControllerFamily();
+/// See also [UserUpdateController].
+@ProviderFor(UserUpdateController)
+const userUpdateControllerProvider = UserUpdateControllerFamily();
 
-/// See also [StaffController].
-class StaffControllerFamily extends Family<AsyncValue<Staff>> {
-  /// See also [StaffController].
-  const StaffControllerFamily();
+/// See also [UserUpdateController].
+class UserUpdateControllerFamily extends Family<AsyncValue<UserUpdateState>> {
+  /// See also [UserUpdateController].
+  const UserUpdateControllerFamily();
 
-  /// See also [StaffController].
-  StaffControllerProvider call(
+  /// See also [UserUpdateController].
+  UserUpdateControllerProvider call(
     String id,
   ) {
-    return StaffControllerProvider(
+    return UserUpdateControllerProvider(
       id,
     );
   }
 
   @override
-  StaffControllerProvider getProviderOverride(
-    covariant StaffControllerProvider provider,
+  UserUpdateControllerProvider getProviderOverride(
+    covariant UserUpdateControllerProvider provider,
   ) {
     return call(
       provider.id,
@@ -77,30 +78,30 @@ class StaffControllerFamily extends Family<AsyncValue<Staff>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'staffControllerProvider';
+  String? get name => r'userUpdateControllerProvider';
 }
 
-/// See also [StaffController].
-class StaffControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<StaffController, Staff> {
-  /// See also [StaffController].
-  StaffControllerProvider(
+/// See also [UserUpdateController].
+class UserUpdateControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
+    UserUpdateController, UserUpdateState> {
+  /// See also [UserUpdateController].
+  UserUpdateControllerProvider(
     String id,
   ) : this._internal(
-          () => StaffController()..id = id,
-          from: staffControllerProvider,
-          name: r'staffControllerProvider',
+          () => UserUpdateController()..id = id,
+          from: userUpdateControllerProvider,
+          name: r'userUpdateControllerProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$staffControllerHash,
-          dependencies: StaffControllerFamily._dependencies,
+                  : _$userUpdateControllerHash,
+          dependencies: UserUpdateControllerFamily._dependencies,
           allTransitiveDependencies:
-              StaffControllerFamily._allTransitiveDependencies,
+              UserUpdateControllerFamily._allTransitiveDependencies,
           id: id,
         );
 
-  StaffControllerProvider._internal(
+  UserUpdateControllerProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -113,8 +114,8 @@ class StaffControllerProvider
   final String id;
 
   @override
-  FutureOr<Staff> runNotifierBuild(
-    covariant StaffController notifier,
+  FutureOr<UserUpdateState> runNotifierBuild(
+    covariant UserUpdateController notifier,
   ) {
     return notifier.build(
       id,
@@ -122,10 +123,10 @@ class StaffControllerProvider
   }
 
   @override
-  Override overrideWith(StaffController Function() create) {
+  Override overrideWith(UserUpdateController Function() create) {
     return ProviderOverride(
       origin: this,
-      override: StaffControllerProvider._internal(
+      override: UserUpdateControllerProvider._internal(
         () => create()..id = id,
         from: from,
         name: null,
@@ -138,14 +139,14 @@ class StaffControllerProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<StaffController, Staff>
+  AutoDisposeAsyncNotifierProviderElement<UserUpdateController, UserUpdateState>
       createElement() {
-    return _StaffControllerProviderElement(this);
+    return _UserUpdateControllerProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is StaffControllerProvider && other.id == id;
+    return other is UserUpdateControllerProvider && other.id == id;
   }
 
   @override
@@ -159,18 +160,19 @@ class StaffControllerProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin StaffControllerRef on AutoDisposeAsyncNotifierProviderRef<Staff> {
+mixin UserUpdateControllerRef
+    on AutoDisposeAsyncNotifierProviderRef<UserUpdateState> {
   /// The parameter `id` of this provider.
   String get id;
 }
 
-class _StaffControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<StaffController, Staff>
-    with StaffControllerRef {
-  _StaffControllerProviderElement(super.provider);
+class _UserUpdateControllerProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<UserUpdateController,
+        UserUpdateState> with UserUpdateControllerRef {
+  _UserUpdateControllerProviderElement(super.provider);
 
   @override
-  String get id => (origin as StaffControllerProvider).id;
+  String get id => (origin as UserUpdateControllerProvider).id;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

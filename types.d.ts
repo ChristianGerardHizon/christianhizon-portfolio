@@ -5974,14 +5974,14 @@ namespace forms {
  interface RecordOAuth2LoginData {
   externalAuth?: models.ExternalAuth
   record?: models.Record
-  oAuth2User?: auth.AuthUser
+  oAuth2User?: auth.AuthData
   providerClient: auth.Provider
  }
  /**
   * BeforeOAuth2RecordCreateFunc defines a callback function that will
   * be called before OAuth2 new Record creation.
   */
- interface BeforeOAuth2RecordCreateFunc {(createForm: RecordUpsert, authRecord: models.Record, authUser: auth.AuthUser): void }
+ interface BeforeOAuth2RecordCreateFunc {(createForm: RecordUpsert, authRecord: models.Record, authUser: auth.AuthData): void }
  /**
   * RecordOAuth2Login is an auth record OAuth2 login form.
   */
@@ -6049,7 +6049,7 @@ namespace forms {
    * 
    * On success returns the authorized record model and the fetched provider's data.
    */
-  submit(...interceptors: InterceptorFunc<RecordOAuth2LoginData | undefined>[]): [(models.Record), (auth.AuthUser)]
+  submit(...interceptors: InterceptorFunc<RecordOAuth2LoginData | undefined>[]): [(models.Record), (auth.AuthData)]
  }
  /**
   * RecordPasswordLogin is record username/email + password login form.
@@ -12808,9 +12808,9 @@ namespace cobra {
 
 namespace auth {
  /**
-  * AuthUser defines a standardized oauth2 user data structure.
+  * AuthData defines a standardized oauth2 user data structure.
   */
- interface AuthUser {
+ interface AuthData {
   id: string
   name: string
   username: string
@@ -12927,10 +12927,10 @@ namespace auth {
    */
   fetchRawUserData(token: oauth2.Token): string|Array<number>
   /**
-   * FetchAuthUser is similar to FetchRawUserData, but normalizes and
-   * marshalizes the user api response into a standardized AuthUser struct.
+   * FetchAuthData is similar to FetchRawUserData, but normalizes and
+   * marshalizes the user api response into a standardized AuthData struct.
    */
-  fetchAuthUser(token: oauth2.Token): (AuthUser)
+  fetchAuthData(token: oauth2.Token): (AuthData)
  }
 }
 
@@ -17931,7 +17931,7 @@ namespace core {
   providerName: string
   providerClient: auth.Provider
   record?: models.Record
-  oAuth2User?: auth.AuthUser
+  oAuth2User?: auth.AuthData
   isNewRecord: boolean
  }
  type _subdXIjq = BaseCollectionEvent

@@ -1,17 +1,17 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/features/admins/domain/admin.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
-import 'package:gym_system/src/features/users/domain/user.dart';
 
-part 'auth_user.mapper.dart';
+part 'auth_admin.mapper.dart';
 
 @MappableClass()
-class AuthUser extends AuthData with AuthUserMappable {
-  final User record;
+class AuthAdmin extends AuthData with AuthAdminMappable {
+  final Admin record;
 
-  static const fromMap = AuthUserMapper.fromMap;
-  static const fromJson = AuthUserMapper.fromJson;
+  static const fromMap = AuthAdminMapper.fromMap;
+  static const fromJson = AuthAdminMapper.fromJson;
 
-  AuthUser({
+  AuthAdmin({
     required super.id,
     required super.token,
     required this.record,
@@ -19,7 +19,7 @@ class AuthUser extends AuthData with AuthUserMappable {
     required super.collectionName,
   });
 
-  static AuthUser customFromMap(Map<String, dynamic> raw) {
+  static AuthAdmin customFromMap(Map<String, dynamic> raw) {
     // if dateOfBirth is '' empty string, it will be null
     return fromMap(
       {

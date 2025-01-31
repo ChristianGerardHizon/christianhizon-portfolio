@@ -1,150 +1,123 @@
 import 'package:cross_file/cross_file.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
+import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pocketbase/pocketbase.dart';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 part 'user_repository.g.dart';
 
 abstract class UserRepository {
+  TaskResult<User> get(String id);
   TaskResult<PageResults<User>> list({
-    String? query,
+    String? filter,
     required int pageNo,
     required int pageSize,
   });
-  TaskResult<User> get(String id);
   TaskResult<void> delete(String id);
   TaskResult<User> update(
-    User user, {
-    Map<String, dynamic> params = const {},
+    User user,
+    Map<String, dynamic> update, {
     List<MultipartFile> files = const [],
   });
-  TaskResult<User> create({
-    required Map<String, dynamic> params,
-    List<MultipartFile> files = const [],
-  });
+
+  TaskResult<User> create(Map<String, dynamic> payload);
+  TaskResult<void> softDeleteMulti(List<String> ids);
 }
 
 @Riverpod(keepAlive: true)
 UserRepository userRepository(Ref ref) {
   return UserRepositoryImpl(
-    pb: ref.read(pocketbaseProvider),
+    pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class UserRepositoryImpl implements UserRepository {
+class UserRepositoryImpl extends UserRepository {
   final PocketBase pb;
-
-  RecordService get collection => pb.collection('users');
 
   UserRepositoryImpl({required this.pb});
 
-  ///
-  /// Update an user
-  ///
-  @override
-  TaskResult<User> update(
-    User user, {
-    Map<String, dynamic> params = const {},
-    List<MultipartFile> files = const [],
-  }) {
-    return TaskResult.tryCatch(
-      () async {
-        final updateMap = {...params};
-        final body = updateMap..removeWhere((key, value) => value is XFile);
+  RecordService get collection => pb.collection(PocketBaseCollections.users);
 
-        final response = await collection.update(
-          user.id,
-          body: body,
-          files: files,
-        );
-        final map = Map<String, dynamic>.from(response.data);
-        return User.fromMap(map);
-      },
-      Failure.tryCatchData,
-    );
-  }
-
-  ///
-  /// Create a new user
-  ///
-  @override
-  TaskResult<User> create({
-    required Map<String, dynamic> params,
-    List<MultipartFile> files = const [],
-  }) {
-    return TaskResult.tryCatch(
-      () async {
-        final response = await collection.create(
-          body: params,
-          files: files,
-        );
-        return User.fromMap(response.toJson());
-      },
-      Failure.tryCatchData,
-    );
-  }
-
-  ///
-  /// Delete an user
-  ///
-  @override
-  TaskResult<void> delete(String id) {
-    return TaskResult.tryCatch(
-      () async {
-        await collection.delete(id);
-      },
-      Failure.tryCatchData,
-    );
-  }
-
-  ///
-  /// Get an user
-  ///
   @override
   TaskResult<User> get(String id) {
-    return TaskResult.tryCatch(
-      () async {
-        final result = await collection.getOne(id);
-        return User.fromMap(result.toJson());
-      },
-      Failure.tryCatchData,
-    );
+    return TaskResult.tryCatch(() async {
+      final result = await collection.getOne(id);
+      return User.customFromMap(result.toJson());
+    }, Failure.tryCatchData);
   }
 
-  ///
-  /// List users
-  ///
+  @override
+  TaskResult<User> create(Map<String, dynamic> payload) {
+    return TaskResult.tryCatch(() async {
+      final response = await collection.create(body: payload);
+      return User.customFromMap(response.toJson());
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<void> delete(String id) {
+    return TaskResult.tryCatch(() async {
+      await collection.delete(id);
+    }, Failure.tryCatchData);
+  }
+
   @override
   TaskResult<PageResults<User>> list({
-    String? query,
+    String? filter,
     required int pageNo,
     required int pageSize,
   }) {
-    return TaskResult.tryCatch(
-      () async {
-        final result = await collection.getList(
-          page: pageNo,
-          perPage: pageSize,
-        );
+    return TaskResult.tryCatch(() async {
+      final result = await collection.getList(
+        page: pageNo,
+        perPage: pageSize,
+      );
+      return PageResults(
+        page: result.page,
+        perPage: result.perPage,
+        totalItems: result.totalItems,
+        totalPages: result.totalPages,
+        items: result.items.map<User>((e) {
+          return User.customFromMap(e.toJson());
+        }).toList(),
+      );
+    }, Failure.tryCatchData);
+  }
 
-        return PageResults<User>(
-          items: result.items.map<User>((e) {
-            return User.fromMap(e.toJson());
-          }).toList(),
-          page: result.page,
-          perPage: result.perPage,
-          totalItems: result.totalItems,
-          totalPages: result.totalPages,
-        );
-      },
-      Failure.tryCatchData,
-    );
+  @override
+  TaskResult<User> update(
+    User user,
+    Map<String, dynamic> update, {
+    List<MultipartFile> files = const [],
+  }) {
+    return TaskResult.tryCatch(() async {
+      final userMap = user.toMap();
+      final combinedMap = {...userMap, ...update};
+      final result = await collection.update(
+        user.id,
+        body: combinedMap,
+        files: files,
+      );
+      return User.customFromMap(result.toJson());
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<void> softDeleteMulti(List<String> ids) {
+    return TaskResult.tryCatch(() async {
+      final batch = pb.createBatch();
+      final batchCollection = batch.collection(PocketBaseCollections.users);
+      for (final id in ids) {
+        batchCollection.update(id, body: {'isDeleted': true});
+      }
+
+      await batch.send();
+    }, Failure.tryCatchData);
   }
 }

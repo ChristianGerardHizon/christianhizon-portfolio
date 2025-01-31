@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -20,6 +22,8 @@ class YourUserPage extends HookConsumerWidget {
       );
     }
 
+    final state = ref.watch(authControllerProvider);
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -27,6 +31,35 @@ class YourUserPage extends HookConsumerWidget {
             title: Text('App Bar Sample'),
           ),
           SliverList.list(children: [
+            state.maybeWhen(
+              orElse: () => SizedBox(),
+              data: (data) {
+                final user = data;
+                if (user is AuthUser) {
+                  return ListTile(
+                    title: Text(user.record.name),
+                    subtitle: Column(
+                      children: [
+                        Text('User'),
+                        Text(user.record.toJson()),
+                      ],
+                    ),
+                  );
+                }
+                if (user is AuthAdmin) {
+                  return ListTile(
+                    title: Text(user.record.name),
+                    subtitle: Column(
+                      children: [
+                        Text('User'),
+                        Text(user.record.toJson()),
+                      ],
+                    ),
+                  );
+                }
+                return Text('Unkown User Type');
+              },
+            ),
             ListTile(
               leading: Icon(
                 Icons.logout,

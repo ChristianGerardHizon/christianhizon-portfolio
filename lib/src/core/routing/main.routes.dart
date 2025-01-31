@@ -8,7 +8,7 @@ import 'package:gym_system/src/features/admins/presentation/pages/admins_page.da
 import 'package:gym_system/src/features/authentication/presentation/pages/account_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_recovery_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/admin_login_page.dart';
-import 'package:gym_system/src/features/authentication/presentation/pages/staff_login_page.dart';
+import 'package:gym_system/src/features/authentication/presentation/pages/user_login_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_create_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
@@ -18,10 +18,7 @@ import 'package:gym_system/src/features/products/presentation/pages/products_pag
 import 'package:gym_system/src/features/sales/presentation/pages/sales_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/settings_page.dart';
-import 'package:gym_system/src/features/staff/presentation/pages/staff_create_page.dart';
-import 'package:gym_system/src/features/staff/presentation/pages/staff_page.dart';
-import 'package:gym_system/src/features/staff/presentation/pages/staff_update_page.dart';
-import 'package:gym_system/src/features/staff/presentation/pages/staffs_page.dart';
+import 'package:gym_system/src/features/users/presentation/pages/user_create_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_update_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/users_page.dart';
@@ -34,7 +31,6 @@ part 'routes/users.routes.dart';
 part 'routes/settings.routes.dart';
 part 'routes/patients.routes.dart';
 part 'routes/dashboard.routes.dart';
-part 'routes/staff.routes.dart';
 part 'routes/others.routes.dart';
 part 'routes/sales.routes.dart';
 part 'routes/products.routes.dart';
@@ -125,14 +121,14 @@ class SplashPageRoute extends GoRouteData {
     ),
 
     ///
-    /// Staffs
+    /// Users
     ///
-    TypedStatefulShellBranch<StaffBranchData>(
+    TypedStatefulShellBranch<UsersBranchData>(
       routes: <TypeRouteData>[
-        TypedGoRoute<StaffsPageRoute>(path: StaffsPageRoute.path),
-        TypedGoRoute<StaffsPageRoute>(path: StaffsPageRoute.path),
-        TypedGoRoute<StaffUpdatePageRoute>(path: StaffUpdatePageRoute.path),
-        TypedGoRoute<StaffCreatePageRoute>(path: StaffCreatePageRoute.path),
+        TypedGoRoute<UsersPageRoute>(path: UsersPageRoute.path),
+        TypedGoRoute<UsersPageRoute>(path: UsersPageRoute.path),
+        TypedGoRoute<UserUpdatePageRoute>(path: UserUpdatePageRoute.path),
+        TypedGoRoute<UserCreatePageRoute>(path: UserCreatePageRoute.path),
       ],
     ),
 

@@ -72,11 +72,11 @@ class AppRoot extends HookConsumerWidget {
         },
       ),
       CustomNavigationBarItem(
-        route: StaffsPageRoute.path,
+        route: UsersPageRoute.path,
         icon: Icon(MIcons.accountGroupOutline),
-        label: 'Staffs',
+        label: 'Users',
         onTap: () {
-          StaffsPageRoute().go(context);
+          UsersPageRoute().go(context);
         },
       ),
     ];

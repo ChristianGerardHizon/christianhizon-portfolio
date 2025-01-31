@@ -1,13 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'staff_update_controller.dart';
+part of 'user_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$staffUpdateControllerHash() =>
-    r'668c1ba4256b28cafd8bbc8bd7bb17126348d588';
+String _$userControllerHash() => r'fc39271a76386a12ca11be539d7a4b497757a7d3';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,36 +29,36 @@ class _SystemHash {
   }
 }
 
-abstract class _$StaffUpdateController
-    extends BuildlessAutoDisposeAsyncNotifier<StaffUpdateState> {
+abstract class _$UserController
+    extends BuildlessAutoDisposeAsyncNotifier<User> {
   late final String id;
 
-  FutureOr<StaffUpdateState> build(
+  FutureOr<User> build(
     String id,
   );
 }
 
-/// See also [StaffUpdateController].
-@ProviderFor(StaffUpdateController)
-const staffUpdateControllerProvider = StaffUpdateControllerFamily();
+/// See also [UserController].
+@ProviderFor(UserController)
+const userControllerProvider = UserControllerFamily();
 
-/// See also [StaffUpdateController].
-class StaffUpdateControllerFamily extends Family<AsyncValue<StaffUpdateState>> {
-  /// See also [StaffUpdateController].
-  const StaffUpdateControllerFamily();
+/// See also [UserController].
+class UserControllerFamily extends Family<AsyncValue<User>> {
+  /// See also [UserController].
+  const UserControllerFamily();
 
-  /// See also [StaffUpdateController].
-  StaffUpdateControllerProvider call(
+  /// See also [UserController].
+  UserControllerProvider call(
     String id,
   ) {
-    return StaffUpdateControllerProvider(
+    return UserControllerProvider(
       id,
     );
   }
 
   @override
-  StaffUpdateControllerProvider getProviderOverride(
-    covariant StaffUpdateControllerProvider provider,
+  UserControllerProvider getProviderOverride(
+    covariant UserControllerProvider provider,
   ) {
     return call(
       provider.id,
@@ -78,31 +77,30 @@ class StaffUpdateControllerFamily extends Family<AsyncValue<StaffUpdateState>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'staffUpdateControllerProvider';
+  String? get name => r'userControllerProvider';
 }
 
-/// See also [StaffUpdateController].
-class StaffUpdateControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<StaffUpdateController,
-        StaffUpdateState> {
-  /// See also [StaffUpdateController].
-  StaffUpdateControllerProvider(
+/// See also [UserController].
+class UserControllerProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<UserController, User> {
+  /// See also [UserController].
+  UserControllerProvider(
     String id,
   ) : this._internal(
-          () => StaffUpdateController()..id = id,
-          from: staffUpdateControllerProvider,
-          name: r'staffUpdateControllerProvider',
+          () => UserController()..id = id,
+          from: userControllerProvider,
+          name: r'userControllerProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$staffUpdateControllerHash,
-          dependencies: StaffUpdateControllerFamily._dependencies,
+                  : _$userControllerHash,
+          dependencies: UserControllerFamily._dependencies,
           allTransitiveDependencies:
-              StaffUpdateControllerFamily._allTransitiveDependencies,
+              UserControllerFamily._allTransitiveDependencies,
           id: id,
         );
 
-  StaffUpdateControllerProvider._internal(
+  UserControllerProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -115,8 +113,8 @@ class StaffUpdateControllerProvider
   final String id;
 
   @override
-  FutureOr<StaffUpdateState> runNotifierBuild(
-    covariant StaffUpdateController notifier,
+  FutureOr<User> runNotifierBuild(
+    covariant UserController notifier,
   ) {
     return notifier.build(
       id,
@@ -124,10 +122,10 @@ class StaffUpdateControllerProvider
   }
 
   @override
-  Override overrideWith(StaffUpdateController Function() create) {
+  Override overrideWith(UserController Function() create) {
     return ProviderOverride(
       origin: this,
-      override: StaffUpdateControllerProvider._internal(
+      override: UserControllerProvider._internal(
         () => create()..id = id,
         from: from,
         name: null,
@@ -140,14 +138,14 @@ class StaffUpdateControllerProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<StaffUpdateController,
-      StaffUpdateState> createElement() {
-    return _StaffUpdateControllerProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<UserController, User>
+      createElement() {
+    return _UserControllerProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is StaffUpdateControllerProvider && other.id == id;
+    return other is UserControllerProvider && other.id == id;
   }
 
   @override
@@ -161,19 +159,18 @@ class StaffUpdateControllerProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin StaffUpdateControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<StaffUpdateState> {
+mixin UserControllerRef on AutoDisposeAsyncNotifierProviderRef<User> {
   /// The parameter `id` of this provider.
   String get id;
 }
 
-class _StaffUpdateControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<StaffUpdateController,
-        StaffUpdateState> with StaffUpdateControllerRef {
-  _StaffUpdateControllerProviderElement(super.provider);
+class _UserControllerProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<UserController, User>
+    with UserControllerRef {
+  _UserControllerProviderElement(super.provider);
 
   @override
-  String get id => (origin as StaffUpdateControllerProvider).id;
+  String get id => (origin as UserControllerProvider).id;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

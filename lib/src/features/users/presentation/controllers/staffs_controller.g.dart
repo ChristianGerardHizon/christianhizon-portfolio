@@ -1,27 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_repository.dart';
+part of 'users_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userRepositoryHash() => r'841e37e30c665e7010837fbc6c404aaa91a23317';
+String _$usersControllerHash() => r'a77673668096bea8ced6c8cfa41c682983d220d7';
 
-/// See also [userRepository].
-@ProviderFor(userRepository)
-final userRepositoryProvider = Provider<UserRepository>.internal(
-  userRepository,
-  name: r'userRepositoryProvider',
+/// See also [UsersController].
+@ProviderFor(UsersController)
+final usersControllerProvider = AutoDisposeAsyncNotifierProvider<
+    UsersController, PageResults<User>>.internal(
+  UsersController.new,
+  name: r'usersControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$userRepositoryHash,
+      : _$usersControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef UserRepositoryRef = ProviderRef<UserRepository>;
+typedef _$UsersController = AutoDisposeAsyncNotifier<PageResults<User>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

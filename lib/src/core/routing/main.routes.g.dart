@@ -15,9 +15,10 @@ List<RouteBase> get $appRoutes => [
       $loginPageRoute,
       $adminLoginPageRoute,
       $accountPageRoute,
-      $userPageRoute,
-      $usersPageRoute,
       $yourUserPageRoute,
+      $usersPageRoute,
+      $userPageRoute,
+      $userCreatePageRoute,
       $userUpdatePageRoute,
       $settingsPageRoute,
       $domainPageRoute,
@@ -26,10 +27,6 @@ List<RouteBase> get $appRoutes => [
       $patientCreatePageRoute,
       $patientUpdatePageRoute,
       $dashboardPageRoute,
-      $staffsPageRoute,
-      $staffPageRoute,
-      $staffCreatePageRoute,
-      $staffUpdatePageRoute,
       $morePageRoute,
       $salesPageRoute,
       $productsPageRoute,
@@ -132,20 +129,20 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
-              path: '/staff',
-              factory: $StaffsPageRouteExtension._fromState,
+              path: '/user',
+              factory: $UsersPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/staff',
-              factory: $StaffsPageRouteExtension._fromState,
+              path: '/user',
+              factory: $UsersPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/updateStaff/:id',
-              factory: $StaffUpdatePageRouteExtension._fromState,
+              path: '/updateUser/:id',
+              factory: $UserUpdatePageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/newStaff',
-              factory: $StaffCreatePageRouteExtension._fromState,
+              path: '/newUser',
+              factory: $UserCreatePageRouteExtension._fromState,
             ),
           ],
         ),
@@ -301,12 +298,12 @@ extension $SalesPageRouteExtension on SalesPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $StaffsPageRouteExtension on StaffsPageRoute {
-  static StaffsPageRoute _fromState(GoRouterState state) =>
-      const StaffsPageRoute();
+extension $UsersPageRouteExtension on UsersPageRoute {
+  static UsersPageRoute _fromState(GoRouterState state) =>
+      const UsersPageRoute();
 
   String get location => GoRouteData.$location(
-        '/staff',
+        '/user',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -319,14 +316,14 @@ extension $StaffsPageRouteExtension on StaffsPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $StaffUpdatePageRouteExtension on StaffUpdatePageRoute {
-  static StaffUpdatePageRoute _fromState(GoRouterState state) =>
-      StaffUpdatePageRoute(
+extension $UserUpdatePageRouteExtension on UserUpdatePageRoute {
+  static UserUpdatePageRoute _fromState(GoRouterState state) =>
+      UserUpdatePageRoute(
         state.pathParameters['id']!,
       );
 
   String get location => GoRouteData.$location(
-        '/updateStaff/${Uri.encodeComponent(id)}',
+        '/updateUser/${Uri.encodeComponent(id)}',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -339,12 +336,12 @@ extension $StaffUpdatePageRouteExtension on StaffUpdatePageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $StaffCreatePageRouteExtension on StaffCreatePageRoute {
-  static StaffCreatePageRoute _fromState(GoRouterState state) =>
-      const StaffCreatePageRoute();
+extension $UserCreatePageRouteExtension on UserCreatePageRoute {
+  static UserCreatePageRoute _fromState(GoRouterState state) =>
+      const UserCreatePageRoute();
 
   String get location => GoRouteData.$location(
-        '/newStaff',
+        '/newUser',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -441,7 +438,7 @@ extension $AdminPageRouteExtension on AdminPageRoute {
 }
 
 RouteBase get $loginPageRoute => GoRouteData.$route(
-      path: '/login/staff',
+      path: '/login/user',
       factory: $LoginPageRouteExtension._fromState,
     );
 
@@ -450,7 +447,7 @@ extension $LoginPageRouteExtension on LoginPageRoute {
       const LoginPageRoute();
 
   String get location => GoRouteData.$location(
-        '/login/staff',
+        '/login/user',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -509,69 +506,28 @@ extension $AccountPageRouteExtension on AccountPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-RouteBase get $userPageRoute => GoRouteData.$route(
-      path: '/user',
-      factory: $UserPageRouteExtension._fromState,
-    );
-
-extension $UserPageRouteExtension on UserPageRoute {
-  static UserPageRoute _fromState(GoRouterState state) => const UserPageRoute();
-
-  String get location => GoRouteData.$location(
-        '/user',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
-
-RouteBase get $usersPageRoute => GoRouteData.$route(
-      path: '/users',
-      factory: $UsersPageRouteExtension._fromState,
-    );
-
-extension $UsersPageRouteExtension on UsersPageRoute {
-  static UsersPageRoute _fromState(GoRouterState state) =>
-      const UsersPageRoute();
-
-  String get location => GoRouteData.$location(
-        '/users',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
-
 RouteBase get $yourUserPageRoute => GoRouteData.$route(
       path: '/your-account',
       factory: $YourUserPageRouteExtension._fromState,
     );
 
-RouteBase get $userUpdatePageRoute => GoRouteData.$route(
-      path: '/user/:id/update',
-      factory: $UserUpdatePageRouteExtension._fromState,
+RouteBase get $usersPageRoute => GoRouteData.$route(
+      path: '/user',
+      factory: $UsersPageRouteExtension._fromState,
     );
 
-extension $UserUpdatePageRouteExtension on UserUpdatePageRoute {
-  static UserUpdatePageRoute _fromState(GoRouterState state) =>
-      UserUpdatePageRoute(
+RouteBase get $userPageRoute => GoRouteData.$route(
+      path: '/user/:id',
+      factory: $UserPageRouteExtension._fromState,
+    );
+
+extension $UserPageRouteExtension on UserPageRoute {
+  static UserPageRoute _fromState(GoRouterState state) => UserPageRoute(
         state.pathParameters['id']!,
       );
 
   String get location => GoRouteData.$location(
-        '/user/${Uri.encodeComponent(id)}/update',
+        '/user/${Uri.encodeComponent(id)}',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -583,6 +539,16 @@ extension $UserUpdatePageRouteExtension on UserUpdatePageRoute {
 
   void replace(BuildContext context) => context.replace(location);
 }
+
+RouteBase get $userCreatePageRoute => GoRouteData.$route(
+      path: '/newUser',
+      factory: $UserCreatePageRouteExtension._fromState,
+    );
+
+RouteBase get $userUpdatePageRoute => GoRouteData.$route(
+      path: '/updateUser/:id',
+      factory: $UserUpdatePageRouteExtension._fromState,
+    );
 
 RouteBase get $settingsPageRoute => GoRouteData.$route(
       path: '/settings',
@@ -635,45 +601,6 @@ RouteBase get $patientUpdatePageRoute => GoRouteData.$route(
 RouteBase get $dashboardPageRoute => GoRouteData.$route(
       path: '/',
       factory: $DashboardPageRouteExtension._fromState,
-    );
-
-RouteBase get $staffsPageRoute => GoRouteData.$route(
-      path: '/staff',
-      factory: $StaffsPageRouteExtension._fromState,
-    );
-
-RouteBase get $staffPageRoute => GoRouteData.$route(
-      path: '/staff/:id',
-      factory: $StaffPageRouteExtension._fromState,
-    );
-
-extension $StaffPageRouteExtension on StaffPageRoute {
-  static StaffPageRoute _fromState(GoRouterState state) => StaffPageRoute(
-        state.pathParameters['id']!,
-      );
-
-  String get location => GoRouteData.$location(
-        '/staff/${Uri.encodeComponent(id)}',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
-
-RouteBase get $staffCreatePageRoute => GoRouteData.$route(
-      path: '/newStaff',
-      factory: $StaffCreatePageRouteExtension._fromState,
-    );
-
-RouteBase get $staffUpdatePageRoute => GoRouteData.$route(
-      path: '/updateStaff/:id',
-      factory: $StaffUpdatePageRouteExtension._fromState,
     );
 
 RouteBase get $morePageRoute => GoRouteData.$route(

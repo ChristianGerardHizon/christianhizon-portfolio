@@ -7,11 +7,11 @@ part of '../main.routes.dart';
 @TypedGoRoute<LoginPageRoute>(path: LoginPageRoute.path)
 class LoginPageRoute extends GoRouteData {
   const LoginPageRoute();
-  static const path = '/login/staff';
+  static const path = '/login/user';
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const StaffLoginPage();
+    return const UserLoginPage();
   }
 }
 

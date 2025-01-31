@@ -5,29 +5,24 @@ part 'user.mapper.dart';
 @MappableClass()
 class User with UserMappable {
   final String id;
-
   final String name;
   final String email;
   final String? avatar;
-  final bool isDeleted;
 
   final DateTime? created;
   final DateTime? updated;
 
   User({
     required this.id,
-    required this.name,
+    this.name = '',
     this.email = '',
-    this.avatar,
-    this.isDeleted = false,
     this.created,
     this.updated,
+    this.avatar,
   });
 
   static const fromMap = UserMapper.fromMap;
-  static const fromJson = UserMapper.fromJson;
-
-  bool get hasAvatar => avatar is String && avatar!.isNotEmpty;
+  static const fromJson = UserMapper.fromMap;
 
   Map<String, dynamic> toForm() {
     return {
