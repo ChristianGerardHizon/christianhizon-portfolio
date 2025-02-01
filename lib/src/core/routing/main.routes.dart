@@ -22,7 +22,7 @@ import 'package:gym_system/src/features/users/presentation/pages/user_create_pag
 import 'package:gym_system/src/features/users/presentation/pages/user_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_update_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/users_page.dart';
-import 'package:gym_system/src/features/users/presentation/pages/your_user_page.dart';
+import 'package:gym_system/src/features/authentication/presentation/pages/your_account_page.dart';
 
 part 'main.routes.g.dart';
 part 'routes/admins.routes.dart';
@@ -126,7 +126,7 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<UsersBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<UsersPageRoute>(path: UsersPageRoute.path),
-        TypedGoRoute<UsersPageRoute>(path: UsersPageRoute.path),
+        TypedGoRoute<UserPageRoute>(path: UserPageRoute.path),
         TypedGoRoute<UserUpdatePageRoute>(path: UserUpdatePageRoute.path),
         TypedGoRoute<UserCreatePageRoute>(path: UserCreatePageRoute.path),
       ],
@@ -142,11 +142,11 @@ class SplashPageRoute extends GoRouteData {
     ),
 
     ///
-    /// Users
+    /// Account
     ///
-    TypedStatefulShellBranch<UsersBranchData>(
+    TypedStatefulShellBranch<AuthenticationBranchData>(
       routes: <TypeRouteData>[
-        TypedGoRoute<YourUserPageRoute>(path: YourUserPageRoute.path),
+        TypedGoRoute<YourAccountPageRoute>(path: YourAccountPageRoute.path),
       ],
     ),
   ],

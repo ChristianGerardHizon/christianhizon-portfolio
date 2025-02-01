@@ -4,16 +4,7 @@ class UsersBranchData extends StatefulShellBranchData {
   const UsersBranchData();
 }
 
-@TypedGoRoute<YourUserPageRoute>(path: YourUserPageRoute.path)
-class YourUserPageRoute extends GoRouteData {
-  const YourUserPageRoute();
-  static const path = '/your-account';
 
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const YourUserPage();
-  }
-}
 
 @TypedGoRoute<UsersPageRoute>(path: UsersPageRoute.path)
 class UsersPageRoute extends GoRouteData {

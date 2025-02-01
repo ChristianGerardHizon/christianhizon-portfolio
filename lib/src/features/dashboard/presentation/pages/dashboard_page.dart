@@ -7,6 +7,7 @@ class DashboardPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text('Dashboard')),
+      body: const Center(child: Text('Dashboard')),
     );
   }
 }

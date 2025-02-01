@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/widgets/image_viewer.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
-import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -23,7 +22,7 @@ class UserImageControlWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ImageViewer(
-      feature: PocketBaseCollections.patients,
+      feature: PocketBaseCollections.users,
       file: user.avatar ?? '',
       id: user.id,
       placeholder: SizedBox(),

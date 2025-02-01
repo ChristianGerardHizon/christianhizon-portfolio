@@ -3,25 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/widgets/image_viewer.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
-import 'package:gym_system/src/features/users/domain/user.dart';
+import 'package:gym_system/src/features/admins/domain/admin.dart';
 
-class UserCircleImage extends StatelessWidget {
-  final User user;
-  final bool isInteractable;
+class AdminCircleImage extends StatelessWidget {
+  final Admin admin;
   final int radius;
-  const UserCircleImage({super.key, required this.user, this.radius = 60, this.isInteractable = true});
+  final bool isInteractable;
+  const AdminCircleImage({super.key, required this.admin, this.radius = 60, this.isInteractable = true});
 
   @override
   Widget build(BuildContext context) {
     // final file = patient.displayImage ?? '';
-    final file = user.avatar ?? '';
+    final file = '';
     if (file.isEmpty) {
       return CircleAvatar(radius: radius.toDouble());
     }
     return ImageViewer(
-      feature: PocketBaseCollections.users,
+      feature: PocketBaseCollections.admins,
       file: file,
-      id: user.id,
+      id: admin.id,
       placeholder: SizedBox(),
       builder: (url) {
         return GestureDetector(
@@ -31,10 +31,7 @@ class UserCircleImage extends StatelessWidget {
             width: radius.toDouble(),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: CachedNetworkImageProvider(url),
-              ),
+              image: DecorationImage(image: CachedNetworkImageProvider(url)),
             ),
           ),
         );

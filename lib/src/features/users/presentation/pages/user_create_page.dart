@@ -5,7 +5,6 @@ import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/form_builders/form_hidden_fields.dart';
-import 'package:gym_system/src/core/widgets/form_builders/hidden_form_field.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
@@ -80,7 +82,7 @@ class UserPage extends HookConsumerWidget {
                   child: SizedBox(
                     height: 250,
                     child: UserCircleImage(
-                      radius: 120,
+                      radius: 100,
                       user: user,
                     ),
                   ),
@@ -105,11 +107,35 @@ class UserPage extends HookConsumerWidget {
                   ),
 
                   ///
+                  /// email
+                  ///
+                  ListTile(
+                    leading: Text('Email: '),
+                    title: Text(user.email),
+                  ),
+
+                  ///
                   /// name
                   ///
                   ListTile(
                     leading: Text('Name: '),
                     title: Text(user.name),
+                  ),
+
+                  ///
+                  /// create
+                  ///
+                  ListTile(
+                    leading: Text('Updated: '),
+                    title: Text((user.updated?.yyyyMMddHHmm()).optional()),
+                  ),
+
+                  ///
+                  /// name
+                  ///
+                  ListTile(
+                    leading: Text('Created: '),
+                    title: Text((user.created?.yyyyMMddHHmm()).optional()),
                   ),
                 ]),
               ),

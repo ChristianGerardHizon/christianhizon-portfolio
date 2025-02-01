@@ -15,7 +15,7 @@ List<RouteBase> get $appRoutes => [
       $loginPageRoute,
       $adminLoginPageRoute,
       $accountPageRoute,
-      $yourUserPageRoute,
+      $yourAccountPageRoute,
       $usersPageRoute,
       $userPageRoute,
       $userCreatePageRoute,
@@ -133,8 +133,8 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               factory: $UsersPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/user',
-              factory: $UsersPageRouteExtension._fromState,
+              path: '/user/:id',
+              factory: $UserPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
               path: '/updateUser/:id',
@@ -158,7 +158,7 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/your-account',
-              factory: $YourUserPageRouteExtension._fromState,
+              factory: $YourAccountPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -316,6 +316,25 @@ extension $UsersPageRouteExtension on UsersPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
+extension $UserPageRouteExtension on UserPageRoute {
+  static UserPageRoute _fromState(GoRouterState state) => UserPageRoute(
+        state.pathParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/user/${Uri.encodeComponent(id)}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
 extension $UserUpdatePageRouteExtension on UserUpdatePageRoute {
   static UserUpdatePageRoute _fromState(GoRouterState state) =>
       UserUpdatePageRoute(
@@ -372,9 +391,9 @@ extension $SettingsPageRouteExtension on SettingsPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $YourUserPageRouteExtension on YourUserPageRoute {
-  static YourUserPageRoute _fromState(GoRouterState state) =>
-      const YourUserPageRoute();
+extension $YourAccountPageRouteExtension on YourAccountPageRoute {
+  static YourAccountPageRoute _fromState(GoRouterState state) =>
+      const YourAccountPageRoute();
 
   String get location => GoRouteData.$location(
         '/your-account',
@@ -506,9 +525,9 @@ extension $AccountPageRouteExtension on AccountPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-RouteBase get $yourUserPageRoute => GoRouteData.$route(
+RouteBase get $yourAccountPageRoute => GoRouteData.$route(
       path: '/your-account',
-      factory: $YourUserPageRouteExtension._fromState,
+      factory: $YourAccountPageRouteExtension._fromState,
     );
 
 RouteBase get $usersPageRoute => GoRouteData.$route(
@@ -520,25 +539,6 @@ RouteBase get $userPageRoute => GoRouteData.$route(
       path: '/user/:id',
       factory: $UserPageRouteExtension._fromState,
     );
-
-extension $UserPageRouteExtension on UserPageRoute {
-  static UserPageRoute _fromState(GoRouterState state) => UserPageRoute(
-        state.pathParameters['id']!,
-      );
-
-  String get location => GoRouteData.$location(
-        '/user/${Uri.encodeComponent(id)}',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
 
 RouteBase get $userCreatePageRoute => GoRouteData.$route(
       path: '/newUser',

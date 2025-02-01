@@ -4,6 +4,11 @@ part of '../main.routes.dart';
 /// Authentication
 ///
 
+class AuthenticationBranchData extends StatefulShellBranchData {
+  const AuthenticationBranchData();
+}
+
+
 @TypedGoRoute<LoginPageRoute>(path: LoginPageRoute.path)
 class LoginPageRoute extends GoRouteData {
   const LoginPageRoute();
@@ -47,5 +52,17 @@ class AccountPageRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const AccountPage();
+  }
+}
+
+
+@TypedGoRoute<YourAccountPageRoute>(path: YourAccountPageRoute.path)
+class YourAccountPageRoute extends GoRouteData {
+  const YourAccountPageRoute();
+  static const path = '/your-account';
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const YourAccountPage();
   }
 }

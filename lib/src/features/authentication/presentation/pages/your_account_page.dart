@@ -6,8 +6,8 @@ import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class YourUserPage extends HookConsumerWidget {
-  const YourUserPage({super.key});
+class YourAccountPage extends HookConsumerWidget {
+  const YourAccountPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ///
@@ -28,7 +28,7 @@ class YourUserPage extends HookConsumerWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            title: Text('App Bar Sample'),
+            title: Text('Your Account'),
           ),
           SliverList.list(children: [
             state.maybeWhen(
@@ -51,7 +51,7 @@ class YourUserPage extends HookConsumerWidget {
                     title: Text(user.record.name),
                     subtitle: Column(
                       children: [
-                        Text('User'),
+                        Text('Admin'),
                         Text(user.record.toJson()),
                       ],
                     ),

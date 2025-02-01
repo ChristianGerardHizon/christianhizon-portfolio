@@ -7,6 +7,7 @@ import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/type_defs/custom_navbar_item.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/mobile_bottom_nav.dart';
+import 'package:gym_system/src/features/authentication/presentation/widgets/account_circle_image.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -122,8 +123,11 @@ class AppRoot extends HookConsumerWidget {
                   footer: Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: InkWell(
-                      onTap: () => YourUserPageRoute().go(context),
-                      child: CircleAvatar(),
+                      onTap: () => YourAccountPageRoute().go(context),
+                      child: AccountCircleImage(
+                        radius: !sideMenuCtrl.isCollapsed() ? 30 : 30,
+                        showName: !sideMenuCtrl.isCollapsed(),
+                      ),
                     ),
                   ),
                 ),

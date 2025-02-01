@@ -41,7 +41,7 @@ class UserUpdatePage extends HookConsumerWidget {
 
       final result = await TaskResult<User?>.Do(($) async {
         final images = await $(
-          FilePickerUtil.getImage(PatientField.avatar),
+          FilePickerUtil.getImage(UserField.avatar),
         );
         if (images == null || images.isEmpty) return $(TaskResult.right(null));
         return $(repo.update(patient, {}, files: images));
@@ -99,7 +99,7 @@ class UserUpdatePage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: "Success");
-          PatientPageRoute(id).go(context);
+          UserPageRoute(id).go(context);
         },
       );
     }
@@ -107,9 +107,9 @@ class UserUpdatePage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
-          onPressed: () => PatientPageRoute(id).go(context),
+          onPressed: () => UserPageRoute(id).go(context),
         ),
-        title: Text('Patient Update Page'),
+        title: Text('User Update'),
         actions: [
           IconButton(
             onPressed: onRefresh,
@@ -130,6 +130,8 @@ class UserUpdatePage extends HookConsumerWidget {
             initialValue: map,
             child: CustomScrollView(
               slivers: [
+                SliverToBoxAdapter(child: SizedBox(height: 20)),
+
                 ///
                 /// image
                 ///
@@ -153,10 +155,12 @@ class UserUpdatePage extends HookConsumerWidget {
                       ListTile(
                         contentPadding: EdgeInsets.all(0),
                         title: Text(
-                          'Owner Details',
+                          'Details',
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                       ),
+
+                      SizedBox(height: 8),
 
                       ///
                       /// Email
@@ -167,6 +171,26 @@ class UserUpdatePage extends HookConsumerWidget {
                           contentPadding: EdgeInsets.only(
                               bottom: 10, right: 8, left: 8, top: 30),
                           labelText: 'Email',
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).colorScheme.surfaceContainerLow,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 20),
+
+                      ///
+                      /// Name
+                      ///
+                      FormBuilderTextField(
+                        name: UserField.name,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10, right: 8, left: 8, top: 30),
+                          labelText: 'Name',
                           filled: true,
                           fillColor:
                               Theme.of(context).colorScheme.surfaceContainerLow,
