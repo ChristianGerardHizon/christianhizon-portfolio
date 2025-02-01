@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class CustomNavigationBarItem extends BottomNavigationBarItem {
   final Function()? onTap;
   final String route;
+  final Icon? selectedIcon;
 
   CustomNavigationBarItem({
     required super.icon,
@@ -12,6 +13,7 @@ class CustomNavigationBarItem extends BottomNavigationBarItem {
     super.backgroundColor,
     super.tooltip,
     this.onTap,
+    this.selectedIcon,
   });
 
   NavigationRailDestination get navRail {

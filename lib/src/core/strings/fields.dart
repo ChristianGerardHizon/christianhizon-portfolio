@@ -4,6 +4,7 @@ class UserField {
   static const String avatar = 'avatar';
   static const String contactNumber = 'contactNumber';
   static const String password = 'password';
+  static const String oldPassword = 'oldPassword';
   static const String passwordConfirm = 'passwordConfirm';
   static const String emailVisibility = 'emailVisibility';
   static const String verified = 'verified';

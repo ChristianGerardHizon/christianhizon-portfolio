@@ -25,6 +25,7 @@ class UserUpdatePage extends HookConsumerWidget {
     final state = ref.watch(updateController);
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
+    final changePassword = useState(false);
 
     final provider = userControllerProvider(id);
 
@@ -201,7 +202,80 @@ class UserUpdatePage extends HookConsumerWidget {
                       ),
 
                       SizedBox(height: 20),
+
+                      ///
+                      /// Change password toggle
+                      ///
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: changePassword.value,
+                            onChanged: (v) {
+                              changePassword.value = v ?? false;
+                            },
+                          ),
+                          Text('Change Password'),
+                        ],
+                      ),
                     ])),
+
+                if (changePassword.value == true)
+                  SliverPadding(
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                    sliver: SliverList.list(
+                      children: [
+                        SizedBox(height: 20),
+                        FormBuilderTextField(
+                          name: UserField.oldPassword,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(
+                                bottom: 10, right: 8, left: 8, top: 30),
+                            labelText: 'Current Password',
+                            filled: true,
+                            fillColor: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerLow,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                        FormBuilderTextField(
+                          name: UserField.password,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(
+                                bottom: 10, right: 8, left: 8, top: 30),
+                            labelText: 'New Password',
+                            filled: true,
+                            fillColor: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerLow,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        FormBuilderTextField(
+                          name: UserField.passwordConfirm,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(
+                                bottom: 10, right: 8, left: 8, top: 30),
+                            labelText: 'Confirm New Password',
+                            filled: true,
+                            fillColor: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerLow,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
 
                 ///
                 /// Save button

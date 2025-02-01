@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gym_system/src/core/assets/assets.gen.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/type_defs/custom_navbar_item.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
@@ -42,7 +43,8 @@ class AppRoot extends HookConsumerWidget {
     final items = [
       CustomNavigationBarItem(
         route: RootRoute.path,
-        icon: Icon(MIcons.viewDashboard),
+        icon: Icon(MIcons.viewDashboardOutline),
+        selectedIcon: Icon(MIcons.viewDashboard),
         label: 'Dashboard',
         onTap: () {
           RootRoute().go(context);
@@ -50,7 +52,8 @@ class AppRoot extends HookConsumerWidget {
       ),
       CustomNavigationBarItem(
         route: PatientsPageRoute.path,
-        icon: Icon(MIcons.clipboardAccount),
+        icon: Icon(MIcons.clipboardAccountOutline),
+        selectedIcon: Icon(MIcons.clipboardAccount),
         label: 'Patients',
         onTap: () {
           PatientsPageRoute().go(context);
@@ -59,6 +62,7 @@ class AppRoot extends HookConsumerWidget {
       CustomNavigationBarItem(
         route: ProductsPageRoute.path,
         icon: Icon(MIcons.shoppingOutline),
+        selectedIcon: Icon(MIcons.shopping),
         label: 'Products',
         onTap: () {
           ProductsPageRoute().go(context);
@@ -66,7 +70,8 @@ class AppRoot extends HookConsumerWidget {
       ),
       CustomNavigationBarItem(
         route: SalesPageRoute.path,
-        icon: Icon(MIcons.chartLine),
+        icon: Icon(MIcons.chartLineVariant),
+        selectedIcon: Icon(MIcons.chartLine),
         label: 'Sales',
         onTap: () {
           SalesPageRoute().go(context);
@@ -75,6 +80,7 @@ class AppRoot extends HookConsumerWidget {
       CustomNavigationBarItem(
         route: UsersPageRoute.path,
         icon: Icon(MIcons.accountGroupOutline),
+        selectedIcon: Icon(MIcons.accountGroup),
         label: 'Users',
         onTap: () {
           UsersPageRoute().go(context);
@@ -93,32 +99,18 @@ class AppRoot extends HookConsumerWidget {
                 controller: sideMenuCtrl,
                 mode: SideMenuMode.compact,
                 builder: (data) => SideMenuData(
-                  header: sideMenuCtrl.isCollapsed()
-                      ? SizedBox(
-                          height: 100,
-                          child: FlutterLogo(),
-                        )
-                      : SizedBox(
-                          height: 100,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 30),
-                            child: Row(
-                              children: [
-                                FlutterLogo(),
-                                SizedBox(width: 10),
-                                Text('Sample System'),
-                              ],
-                            ),
-                          ),
-                        ),
+                  header: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Assets.icons.appIconTransparent.image(width: 250),
+                  ),
                   items: items.mapWithIndex((e, index) {
                     return SideMenuItemDataTile(
-                      hasSelectedLine: false,
-                      isSelected: shell.currentIndex == index,
-                      onTap: () => e.onTap?.call(),
-                      title: e.label,
-                      icon: e.icon,
-                    );
+                        hasSelectedLine: false,
+                        isSelected: shell.currentIndex == index,
+                        onTap: () => e.onTap?.call(),
+                        title: e.label,
+                        icon: e.icon,
+                        selectedIcon: e.selectedIcon);
                   }).toList(),
                   footer: Padding(
                     padding: const EdgeInsets.only(bottom: 20),

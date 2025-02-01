@@ -20,17 +20,62 @@ class AccountCircleImage extends HookConsumerWidget {
       Widget image, {
       required String name,
       bool showName = false,
+      String? type,
     }) {
       if (showName == false) return image;
 
-      return Padding(
-        padding: const EdgeInsets.only(left: 20,right: 20),
-        child: Row(
-          children: [
-            image,
-            SizedBox(width: 12),
-            Text(name),
-          ],
+      return AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            double availableWidth = constraints.maxWidth;
+        
+            // Minimum width required for the name and SizedBox to fit
+            double imageWidth = radius * 2;
+            double requiredWidth = imageWidth + 12 + 127;
+        
+            ///
+            /// i did this so that when avatar is transitioning the name wont cause error to layout
+            /// so when sidemenu is not yet fully open or does not fit the content just return the image
+            ///
+            if (showName && availableWidth <= requiredWidth)
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: image,
+              );
+        
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: availableWidth >= requiredWidth
+                    ? [
+                        image,
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 110),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '12312313123123123123123123123131231231231231231231231312312312312312312312313123123123123123',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: Theme.of(context).textTheme.titleSmall,
+                              ),
+                              if (type != null)
+                                Text(
+                                  type,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                )
+                            ],
+                          ),
+                        )
+                      ]
+                    : [image],
+              ),
+            );
+          },
         ),
       );
     }
@@ -39,29 +84,29 @@ class AccountCircleImage extends HookConsumerWidget {
       data: (user) {
         if (user is AuthUser) {
           return buildName(
-            UserCircleImage(
-                isInteractable: false, user: user.record, radius: radius),
-            name: user.record.name,
-            showName: showName,
-          );
+              UserCircleImage(
+                  isInteractable: false, user: user.record, radius: radius),
+              name: user.record.name,
+              showName: showName,
+              type: 'Staff');
         }
 
         if (user is AuthAdmin) {
           return buildName(
-            Container(
-              height: (radius * 1.5).toDouble(),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.inversePrimary,
-                  width: 4,
+              Container(
+                height: (radius * 1.5).toDouble(),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                    width: 4,
+                  ),
                 ),
+                child: AdminCircleImage(admin: user.record, radius: radius),
               ),
-              child: AdminCircleImage(admin: user.record, radius: radius),
-            ),
-            name: user.record.name,
-            showName: showName,
-          );
+              name: user.record.name,
+              showName: showName,
+              type: 'Admin');
         }
 
         return SizedBox();
