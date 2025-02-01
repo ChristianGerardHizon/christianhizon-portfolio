@@ -9,14 +9,27 @@ class UserCircleImage extends StatelessWidget {
   final User user;
   final bool isInteractable;
   final int radius;
-  const UserCircleImage({super.key, required this.user, this.radius = 60, this.isInteractable = true});
+  const UserCircleImage(
+      {super.key,
+      required this.user,
+      this.radius = 60,
+      this.isInteractable = true});
 
   @override
   Widget build(BuildContext context) {
     // final file = patient.displayImage ?? '';
     final file = user.avatar ?? '';
     if (file.isEmpty) {
-      return CircleAvatar(radius: radius.toDouble());
+      return Container(
+        height: radius.toDouble() * 2,
+        width: radius.toDouble() * 2,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Theme.of(context)
+              .colorScheme
+              .primaryFixedDim, // or any other placeholder color
+        ),
+      );
     }
     return ImageViewer(
       feature: PocketBaseCollections.users,

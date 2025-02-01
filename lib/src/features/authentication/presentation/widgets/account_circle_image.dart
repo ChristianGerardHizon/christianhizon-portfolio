@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/features/admins/presentation/widgets/admin_circle_image.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
@@ -29,11 +30,11 @@ class AccountCircleImage extends HookConsumerWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             double availableWidth = constraints.maxWidth;
-        
+
             // Minimum width required for the name and SizedBox to fit
             double imageWidth = radius * 2;
             double requiredWidth = imageWidth + 12 + 127;
-        
+
             ///
             /// i did this so that when avatar is transitioning the name wont cause error to layout
             /// so when sidemenu is not yet fully open or does not fit the content just return the image
@@ -43,20 +44,21 @@ class AccountCircleImage extends HookConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: image,
               );
-        
+
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Row(
                 children: availableWidth >= requiredWidth
                     ? [
                         image,
+                        SizedBox(width: 8),
                         ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: 110),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '12312313123123123123123123123131231231231231231231231312312312312312312312313123123123123123',
+                                name.optional(placeholder: '-'),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 style: Theme.of(context).textTheme.titleSmall,
@@ -84,11 +86,22 @@ class AccountCircleImage extends HookConsumerWidget {
       data: (user) {
         if (user is AuthUser) {
           return buildName(
-              UserCircleImage(
+            Container(
+              height: (radius * 1.5).toDouble(),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.secondary,
+                  width: 4,
+                ),
+              ),
+              child: UserCircleImage(
                   isInteractable: false, user: user.record, radius: radius),
-              name: user.record.name,
-              showName: showName,
-              type: 'Staff');
+            ),
+            name: user.record.name,
+            showName: showName,
+            type: 'Staff',
+          );
         }
 
         if (user is AuthAdmin) {
@@ -102,7 +115,8 @@ class AccountCircleImage extends HookConsumerWidget {
                     width: 4,
                   ),
                 ),
-                child: AdminCircleImage(admin: user.record, radius: radius),
+                child: AdminCircleImage(
+                    isInteractable: false, admin: user.record, radius: radius),
               ),
               name: user.record.name,
               showName: showName,

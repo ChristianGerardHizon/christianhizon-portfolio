@@ -14,9 +14,18 @@ class AdminCircleImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final file = patient.displayImage ?? '';
-    final file = '';
+    final file = admin.avatar ?? '';
     if (file.isEmpty) {
-      return CircleAvatar(radius: radius.toDouble());
+      return Container(
+        height: radius.toDouble() * 2,
+        width: radius.toDouble() * 2,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Theme.of(context)
+              .colorScheme
+              .primaryFixedDim, // or any other placeholder color
+        ),
+      );
     }
     return ImageViewer(
       feature: PocketBaseCollections.admins,

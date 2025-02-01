@@ -117,7 +117,7 @@ class AppRoot extends HookConsumerWidget {
                     child: InkWell(
                       onTap: () => YourAccountPageRoute().go(context),
                       child: AccountCircleImage(
-                        radius: !sideMenuCtrl.isCollapsed() ? 30 : 30,
+                        radius: !sideMenuCtrl.isCollapsed() ? 30 : 40,
                         showName: !sideMenuCtrl.isCollapsed(),
                       ),
                     ),
