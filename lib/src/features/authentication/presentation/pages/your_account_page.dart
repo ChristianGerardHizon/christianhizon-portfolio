@@ -31,35 +31,35 @@ class YourAccountPage extends HookConsumerWidget {
             title: Text('Your Account'),
           ),
           SliverList.list(children: [
-            state.maybeWhen(
-              orElse: () => SizedBox(),
-              data: (data) {
-                final user = data;
-                if (user is AuthUser) {
-                  return ListTile(
-                    title: Text(user.record.name),
-                    subtitle: Column(
-                      children: [
-                        Text('User'),
-                        Text(user.record.toJson()),
-                      ],
-                    ),
-                  );
-                }
-                if (user is AuthAdmin) {
-                  return ListTile(
-                    title: Text(user.record.name),
-                    subtitle: Column(
-                      children: [
-                        Text('Admin'),
-                        Text(user.record.toJson()),
-                      ],
-                    ),
-                  );
-                }
-                return Text('Unkown User Type');
-              },
-            ),
+            // state.maybeWhen(
+            //   orElse: () => SizedBox(),
+            //   data: (data) {
+            //     final user = data;
+            //     if (user is AuthUser) {
+            //       return ListTile(
+            //         title: Text(user.record.name),
+            //         subtitle: Column(
+            //           children: [
+            //             Text('User'),
+            //             Text(user.record.toJson()),
+            //           ],
+            //         ),
+            //       );
+            //     }
+            //     if (user is AuthAdmin) {
+            //       return ListTile(
+            //         title: Text(user.record.name),
+            //         subtitle: Column(
+            //           children: [
+            //             Text('Admin'),
+            //             Text(user.record.toJson()),
+            //           ],
+            //         ),
+            //       );
+            //     }
+            //     return Text('Unkown User Type');
+            //   },
+            // ),
             ListTile(
               leading: Icon(
                 Icons.logout,

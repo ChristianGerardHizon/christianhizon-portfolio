@@ -97,7 +97,7 @@ class AppRoot extends HookConsumerWidget {
                 minWidth: 80,
                 maxWidth: 200,
                 controller: sideMenuCtrl,
-                mode: SideMenuMode.compact,
+                mode: SideMenuMode.open,
                 builder: (data) => SideMenuData(
                   header: Padding(
                     padding: EdgeInsets.all(10),
