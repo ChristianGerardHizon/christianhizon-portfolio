@@ -40,7 +40,8 @@ class SettingRepository {
 
       if (result == null) {
         return const Settings(
-          domain: 'http://127.0.0.1:8090',
+          domain: 'https://fox-expect.pockethost.io',
+          // domain: 'http://127.0.0.1:8090',
         );
       }
 

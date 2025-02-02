@@ -6,7 +6,7 @@ A new Flutter project.
 
 
 ### Build packages
-`dart run build_runner watch --delete-conflicting-outputs`
+`dart pub get ;dart run build_runner watch --delete-conflicting-outputs`
 
 `dart run change_app_package_name:main com.it2do.dev`
 
@@ -22,3 +22,7 @@ A new Flutter project.
 `pocketbase admin create admin@test.com password101`
 
 `pocketbase serve --dir .`
+
+# Deploy Sever to flycytl
+
+`flyctl launch --build-only --dockerfile`
