@@ -7,6 +7,7 @@ import 'package:gym_system/src/core/assets/assets.gen.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/type_defs/custom_navbar_item.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/mobile_bottom_nav.dart';
 import 'package:gym_system/src/features/authentication/presentation/widgets/account_circle_image.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
@@ -29,6 +30,7 @@ class AppRoot extends HookConsumerWidget {
     ref.watch(settingsControllerProvider);
 
     final sideMenuCtrl = useMemoized(() => SideMenuController());
+    final canPop = useState(false);
 
     ///
     /// these are the bottom navigation items. ex. home, bids, orders, account.
@@ -130,12 +132,24 @@ class AppRoot extends HookConsumerWidget {
         );
       }
 
-      return Scaffold(
-        body: shell,
-        bottomNavigationBar: MobileBottomNav(
-          index: shell.currentIndex,
-          list: items,
-          state: state,
+      return PopScope(
+        canPop: canPop.value,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return;
+          final confirm = await ConfirmModal.show(context,
+                  title: 'Exit', message: 'Are you sure you want to exit?') ??
+              false;
+          if (context.mounted && confirm) {
+            context.canPop();
+          }
+        },
+        child: Scaffold(
+          body: shell,
+          bottomNavigationBar: MobileBottomNav(
+            index: shell.currentIndex,
+            list: items,
+            state: state,
+          ),
         ),
       );
     });

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/flutter_secure_storage.dart';
@@ -156,12 +158,13 @@ class AuthRepositoryImpl implements AuthRepository {
           throw Failure('authUserString is null', StackTrace.current);
         }
 
-        final authUser = AuthData.fromJson(authUserString);
-
-        authStore.save(authUser.token, null);
+        final map = jsonDecode(authUserString);
+        final oldtoken = map['token'];
+        final oldCollectionId = map['collectionId'];
+        authStore.save(oldtoken, null);
 
         final authModel =
-            await pb.collection(authUser.collectionId).authRefresh();
+            await pb.collection(oldCollectionId).authRefresh();
 
         authStore.save(authModel.token, authModel.record);
 
@@ -189,7 +192,9 @@ class AuthRepositoryImpl implements AuthRepository {
         }
         throw 'unknown user type';
       },
-      Failure.tryCatchData,
+      (error,stack) {
+        return Failure.tryCatchData(error,stack);
+      },
     );
   }
 }
