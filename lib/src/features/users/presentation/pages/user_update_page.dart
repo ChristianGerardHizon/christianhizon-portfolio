@@ -301,7 +301,7 @@ class UserUpdatePage extends HookConsumerWidget {
         error: (error, stack) {
           return Text(error.toString());
         },
-        loading: () => const CircularProgressIndicator(),
+        loading: () => Center(child: const CircularProgressIndicator()),
       ),
     );
   }

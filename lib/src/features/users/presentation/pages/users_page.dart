@@ -98,11 +98,19 @@ class UsersPage extends HookConsumerWidget {
               ///
               /// list
               ///
-              state.maybeWhen(
+              state.when(
                 skipError: false,
                 skipLoadingOnRefresh: false,
                 skipLoadingOnReload: false,
-                orElse: () => SliverToBoxAdapter(),
+                loading: () => SliverPadding(
+                  padding: const EdgeInsets.all(20.0),
+                  sliver: SliverToBoxAdapter(child: Center(child: SizedBox(width: 50, height: 50, child: CircularProgressIndicator()),)),
+                ),
+                error: (error, stackTrace) => SliverToBoxAdapter(
+                  child: Center(
+                    child: Text(error.toString()),
+                  ),
+                ),
                 data: (data) {
                   final list = data.items;
 

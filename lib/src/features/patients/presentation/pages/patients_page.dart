@@ -102,10 +102,9 @@ class PatientsPage extends HookConsumerWidget {
                 skipError: false,
                 skipLoadingOnRefresh: false,
                 skipLoadingOnReload: false,
-                loading: () => const SliverToBoxAdapter(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                loading: () => SliverPadding(
+                  padding: const EdgeInsets.all(20.0),
+                  sliver: SliverToBoxAdapter(child: Center(child: SizedBox(width: 50, height: 50, child: CircularProgressIndicator()),)),
                 ),
                 error: (error, stackTrace) => SliverToBoxAdapter(
                   child: Center(
