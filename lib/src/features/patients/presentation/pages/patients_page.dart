@@ -98,11 +98,20 @@ class PatientsPage extends HookConsumerWidget {
               ///
               /// list
               ///
-              state.maybeWhen(
+              state.when(
                 skipError: false,
                 skipLoadingOnRefresh: false,
                 skipLoadingOnReload: false,
-                orElse: () => SliverToBoxAdapter(),
+                loading: () => const SliverToBoxAdapter(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                error: (error, stackTrace) => SliverToBoxAdapter(
+                  child: Center(
+                    child: Text(error.toString()),
+                  ),
+                ),
                 data: (data) {
                   final list = data.items;
 
