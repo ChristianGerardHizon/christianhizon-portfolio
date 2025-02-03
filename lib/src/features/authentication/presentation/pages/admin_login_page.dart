@@ -10,6 +10,7 @@ import 'package:gym_system/src/core/utils/form_utils.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class AdminLoginPage extends HookConsumerWidget {
   const AdminLoginPage({super.key});
@@ -54,77 +55,85 @@ class AdminLoginPage extends HookConsumerWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-      ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: 500,
-            maxHeight: 500,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: Column(
-              children: [
-                FormBuilder(
-                  key: formKey,
-                  enabled: !isLoading.value,
-                  child: Column(
-                    children: [
-                      Assets.icons.appIconTransparent.image(width: 250),
-                      SizedBox(
-                        height: 40,
-                        child: Center(
-                          child: Text(
-                            'Login as Admin',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      // ),
+      body: ResponsiveBuilder(builder: (context, si) {
+        final form = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18),
+          child: Column(
+            children: [
+              FormBuilder(
+                key: formKey,
+                enabled: !isLoading.value,
+                child: Column(
+                  children: [
+                    Assets.icons.appIconTransparent.image(width: 250),
+                    SizedBox(
+                      height: 40,
+                      child: Center(
+                        child: Text(
+                          'Login as Admin',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                      ),
+                    ),
+                    FormBuilderTextField(
+                      name: 'email',
+                      onSubmitted: (_) => onLogin(),
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                      ),
+                    ),
+                    FormBuilderTextField(
+                      name: 'password',
+                      obscureText: !isPasswordVisible.value,
+                      onSubmitted: (_) => onLogin(),
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        suffixIcon: IconButton(
+                          onPressed: togglePasswordVisibility,
+                          icon: Icon(
+                            !isPasswordVisible.value
+                                ? MIcons.eyeOutline
+                                : MIcons.eyeOffOutline,
                           ),
                         ),
                       ),
-                      FormBuilderTextField(
-                        name: 'email',
-                        onSubmitted: (_) => onLogin(),
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                        ),
-                      ),
-                      FormBuilderTextField(
-                        name: 'password',
-                        obscureText: !isPasswordVisible.value,
-                        onSubmitted: (_) => onLogin(),
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          suffixIcon: IconButton(
-                            onPressed: togglePasswordVisibility,
-                            icon: Icon(
-                              !isPasswordVisible.value
-                                  ? MIcons.eyeOutline
-                                  : MIcons.eyeOffOutline,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
 
-                ///
-                /// Login Button
-                ///
-                const SizedBox(height: 20),
-                LoadingFilledButton(
-                  onPressed: onLogin,
-                  showText: false,
-                  isLoading: isLoading.value,
-                  child: const Text('Login'),
-                ),
-              ],
-            ),
+              ///
+              /// Login Button
+              ///
+              const SizedBox(height: 20),
+              LoadingFilledButton(
+                onPressed: onLogin,
+                showText: false,
+                isLoading: isLoading.value,
+                child: const Text('Login'),
+              ),
+            ],
           ),
-        ),
-      ),
+        );
+
+        if (si.isMobile) {
+          return form;
+        }
+
+        return Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 500,
+              maxHeight: 500,
+            ),
+            child: form,
+          ),
+        );
+      }),
     );
   }
 }

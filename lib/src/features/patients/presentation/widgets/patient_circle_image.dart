@@ -31,7 +31,10 @@ class PatientCircleImage extends StatelessWidget {
             width: radius.toDouble(),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              image: DecorationImage(image: CachedNetworkImageProvider(url)),
+              
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: CachedNetworkImageProvider(url)),
             ),
           ),
         );

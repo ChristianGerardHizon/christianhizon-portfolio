@@ -57,7 +57,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.14.1
+  flutter_launcher_icons: ^0.14.3
   flutter_gen_runner: ^5.8.0 
   custom_lint: ^0.7.0
   build_runner: ^2.4.13

@@ -10,6 +10,7 @@ import 'package:gym_system/src/core/utils/form_utils.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class UserLoginPage extends HookConsumerWidget {
   const UserLoginPage({super.key});
@@ -52,97 +53,102 @@ class UserLoginPage extends HookConsumerWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        actions: [
-          IconButton(
-            icon: Icon(MIcons.earth),
-            onPressed: () {
-              const DomainPageRoute().push(context);
-            },
-          ),
-        ],
-      ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: 500,
-            maxHeight: 500,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: Column(
-              children: [
-                FormBuilder(
-                  key: formKey,
-                  enabled: !isLoading.value,
-                  child: Column(
-                    children: [
-                      Assets.icons.appIconTransparent.image(width: 250),
-                      FormBuilderTextField(
-                        name: 'email',
-                        onSubmitted: (_) => onLogin(),
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                        ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   actions: [
+      //     IconButton(
+      //       icon: Icon(MIcons.earth),
+      //       onPressed: () {
+      //         const DomainPageRoute().push(context);
+      //       },
+      //     ),
+      //   ],
+      // ),
+      body: ResponsiveBuilder(builder: (context, si) {
+        final form = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18),
+          child: Column(
+            children: [
+              FormBuilder(
+                key: formKey,
+                enabled: !isLoading.value,
+                child: Column(
+                  children: [
+                    Assets.icons.appIconTransparent.image(width: 250),
+                    FormBuilderTextField(
+                      name: 'email',
+                      onSubmitted: (_) => onLogin(),
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
                       ),
-                      FormBuilderTextField(
-                        name: 'password',
-                        obscureText: !isPasswordVisible.value,
-                        onSubmitted: (_) => onLogin(),
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          suffixIcon: IconButton(
-                            onPressed: togglePasswordVisibility,
-                            icon: Icon(
-                              !isPasswordVisible.value
-                                  ? MIcons.eyeOutline
-                                  : MIcons.eyeOffOutline,
-                            ),
+                    ),
+                    FormBuilderTextField(
+                      name: 'password',
+                      obscureText: !isPasswordVisible.value,
+                      onSubmitted: (_) => onLogin(),
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        suffixIcon: IconButton(
+                          onPressed: togglePasswordVisibility,
+                          icon: Icon(
+                            !isPasswordVisible.value
+                                ? MIcons.eyeOutline
+                                : MIcons.eyeOffOutline,
                           ),
                         ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              ///
+              /// Login Button
+              ///
+              const SizedBox(height: 20),
+              LoadingFilledButton(
+                onPressed: onLogin,
+                showText: false,
+                isLoading: isLoading.value,
+                child: const Text('Login'),
+              ),
+
+              SizedBox(height: 20),
+
+              TextButton(
+                onPressed: () => const AdminLoginPageRoute().push(context),
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Not a user? ',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'Login as admin here',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Theme.of(context).colorScheme.primary),
                       ),
                     ],
                   ),
                 ),
-
-                ///
-                /// Login Button
-                ///
-                const SizedBox(height: 20),
-                LoadingFilledButton(
-                  onPressed: onLogin,
-                  showText: false,
-                  isLoading: isLoading.value,
-                  child: const Text('Login'),
-                ),
-
-                SizedBox(height: 20),
-
-                TextButton(
-                  onPressed: () => const AdminLoginPageRoute().push(context),
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Not a user? ',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'Login as admin here',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                  color: Theme.of(context).colorScheme.primary),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            ),
+              )
+            ],
           ),
-        ),
-      ),
+        );
+
+        if (si.isMobile) {
+          return form;
+        }
+
+        return Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 500,
+              maxHeight: 500,
+            ),
+            child: form,
+          ),
+        );
+      }),
     );
   }
 }
