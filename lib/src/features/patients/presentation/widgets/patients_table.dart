@@ -79,7 +79,7 @@ class PatientsTable extends HookWidget {
                 return Align(
                   alignment: Alignment.centerLeft,
                   child: const Text(
-                    'Picture',
+                    '',
                     style: TextStyle(fontWeight: FontWeight.w600),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -146,7 +146,11 @@ class PatientsTable extends HookWidget {
                 case 1:
                   return Padding(
                     padding: EdgeInsets.all(8),
-                    child: PatientCircleImage(radius: 120, patient: patient),
+                    child: PatientCircleImage(
+                      radius: 120,
+                      patient: patient,
+                      fit: BoxFit.cover,
+                    ),
                   );
                 case 2:
                   return Align(

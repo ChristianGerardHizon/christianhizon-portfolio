@@ -7,6 +7,7 @@ import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/utils/file_picker.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/form_typeahead_custom.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
@@ -127,6 +128,10 @@ class PatientUpdatePage extends HookConsumerWidget {
         skipError: false,
         skipLoadingOnRefresh: false,
         skipLoadingOnReload: false,
+        error: (error, stack) {
+          return Text(error.toString());
+        },
+        loading: () => CenteredProgressIndicator(),
         data: (updateState) {
           final patient = updateState.patient;
           // final settings = updateState.settings;
@@ -413,10 +418,6 @@ class PatientUpdatePage extends HookConsumerWidget {
             ),
           );
         },
-        error: (error, stack) {
-          return Text(error.toString());
-        },
-        loading: () => const CircularProgressIndicator(),
       ),
     );
   }

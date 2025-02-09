@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -28,7 +29,7 @@ class XFileWidget extends HookConsumerWidget {
         bytes,
         width: double.maxFinite,
       ),
-      loading: () => const CircularProgressIndicator(),
+      loading: () => CenteredProgressIndicator(),
       error: (error, stackTrace) => const Text('Error loading file'),
     );
   }

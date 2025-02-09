@@ -7,9 +7,10 @@ import 'package:gym_system/src/features/patients/domain/patient.dart';
 
 class PatientCircleImage extends StatelessWidget {
   final Patient patient;
+  final BoxFit fit;
   final int radius;
   const PatientCircleImage(
-      {super.key, required this.patient, this.radius = 60});
+      {super.key, required this.patient, this.radius = 60, this.fit = BoxFit.contain});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class PatientCircleImage extends StatelessWidget {
               shape: BoxShape.circle,
               
               image: DecorationImage(
-                fit: BoxFit.cover,
+                fit: fit,
                 image: CachedNetworkImageProvider(url)),
             ),
           ),

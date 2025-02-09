@@ -4,6 +4,7 @@ import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/widgets/image_viewer.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_circle_image.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class PatientImageControlWidget extends StatelessWidget {
@@ -33,12 +34,7 @@ class PatientImageControlWidget extends StatelessWidget {
             if (si.isMobile) {
               return Column(
                 children: [
-                  InkWell(
-                      onTap: () => PhotoViewer.show(context, url),
-                      child: CircleAvatar(
-                        radius: 60,
-                        backgroundImage: CachedNetworkImageProvider(url),
-                      )),
+                  PatientCircleImage(patient: patient),
                   SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

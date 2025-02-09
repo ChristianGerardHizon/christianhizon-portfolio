@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -35,7 +36,7 @@ class ImageViewer extends ConsumerWidget {
         child: Text(error.toString()),
       ),
       loading: () =>
-          loader?.call() ?? const Center(child: CircularProgressIndicator()),
+          loader?.call() ?? CenteredProgressIndicator(),
     );
   }
 }

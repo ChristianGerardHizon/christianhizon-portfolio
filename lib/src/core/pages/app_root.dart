@@ -8,6 +8,7 @@ import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/type_defs/custom_navbar_item.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/logo.dart';
 import 'package:gym_system/src/core/widgets/mobile_bottom_nav.dart';
 import 'package:gym_system/src/features/authentication/presentation/widgets/account_circle_image.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
@@ -101,9 +102,10 @@ class AppRoot extends HookConsumerWidget {
                 controller: sideMenuCtrl,
                 mode: SideMenuMode.open,
                 builder: (data) => SideMenuData(
-                  header: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Assets.icons.appIconTransparent.image(width: 250),
+                  header: Logo(
+                    width: null,
+                    height: null,
+
                   ),
                   items: items.mapWithIndex((e, index) {
                     return SideMenuItemDataTile(

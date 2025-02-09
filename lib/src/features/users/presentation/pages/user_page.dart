@@ -3,6 +3,7 @@ import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:gym_system/src/features/users/presentation/controllers/user_controller.dart';
@@ -44,7 +45,7 @@ class UserPage extends HookConsumerWidget {
         skipError: false,
         skipLoadingOnRefresh: false,
         skipLoadingOnReload: false,
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => CenteredProgressIndicator(),
         error: (error, stackTrace) => Center(child: Text(error.toString())),
         data: (user) {
           return CustomScrollView(

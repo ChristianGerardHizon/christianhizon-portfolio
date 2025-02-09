@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:searchfield/searchfield.dart';
@@ -165,9 +166,7 @@ class CustomFormField<T> extends HookConsumerWidget {
                     if (isLoading.value) {
                       return const SizedBox(
                         height: 200,
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
+                        child: CenteredProgressIndicator(),
                       );
                     }
 

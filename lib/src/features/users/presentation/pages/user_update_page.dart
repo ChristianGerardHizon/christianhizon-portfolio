@@ -6,6 +6,7 @@ import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/utils/file_picker.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
@@ -301,7 +302,7 @@ class UserUpdatePage extends HookConsumerWidget {
         error: (error, stack) {
           return Text(error.toString());
         },
-        loading: () => Center(child: const CircularProgressIndicator()),
+        loading: () => CenteredProgressIndicator(),
       ),
     );
   }
