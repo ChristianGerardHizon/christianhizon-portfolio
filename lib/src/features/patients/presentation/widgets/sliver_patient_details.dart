@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_circle_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
