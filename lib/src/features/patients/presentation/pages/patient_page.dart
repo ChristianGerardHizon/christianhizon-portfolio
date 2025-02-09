@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
@@ -8,6 +6,7 @@ import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_circle_image.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/sliver_patient_details.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientPage extends HookConsumerWidget {
@@ -94,149 +93,58 @@ class PatientPage extends HookConsumerWidget {
                   ),
                 ),
 
-                ///
-                /// Patient Infor
-                ///
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  sliver: SliverList.list(children: [
-                    ///
-                    /// Header
-                    ///
-                    ListTile(
-                      contentPadding: EdgeInsets.only(left: 14),
-                      title: Text(
-                        'Patient Info',
-                        style: Theme.of(context).textTheme.titleLarge,
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 20,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              child: TextButton(
+                                onPressed: () {},
+                                child: Text('Sample'),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: TextButton(
+                                  onPressed: () {}, child: Text('Sample')),
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: TextButton(
+                                  onPressed: () {}, child: Text('Sample')),
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: TextButton(
+                                  onPressed: () {}, child: Text('Sample')),
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: TextButton(
+                                  onPressed: () {}, child: Text('Sample')),
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: TextButton(
+                                  onPressed: () {}, child: Text('Sample')),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-
-                    ///
-                    /// name
-                    ///
-                    ListTile(
-                      leading: Text('Name: '),
-                      title: Text(patient.name),
-                    ),
-
-                    ///
-                    /// Breed
-                    ///
-                    ListTile(
-                      leading: Text('Breed: '),
-                      title: Text(patient.breed.optional()),
-                    ),
-
-                    ///
-                    /// Species
-                    ///
-                    ListTile(
-                      leading: Text('Species: '),
-                      title: Text(patient.species.optional()),
-                    ),
-
-                    ///
-                    /// date of birth
-                    ///
-                    ListTile(
-                      leading: Text('Date of Birth: '),
-                      title: Text((patient.dateOfBirth?.toLocal().yyyyMMdd())
-                          .optional()),
-                    ),
-                  ]),
+                      Divider(),
+                    ],
+                  ),
                 ),
 
                 ///
-                /// Owner Details
+                /// Patient Details
                 ///
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  sliver: SliverList.list(children: [
-                    SizedBox(height: 30),
-
-                    ///
-                    /// Header
-                    ///
-                    ListTile(
-                      contentPadding: EdgeInsets.only(left: 14),
-                      title: Text(
-                        'Owner Info',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
-
-                    ///
-                    /// owner
-                    ///
-                    ListTile(
-                      leading: Text('Owner: '),
-                      title: Text(patient.owner.optional()),
-                    ),
-
-                    ///
-                    /// address
-                    ///
-                    ListTile(
-                      leading: Text('Address: '),
-                      title: Text(patient.address.optional()),
-                    ),
-
-                    ///
-                    /// email
-                    ///
-                    ListTile(
-                      leading: Text('Email: '),
-                      title: Text(patient.email.optional()),
-                    ),
-
-                    ///
-                    /// contact number
-                    ///
-                    ListTile(
-                      leading: Text('Contact Number: '),
-                      title: Text(patient.contactNumber.optional()),
-                    ),
-                  ]),
-                ),
-
-                ///
-                /// Other Details
-                ///
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  sliver: SliverList.list(children: [
-                    SizedBox(height: 30),
-
-                    ///
-                    /// Header
-                    ///
-                    ListTile(
-                      contentPadding: EdgeInsets.only(left: 14),
-                      title: Text(
-                        'Other Info',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
-
-                    ///
-                    /// created
-                    ///
-                    ListTile(
-                      leading: Text('Created At: '),
-                      title: Text((patient.created?.toLocal().yyyyMMddHHmmA())
-                          .optional()),
-                    ),
-
-                    ///
-                    /// updated
-                    ///
-                    ListTile(
-                      leading: Text('Updated At: '),
-                      title: Text((patient.created?.toLocal().yyyyMMddHHmmA())
-                          .optional()),
-                    ),
-                  ]),
-                ),
+                SliverPatientDetails(patient: patient),
 
                 ///
                 /// Spacer
