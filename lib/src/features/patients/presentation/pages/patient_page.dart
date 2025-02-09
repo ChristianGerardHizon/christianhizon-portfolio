@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
@@ -8,6 +9,7 @@ import 'package:gym_system/src/features/patients/presentation/controllers/patien
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_circle_image.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/sliver_patient_details.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tab_container/tab_container.dart';
 
 class PatientPage extends HookConsumerWidget {
   const PatientPage(this.id, {super.key});
@@ -93,6 +95,9 @@ class PatientPage extends HookConsumerWidget {
                   ),
                 ),
 
+                ///
+                /// Tabs
+                ///
                 SliverToBoxAdapter(
                   child: Column(
                     children: [
@@ -101,38 +106,33 @@ class PatientPage extends HookConsumerWidget {
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: [
-                            SizedBox(
-                              width: 100,
-                              child: TextButton(
-                                onPressed: () {},
-                                child: Text('Sample'),
-                              ),
+                            ///
+                            ///
+                            ///
+                            TextButton(
+                              onPressed: () {},
+                              child: Text('Sample Data'),
                             ),
-                            SizedBox(
-                              width: 100,
-                              child: TextButton(
-                                  onPressed: () {}, child: Text('Sample')),
+
+                            ///
+                            ///
+                            ///
+                            TextButton(
+                              onPressed: () {},
+                              child: Text('More Data'),
                             ),
-                            SizedBox(
-                              width: 100,
-                              child: TextButton(
-                                  onPressed: () {}, child: Text('Sample')),
+
+                            ///
+                            ///
+                            ///
+                            TextButton(
+                              onPressed: () {},
+                              child: Text('Dashboard'),
                             ),
-                            SizedBox(
-                              width: 100,
-                              child: TextButton(
-                                  onPressed: () {}, child: Text('Sample')),
-                            ),
-                            SizedBox(
-                              width: 100,
-                              child: TextButton(
-                                  onPressed: () {}, child: Text('Sample')),
-                            ),
-                            SizedBox(
-                              width: 100,
-                              child: TextButton(
-                                  onPressed: () {}, child: Text('Sample')),
-                            ),
+
+                            ///
+                            ///
+                            ///
                           ],
                         ),
                       ),

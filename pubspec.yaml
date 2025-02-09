@@ -48,6 +48,7 @@ dependencies:
   photo_view: ^0.15.0
   material_table_view: ^5.0.0
   sliver_tools: ^0.2.12
+  tab_container: ^3.5.3
 
 dev_dependencies:
   dart_mappable_builder: ^4.3.0  
