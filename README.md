@@ -26,3 +26,11 @@ A new Flutter project.
 # Deploy Sever to flycytl
 
 `flyctl launch --build-only --dockerfile`
+
+# Deploy Staging Site
+
+surge --domain stg-sannjose.surge.sh build/web
+
+# update splash screen
+
+dart run flutter_native_splash:create
