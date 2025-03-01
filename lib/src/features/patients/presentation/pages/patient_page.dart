@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/features/history/presentation/widgets/history_type_selector.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
@@ -99,45 +100,8 @@ class PatientPage extends HookConsumerWidget {
                 /// Tabs
                 ///
                 SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 20,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            ///
-                            ///
-                            ///
-                            TextButton(
-                              onPressed: () {},
-                              child: Text('Sample Data'),
-                            ),
-
-                            ///
-                            ///
-                            ///
-                            TextButton(
-                              onPressed: () {},
-                              child: Text('More Data'),
-                            ),
-
-                            ///
-                            ///
-                            ///
-                            TextButton(
-                              onPressed: () {},
-                              child: Text('Dashboard'),
-                            ),
-
-                            ///
-                            ///
-                            ///
-                          ],
-                        ),
-                      ),
-                      Divider(),
-                    ],
+                  child: HistoryTypeSelector(
+                    onPress: (type) {},
                   ),
                 ),
 

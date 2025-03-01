@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/assets/assets.gen.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/type_defs/custom_navbar_item.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
@@ -11,6 +10,7 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/logo.dart';
 import 'package:gym_system/src/core/widgets/mobile_bottom_nav.dart';
 import 'package:gym_system/src/features/authentication/presentation/widgets/account_circle_image.dart';
+import 'package:gym_system/src/features/history/presentation/controllers/history_types_controller.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -29,6 +29,7 @@ class AppRoot extends HookConsumerWidget {
     final theme = Theme.of(context);
 
     ref.watch(settingsControllerProvider);
+    ref.watch(historyTypesControllerProvider);
 
     final sideMenuCtrl = useMemoized(() => SideMenuController());
     final canPop = useState(false);
@@ -105,7 +106,6 @@ class AppRoot extends HookConsumerWidget {
                   header: Logo(
                     width: null,
                     height: null,
-
                   ),
                   items: items.mapWithIndex((e, index) {
                     return SideMenuItemDataTile(

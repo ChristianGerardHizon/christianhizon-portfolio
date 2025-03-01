@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:gym_system/src/core/widgets/collapsing_card.dart';
+import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -17,51 +19,53 @@ class SliverPatientDetails extends HookConsumerWidget {
         ///
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          sliver: SliverList.list(children: [
-            ///
-            /// Header
-            ///
-            ListTile(
-              contentPadding: EdgeInsets.only(left: 14),
-              title: Text(
+          sliver: SliverToBoxAdapter(
+            child: CollapsingCard(
+              header: Text(
                 'Patient Info',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-            ),
+              child: Column(
+                children: [
+                  ///
+                  /// name
+                  ///
+                  DynamicListTile(
+                    title: Text('Name: '),
+                    content: Text(patient.name),
+                  ),
+                  Divider(),
 
-            ///
-            /// name
-            ///
-            ListTile(
-              leading: Text('Name: '),
-              title: Text(patient.name),
-            ),
+                  ///
+                  /// Breed
+                  ///
+                  DynamicListTile(
+                    title: Text('Breed: '),
+                    content: Text(patient.breed.optional()),
+                  ),
+                  Divider(),
 
-            ///
-            /// Breed
-            ///
-            ListTile(
-              leading: Text('Breed: '),
-              title: Text(patient.breed.optional()),
-            ),
+                  ///
+                  /// Species
+                  ///
+                  DynamicListTile(
+                    title: Text('Species: '),
+                    content: Text(patient.species.optional()),
+                  ),
+                  Divider(),
 
-            ///
-            /// Species
-            ///
-            ListTile(
-              leading: Text('Species: '),
-              title: Text(patient.species.optional()),
+                  ///
+                  /// date of birth
+                  ///
+                  DynamicListTile(
+                    title: Text('Date of Birth: '),
+                    content: Text(
+                        (patient.dateOfBirth?.toLocal().yyyyMMdd()).optional()),
+                  ),
+                ],
+              ),
             ),
-
-            ///
-            /// date of birth
-            ///
-            ListTile(
-              leading: Text('Date of Birth: '),
-              title:
-                  Text((patient.dateOfBirth?.toLocal().yyyyMMdd()).optional()),
-            ),
-          ]),
+          ),
         ),
 
         ///
@@ -69,52 +73,38 @@ class SliverPatientDetails extends HookConsumerWidget {
         ///
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          sliver: SliverList.list(children: [
-            SizedBox(height: 30),
-
-            ///
-            /// Header
-            ///
-            ListTile(
-              contentPadding: EdgeInsets.only(left: 14),
-              title: Text(
+          sliver: SliverToBoxAdapter(
+            child: CollapsingCard(
+              header: Text(
                 'Owner Info',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
+              child: Column(
+                children: [
+                  SizedBox(height: 30),
+                  DynamicListTile(
+                    title: Text('Owner: '),
+                    content: Text(patient.owner.optional()),
+                  ),
+                  Divider(),
+                  DynamicListTile(
+                    title: Text('Address: '),
+                    content: Text(patient.address.optional()),
+                  ),
+                  Divider(),
+                  DynamicListTile(
+                    title: Text('Email: '),
+                    content: Text(patient.email.optional()),
+                  ),
+                  Divider(),
+                  DynamicListTile(
+                    title: Text('Contact Number: '),
+                    content: Text(patient.contactNumber.optional()),
+                  ),
+                ],
+              ),
             ),
-
-            ///
-            /// owner
-            ///
-            ListTile(
-              leading: Text('Owner: '),
-              title: Text(patient.owner.optional()),
-            ),
-
-            ///
-            /// address
-            ///
-            ListTile(
-              leading: Text('Address: '),
-              title: Text(patient.address.optional()),
-            ),
-
-            ///
-            /// email
-            ///
-            ListTile(
-              leading: Text('Email: '),
-              title: Text(patient.email.optional()),
-            ),
-
-            ///
-            /// contact number
-            ///
-            ListTile(
-              leading: Text('Contact Number: '),
-              title: Text(patient.contactNumber.optional()),
-            ),
-          ]),
+          ),
         ),
 
         ///
@@ -122,39 +112,35 @@ class SliverPatientDetails extends HookConsumerWidget {
         ///
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          sliver: SliverList.list(children: [
-            SizedBox(height: 30),
-
-            ///
-            /// Header
-            ///
-            ListTile(
-              contentPadding: EdgeInsets.only(left: 14),
-              title: Text(
+          sliver: SliverToBoxAdapter(
+            child: CollapsingCard(
+              header: Text(
                 'Other Info',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
+              child: Column(
+                children: [
+                  SizedBox(height: 30),
+                  DynamicListTile(
+                    title: Text('Created At: '),
+                    content: Text((patient.created?.toLocal().yyyyMMddHHmmA())
+                        .optional()),
+                  ),
+                  Divider(),
+                  DynamicListTile(
+                    title: Text('Updated At: '),
+                    content: Text((patient.updated?.toLocal().yyyyMMddHHmmA())
+                        .optional()),
+                  ),
+                ],
+              ),
             ),
-
-            ///
-            /// created
-            ///
-            ListTile(
-              leading: Text('Created At: '),
-              title:
-                  Text((patient.created?.toLocal().yyyyMMddHHmmA()).optional()),
-            ),
-
-            ///
-            /// updated
-            ///
-            ListTile(
-              leading: Text('Updated At: '),
-              title:
-                  Text((patient.created?.toLocal().yyyyMMddHHmmA()).optional()),
-            ),
-          ]),
+          ),
         ),
+
+        ///
+        ///
+        ///
       ],
     );
   }
