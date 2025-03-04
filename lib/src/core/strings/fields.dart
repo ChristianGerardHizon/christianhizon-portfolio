@@ -8,12 +8,14 @@ class UserField {
   static const String passwordConfirm = 'passwordConfirm';
   static const String emailVisibility = 'emailVisibility';
   static const String verified = 'verified';
+  static const String isDeleted = 'isDeleted';
 }
 
 class AdminField {
   static const String name = 'name';
   static const String profilePhoto = 'profilePhoto';
   static const String contactNumber = 'contactNumber';
+  static const String isDeleted = 'isDeleted';
 }
 
 class PatientField {
@@ -29,4 +31,11 @@ class PatientField {
   static const String sex = 'sex';
   static const String images = 'images';
   static const String avatar = 'avatar';
+  static const String isDeleted = 'isDeleted';
+}
+
+class HistoryField {
+  static const String name = 'name';
+  static const String address = 'address';
+  static const String isDeleted = 'isDeleted';
 }

@@ -3,13 +3,17 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/features/history/domain/history_type.dart';
+import 'package:gym_system/src/features/history/presentation/controllers/history_type/history_types_controller.dart';
 import 'package:gym_system/src/features/history/presentation/widgets/history_type_selector.dart';
+import 'package:gym_system/src/features/history/presentation/widgets/patient_history_view.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_circle_image.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/sliver_patient_details.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_details.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 import 'package:tab_container/tab_container.dart';
 
 class PatientPage extends HookConsumerWidget {
@@ -21,6 +25,7 @@ class PatientPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = patientControllerProvider(id);
     final state = ref.watch(provider);
+    final historyType = useState<HistoryType?>(null);
 
     ///
     /// onDelete
@@ -39,6 +44,14 @@ class PatientPage extends HookConsumerWidget {
               },
             );
           });
+    }
+
+    ///
+    /// Refresh
+    ///
+    refresh() {
+      ref.invalidate(provider);
+      ref.invalidate(historyTypesControllerProvider);
     }
 
     return PopScope(
@@ -75,7 +88,7 @@ class PatientPage extends HookConsumerWidget {
                     ),
                     IconButton(
                       icon: const Icon(Icons.refresh),
-                      onPressed: () => ref.invalidate(provider),
+                      onPressed: () => refresh(),
                     )
                   ],
                 ),
@@ -101,14 +114,20 @@ class PatientPage extends HookConsumerWidget {
                 ///
                 SliverToBoxAdapter(
                   child: HistoryTypeSelector(
-                    onPress: (type) {},
+                    onPress: (type) {
+                      historyType.value = type;
+                    },
                   ),
                 ),
 
-                ///
-                /// Patient Details
-                ///
-                SliverPatientDetails(patient: patient),
+                SliverAnimatedSwitcher(
+                  duration: Duration(milliseconds: 300),
+                  child: historyType.value == null
+                      ? SliverToBoxAdapter(
+                          child: PatientDetails(patient: patient))
+                      : SliverToBoxAdapter(
+                          child: PatientHistoryView(type: historyType.value!)),
+                ),
 
                 ///
                 /// Spacer

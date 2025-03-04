@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/features/history/domain/history_type.dart';
-import 'package:gym_system/src/features/history/presentation/controllers/history_types_controller.dart';
+import 'package:gym_system/src/features/history/presentation/controllers/history_type/history_types_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HistoryTypeSelector extends HookConsumerWidget {

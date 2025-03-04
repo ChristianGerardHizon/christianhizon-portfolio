@@ -28,14 +28,15 @@ class CollapsingCard extends HookWidget {
     return Card(
       margin: cardMargin ?? EdgeInsets.only(left: 16, right: 16, bottom: 16),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10)
+            .copyWith(bottom: 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
               minTileHeight: 0,
-              contentPadding:
-                  contentPadding ?? EdgeInsets.only(left: 16, right: 28),
+              contentPadding: contentPadding ??
+                  EdgeInsets.only(left: 16, right: 28, bottom: 8),
               title: header,
               subtitle: subtitle,
               trailing: canCollapse
@@ -58,6 +59,7 @@ class CollapsingCard extends HookWidget {
                     )
                   : const SizedBox(),
             ),
+            if (isExpanded.value) Divider(height: 0),
             isExpanded.value ? child : SizedBox(),
           ],
         ),

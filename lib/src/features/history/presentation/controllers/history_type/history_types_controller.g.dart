@@ -1,27 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'history_type_search_controller.dart';
+part of 'history_types_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$historyTypeSearchControllerHash() =>
-    r'b9fa91b37efbf2d673a69d04dae74beea13ed2e9';
+String _$historyTypesControllerHash() =>
+    r'0b4c4ddedece25a2cabc14fdc07c70be08dd7b2c';
 
-/// See also [HistoryTypeSearchController].
-@ProviderFor(HistoryTypeSearchController)
-final historyTypeSearchControllerProvider =
-    AutoDisposeNotifierProvider<HistoryTypeSearchController, String?>.internal(
-  HistoryTypeSearchController.new,
-  name: r'historyTypeSearchControllerProvider',
+/// See also [HistoryTypesController].
+@ProviderFor(HistoryTypesController)
+final historyTypesControllerProvider = AutoDisposeAsyncNotifierProvider<
+    HistoryTypesController, PageResults<HistoryType>>.internal(
+  HistoryTypesController.new,
+  name: r'historyTypesControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$historyTypeSearchControllerHash,
+      : _$historyTypesControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$HistoryTypeSearchController = AutoDisposeNotifier<String?>;
+typedef _$HistoryTypesController
+    = AutoDisposeAsyncNotifier<PageResults<HistoryType>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

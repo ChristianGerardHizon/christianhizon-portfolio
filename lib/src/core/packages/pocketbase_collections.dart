@@ -3,4 +3,5 @@ class PocketBaseCollections {
   static const patients = 'patients';
   static const admins = 'admins';
   static const historyTypes = 'history_types';
+  static const historyies = 'histories';
 }

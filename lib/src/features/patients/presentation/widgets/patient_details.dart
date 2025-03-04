@@ -7,19 +7,19 @@ import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class SliverPatientDetails extends HookConsumerWidget {
+class PatientDetails extends HookConsumerWidget {
   final Patient patient;
-  const SliverPatientDetails({super.key, required this.patient});
+  const PatientDetails({super.key, required this.patient});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MultiSliver(
+    return Column(
       children: [
         ///
         /// Patient General Info
         ///
-        SliverPadding(
+        Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          sliver: SliverToBoxAdapter(
+          child: SizedBox(
             child: CollapsingCard(
               header: Text(
                 'Patient Info',
@@ -71,9 +71,9 @@ class SliverPatientDetails extends HookConsumerWidget {
         ///
         /// Owner Details
         ///
-        SliverPadding(
+        Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          sliver: SliverToBoxAdapter(
+          child: SizedBox(
             child: CollapsingCard(
               header: Text(
                 'Owner Info',
@@ -110,9 +110,9 @@ class SliverPatientDetails extends HookConsumerWidget {
         ///
         /// System Details
         ///
-        SliverPadding(
+        Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          sliver: SliverToBoxAdapter(
+          child: SizedBox(
             child: CollapsingCard(
               header: Text(
                 'Other Info',

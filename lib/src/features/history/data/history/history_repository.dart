@@ -3,60 +3,64 @@ import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/features/history/domain/history_type.dart';
+import 'package:gym_system/src/features/history/domain/history.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'history_type_repository.g.dart';
+part 'history_repository.g.dart';
 
-abstract class HistoryTypeRepository {
-  TaskResult<HistoryType> get(String id);
-  TaskResult<PageResults<HistoryType>> list({
+abstract class HistoryRepository {
+  TaskResult<History> get(String id);
+  TaskResult<PageResults<History>> list({
     String? filter,
     required int pageNo,
     required int pageSize,
   });
+  TaskResult<List<History>> listAll({
+    int batch = 500,
+    String? filter,
+  });
   TaskResult<void> delete(String id);
   TaskResult<void> softDeleteMulti(List<String> ids);
-  TaskResult<HistoryType> update(
-    HistoryType historyType,
+  TaskResult<History> update(
+    History history,
     Map<String, dynamic> update, {
     List<MultipartFile> files = const [],
   });
 
-  TaskResult<HistoryType> create(Map<String, dynamic> payload);
+  TaskResult<History> create(Map<String, dynamic> payload);
 }
 
 @Riverpod(keepAlive: true)
-HistoryTypeRepository historyTypeRepository(Ref ref) {
-  return HistoryTypeRepositoryImpl(
+HistoryRepository historyRepository(Ref ref) {
+  return HistoryRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class HistoryTypeRepositoryImpl extends HistoryTypeRepository {
+class HistoryRepositoryImpl extends HistoryRepository {
   final PocketBase pb;
 
-  HistoryTypeRepositoryImpl({required this.pb});
+  HistoryRepositoryImpl({required this.pb});
 
   RecordService get collection =>
-      pb.collection(PocketBaseCollections.historyTypes);
+      pb.collection(PocketBaseCollections.historyies);
 
   @override
-  TaskResult<HistoryType> get(String id) {
+  TaskResult<History> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
-      return HistoryType.customFromMap(result.toJson());
+      return History.customFromMap(result.toJson());
     }, Failure.tryCatchData);
   }
 
   @override
-  TaskResult<HistoryType> create(Map<String, dynamic> payload) {
+  TaskResult<History> create(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload);
-      return HistoryType.customFromMap(response.toJson());
+      return History.customFromMap(response.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -68,7 +72,7 @@ class HistoryTypeRepositoryImpl extends HistoryTypeRepository {
   }
 
   @override
-  TaskResult<PageResults<HistoryType>> list({
+  TaskResult<PageResults<History>> list({
     String? filter,
     required int pageNo,
     required int pageSize,
@@ -84,28 +88,28 @@ class HistoryTypeRepositoryImpl extends HistoryTypeRepository {
         perPage: result.perPage,
         totalItems: result.totalItems,
         totalPages: result.totalPages,
-        items: result.items.map<HistoryType>((e) {
-          return HistoryType.customFromMap(e.toJson());
+        items: result.items.map<History>((e) {
+          return History.customFromMap(e.toJson());
         }).toList(),
       );
     }, Failure.tryCatchData);
   }
 
   @override
-  TaskResult<HistoryType> update(
-    HistoryType historyType,
+  TaskResult<History> update(
+    History history,
     Map<String, dynamic> update, {
     List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
-      final historyTypeMap = historyType.toMap();
-      final combinedMap = {...historyTypeMap, ...update};
+      final historyMap = history.toMap();
+      final combinedMap = {...historyMap, ...update};
       final result = await collection.update(
-        historyType.id,
+        history.id,
         body: combinedMap,
         files: files,
       );
-      return HistoryType.customFromMap(result.toJson());
+      return History.customFromMap(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -114,12 +118,30 @@ class HistoryTypeRepositoryImpl extends HistoryTypeRepository {
     return TaskResult.tryCatch(() async {
       final batch = pb.createBatch();
       final batchCollection =
-          batch.collection(PocketBaseCollections.historyTypes);
+          batch.collection(PocketBaseCollections.historyies);
       for (final id in ids) {
         batchCollection.update(id, body: {'isDeleted': true});
       }
 
       await batch.send();
     }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<List<History>> listAll({
+    int batch = 500,
+    String? filter,
+  }) {
+    return TaskResult.tryCatch(
+      () async {
+        final result = await collection.getFullList(
+          filter: filter,
+        );
+        return result
+            .map<History>((e) => History.customFromMap(e.toJson()))
+            .toList();
+      },
+      Failure.tryCatchData,
+    );
   }
 }
