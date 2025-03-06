@@ -6,8 +6,9 @@ import 'package:gym_system/src/features/history/presentation/controllers/history
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HistoryTypeSelector extends HookConsumerWidget {
-  const HistoryTypeSelector({super.key, this.onPress});
+  const HistoryTypeSelector({super.key, this.onPress, this.selected});
 
+  final HistoryType? selected;
   final Function(HistoryType?)? onPress;
 
   @override
@@ -49,10 +50,17 @@ class HistoryTypeSelector extends HookConsumerWidget {
                   ///
                   /// Main
                   ///
-                  TextButton.icon(
-                    icon: Icon(MIcons.speedometer),
-                    onPressed: () => onPress?.call(null),
-                    label: Text('Main'),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 4),
+                    child: ChoiceChip(
+                      label: Text('Details'),
+                      selected: selected == null,
+                      onSelected: (value) {
+                        if (value) {
+                          onPress?.call(null);
+                        }
+                      },
+                    ),
                   ),
 
                   ///
@@ -60,13 +68,27 @@ class HistoryTypeSelector extends HookConsumerWidget {
                   ///
                   ...data.items.map(
                     (e) {
-                      return TextButton.icon(
-                        icon: Icon(MIcons.fromString(e.icon ?? '')),
-                        onPressed: () => onPress?.call(e),
+                      return ChoiceChip(
                         label: Text(e.name),
+                        selected: selected?.id == e.id,
+                        onSelected: (value) {
+                          if (value) {
+                            onPress?.call(e);
+                          }
+                        },
                       );
                     },
-                  ).toList()
+                  ).toList(),
+                  ...[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: TextButton.icon(
+                        onPressed: () {},
+                        icon: Icon(MIcons.plus),
+                        label: Text('Add Type'),
+                      ),
+                    ),
+                  ]
                 ],
               ),
             ),

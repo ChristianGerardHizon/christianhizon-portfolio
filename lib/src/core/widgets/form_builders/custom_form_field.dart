@@ -1,102 +1,81 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
+import 'package:gym_system/src/core/widgets/loaders/loading_details_tiles.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:searchfield/searchfield.dart'
+    show
+        SearchField,
+        SearchFieldListItem,
+        SearchInputDecoration,
+        SuggestionDecoration;
 
-import 'package:searchfield/searchfield.dart';
-
-///
-/// This is used for handling searchable dropdown fields
-/// the `T` represents the type of the search result
-/// so when you create a  you can declare it to be any type that fits your need
-///
-class CustomFormField<T> extends HookConsumerWidget {
+class CustomSearchFormField<T> extends HookConsumerWidget {
   final String name;
   final bool enabled;
   final Function(T?)? onChanged;
   final Future<List<T>> Function(String?) onSearch;
-  final SearchFieldListItem<T> Function(T) onChild;
-  final Widget Function(T, TextEditingController) selectedBuilder;
   final String? hint;
   final Duration debounce;
-  final dynamic Function(Object?)? valueTransformer;
+  final dynamic Function(T?)? valueTransformer;
+  final (String, Widget) Function(T) onChild;
+  final Widget Function(T, TextEditingController, FormField) selectedBuilder;
+  final InputDecoration decoration;
+  final bool showAll;
+  final List<T>? initialList;
+  final String? Function(T?)? validator;
 
-  const CustomFormField({
+  const CustomSearchFormField({
     super.key,
-
-    ///
-    /// A widget for handling searchable dropdown fields.
-    ///
+    this.validator,
+    this.initialList,
+    this.decoration = const InputDecoration(),
     this.enabled = true,
-
-    ///
-    ///  when the field is submitted this value transformer will be called and
-    ///  and whatever the value is returned will be the return value will be
-    ///  result value this can be any type you want it does not need to be
-    ///  similar to T
-    ///
     this.valueTransformer,
-
-    ///
-    /// this will represent the name of the field. this will be the key when the
-    /// result is created.
-    ///
-    required this.name,
-
-    ///
-    /// will handle the changes on the field value.
-    ///
-    required this.onChanged,
-
-    ///
-    /// this function will be called when the user types something in the field
-    /// then it expects to return a list of the T type
-    ///
-    required this.onSearch,
-
-    ///
-    /// this is also a builder but this will be called when an item form the
-    /// suggestions is displayed. in short this will determine what your search
-    /// dropdown will look like.
-    ///
-    required this.onChild,
-
-    ///
-    /// this is the widget that will be shown when an item is selected
-    ///
     required this.selectedBuilder,
-
-    ///
-    /// for decoration purposes. this will show as the helper text
-    ///
+    required this.name,
+    this.onChanged,
+    this.showAll = false,
+    required this.onSearch,
+    required this.onChild,
     this.hint,
-
-    ///
-    /// added this so that the search will only work every 500 milliseconds
-    ///
     this.debounce = const Duration(milliseconds: 500),
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final fieldKey = useMemoized(() => GlobalKey<FormBuilderFieldState>());
     final focus = useFocusNode();
-    final searchResults = useState<List<T>>([]);
-    final searchQuery = useState<String>('');
-    final isEmpty = useState<bool>(true);
+
+    final results = useState<List<T>?>(null);
     final isLoading = useState<bool>(false);
-    final debouncedQuery = useDebounced(searchQuery.value, debounce);
+    final debounceValue = useRef<Timer?>(null);
     final textCtrl = useTextEditingController();
+
+    final suggestionDecoration = SuggestionDecoration(
+      elevation: 1,
+      color: Theme.of(context).cardColor,
+      shadowColor: Theme.of(context).shadowColor,
+      borderRadius: BorderRadius.circular(8),
+      padding: const EdgeInsets.all(8),
+      boxShadow: [
+        BoxShadow(
+          color: Theme.of(context).shadowColor,
+          blurRadius: 10,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    );
 
     ///
     ///
     ///
-    Future<void> search(String query) async {
-      if (query.isEmpty) {
-        searchResults.value = [];
+    Future<void> startSearch(String query) async {
+      if (!showAll && query.isEmpty) {
+        results.value = null;
         return;
       }
       isLoading.value = true;
@@ -107,99 +86,132 @@ class CustomFormField<T> extends HookConsumerWidget {
       ).run();
 
       result.fold((l) {}, (r) {
-        isEmpty.value = r.isEmpty;
-        searchResults.value = r;
+        results.value = r;
       });
       isLoading.value = false;
     }
 
-    useEffect(() {
-      if (debouncedQuery != null && debouncedQuery.isNotEmpty) {
-        search(debouncedQuery);
+    void onSearchChanged(String query) {
+      // Cancel the previous timer if it's active.
+      if (debounceValue.value?.isActive ?? false) {
+        debounceValue.value!.cancel();
       }
-      return null;
-    }, [debouncedQuery]);
+      // Start a new timer that triggers the search after 500ms.
+      debounceValue.value = Timer(debounce, () {
+        startSearch(query);
+      });
+    }
+
+    // Clean up the timer when the widget is disposed.
+    useEffect(() {
+      return () {
+        debounceValue.value?.cancel();
+      };
+    }, []);
 
     return FormBuilderField(
-      key: fieldKey,
-      valueTransformer: valueTransformer,
       name: name,
-      enabled: enabled,
+      valueTransformer: valueTransformer,
+      validator: validator,
       onChanged: (value) {
-        if (value is T) onChanged?.call(value);
+        if (value is T) {
+          onChanged?.call(value);
+        }
+        if (value == '' || value == null) {
+          onSearchChanged('');
+        }
       },
       builder: (field) {
+        final list = results.value;
         final value = field.value;
+        final widget = field.widget;
+        final errorText = field.errorText;
+        final theme = Theme.of(context);
 
-        final suggestions = searchResults.value
-
-            /// where type is used to filter the to match the T
-            .whereType<T>()
-            .map(onChild)
-            .toList();
-
-        ///
-        /// search field
-        ///
+        final errorColor = theme.colorScheme.error;
+        final border = field.hasError == true
+            ? Border.all(color: theme.colorScheme.error)
+            : Border.all(color: theme.dividerColor);
         return Column(
           children: [
-            ///
-            /// this will be the widget to show when there is a selected value
-            ///
-            if (value is T) selectedBuilder.call(value, textCtrl),
-
-            ///
-            /// Search Field
-            ///
+            if (value is T) selectedBuilder.call(value, textCtrl, widget),
             Offstage(
               offstage: value != null,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: SearchField<T>(
-                  controller: textCtrl,
-                  hint: hint,
-                  focusNode: focus,
-                  emptyWidget: Builder(builder: (context) {
-                    ///
-                    /// will display a loading indicator while searching
-                    ///
-                    if (isLoading.value) {
-                      return const SizedBox(
-                        height: 200,
-                        child: CenteredProgressIndicator(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SearchField<T>(
+                    controller: textCtrl,
+                    hint: hint,
+                    focusNode: focus,
+                    onTapOutside: (p0) {
+                      focus.unfocus();
+                    },
+                    searchInputDecoration: SearchInputDecoration(
+                      border: OutlineInputBorder(),
+                      errorText: field.errorText,
+                    ),
+                    suggestions: (list ?? []).whereType<T>().map((item) {
+                      final result = onChild.call(item);
+                      return SearchFieldListItem<T>(
+                        result.$1,
+                        child: result.$2,
+                        item: item,
                       );
-                    }
+                    }).toList(),
+                    onTap: () {
+                      // if (focus.hasFocus) focus.unfocus();
+                    },
+                    onSuggestionTap: (x) {
+                      field.didChange(x.item);
+                      focus.unfocus();
+                    },
+                    emptyWidget: Builder(
+                      builder: (context) {
+                        /// loading
+                        if (isLoading.value) {
+                          return Card(
+                            elevation: 0,
+                            child: LoadingDetailsTiles(),
+                          );
+                        }
 
-                    ///
-                    /// will display and empty widget if there are no results
-                    ///
-                    if (isEmpty.value) {
-                      return const SizedBox(
-                        height: 200,
-                        child: Center(
-                          child: Text('No results found'),
-                        ),
-                      );
-                    }
-                    return const SizedBox();
-                  }),
+                        if (list == null) return SizedBox();
 
-                  ///
-                  /// this are where the results will be displayed
-                  /// if there are no results,
-                  ///
-                  suggestions: suggestions,
-                  onSuggestionTap: (x) {
-                    field.didChange(x.item);
-                    focus.unfocus();
-                  },
-                  onSearchTextChanged: (query) {
-                    searchQuery.value = query;
-                    return;
-                  },
-                ),
+                        if (list.isEmpty) {
+                          return const SizedBox(
+                              height: 200,
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    height: 0,
+                                    right: 0,
+                                    child: Text('button'),
+                                  ),
+                                  Center(
+                                    child: Text('No results found'),
+                                  ),
+                                ],
+                              ));
+                        }
+                        return SizedBox();
+                      },
+                    ),
+                    suggestionsDecoration: suggestionDecoration,
+                    onSearchTextChanged: (query) {
+                      if (showAll) {
+                        onSearchChanged(query);
+                        return;
+                      }
+                      final trimmed = query.trim();
+                      onSearchChanged(trimmed);
+                      return;
+                    },
+                  ),
+                ],
               ),
-            )
+            ),
           ],
         );
       },

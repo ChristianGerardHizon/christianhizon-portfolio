@@ -26,41 +26,56 @@ class CollapsingCard extends HookWidget {
     final isExpanded = useState<bool>(canCollapse ? expanded : true);
 
     return Card(
-      margin: cardMargin ?? EdgeInsets.only(left: 16, right: 16, bottom: 16),
+      margin:
+          cardMargin ?? const EdgeInsets.only(left: 16, right: 16, bottom: 16),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10)
-            .copyWith(bottom: 0),
+        padding: isExpanded.value
+            ? const EdgeInsets.only(bottom: 10)
+            : EdgeInsets.zero,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(10),
+                  topRight: const Radius.circular(10),
+                  bottomLeft: Radius.circular(isExpanded.value ? 0 : 10),
+                  bottomRight: Radius.circular(isExpanded.value ? 0 : 10),
+                ),
+              ),
+              onTap: () => isExpanded.value = !isExpanded.value,
               minTileHeight: 0,
               contentPadding: contentPadding ??
-                  EdgeInsets.only(left: 16, right: 28, bottom: 8),
+                  EdgeInsets.only(
+                      top: 10,
+                      left: 16,
+                      right: 16,
+                      bottom: !isExpanded.value ? 10 : 10),
               title: header,
               subtitle: subtitle,
               trailing: canCollapse
-                  ? IconButton(
-                      icon: AnimatedCrossFade(
-                        duration: const Duration(milliseconds: 300),
-                        firstChild: Transform.rotate(
-                          angle: 0,
-                          child: const Icon(Icons.keyboard_arrow_down),
-                        ),
-                        secondChild: Transform.rotate(
-                          angle: 3.14,
-                          child: const Icon(Icons.keyboard_arrow_down),
-                        ),
-                        crossFadeState: isExpanded.value
-                            ? CrossFadeState.showSecond
-                            : CrossFadeState.showFirst,
+                  ? AnimatedCrossFade(
+                      duration: const Duration(milliseconds: 300),
+                      firstChild: Transform.rotate(
+                        angle: 0,
+                        child: const Icon(Icons.keyboard_arrow_down),
                       ),
-                      onPressed: () => isExpanded.value = !isExpanded.value,
+                      secondChild: Transform.rotate(
+                        angle: 3.14,
+                        child: const Icon(Icons.keyboard_arrow_down),
+                      ),
+                      crossFadeState: isExpanded.value
+                          ? CrossFadeState.showSecond
+                          : CrossFadeState.showFirst,
                     )
                   : const SizedBox(),
             ),
-            if (isExpanded.value) Divider(height: 0),
-            isExpanded.value ? child : SizedBox(),
+            Visibility(
+              visible: isExpanded.value,
+              child: const Divider(height: 1),
+            ),
+            isExpanded.value ? child : const SizedBox(),
           ],
         ),
       ),

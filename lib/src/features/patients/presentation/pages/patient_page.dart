@@ -114,6 +114,7 @@ class PatientPage extends HookConsumerWidget {
                 ///
                 SliverToBoxAdapter(
                   child: HistoryTypeSelector(
+                    selected: historyType.value,
                     onPress: (type) {
                       historyType.value = type;
                     },
@@ -126,7 +127,10 @@ class PatientPage extends HookConsumerWidget {
                       ? SliverToBoxAdapter(
                           child: PatientDetails(patient: patient))
                       : SliverToBoxAdapter(
-                          child: PatientHistoryView(type: historyType.value!)),
+                          child: PatientHistoryView(
+                          type: historyType.value!,
+                          patient: patient,
+                        )),
                 ),
 
                 ///

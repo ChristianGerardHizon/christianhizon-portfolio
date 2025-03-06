@@ -30,7 +30,8 @@ dependencies:
   riverpod_annotation: ^2.6.1 
   window_manager: ^0.4.3 
   dart_mappable: ^4.3.0 
-  searchfield: ^1.1.7 
+  # latest version 1.2.0 havin issue on onSuggestionTap
+  searchfield: ^1.2.4
   flutter_image_compress: ^2.3.0 
   image_picker: ^1.1.2 
   path_provider: ^2.1.5 
@@ -49,6 +50,7 @@ dependencies:
   material_table_view: ^5.0.0
   sliver_tools: ^0.2.12
   tab_container: ^3.5.3
+  skeletonizer: ^1.4.3
 
 dev_dependencies:
   dart_mappable_builder: ^4.3.0  

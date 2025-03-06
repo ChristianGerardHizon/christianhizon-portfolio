@@ -8,17 +8,12 @@ import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/history/data/history/history_repository.dart';
 import 'package:gym_system/src/features/history/domain/history_type.dart';
-import 'package:gym_system/src/features/history/presentation/widgets/history_type_form_field.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 
-class HistoryCreateSheet extends HookConsumerWidget {
-  final HistoryType type;
-
+class HistoryTypeCreateSheet extends HookConsumerWidget {
   final Map<String, dynamic>? formData;
 
-  const HistoryCreateSheet({super.key, required this.type, this.formData});
+  const HistoryTypeCreateSheet({super.key, this.formData});
 
   static Future show(
     BuildContext context, {
@@ -31,7 +26,7 @@ class HistoryCreateSheet extends HookConsumerWidget {
       context: context,
       useRootNavigator: true,
       useSafeArea: true,
-      builder: (_) => HistoryCreateSheet(type: type, formData: formData),
+      builder: (_) => HistoryTypeCreateSheet(formData: formData),
     );
   }
 
@@ -70,67 +65,17 @@ class HistoryCreateSheet extends HookConsumerWidget {
     final content = Scaffold(
       appBar: AppBar(
         leading: CloseButton(),
-        title: Text('New ${type.name} History'),
+        title: Text('New History Type'),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 10),
         child: FormBuilder(
           key: formKey,
-          initialValue: {
-            HistoryField.id: formData?[HistoryField.id],
-            HistoryField.date: formData?[HistoryField.date] ?? DateTime.now(),
-            HistoryField.patient: formData?[HistoryField.patient],
-            HistoryField.type: formData?[HistoryField.type] ?? type,
-          },
           child: CustomScrollView(
             slivers: [
               ///
-              /// Date
+              /// Patient Details
               ///
-              SliverPadding(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                sliver: SliverList.list(
-                  children: [
-                    SizedBox(height: 10),
-                    ListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title: Text(
-                        'Date',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    FormBuilderDateTimePicker(
-                      name: HistoryField.date,
-                      firstDate:
-                          DateTime.now().subtract(Duration(days: 365 * 5)),
-                      lastDate: DateTime.now().add(Duration(days: 365 * 5)),
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                      ]),
-                      format: DateFormat('yyyy-MM-dd'),
-                      initialTime: TimeOfDay(hour: 0, minute: 0),
-                      inputType: InputType.date,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(
-                            bottom: 10, right: 8, left: 8, top: 30),
-                        labelText: 'Date',
-                        filled: true,
-                        fillColor:
-                            Theme.of(context).colorScheme.surfaceContainerLow,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    HistoryTypeFormField(
-                      name: HistoryField.type,
-                    ),
-                  ],
-                ),
-              ),
-
               SliverPadding(
                 padding: EdgeInsets.only(left: 10, right: 10),
                 sliver: SliverList.list(
@@ -144,19 +89,15 @@ class HistoryCreateSheet extends HookConsumerWidget {
                       ),
                     ),
                     SizedBox(height: 10),
-                    PatientFormField(
-                      name: HistoryField.patient,
-                    ),
-                    SizedBox(height: 10),
                     FormBuilderTextField(
-                      name: HistoryField.note,
+                      name: HistoryField.id,
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(),
                       ]),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(
                             bottom: 10, right: 8, left: 8, top: 30),
-                        labelText: 'Note',
+                        labelText: 'Name',
                         filled: true,
                         fillColor:
                             Theme.of(context).colorScheme.surfaceContainerLow,
@@ -195,11 +136,9 @@ class HistoryCreateSheet extends HookConsumerWidget {
         child: content,
       );
     }
+
     return Dialog(
-      child: SizedBox(
-        width: screenSize.width / 2,
-        child: content,
-      ),
+      child: content,
     );
   }
 }

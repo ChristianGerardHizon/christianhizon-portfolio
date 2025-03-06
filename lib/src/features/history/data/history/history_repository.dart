@@ -45,8 +45,7 @@ class HistoryRepositoryImpl extends HistoryRepository {
 
   HistoryRepositoryImpl({required this.pb});
 
-  RecordService get collection =>
-      pb.collection(PocketBaseCollections.historyies);
+  RecordService get collection => pb.collection(PocketBaseCollections.history);
 
   @override
   TaskResult<History> get(String id) {
@@ -117,8 +116,7 @@ class HistoryRepositoryImpl extends HistoryRepository {
   TaskResult<void> softDeleteMulti(List<String> ids) {
     return TaskResult.tryCatch(() async {
       final batch = pb.createBatch();
-      final batchCollection =
-          batch.collection(PocketBaseCollections.historyies);
+      final batchCollection = batch.collection(PocketBaseCollections.history);
       for (final id in ids) {
         batchCollection.update(id, body: {'isDeleted': true});
       }
