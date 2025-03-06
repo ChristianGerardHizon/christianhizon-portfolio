@@ -6,23 +6,24 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
-import 'package:gym_system/src/features/history/data/history/history_repository.dart';
-import 'package:gym_system/src/features/history/domain/history_type.dart';
-import 'package:gym_system/src/features/history/presentation/widgets/history_type_form_field.dart';
+import 'package:gym_system/src/features/vaccines/data/vaccine_record/vaccine_record_repository.dart';
+import 'package:gym_system/src/features/vaccines/domain/vaccine.dart';
+import 'package:gym_system/src/features/vaccines/presentation/widgets/vaccine_form_field.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class HistoryCreateSheet extends HookConsumerWidget {
-  final HistoryType type;
+class VaccineRecordCreateSheet extends HookConsumerWidget {
+  final Vaccine type;
 
   final Map<String, dynamic>? formData;
 
-  const HistoryCreateSheet({super.key, required this.type, this.formData});
+  const VaccineRecordCreateSheet(
+      {super.key, required this.type, this.formData});
 
   static Future show(
     BuildContext context, {
-    required HistoryType type,
+    required Vaccine type,
     Map<String, dynamic>? formData,
   }) async {
     final screenSize = MediaQuery.of(context).size;
@@ -31,7 +32,7 @@ class HistoryCreateSheet extends HookConsumerWidget {
       context: context,
       useRootNavigator: true,
       useSafeArea: true,
-      builder: (_) => HistoryCreateSheet(type: type, formData: formData),
+      builder: (_) => VaccineRecordCreateSheet(type: type, formData: formData),
     );
   }
 
@@ -77,10 +78,11 @@ class HistoryCreateSheet extends HookConsumerWidget {
         child: FormBuilder(
           key: formKey,
           initialValue: {
-            HistoryField.id: formData?[HistoryField.id],
-            HistoryField.date: formData?[HistoryField.date] ?? DateTime.now(),
-            HistoryField.patient: formData?[HistoryField.patient],
-            HistoryField.type: formData?[HistoryField.type] ?? type,
+            VaccineRecordField.id: formData?[VaccineRecordField.id],
+            VaccineRecordField.date:
+                formData?[VaccineRecordField.date] ?? DateTime.now(),
+            VaccineRecordField.patient: formData?[VaccineRecordField.patient],
+            VaccineRecordField.type: formData?[VaccineRecordField.type] ?? type,
           },
           child: CustomScrollView(
             slivers: [
@@ -101,7 +103,7 @@ class HistoryCreateSheet extends HookConsumerWidget {
                     ),
                     SizedBox(height: 10),
                     FormBuilderDateTimePicker(
-                      name: HistoryField.date,
+                      name: VaccineRecordField.date,
                       valueTransformer: (value) => value?.toIso8601String(),
                       firstDate:
                           DateTime.now().subtract(Duration(days: 365 * 5)),
@@ -125,8 +127,8 @@ class HistoryCreateSheet extends HookConsumerWidget {
                       ),
                     ),
                     SizedBox(height: 10),
-                    HistoryTypeFormField(
-                      name: HistoryField.type,
+                    VaccineFormField(
+                      name: VaccineRecordField.type,
                       valueTransformer: (x) => x.id,
                     ),
                   ],
@@ -147,12 +149,12 @@ class HistoryCreateSheet extends HookConsumerWidget {
                     // ),
                     SizedBox(height: 10),
                     PatientFormField(
-                      name: HistoryField.patient,
+                      name: VaccineRecordField.patient,
                       valueTransformer: (x) => x.id,
                     ),
                     SizedBox(height: 10),
                     FormBuilderTextField(
-                      name: HistoryField.note,
+                      name: VaccineRecordField.note,
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(),
                       ]),

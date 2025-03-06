@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'patient_history_controller.dart';
+part of 'patient_vaccine_record_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$patientHistoryControllerHash() =>
-    r'2feae385694d87d5fb128218a5f5715cf230be03';
+String _$patientVaccineRecordControllerHash() =>
+    r'b3c650bb4042f42cd2c1f4ab79bdf442aa2759a0';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,41 +30,42 @@ class _SystemHash {
   }
 }
 
-abstract class _$PatientHistoryController
-    extends BuildlessAutoDisposeAsyncNotifier<PageResults<History>> {
+abstract class _$PatientVaccineRecordController
+    extends BuildlessAutoDisposeAsyncNotifier<PageResults<VaccineRecord>> {
   late final String patientId;
   late final String historyTypeId;
 
-  FutureOr<PageResults<History>> build({
+  FutureOr<PageResults<VaccineRecord>> build({
     required String patientId,
     required String historyTypeId,
   });
 }
 
-/// See also [PatientHistoryController].
-@ProviderFor(PatientHistoryController)
-const patientHistoryControllerProvider = PatientHistoryControllerFamily();
+/// See also [PatientVaccineRecordController].
+@ProviderFor(PatientVaccineRecordController)
+const patientVaccineRecordControllerProvider =
+    PatientVaccineRecordControllerFamily();
 
-/// See also [PatientHistoryController].
-class PatientHistoryControllerFamily
-    extends Family<AsyncValue<PageResults<History>>> {
-  /// See also [PatientHistoryController].
-  const PatientHistoryControllerFamily();
+/// See also [PatientVaccineRecordController].
+class PatientVaccineRecordControllerFamily
+    extends Family<AsyncValue<PageResults<VaccineRecord>>> {
+  /// See also [PatientVaccineRecordController].
+  const PatientVaccineRecordControllerFamily();
 
-  /// See also [PatientHistoryController].
-  PatientHistoryControllerProvider call({
+  /// See also [PatientVaccineRecordController].
+  PatientVaccineRecordControllerProvider call({
     required String patientId,
     required String historyTypeId,
   }) {
-    return PatientHistoryControllerProvider(
+    return PatientVaccineRecordControllerProvider(
       patientId: patientId,
       historyTypeId: historyTypeId,
     );
   }
 
   @override
-  PatientHistoryControllerProvider getProviderOverride(
-    covariant PatientHistoryControllerProvider provider,
+  PatientVaccineRecordControllerProvider getProviderOverride(
+    covariant PatientVaccineRecordControllerProvider provider,
   ) {
     return call(
       patientId: provider.patientId,
@@ -84,35 +85,35 @@ class PatientHistoryControllerFamily
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'patientHistoryControllerProvider';
+  String? get name => r'patientVaccineRecordControllerProvider';
 }
 
-/// See also [PatientHistoryController].
-class PatientHistoryControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<PatientHistoryController,
-        PageResults<History>> {
-  /// See also [PatientHistoryController].
-  PatientHistoryControllerProvider({
+/// See also [PatientVaccineRecordController].
+class PatientVaccineRecordControllerProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<PatientVaccineRecordController,
+        PageResults<VaccineRecord>> {
+  /// See also [PatientVaccineRecordController].
+  PatientVaccineRecordControllerProvider({
     required String patientId,
     required String historyTypeId,
   }) : this._internal(
-          () => PatientHistoryController()
+          () => PatientVaccineRecordController()
             ..patientId = patientId
             ..historyTypeId = historyTypeId,
-          from: patientHistoryControllerProvider,
-          name: r'patientHistoryControllerProvider',
+          from: patientVaccineRecordControllerProvider,
+          name: r'patientVaccineRecordControllerProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$patientHistoryControllerHash,
-          dependencies: PatientHistoryControllerFamily._dependencies,
+                  : _$patientVaccineRecordControllerHash,
+          dependencies: PatientVaccineRecordControllerFamily._dependencies,
           allTransitiveDependencies:
-              PatientHistoryControllerFamily._allTransitiveDependencies,
+              PatientVaccineRecordControllerFamily._allTransitiveDependencies,
           patientId: patientId,
           historyTypeId: historyTypeId,
         );
 
-  PatientHistoryControllerProvider._internal(
+  PatientVaccineRecordControllerProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -127,8 +128,8 @@ class PatientHistoryControllerProvider
   final String historyTypeId;
 
   @override
-  FutureOr<PageResults<History>> runNotifierBuild(
-    covariant PatientHistoryController notifier,
+  FutureOr<PageResults<VaccineRecord>> runNotifierBuild(
+    covariant PatientVaccineRecordController notifier,
   ) {
     return notifier.build(
       patientId: patientId,
@@ -137,10 +138,10 @@ class PatientHistoryControllerProvider
   }
 
   @override
-  Override overrideWith(PatientHistoryController Function() create) {
+  Override overrideWith(PatientVaccineRecordController Function() create) {
     return ProviderOverride(
       origin: this,
-      override: PatientHistoryControllerProvider._internal(
+      override: PatientVaccineRecordControllerProvider._internal(
         () => create()
           ..patientId = patientId
           ..historyTypeId = historyTypeId,
@@ -156,14 +157,14 @@ class PatientHistoryControllerProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<PatientHistoryController,
-      PageResults<History>> createElement() {
-    return _PatientHistoryControllerProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<PatientVaccineRecordController,
+      PageResults<VaccineRecord>> createElement() {
+    return _PatientVaccineRecordControllerProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is PatientHistoryControllerProvider &&
+    return other is PatientVaccineRecordControllerProvider &&
         other.patientId == patientId &&
         other.historyTypeId == historyTypeId;
   }
@@ -180,8 +181,8 @@ class PatientHistoryControllerProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin PatientHistoryControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<PageResults<History>> {
+mixin PatientVaccineRecordControllerRef
+    on AutoDisposeAsyncNotifierProviderRef<PageResults<VaccineRecord>> {
   /// The parameter `patientId` of this provider.
   String get patientId;
 
@@ -189,17 +190,18 @@ mixin PatientHistoryControllerRef
   String get historyTypeId;
 }
 
-class _PatientHistoryControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<PatientHistoryController,
-        PageResults<History>> with PatientHistoryControllerRef {
-  _PatientHistoryControllerProviderElement(super.provider);
+class _PatientVaccineRecordControllerProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<
+        PatientVaccineRecordController,
+        PageResults<VaccineRecord>> with PatientVaccineRecordControllerRef {
+  _PatientVaccineRecordControllerProviderElement(super.provider);
 
   @override
   String get patientId =>
-      (origin as PatientHistoryControllerProvider).patientId;
+      (origin as PatientVaccineRecordControllerProvider).patientId;
   @override
   String get historyTypeId =>
-      (origin as PatientHistoryControllerProvider).historyTypeId;
+      (origin as PatientVaccineRecordControllerProvider).historyTypeId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

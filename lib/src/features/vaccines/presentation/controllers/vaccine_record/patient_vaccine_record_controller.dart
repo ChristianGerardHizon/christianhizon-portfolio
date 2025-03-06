@@ -1,14 +1,14 @@
 import 'package:gym_system/src/core/type_defs/page_results.dart';
-import 'package:gym_system/src/features/history/data/history/history_repository.dart';
-import 'package:gym_system/src/features/history/domain/history.dart';
+import 'package:gym_system/src/features/vaccines/data/vaccine_record/vaccine_record_repository.dart';
+import 'package:gym_system/src/features/vaccines/domain/vaccine_record.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'patient_history_controller.g.dart';
+part 'patient_vaccine_record_controller.g.dart';
 
 @riverpod
-class PatientHistoryController extends _$PatientHistoryController {
+class PatientVaccineRecordController extends _$PatientVaccineRecordController {
   @override
-  Future<PageResults<History>> build({
+  Future<PageResults<VaccineRecord>> build({
     required String patientId,
     required String historyTypeId,
   }) async {

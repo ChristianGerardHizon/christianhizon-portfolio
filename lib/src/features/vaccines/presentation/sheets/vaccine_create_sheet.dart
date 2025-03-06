@@ -6,14 +6,14 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
-import 'package:gym_system/src/features/history/data/history/history_repository.dart';
-import 'package:gym_system/src/features/history/data/history_type/history_type_repository.dart';
+import 'package:gym_system/src/features/vaccines/data/vaccine_record/vaccine_record_repository.dart';
+import 'package:gym_system/src/features/vaccines/data/vaccine/vaccine_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class HistoryTypeCreateSheet extends HookConsumerWidget {
+class VaccineCreateSheet extends HookConsumerWidget {
   final Map<String, dynamic>? formData;
 
-  const HistoryTypeCreateSheet({super.key, this.formData});
+  const VaccineCreateSheet({super.key, this.formData});
 
   static Future show(
     BuildContext context, {
@@ -25,7 +25,7 @@ class HistoryTypeCreateSheet extends HookConsumerWidget {
       context: context,
       useRootNavigator: true,
       useSafeArea: true,
-      builder: (_) => HistoryTypeCreateSheet(formData: formData),
+      builder: (_) => VaccineCreateSheet(formData: formData),
     );
   }
 
@@ -87,7 +87,7 @@ class HistoryTypeCreateSheet extends HookConsumerWidget {
                     /// Icon
                     ///
                     FormBuilderDropdown(
-                      name: HistoryTypeField.icon,
+                      name: VaccineField.icon,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(
                             bottom: 10, right: 8, left: 8, top: 30),
@@ -118,7 +118,7 @@ class HistoryTypeCreateSheet extends HookConsumerWidget {
                     /// Type Name
                     ///
                     FormBuilderTextField(
-                      name: HistoryTypeField.name,
+                      name: VaccineField.name,
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(),
                       ]),

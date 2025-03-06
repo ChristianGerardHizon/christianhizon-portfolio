@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
-import 'package:gym_system/src/features/history/domain/history_type.dart';
-import 'package:gym_system/src/features/history/presentation/controllers/history/patient_history_controller.dart';
-import 'package:gym_system/src/features/history/presentation/sheets/history_create_sheet.dart';
+import 'package:gym_system/src/features/vaccines/domain/vaccine.dart';
+import 'package:gym_system/src/features/vaccines/presentation/controllers/vaccine_record/patient_vaccine_record_controller.dart';
+import 'package:gym_system/src/features/vaccines/presentation/sheets/vaccine_record_create_sheet.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PatientHistoryView extends HookConsumerWidget {
-  final HistoryType type;
+class PatientVaccineRecordView extends HookConsumerWidget {
+  final Vaccine type;
   final Patient patient;
 
-  const PatientHistoryView(
+  const PatientVaccineRecordView(
       {super.key, required this.type, required this.patient});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    void showCreateSheet(Patient patient, HistoryType type) {
-      HistoryCreateSheet.show(context, type: type, formData: {
-        HistoryField.patient: patient,
-        HistoryField.type: type,
+    void showCreateSheet(Patient patient, Vaccine type) {
+      VaccineRecordCreateSheet.show(context, type: type, formData: {
+        VaccineRecordField.patient: patient,
+        VaccineRecordField.type: type,
       });
     }
 
-    final state = ref.watch(patientHistoryControllerProvider(
+    final state = ref.watch(patientVaccineRecordControllerProvider(
       historyTypeId: type.id,
       patientId: patient.id,
     ));

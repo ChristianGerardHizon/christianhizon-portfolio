@@ -1,21 +1,21 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'history_types_page_controller.g.dart';
+part 'vaccines_page_controller.g.dart';
 
-class HistoryTypesPageState {
+class VaccinesPageState {
   final int page;
   final int pageSize;
 
-  HistoryTypesPageState({
+  VaccinesPageState({
     required this.page,
     required this.pageSize,
   });
 
-  HistoryTypesPageState copyWith({
+  VaccinesPageState copyWith({
     int? page,
     int? pageSize,
   }) {
-    return HistoryTypesPageState(
+    return VaccinesPageState(
       page: page ?? this.page,
       pageSize: pageSize ?? this.pageSize,
     );
@@ -23,10 +23,10 @@ class HistoryTypesPageState {
 }
 
 @riverpod
-class HistoryTypesPageController extends _$HistoryTypesPageController {
+class VaccinesPageController extends _$VaccinesPageController {
   @override
-  HistoryTypesPageState build() {
-    return HistoryTypesPageState(page: 1, pageSize: 50);
+  VaccinesPageState build() {
+    return VaccinesPageState(page: 1, pageSize: 50);
   }
 
   changePage(int page) {

@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gym_system/src/core/widgets/form_builders/custom_form_field.dart';
 import 'package:gym_system/src/core/widgets/form_builders/toggle_field_item.dart';
-import 'package:gym_system/src/features/history/data/history_type/history_type_repository.dart';
-import 'package:gym_system/src/features/history/domain/history_type.dart';
+import 'package:gym_system/src/features/vaccines/data/vaccine/vaccine_repository.dart';
+import 'package:gym_system/src/features/vaccines/domain/vaccine.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class HistoryTypeFormField extends HookConsumerWidget {
+class VaccineFormField extends HookConsumerWidget {
   final String name;
-  final Function(HistoryType?)? onChanged;
-  final dynamic Function(HistoryType)? valueTransformer;
-  final String? Function(HistoryType?)? validator;
+  final Function(Vaccine?)? onChanged;
+  final dynamic Function(Vaccine)? valueTransformer;
+  final String? Function(Vaccine?)? validator;
 
   final bool readOnly;
 
-  const HistoryTypeFormField({
+  const VaccineFormField({
     super.key,
     required this.name,
     this.onChanged,
@@ -27,7 +27,7 @@ class HistoryTypeFormField extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Future<List<HistoryType>> search(String? query) async {
+    Future<List<Vaccine>> search(String? query) async {
       if (query == null) return [];
       if (query.isEmpty) return [];
       final repo = ref.read(historyTypeRepositoryProvider);
@@ -41,7 +41,7 @@ class HistoryTypeFormField extends HookConsumerWidget {
       return result.fold(Future.error, Future.value);
     }
 
-    return CustomSearchFormField<HistoryType>(
+    return CustomSearchFormField<Vaccine>(
       name: name,
       enabled: readOnly,
       validator: validator,
@@ -55,7 +55,7 @@ class HistoryTypeFormField extends HookConsumerWidget {
       ),
       valueTransformer: (p0) {
         final value = p0;
-        if (value is HistoryType) return valueTransformer?.call(value);
+        if (value is Vaccine) return valueTransformer?.call(value);
       },
       selectedBuilder: (p0, controller, widget) => ToggleFieldItem.card(
         readOnly: readOnly,

@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
-import 'package:gym_system/src/features/history/domain/history_type.dart';
-import 'package:gym_system/src/features/history/presentation/controllers/history_type/history_types_controller.dart';
-import 'package:gym_system/src/features/history/presentation/sheets/history_type_create_sheet.dart';
+import 'package:gym_system/src/features/vaccines/domain/vaccine.dart';
+import 'package:gym_system/src/features/vaccines/presentation/controllers/vaccine/vaccines_controller.dart';
+import 'package:gym_system/src/features/vaccines/presentation/sheets/vaccine_create_sheet.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class HistoryTypeSelector extends HookConsumerWidget {
-  const HistoryTypeSelector({super.key, this.onPress, this.selected});
+class VaccineSelector extends HookConsumerWidget {
+  const VaccineSelector({super.key, this.onPress, this.selected});
 
-  final HistoryType? selected;
-  final Function(HistoryType?)? onPress;
+  final Vaccine? selected;
+  final Function(Vaccine?)? onPress;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(historyTypesControllerProvider);
+    final state = ref.watch(vaccinesControllerProvider);
 
     addType() async {
-      final result = await HistoryTypeCreateSheet.show(context);
+      final result = await VaccineCreateSheet.show(context);
       if (result != null) {
-        ref.invalidate(historyTypesControllerProvider);
+        ref.invalidate(vaccinesControllerProvider);
       }
     }
 
@@ -37,7 +37,7 @@ class HistoryTypeSelector extends HookConsumerWidget {
             ),
             IconButton(
               onPressed: () {
-                ref.invalidate(historyTypesControllerProvider);
+                ref.invalidate(vaccinesControllerProvider);
               },
               icon: Icon(MIcons.refresh),
             ),
@@ -90,6 +90,10 @@ class HistoryTypeSelector extends HookConsumerWidget {
                       );
                     },
                   ).toList(),
+
+                  ///
+                  /// Add Type Button
+                  ///
                   ...[
                     Padding(
                       padding: const EdgeInsets.only(left: 4),

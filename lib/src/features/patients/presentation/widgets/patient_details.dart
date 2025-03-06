@@ -12,8 +12,10 @@ class PatientDetails extends HookConsumerWidget {
   const PatientDetails({super.key, required this.patient});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+    return ListView(
       children: [
+        SizedBox(height: 20),
+
         ///
         /// Patient General Info
         ///
@@ -27,6 +29,8 @@ class PatientDetails extends HookConsumerWidget {
               ),
               child: Column(
                 children: [
+                  SizedBox(height: 30),
+
                   ///
                   /// name
                   ///

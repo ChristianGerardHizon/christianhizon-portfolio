@@ -10,7 +10,7 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/logo.dart';
 import 'package:gym_system/src/core/widgets/mobile_bottom_nav.dart';
 import 'package:gym_system/src/features/authentication/presentation/widgets/account_circle_image.dart';
-import 'package:gym_system/src/features/history/presentation/controllers/history_type/history_types_controller.dart';
+import 'package:gym_system/src/features/vaccines/presentation/controllers/vaccine/vaccines_controller.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -29,7 +29,7 @@ class AppRoot extends HookConsumerWidget {
     final theme = Theme.of(context);
 
     ref.watch(settingsControllerProvider);
-    ref.watch(historyTypesControllerProvider);
+    ref.watch(vaccinesControllerProvider);
 
     final sideMenuCtrl = useMemoized(() => SideMenuController());
     final canPop = useState(false);

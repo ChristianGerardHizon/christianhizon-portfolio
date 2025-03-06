@@ -1,9 +1,9 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
-part 'history_type.mapper.dart';
+part 'vaccine.mapper.dart';
 
 @MappableClass()
-class HistoryType with HistoryTypeMappable {
+class Vaccine with VaccineMappable {
   final String id;
 
   final String name;
@@ -12,10 +12,10 @@ class HistoryType with HistoryTypeMappable {
   final DateTime? created;
   final DateTime? updated;
 
-  static const fromMap = HistoryTypeMapper.fromMap;
-  static const fromJson = HistoryTypeMapper.fromMap;
+  static const fromMap = VaccineMapper.fromMap;
+  static const fromJson = VaccineMapper.fromMap;
 
-  HistoryType({
+  Vaccine({
     required this.id,
     required this.name,
     required this.icon,
@@ -23,7 +23,7 @@ class HistoryType with HistoryTypeMappable {
     required this.updated,
   });
 
-  static HistoryType customFromMap(Map<String, dynamic> raw) {
+  static Vaccine customFromMap(Map<String, dynamic> raw) {
     return fromMap(
       {
         ...raw,

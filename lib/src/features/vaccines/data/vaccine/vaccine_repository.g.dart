@@ -1,28 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'history_types_controller.dart';
+part of 'vaccine_repository.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$historyTypesControllerHash() =>
-    r'0b4c4ddedece25a2cabc14fdc07c70be08dd7b2c';
+String _$historyTypeRepositoryHash() =>
+    r'26568044948216eb2bdc1b554b7668479df9d636';
 
-/// See also [HistoryTypesController].
-@ProviderFor(HistoryTypesController)
-final historyTypesControllerProvider = AutoDisposeAsyncNotifierProvider<
-    HistoryTypesController, PageResults<HistoryType>>.internal(
-  HistoryTypesController.new,
-  name: r'historyTypesControllerProvider',
+/// See also [historyTypeRepository].
+@ProviderFor(historyTypeRepository)
+final historyTypeRepositoryProvider = Provider<VaccineRepository>.internal(
+  historyTypeRepository,
+  name: r'historyTypeRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$historyTypesControllerHash,
+      : _$historyTypeRepositoryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$HistoryTypesController
-    = AutoDisposeAsyncNotifier<PageResults<HistoryType>>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef HistoryTypeRepositoryRef = ProviderRef<VaccineRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
