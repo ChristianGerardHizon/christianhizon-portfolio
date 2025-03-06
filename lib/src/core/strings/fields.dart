@@ -34,6 +34,13 @@ class PatientField {
   static const String isDeleted = 'isDeleted';
 }
 
+class HistoryTypeField {
+  static const String id = 'id';
+  static const String name = 'name';
+  static const String isDeleted = 'isDeleted';
+  static const String icon = 'icon';
+}
+
 class HistoryField {
   static const String id = 'id';
   static const String type = 'type';

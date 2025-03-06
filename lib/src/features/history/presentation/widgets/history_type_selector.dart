@@ -3,6 +3,7 @@ import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/features/history/domain/history_type.dart';
 import 'package:gym_system/src/features/history/presentation/controllers/history_type/history_types_controller.dart';
+import 'package:gym_system/src/features/history/presentation/sheets/history_type_create_sheet.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HistoryTypeSelector extends HookConsumerWidget {
@@ -14,6 +15,13 @@ class HistoryTypeSelector extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(historyTypesControllerProvider);
+
+    addType() async {
+      final result = await HistoryTypeCreateSheet.show(context);
+      if (result != null) {
+        ref.invalidate(historyTypesControllerProvider);
+      }
+    }
 
     return state.when(
       error: (error, stackTrace) => Padding(
@@ -51,7 +59,7 @@ class HistoryTypeSelector extends HookConsumerWidget {
                   /// Main
                   ///
                   Padding(
-                    padding: const EdgeInsets.only(right: 4),
+                    padding: const EdgeInsets.only(left: 4),
                     child: ChoiceChip(
                       label: Text('Details'),
                       selected: selected == null,
@@ -68,14 +76,17 @@ class HistoryTypeSelector extends HookConsumerWidget {
                   ///
                   ...data.items.map(
                     (e) {
-                      return ChoiceChip(
-                        label: Text(e.name),
-                        selected: selected?.id == e.id,
-                        onSelected: (value) {
-                          if (value) {
-                            onPress?.call(e);
-                          }
-                        },
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: ChoiceChip(
+                          label: Text(e.name),
+                          selected: selected?.id == e.id,
+                          onSelected: (value) {
+                            if (value) {
+                              onPress?.call(e);
+                            }
+                          },
+                        ),
                       );
                     },
                   ).toList(),
@@ -83,7 +94,7 @@ class HistoryTypeSelector extends HookConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.only(left: 4),
                       child: TextButton.icon(
-                        onPressed: () {},
+                        onPressed: addType,
                         icon: Icon(MIcons.plus),
                         label: Text('Add Type'),
                       ),

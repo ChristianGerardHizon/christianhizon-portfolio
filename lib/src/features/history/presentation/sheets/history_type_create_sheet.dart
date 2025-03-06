@@ -7,7 +7,7 @@ import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/history/data/history/history_repository.dart';
-import 'package:gym_system/src/features/history/domain/history_type.dart';
+import 'package:gym_system/src/features/history/data/history_type/history_type_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HistoryTypeCreateSheet extends HookConsumerWidget {
@@ -17,7 +17,6 @@ class HistoryTypeCreateSheet extends HookConsumerWidget {
 
   static Future show(
     BuildContext context, {
-    required HistoryType type,
     Map<String, dynamic>? formData,
   }) async {
     final screenSize = MediaQuery.of(context).size;
@@ -50,14 +49,16 @@ class HistoryTypeCreateSheet extends HookConsumerWidget {
         return;
       }
 
-      final result =
-          await ref.read(historyRepositoryProvider).create(form.value).run();
+      final result = await ref
+          .read(historyTypeRepositoryProvider)
+          .create(form.value)
+          .run();
       isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          context.pop();
+          context.pop(r);
         },
       );
     }
@@ -81,23 +82,50 @@ class HistoryTypeCreateSheet extends HookConsumerWidget {
                 sliver: SliverList.list(
                   children: [
                     SizedBox(height: 10),
-                    ListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title: Text(
-                        'Patient Info',
-                        style: Theme.of(context).textTheme.titleLarge,
+
+                    ///
+                    /// Icon
+                    ///
+                    FormBuilderDropdown(
+                      name: HistoryTypeField.icon,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(
+                            bottom: 10, right: 8, left: 8, top: 30),
+                        labelText: 'Icon',
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).colorScheme.surfaceContainerLow,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
+                      items: [
+                        'star',
+                        'heart',
+                        'smile',
+                        'sad',
+                        'mood',
+                      ]
+                          .map((e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(e),
+                              ))
+                          .toList(),
                     ),
                     SizedBox(height: 10),
+
+                    ///
+                    /// Type Name
+                    ///
                     FormBuilderTextField(
-                      name: HistoryField.id,
+                      name: HistoryTypeField.name,
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(),
                       ]),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(
                             bottom: 10, right: 8, left: 8, top: 30),
-                        labelText: 'Name',
+                        labelText: 'History Name',
                         filled: true,
                         fillColor:
                             Theme.of(context).colorScheme.surfaceContainerLow,

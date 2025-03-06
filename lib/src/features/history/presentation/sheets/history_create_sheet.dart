@@ -62,7 +62,7 @@ class HistoryCreateSheet extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          context.pop();
+          context.pop(r);
         },
       );
     }
@@ -102,6 +102,7 @@ class HistoryCreateSheet extends HookConsumerWidget {
                     SizedBox(height: 10),
                     FormBuilderDateTimePicker(
                       name: HistoryField.date,
+                      valueTransformer: (value) => value?.toIso8601String(),
                       firstDate:
                           DateTime.now().subtract(Duration(days: 365 * 5)),
                       lastDate: DateTime.now().add(Duration(days: 365 * 5)),
@@ -126,6 +127,7 @@ class HistoryCreateSheet extends HookConsumerWidget {
                     SizedBox(height: 10),
                     HistoryTypeFormField(
                       name: HistoryField.type,
+                      valueTransformer: (x) => x.id,
                     ),
                   ],
                 ),
@@ -135,17 +137,18 @@ class HistoryCreateSheet extends HookConsumerWidget {
                 padding: EdgeInsets.only(left: 10, right: 10),
                 sliver: SliverList.list(
                   children: [
-                    SizedBox(height: 10),
-                    ListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title: Text(
-                        'Patient Info',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
+                    // SizedBox(height: 10),
+                    // ListTile(
+                    //   contentPadding: EdgeInsets.all(0),
+                    //   title: Text(
+                    //     'Patient Info',
+                    //     style: Theme.of(context).textTheme.titleLarge,
+                    //   ),
+                    // ),
                     SizedBox(height: 10),
                     PatientFormField(
                       name: HistoryField.patient,
+                      valueTransformer: (x) => x.id,
                     ),
                     SizedBox(height: 10),
                     FormBuilderTextField(
