@@ -4,13 +4,12 @@ import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
-import 'package:gym_system/src/features/vaccines/domain/vaccine_record.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'medical_repository.g.dart';
+part 'medical_record_repository.g.dart';
 
 abstract class MedicalRecordRepository {
   TaskResult<MedicalRecord> get(String id);
@@ -35,7 +34,7 @@ abstract class MedicalRecordRepository {
 }
 
 @Riverpod(keepAlive: true)
-MedicalRecordRepository historyRepository(Ref ref) {
+MedicalRecordRepository medicalRecordRepository(Ref ref) {
   return MedicalRecordRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );

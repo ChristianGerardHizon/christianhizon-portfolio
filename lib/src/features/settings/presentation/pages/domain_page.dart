@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/features/settings/data/setting_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 
 class DomainPage extends HookConsumerWidget {
   const DomainPage({super.key});
@@ -18,7 +18,8 @@ class DomainPage extends HookConsumerWidget {
       repo.get().run().then((result) {
         final settings = result.fold((l) => null, (r) => r);
         if (settings == null) return;
-        if (context.mounted) textCtrl.text = settings.domain;
+        final pb = ref.read(pocketbaseProvider);
+        if (context.mounted) textCtrl.text = pb.baseURL;
       });
       return null;
     }, []);

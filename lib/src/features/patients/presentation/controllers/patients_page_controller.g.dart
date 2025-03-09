@@ -6,6 +6,23 @@ part of 'patients_page_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$patientSearchControllerHash() =>
+    r'f78b0e97eb141c9f4aa20e5c241924d309b013d8';
+
+/// See also [PatientSearchController].
+@ProviderFor(PatientSearchController)
+final patientSearchControllerProvider =
+    AutoDisposeNotifierProvider<PatientSearchController, String?>.internal(
+  PatientSearchController.new,
+  name: r'patientSearchControllerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$patientSearchControllerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$PatientSearchController = AutoDisposeNotifier<String?>;
 String _$patientsPageControllerHash() =>
     r'7d7acbf79ed79f8337f52dbb516cc9f2612461f6';
 

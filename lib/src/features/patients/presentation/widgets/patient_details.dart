@@ -4,6 +4,7 @@ import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/widgets/collapsing_card.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_circle_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -15,6 +16,16 @@ class PatientDetails extends HookConsumerWidget {
     return ListView(
       children: [
         SizedBox(height: 20),
+
+        SizedBox(
+          height: 250,
+          child: PatientCircleImage(
+            radius: 120,
+            patient: patient,
+          ),
+        ),
+
+        SizedBox(height: 50),
 
         ///
         /// Patient General Info

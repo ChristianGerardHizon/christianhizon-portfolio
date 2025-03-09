@@ -1,7 +1,6 @@
 import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patient_search_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_page_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

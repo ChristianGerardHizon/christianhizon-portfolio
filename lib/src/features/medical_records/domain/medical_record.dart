@@ -6,16 +6,18 @@ part 'medical_record.mapper.dart';
 class MedicalRecord with MedicalRecordMappable {
   final String id;
 
-  final String name;
+  final String patient;
 
+  final bool isDeleted;
   final DateTime? created;
   final DateTime? updated;
 
   MedicalRecord({
     required this.id,
-    this.name = '',
+    required this.patient,
     this.created,
     this.updated,
+    this.isDeleted = false,
   });
 
   static const fromMap = MedicalRecordMapper.fromMap;

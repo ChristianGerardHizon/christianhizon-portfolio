@@ -23,6 +23,18 @@ class PatientsPageState {
 }
 
 @riverpod
+class PatientSearchController extends _$PatientSearchController {
+  @override
+  String? build() {
+    return null;
+  }
+
+  void change(String value) {
+    state = value;
+  }
+}
+
+@riverpod
 class PatientsPageController extends _$PatientsPageController {
   @override
   PatientsPageState build() {

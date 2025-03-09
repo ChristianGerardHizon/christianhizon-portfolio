@@ -26,7 +26,9 @@ class PhotoViewer extends HookConsumerWidget {
           errorBuilder: (context, error, stackTrace) {
             return const Center(child: Text('Error loading image'));
           },
-          imageProvider: CachedNetworkImageProvider(url),
+          imageProvider: CachedNetworkImageProvider(
+            url,
+          ),
         ),
       ),
     );

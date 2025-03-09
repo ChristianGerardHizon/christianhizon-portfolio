@@ -20,16 +20,11 @@ class SettingsMapper extends ClassMapperBase<Settings> {
   @override
   final String id = 'Settings';
 
-  static String _$domain(Settings v) => v.domain;
-  static const Field<Settings, String> _f$domain = Field('domain', _$domain);
-
   @override
-  final MappableFields<Settings> fields = const {
-    #domain: _f$domain,
-  };
+  final MappableFields<Settings> fields = const {};
 
   static Settings _instantiate(DecodingData data) {
-    return Settings(domain: data.dec(_f$domain));
+    return Settings();
   }
 
   @override
@@ -81,7 +76,7 @@ extension SettingsValueCopy<$R, $Out> on ObjectCopyWith<$R, Settings, $Out> {
 
 abstract class SettingsCopyWith<$R, $In extends Settings, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call({String? domain});
+  $R call();
   SettingsCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -94,11 +89,9 @@ class _SettingsCopyWithImpl<$R, $Out>
   late final ClassMapperBase<Settings> $mapper =
       SettingsMapper.ensureInitialized();
   @override
-  $R call({String? domain}) =>
-      $apply(FieldCopyWithData({if (domain != null) #domain: domain}));
+  $R call() => $apply(FieldCopyWithData({}));
   @override
-  Settings $make(CopyWithData data) =>
-      Settings(domain: data.get(#domain, or: $value.domain));
+  Settings $make(CopyWithData data) => Settings();
 
   @override
   SettingsCopyWith<$R2, Settings, $Out2> $chain<$R2, $Out2>(

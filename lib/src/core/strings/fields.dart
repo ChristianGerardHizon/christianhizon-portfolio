@@ -49,3 +49,16 @@ class VaccineRecordField {
   static const String note = 'note';
   static const String isDeleted = 'isDeleted';
 }
+
+class MedicalRecordField {
+  static const String id = 'id';
+  static const String patient = 'patient';
+  static const String diagnosis = 'diagnosis';
+  static const String isDeleted = 'isDeleted';
+  static const String vistDate = 'visitDate';
+  static const String treatment = 'treatment';
+  static const String isFollowUpRequired = 'isFollowUpRequired';
+  static const String prescription = 'prescription';
+  static const String user = 'user';
+  static const String admin = 'admin';
+}

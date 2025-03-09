@@ -22,30 +22,35 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
 
   static String _$id(MedicalRecord v) => v.id;
   static const Field<MedicalRecord, String> _f$id = Field('id', _$id);
-  static String _$name(MedicalRecord v) => v.name;
-  static const Field<MedicalRecord, String> _f$name =
-      Field('name', _$name, opt: true, def: '');
+  static String _$patient(MedicalRecord v) => v.patient;
+  static const Field<MedicalRecord, String> _f$patient =
+      Field('patient', _$patient);
   static DateTime? _$created(MedicalRecord v) => v.created;
   static const Field<MedicalRecord, DateTime> _f$created =
       Field('created', _$created, opt: true);
   static DateTime? _$updated(MedicalRecord v) => v.updated;
   static const Field<MedicalRecord, DateTime> _f$updated =
       Field('updated', _$updated, opt: true);
+  static bool _$isDeleted(MedicalRecord v) => v.isDeleted;
+  static const Field<MedicalRecord, bool> _f$isDeleted =
+      Field('isDeleted', _$isDeleted, opt: true, def: false);
 
   @override
   final MappableFields<MedicalRecord> fields = const {
     #id: _f$id,
-    #name: _f$name,
+    #patient: _f$patient,
     #created: _f$created,
     #updated: _f$updated,
+    #isDeleted: _f$isDeleted,
   };
 
   static MedicalRecord _instantiate(DecodingData data) {
     return MedicalRecord(
         id: data.dec(_f$id),
-        name: data.dec(_f$name),
+        patient: data.dec(_f$patient),
         created: data.dec(_f$created),
-        updated: data.dec(_f$updated));
+        updated: data.dec(_f$updated),
+        isDeleted: data.dec(_f$isDeleted));
   }
 
   @override
@@ -101,7 +106,12 @@ extension MedicalRecordValueCopy<$R, $Out>
 
 abstract class MedicalRecordCopyWith<$R, $In extends MedicalRecord, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call({String? id, String? name, DateTime? created, DateTime? updated});
+  $R call(
+      {String? id,
+      String? patient,
+      DateTime? created,
+      DateTime? updated,
+      bool? isDeleted});
   MedicalRecordCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -116,21 +126,24 @@ class _MedicalRecordCopyWithImpl<$R, $Out>
   @override
   $R call(
           {String? id,
-          String? name,
+          String? patient,
           Object? created = $none,
-          Object? updated = $none}) =>
+          Object? updated = $none,
+          bool? isDeleted}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
-        if (name != null) #name: name,
+        if (patient != null) #patient: patient,
         if (created != $none) #created: created,
-        if (updated != $none) #updated: updated
+        if (updated != $none) #updated: updated,
+        if (isDeleted != null) #isDeleted: isDeleted
       }));
   @override
   MedicalRecord $make(CopyWithData data) => MedicalRecord(
       id: data.get(#id, or: $value.id),
-      name: data.get(#name, or: $value.name),
+      patient: data.get(#patient, or: $value.patient),
       created: data.get(#created, or: $value.created),
-      updated: data.get(#updated, or: $value.updated));
+      updated: data.get(#updated, or: $value.updated),
+      isDeleted: data.get(#isDeleted, or: $value.isDeleted));
 
   @override
   MedicalRecordCopyWith<$R2, MedicalRecord, $Out2> $chain<$R2, $Out2>(

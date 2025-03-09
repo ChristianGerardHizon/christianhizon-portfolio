@@ -8,7 +8,6 @@ import 'package:gym_system/src/core/widgets/page_actions.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
 import 'package:gym_system/src/core/widgets/text_search_bar.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patient_search_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients_page_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patients_table.dart';
@@ -69,10 +68,10 @@ class PatientsPage extends HookConsumerWidget {
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.invalidate(patientsControllerProvider),
           ),
-          IconButton(
-            icon: Icon(MIcons.plusCircle),
-            onPressed: () => PatientCreatePageRoute().go(context),
-          )
+          // IconButton(
+          //   icon: Icon(MIcons.plusCircle),
+          //   onPressed: () => PatientCreatePageRoute().go(context),
+          // )
         ],
       ),
       body: Stack(
@@ -92,6 +91,7 @@ class PatientsPage extends HookConsumerWidget {
                   onSearch: () {
                     searchNotif.change(searchCtrl.text);
                   },
+                  onCreate: () => PatientCreatePageRoute().go(context),
                 ),
               ),
 
@@ -104,7 +104,13 @@ class PatientsPage extends HookConsumerWidget {
                 skipLoadingOnReload: false,
                 loading: () => SliverPadding(
                   padding: const EdgeInsets.all(20.0),
-                  sliver: SliverToBoxAdapter(child: Center(child: SizedBox(width: 50, height: 50, child: CircularProgressIndicator()),)),
+                  sliver: SliverToBoxAdapter(
+                      child: Center(
+                    child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: CircularProgressIndicator()),
+                  )),
                 ),
                 error: (error, stackTrace) => SliverToBoxAdapter(
                   child: Center(

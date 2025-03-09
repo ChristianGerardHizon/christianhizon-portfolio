@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -29,14 +30,15 @@ class ImageViewer extends ConsumerWidget {
 
     return state.when(
       data: (setting) {
-        final url = '${setting.domain}/api/files/$feature/$id/$file';
+        final pb = ref.read(pocketbaseProvider);
+
+        final url = '${pb.baseURL}/api/files/$feature/$id/$file';
         return builder(url);
       },
       error: (error, stack) => Center(
         child: Text(error.toString()),
       ),
-      loading: () =>
-          loader?.call() ?? CenteredProgressIndicator(),
+      loading: () => loader?.call() ?? CenteredProgressIndicator(),
     );
   }
 }

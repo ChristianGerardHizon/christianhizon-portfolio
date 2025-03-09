@@ -9,7 +9,11 @@ class AdminCircleImage extends StatelessWidget {
   final Admin admin;
   final int radius;
   final bool isInteractable;
-  const AdminCircleImage({super.key, required this.admin, this.radius = 60, this.isInteractable = true});
+  const AdminCircleImage(
+      {super.key,
+      required this.admin,
+      this.radius = 60,
+      this.isInteractable = true});
 
   @override
   Widget build(BuildContext context) {

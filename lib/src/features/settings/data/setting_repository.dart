@@ -40,9 +40,9 @@ class SettingRepository {
 
       if (result == null) {
         return const Settings(
-          domain: 'https://fox-expect.pockethost.io',
-          // domain: 'http://127.0.0.1:8090',
-        );
+            // domain: 'https://fox-expect.pockethost.io',
+            // domain: 'http://127.0.0.1:8090',
+            );
       }
 
       return Settings.fromJson(result);
@@ -52,9 +52,7 @@ class SettingRepository {
   TaskResult<Settings> update({String? domain}) {
     return TaskResult.Do(($) async {
       final settings = await $(get());
-      final updated = settings.copyWith(
-        domain: domain ?? settings.domain,
-      );
+      final updated = settings.copyWith();
       return await $(set(settings: updated));
     });
   }

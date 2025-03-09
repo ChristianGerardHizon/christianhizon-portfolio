@@ -26,10 +26,13 @@ List<RouteBase> get $appRoutes => [
       $patientPageRoute,
       $patientCreatePageRoute,
       $patientUpdatePageRoute,
+      $patientMedicalRecordPageRoute,
       $dashboardPageRoute,
       $morePageRoute,
       $salesPageRoute,
       $productsPageRoute,
+      $medicalRecordsPageRoute,
+      $medicalRecordPageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -97,7 +100,7 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               factory: $PatientsPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/patient/:id',
+              path: '/patient/:id/:page',
               factory: $PatientPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
@@ -107,6 +110,10 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/newPatient',
               factory: $PatientCreatePageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/patient/medicalRecord/:id/:patientId',
+              factory: $PatientMedicalRecordPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -208,10 +215,11 @@ extension $PatientsPageRouteExtension on PatientsPageRoute {
 extension $PatientPageRouteExtension on PatientPageRoute {
   static PatientPageRoute _fromState(GoRouterState state) => PatientPageRoute(
         state.pathParameters['id']!,
+        page: int.parse(state.pathParameters['page']!) ?? 0,
       );
 
   String get location => GoRouteData.$location(
-        '/patient/${Uri.encodeComponent(id)}',
+        '/patient/${Uri.encodeComponent(id)}/${Uri.encodeComponent(page.toString())}',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -250,6 +258,28 @@ extension $PatientCreatePageRouteExtension on PatientCreatePageRoute {
 
   String get location => GoRouteData.$location(
         '/newPatient',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $PatientMedicalRecordPageRouteExtension
+    on PatientMedicalRecordPageRoute {
+  static PatientMedicalRecordPageRoute _fromState(GoRouterState state) =>
+      PatientMedicalRecordPageRoute(
+        state.pathParameters['id']!,
+        state.pathParameters['patientId']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/patient/medicalRecord/${Uri.encodeComponent(id)}/${Uri.encodeComponent(patientId)}',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -584,7 +614,7 @@ RouteBase get $patientsPageRoute => GoRouteData.$route(
     );
 
 RouteBase get $patientPageRoute => GoRouteData.$route(
-      path: '/patient/:id',
+      path: '/patient/:id/:page',
       factory: $PatientPageRouteExtension._fromState,
     );
 
@@ -596,6 +626,11 @@ RouteBase get $patientCreatePageRoute => GoRouteData.$route(
 RouteBase get $patientUpdatePageRoute => GoRouteData.$route(
       path: '/updatePatient/:id',
       factory: $PatientUpdatePageRouteExtension._fromState,
+    );
+
+RouteBase get $patientMedicalRecordPageRoute => GoRouteData.$route(
+      path: '/patient/medicalRecord/:id/:patientId',
+      factory: $PatientMedicalRecordPageRouteExtension._fromState,
     );
 
 RouteBase get $dashboardPageRoute => GoRouteData.$route(
@@ -634,3 +669,59 @@ RouteBase get $productsPageRoute => GoRouteData.$route(
       path: '/products',
       factory: $ProductsPageRouteExtension._fromState,
     );
+
+RouteBase get $medicalRecordsPageRoute => GoRouteData.$route(
+      path: '/medicalRecords',
+      factory: $MedicalRecordsPageRouteExtension._fromState,
+    );
+
+extension $MedicalRecordsPageRouteExtension on MedicalRecordsPageRoute {
+  static MedicalRecordsPageRoute _fromState(GoRouterState state) =>
+      MedicalRecordsPageRoute(
+        state.uri.queryParameters['id']!,
+        state.uri.queryParameters['patient-id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/medicalRecords',
+        queryParams: {
+          'id': id,
+          'patient-id': patientId,
+        },
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $medicalRecordPageRoute => GoRouteData.$route(
+      path: '/medicalRecord/:id/:patientId',
+      factory: $MedicalRecordPageRouteExtension._fromState,
+    );
+
+extension $MedicalRecordPageRouteExtension on MedicalRecordPageRoute {
+  static MedicalRecordPageRoute _fromState(GoRouterState state) =>
+      MedicalRecordPageRoute(
+        state.pathParameters['id']!,
+        state.pathParameters['patientId']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/medicalRecord/${Uri.encodeComponent(id)}/${Uri.encodeComponent(patientId)}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}

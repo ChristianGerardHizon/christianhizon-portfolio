@@ -10,6 +10,7 @@ import 'package:gym_system/src/features/authentication/presentation/pages/accoun
 import 'package:gym_system/src/features/authentication/presentation/pages/admin_login_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/user_login_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:gym_system/src/features/medical_records/presentation/pages/medical_record_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_create_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_update_page.dart';
@@ -34,6 +35,7 @@ part 'routes/dashboard.routes.dart';
 part 'routes/others.routes.dart';
 part 'routes/sales.routes.dart';
 part 'routes/products.routes.dart';
+part 'routes/medical_records.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
@@ -99,6 +101,8 @@ class SplashPageRoute extends GoRouteData {
         TypedGoRoute<PatientPageRoute>(path: PatientPageRoute.path),
         TypedGoRoute<PatientUpdatePageRoute>(path: PatientUpdatePageRoute.path),
         TypedGoRoute<PatientCreatePageRoute>(path: PatientCreatePageRoute.path),
+        TypedGoRoute<PatientMedicalRecordPageRoute>(
+            path: PatientMedicalRecordPageRoute.path),
       ],
     ),
 
@@ -149,6 +153,17 @@ class SplashPageRoute extends GoRouteData {
         TypedGoRoute<YourAccountPageRoute>(path: YourAccountPageRoute.path),
       ],
     ),
+
+    ///
+    /// Medical Records
+    ///
+    // TypedStatefulShellBranch<MedicalRecordsBranchData>(
+    //   routes: <TypeRouteData>[
+    //     TypedGoRoute<MedicalRecordsPageRoute>(
+    //         path: MedicalRecordsPageRoute.path),
+    //     TypedGoRoute<MedicalRecordPageRoute>(path: MedicalRecordPageRoute.path),
+    //   ],
+    // ),
   ],
 )
 class RootRouteData extends StatefulShellRouteData {
