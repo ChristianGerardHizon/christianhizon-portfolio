@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
+import 'package:gym_system/src/core/widgets/responsive_two_fields.dart';
 import 'package:gym_system/src/features/medical_records/data/medical_record_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_form_field.dart';
@@ -77,6 +78,7 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
           key: formKey,
           initialValue: {
             MedicalRecordField.patient: patient,
+            MedicalRecordField.vistDate: DateTime.now(),
           },
           child: CustomScrollView(
             slivers: [
@@ -129,22 +131,15 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
                       ),
                     ),
 
-                    ///
-                    /// Diagnosis
-                    ///
-                    FormBuilderTextField(
-                      name: MedicalRecordField.diagnosis,
-                      validator: FormBuilderValidators.compose([]),
-                      minLines: 5,
-                      maxLines: 8,
+                    FormBuilderDateTimePicker(
+                      initialEntryMode: DatePickerEntryMode.inputOnly,
+                      inputType: InputType.date,
+                      name: MedicalRecordField.vistDate,
                       decoration: InputDecoration(
+                        suffixIcon: Icon(Icons.calendar_month),
                         contentPadding: EdgeInsets.only(
-                          bottom: 10,
-                          right: 8,
-                          left: 8,
-                          top: 30,
-                        ),
-                        labelText: 'Diagnosis',
+                            bottom: 10, right: 8, left: 8, top: 30),
+                        labelText: 'Visitation Date',
                         filled: true,
                         fillColor:
                             Theme.of(context).colorScheme.surfaceContainerLow,
@@ -152,33 +147,69 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
+                      valueTransformer: (dateTime) {
+                        if (dateTime == null) return null;
+                        return dateTime.toUtc().toIso8601String();
+                      },
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 16),
 
-                    ///
-                    /// Treatment
-                    ///
-                    FormBuilderTextField(
-                      name: MedicalRecordField.treatment,
-                      validator: FormBuilderValidators.compose([]),
-                      minLines: 5,
-                      maxLines: 8,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(
-                          bottom: 10,
-                          right: 8,
-                          left: 8,
-                          top: 30,
-                        ),
-                        labelText: 'Treatment',
-                        filled: true,
-                        fillColor:
-                            Theme.of(context).colorScheme.surfaceContainerLow,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
+                    ResponsiveTwoFields(
+                        verticalGap: 8,
+                        horizontalGap: 8,
+                        children: [
+                          ///
+                          /// Diagnosis
+                          ///
+                          FormBuilderTextField(
+                            name: MedicalRecordField.diagnosis,
+                            validator: FormBuilderValidators.compose([]),
+                            minLines: 5,
+                            maxLines: 8,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(
+                                bottom: 10,
+                                right: 8,
+                                left: 8,
+                                top: 30,
+                              ),
+                              labelText: 'Diagnosis',
+                              filled: true,
+                              fillColor: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainerLow,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+
+                          ///
+                          /// Treatment
+                          ///
+                          FormBuilderTextField(
+                            name: MedicalRecordField.treatment,
+                            validator: FormBuilderValidators.compose([]),
+                            minLines: 5,
+                            maxLines: 8,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(
+                                bottom: 10,
+                                right: 8,
+                                left: 8,
+                                top: 30,
+                              ),
+                              labelText: 'Treatment',
+                              filled: true,
+                              fillColor: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainerLow,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ])
                   ],
                 ),
               ),

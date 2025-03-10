@@ -46,7 +46,7 @@ class PrescriptionItemRepositoryImpl extends PrescriptionItemRepository {
   PrescriptionItemRepositoryImpl({required this.pb});
 
   RecordService get collection =>
-      pb.collection(PocketBaseCollections.prescriptions);
+      pb.collection(PocketBaseCollections.prescriptionItems);
 
   @override
   TaskResult<PrescriptionItem> get(String id) {
@@ -118,7 +118,7 @@ class PrescriptionItemRepositoryImpl extends PrescriptionItemRepository {
     return TaskResult.tryCatch(() async {
       final batch = pb.createBatch();
       final batchCollection =
-          batch.collection(PocketBaseCollections.prescriptions);
+          batch.collection(PocketBaseCollections.prescriptionItems);
       for (final id in ids) {
         batchCollection.update(id, body: {'isDeleted': true});
       }

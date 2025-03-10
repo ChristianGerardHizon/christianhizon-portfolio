@@ -19,7 +19,10 @@ class MedicalRecordPage extends HookConsumerWidget {
             return PatientPageRoute(patientId, page: 1).go(context);
           },
         ),
-        title: Text('Medical Recrod ${id}'),
+        title: Text('Medical Record'),
+      ),
+      body: Center(
+        child: Text(id),
       ),
     );
   }

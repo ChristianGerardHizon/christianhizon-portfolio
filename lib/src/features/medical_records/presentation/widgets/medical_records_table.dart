@@ -60,6 +60,7 @@ class MedicalRecordsTable extends HookWidget {
         const TableColumn(width: 180),
         const TableColumn(width: 180),
         const TableColumn(width: 180),
+        const TableColumn(width: 180),
         const TableColumn(width: 120),
         TableColumn(width: 56.0, freezePriority: 100),
       ],
@@ -79,7 +80,7 @@ class MedicalRecordsTable extends HookWidget {
                 return Align(
                   alignment: Alignment.centerLeft,
                   child: const Text(
-                    'Date',
+                    'Visit Date',
                     style: TextStyle(fontWeight: FontWeight.w600),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -103,6 +104,15 @@ class MedicalRecordsTable extends HookWidget {
                   ),
                 );
               case 4:
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    'Has Follow Up',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              case 5:
                 return Align(
                   alignment: Alignment.centerLeft,
                   child: const Text(
@@ -180,6 +190,15 @@ class MedicalRecordsTable extends HookWidget {
                     ),
                   );
                 case 4:
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      record.isFollowUpRequired == true ? 'Yes' : 'No',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                case 5:
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
