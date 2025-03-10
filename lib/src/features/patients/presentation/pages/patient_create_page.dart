@@ -48,6 +48,7 @@ class PatientCreatePage extends HookConsumerWidget {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: CloseButton(
           onPressed: () => PatientsPageRoute().go(context),

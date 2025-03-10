@@ -39,10 +39,7 @@ class SettingRepository {
       final result = await _storage.read(key: _settingsKey);
 
       if (result == null) {
-        return const Settings(
-            // domain: 'https://fox-expect.pockethost.io',
-            // domain: 'http://127.0.0.1:8090',
-            );
+        return const Settings();
       }
 
       return Settings.fromJson(result);

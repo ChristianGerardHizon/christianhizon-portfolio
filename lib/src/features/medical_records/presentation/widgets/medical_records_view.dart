@@ -70,7 +70,20 @@ class MedicalRecordsView extends HookConsumerWidget {
       children: [
         CustomScrollView(
           slivers: [
-            SliverToBoxAdapter(child: SizedBox(height: 20)),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 20,
+                  bottom: 8,
+                ),
+                child: Text(
+                  'Medical Records',
+                  style: theme.textTheme.headlineSmall,
+                ),
+              ),
+            ),
 
             ///
             /// Serch Bar

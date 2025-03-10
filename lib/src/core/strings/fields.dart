@@ -62,3 +62,11 @@ class MedicalRecordField {
   static const String user = 'user';
   static const String admin = 'admin';
 }
+
+class PrescriptionItemField {
+  static const String id = 'id';
+  static const String isDeleted = 'isDeleted';
+
+  static const String medication = 'medication';
+  static const String instructions = 'instructions';
+}

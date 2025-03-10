@@ -102,6 +102,7 @@ class AppRoot extends HookConsumerWidget {
                 maxWidth: 200,
                 controller: sideMenuCtrl,
                 mode: SideMenuMode.open,
+                backgroundColor: theme.appBarTheme.backgroundColor,
                 builder: (data) => SideMenuData(
                   header: Logo(
                     width: null,

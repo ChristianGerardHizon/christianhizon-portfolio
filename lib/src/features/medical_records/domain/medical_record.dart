@@ -7,6 +7,11 @@ class MedicalRecord with MedicalRecordMappable {
   final String id;
 
   final String patient;
+  final String? diagnosis;
+  final DateTime visitDate;
+  final String? treatment;
+  final bool? isFollowUpRequired;
+  final String? note;
 
   final bool isDeleted;
   final DateTime? created;
@@ -18,6 +23,11 @@ class MedicalRecord with MedicalRecordMappable {
     this.created,
     this.updated,
     this.isDeleted = false,
+    this.diagnosis,
+    required this.visitDate,
+    this.treatment,
+    this.isFollowUpRequired,
+    this.note,
   });
 
   static const fromMap = MedicalRecordMapper.fromMap;

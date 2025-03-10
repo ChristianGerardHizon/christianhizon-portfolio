@@ -3,6 +3,7 @@ class PocketBaseCollections {
   static const patients = 'patients';
   static const admins = 'admins';
   static const vaccines = 'vaccines';
-  static const vaccineRecords = 'vaccine_records';
-  static const medicalRecords = 'medical_records';
+  static const vaccineRecords = 'vaccineRecords';
+  static const medicalRecords = 'medicalRecords';
+  static const prescriptionItems = 'prescriptionItems';
 }

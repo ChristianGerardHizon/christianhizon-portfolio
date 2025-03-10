@@ -34,6 +34,21 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
   static bool _$isDeleted(MedicalRecord v) => v.isDeleted;
   static const Field<MedicalRecord, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
+  static String? _$diagnosis(MedicalRecord v) => v.diagnosis;
+  static const Field<MedicalRecord, String> _f$diagnosis =
+      Field('diagnosis', _$diagnosis, opt: true);
+  static DateTime _$visitDate(MedicalRecord v) => v.visitDate;
+  static const Field<MedicalRecord, DateTime> _f$visitDate =
+      Field('visitDate', _$visitDate);
+  static String? _$treatment(MedicalRecord v) => v.treatment;
+  static const Field<MedicalRecord, String> _f$treatment =
+      Field('treatment', _$treatment, opt: true);
+  static bool? _$isFollowUpRequired(MedicalRecord v) => v.isFollowUpRequired;
+  static const Field<MedicalRecord, bool> _f$isFollowUpRequired =
+      Field('isFollowUpRequired', _$isFollowUpRequired, opt: true);
+  static String? _$note(MedicalRecord v) => v.note;
+  static const Field<MedicalRecord, String> _f$note =
+      Field('note', _$note, opt: true);
 
   @override
   final MappableFields<MedicalRecord> fields = const {
@@ -42,6 +57,11 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
     #created: _f$created,
     #updated: _f$updated,
     #isDeleted: _f$isDeleted,
+    #diagnosis: _f$diagnosis,
+    #visitDate: _f$visitDate,
+    #treatment: _f$treatment,
+    #isFollowUpRequired: _f$isFollowUpRequired,
+    #note: _f$note,
   };
 
   static MedicalRecord _instantiate(DecodingData data) {
@@ -50,7 +70,12 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
         patient: data.dec(_f$patient),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated),
-        isDeleted: data.dec(_f$isDeleted));
+        isDeleted: data.dec(_f$isDeleted),
+        diagnosis: data.dec(_f$diagnosis),
+        visitDate: data.dec(_f$visitDate),
+        treatment: data.dec(_f$treatment),
+        isFollowUpRequired: data.dec(_f$isFollowUpRequired),
+        note: data.dec(_f$note));
   }
 
   @override
@@ -111,7 +136,12 @@ abstract class MedicalRecordCopyWith<$R, $In extends MedicalRecord, $Out>
       String? patient,
       DateTime? created,
       DateTime? updated,
-      bool? isDeleted});
+      bool? isDeleted,
+      String? diagnosis,
+      DateTime? visitDate,
+      String? treatment,
+      bool? isFollowUpRequired,
+      String? note});
   MedicalRecordCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -129,13 +159,24 @@ class _MedicalRecordCopyWithImpl<$R, $Out>
           String? patient,
           Object? created = $none,
           Object? updated = $none,
-          bool? isDeleted}) =>
+          bool? isDeleted,
+          Object? diagnosis = $none,
+          DateTime? visitDate,
+          Object? treatment = $none,
+          Object? isFollowUpRequired = $none,
+          Object? note = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (patient != null) #patient: patient,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated,
-        if (isDeleted != null) #isDeleted: isDeleted
+        if (isDeleted != null) #isDeleted: isDeleted,
+        if (diagnosis != $none) #diagnosis: diagnosis,
+        if (visitDate != null) #visitDate: visitDate,
+        if (treatment != $none) #treatment: treatment,
+        if (isFollowUpRequired != $none)
+          #isFollowUpRequired: isFollowUpRequired,
+        if (note != $none) #note: note
       }));
   @override
   MedicalRecord $make(CopyWithData data) => MedicalRecord(
@@ -143,7 +184,13 @@ class _MedicalRecordCopyWithImpl<$R, $Out>
       patient: data.get(#patient, or: $value.patient),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated),
-      isDeleted: data.get(#isDeleted, or: $value.isDeleted));
+      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
+      diagnosis: data.get(#diagnosis, or: $value.diagnosis),
+      visitDate: data.get(#visitDate, or: $value.visitDate),
+      treatment: data.get(#treatment, or: $value.treatment),
+      isFollowUpRequired:
+          data.get(#isFollowUpRequired, or: $value.isFollowUpRequired),
+      note: data.get(#note, or: $value.note));
 
   @override
   MedicalRecordCopyWith<$R2, MedicalRecord, $Out2> $chain<$R2, $Out2>(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/strings/strings.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
@@ -55,14 +57,13 @@ class MedicalRecordsTable extends HookWidget {
     return SliverTableView.builder(
       columns: [
         const TableColumn(width: 56.0, freezePriority: 100),
-        const TableColumn(width: 60),
-        const TableColumn(width: 150),
-        const TableColumn(width: 120),
-        const TableColumn(width: 120),
-        const TableColumn(width: 120),
+        const TableColumn(width: 180),
+        const TableColumn(width: 180),
+        const TableColumn(width: 180),
         const TableColumn(width: 120),
         TableColumn(width: 56.0, freezePriority: 100),
       ],
+
       headerBuilder: (context, contentBuilder) {
         return contentBuilder(
           context,
@@ -78,7 +79,7 @@ class MedicalRecordsTable extends HookWidget {
                 return Align(
                   alignment: Alignment.centerLeft,
                   child: const Text(
-                    '',
+                    'Date',
                     style: TextStyle(fontWeight: FontWeight.w600),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -87,33 +88,29 @@ class MedicalRecordsTable extends HookWidget {
                 return Align(
                   alignment: Alignment.centerLeft,
                   child: const Text(
-                    'Name',
+                    'Diagnosis',
                     style: TextStyle(fontWeight: FontWeight.w600),
                     overflow: TextOverflow.ellipsis,
                   ),
                 );
               case 3:
                 return Align(
-                    alignment: Alignment.centerLeft,
-                    child: const Text(
-                      'Owner',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ));
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    'Treatment',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
               case 4:
                 return Align(
-                    alignment: Alignment.centerLeft,
-                    child: const Text('Contact Number',
-                        style: TextStyle(fontWeight: FontWeight.w600)));
-              case 5:
-                return Align(
-                    alignment: Alignment.centerLeft,
-                    child: const Text('Email',
-                        style: TextStyle(fontWeight: FontWeight.w600)));
-              case 6:
-                return Align(
-                    alignment: Alignment.centerLeft,
-                    child: const Text('Species',
-                        style: TextStyle(fontWeight: FontWeight.w600)));
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    'Administered By',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
 
               default:
                 return SizedBox();
@@ -134,6 +131,10 @@ class MedicalRecordsTable extends HookWidget {
           onTap: () {
             onRowTap?.call(row);
           },
+
+          ///
+          /// Content
+          ///
           child: contentBuilder(
             context,
             (context, column) {
@@ -144,50 +145,45 @@ class MedicalRecordsTable extends HookWidget {
                       onChanged: (value) => onCellSelect(row, value));
                 case 1:
                   return Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Text('Circle'),
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        record.visitDate.yyyyMMddHHmmA(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   );
                 case 2:
-                  return Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      record.id,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        record.diagnosis.optional(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   );
                 case 3:
-                  return Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      record.id ?? AppStrings.placeholderText,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        record.treatment.optional(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   );
                 case 4:
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      record.id ?? AppStrings.placeholderText,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  );
-                case 5:
-                  return Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      record.id ?? AppStrings.placeholderText,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  );
-                case 6:
-                  return Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      record.id ?? AppStrings.placeholderText,
+                      '-',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
