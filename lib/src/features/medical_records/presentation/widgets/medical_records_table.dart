@@ -192,7 +192,7 @@ class MedicalRecordsTable extends HookWidget {
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      record.isFollowUpRequired == true ? 'Yes' : 'No',
+                      (record.followUpDate?.yyyyMMdd()).optional(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

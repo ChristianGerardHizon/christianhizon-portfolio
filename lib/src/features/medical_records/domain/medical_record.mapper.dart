@@ -43,9 +43,9 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
   static String? _$treatment(MedicalRecord v) => v.treatment;
   static const Field<MedicalRecord, String> _f$treatment =
       Field('treatment', _$treatment, opt: true);
-  static bool? _$isFollowUpRequired(MedicalRecord v) => v.isFollowUpRequired;
-  static const Field<MedicalRecord, bool> _f$isFollowUpRequired =
-      Field('isFollowUpRequired', _$isFollowUpRequired, opt: true);
+  static DateTime? _$followUpDate(MedicalRecord v) => v.followUpDate;
+  static const Field<MedicalRecord, DateTime> _f$followUpDate =
+      Field('followUpDate', _$followUpDate, opt: true);
   static String? _$note(MedicalRecord v) => v.note;
   static const Field<MedicalRecord, String> _f$note =
       Field('note', _$note, opt: true);
@@ -60,7 +60,7 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
     #diagnosis: _f$diagnosis,
     #visitDate: _f$visitDate,
     #treatment: _f$treatment,
-    #isFollowUpRequired: _f$isFollowUpRequired,
+    #followUpDate: _f$followUpDate,
     #note: _f$note,
   };
 
@@ -74,7 +74,7 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
         diagnosis: data.dec(_f$diagnosis),
         visitDate: data.dec(_f$visitDate),
         treatment: data.dec(_f$treatment),
-        isFollowUpRequired: data.dec(_f$isFollowUpRequired),
+        followUpDate: data.dec(_f$followUpDate),
         note: data.dec(_f$note));
   }
 
@@ -140,7 +140,7 @@ abstract class MedicalRecordCopyWith<$R, $In extends MedicalRecord, $Out>
       String? diagnosis,
       DateTime? visitDate,
       String? treatment,
-      bool? isFollowUpRequired,
+      DateTime? followUpDate,
       String? note});
   MedicalRecordCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
@@ -163,7 +163,7 @@ class _MedicalRecordCopyWithImpl<$R, $Out>
           Object? diagnosis = $none,
           DateTime? visitDate,
           Object? treatment = $none,
-          Object? isFollowUpRequired = $none,
+          Object? followUpDate = $none,
           Object? note = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
@@ -174,8 +174,7 @@ class _MedicalRecordCopyWithImpl<$R, $Out>
         if (diagnosis != $none) #diagnosis: diagnosis,
         if (visitDate != null) #visitDate: visitDate,
         if (treatment != $none) #treatment: treatment,
-        if (isFollowUpRequired != $none)
-          #isFollowUpRequired: isFollowUpRequired,
+        if (followUpDate != $none) #followUpDate: followUpDate,
         if (note != $none) #note: note
       }));
   @override
@@ -188,8 +187,7 @@ class _MedicalRecordCopyWithImpl<$R, $Out>
       diagnosis: data.get(#diagnosis, or: $value.diagnosis),
       visitDate: data.get(#visitDate, or: $value.visitDate),
       treatment: data.get(#treatment, or: $value.treatment),
-      isFollowUpRequired:
-          data.get(#isFollowUpRequired, or: $value.isFollowUpRequired),
+      followUpDate: data.get(#followUpDate, or: $value.followUpDate),
       note: data.get(#note, or: $value.note));
 
   @override

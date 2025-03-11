@@ -10,7 +10,7 @@ class MedicalRecord with MedicalRecordMappable {
   final String? diagnosis;
   final DateTime visitDate;
   final String? treatment;
-  final bool? isFollowUpRequired;
+  final DateTime? followUpDate;
   final String? note;
 
   final bool isDeleted;
@@ -26,7 +26,7 @@ class MedicalRecord with MedicalRecordMappable {
     this.diagnosis,
     required this.visitDate,
     this.treatment,
-    this.isFollowUpRequired,
+    this.followUpDate,
     this.note,
   });
 

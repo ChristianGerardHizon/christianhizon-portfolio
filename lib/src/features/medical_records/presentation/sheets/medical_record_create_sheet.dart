@@ -85,7 +85,7 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
                   surfaceTintColor: Colors.transparent,
                   backgroundColor: Colors.transparent,
                   leading: CloseButton(),
-                  title: Text('Medical Create Sheet'),
+                  title: Text('Add Medical Record'),
                 ),
 
                 ///
@@ -136,6 +136,7 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                       ),
+                      SizedBox(height: 10),
 
                       FormBuilderDateTimePicker(
                         initialEntryMode: DatePickerEntryMode.inputOnly,
@@ -215,7 +216,15 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
                                 ),
                               ),
                             ),
-                          ])
+                          ]),
+
+                      ///
+                      /// Follow Up
+                      ///
+                      FormBuilderCheckbox(
+                        name: 'name',
+                        title: Text('Has Follow Up?'),
+                      )
                     ],
                   ),
                 ),
