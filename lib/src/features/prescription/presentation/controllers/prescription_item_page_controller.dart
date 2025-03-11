@@ -1,4 +1,4 @@
-import 'package:gym_system/src/features/prescription/data/prescription_search.dart';
+import 'package:gym_system/src/features/prescription/domain/prescription_search.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'prescription_item_page_controller.g.dart';

@@ -34,7 +34,7 @@ abstract class TreatmentRepository {
 }
 
 @Riverpod(keepAlive: true)
-TreatmentRepository historyTypeRepository(Ref ref) {
+TreatmentRepository treatmentRepository(Ref ref) {
   return TreatmentRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );

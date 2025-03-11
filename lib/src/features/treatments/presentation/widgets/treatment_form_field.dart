@@ -30,7 +30,7 @@ class TreatmentFormField extends HookConsumerWidget {
     Future<List<Treatment>> search(String? query) async {
       if (query == null) return [];
       if (query.isEmpty) return [];
-      final repo = ref.read(historyTypeRepositoryProvider);
+      final repo = ref.read(treatmentRepositoryProvider);
       final result = await repo
           .list(
               pageNo: 1,

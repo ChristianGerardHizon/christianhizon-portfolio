@@ -1,6 +1,7 @@
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
+import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/treatments/domain/treatment_record.dart';
@@ -17,6 +18,7 @@ abstract class TreatmentRecordRepository {
     String? filter,
     required int pageNo,
     required int pageSize,
+    PocketbaseSortValue? sort,
   });
   TaskResult<List<TreatmentRecord>> listAll({
     int batch = 500,
@@ -34,7 +36,7 @@ abstract class TreatmentRecordRepository {
 }
 
 @Riverpod(keepAlive: true)
-TreatmentRecordRepository treatmentRepository(Ref ref) {
+TreatmentRecordRepository treatmentRecordRepository(Ref ref) {
   return TreatmentRecordRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
@@ -76,12 +78,14 @@ class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
     String? filter,
     required int pageNo,
     required int pageSize,
+    PocketbaseSortValue? sort,
   }) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getList(
         filter: filter,
         page: pageNo,
         perPage: pageSize,
+        sort: sort?.value,
       );
       return PageResults(
         page: result.page,

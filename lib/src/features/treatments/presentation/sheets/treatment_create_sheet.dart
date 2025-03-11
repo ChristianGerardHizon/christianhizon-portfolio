@@ -48,10 +48,8 @@ class TreatmentCreateSheet extends HookConsumerWidget {
         return;
       }
 
-      final result = await ref
-          .read(historyTypeRepositoryProvider)
-          .create(form.value)
-          .run();
+      final result =
+          await ref.read(treatmentRepositoryProvider).create(form.value).run();
       isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),

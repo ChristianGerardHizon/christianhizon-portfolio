@@ -47,7 +47,10 @@ class TreatmentRecordField {
   static const String patient = 'patient';
   static const String date = 'date';
   static const String note = 'note';
+
   static const String isDeleted = 'isDeleted';
+  static const String created = 'created';
+  static const String updated = 'updated';
 }
 
 class MedicalRecordField {

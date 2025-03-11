@@ -74,7 +74,7 @@ class TreatmentSelector extends HookConsumerWidget {
                   ///
                   /// Another Types
                   ///
-                  ...data.items.map(
+                  ...data.map(
                     (e) {
                       return Padding(
                         padding: const EdgeInsets.only(left: 4),

@@ -57,8 +57,10 @@ class TreatmentRecordCreateSheet extends HookConsumerWidget {
         return;
       }
 
-      final result =
-          await ref.read(treatmentRepositoryProvider).create(form.value).run();
+      final result = await ref
+          .read(treatmentRecordRepositoryProvider)
+          .create(form.value)
+          .run();
       isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
@@ -72,7 +74,7 @@ class TreatmentRecordCreateSheet extends HookConsumerWidget {
     final content = Scaffold(
       appBar: AppBar(
         leading: CloseButton(),
-        title: Text('New ${type.name} History'),
+        title: Text('New ${type.name} Treatment'),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 10),
