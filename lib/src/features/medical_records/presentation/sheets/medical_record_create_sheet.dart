@@ -69,166 +69,173 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
     }
 
     return Dialog(
-      child: Scaffold(
-        appBar: AppBar(
-          leading: CloseButton(),
-          title: Text('Medical Create Sheet'),
-        ),
-        body: FormBuilder(
-          key: formKey,
-          initialValue: {
-            MedicalRecordField.patient: patient,
-            MedicalRecordField.vistDate: DateTime.now(),
-          },
-          child: CustomScrollView(
-            slivers: [
-              ///
-              /// Patient Information
-              ///
-              SliverPadding(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                sliver: SliverList.list(
-                  children: [
-                    ///
-                    /// Header
-                    ///
-                    SizedBox(height: 10),
-                    ListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title: Text(
-                        'Patient',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
-
-                    ///
-                    /// Patient
-                    ///
-                    PatientFormField(
-                      name: MedicalRecordField.patient,
-                      valueTransformer: (p0) => p0.id,
-                    ),
-                  ],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: FormBuilder(
+            key: formKey,
+            initialValue: {
+              MedicalRecordField.patient: patient,
+              MedicalRecordField.vistDate: DateTime.now(),
+            },
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  surfaceTintColor: Colors.transparent,
+                  backgroundColor: Colors.transparent,
+                  leading: CloseButton(),
+                  title: Text('Medical Create Sheet'),
                 ),
-              ),
 
-              ///
-              /// Information
-              ///
-              SliverPadding(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                sliver: SliverList.list(
-                  children: [
-                    ///
-                    /// Header
-                    ///
-                    SizedBox(height: 10),
-                    ListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title: Text(
-                        'Information',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
-
-                    FormBuilderDateTimePicker(
-                      initialEntryMode: DatePickerEntryMode.inputOnly,
-                      inputType: InputType.date,
-                      name: MedicalRecordField.vistDate,
-                      decoration: InputDecoration(
-                        suffixIcon: Icon(Icons.calendar_month),
-                        contentPadding: EdgeInsets.only(
-                            bottom: 10, right: 8, left: 8, top: 30),
-                        labelText: 'Visitation Date',
-                        filled: true,
-                        fillColor:
-                            Theme.of(context).colorScheme.surfaceContainerLow,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                ///
+                /// Patient Information
+                ///
+                SliverPadding(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+                  sliver: SliverList.list(
+                    children: [
+                      ///
+                      /// Header
+                      ///
+                      SizedBox(height: 10),
+                      ListTile(
+                        contentPadding: EdgeInsets.all(0),
+                        title: Text(
+                          'Patient',
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
                       ),
-                      valueTransformer: (dateTime) {
-                        if (dateTime == null) return null;
-                        return dateTime.toUtc().toIso8601String();
-                      },
-                    ),
-                    SizedBox(height: 16),
 
-                    ResponsiveTwoFields(
-                        verticalGap: 8,
-                        horizontalGap: 8,
-                        children: [
-                          ///
-                          /// Diagnosis
-                          ///
-                          FormBuilderTextField(
-                            name: MedicalRecordField.diagnosis,
-                            validator: FormBuilderValidators.compose([]),
-                            minLines: 5,
-                            maxLines: 8,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.only(
-                                bottom: 10,
-                                right: 8,
-                                left: 8,
-                                top: 30,
-                              ),
-                              labelText: 'Diagnosis',
-                              filled: true,
-                              fillColor: Theme.of(context)
-                                  .colorScheme
-                                  .surfaceContainerLow,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-
-                          ///
-                          /// Treatment
-                          ///
-                          FormBuilderTextField(
-                            name: MedicalRecordField.treatment,
-                            validator: FormBuilderValidators.compose([]),
-                            minLines: 5,
-                            maxLines: 8,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.only(
-                                bottom: 10,
-                                right: 8,
-                                left: 8,
-                                top: 30,
-                              ),
-                              labelText: 'Treatment',
-                              filled: true,
-                              fillColor: Theme.of(context)
-                                  .colorScheme
-                                  .surfaceContainerLow,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        ])
-                  ],
-                ),
-              ),
-
-              ///
-              /// Save Button
-              ///
-              SliverPadding(
-                padding: const EdgeInsets.only(
-                    left: 10, right: 10, top: 30, bottom: 20),
-                sliver: SliverToBoxAdapter(
-                  child: LoadingFilledButton(
-                    isLoading: isLoading.value,
-                    child: Text('Save'),
-                    onPressed: onSubmit,
+                      ///
+                      /// Patient
+                      ///
+                      PatientFormField(
+                        name: MedicalRecordField.patient,
+                        valueTransformer: (p0) => p0.id,
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
+
+                ///
+                /// Information
+                ///
+                SliverPadding(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+                  sliver: SliverList.list(
+                    children: [
+                      ///
+                      /// Header
+                      ///
+                      SizedBox(height: 10),
+                      ListTile(
+                        contentPadding: EdgeInsets.all(0),
+                        title: Text(
+                          'Information',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+
+                      FormBuilderDateTimePicker(
+                        initialEntryMode: DatePickerEntryMode.inputOnly,
+                        inputType: InputType.date,
+                        name: MedicalRecordField.vistDate,
+                        decoration: InputDecoration(
+                          suffixIcon: Icon(Icons.calendar_month),
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10, right: 8, left: 8, top: 30),
+                          labelText: 'Visitation Date',
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).colorScheme.surfaceContainerLow,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        valueTransformer: (dateTime) {
+                          if (dateTime == null) return null;
+                          return dateTime.toUtc().toIso8601String();
+                        },
+                      ),
+                      SizedBox(height: 16),
+
+                      ResponsiveTwoFields(
+                          verticalGap: 8,
+                          horizontalGap: 8,
+                          children: [
+                            ///
+                            /// Diagnosis
+                            ///
+                            FormBuilderTextField(
+                              name: MedicalRecordField.diagnosis,
+                              validator: FormBuilderValidators.compose([]),
+                              minLines: 5,
+                              maxLines: 8,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.only(
+                                  bottom: 10,
+                                  right: 8,
+                                  left: 8,
+                                  top: 30,
+                                ),
+                                labelText: 'Diagnosis',
+                                filled: true,
+                                fillColor: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerLow,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+
+                            ///
+                            /// Treatment
+                            ///
+                            FormBuilderTextField(
+                              name: MedicalRecordField.treatment,
+                              validator: FormBuilderValidators.compose([]),
+                              minLines: 5,
+                              maxLines: 8,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.only(
+                                  bottom: 10,
+                                  right: 8,
+                                  left: 8,
+                                  top: 30,
+                                ),
+                                labelText: 'Treatment',
+                                filled: true,
+                                fillColor: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerLow,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+                          ])
+                    ],
+                  ),
+                ),
+
+                ///
+                /// Save Button
+                ///
+                SliverPadding(
+                  padding: const EdgeInsets.only(
+                      left: 10, right: 10, top: 30, bottom: 20),
+                  sliver: SliverToBoxAdapter(
+                    child: LoadingFilledButton(
+                      isLoading: isLoading.value,
+                      child: Text('Save'),
+                      onPressed: onSubmit,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

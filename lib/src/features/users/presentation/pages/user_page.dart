@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/card_group.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
+import 'package:gym_system/src/core/widgets/collapsing_card.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:gym_system/src/features/users/presentation/controllers/user_controller.dart';
 import 'package:gym_system/src/features/users/presentation/controllers/users_controller.dart';
@@ -34,7 +38,7 @@ class UserPage extends HookConsumerWidget {
           (r) {
             ref.invalidate(usersControllerProvider);
             AppSnackBar.root(message: 'Successfully Deleted');
-            PatientsPageRoute().go(context);
+            if (context.canPop()) context.pop();
           },
         );
       });
@@ -59,14 +63,6 @@ class UserPage extends HookConsumerWidget {
                 ),
                 title: Text(user.name),
                 actions: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () => UserUpdatePageRoute(id).go(context),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () => onDelete(),
-                  ),
                   IconButton(
                     icon: const Icon(Icons.refresh),
                     onPressed: () => ref.invalidate(provider),
@@ -95,50 +91,78 @@ class UserPage extends HookConsumerWidget {
               ///
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                sliver: SliverList.list(children: [
-                  ///
-                  /// Header
-                  ///
-                  ListTile(
-                    contentPadding: EdgeInsets.only(left: 14),
-                    title: Text(
-                      'User Info',
+                sliver: SliverToBoxAdapter(
+                  child: CollapsingCard(
+                    canCollapse: false,
+                    header: Text(
+                      'Details',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
-                  ),
+                    child: Column(children: [
+                      ///
+                      /// email
+                      ///
+                      DynamicListTile.divider(
+                        leading: Text('Email: '),
+                        content: Text(user.email),
+                      ),
 
-                  ///
-                  /// email
-                  ///
-                  ListTile(
-                    leading: Text('Email: '),
-                    title: Text(user.email),
-                  ),
+                      ///
+                      /// name
+                      ///
+                      DynamicListTile.divider(
+                        leading: Text('Name: '),
+                        content: Text(user.name),
+                      ),
 
-                  ///
-                  /// name
-                  ///
-                  ListTile(
-                    leading: Text('Name: '),
-                    title: Text(user.name),
-                  ),
+                      ///
+                      /// updated
+                      ///
+                      DynamicListTile.divider(
+                        leading: Text('Updated: '),
+                        content:
+                            Text((user.updated?.yyyyMMddHHmm()).optional()),
+                      ),
 
-                  ///
-                  /// create
-                  ///
-                  ListTile(
-                    leading: Text('Updated: '),
-                    title: Text((user.updated?.yyyyMMddHHmm()).optional()),
+                      ///
+                      /// created
+                      ///
+                      DynamicListTile(
+                        leading: Text('Created: '),
+                        content:
+                            Text((user.created?.yyyyMMddHHmm()).optional()),
+                      ),
+                    ]),
                   ),
-
-                  ///
-                  /// name
-                  ///
-                  ListTile(
-                    leading: Text('Created: '),
-                    title: Text((user.created?.yyyyMMddHHmm()).optional()),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                sliver: SliverToBoxAdapter(
+                  child: CardGroup(
+                    header: 'Actions',
+                    children: [
+                      ListTile(
+                        leading: const Icon(Icons.edit_outlined),
+                        title: const Text('Edit User Information'),
+                        trailing: const Icon(
+                          Icons.chevron_right_outlined,
+                          size: 24,
+                        ),
+                        onTap: () => UserUpdatePageRoute(id).push(context),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.delete_outlined),
+                        title: const Text('Delete User Permanently'),
+                        trailing: const Icon(
+                          Icons.chevron_right_outlined,
+                          size: 24,
+                        ),
+                        onTap: onDelete,
+                      ),
+                    ],
                   ),
-                ]),
+                ),
               ),
 
               ///

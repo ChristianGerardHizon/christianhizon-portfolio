@@ -4,6 +4,8 @@ import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_record_page_controller.dart';
+import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_records_controller.dart';
 import 'package:gym_system/src/features/medical_records/presentation/widgets/medical_records_view.dart';
 import 'package:gym_system/src/features/vaccines/domain/vaccine.dart';
 import 'package:gym_system/src/features/vaccines/presentation/controllers/vaccine/vaccines_controller.dart';
@@ -25,24 +27,10 @@ class PatientPage extends HookConsumerWidget {
     final state = ref.watch(provider);
     final vaccine = useState<Vaccine?>(null);
 
-    ///
-    /// onDelete
-    ///
-    onDelete() async {
-      final confirm = await ConfirmModal.show(context);
-      if (confirm != true) return;
-      final repo = ref.read(patientRepositoryProvider);
-      repo.softDeleteMulti([id]).run().then((result) {
-            result.fold(
-              (l) => AppSnackBar.rootFailure(l),
-              (r) {
-                ref.invalidate(patientsControllerProvider);
-                AppSnackBar.root(message: 'Successfully Deleted');
-                PatientsPageRoute().go(context);
-              },
-            );
-          });
-    }
+    /// for medical records tab. preloading the data
+    ref.watch(medicalRecordsPageControllerProvider);
+    ref.watch(medicalRecordSearchControllerProvider.notifier);
+    ref.watch(medicalRecordsControllerProvider(id: id));
 
     ///
     /// Refresh
@@ -52,95 +40,85 @@ class PatientPage extends HookConsumerWidget {
       ref.invalidate(vaccinesControllerProvider);
     }
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) async {
-        print('test');
-      },
-      child: DefaultTabController(
-        length: 3,
-        initialIndex: page ?? 0,
-        child: Scaffold(
-          body: state.when(
-            skipError: false,
-            skipLoadingOnRefresh: false,
-            skipLoadingOnReload: false,
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stackTrace) => Center(child: Text(error.toString())),
-            data: (patient) {
-              return NestedScrollView(
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    ///
-                    /// AppBar
-                    ///
-                    SliverAppBar(
-                      leading: BackButton(
-                        onPressed: () => PatientsPageRoute().go(context),
-                      ),
-                      title: Text(patient.name),
-                      actions: [
-                        // IconButton(
-                        //   icon: const Icon(Icons.edit),
-                        //   onPressed: () =>
-                        //       PatientUpdatePageRoute(id).go(context),
-                        // ),
-                        // IconButton(
-                        //   icon: const Icon(Icons.delete),
-                        //   onPressed: () => onDelete(),
-                        // ),
-                        // IconButton(
-                        //   icon: const Icon(Icons.refresh),
-                        //   onPressed: () => refresh(),
-                        // )
-                      ],
-                    ),
-
-                    SliverOverlapAbsorber(
-                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                          context),
-                      sliver: PinnedHeaderSliver(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).appBarTheme.backgroundColor,
-                          ),
-                          child: TabBar(
-                            isScrollable: false,
-                            tabs: [
-                              Tab(
-                                icon: Icon(MIcons.accountOutline),
-                                child: Text('Details'),
-                              ),
-                              Tab(
-                                icon: Icon(MIcons.informationOutline),
-                                child: Text('Records'),
-                              ),
-                              Tab(
-                                icon: Icon(MIcons.hospitalBoxOutline),
-                                child: Text('Vaccines'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  ];
-                },
-                body: Padding(
-                  padding: const EdgeInsets.only(top: 75),
-                  child: TabBarView(
-                    children: [
-                      PatientDetails(patient: patient),
-                      MedicalRecordsView(patient: patient),
-                      FlutterLogo()
-                      // PatientVaccineRecordView(patient: patient),
+    return DefaultTabController(
+      length: 3,
+      initialIndex: page ?? 0,
+      child: Scaffold(
+        body: state.when(
+          skipError: false,
+          skipLoadingOnRefresh: false,
+          skipLoadingOnReload: false,
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => Center(child: Text(error.toString())),
+          data: (patient) {
+            return NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  ///
+                  /// AppBar
+                  ///
+                  SliverAppBar(
+                    title: Text(patient.name),
+                    actions: [
+                      // IconButton(
+                      //   icon: const Icon(Icons.edit),
+                      //   onPressed: () =>
+                      //       PatientUpdatePageRoute(id).go(context),
+                      // ),
+                      // IconButton(
+                      //   icon: const Icon(Icons.delete),
+                      //   onPressed: () => onDelete(),
+                      // ),
+                      // IconButton(
+                      //   icon: const Icon(Icons.refresh),
+                      //   onPressed: () => refresh(),
+                      // )
                     ],
                   ),
+
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                        context),
+                    sliver: PinnedHeaderSliver(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).appBarTheme.backgroundColor,
+                        ),
+                        child: TabBar(
+                          isScrollable: false,
+                          tabs: [
+                            Tab(
+                              icon: Icon(MIcons.accountOutline),
+                              child: Text('Details'),
+                            ),
+                            Tab(
+                              icon: Icon(MIcons.informationOutline),
+                              child: Text('Records'),
+                            ),
+                            Tab(
+                              icon: Icon(MIcons.hospitalBoxOutline),
+                              child: Text('Vaccines'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ];
+              },
+              body: Padding(
+                padding: const EdgeInsets.only(top: 75),
+                child: TabBarView(
+                  children: [
+                    PatientDetails(patient: patient),
+                    MedicalRecordsView(patient: patient),
+                    FlutterLogo()
+                    // PatientVaccineRecordView(patient: patient),
+                  ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/routing/router.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/page_actions.dart';
@@ -78,9 +79,17 @@ class MedicalRecordsView extends HookConsumerWidget {
                   top: 20,
                   bottom: 8,
                 ),
-                child: Text(
-                  'Medical Records',
-                  style: theme.textTheme.headlineSmall,
+                child: Row(
+                  children: [
+                    Text(
+                      'Medical Records',
+                      style: theme.textTheme.headlineSmall,
+                    ),
+                    IconButton(
+                      onPressed: () => ref.invalidate(provider),
+                      icon: Icon(MIcons.refresh),
+                    )
+                  ],
                 ),
               ),
             ),
@@ -154,9 +163,8 @@ class MedicalRecordsView extends HookConsumerWidget {
                   selected: selected.value,
                   onSelected: (p0) => selected.value = p0,
                   onRowTap: (row) => PatientMedicalRecordPageRoute(
-                    list[row].id,
-                    list[row].patient,
-                  ).go(context),
+                    medicalRecordId: list[row].id,
+                  ).push(context),
                 );
               },
             ),

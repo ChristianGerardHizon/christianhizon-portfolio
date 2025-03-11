@@ -69,10 +69,6 @@ class UsersPage extends HookConsumerWidget {
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.invalidate(usersControllerProvider),
           ),
-          IconButton(
-            icon: Icon(MIcons.plusCircle),
-            onPressed: () => UserCreatePageRoute().go(context),
-          )
         ],
       ),
       body: Stack(
@@ -92,6 +88,7 @@ class UsersPage extends HookConsumerWidget {
                   onSearch: () {
                     searchNotif.change(searchCtrl.text);
                   },
+                  onCreate: () => UserCreatePageRoute().push(context),
                 ),
               ),
 
@@ -104,7 +101,13 @@ class UsersPage extends HookConsumerWidget {
                 skipLoadingOnReload: false,
                 loading: () => SliverPadding(
                   padding: const EdgeInsets.all(20.0),
-                  sliver: SliverToBoxAdapter(child: Center(child: SizedBox(width: 50, height: 50, child: CircularProgressIndicator()),)),
+                  sliver: SliverToBoxAdapter(
+                      child: Center(
+                    child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: CircularProgressIndicator()),
+                  )),
                 ),
                 error: (error, stackTrace) => SliverToBoxAdapter(
                   child: Center(

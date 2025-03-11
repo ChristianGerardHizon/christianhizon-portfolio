@@ -100,7 +100,7 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               factory: $PatientsPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/patient/:id/:page',
+              path: '/patient/:id',
               factory: $PatientPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
@@ -112,7 +112,7 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               factory: $PatientCreatePageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/patient/medicalRecord/:id/:patientId',
+              path: '/medicalRecord/:medicalRecordId',
               factory: $PatientMedicalRecordPageRouteExtension._fromState,
             ),
           ],
@@ -215,11 +215,15 @@ extension $PatientsPageRouteExtension on PatientsPageRoute {
 extension $PatientPageRouteExtension on PatientPageRoute {
   static PatientPageRoute _fromState(GoRouterState state) => PatientPageRoute(
         state.pathParameters['id']!,
-        page: int.parse(state.pathParameters['page']!) ?? 0,
+        page: _$convertMapValue('page', state.uri.queryParameters, int.parse) ??
+            0,
       );
 
   String get location => GoRouteData.$location(
-        '/patient/${Uri.encodeComponent(id)}/${Uri.encodeComponent(page.toString())}',
+        '/patient/${Uri.encodeComponent(id)}',
+        queryParams: {
+          if (page != 0) 'page': page.toString(),
+        },
       );
 
   void go(BuildContext context) => context.go(location);
@@ -274,12 +278,11 @@ extension $PatientMedicalRecordPageRouteExtension
     on PatientMedicalRecordPageRoute {
   static PatientMedicalRecordPageRoute _fromState(GoRouterState state) =>
       PatientMedicalRecordPageRoute(
-        state.pathParameters['id']!,
-        state.pathParameters['patientId']!,
+        medicalRecordId: state.pathParameters['medicalRecordId']!,
       );
 
   String get location => GoRouteData.$location(
-        '/patient/medicalRecord/${Uri.encodeComponent(id)}/${Uri.encodeComponent(patientId)}',
+        '/medicalRecord/${Uri.encodeComponent(medicalRecordId)}',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -437,6 +440,15 @@ extension $YourAccountPageRouteExtension on YourAccountPageRoute {
       context.pushReplacement(location);
 
   void replace(BuildContext context) => context.replace(location);
+}
+
+T? _$convertMapValue<T>(
+  String key,
+  Map<String, String> map,
+  T Function(String) converter,
+) {
+  final value = map[key];
+  return value == null ? null : converter(value);
 }
 
 RouteBase get $adminsPageRoute => GoRouteData.$route(
@@ -614,7 +626,7 @@ RouteBase get $patientsPageRoute => GoRouteData.$route(
     );
 
 RouteBase get $patientPageRoute => GoRouteData.$route(
-      path: '/patient/:id/:page',
+      path: '/patient/:id',
       factory: $PatientPageRouteExtension._fromState,
     );
 
@@ -629,7 +641,7 @@ RouteBase get $patientUpdatePageRoute => GoRouteData.$route(
     );
 
 RouteBase get $patientMedicalRecordPageRoute => GoRouteData.$route(
-      path: '/patient/medicalRecord/:id/:patientId',
+      path: '/medicalRecord/:medicalRecordId',
       factory: $PatientMedicalRecordPageRouteExtension._fromState,
     );
 

@@ -28,6 +28,6 @@ class MedicalRecordPageRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return MedicalRecordPage(id: id, patientId: patientId);
+    return MedicalRecordPage(id: id);
   }
 }

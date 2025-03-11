@@ -31,6 +31,9 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
   static String? _$instructions(PrescriptionItem v) => v.instructions;
   static const Field<PrescriptionItem, String> _f$instructions =
       Field('instructions', _$instructions, opt: true);
+  static String? _$dosage(PrescriptionItem v) => v.dosage;
+  static const Field<PrescriptionItem, String> _f$dosage =
+      Field('dosage', _$dosage, opt: true);
   static DateTime? _$created(PrescriptionItem v) => v.created;
   static const Field<PrescriptionItem, DateTime> _f$created =
       Field('created', _$created, opt: true);
@@ -47,6 +50,7 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
     #medicalRecord: _f$medicalRecord,
     #medication: _f$medication,
     #instructions: _f$instructions,
+    #dosage: _f$dosage,
     #created: _f$created,
     #updated: _f$updated,
     #isDeleted: _f$isDeleted,
@@ -58,6 +62,7 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
         medicalRecord: data.dec(_f$medicalRecord),
         medication: data.dec(_f$medication),
         instructions: data.dec(_f$instructions),
+        dosage: data.dec(_f$dosage),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated),
         isDeleted: data.dec(_f$isDeleted));
@@ -122,6 +127,7 @@ abstract class PrescriptionItemCopyWith<$R, $In extends PrescriptionItem, $Out>
       String? medicalRecord,
       String? medication,
       String? instructions,
+      String? dosage,
       DateTime? created,
       DateTime? updated,
       bool? isDeleted});
@@ -143,6 +149,7 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
           String? medicalRecord,
           Object? medication = $none,
           Object? instructions = $none,
+          Object? dosage = $none,
           Object? created = $none,
           Object? updated = $none,
           bool? isDeleted}) =>
@@ -151,6 +158,7 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
         if (medicalRecord != null) #medicalRecord: medicalRecord,
         if (medication != $none) #medication: medication,
         if (instructions != $none) #instructions: instructions,
+        if (dosage != $none) #dosage: dosage,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated,
         if (isDeleted != null) #isDeleted: isDeleted
@@ -161,6 +169,7 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
       medicalRecord: data.get(#medicalRecord, or: $value.medicalRecord),
       medication: data.get(#medication, or: $value.medication),
       instructions: data.get(#instructions, or: $value.instructions),
+      dosage: data.get(#dosage, or: $value.dosage),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted));

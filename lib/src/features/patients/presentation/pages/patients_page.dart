@@ -135,7 +135,7 @@ class PatientsPage extends HookConsumerWidget {
                     selected: selected.value,
                     onSelected: (p0) => selected.value = p0,
                     onRowTap: (row) =>
-                        PatientPageRoute(list[row].id).go(context),
+                        PatientPageRoute(list[row].id).push(context),
                   );
                 },
               ),

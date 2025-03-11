@@ -113,9 +113,9 @@ class PatientUpdatePage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(
-          onPressed: () => PatientPageRoute(id).go(context),
-        ),
+        // leading: BackButton(
+        //   onPressed: () => PatientPageRoute(id).go(context),
+        // ),
         title: Text('Patient Update Page'),
         actions: [
           IconButton(

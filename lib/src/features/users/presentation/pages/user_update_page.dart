@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
@@ -53,6 +54,7 @@ class UserUpdatePage extends HookConsumerWidget {
         if (r == null) return;
         onRefresh();
         AppSnackBar.root(message: 'Successfully Updated');
+        if (context.canPop()) context.pop();
       });
     }
 

@@ -1,18 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:gym_system/src/core/routing/router.dart';
+import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/card_group.dart';
 import 'package:gym_system/src/core/widgets/collapsing_card.dart';
+import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
+import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_circle_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 class PatientDetails extends HookConsumerWidget {
   final Patient patient;
   const PatientDetails({super.key, required this.patient});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ///
+    /// onDelete
+    ///
+    onDelete() async {
+      final confirm = await ConfirmModal.show(context);
+      if (confirm != true) return;
+      final repo = ref.read(patientRepositoryProvider);
+      repo.softDeleteMulti([patient.id]).run().then((result) {
+            result.fold(
+              (l) => AppSnackBar.rootFailure(l),
+              (r) {
+                ref.invalidate(patientsControllerProvider);
+                AppSnackBar.root(message: 'Successfully Deleted');
+                if (context.canPop()) context.pop();
+              },
+            );
+          });
+    }
+
     return ListView(
       children: [
         SizedBox(height: 20),
@@ -40,34 +65,29 @@ class PatientDetails extends HookConsumerWidget {
               ),
               child: Column(
                 children: [
-                  SizedBox(height: 30),
-
                   ///
                   /// name
                   ///
-                  DynamicListTile(
+                  DynamicListTile.divider(
                     title: Text('Name: '),
                     content: Text(patient.name),
                   ),
-                  Divider(),
 
                   ///
                   /// Breed
                   ///
-                  DynamicListTile(
+                  DynamicListTile.divider(
                     title: Text('Breed: '),
                     content: Text(patient.breed.optional()),
                   ),
-                  Divider(),
 
                   ///
                   /// Species
                   ///
-                  DynamicListTile(
+                  DynamicListTile.divider(
                     title: Text('Species: '),
                     content: Text(patient.species.optional()),
                   ),
-                  Divider(),
 
                   ///
                   /// date of birth
@@ -96,22 +116,18 @@ class PatientDetails extends HookConsumerWidget {
               ),
               child: Column(
                 children: [
-                  SizedBox(height: 30),
-                  DynamicListTile(
+                  DynamicListTile.divider(
                     title: Text('Owner: '),
                     content: Text(patient.owner.optional()),
                   ),
-                  Divider(),
-                  DynamicListTile(
+                  DynamicListTile.divider(
                     title: Text('Address: '),
                     content: Text(patient.address.optional()),
                   ),
-                  Divider(),
-                  DynamicListTile(
+                  DynamicListTile.divider(
                     title: Text('Email: '),
                     content: Text(patient.email.optional()),
                   ),
-                  Divider(),
                   DynamicListTile(
                     title: Text('Contact Number: '),
                     content: Text(patient.contactNumber.optional()),
@@ -135,7 +151,6 @@ class PatientDetails extends HookConsumerWidget {
               ),
               child: Column(
                 children: [
-                  SizedBox(height: 30),
                   DynamicListTile(
                     title: Text('Created At: '),
                     content: Text((patient.created?.toLocal().yyyyMMddHHmmA())
@@ -153,9 +168,37 @@ class PatientDetails extends HookConsumerWidget {
           ),
         ),
 
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: CardGroup(
+            header: 'Actions',
+            children: [
+              ListTile(
+                leading: const Icon(Icons.edit_outlined),
+                title: const Text('Edit Patient Information'),
+                trailing: const Icon(
+                  Icons.chevron_right_outlined,
+                  size: 24,
+                ),
+                onTap: () => PatientUpdatePageRoute(patient.id).push(context),
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete_outlined),
+                title: const Text('Delete User Permanently'),
+                trailing: const Icon(
+                  Icons.chevron_right_outlined,
+                  size: 24,
+                ),
+                onTap: onDelete,
+              ),
+            ],
+          ),
+        ),
+
         ///
+        /// Spacer
         ///
-        ///
+        SizedBox(height: 50),
       ],
     );
   }

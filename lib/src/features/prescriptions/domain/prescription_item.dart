@@ -10,6 +10,7 @@ class PrescriptionItem with PrescriptionItemMappable {
   final String? medication;
 
   final String? instructions;
+  final String? dosage;
 
   final bool isDeleted;
   final DateTime? created;
@@ -20,6 +21,7 @@ class PrescriptionItem with PrescriptionItemMappable {
     required this.medicalRecord,
     this.medication = '',
     this.instructions,
+    this.dosage,
     this.created,
     this.updated,
     this.isDeleted = false,

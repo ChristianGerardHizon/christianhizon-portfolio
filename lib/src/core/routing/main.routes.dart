@@ -102,7 +102,8 @@ class SplashPageRoute extends GoRouteData {
         TypedGoRoute<PatientUpdatePageRoute>(path: PatientUpdatePageRoute.path),
         TypedGoRoute<PatientCreatePageRoute>(path: PatientCreatePageRoute.path),
         TypedGoRoute<PatientMedicalRecordPageRoute>(
-            path: PatientMedicalRecordPageRoute.path),
+          path: PatientMedicalRecordPageRoute.path,
+        ),
       ],
     ),
 
