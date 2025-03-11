@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/features/prescriptions/domain/prescription_item_create.dart';
+import 'package:gym_system/src/features/prescription/domain/prescription_item_create.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Define the PrescriptionItem class

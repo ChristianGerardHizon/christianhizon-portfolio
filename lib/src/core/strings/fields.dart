@@ -34,14 +34,14 @@ class PatientField {
   static const String isDeleted = 'isDeleted';
 }
 
-class VaccineField {
+class TreatmentField {
   static const String id = 'id';
   static const String name = 'name';
   static const String isDeleted = 'isDeleted';
   static const String icon = 'icon';
 }
 
-class VaccineRecordField {
+class TreatmentRecordField {
   static const String id = 'id';
   static const String type = 'type';
   static const String patient = 'patient';

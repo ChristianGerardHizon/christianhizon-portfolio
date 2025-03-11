@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_record_page_controller.dart';
 import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_records_controller.dart';
 import 'package:gym_system/src/features/medical_records/presentation/widgets/medical_records_view.dart';
-import 'package:gym_system/src/features/vaccines/domain/vaccine.dart';
-import 'package:gym_system/src/features/vaccines/presentation/controllers/vaccine/vaccines_controller.dart';
-import 'package:gym_system/src/features/patients/data/patient_repository.dart';
+import 'package:gym_system/src/features/treatments/domain/treatment.dart';
+import 'package:gym_system/src/features/treatments/presentation/controllers/treatment/treatments_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_details.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -25,7 +20,7 @@ class PatientPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = patientControllerProvider(id);
     final state = ref.watch(provider);
-    final vaccine = useState<Vaccine?>(null);
+    final treatment = useState<Treatment?>(null);
 
     /// for medical records tab. preloading the data
     ref.watch(medicalRecordsPageControllerProvider);
@@ -37,7 +32,7 @@ class PatientPage extends HookConsumerWidget {
     ///
     refresh() {
       ref.invalidate(provider);
-      ref.invalidate(vaccinesControllerProvider);
+      ref.invalidate(treatmentsControllerProvider);
     }
 
     return DefaultTabController(
@@ -97,7 +92,7 @@ class PatientPage extends HookConsumerWidget {
                             ),
                             Tab(
                               icon: Icon(MIcons.hospitalBoxOutline),
-                              child: Text('Vaccines'),
+                              child: Text('Treatments'),
                             ),
                           ],
                         ),
@@ -113,7 +108,7 @@ class PatientPage extends HookConsumerWidget {
                     PatientDetails(patient: patient),
                     MedicalRecordsView(patient: patient),
                     FlutterLogo()
-                    // PatientVaccineRecordView(patient: patient),
+                    // PatientTreatmentRecordView(patient: patient),
                   ],
                 ),
               ),
