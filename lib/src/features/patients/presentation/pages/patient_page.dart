@@ -8,6 +8,7 @@ import 'package:gym_system/src/features/treatments/domain/treatment.dart';
 import 'package:gym_system/src/features/treatments/presentation/controllers/treatment/treatments_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_details.dart';
+import 'package:gym_system/src/features/treatments/presentation/widgets/patient_treatment_record_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientPage extends HookConsumerWidget {
@@ -107,8 +108,7 @@ class PatientPage extends HookConsumerWidget {
                   children: [
                     PatientDetails(patient: patient),
                     MedicalRecordsView(patient: patient),
-                    FlutterLogo()
-                    // PatientTreatmentRecordView(patient: patient),
+                    PatientTreatmentRecordView(patient: patient),
                   ],
                 ),
               ),

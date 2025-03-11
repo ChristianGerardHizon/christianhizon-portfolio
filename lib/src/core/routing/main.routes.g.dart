@@ -31,6 +31,8 @@ List<RouteBase> get $appRoutes => [
       $morePageRoute,
       $salesPageRoute,
       $productsPageRoute,
+      $productCreatePageRoute,
+      $productUpdatePageRoute,
       $medicalRecordsPageRoute,
       $medicalRecordPageRoute,
     ];
@@ -122,6 +124,10 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/products',
               factory: $ProductsPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/newProduct',
+              factory: $ProductCreatePageRouteExtension._fromState,
             ),
           ],
         ),
@@ -301,6 +307,24 @@ extension $ProductsPageRouteExtension on ProductsPageRoute {
 
   String get location => GoRouteData.$location(
         '/products',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $ProductCreatePageRouteExtension on ProductCreatePageRoute {
+  static ProductCreatePageRoute _fromState(GoRouterState state) =>
+      const ProductCreatePageRoute();
+
+  String get location => GoRouteData.$location(
+        '/newProduct',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -681,6 +705,36 @@ RouteBase get $productsPageRoute => GoRouteData.$route(
       path: '/products',
       factory: $ProductsPageRouteExtension._fromState,
     );
+
+RouteBase get $productCreatePageRoute => GoRouteData.$route(
+      path: '/newProduct',
+      factory: $ProductCreatePageRouteExtension._fromState,
+    );
+
+RouteBase get $productUpdatePageRoute => GoRouteData.$route(
+      path: '/updateProduct/:id',
+      factory: $ProductUpdatePageRouteExtension._fromState,
+    );
+
+extension $ProductUpdatePageRouteExtension on ProductUpdatePageRoute {
+  static ProductUpdatePageRoute _fromState(GoRouterState state) =>
+      ProductUpdatePageRoute(
+        state.pathParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/updateProduct/${Uri.encodeComponent(id)}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
 
 RouteBase get $medicalRecordsPageRoute => GoRouteData.$route(
       path: '/medicalRecords',

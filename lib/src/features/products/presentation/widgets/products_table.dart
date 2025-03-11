@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/features/treatments/domain/treatment_record.dart';
+import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:material_table_view/material_table_view.dart';
 import 'package:material_table_view/sliver_table_view.dart';
 
-class TreatmentRecordsTable extends HookWidget {
-  final List<TreatmentRecord> list;
+class ProductsTable extends HookWidget {
+  final List<Product> list;
   final List<int> selected;
   final Function(List<int>)? onSelected;
   final Function(int)? onRowTap;
 
-  const TreatmentRecordsTable({
+  const ProductsTable({
     super.key,
     required this.list,
     required this.selected,
@@ -21,7 +21,7 @@ class TreatmentRecordsTable extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool? mainCheckboxStatus(List<TreatmentRecord> list, List<int> selected) {
+    bool? mainCheckboxStatus(List<Product> list, List<int> selected) {
       if (selected.isEmpty) {
         return false;
       }
@@ -55,10 +55,6 @@ class TreatmentRecordsTable extends HookWidget {
       columns: [
         const TableColumn(width: 56.0, freezePriority: 100),
         const TableColumn(width: 180),
-        const TableColumn(width: 180),
-        const TableColumn(width: 180),
-        const TableColumn(width: 180),
-        const TableColumn(width: 120),
         TableColumn(width: 56.0, freezePriority: 100),
       ],
 
@@ -73,7 +69,15 @@ class TreatmentRecordsTable extends HookWidget {
                   value: mainCheckboxStatus(list, selected),
                   onChanged: onMainCheckboxChange,
                 );
-
+              case 1:
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    'Name',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
               default:
                 return SizedBox();
             }
@@ -105,6 +109,15 @@ class TreatmentRecordsTable extends HookWidget {
                   return Checkbox(
                       value: selected.contains(row),
                       onChanged: (value) => onCellSelect(row, value));
+                case 1:
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      record.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
                 default:
                   return Align(
                     alignment: Alignment.center,

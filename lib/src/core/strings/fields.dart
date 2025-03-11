@@ -73,3 +73,22 @@ class PrescriptionItemField {
   static const String medication = 'medication';
   static const String instructions = 'instructions';
 }
+
+class ProductField {
+  static const String id = 'id';
+  static const String name = 'name';
+  static const String category = 'category';
+
+  static const String isDeleted = 'isDeleted';
+  static const String created = 'created';
+  static const String updated = 'updated';
+}
+
+class CategoryField {
+  static const String id = 'id';
+  static const String name = 'name';
+
+  static const String isDeleted = 'isDeleted';
+  static const String created = 'created';
+  static const String updated = 'updated';
+}

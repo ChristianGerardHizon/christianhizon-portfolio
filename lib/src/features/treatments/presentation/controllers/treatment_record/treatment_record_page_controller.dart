@@ -1,4 +1,3 @@
-import 'package:gym_system/src/features/medical_records/domain/medical_record_search.dart';
 import 'package:gym_system/src/features/treatments/domain/treatment_record_search.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

@@ -21,7 +21,6 @@ class PatientsPage extends HookConsumerWidget {
     final state = ref.watch(patientsControllerProvider);
     final selected = useState<List<int>>([]);
     final searchCtrl = useTextEditingController();
-
     final hasNext = useState(false);
 
     ///

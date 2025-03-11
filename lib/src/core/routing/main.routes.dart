@@ -15,6 +15,8 @@ import 'package:gym_system/src/features/patients/presentation/pages/patient_crea
 import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_update_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/product_create_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/product_update_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/products_page.dart';
 import 'package:gym_system/src/features/sales/presentation/pages/sales_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
@@ -113,6 +115,7 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<ProductsBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<ProductsPageRoute>(path: ProductsPageRoute.path),
+        TypedGoRoute<ProductCreatePageRoute>(path: ProductCreatePageRoute.path),
       ],
     ),
 
