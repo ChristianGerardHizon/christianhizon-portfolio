@@ -106,7 +106,7 @@ class MedicalRecordsTable extends HookWidget {
                 return Align(
                   alignment: Alignment.centerLeft,
                   child: const Text(
-                    'Has Follow Up',
+                    'Follow Up Date',
                     style: TextStyle(fontWeight: FontWeight.w600),
                     overflow: TextOverflow.ellipsis,
                   ),

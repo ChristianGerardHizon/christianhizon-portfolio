@@ -15,6 +15,7 @@ import 'package:gym_system/src/features/treatments/domain/treatment_record_searc
 import 'package:gym_system/src/features/treatments/presentation/controllers/treatment_record/treatment_record_page_controller.dart';
 import 'package:gym_system/src/features/treatments/presentation/controllers/treatment_record/treatment_records_controller.dart';
 import 'package:gym_system/src/features/treatments/presentation/widgets/treatment_records_table.dart';
+import 'package:gym_system/src/features/treatments/presentation/widgets/treatment_selector.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientTreatmentRecordView extends HookConsumerWidget {
@@ -86,7 +87,7 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
                 child: Row(
                   children: [
                     Text(
-                      'Medical Records',
+                      'Treatments',
                       style: theme.textTheme.headlineSmall,
                     ),
                     IconButton(
@@ -94,6 +95,19 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
                       icon: Icon(MIcons.refresh),
                     )
                   ],
+                ),
+              ),
+            ),
+
+            SliverPadding(
+              padding: const EdgeInsets.only(top: 8, bottom: 10),
+              sliver: SliverToBoxAdapter(
+                child: TreatmentSelector(
+                  selected:
+                      ref.watch(treatmentRecordSearchControllerProvider)?.type,
+                  onPress: (treatment) {
+                    searchNotif.updateType(treatment);
+                  },
                 ),
               ),
             ),

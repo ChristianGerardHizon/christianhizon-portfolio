@@ -1,4 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/strings/fields.dart';
 
 part 'medical_record.mapper.dart';
 
@@ -46,6 +47,10 @@ class MedicalRecord with MedicalRecordMappable {
     return fromMap(
       {
         ...raw,
+        MedicalRecordField.followUpDate:
+            raw[MedicalRecordField.followUpDate] == ''
+                ? null
+                : raw[MedicalRecordField.followUpDate],
       },
     );
   }

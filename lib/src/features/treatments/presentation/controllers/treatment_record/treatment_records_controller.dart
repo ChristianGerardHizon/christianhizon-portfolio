@@ -26,10 +26,16 @@ class TreatmentRecordsController extends _$TreatmentRecordsController {
     final patientFilter = Option.of(patientId)
         .map((p) => "${TreatmentRecordField.patient} = '$p'");
 
+    final typeFilter = Option.of(params?.type?.id)
+        .map((q) => (q ?? '').trim())
+        .filter((q) => q.isNotEmpty)
+        .map((q) => '${TreatmentRecordField.type} ~ "${q}"');
+
     final result = [
       idFilter,
       Some(baseFilter),
       patientFilter,
+      typeFilter,
     ].whereType<Some<String>>().map((some) => some.value).join(' && ');
 
     return result;

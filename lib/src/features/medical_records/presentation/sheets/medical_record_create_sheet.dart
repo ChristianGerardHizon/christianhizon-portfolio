@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
+import 'package:gym_system/src/core/widgets/responsive_row_column.dart';
 import 'package:gym_system/src/core/widgets/responsive_two_fields.dart';
 import 'package:gym_system/src/features/medical_records/data/medical_record_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
@@ -138,26 +139,75 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
                       ),
                       SizedBox(height: 10),
 
-                      FormBuilderDateTimePicker(
-                        initialEntryMode: DatePickerEntryMode.inputOnly,
-                        inputType: InputType.date,
-                        name: MedicalRecordField.vistDate,
-                        decoration: InputDecoration(
-                          suffixIcon: Icon(Icons.calendar_month),
-                          contentPadding: EdgeInsets.only(
-                              bottom: 10, right: 8, left: 8, top: 30),
-                          labelText: 'Visitation Date',
-                          filled: true,
-                          fillColor:
-                              Theme.of(context).colorScheme.surfaceContainerLow,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                      ResponsiveTwoFields(
+                        horizontalGap: 8,
+                        verticalGap: 8,
+                        children: [
+                          FormBuilderDateTimePicker(
+                            initialEntryMode: DatePickerEntryMode.inputOnly,
+                            inputType: InputType.date,
+                            name: MedicalRecordField.vistDate,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.calendar_month),
+                              contentPadding: EdgeInsets.only(
+                                  bottom: 10, right: 8, left: 8, top: 30),
+                              labelText: 'Visitation Date',
+                              filled: true,
+                              fillColor: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainerLow,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            valueTransformer: (dateTime) {
+                              if (dateTime == null) return null;
+                              return dateTime.toUtc().toIso8601String();
+                            },
                           ),
-                        ),
-                        valueTransformer: (dateTime) {
-                          if (dateTime == null) return null;
-                          return dateTime.toUtc().toIso8601String();
-                        },
+                          FormBuilderDateTimePicker(
+                            initialEntryMode: DatePickerEntryMode.inputOnly,
+                            inputType: InputType.date,
+                            name: MedicalRecordField.followUpDate,
+                            decoration: InputDecoration(
+                              suffixIcon: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      formKey
+                                          .currentState
+                                          ?.fields[
+                                              MedicalRecordField.followUpDate]
+                                          ?.didChange(null);
+                                    },
+                                    icon: Icon(Icons.clear),
+                                  ),
+                                  Icon(Icons.calendar_month),
+                                  SizedBox(width: 8),
+                                ],
+                              ),
+                              contentPadding: EdgeInsets.only(
+                                bottom: 10,
+                                right: 8,
+                                left: 8,
+                                top: 30,
+                              ),
+                              labelText: 'Follow Up Date',
+                              filled: true,
+                              fillColor: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainerLow,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            valueTransformer: (dateTime) {
+                              if (dateTime == null) return null;
+                              return dateTime.toUtc().toIso8601String();
+                            },
+                          ),
+                        ],
                       ),
                       SizedBox(height: 16),
 
@@ -217,14 +267,6 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
                               ),
                             ),
                           ]),
-
-                      ///
-                      /// Follow Up
-                      ///
-                      FormBuilderCheckbox(
-                        name: 'name',
-                        title: Text('Has Follow Up?'),
-                      )
                     ],
                   ),
                 ),

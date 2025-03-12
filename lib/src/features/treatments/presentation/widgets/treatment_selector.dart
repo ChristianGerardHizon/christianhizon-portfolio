@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/features/treatments/domain/treatment.dart';
@@ -56,12 +57,12 @@ class TreatmentSelector extends HookConsumerWidget {
                 scrollDirection: Axis.horizontal,
                 children: [
                   ///
-                  /// Main
+                  /// All
                   ///
                   Padding(
                     padding: const EdgeInsets.only(left: 4),
                     child: ChoiceChip(
-                      label: Text('Details'),
+                      label: Text('All'),
                       selected: selected == null,
                       onSelected: (value) {
                         if (value) {
@@ -74,8 +75,8 @@ class TreatmentSelector extends HookConsumerWidget {
                   ///
                   /// Another Types
                   ///
-                  ...data.map(
-                    (e) {
+                  ...data.mapWithIndex(
+                    (e, index) {
                       return Padding(
                         padding: const EdgeInsets.only(left: 4),
                         child: ChoiceChip(
@@ -108,7 +109,7 @@ class TreatmentSelector extends HookConsumerWidget {
               ),
             ),
           ),
-          Divider(),
+          // Divider(),
         ],
       ),
     );

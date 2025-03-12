@@ -69,7 +69,7 @@ class MedicalRecordField {
   static const String diagnosis = 'diagnosis';
   static const String vistDate = 'visitDate';
   static const String treatment = 'treatment';
-  static const String isFollowUpRequired = 'isFollowUpRequired';
+  static const String followUpDate = 'followUpDate';
   static const String prescription = 'prescription';
   static const String user = 'user';
   static const String admin = 'admin';
