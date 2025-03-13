@@ -9,14 +9,20 @@ import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/core/widgets/responsive_row_column.dart';
 import 'package:gym_system/src/core/widgets/responsive_two_fields.dart';
 import 'package:gym_system/src/features/medical_records/data/medical_record_repository.dart';
+import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class MedicalRecordCreateSheet extends HookConsumerWidget {
   final Patient patient;
+  final MedicalRecord? record;
 
-  const MedicalRecordCreateSheet({super.key, required this.patient});
+  const MedicalRecordCreateSheet({
+    super.key,
+    required this.patient,
+    this.record,
+  });
 
   static Future<bool?> show(
     BuildContext context, {
@@ -69,6 +75,17 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
       );
     }
 
+    Map<String, dynamic> buildInitialValue() {
+      return {
+        MedicalRecordField.id: record?.id,
+        MedicalRecordField.followUpDate: record?.followUpDate,
+        MedicalRecordField.vistDate: record?.visitDate ?? DateTime.now(),
+        MedicalRecordField.patient: patient,
+        MedicalRecordField.treatment: record?.treatment,
+        MedicalRecordField.diagnosis: record?.diagnosis,
+      };
+    }
+
     return Dialog(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -76,12 +93,12 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
           backgroundColor: Colors.transparent,
           body: FormBuilder(
             key: formKey,
-            initialValue: {
-              MedicalRecordField.patient: patient,
-              MedicalRecordField.vistDate: DateTime.now(),
-            },
+            initialValue: buildInitialValue(),
             child: CustomScrollView(
               slivers: [
+                ///
+                ///  Header
+                ///
                 SliverAppBar(
                   surfaceTintColor: Colors.transparent,
                   backgroundColor: Colors.transparent,

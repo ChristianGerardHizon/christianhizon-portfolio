@@ -53,7 +53,7 @@ class MedicalRecordsController extends _$MedicalRecordsController {
             pageSize: pageState.pageSize,
             sort: PocketbaseSortValue(
               sortKey: MedicalRecordField.vistDate,
-              isAsc: true,
+              isAsc: false,
             ))
         .run();
     return result.fold(Future.error, (x) => Future.value(x));

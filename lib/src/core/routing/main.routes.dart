@@ -16,11 +16,13 @@ import 'package:gym_system/src/features/patients/presentation/pages/patient_page
 import 'package:gym_system/src/features/patients/presentation/pages/patient_update_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product_create_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/product_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product_update_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/products_page.dart';
 import 'package:gym_system/src/features/sales/presentation/pages/sales_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/settings_page.dart';
+import 'package:gym_system/src/features/treatments/presentation/pages/treatment_record_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_create_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_update_page.dart';
@@ -38,6 +40,7 @@ part 'routes/others.routes.dart';
 part 'routes/sales.routes.dart';
 part 'routes/products.routes.dart';
 part 'routes/medical_records.routes.dart';
+part 'routes/treatment_records.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
@@ -115,7 +118,9 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<ProductsBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<ProductsPageRoute>(path: ProductsPageRoute.path),
+        TypedGoRoute<ProductPageRoute>(path: ProductPageRoute.path),
         TypedGoRoute<ProductCreatePageRoute>(path: ProductCreatePageRoute.path),
+        TypedGoRoute<ProductUpdatePageRoute>(path: ProductUpdatePageRoute.path),
       ],
     ),
 
@@ -168,6 +173,18 @@ class SplashPageRoute extends GoRouteData {
     //     TypedGoRoute<MedicalRecordPageRoute>(path: MedicalRecordPageRoute.path),
     //   ],
     // ),
+
+    ///
+    /// Treatment Records
+    ///
+    TypedStatefulShellBranch<TreatmentRecordsBranchData>(
+      routes: <TypeRouteData>[
+        TypedGoRoute<TreatmentRecordsPageRoute>(
+            path: TreatmentRecordsPageRoute.path),
+        TypedGoRoute<TreatmentRecordPageRoute>(
+            path: TreatmentRecordPageRoute.path),
+      ],
+    ),
   ],
 )
 class RootRouteData extends StatefulShellRouteData {

@@ -14,7 +14,6 @@ class TreatmentRecordSearchMapper
   static TreatmentRecordSearchMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = TreatmentRecordSearchMapper._());
-      TreatmentMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -25,18 +24,14 @@ class TreatmentRecordSearchMapper
   static String? _$id(TreatmentRecordSearch v) => v.id;
   static const Field<TreatmentRecordSearch, String> _f$id =
       Field('id', _$id, opt: true);
-  static Treatment? _$type(TreatmentRecordSearch v) => v.type;
-  static const Field<TreatmentRecordSearch, Treatment> _f$type =
-      Field('type', _$type, opt: true);
 
   @override
   final MappableFields<TreatmentRecordSearch> fields = const {
     #id: _f$id,
-    #type: _f$type,
   };
 
   static TreatmentRecordSearch _instantiate(DecodingData data) {
-    return TreatmentRecordSearch(id: data.dec(_f$id), type: data.dec(_f$type));
+    return TreatmentRecordSearch(id: data.dec(_f$id));
   }
 
   @override
@@ -96,8 +91,7 @@ abstract class TreatmentRecordSearchCopyWith<
     $R,
     $In extends TreatmentRecordSearch,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
-  TreatmentCopyWith<$R, Treatment, Treatment>? get type;
-  $R call({String? id, Treatment? type});
+  $R call({String? id});
   TreatmentRecordSearchCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -111,15 +105,11 @@ class _TreatmentRecordSearchCopyWithImpl<$R, $Out>
   late final ClassMapperBase<TreatmentRecordSearch> $mapper =
       TreatmentRecordSearchMapper.ensureInitialized();
   @override
-  TreatmentCopyWith<$R, Treatment, Treatment>? get type =>
-      $value.type?.copyWith.$chain((v) => call(type: v));
+  $R call({Object? id = $none}) =>
+      $apply(FieldCopyWithData({if (id != $none) #id: id}));
   @override
-  $R call({Object? id = $none, Object? type = $none}) =>
-      $apply(FieldCopyWithData(
-          {if (id != $none) #id: id, if (type != $none) #type: type}));
-  @override
-  TreatmentRecordSearch $make(CopyWithData data) => TreatmentRecordSearch(
-      id: data.get(#id, or: $value.id), type: data.get(#type, or: $value.type));
+  TreatmentRecordSearch $make(CopyWithData data) =>
+      TreatmentRecordSearch(id: data.get(#id, or: $value.id));
 
   @override
   TreatmentRecordSearchCopyWith<$R2, TreatmentRecordSearch, $Out2>

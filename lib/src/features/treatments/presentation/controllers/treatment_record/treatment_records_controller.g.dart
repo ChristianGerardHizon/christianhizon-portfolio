@@ -7,7 +7,7 @@ part of 'treatment_records_controller.dart';
 // **************************************************************************
 
 String _$treatmentRecordsControllerHash() =>
-    r'b2c9b358145b1e9621cdd95952376f05529820b5';
+    r'9b16936b26ae754226af5508db93fa06b3d6c53f';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -33,9 +33,11 @@ class _SystemHash {
 abstract class _$TreatmentRecordsController
     extends BuildlessAutoDisposeAsyncNotifier<PageResults<TreatmentRecord>> {
   late final String? id;
+  late final Treatment? treatment;
 
   FutureOr<PageResults<TreatmentRecord>> build({
     String? id,
+    Treatment? treatment,
   });
 }
 
@@ -52,9 +54,11 @@ class TreatmentRecordsControllerFamily
   /// See also [TreatmentRecordsController].
   TreatmentRecordsControllerProvider call({
     String? id,
+    Treatment? treatment,
   }) {
     return TreatmentRecordsControllerProvider(
       id: id,
+      treatment: treatment,
     );
   }
 
@@ -64,6 +68,7 @@ class TreatmentRecordsControllerFamily
   ) {
     return call(
       id: provider.id,
+      treatment: provider.treatment,
     );
   }
 
@@ -89,8 +94,11 @@ class TreatmentRecordsControllerProvider
   /// See also [TreatmentRecordsController].
   TreatmentRecordsControllerProvider({
     String? id,
+    Treatment? treatment,
   }) : this._internal(
-          () => TreatmentRecordsController()..id = id,
+          () => TreatmentRecordsController()
+            ..id = id
+            ..treatment = treatment,
           from: treatmentRecordsControllerProvider,
           name: r'treatmentRecordsControllerProvider',
           debugGetCreateSourceHash:
@@ -101,6 +109,7 @@ class TreatmentRecordsControllerProvider
           allTransitiveDependencies:
               TreatmentRecordsControllerFamily._allTransitiveDependencies,
           id: id,
+          treatment: treatment,
         );
 
   TreatmentRecordsControllerProvider._internal(
@@ -111,9 +120,11 @@ class TreatmentRecordsControllerProvider
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.id,
+    required this.treatment,
   }) : super.internal();
 
   final String? id;
+  final Treatment? treatment;
 
   @override
   FutureOr<PageResults<TreatmentRecord>> runNotifierBuild(
@@ -121,6 +132,7 @@ class TreatmentRecordsControllerProvider
   ) {
     return notifier.build(
       id: id,
+      treatment: treatment,
     );
   }
 
@@ -129,13 +141,16 @@ class TreatmentRecordsControllerProvider
     return ProviderOverride(
       origin: this,
       override: TreatmentRecordsControllerProvider._internal(
-        () => create()..id = id,
+        () => create()
+          ..id = id
+          ..treatment = treatment,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         id: id,
+        treatment: treatment,
       ),
     );
   }
@@ -148,13 +163,16 @@ class TreatmentRecordsControllerProvider
 
   @override
   bool operator ==(Object other) {
-    return other is TreatmentRecordsControllerProvider && other.id == id;
+    return other is TreatmentRecordsControllerProvider &&
+        other.id == id &&
+        other.treatment == treatment;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, id.hashCode);
+    hash = _SystemHash.combine(hash, treatment.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -166,6 +184,9 @@ mixin TreatmentRecordsControllerRef
     on AutoDisposeAsyncNotifierProviderRef<PageResults<TreatmentRecord>> {
   /// The parameter `id` of this provider.
   String? get id;
+
+  /// The parameter `treatment` of this provider.
+  Treatment? get treatment;
 }
 
 class _TreatmentRecordsControllerProviderElement
@@ -175,6 +196,9 @@ class _TreatmentRecordsControllerProviderElement
 
   @override
   String? get id => (origin as TreatmentRecordsControllerProvider).id;
+  @override
+  Treatment? get treatment =>
+      (origin as TreatmentRecordsControllerProvider).treatment;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -50,10 +50,12 @@ class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
   RecordService get collection =>
       pb.collection(PocketBaseCollections.treatmentRecords);
 
+  final expand = 'type';
+
   @override
   TaskResult<TreatmentRecord> get(String id) {
     return TaskResult.tryCatch(() async {
-      final result = await collection.getOne(id);
+      final result = await collection.getOne(id, expand: expand);
       return TreatmentRecord.customFromMap(result.toJson());
     }, Failure.tryCatchData);
   }
@@ -86,6 +88,7 @@ class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
         page: pageNo,
         perPage: pageSize,
         sort: sort?.value,
+        expand: expand,
       );
       return PageResults(
         page: result.page,
@@ -93,7 +96,12 @@ class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
         totalItems: result.totalItems,
         totalPages: result.totalPages,
         items: result.items.map<TreatmentRecord>((e) {
-          return TreatmentRecord.customFromMap(e.toJson());
+          return TreatmentRecord.customFromMap({
+            ...e.toJson(),
+            'expand': {
+              'type': e.get('expand.type'),
+            },
+          });
         }).toList(),
       );
     }, Failure.tryCatchData);
@@ -112,6 +120,7 @@ class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
         treatment.id,
         body: combinedMap,
         files: files,
+        expand: expand,
       );
       return TreatmentRecord.customFromMap(result.toJson());
     }, Failure.tryCatchData);
@@ -140,6 +149,7 @@ class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
       () async {
         final result = await collection.getFullList(
           filter: filter,
+          expand: expand,
         );
         return result
             .map<TreatmentRecord>(

@@ -1,4 +1,3 @@
-import 'package:gym_system/src/features/treatments/domain/treatment.dart';
 import 'package:gym_system/src/features/treatments/domain/treatment_record_search.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -46,9 +45,5 @@ class TreatmentRecordSearchController
 
   void updateParams(TreatmentRecordSearch params) {
     state = params;
-  }
-
-  void updateType(Treatment? treatment) {
-    state = state?.copyWith(type: treatment);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
@@ -52,30 +53,30 @@ class PatientsPage extends HookConsumerWidget {
             selected.value = [];
             ref.invalidate(patientsControllerProvider);
             AppSnackBar.root(message: 'Successfully Deleted');
-            PatientsPageRoute().go(context);
+            if (context.canPop()) context.pop();
           },
         );
       });
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Patients'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => ref.invalidate(patientsControllerProvider),
-          ),
-          // IconButton(
-          //   icon: Icon(MIcons.plusCircle),
-          //   onPressed: () => PatientCreatePageRoute().go(context),
-          // )
-        ],
-      ),
       body: Stack(
         children: [
           CustomScrollView(
             slivers: [
+              SliverAppBar(
+                title: Text('Patients'),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () => ref.invalidate(patientsControllerProvider),
+                  ),
+                ],
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Container(),
+                ),
+              ),
+
               ///
               /// Serch Bar
               ///

@@ -61,16 +61,22 @@ class TreatmentCreateSheet extends HookConsumerWidget {
     }
 
     final content = Scaffold(
-      appBar: AppBar(
-        leading: CloseButton(),
-        title: Text('New History Type'),
-      ),
+      backgroundColor: Colors.transparent,
       body: Padding(
-        padding: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 10, left: 12, right: 12),
         child: FormBuilder(
           key: formKey,
           child: CustomScrollView(
             slivers: [
+              ///
+              /// App Bar
+              ///
+              SliverAppBar(
+                backgroundColor: Colors.transparent,
+                leading: CloseButton(),
+                title: Text('New Treatment Type'),
+              ),
+
               ///
               /// Patient Details
               ///
@@ -78,37 +84,6 @@ class TreatmentCreateSheet extends HookConsumerWidget {
                 padding: EdgeInsets.only(left: 10, right: 10),
                 sliver: SliverList.list(
                   children: [
-                    SizedBox(height: 10),
-
-                    ///
-                    /// Icon
-                    ///
-                    FormBuilderDropdown(
-                      name: TreatmentField.icon,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(
-                            bottom: 10, right: 8, left: 8, top: 30),
-                        labelText: 'Icon',
-                        filled: true,
-                        fillColor:
-                            Theme.of(context).colorScheme.surfaceContainerLow,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      items: [
-                        'star',
-                        'heart',
-                        'smile',
-                        'sad',
-                        'mood',
-                      ]
-                          .map((e) => DropdownMenuItem(
-                                value: e,
-                                child: Text(e),
-                              ))
-                          .toList(),
-                    ),
                     SizedBox(height: 10),
 
                     ///
@@ -122,7 +97,7 @@ class TreatmentCreateSheet extends HookConsumerWidget {
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(
                             bottom: 10, right: 8, left: 8, top: 30),
-                        labelText: 'History Name',
+                        labelText: 'Name',
                         filled: true,
                         fillColor:
                             Theme.of(context).colorScheme.surfaceContainerLow,
@@ -131,7 +106,6 @@ class TreatmentCreateSheet extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
                   ],
                 ),
               ),

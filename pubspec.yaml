@@ -32,7 +32,7 @@ dependencies:
   dart_mappable: ^4.3.0 
   # latest version 1.2.0 havin issue on onSuggestionTap
   searchfield: ^1.2.4
-  flutter_image_compress: ^2.3.0 
+  flutter_image_compress: ^2.4.0 
   image_picker: ^1.1.2 
   path_provider: ^2.1.5 
   intl: ^0.19.0 

@@ -136,8 +136,9 @@ class ProductsPage extends HookConsumerWidget {
                     list: list,
                     selected: selected.value,
                     onSelected: (p0) => selected.value = p0,
-                    onRowTap: (row) =>
-                        PatientPageRoute(list[row].id).push(context),
+                    onRowTap: (row) {
+                      ProductPageRoute(list[row].id).push(context);
+                    },
                   );
                 },
               ),

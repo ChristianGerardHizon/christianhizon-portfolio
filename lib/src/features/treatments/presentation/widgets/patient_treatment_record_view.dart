@@ -6,14 +6,17 @@ import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/page_actions.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
+import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/text_search_bar.dart';
 import 'package:gym_system/src/features/medical_records/presentation/sheets/medical_record_create_sheet.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/treatments/data/treatment_record/treatment_record_repository.dart';
+import 'package:gym_system/src/features/treatments/domain/treatment.dart';
 import 'package:gym_system/src/features/treatments/domain/treatment_record.dart';
 import 'package:gym_system/src/features/treatments/domain/treatment_record_search.dart';
 import 'package:gym_system/src/features/treatments/presentation/controllers/treatment_record/treatment_record_page_controller.dart';
 import 'package:gym_system/src/features/treatments/presentation/controllers/treatment_record/treatment_records_controller.dart';
+import 'package:gym_system/src/features/treatments/presentation/sheets/treatment_record_create_sheet.dart';
 import 'package:gym_system/src/features/treatments/presentation/widgets/treatment_records_table.dart';
 import 'package:gym_system/src/features/treatments/presentation/widgets/treatment_selector.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -24,11 +27,14 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
   const PatientTreatmentRecordView({super.key, required this.patient});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final treatment = useState<Treatment?>(null);
+
     final theme = Theme.of(context);
     final pageState = ref.watch(treatmentRecordsPageControllerProvider);
     final searchNotif =
         ref.read(treatmentRecordSearchControllerProvider.notifier);
-    final provider = treatmentRecordsControllerProvider(id: patient.id);
+    final provider = treatmentRecordsControllerProvider(
+        id: patient.id, treatment: treatment.value);
     final state = ref.watch(provider);
     final selected = useState<List<int>>([]);
     final searchCtrl = useTextEditingController();
@@ -64,13 +70,14 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
             selected.value = [];
             ref.invalidate(provider);
             AppSnackBar.root(message: 'Successfully Deleted');
-            PatientsPageRoute().go(context);
           },
         );
       });
     }
 
-    onTap(TreatmentRecord record) {}
+    onTap(TreatmentRecord record) {
+      TreatmentRecordPageRoute(record.id).push(context);
+    }
 
     return Stack(
       children: [
@@ -90,9 +97,8 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
                       'Treatments',
                       style: theme.textTheme.headlineSmall,
                     ),
-                    IconButton(
+                    RefreshButton(
                       onPressed: () => ref.invalidate(provider),
-                      icon: Icon(MIcons.refresh),
                     )
                   ],
                 ),
@@ -103,10 +109,10 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
               padding: const EdgeInsets.only(top: 8, bottom: 10),
               sliver: SliverToBoxAdapter(
                 child: TreatmentSelector(
-                  selected:
-                      ref.watch(treatmentRecordSearchControllerProvider)?.type,
-                  onPress: (treatment) {
-                    searchNotif.updateType(treatment);
+                  selected: treatment.value,
+                  onPress: (x) {
+                    treatment.value = x;
+                    // ref.invalidate(provider);
                   },
                 ),
               ),
@@ -134,7 +140,11 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
                   );
                 },
                 onCreate: () {
-                  MedicalRecordCreateSheet.show(context, patient: patient);
+                  TreatmentRecordCreateSheet.show(
+                    context,
+                    patient: patient,
+                    treatment: treatment.value,
+                  );
                 },
               ),
             ),

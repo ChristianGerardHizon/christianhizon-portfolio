@@ -54,7 +54,6 @@ class UsersPage extends HookConsumerWidget {
             selected.value = [];
             ref.invalidate(usersControllerProvider);
             AppSnackBar.root(message: 'Successfully Deleted');
-            UsersPageRoute().go(context);
           },
         );
       });

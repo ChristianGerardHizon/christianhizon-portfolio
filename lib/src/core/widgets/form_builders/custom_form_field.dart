@@ -28,6 +28,7 @@ class CustomSearchFormField<T> extends HookConsumerWidget {
   final bool showAll;
   final List<T>? initialList;
   final String? Function(T?)? validator;
+  final bool? filled;
 
   const CustomSearchFormField({
     super.key,
@@ -38,6 +39,7 @@ class CustomSearchFormField<T> extends HookConsumerWidget {
     this.valueTransformer,
     required this.selectedBuilder,
     required this.name,
+    this.filled,
     this.onChanged,
     this.showAll = false,
     required this.onSearch,
@@ -150,7 +152,10 @@ class CustomSearchFormField<T> extends HookConsumerWidget {
                     },
                     searchInputDecoration: SearchInputDecoration(
                       border: OutlineInputBorder(),
+                      filled: filled,
                       errorText: field.errorText,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
                     ),
                     suggestions: (list ?? []).whereType<T>().map((item) {
                       final result = onChild.call(item);

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/form_builders/custom_form_field.dart';
 import 'package:gym_system/src/core/widgets/form_builders/toggle_field_item.dart';
 import 'package:gym_system/src/features/treatments/data/treatment/treatment_repository.dart';
@@ -35,7 +36,8 @@ class TreatmentFormField extends HookConsumerWidget {
           .list(
               pageNo: 1,
               pageSize: 5,
-              filter: 'name ~ "$query" && isDeleted = false')
+              filter:
+                  '${TreatmentField.name} ~ "$query" && ${TreatmentField.isDeleted} = false')
           .map((x) => x.items)
           .run();
       return result.fold(Future.error, Future.value);
@@ -47,6 +49,8 @@ class TreatmentFormField extends HookConsumerWidget {
       validator: validator,
       onChanged: onChanged,
       onSearch: search,
+      filled: true,
+      hint: 'Select Type of Treatment',
       onChild: (item) {
         return (item.name, Text(item.name));
       },

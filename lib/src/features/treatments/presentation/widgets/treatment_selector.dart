@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
+import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/treatments/domain/treatment.dart';
 import 'package:gym_system/src/features/treatments/presentation/controllers/treatment/treatments_controller.dart';
 import 'package:gym_system/src/features/treatments/presentation/sheets/treatment_create_sheet.dart';
@@ -36,11 +37,10 @@ class TreatmentSelector extends HookConsumerWidget {
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),
-            IconButton(
+            RefreshButton(
               onPressed: () {
                 ref.invalidate(treatmentsControllerProvider);
               },
-              icon: Icon(MIcons.refresh),
             ),
           ],
         ),
@@ -62,7 +62,18 @@ class TreatmentSelector extends HookConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 4),
                     child: ChoiceChip(
-                      label: Text('All'),
+                      padding: EdgeInsets.zero,
+                      label: Container(
+                        constraints: BoxConstraints(minWidth: 40),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(
+                          left: 8,
+                          right: 8,
+                          top: 0,
+                          bottom: 0,
+                        ),
+                        child: Text('All'),
+                      ),
                       selected: selected == null,
                       onSelected: (value) {
                         if (value) {
@@ -80,7 +91,18 @@ class TreatmentSelector extends HookConsumerWidget {
                       return Padding(
                         padding: const EdgeInsets.only(left: 4),
                         child: ChoiceChip(
-                          label: Text(e.name),
+                          padding: EdgeInsets.zero,
+                          label: Container(
+                            alignment: Alignment.center,
+                            constraints: BoxConstraints(minWidth: 80),
+                            padding: const EdgeInsets.only(
+                              left: 4,
+                              right: 4,
+                              top: 0,
+                              bottom: 0,
+                            ),
+                            child: Text(e.name),
+                          ),
                           selected: selected?.id == e.id,
                           onSelected: (value) {
                             if (value) {

@@ -6,12 +6,15 @@ import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/page_actions.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
+import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/text_search_bar.dart';
 import 'package:gym_system/src/features/medical_records/data/medical_record_repository.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record_search.dart';
 import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_record_page_controller.dart';
 import 'package:gym_system/src/features/medical_records/presentation/sheets/medical_record_create_sheet.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:gym_system/src/features/products/data/product_repository.dart';
+import 'package:gym_system/src/features/products/domain/product_search.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/products_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/products_page_controller.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/products_table.dart';
@@ -24,8 +27,7 @@ class ProductsView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final pageState = ref.watch(productsPageControllerProvider);
-    final searchNotif =
-        ref.read(medicalRecordSearchControllerProvider.notifier);
+    final searchNotif = ref.read(productSearchControllerProvider.notifier);
     final provider = productsControllerProvider;
     final state = ref.watch(provider);
     final selected = useState<List<int>>([]);
@@ -53,7 +55,7 @@ class ProductsView extends HookConsumerWidget {
     onDelete() async {
       final confirm = await ConfirmModal.show(context);
       if (confirm != true) return;
-      final repo = ref.read(medicalRecordRepositoryProvider);
+      final repo = ref.read(productRepositoryProvider);
       final ids = selected.value.map((e) => state.value!.items[e].id).toList();
       repo.softDeleteMulti(ids).run().then((result) {
         result.fold(
@@ -62,7 +64,6 @@ class ProductsView extends HookConsumerWidget {
             selected.value = [];
             ref.invalidate(provider);
             AppSnackBar.root(message: 'Successfully Deleted');
-            PatientsPageRoute().go(context);
           },
         );
       });
@@ -83,12 +84,11 @@ class ProductsView extends HookConsumerWidget {
                 child: Row(
                   children: [
                     Text(
-                      'Medical Records',
+                      'Products',
                       style: theme.textTheme.headlineSmall,
                     ),
-                    IconButton(
+                    RefreshButton(
                       onPressed: () => ref.invalidate(provider),
-                      icon: Icon(MIcons.refresh),
                     )
                   ],
                 ),
@@ -104,22 +104,20 @@ class ProductsView extends HookConsumerWidget {
                 onClear: () {
                   searchCtrl.clear();
                   searchNotif.updateParams(
-                    MedicalRecordSearch.buildQuery(
+                    ProductSearch.buildQuery(
                       searchCtrl.text,
-                      includeDiagnosis: true,
                     ),
                   );
                 },
                 onSearch: () {
                   searchNotif.updateParams(
-                    MedicalRecordSearch.buildQuery(
+                    ProductSearch.buildQuery(
                       searchCtrl.text,
-                      includeDiagnosis: true,
                     ),
                   );
                 },
                 onCreate: () {
-                  MedicalRecordCreateSheet.show(context, patient: patient);
+                  // ProductCreateSheet.show(context, patient: patient);
                 },
               ),
             ),
@@ -163,9 +161,8 @@ class ProductsView extends HookConsumerWidget {
                   list: list,
                   selected: selected.value,
                   onSelected: (p0) => selected.value = p0,
-                  onRowTap: (row) => PatientMedicalRecordPageRoute(
-                    medicalRecordId: list[row].id,
-                  ).push(context),
+                  onRowTap: (row) =>
+                      ProductPageRoute(list[row].id).push(context),
                 );
               },
             ),

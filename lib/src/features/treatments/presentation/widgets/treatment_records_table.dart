@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/treatments/domain/treatment_record.dart';
 import 'package:material_table_view/material_table_view.dart';
@@ -58,8 +60,8 @@ class TreatmentRecordsTable extends HookWidget {
         const TableColumn(width: 180),
         const TableColumn(width: 180),
         const TableColumn(width: 180),
-        const TableColumn(width: 120),
-        TableColumn(width: 56.0, freezePriority: 100),
+        // const TableColumn(width: 120),
+        // TableColumn(width: 56.0, freezePriority: 100),
       ],
 
       headerBuilder: (context, contentBuilder) {
@@ -73,7 +75,42 @@ class TreatmentRecordsTable extends HookWidget {
                   value: mainCheckboxStatus(list, selected),
                   onChanged: onMainCheckboxChange,
                 );
-
+              case 1:
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    'Date',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              case 2:
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    'Follow Up Date',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              case 3:
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    'Type',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              case 4:
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    'Notes',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
               default:
                 return SizedBox();
             }
@@ -105,6 +142,44 @@ class TreatmentRecordsTable extends HookWidget {
                   return Checkbox(
                       value: selected.contains(row),
                       onChanged: (value) => onCellSelect(row, value));
+                case 1:
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      (record.date?.yyyyMMddHHmm())
+                          .optional(placeholder: 'N/A'),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                case 2:
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      (record.followUpDate?.yyyyMMddHHmm())
+                          .optional(placeholder: 'N/A'),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                case 3:
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      (record.expand?.type?.name).optional(placeholder: 'N/A'),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                case 4:
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      (record.notes).optional(placeholder: 'N/A'),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
                 default:
                   return Align(
                     alignment: Alignment.center,

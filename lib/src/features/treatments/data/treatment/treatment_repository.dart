@@ -51,7 +51,9 @@ class TreatmentRepositoryImpl extends TreatmentRepository {
   @override
   TaskResult<Treatment> get(String id) {
     return TaskResult.tryCatch(() async {
-      final result = await collection.getOne(id);
+      final result = await collection.getOne(
+        id,
+      );
       return Treatment.customFromMap(result.toJson());
     }, Failure.tryCatchData);
   }

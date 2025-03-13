@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/features/prescription/domain/prescription_item_create.dart';
+import 'package:go_router/go_router.dart';
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/card_group.dart';
+import 'package:gym_system/src/core/widgets/collapsing_card.dart';
+import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
+import 'package:gym_system/src/features/medical_records/data/medical_record_repository.dart';
+import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
+import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_record_controller.dart';
+import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_records_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Define the PrescriptionItem class
@@ -14,188 +24,166 @@ class MedicalRecordPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final prescriptions = useState<List<PrescriptionItemCreate>>([]);
+    final provider = medicalRecordControllerProvider(id);
+    final state = ref.watch(provider);
 
-    final textControllers = useState<List<List<TextEditingController>>>(
-      prescriptions.value
-          .map(
-            (item) => [
-              TextEditingController(text: item.medication),
-              TextEditingController(text: item.dosage),
-              TextEditingController(text: item.instruction),
-            ],
-          )
-          .toList(),
-    );
-
-    final focusNodes = useState<List<List<FocusNode>>>(
-      prescriptions.value
-          .map((_) => [FocusNode(), FocusNode(), FocusNode()])
-          .toList(),
-    );
-
-    void addPrescription({bool focusOnNew = false}) {
-      prescriptions.value = [
-        ...prescriptions.value,
-        PrescriptionItemCreate(
-          medicalRecord: id,
-          medication: null,
-          dosage: null,
-          instruction: null,
-        ),
-      ];
-
-      textControllers.value = [
-        ...textControllers.value,
-        [
-          TextEditingController(),
-          TextEditingController(),
-          TextEditingController(),
-        ],
-      ];
-
-      focusNodes.value = [
-        ...focusNodes.value,
-        [FocusNode(), FocusNode(), FocusNode()]
-      ];
-
-      if (focusOnNew) {
-        Future.delayed(const Duration(milliseconds: 100), () {
-          FocusScope.of(context).requestFocus(
-              focusNodes.value.last[0]); // Focus on new row's medication field
-        });
-      }
+    ///
+    /// onDelete
+    ///
+    onDelete(MedicalRecord record) async {
+      final confirm = await ConfirmModal.show(context);
+      if (confirm != true) return;
+      final repo = ref.read(medicalRecordRepositoryProvider);
+      repo.softDeleteMulti([record.id]).run().then((result) {
+            result.fold(
+              (l) => AppSnackBar.rootFailure(l),
+              (r) {
+                ref.invalidate(medicalRecordsControllerProvider);
+                AppSnackBar.root(message: 'Successfully Deleted');
+                if (context.canPop()) context.pop();
+              },
+            );
+          });
     }
 
-    void deletePrescription(int index) {
-      if (prescriptions.value.length == 1)
-        return; // Prevent deleting the last item
-
-      final updatedList = List<PrescriptionItemCreate>.from(prescriptions.value)
-        ..removeAt(index);
-      final updatedControllers =
-          List<List<TextEditingController>>.from(textControllers.value)
-            ..removeAt(index);
-      final updatedFocusNodes = List<List<FocusNode>>.from(focusNodes.value)
-        ..removeAt(index);
-
-      prescriptions.value = updatedList;
-      textControllers.value = updatedControllers;
-      focusNodes.value = updatedFocusNodes;
-    }
+    onTap(MedicalRecord record) {}
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Prescription Table')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Table(
-                border: TableBorder.all(),
-                columnWidths: const {
-                  0: FixedColumnWidth(50), // Row number
-                  1: FlexColumnWidth(),
-                  2: FlexColumnWidth(),
-                  3: FlexColumnWidth(),
-                  4: FixedColumnWidth(60), // Delete button
-                },
-                children: [
-                  // Header Row
-                  TableRow(
-                    decoration: BoxDecoration(color: Colors.grey[300]),
-                    children: const [
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text("#",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+      appBar: AppBar(
+        title: const Text('Medical Record'),
+      ),
+      body: state.when(
+          skipError: false,
+          skipLoadingOnRefresh: false,
+          skipLoadingOnReload: false,
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => Scaffold(
+                appBar: AppBar(
+                  title: Text('Something Went Wrong'),
+                ),
+                body: Center(child: Text(error.toString())),
+              ),
+          data: (record) {
+            return CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(child: SizedBox(height: 30)),
+                SliverList.list(
+                  children: [
+                    ///
+                    /// Details
+                    ///
+                    CollapsingCard(
+                      header: Text(
+                        'Details',
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text("Medication",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text("Dosage",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text("Instruction",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ),
-                      SizedBox(), // Empty cell for delete button
-                    ],
-                  ),
-                  // Data Rows
-                  ...prescriptions.value.asMap().entries.map(
-                    (entry) {
-                      final index = entry.key;
-                      final isLastRow = index == prescriptions.value.length - 1;
-                      return TableRow(
+                      child: Column(
                         children: [
-                          // Row number column
-                          Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text("${index + 1}",
-                                textAlign: TextAlign.center),
+                          ///
+                          /// Visit Date
+                          ///
+                          DynamicListTile.divider(
+                            title: Text('Vist Date: '),
+                            content:
+                                Text((record.visitDate.yyyyMMdd()).optional()),
                           ),
-                          for (int i = 0; i < 3; i++)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12.0, vertical: 8.0),
-                              child: TextField(
-                                controller: textControllers.value[index][i],
-                                focusNode: focusNodes.value[index][i],
-                                minLines: 1,
-                                maxLines: 5,
-                                decoration: const InputDecoration(
-                                    border: InputBorder.none),
-                                onChanged: (value) {
-                                  final updatedList =
-                                      List<PrescriptionItemCreate>.from(
-                                          prescriptions.value);
-                                  final createParam = updatedList[index];
-                                  if (i == 0)
-                                    createParam.copyWith(medication: value);
-                                  if (i == 1)
-                                    createParam.copyWith(dosage: value);
-                                  if (i == 2)
-                                    createParam.copyWith(instruction: value);
-                                  prescriptions.value = updatedList;
-                                },
-                              ),
-                            ),
-                          Center(
-                            child: IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => deletePrescription(index),
-                            ),
+
+                          ///
+                          /// Diagnosis
+                          ///
+                          DynamicListTile.divider(
+                            title: Text('Diagnosis: '),
+                            content: Text((record.diagnosis).optional()),
+                          ),
+
+                          ///
+                          /// Treatment
+                          ///
+                          DynamicListTile.divider(
+                            title: Text('Treatment: '),
+                            content: Text((record.treatment).optional()),
+                          ),
+
+                          ///
+                          /// Follow Up Date
+                          ///
+                          DynamicListTile(
+                            title: Text('Follow Up Date: '),
+                            content: Text(
+                                (record.followUpDate?.yyyyMMdd()).optional()),
                           ),
                         ],
-                      );
-                    },
-                  ),
-                  // "Add Prescription" Button
-                  TableRow(
-                    children: [
-                      const SizedBox(), // Empty column for numbering
-                      TextButton(
-                        onPressed: () => addPrescription(focusOnNew: true),
-                        child: const Text("Add Prescription"),
                       ),
-                      const SizedBox(),
-                      const SizedBox(),
-                      const SizedBox(),
-                    ],
+                    ),
+
+                    ///
+                    /// Details
+                    ///
+                    CollapsingCard(
+                      header: Text(
+                        'Other Information',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      child: Column(
+                        children: [
+                          ///
+                          /// Visit Date
+                          ///
+                          DynamicListTile.divider(
+                            title: Text('Created: '),
+                            content:
+                                Text((record.created?.yyyyMMdd()).optional()),
+                          ),
+
+                          ///
+                          /// Diagnosis
+                          ///
+                          DynamicListTile(
+                            title: Text('Updated: '),
+                            content:
+                                Text((record.updated?.yyyyMMdd()).optional()),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+
+                ///
+                /// Actions
+                ///
+                SliverList.list(children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: CardGroup(
+                      header: 'Actions',
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.edit_outlined),
+                          title: const Text('Edit Medical Record Information'),
+                          trailing: const Icon(
+                            Icons.chevron_right_outlined,
+                            size: 24,
+                          ),
+                          onTap: () => onTap(record),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.delete_outlined),
+                          title:
+                              const Text('Delete Medical Record Permanently'),
+                          trailing: const Icon(
+                            Icons.chevron_right_outlined,
+                            size: 24,
+                          ),
+                          onTap: () => onDelete(record),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+                ])
+              ],
+            );
+          }),
     );
   }
 }

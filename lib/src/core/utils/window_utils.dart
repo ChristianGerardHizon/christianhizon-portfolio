@@ -16,14 +16,19 @@ class WindowUtils {
     /// the WindowManager will not be initialized
     /// not applicable since app is just a mobile app
     ///
-    if (kIsWeb || !Platform.isWindows) return;
+    if (kIsWeb ||
+        ![
+          TargetPlatform.linux,
+          TargetPlatform.macOS,
+          TargetPlatform.windows,
+        ].contains(defaultTargetPlatform)) return;
 
     // * Initialize the WindowManager
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
       title: AppStrings.appName,
       minimumSize: Size(380, 700),
-      size: Size(800, 700),
+      size: Size(1000, 700),
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
     );

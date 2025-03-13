@@ -61,7 +61,7 @@ class MedicalRecordsTable extends HookWidget {
         const TableColumn(width: 180),
         const TableColumn(width: 180),
         const TableColumn(width: 120),
-        TableColumn(width: 56.0, freezePriority: 100),
+        // TableColumn(width: 56.0, freezePriority: 100),
       ],
 
       headerBuilder: (context, contentBuilder) {

@@ -55,7 +55,7 @@ class ProductsTable extends HookWidget {
       columns: [
         const TableColumn(width: 56.0, freezePriority: 100),
         const TableColumn(width: 180),
-        TableColumn(width: 56.0, freezePriority: 100),
+        // TableColumn(width: 56.0, freezePriority: 100),
       ],
 
       headerBuilder: (context, contentBuilder) {

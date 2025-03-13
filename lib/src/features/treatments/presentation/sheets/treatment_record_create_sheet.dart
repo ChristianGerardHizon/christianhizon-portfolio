@@ -5,25 +5,35 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/form_builders/hidden_form_field.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
+import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/treatments/data/treatment_record/treatment_record_repository.dart';
 import 'package:gym_system/src/features/treatments/domain/treatment.dart';
+import 'package:gym_system/src/features/treatments/presentation/controllers/treatment/treatments_controller.dart';
+import 'package:gym_system/src/features/treatments/presentation/controllers/treatment_record/treatment_record_page_controller.dart';
+import 'package:gym_system/src/features/treatments/presentation/controllers/treatment_record/treatment_records_controller.dart';
 import 'package:gym_system/src/features/treatments/presentation/widgets/treatment_form_field.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class TreatmentRecordCreateSheet extends HookConsumerWidget {
-  final Treatment type;
+  final Treatment? treatment;
+  final Patient patient;
 
   final Map<String, dynamic>? formData;
 
-  const TreatmentRecordCreateSheet(
-      {super.key, required this.type, this.formData});
+  const TreatmentRecordCreateSheet({
+    super.key,
+    required this.treatment,
+    required this.patient,
+    this.formData,
+  });
 
   static Future show(
     BuildContext context, {
-    required Treatment type,
+    Treatment? treatment,
+    required Patient patient,
     Map<String, dynamic>? formData,
   }) async {
     final screenSize = MediaQuery.of(context).size;
@@ -32,8 +42,8 @@ class TreatmentRecordCreateSheet extends HookConsumerWidget {
       context: context,
       useRootNavigator: true,
       useSafeArea: true,
-      builder: (_) =>
-          TreatmentRecordCreateSheet(type: type, formData: formData),
+      builder: (_) => TreatmentRecordCreateSheet(
+          patient: patient, treatment: treatment, formData: formData),
     );
   }
 
@@ -66,18 +76,16 @@ class TreatmentRecordCreateSheet extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
+          ref.invalidate(treatmentRecordsPageControllerProvider);
           context.pop(r);
         },
       );
     }
 
     final content = Scaffold(
-      appBar: AppBar(
-        leading: CloseButton(),
-        title: Text('New ${type.name} Treatment'),
-      ),
+      backgroundColor: Colors.transparent,
       body: Padding(
-        padding: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
         child: FormBuilder(
           key: formKey,
           initialValue: {
@@ -85,12 +93,18 @@ class TreatmentRecordCreateSheet extends HookConsumerWidget {
             TreatmentRecordField.date:
                 formData?[TreatmentRecordField.date] ?? DateTime.now(),
             TreatmentRecordField.patient:
-                formData?[TreatmentRecordField.patient],
+                formData?[TreatmentRecordField.patient] ?? patient,
             TreatmentRecordField.type:
-                formData?[TreatmentRecordField.type] ?? type,
+                formData?[TreatmentRecordField.type] ?? treatment,
           },
           child: CustomScrollView(
             slivers: [
+              SliverAppBar(
+                backgroundColor: Colors.transparent,
+                leading: CloseButton(),
+                title: Text('New Treatment Record'),
+              ),
+
               ///
               /// Date
               ///
@@ -102,7 +116,7 @@ class TreatmentRecordCreateSheet extends HookConsumerWidget {
                     ListTile(
                       contentPadding: EdgeInsets.all(0),
                       title: Text(
-                        'Date',
+                        'Treatment Date',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
@@ -132,37 +146,73 @@ class TreatmentRecordCreateSheet extends HookConsumerWidget {
                       ),
                     ),
                     SizedBox(height: 10),
+                    ListTile(
+                      contentPadding: EdgeInsets.all(0),
+                      title: Text(
+                        'Type of Treatment',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
                     TreatmentFormField(
+                      readOnly: false,
                       name: TreatmentRecordField.type,
+                      valueTransformer: (x) => x.id,
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(),
+                      ]),
+                    ),
+                    SizedBox(height: 10),
+                    HiddenFormField(
+                      name: TreatmentRecordField.patient,
                       valueTransformer: (x) => x.id,
                     ),
                   ],
                 ),
               ),
 
+              ///
+              /// Fields
+              ///
               SliverPadding(
                 padding: EdgeInsets.only(left: 10, right: 10),
                 sliver: SliverList.list(
                   children: [
-                    // SizedBox(height: 10),
-                    // ListTile(
-                    //   contentPadding: EdgeInsets.all(0),
-                    //   title: Text(
-                    //     'Patient Info',
-                    //     style: Theme.of(context).textTheme.titleLarge,
-                    //   ),
-                    // ),
-                    SizedBox(height: 10),
-                    PatientFormField(
-                      name: TreatmentRecordField.patient,
-                      valueTransformer: (x) => x.id,
+                    ListTile(
+                      contentPadding: EdgeInsets.all(0),
+                      title: Text(
+                        'Follow Up Date',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    FormBuilderDateTimePicker(
+                      name: TreatmentRecordField.date,
+                      valueTransformer: (value) => value?.toIso8601String(),
+                      firstDate:
+                          DateTime.now().subtract(Duration(days: 365 * 5)),
+                      lastDate: DateTime.now().add(Duration(days: 365 * 5)),
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(),
+                      ]),
+                      format: DateFormat('yyyy-MM-dd'),
+                      initialTime: TimeOfDay(hour: 0, minute: 0),
+                      inputType: InputType.date,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(
+                            bottom: 10, right: 8, left: 8, top: 30),
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).colorScheme.surfaceContainerLow,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                     ),
                     SizedBox(height: 10),
                     FormBuilderTextField(
                       name: TreatmentRecordField.note,
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                      ]),
+                      maxLines: 10,
+                      minLines: 3,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(
                             bottom: 10, right: 8, left: 8, top: 30),
@@ -175,7 +225,6 @@ class TreatmentRecordCreateSheet extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
                   ],
                 ),
               ),
@@ -185,7 +234,11 @@ class TreatmentRecordCreateSheet extends HookConsumerWidget {
               ///
               SliverPadding(
                 padding: const EdgeInsets.only(
-                    left: 10, right: 10, top: 30, bottom: 20),
+                  left: 10,
+                  right: 10,
+                  top: 30,
+                  bottom: 20,
+                ),
                 sliver: SliverToBoxAdapter(
                   child: LoadingFilledButton(
                     isLoading: isLoading.value,
@@ -208,6 +261,7 @@ class TreatmentRecordCreateSheet extends HookConsumerWidget {
     return Dialog(
       child: SizedBox(
         width: screenSize.width / 2,
+        height: screenSize.width / 1.5,
         child: content,
       ),
     );

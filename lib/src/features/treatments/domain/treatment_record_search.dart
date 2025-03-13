@@ -6,9 +6,8 @@ part 'treatment_record_search.mapper.dart';
 @MappableClass()
 class TreatmentRecordSearch with TreatmentRecordSearchMappable {
   final String? id;
-  final Treatment? type;
 
-  TreatmentRecordSearch({this.id, this.type});
+  TreatmentRecordSearch({this.id});
 
   static const fromMap = TreatmentRecordSearchMapper.fromMap;
   static const fromJson = TreatmentRecordSearchMapper.fromMap;
@@ -20,7 +19,6 @@ class TreatmentRecordSearch with TreatmentRecordSearchMappable {
   }) {
     return TreatmentRecordSearch(
       id: id ? query : null,
-      type: type,
     );
   }
 

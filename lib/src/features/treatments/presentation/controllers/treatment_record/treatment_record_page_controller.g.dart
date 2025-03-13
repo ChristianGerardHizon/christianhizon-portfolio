@@ -25,7 +25,7 @@ final treatmentRecordsPageControllerProvider = AutoDisposeNotifierProvider<
 typedef _$TreatmentRecordsPageController
     = AutoDisposeNotifier<TreatmentRecordsPageState>;
 String _$treatmentRecordSearchControllerHash() =>
-    r'cdfbd15aea9f478410016da92a1ae64defd5d150';
+    r'96d0d653070d5a9ed9b1979b11f83b479ee6c003';
 
 /// See also [TreatmentRecordSearchController].
 @ProviderFor(TreatmentRecordSearchController)
