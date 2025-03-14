@@ -8,8 +8,8 @@ import 'package:gym_system/src/core/widgets/page_actions.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
 import 'package:gym_system/src/core/widgets/text_search_bar.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients_page_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_page_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patients_table.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

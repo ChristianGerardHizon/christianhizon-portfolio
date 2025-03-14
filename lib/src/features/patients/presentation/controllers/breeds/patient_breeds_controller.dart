@@ -1,0 +1,24 @@
+import 'package:gym_system/src/core/strings/fields.dart';
+import 'package:gym_system/src/features/patients/data/patient_breed_repository.dart';
+import 'package:gym_system/src/features/patients/domain/patient_breed.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'patient_breeds_controller.g.dart';
+
+@riverpod
+class PatientBreedsController extends _$PatientBreedsController {
+  String? _buildFilter(String speciesId) {
+    return "${PatientBreedField.species} = '$speciesId' && ${PatientBreedField.isDeleted} = false";
+  }
+
+  @override
+  Future<List<PatientBreed>> build(String speciesId) async {
+    final repo = ref.read(patientBreedRepositoryProvider);
+    final result = await repo
+        .listAll(
+          filter: _buildFilter(speciesId),
+        )
+        .run();
+    return result.fold(Future.error, (x) => Future.value(x));
+  }
+}

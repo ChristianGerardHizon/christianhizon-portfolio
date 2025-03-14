@@ -43,6 +43,23 @@ class PatientField {
   static const String isDeleted = 'isDeleted';
 }
 
+class PatientSpeciesField {
+  static const String id = 'id';
+  static const String name = 'name';
+  static const String created = 'created';
+  static const String updated = 'updated';
+  static const String isDeleted = 'isDeleted';
+}
+
+class PatientBreedField {
+  static const String id = 'id';
+  static const String name = 'name';
+  static const String species = 'species';
+  static const String created = 'created';
+  static const String updated = 'updated';
+  static const String isDeleted = 'isDeleted';
+}
+
 class TreatmentField {
   static const String id = 'id';
   static const String name = 'name';
@@ -82,6 +99,8 @@ class MedicalRecordField {
 class PrescriptionItemField {
   static const String id = 'id';
   static const String medication = 'medication';
+  static const String medicalRecord = 'medicalRecord';
+  static const String dosage = 'dosage';
   static const String instructions = 'instructions';
   static const String created = 'created';
   static const String updated = 'updated';

@@ -1,0 +1,146 @@
+import 'package:gym_system/src/core/failures/failure.dart';
+import 'package:gym_system/src/core/packages/pocketbase.dart';
+import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
+import 'package:gym_system/src/core/type_defs/page_results.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/features/patients/domain/patient_breed.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart';
+import 'package:pocketbase/pocketbase.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'patient_breed_repository.g.dart';
+
+abstract class PatientBreedRepository {
+  TaskResult<PatientBreed> get(String id);
+  TaskResult<PageResults<PatientBreed>> list({
+    String? filter,
+    required int pageNo,
+    required int pageSize,
+  });
+  TaskResult<void> delete(String id);
+  TaskResult<void> softDeleteMulti(List<String> ids);
+  TaskResult<PatientBreed> update(
+    PatientBreed patientBreed,
+    Map<String, dynamic> update, {
+    List<MultipartFile> files = const [],
+  });
+  TaskResult<List<PatientBreed>> listAll({
+    int batch = 500,
+    String? filter,
+  });
+  TaskResult<PatientBreed> create(Map<String, dynamic> payload);
+}
+
+@Riverpod(keepAlive: true)
+PatientBreedRepository patientBreedRepository(Ref ref) {
+  return PatientBreedRepositoryImpl(
+    pb: ref.watch(pocketbaseProvider),
+  );
+}
+
+class PatientBreedRepositoryImpl extends PatientBreedRepository {
+  final PocketBase pb;
+
+  PatientBreedRepositoryImpl({required this.pb});
+
+  RecordService get collection =>
+      pb.collection(PocketBaseCollections.patientBreeds);
+
+  @override
+  TaskResult<PatientBreed> get(String id) {
+    return TaskResult.tryCatch(() async {
+      final result = await collection.getOne(id);
+      return PatientBreed.customFromMap(result.toJson());
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<PatientBreed> create(Map<String, dynamic> payload) {
+    return TaskResult.tryCatch(() async {
+      final response = await collection.create(body: payload);
+      return PatientBreed.customFromMap(response.toJson());
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<void> delete(String id) {
+    return TaskResult.tryCatch(() async {
+      await collection.delete(id);
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<PageResults<PatientBreed>> list({
+    String? filter,
+    required int pageNo,
+    required int pageSize,
+  }) {
+    return TaskResult.tryCatch(() async {
+      final result = await collection.getList(
+        filter: filter,
+        page: pageNo,
+        perPage: pageSize,
+      );
+      return PageResults(
+        page: result.page,
+        perPage: result.perPage,
+        totalItems: result.totalItems,
+        totalPages: result.totalPages,
+        items: result.items.map<PatientBreed>((e) {
+          return PatientBreed.customFromMap(e.toJson());
+        }).toList(),
+      );
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<PatientBreed> update(
+    PatientBreed patientBreed,
+    Map<String, dynamic> update, {
+    List<MultipartFile> files = const [],
+  }) {
+    return TaskResult.tryCatch(() async {
+      final patientBreedMap = patientBreed.toMap();
+      final combinedMap = {...patientBreedMap, ...update};
+      final result = await collection.update(
+        patientBreed.id,
+        body: combinedMap,
+        files: files,
+      );
+      return PatientBreed.customFromMap(result.toJson());
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<void> softDeleteMulti(List<String> ids) {
+    return TaskResult.tryCatch(() async {
+      final batch = pb.createBatch();
+      final batchCollection =
+          batch.collection(PocketBaseCollections.patientBreeds);
+      for (final id in ids) {
+        batchCollection.update(id, body: {'isDeleted': true});
+      }
+
+      await batch.send();
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<List<PatientBreed>> listAll({
+    int batch = 500,
+    String? filter,
+  }) {
+    return TaskResult.tryCatch(
+      () async {
+        final result = await collection.getFullList(
+          filter: filter,
+        );
+        return result
+            .map<PatientBreed>((e) => PatientBreed.customFromMap(e.toJson()))
+            .toList();
+      },
+      Failure.tryCatchData,
+    );
+  }
+}

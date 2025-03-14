@@ -1,38 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/page_actions.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/text_search_bar.dart';
-import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/treatments/data/treatment_record/treatment_record_repository.dart';
-import 'package:gym_system/src/features/treatments/domain/treatment.dart';
-import 'package:gym_system/src/features/treatments/domain/treatment_record.dart';
-import 'package:gym_system/src/features/treatments/domain/treatment_record_search.dart';
-import 'package:gym_system/src/features/treatments/presentation/controllers/treatment_record/treatment_record_page_controller.dart';
-import 'package:gym_system/src/features/treatments/presentation/controllers/treatment_record/treatment_records_controller.dart';
-import 'package:gym_system/src/features/treatments/presentation/sheets/treatment_record_create_sheet.dart';
-import 'package:gym_system/src/features/treatments/presentation/widgets/treatment_records_table.dart';
-import 'package:gym_system/src/features/treatments/presentation/widgets/treatment_selector.dart';
+import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
+import 'package:gym_system/src/features/prescription/data/prescription_item_repository.dart';
+import 'package:gym_system/src/features/prescription/domain/prescription_search.dart';
+import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_item_page_controller.dart';
+import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_items_controller.dart';
+import 'package:gym_system/src/features/prescription/presentation/sheets/prescription_item_create_sheet.dart';
+import 'package:gym_system/src/features/prescription/presentation/widgets/prescription_items_table.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PatientTreatmentRecordView extends HookConsumerWidget {
-  final Patient patient;
-
-  const PatientTreatmentRecordView({super.key, required this.patient});
+class PrescriptionItemsView extends HookConsumerWidget {
+  final MedicalRecord record;
+  const PrescriptionItemsView({super.key, required this.record});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final treatment = useState<Treatment?>(null);
-
     final theme = Theme.of(context);
-    final pageState = ref.watch(treatmentRecordsPageControllerProvider);
+    final pageState = ref.watch(prescriptionItemsPageControllerProvider);
     final searchNotif =
-        ref.read(treatmentRecordSearchControllerProvider.notifier);
-    final provider = treatmentRecordsControllerProvider(
-        id: patient.id, treatment: treatment.value);
+        ref.read(prescriptionItemSearchControllerProvider.notifier);
+    final provider = prescriptionItemsControllerProvider(id: record.id);
     final state = ref.watch(provider);
     final selected = useState<List<int>>([]);
     final searchCtrl = useTextEditingController();
@@ -59,7 +51,7 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
     onDelete() async {
       final confirm = await ConfirmModal.show(context);
       if (confirm != true) return;
-      final repo = ref.read(treatmentRecordRepositoryProvider);
+      final repo = ref.read(prescriptionItemRepositoryProvider);
       final ids = selected.value.map((e) => state.value!.items[e].id).toList();
       repo.softDeleteMulti(ids).run().then((result) {
         result.fold(
@@ -68,15 +60,15 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
             selected.value = [];
             ref.invalidate(provider);
             AppSnackBar.root(message: 'Successfully Deleted');
+            // if (context.canPop()) context.pop();
           },
         );
       });
     }
 
-    onTap(TreatmentRecord record) {
-      TreatmentRecordPageRoute(record.id).push(context);
-    }
-
+    ///
+    /// Stack
+    ///
     return Stack(
       children: [
         CustomScrollView(
@@ -92,26 +84,13 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
                 child: Row(
                   children: [
                     Text(
-                      'Treatments',
+                      'Prescriptions',
                       style: theme.textTheme.headlineSmall,
                     ),
                     RefreshButton(
                       onPressed: () => ref.invalidate(provider),
                     )
                   ],
-                ),
-              ),
-            ),
-
-            SliverPadding(
-              padding: const EdgeInsets.only(top: 8, bottom: 10),
-              sliver: SliverToBoxAdapter(
-                child: TreatmentSelector(
-                  selected: treatment.value,
-                  onPress: (x) {
-                    treatment.value = x;
-                    // ref.invalidate(provider);
-                  },
                 ),
               ),
             ),
@@ -125,23 +104,23 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
                 onClear: () {
                   searchCtrl.clear();
                   searchNotif.updateParams(
-                    TreatmentRecordSearch.buildQuery(
+                    PrescriptionItemSearch.buildQuery(
                       searchCtrl.text,
                     ),
                   );
                 },
                 onSearch: () {
                   searchNotif.updateParams(
-                    TreatmentRecordSearch.buildQuery(
+                    PrescriptionItemSearch.buildQuery(
                       searchCtrl.text,
+                      includeDiagnosis: true,
                     ),
                   );
                 },
                 onCreate: () {
-                  TreatmentRecordCreateSheet.show(
+                  PrescriptionItemCreateSheet.show(
                     context,
-                    patient: patient,
-                    treatment: treatment.value,
+                    record: record,
                   );
                 },
               ),
@@ -177,17 +156,16 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
                     child: SizedBox(
                       height: 100,
                       child: Center(
-                        child: Text('No treatments found'),
+                        child: Text('No Prescriptions found'),
                       ),
                     ),
                   );
                 }
-                return TreatmentRecordsTable(
-                  list: list,
-                  selected: selected.value,
-                  onSelected: (p0) => selected.value = p0,
-                  onRowTap: (row) => onTap(list[row]),
-                );
+                return PrescriptionItemsTable(
+                    list: list,
+                    selected: selected.value,
+                    onSelected: (p0) => selected.value = p0,
+                    onRowTap: (row) {});
               },
             ),
 
@@ -210,7 +188,7 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
                     ///
                     selected.value = [];
                     ref
-                        .read(treatmentRecordsPageControllerProvider.notifier)
+                        .read(prescriptionItemsPageControllerProvider.notifier)
                         .changePage(value);
                   },
                 ),

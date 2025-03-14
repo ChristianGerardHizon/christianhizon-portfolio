@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/card_group.dart';
-import 'package:gym_system/src/core/widgets/collapsing_card.dart';
-import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
-import 'package:gym_system/src/features/medical_records/data/medical_record_repository.dart';
-import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_record_controller.dart';
-import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_records_controller.dart';
+import 'package:gym_system/src/features/medical_records/presentation/widgets/medical_record_details.dart';
+import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_item_page_controller.dart';
+import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_items_controller.dart';
+import 'package:gym_system/src/features/prescription/presentation/widgets/prescription_items_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Define the PrescriptionItem class
@@ -24,35 +18,15 @@ class MedicalRecordPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(prescriptionItemsControllerProvider(id: id));
+    ref.watch(prescriptionItemsPageControllerProvider);
     final provider = medicalRecordControllerProvider(id);
     final state = ref.watch(provider);
 
-    ///
-    /// onDelete
-    ///
-    onDelete(MedicalRecord record) async {
-      final confirm = await ConfirmModal.show(context);
-      if (confirm != true) return;
-      final repo = ref.read(medicalRecordRepositoryProvider);
-      repo.softDeleteMulti([record.id]).run().then((result) {
-            result.fold(
-              (l) => AppSnackBar.rootFailure(l),
-              (r) {
-                ref.invalidate(medicalRecordsControllerProvider);
-                AppSnackBar.root(message: 'Successfully Deleted');
-                if (context.canPop()) context.pop();
-              },
-            );
-          });
-    }
-
-    onTap(MedicalRecord record) {}
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Medical Record'),
-      ),
-      body: state.when(
+    return DefaultTabController(
+      length: 3,
+      initialIndex: 0,
+      child: state.when(
           skipError: false,
           skipLoadingOnRefresh: false,
           skipLoadingOnReload: false,
@@ -64,124 +38,56 @@ class MedicalRecordPage extends HookConsumerWidget {
                 body: Center(child: Text(error.toString())),
               ),
           data: (record) {
-            return CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(child: SizedBox(height: 30)),
-                SliverList.list(
-                  children: [
-                    ///
-                    /// Details
-                    ///
-                    CollapsingCard(
-                      header: Text(
-                        'Details',
-                        style: Theme.of(context).textTheme.titleLarge,
+            return Scaffold(
+              body: SafeArea(
+                child: NestedScrollView(
+                  headerSliverBuilder: (context, innerBoxIsScrolled) {
+                    return [
+                      ///
+                      /// AppBar
+                      ///
+                      SliverAppBar(
+                        title: Text('Medical Record'),
                       ),
-                      child: Column(
-                        children: [
-                          ///
-                          /// Visit Date
-                          ///
-                          DynamicListTile.divider(
-                            title: Text('Vist Date: '),
-                            content:
-                                Text((record.visitDate.yyyyMMdd()).optional()),
-                          ),
 
-                          ///
-                          /// Diagnosis
-                          ///
-                          DynamicListTile.divider(
-                            title: Text('Diagnosis: '),
-                            content: Text((record.diagnosis).optional()),
+                      SliverOverlapAbsorber(
+                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                            context),
+                        sliver: PinnedHeaderSliver(
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color:
+                                  Theme.of(context).appBarTheme.backgroundColor,
+                            ),
+                            child: TabBar(
+                              isScrollable: false,
+                              tabs: [
+                                Tab(
+                                  icon: Icon(MIcons.accountOutline),
+                                  child: Text('Details'),
+                                ),
+                                Tab(
+                                  icon: Icon(MIcons.informationOutline),
+                                  child: Text('Prescriptions'),
+                                ),
+                              ],
+                            ),
                           ),
-
-                          ///
-                          /// Treatment
-                          ///
-                          DynamicListTile.divider(
-                            title: Text('Treatment: '),
-                            content: Text((record.treatment).optional()),
-                          ),
-
-                          ///
-                          /// Follow Up Date
-                          ///
-                          DynamicListTile(
-                            title: Text('Follow Up Date: '),
-                            content: Text(
-                                (record.followUpDate?.yyyyMMdd()).optional()),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    ///
-                    /// Details
-                    ///
-                    CollapsingCard(
-                      header: Text(
-                        'Other Information',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      child: Column(
-                        children: [
-                          ///
-                          /// Visit Date
-                          ///
-                          DynamicListTile.divider(
-                            title: Text('Created: '),
-                            content:
-                                Text((record.created?.yyyyMMdd()).optional()),
-                          ),
-
-                          ///
-                          /// Diagnosis
-                          ///
-                          DynamicListTile(
-                            title: Text('Updated: '),
-                            content:
-                                Text((record.updated?.yyyyMMdd()).optional()),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-
-                ///
-                /// Actions
-                ///
-                SliverList.list(children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: CardGroup(
-                      header: 'Actions',
+                        ),
+                      )
+                    ];
+                  },
+                  body: Padding(
+                    padding: const EdgeInsets.only(top: 75),
+                    child: TabBarView(
                       children: [
-                        ListTile(
-                          leading: const Icon(Icons.edit_outlined),
-                          title: const Text('Edit Medical Record Information'),
-                          trailing: const Icon(
-                            Icons.chevron_right_outlined,
-                            size: 24,
-                          ),
-                          onTap: () => onTap(record),
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.delete_outlined),
-                          title:
-                              const Text('Delete Medical Record Permanently'),
-                          trailing: const Icon(
-                            Icons.chevron_right_outlined,
-                            size: 24,
-                          ),
-                          onTap: () => onDelete(record),
-                        ),
+                        MedicalRecordDetails(record: record),
+                        PrescriptionItemsView(record: record),
                       ],
                     ),
                   ),
-                ])
-              ],
+                ),
+              ),
             );
           }),
     );

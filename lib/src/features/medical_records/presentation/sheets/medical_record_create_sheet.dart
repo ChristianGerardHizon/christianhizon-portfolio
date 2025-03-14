@@ -6,10 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
-import 'package:gym_system/src/core/widgets/responsive_row_column.dart';
 import 'package:gym_system/src/core/widgets/responsive_two_fields.dart';
 import 'package:gym_system/src/features/medical_records/data/medical_record_repository.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
+import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_record_page_controller.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -65,11 +65,13 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
           .read(medicalRecordRepositoryProvider)
           .create(form.value)
           .run();
+
       isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
+          ref.invalidate(medicalRecordsPageControllerProvider);
           context.pop();
         },
       );

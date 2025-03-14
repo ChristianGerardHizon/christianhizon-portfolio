@@ -5,9 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Define the PrescriptionItem class
 
-class PrescriptionTable extends HookConsumerWidget {
+class PrescriptionViewTable extends HookConsumerWidget {
   final String id;
-  const PrescriptionTable({
+  const PrescriptionViewTable({
     super.key,
     required this.id,
   });

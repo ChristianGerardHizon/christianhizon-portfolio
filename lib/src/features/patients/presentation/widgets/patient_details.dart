@@ -10,7 +10,7 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_circle_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
