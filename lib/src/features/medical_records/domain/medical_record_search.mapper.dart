@@ -62,9 +62,9 @@ mixin MedicalRecordSearchMappable {
   }
 
   MedicalRecordSearchCopyWith<MedicalRecordSearch, MedicalRecordSearch,
-          MedicalRecordSearch>
-      get copyWith => _MedicalRecordSearchCopyWithImpl(
-          this as MedicalRecordSearch, $identity, $identity);
+      MedicalRecordSearch> get copyWith => _MedicalRecordSearchCopyWithImpl<
+          MedicalRecordSearch, MedicalRecordSearch>(
+      this as MedicalRecordSearch, $identity, $identity);
   @override
   String toString() {
     return MedicalRecordSearchMapper.ensureInitialized()
@@ -87,8 +87,8 @@ mixin MedicalRecordSearchMappable {
 extension MedicalRecordSearchValueCopy<$R, $Out>
     on ObjectCopyWith<$R, MedicalRecordSearch, $Out> {
   MedicalRecordSearchCopyWith<$R, MedicalRecordSearch, $Out>
-      get $asMedicalRecordSearch =>
-          $base.as((v, t, t2) => _MedicalRecordSearchCopyWithImpl(v, t, t2));
+      get $asMedicalRecordSearch => $base.as(
+          (v, t, t2) => _MedicalRecordSearchCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class MedicalRecordSearchCopyWith<$R, $In extends MedicalRecordSearch,
@@ -120,5 +120,5 @@ class _MedicalRecordSearchCopyWithImpl<$R, $Out>
   @override
   MedicalRecordSearchCopyWith<$R2, MedicalRecordSearch, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _MedicalRecordSearchCopyWithImpl($value, $cast, t);
+          _MedicalRecordSearchCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

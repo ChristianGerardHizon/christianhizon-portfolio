@@ -80,7 +80,7 @@ mixin UserMappable {
   }
 
   UserCopyWith<User, User, User> get copyWith =>
-      _UserCopyWithImpl(this as User, $identity, $identity);
+      _UserCopyWithImpl<User, User>(this as User, $identity, $identity);
   @override
   String toString() {
     return UserMapper.ensureInitialized().stringifyValue(this as User);
@@ -99,7 +99,7 @@ mixin UserMappable {
 
 extension UserValueCopy<$R, $Out> on ObjectCopyWith<$R, User, $Out> {
   UserCopyWith<$R, User, $Out> get $asUser =>
-      $base.as((v, t, t2) => _UserCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _UserCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class UserCopyWith<$R, $In extends User, $Out>
@@ -147,5 +147,5 @@ class _UserCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, User, $Out>
 
   @override
   UserCopyWith<$R2, User, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _UserCopyWithImpl($value, $cast, t);
+      _UserCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

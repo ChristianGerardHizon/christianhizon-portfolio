@@ -59,7 +59,7 @@ mixin ProductSearchMappable {
   }
 
   ProductSearchCopyWith<ProductSearch, ProductSearch, ProductSearch>
-      get copyWith => _ProductSearchCopyWithImpl(
+      get copyWith => _ProductSearchCopyWithImpl<ProductSearch, ProductSearch>(
           this as ProductSearch, $identity, $identity);
   @override
   String toString() {
@@ -83,7 +83,7 @@ mixin ProductSearchMappable {
 extension ProductSearchValueCopy<$R, $Out>
     on ObjectCopyWith<$R, ProductSearch, $Out> {
   ProductSearchCopyWith<$R, ProductSearch, $Out> get $asProductSearch =>
-      $base.as((v, t, t2) => _ProductSearchCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _ProductSearchCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class ProductSearchCopyWith<$R, $In extends ProductSearch, $Out>
@@ -111,5 +111,5 @@ class _ProductSearchCopyWithImpl<$R, $Out>
   @override
   ProductSearchCopyWith<$R2, ProductSearch, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _ProductSearchCopyWithImpl($value, $cast, t);
+      _ProductSearchCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

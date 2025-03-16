@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
+import 'package:gym_system/src/core/failures/failure.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/form_builders/custom_form_field.dart';
 import 'package:gym_system/src/core/widgets/form_builders/toggle_field_item.dart';
-import 'package:gym_system/src/features/treatments/data/treatment/treatment_repository.dart';
 import 'package:gym_system/src/features/treatments/domain/treatment.dart';
+import 'package:gym_system/src/features/treatments/presentation/controllers/treatment/treatments_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class TreatmentFormField extends HookConsumerWidget {
@@ -29,17 +30,20 @@ class TreatmentFormField extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Future<List<Treatment>> search(String? query) async {
-      if (query == null) return [];
-      if (query.isEmpty) return [];
-      final repo = ref.read(treatmentRepositoryProvider);
-      final result = await repo
-          .list(
-              pageNo: 1,
-              pageSize: 5,
-              filter:
-                  '${TreatmentField.name} ~ "$query" && ${TreatmentField.isDeleted} = false')
-          .map((x) => x.items)
-          .run();
+      final result = await TaskResult.tryCatch(
+        () async {
+          final list = await ref.watch(treatmentsControllerProvider.future);
+
+          if (query == null) return list;
+          if (query.isEmpty) return list;
+
+          return list
+              .where((x) =>
+                  x.name.toLowerCase().contains(query.toLowerCase()))
+              .toList();
+        },
+        Failure.tryCatchPresentation,
+      ).run();
       return result.fold(Future.error, Future.value);
     }
 
@@ -50,10 +54,13 @@ class TreatmentFormField extends HookConsumerWidget {
       onChanged: onChanged,
       onSearch: search,
       filled: true,
+      showAll: true,
       hint: 'Select Type of Treatment',
+      initialList: ref.read(treatmentsControllerProvider).valueOrNull,
       onChild: (item) {
         return (item.name, Text(item.name));
       },
+      debounce: Duration.zero,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
       ),

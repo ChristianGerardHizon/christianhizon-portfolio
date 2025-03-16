@@ -79,8 +79,9 @@ mixin PageResultsMappable<T> {
   }
 
   PageResultsCopyWith<PageResults<T>, PageResults<T>, PageResults<T>, T>
-      get copyWith => _PageResultsCopyWithImpl(
-          this as PageResults<T>, $identity, $identity);
+      get copyWith =>
+          _PageResultsCopyWithImpl<PageResults<T>, PageResults<T>, T>(
+              this as PageResults<T>, $identity, $identity);
   @override
   String toString() {
     return PageResultsMapper.ensureInitialized()
@@ -103,7 +104,7 @@ mixin PageResultsMappable<T> {
 extension PageResultsValueCopy<$R, $Out, T>
     on ObjectCopyWith<$R, PageResults<T>, $Out> {
   PageResultsCopyWith<$R, PageResults<T>, $Out, T> get $asPageResults =>
-      $base.as((v, t, t2) => _PageResultsCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _PageResultsCopyWithImpl<$R, $Out, T>(v, t, t2));
 }
 
 abstract class PageResultsCopyWith<$R, $In extends PageResults<T>, $Out, T>
@@ -157,5 +158,5 @@ class _PageResultsCopyWithImpl<$R, $Out, T>
   @override
   PageResultsCopyWith<$R2, PageResults<T>, $Out2, T> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _PageResultsCopyWithImpl($value, $cast, t);
+      _PageResultsCopyWithImpl<$R2, $Out2, T>($value, $cast, t);
 }

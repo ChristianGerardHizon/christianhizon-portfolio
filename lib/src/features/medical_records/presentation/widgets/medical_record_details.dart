@@ -2,14 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:gym_system/src/core/failures/failure.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/card_group.dart';
 import 'package:gym_system/src/core/widgets/collapsing_card.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
+import 'package:gym_system/src/core/widgets/pdf_generator.dart';
+import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/medical_records/data/medical_record_repository.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
 import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_records_controller.dart';
+import 'package:gym_system/src/features/prescription/domain/prescription_item.dart';
+import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_all_items_controller.dart';
+import 'package:gym_system/src/features/prescription/presentation/sheets/prescription_item_create_sheet.dart';
+import 'package:gym_system/src/features/prescription/presentation/widgets/prescription_list_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class MedicalRecordDetails extends HookConsumerWidget {
@@ -34,6 +42,26 @@ class MedicalRecordDetails extends HookConsumerWidget {
               },
             );
           });
+    }
+
+    onPrescriptionAdd() async {
+      final result =
+          await PrescriptionItemCreateSheet.show(context, record: record);
+      if (result is! PrescriptionItem) return;
+      ref.invalidate(prescriptionAllItemsControllerProvider(id: record.id));
+    }
+
+    onPrint() async {
+      final result = await TaskResult.tryCatch(() async {
+        await PdfGenerator.print();
+      }, Failure.tryCatchPresentation)
+          .run();
+
+      result.fold((l) {
+        AppSnackBar.rootFailure(l);
+      }, (r) {
+        AppSnackBar.root(message: 'Starting Print Job...');
+      });
     }
 
     ///
@@ -83,66 +111,95 @@ class MedicalRecordDetails extends HookConsumerWidget {
                   ///
                   /// Follow Up Date
                   ///
-                  DynamicListTile(
+                  DynamicListTile.divider(
                     title: Text('Follow Up Date: '),
                     content: Text((record.followUpDate?.yyyyMMdd()).optional()),
+                  ),
+
+                  ///
+                  /// Visit Date
+                  ///
+                  DynamicListTile(
+                    title: Text('Created: '),
+                    content: Text((record.created?.yyyyMMdd()).optional()),
                   ),
                 ],
               ),
             ),
+          ],
+        ),
 
+        ///
+        /// Prescriptions
+        ///
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          sliver: SliverList.list(children: [
             ///
-            /// Details
+            /// Prescription
             ///
             CollapsingCard(
-              header: Text(
-                'Other Information',
-                style: Theme.of(context).textTheme.titleLarge,
+              canCollapse: false,
+              header: Row(
+                children: [
+                  Text(
+                    'Prescriptions',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(width: 4),
+                  RefreshButton(
+                    onPressed: () => ref.invalidate(
+                        prescriptionAllItemsControllerProvider(id: record.id)),
+                  ),
+                ],
               ),
               child: Column(
                 children: [
                   ///
-                  /// Visit Date
+                  /// Prescriptions
                   ///
-                  DynamicListTile.divider(
-                    title: Text('Created: '),
-                    content: Text((record.created?.yyyyMMdd()).optional()),
-                  ),
+                  PrescriptionListView(medicalRecordId: record.id),
 
                   ///
-                  /// Diagnosis
+                  /// Add Button
                   ///
-                  DynamicListTile(
-                    title: Text('Updated: '),
-                    content: Text((record.updated?.yyyyMMdd()).optional()),
-                  ),
+                  ...[
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton.icon(
+                            label: Text('Add Prescription'),
+                            icon: Icon(Icons.add),
+                            onPressed: onPrescriptionAdd,
+                          ),
+                          TextButton.icon(
+                            label: Text('Print'),
+                            icon: Icon(MIcons.printer),
+                            onPressed: onPrint,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]
                 ],
               ),
-            )
-          ],
+            ),
+          ]),
         ),
 
         ///
         /// Actions
         ///
-        SliverList.list(children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: CardGroup(
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          sliver: SliverList.list(children: [
+            CardGroup(
               header: 'Actions',
               children: [
                 ListTile(
                   leading: const Icon(Icons.edit_outlined),
                   title: const Text('Edit Medical Record Information'),
-                  trailing: const Icon(
-                    Icons.chevron_right_outlined,
-                    size: 24,
-                  ),
-                  onTap: () => onTap(record),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.edit_outlined),
-                  title: const Text('Update Prescriptions'),
                   trailing: const Icon(
                     Icons.chevron_right_outlined,
                     size: 24,
@@ -160,8 +217,8 @@ class MedicalRecordDetails extends HookConsumerWidget {
                 ),
               ],
             ),
-          ),
-        ])
+          ]),
+        )
       ],
     );
   }

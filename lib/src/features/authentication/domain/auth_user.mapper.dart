@@ -77,7 +77,8 @@ mixin AuthUserMappable {
   }
 
   AuthUserCopyWith<AuthUser, AuthUser, AuthUser> get copyWith =>
-      _AuthUserCopyWithImpl(this as AuthUser, $identity, $identity);
+      _AuthUserCopyWithImpl<AuthUser, AuthUser>(
+          this as AuthUser, $identity, $identity);
   @override
   String toString() {
     return AuthUserMapper.ensureInitialized().stringifyValue(this as AuthUser);
@@ -97,7 +98,7 @@ mixin AuthUserMappable {
 
 extension AuthUserValueCopy<$R, $Out> on ObjectCopyWith<$R, AuthUser, $Out> {
   AuthUserCopyWith<$R, AuthUser, $Out> get $asAuthUser =>
-      $base.as((v, t, t2) => _AuthUserCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _AuthUserCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class AuthUserCopyWith<$R, $In extends AuthUser, $Out>
@@ -149,5 +150,5 @@ class _AuthUserCopyWithImpl<$R, $Out>
   @override
   AuthUserCopyWith<$R2, AuthUser, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _AuthUserCopyWithImpl($value, $cast, t);
+      _AuthUserCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

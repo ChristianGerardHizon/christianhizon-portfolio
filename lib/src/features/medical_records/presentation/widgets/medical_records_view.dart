@@ -155,7 +155,7 @@ class MedicalRecordsView extends HookConsumerWidget {
                     child: SizedBox(
                       height: 100,
                       child: Center(
-                        child: Text('No medicalRecords found'),
+                        child: Text('No Medical Records found'),
                       ),
                     ),
                   );

@@ -81,7 +81,8 @@ mixin ProductMappable {
   }
 
   ProductCopyWith<Product, Product, Product> get copyWith =>
-      _ProductCopyWithImpl(this as Product, $identity, $identity);
+      _ProductCopyWithImpl<Product, Product>(
+          this as Product, $identity, $identity);
   @override
   String toString() {
     return ProductMapper.ensureInitialized().stringifyValue(this as Product);
@@ -101,7 +102,7 @@ mixin ProductMappable {
 
 extension ProductValueCopy<$R, $Out> on ObjectCopyWith<$R, Product, $Out> {
   ProductCopyWith<$R, Product, $Out> get $asProduct =>
-      $base.as((v, t, t2) => _ProductCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _ProductCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class ProductCopyWith<$R, $In extends Product, $Out>
@@ -151,5 +152,5 @@ class _ProductCopyWithImpl<$R, $Out>
 
   @override
   ProductCopyWith<$R2, Product, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _ProductCopyWithImpl($value, $cast, t);
+      _ProductCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

@@ -25,9 +25,9 @@ class AuthDataTypeMapper extends EnumMapper<AuthDataType> {
   @override
   AuthDataType decode(dynamic value) {
     switch (value) {
-      case 'admins':
+      case r'admins':
         return AuthDataType.admins;
-      case 'users':
+      case r'users':
         return AuthDataType.users;
       default:
         throw MapperException.unknownEnumValue(value);
@@ -38,9 +38,9 @@ class AuthDataTypeMapper extends EnumMapper<AuthDataType> {
   dynamic encode(AuthDataType self) {
     switch (self) {
       case AuthDataType.admins:
-        return 'admins';
+        return r'admins';
       case AuthDataType.users:
-        return 'users';
+        return r'users';
     }
   }
 }

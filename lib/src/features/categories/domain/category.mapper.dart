@@ -76,7 +76,8 @@ mixin CategoryMappable {
   }
 
   CategoryCopyWith<Category, Category, Category> get copyWith =>
-      _CategoryCopyWithImpl(this as Category, $identity, $identity);
+      _CategoryCopyWithImpl<Category, Category>(
+          this as Category, $identity, $identity);
   @override
   String toString() {
     return CategoryMapper.ensureInitialized().stringifyValue(this as Category);
@@ -96,7 +97,7 @@ mixin CategoryMappable {
 
 extension CategoryValueCopy<$R, $Out> on ObjectCopyWith<$R, Category, $Out> {
   CategoryCopyWith<$R, Category, $Out> get $asCategory =>
-      $base.as((v, t, t2) => _CategoryCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _CategoryCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class CategoryCopyWith<$R, $In extends Category, $Out>
@@ -143,5 +144,5 @@ class _CategoryCopyWithImpl<$R, $Out>
   @override
   CategoryCopyWith<$R2, Category, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _CategoryCopyWithImpl($value, $cast, t);
+      _CategoryCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

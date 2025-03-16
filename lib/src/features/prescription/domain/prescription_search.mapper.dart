@@ -64,7 +64,8 @@ mixin PrescriptionItemSearchMappable {
 
   PrescriptionItemSearchCopyWith<PrescriptionItemSearch, PrescriptionItemSearch,
           PrescriptionItemSearch>
-      get copyWith => _PrescriptionItemSearchCopyWithImpl(
+      get copyWith => _PrescriptionItemSearchCopyWithImpl<
+              PrescriptionItemSearch, PrescriptionItemSearch>(
           this as PrescriptionItemSearch, $identity, $identity);
   @override
   String toString() {
@@ -88,8 +89,8 @@ mixin PrescriptionItemSearchMappable {
 extension PrescriptionItemSearchValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PrescriptionItemSearch, $Out> {
   PrescriptionItemSearchCopyWith<$R, PrescriptionItemSearch, $Out>
-      get $asPrescriptionItemSearch =>
-          $base.as((v, t, t2) => _PrescriptionItemSearchCopyWithImpl(v, t, t2));
+      get $asPrescriptionItemSearch => $base.as((v, t, t2) =>
+          _PrescriptionItemSearchCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class PrescriptionItemSearchCopyWith<
@@ -124,5 +125,5 @@ class _PrescriptionItemSearchCopyWithImpl<$R, $Out>
   @override
   PrescriptionItemSearchCopyWith<$R2, PrescriptionItemSearch, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _PrescriptionItemSearchCopyWithImpl($value, $cast, t);
+          _PrescriptionItemSearchCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

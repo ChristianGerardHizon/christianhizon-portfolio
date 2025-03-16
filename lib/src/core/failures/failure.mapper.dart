@@ -66,7 +66,8 @@ mixin FailureMappable {
   }
 
   FailureCopyWith<Failure, Failure, Failure> get copyWith =>
-      _FailureCopyWithImpl(this as Failure, $identity, $identity);
+      _FailureCopyWithImpl<Failure, Failure>(
+          this as Failure, $identity, $identity);
   @override
   String toString() {
     return FailureMapper.ensureInitialized().stringifyValue(this as Failure);
@@ -86,7 +87,7 @@ mixin FailureMappable {
 
 extension FailureValueCopy<$R, $Out> on ObjectCopyWith<$R, Failure, $Out> {
   FailureCopyWith<$R, Failure, $Out> get $asFailure =>
-      $base.as((v, t, t2) => _FailureCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _FailureCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class FailureCopyWith<$R, $In extends Failure, $Out>
@@ -121,5 +122,5 @@ class _FailureCopyWithImpl<$R, $Out>
 
   @override
   FailureCopyWith<$R2, Failure, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _FailureCopyWithImpl($value, $cast, t);
+      _FailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

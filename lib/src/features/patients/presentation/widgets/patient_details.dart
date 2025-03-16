@@ -188,7 +188,7 @@ class PatientDetails extends HookConsumerWidget {
                   color: Theme.of(context).colorScheme.error,
                 ),
                 title: Text(
-                  'Delete User Permanently',
+                  'Delete Patient Record',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.error,
                   ),

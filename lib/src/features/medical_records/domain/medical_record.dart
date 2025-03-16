@@ -1,6 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/features/medical_records/domain/medical_prescription.dart';
 
 part 'medical_record.mapper.dart';
 
@@ -14,7 +13,6 @@ class MedicalRecord with MedicalRecordMappable {
   final String? treatment;
   final DateTime? followUpDate;
   final String? note;
-  final MedicalPrescription? prescription;
 
   final bool isDeleted;
   final DateTime? created;
@@ -29,7 +27,6 @@ class MedicalRecord with MedicalRecordMappable {
     this.diagnosis,
     required this.visitDate,
     this.treatment,
-    this.prescription,
     this.followUpDate,
     this.note,
   });

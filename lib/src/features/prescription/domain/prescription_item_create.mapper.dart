@@ -75,7 +75,8 @@ mixin PrescriptionItemCreateMappable {
 
   PrescriptionItemCreateCopyWith<PrescriptionItemCreate, PrescriptionItemCreate,
           PrescriptionItemCreate>
-      get copyWith => _PrescriptionItemCreateCopyWithImpl(
+      get copyWith => _PrescriptionItemCreateCopyWithImpl<
+              PrescriptionItemCreate, PrescriptionItemCreate>(
           this as PrescriptionItemCreate, $identity, $identity);
   @override
   String toString() {
@@ -99,8 +100,8 @@ mixin PrescriptionItemCreateMappable {
 extension PrescriptionItemCreateValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PrescriptionItemCreate, $Out> {
   PrescriptionItemCreateCopyWith<$R, PrescriptionItemCreate, $Out>
-      get $asPrescriptionItemCreate =>
-          $base.as((v, t, t2) => _PrescriptionItemCreateCopyWithImpl(v, t, t2));
+      get $asPrescriptionItemCreate => $base.as((v, t, t2) =>
+          _PrescriptionItemCreateCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class PrescriptionItemCreateCopyWith<
@@ -147,5 +148,5 @@ class _PrescriptionItemCreateCopyWithImpl<$R, $Out>
   @override
   PrescriptionItemCreateCopyWith<$R2, PrescriptionItemCreate, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _PrescriptionItemCreateCopyWithImpl($value, $cast, t);
+          _PrescriptionItemCreateCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

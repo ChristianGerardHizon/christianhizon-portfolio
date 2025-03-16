@@ -74,7 +74,7 @@ mixin AdminMappable {
   }
 
   AdminCopyWith<Admin, Admin, Admin> get copyWith =>
-      _AdminCopyWithImpl(this as Admin, $identity, $identity);
+      _AdminCopyWithImpl<Admin, Admin>(this as Admin, $identity, $identity);
   @override
   String toString() {
     return AdminMapper.ensureInitialized().stringifyValue(this as Admin);
@@ -93,7 +93,7 @@ mixin AdminMappable {
 
 extension AdminValueCopy<$R, $Out> on ObjectCopyWith<$R, Admin, $Out> {
   AdminCopyWith<$R, Admin, $Out> get $asAdmin =>
-      $base.as((v, t, t2) => _AdminCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _AdminCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class AdminCopyWith<$R, $In extends Admin, $Out>
@@ -137,5 +137,5 @@ class _AdminCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Admin, $Out>
 
   @override
   AdminCopyWith<$R2, Admin, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _AdminCopyWithImpl($value, $cast, t);
+      _AdminCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

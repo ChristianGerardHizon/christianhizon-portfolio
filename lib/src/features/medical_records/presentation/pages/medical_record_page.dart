@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_record_controller.dart';
 import 'package:gym_system/src/features/medical_records/presentation/widgets/medical_record_details.dart';
+import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_all_items_controller.dart';
 import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_item_page_controller.dart';
 import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_items_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -18,6 +19,7 @@ class MedicalRecordPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(prescriptionItemsControllerProvider(id: id));
     ref.watch(prescriptionItemsPageControllerProvider);
+    ref.watch(prescriptionAllItemsControllerProvider(id: id));
     final provider = medicalRecordControllerProvider(id);
     final state = ref.watch(provider);
 
@@ -38,7 +40,7 @@ class MedicalRecordPage extends HookConsumerWidget {
           data: (record) {
             return Scaffold(
               appBar: AppBar(
-                title: Text('Medical Records'),
+                title: Text('Medical Record Details'),
               ),
               body: MedicalRecordDetails(record: record),
             );

@@ -52,7 +52,7 @@ class CustomSearchFormField<T> extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final focus = useFocusNode();
 
-    final results = useState<List<T>?>(null);
+    final results = useState<List<T>?>(initialList);
     final isLoading = useState<bool>(false);
     final debounceValue = useRef<Timer?>(null);
     final textCtrl = useTextEditingController();

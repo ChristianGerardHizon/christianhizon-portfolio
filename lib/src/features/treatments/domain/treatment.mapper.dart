@@ -75,7 +75,8 @@ mixin TreatmentMappable {
   }
 
   TreatmentCopyWith<Treatment, Treatment, Treatment> get copyWith =>
-      _TreatmentCopyWithImpl(this as Treatment, $identity, $identity);
+      _TreatmentCopyWithImpl<Treatment, Treatment>(
+          this as Treatment, $identity, $identity);
   @override
   String toString() {
     return TreatmentMapper.ensureInitialized()
@@ -96,7 +97,7 @@ mixin TreatmentMappable {
 
 extension TreatmentValueCopy<$R, $Out> on ObjectCopyWith<$R, Treatment, $Out> {
   TreatmentCopyWith<$R, Treatment, $Out> get $asTreatment =>
-      $base.as((v, t, t2) => _TreatmentCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _TreatmentCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class TreatmentCopyWith<$R, $In extends Treatment, $Out>
@@ -143,5 +144,5 @@ class _TreatmentCopyWithImpl<$R, $Out>
   @override
   TreatmentCopyWith<$R2, Treatment, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _TreatmentCopyWithImpl($value, $cast, t);
+      _TreatmentCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

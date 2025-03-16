@@ -10,8 +10,6 @@ import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
 import 'package:gym_system/src/features/prescription/data/prescription_item_repository.dart';
 import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_item_page_controller.dart';
-import 'package:gym_system/src/features/treatments/data/treatment_record/treatment_record_repository.dart';
-import 'package:gym_system/src/features/treatments/presentation/controllers/treatment_record/treatment_record_page_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PrescriptionItemCreateSheet extends HookConsumerWidget {

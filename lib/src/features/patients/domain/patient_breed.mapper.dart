@@ -82,7 +82,8 @@ mixin PatientBreedMappable {
   }
 
   PatientBreedCopyWith<PatientBreed, PatientBreed, PatientBreed> get copyWith =>
-      _PatientBreedCopyWithImpl(this as PatientBreed, $identity, $identity);
+      _PatientBreedCopyWithImpl<PatientBreed, PatientBreed>(
+          this as PatientBreed, $identity, $identity);
   @override
   String toString() {
     return PatientBreedMapper.ensureInitialized()
@@ -105,7 +106,7 @@ mixin PatientBreedMappable {
 extension PatientBreedValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PatientBreed, $Out> {
   PatientBreedCopyWith<$R, PatientBreed, $Out> get $asPatientBreed =>
-      $base.as((v, t, t2) => _PatientBreedCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _PatientBreedCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class PatientBreedCopyWith<$R, $In extends PatientBreed, $Out>
@@ -156,5 +157,5 @@ class _PatientBreedCopyWithImpl<$R, $Out>
   @override
   PatientBreedCopyWith<$R2, PatientBreed, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _PatientBreedCopyWithImpl($value, $cast, t);
+      _PatientBreedCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

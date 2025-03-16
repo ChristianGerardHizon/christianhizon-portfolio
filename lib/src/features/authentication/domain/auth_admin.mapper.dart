@@ -77,7 +77,8 @@ mixin AuthAdminMappable {
   }
 
   AuthAdminCopyWith<AuthAdmin, AuthAdmin, AuthAdmin> get copyWith =>
-      _AuthAdminCopyWithImpl(this as AuthAdmin, $identity, $identity);
+      _AuthAdminCopyWithImpl<AuthAdmin, AuthAdmin>(
+          this as AuthAdmin, $identity, $identity);
   @override
   String toString() {
     return AuthAdminMapper.ensureInitialized()
@@ -98,7 +99,7 @@ mixin AuthAdminMappable {
 
 extension AuthAdminValueCopy<$R, $Out> on ObjectCopyWith<$R, AuthAdmin, $Out> {
   AuthAdminCopyWith<$R, AuthAdmin, $Out> get $asAuthAdmin =>
-      $base.as((v, t, t2) => _AuthAdminCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _AuthAdminCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class AuthAdminCopyWith<$R, $In extends AuthAdmin, $Out>
@@ -150,5 +151,5 @@ class _AuthAdminCopyWithImpl<$R, $Out>
   @override
   AuthAdminCopyWith<$R2, AuthAdmin, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _AuthAdminCopyWithImpl($value, $cast, t);
+      _AuthAdminCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

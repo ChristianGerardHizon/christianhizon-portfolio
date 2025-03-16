@@ -92,8 +92,9 @@ mixin PrescriptionItemMappable {
   }
 
   PrescriptionItemCopyWith<PrescriptionItem, PrescriptionItem, PrescriptionItem>
-      get copyWith => _PrescriptionItemCopyWithImpl(
-          this as PrescriptionItem, $identity, $identity);
+      get copyWith =>
+          _PrescriptionItemCopyWithImpl<PrescriptionItem, PrescriptionItem>(
+              this as PrescriptionItem, $identity, $identity);
   @override
   String toString() {
     return PrescriptionItemMapper.ensureInitialized()
@@ -116,8 +117,8 @@ mixin PrescriptionItemMappable {
 extension PrescriptionItemValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PrescriptionItem, $Out> {
   PrescriptionItemCopyWith<$R, PrescriptionItem, $Out>
-      get $asPrescriptionItem =>
-          $base.as((v, t, t2) => _PrescriptionItemCopyWithImpl(v, t, t2));
+      get $asPrescriptionItem => $base
+          .as((v, t, t2) => _PrescriptionItemCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class PrescriptionItemCopyWith<$R, $In extends PrescriptionItem, $Out>
@@ -177,5 +178,5 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
   @override
   PrescriptionItemCopyWith<$R2, PrescriptionItem, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _PrescriptionItemCopyWithImpl($value, $cast, t);
+      _PrescriptionItemCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

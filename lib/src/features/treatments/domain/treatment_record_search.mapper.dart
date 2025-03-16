@@ -58,9 +58,9 @@ mixin TreatmentRecordSearchMappable {
   }
 
   TreatmentRecordSearchCopyWith<TreatmentRecordSearch, TreatmentRecordSearch,
-          TreatmentRecordSearch>
-      get copyWith => _TreatmentRecordSearchCopyWithImpl(
-          this as TreatmentRecordSearch, $identity, $identity);
+      TreatmentRecordSearch> get copyWith => _TreatmentRecordSearchCopyWithImpl<
+          TreatmentRecordSearch, TreatmentRecordSearch>(
+      this as TreatmentRecordSearch, $identity, $identity);
   @override
   String toString() {
     return TreatmentRecordSearchMapper.ensureInitialized()
@@ -83,8 +83,8 @@ mixin TreatmentRecordSearchMappable {
 extension TreatmentRecordSearchValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TreatmentRecordSearch, $Out> {
   TreatmentRecordSearchCopyWith<$R, TreatmentRecordSearch, $Out>
-      get $asTreatmentRecordSearch =>
-          $base.as((v, t, t2) => _TreatmentRecordSearchCopyWithImpl(v, t, t2));
+      get $asTreatmentRecordSearch => $base.as(
+          (v, t, t2) => _TreatmentRecordSearchCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class TreatmentRecordSearchCopyWith<
@@ -114,5 +114,5 @@ class _TreatmentRecordSearchCopyWithImpl<$R, $Out>
   @override
   TreatmentRecordSearchCopyWith<$R2, TreatmentRecordSearch, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _TreatmentRecordSearchCopyWithImpl($value, $cast, t);
+          _TreatmentRecordSearchCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

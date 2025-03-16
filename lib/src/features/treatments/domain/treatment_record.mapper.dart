@@ -97,8 +97,9 @@ mixin TreatmentRecordMappable {
   }
 
   TreatmentRecordCopyWith<TreatmentRecord, TreatmentRecord, TreatmentRecord>
-      get copyWith => _TreatmentRecordCopyWithImpl(
-          this as TreatmentRecord, $identity, $identity);
+      get copyWith =>
+          _TreatmentRecordCopyWithImpl<TreatmentRecord, TreatmentRecord>(
+              this as TreatmentRecord, $identity, $identity);
   @override
   String toString() {
     return TreatmentRecordMapper.ensureInitialized()
@@ -121,7 +122,7 @@ mixin TreatmentRecordMappable {
 extension TreatmentRecordValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TreatmentRecord, $Out> {
   TreatmentRecordCopyWith<$R, TreatmentRecord, $Out> get $asTreatmentRecord =>
-      $base.as((v, t, t2) => _TreatmentRecordCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _TreatmentRecordCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class TreatmentRecordCopyWith<$R, $In extends TreatmentRecord, $Out>
@@ -191,7 +192,7 @@ class _TreatmentRecordCopyWithImpl<$R, $Out>
   @override
   TreatmentRecordCopyWith<$R2, TreatmentRecord, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _TreatmentRecordCopyWithImpl($value, $cast, t);
+      _TreatmentRecordCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class TreatmentRecordExpandMapper
@@ -247,9 +248,9 @@ mixin TreatmentRecordExpandMappable {
   }
 
   TreatmentRecordExpandCopyWith<TreatmentRecordExpand, TreatmentRecordExpand,
-          TreatmentRecordExpand>
-      get copyWith => _TreatmentRecordExpandCopyWithImpl(
-          this as TreatmentRecordExpand, $identity, $identity);
+      TreatmentRecordExpand> get copyWith => _TreatmentRecordExpandCopyWithImpl<
+          TreatmentRecordExpand, TreatmentRecordExpand>(
+      this as TreatmentRecordExpand, $identity, $identity);
   @override
   String toString() {
     return TreatmentRecordExpandMapper.ensureInitialized()
@@ -272,8 +273,8 @@ mixin TreatmentRecordExpandMappable {
 extension TreatmentRecordExpandValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TreatmentRecordExpand, $Out> {
   TreatmentRecordExpandCopyWith<$R, TreatmentRecordExpand, $Out>
-      get $asTreatmentRecordExpand =>
-          $base.as((v, t, t2) => _TreatmentRecordExpandCopyWithImpl(v, t, t2));
+      get $asTreatmentRecordExpand => $base.as(
+          (v, t, t2) => _TreatmentRecordExpandCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class TreatmentRecordExpandCopyWith<
@@ -307,5 +308,5 @@ class _TreatmentRecordExpandCopyWithImpl<$R, $Out>
   @override
   TreatmentRecordExpandCopyWith<$R2, TreatmentRecordExpand, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _TreatmentRecordExpandCopyWithImpl($value, $cast, t);
+          _TreatmentRecordExpandCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
