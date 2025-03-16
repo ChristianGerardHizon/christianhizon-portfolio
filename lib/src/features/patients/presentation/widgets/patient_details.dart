@@ -183,11 +183,20 @@ class PatientDetails extends HookConsumerWidget {
                 onTap: () => PatientUpdatePageRoute(patient.id).push(context),
               ),
               ListTile(
-                leading: const Icon(Icons.delete_outlined),
-                title: const Text('Delete User Permanently'),
-                trailing: const Icon(
+                leading: Icon(
+                  Icons.delete_outlined,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                title: Text(
+                  'Delete User Permanently',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                trailing: Icon(
                   Icons.chevron_right_outlined,
                   size: 24,
+                  color: Theme.of(context).colorScheme.error,
                 ),
                 onTap: onDelete,
               ),

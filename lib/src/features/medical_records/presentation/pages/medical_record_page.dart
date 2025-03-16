@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_record_controller.dart';
 import 'package:gym_system/src/features/medical_records/presentation/widgets/medical_record_details.dart';
 import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_item_page_controller.dart';
 import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_items_controller.dart';
-import 'package:gym_system/src/features/prescription/presentation/widgets/prescription_items_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Define the PrescriptionItem class
@@ -39,56 +37,62 @@ class MedicalRecordPage extends HookConsumerWidget {
               ),
           data: (record) {
             return Scaffold(
-              body: SafeArea(
-                child: NestedScrollView(
-                  headerSliverBuilder: (context, innerBoxIsScrolled) {
-                    return [
-                      ///
-                      /// AppBar
-                      ///
-                      SliverAppBar(
-                        title: Text('Medical Record'),
-                      ),
-
-                      SliverOverlapAbsorber(
-                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                            context),
-                        sliver: PinnedHeaderSliver(
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color:
-                                  Theme.of(context).appBarTheme.backgroundColor,
-                            ),
-                            child: TabBar(
-                              isScrollable: false,
-                              tabs: [
-                                Tab(
-                                  icon: Icon(MIcons.accountOutline),
-                                  child: Text('Details'),
-                                ),
-                                Tab(
-                                  icon: Icon(MIcons.informationOutline),
-                                  child: Text('Prescriptions'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    ];
-                  },
-                  body: Padding(
-                    padding: const EdgeInsets.only(top: 75),
-                    child: TabBarView(
-                      children: [
-                        MedicalRecordDetails(record: record),
-                        PrescriptionItemsView(record: record),
-                      ],
-                    ),
-                  ),
-                ),
+              appBar: AppBar(
+                title: Text('Medical Records'),
               ),
+              body: MedicalRecordDetails(record: record),
             );
+            // return Scaffold(
+            //   body: SafeArea(
+            //     child: NestedScrollView(
+            //       headerSliverBuilder: (context, innerBoxIsScrolled) {
+            //         return [
+            //           ///
+            //           /// AppBar
+            //           ///
+            //           SliverAppBar(
+            //             title: Text('Medical Record'),
+            //           ),
+
+            //           SliverOverlapAbsorber(
+            //             handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+            //                 context),
+            //             sliver: PinnedHeaderSliver(
+            //               child: DecoratedBox(
+            //                 decoration: BoxDecoration(
+            //                   color:
+            //                       Theme.of(context).appBarTheme.backgroundColor,
+            //                 ),
+            //                 child: TabBar(
+            //                   isScrollable: false,
+            //                   tabs: [
+            //                     Tab(
+            //                       icon: Icon(MIcons.accountOutline),
+            //                       child: Text('Details'),
+            //                     ),
+            //                     Tab(
+            //                       icon: Icon(MIcons.informationOutline),
+            //                       child: Text('Prescriptions'),
+            //                     ),
+            //                   ],
+            //                 ),
+            //               ),
+            //             ),
+            //           )
+            //         ];
+            //       },
+            //       body: Padding(
+            //         padding: const EdgeInsets.only(top: 75),
+            //         child: TabBarView(
+            //           children: [
+            //             MedicalRecordDetails(record: record),
+            //             PrescriptionItemsView(record: record),
+            //           ],
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // );
           }),
     );
   }

@@ -13,6 +13,7 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
   static MedicalRecordMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = MedicalRecordMapper._());
+      MedicalPrescriptionMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -43,6 +44,9 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
   static String? _$treatment(MedicalRecord v) => v.treatment;
   static const Field<MedicalRecord, String> _f$treatment =
       Field('treatment', _$treatment, opt: true);
+  static MedicalPrescription? _$prescription(MedicalRecord v) => v.prescription;
+  static const Field<MedicalRecord, MedicalPrescription> _f$prescription =
+      Field('prescription', _$prescription, opt: true);
   static DateTime? _$followUpDate(MedicalRecord v) => v.followUpDate;
   static const Field<MedicalRecord, DateTime> _f$followUpDate =
       Field('followUpDate', _$followUpDate, opt: true);
@@ -60,6 +64,7 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
     #diagnosis: _f$diagnosis,
     #visitDate: _f$visitDate,
     #treatment: _f$treatment,
+    #prescription: _f$prescription,
     #followUpDate: _f$followUpDate,
     #note: _f$note,
   };
@@ -74,6 +79,7 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
         diagnosis: data.dec(_f$diagnosis),
         visitDate: data.dec(_f$visitDate),
         treatment: data.dec(_f$treatment),
+        prescription: data.dec(_f$prescription),
         followUpDate: data.dec(_f$followUpDate),
         note: data.dec(_f$note));
   }
@@ -131,6 +137,8 @@ extension MedicalRecordValueCopy<$R, $Out>
 
 abstract class MedicalRecordCopyWith<$R, $In extends MedicalRecord, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
+  MedicalPrescriptionCopyWith<$R, MedicalPrescription, MedicalPrescription>?
+      get prescription;
   $R call(
       {String? id,
       String? patient,
@@ -140,6 +148,7 @@ abstract class MedicalRecordCopyWith<$R, $In extends MedicalRecord, $Out>
       String? diagnosis,
       DateTime? visitDate,
       String? treatment,
+      MedicalPrescription? prescription,
       DateTime? followUpDate,
       String? note});
   MedicalRecordCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
@@ -154,6 +163,10 @@ class _MedicalRecordCopyWithImpl<$R, $Out>
   late final ClassMapperBase<MedicalRecord> $mapper =
       MedicalRecordMapper.ensureInitialized();
   @override
+  MedicalPrescriptionCopyWith<$R, MedicalPrescription, MedicalPrescription>?
+      get prescription =>
+          $value.prescription?.copyWith.$chain((v) => call(prescription: v));
+  @override
   $R call(
           {String? id,
           String? patient,
@@ -163,6 +176,7 @@ class _MedicalRecordCopyWithImpl<$R, $Out>
           Object? diagnosis = $none,
           DateTime? visitDate,
           Object? treatment = $none,
+          Object? prescription = $none,
           Object? followUpDate = $none,
           Object? note = $none}) =>
       $apply(FieldCopyWithData({
@@ -174,6 +188,7 @@ class _MedicalRecordCopyWithImpl<$R, $Out>
         if (diagnosis != $none) #diagnosis: diagnosis,
         if (visitDate != null) #visitDate: visitDate,
         if (treatment != $none) #treatment: treatment,
+        if (prescription != $none) #prescription: prescription,
         if (followUpDate != $none) #followUpDate: followUpDate,
         if (note != $none) #note: note
       }));
@@ -187,6 +202,7 @@ class _MedicalRecordCopyWithImpl<$R, $Out>
       diagnosis: data.get(#diagnosis, or: $value.diagnosis),
       visitDate: data.get(#visitDate, or: $value.visitDate),
       treatment: data.get(#treatment, or: $value.treatment),
+      prescription: data.get(#prescription, or: $value.prescription),
       followUpDate: data.get(#followUpDate, or: $value.followUpDate),
       note: data.get(#note, or: $value.note));
 

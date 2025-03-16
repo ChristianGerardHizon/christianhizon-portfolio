@@ -51,6 +51,8 @@ dependencies:
   sliver_tools: ^0.2.12
   tab_container: ^3.5.3
   skeletonizer: ^1.4.3
+  pdf: ^3.11.3
+  printing: ^5.14.2
 
 dev_dependencies:
   dart_mappable_builder: ^4.3.0  

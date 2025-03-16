@@ -4,6 +4,7 @@ import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/page_actions.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
+import 'package:gym_system/src/core/widgets/pdf_generator.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/text_search_bar.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
@@ -162,10 +163,14 @@ class PrescriptionItemsView extends HookConsumerWidget {
                   );
                 }
                 return PrescriptionItemsTable(
-                    list: list,
-                    selected: selected.value,
-                    onSelected: (p0) => selected.value = p0,
-                    onRowTap: (row) {});
+                  list: list,
+                  selected: selected.value,
+                  onSelected: (p0) => selected.value = p0,
+                  onRowTap: (row) async {
+                    AppSnackBar.show(context, message: 'Successfully Printed');
+                    await PdfGenerator.print();
+                  },
+                );
               },
             ),
 

@@ -141,6 +141,15 @@ class MedicalRecordDetails extends HookConsumerWidget {
                   onTap: () => onTap(record),
                 ),
                 ListTile(
+                  leading: const Icon(Icons.edit_outlined),
+                  title: const Text('Update Prescriptions'),
+                  trailing: const Icon(
+                    Icons.chevron_right_outlined,
+                    size: 24,
+                  ),
+                  onTap: () => onTap(record),
+                ),
+                ListTile(
                   leading: const Icon(Icons.delete_outlined),
                   title: const Text('Delete Medical Record Permanently'),
                   trailing: const Icon(
