@@ -17,6 +17,7 @@ import 'package:gym_system/src/features/medical_records/presentation/controllers
 import 'package:gym_system/src/features/prescription/domain/prescription_item.dart';
 import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_all_items_controller.dart';
 import 'package:gym_system/src/features/prescription/presentation/sheets/prescription_item_create_sheet.dart';
+import 'package:gym_system/src/features/prescription/presentation/widgets/prescription_items_pdf_generator.dart';
 import 'package:gym_system/src/features/prescription/presentation/widgets/prescription_list_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -44,25 +45,6 @@ class MedicalRecordDetails extends HookConsumerWidget {
           });
     }
 
-    onPrescriptionAdd() async {
-      final result =
-          await PrescriptionItemCreateSheet.show(context, record: record);
-      if (result is! PrescriptionItem) return;
-      ref.invalidate(prescriptionAllItemsControllerProvider(id: record.id));
-    }
-
-    onPrint() async {
-      final result = await TaskResult.tryCatch(() async {
-        await PdfGenerator.print();
-      }, Failure.tryCatchPresentation)
-          .run();
-
-      result.fold((l) {
-        AppSnackBar.rootFailure(l);
-      }, (r) {
-        AppSnackBar.root(message: 'Starting Print Job...');
-      });
-    }
 
     ///
     ///
@@ -153,37 +135,7 @@ class MedicalRecordDetails extends HookConsumerWidget {
                   ),
                 ],
               ),
-              child: Column(
-                children: [
-                  ///
-                  /// Prescriptions
-                  ///
-                  PrescriptionListView(medicalRecordId: record.id),
-
-                  ///
-                  /// Add Button
-                  ///
-                  ...[
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextButton.icon(
-                            label: Text('Add Prescription'),
-                            icon: Icon(Icons.add),
-                            onPressed: onPrescriptionAdd,
-                          ),
-                          TextButton.icon(
-                            label: Text('Print'),
-                            icon: Icon(MIcons.printer),
-                            onPressed: onPrint,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ]
-                ],
-              ),
+              child: PrescriptionListView(record: record),
             ),
           ]),
         ),
