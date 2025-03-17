@@ -11,6 +11,7 @@ import 'package:gym_system/src/features/medical_records/domain/medical_record.da
 import 'package:gym_system/src/features/prescription/data/prescription_item_repository.dart';
 import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_item_page_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class PrescriptionItemCreateSheet extends HookConsumerWidget {
   final MedicalRecord medicalRecord;
@@ -214,17 +215,28 @@ class PrescriptionItemCreateSheet extends HookConsumerWidget {
       ),
     );
 
-    if (isFullScreen.value) {
-      return Dialog.fullscreen(
-        child: content,
+    return ResponsiveBuilder(builder: (context, si) {
+      if (isFullScreen.value) {
+        return Dialog.fullscreen(
+          child: content,
+        );
+      }
+
+      if (si.isMobile) {
+        return Dialog(
+          child: SizedBox(
+            child: content,
+          ),
+        );
+      }
+
+      return Dialog(
+        child: SizedBox(
+          width: screenSize.width / 2,
+          height: screenSize.width / 1.5,
+          child: content,
+        ),
       );
-    }
-    return Dialog(
-      child: SizedBox(
-        width: screenSize.width / 2,
-        height: screenSize.width / 1.5,
-        child: content,
-      ),
-    );
+    });
   }
 }
