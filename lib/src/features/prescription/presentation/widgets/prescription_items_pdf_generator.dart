@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,7 +17,8 @@ class PrescriptionItemsPdfGenerator {
   final Patient patient;
   final MedicalRecord record;
 
-  PrescriptionItemsPdfGenerator({required this.items, required this.patient, required this.record});
+  PrescriptionItemsPdfGenerator(
+      {required this.items, required this.patient, required this.record});
 
   String buildFileName() {
     final fileName = 'prescription-${DateTime.now().yyyyMMdd()}.pdf';
@@ -23,13 +26,11 @@ class PrescriptionItemsPdfGenerator {
   }
 
   Future<bool> share() async {
-    try {
-      final pdfData = await _generatePdf();
-      await Printing.sharePdf(bytes: pdfData, filename: buildFileName());
-      return true;
-    } catch (e) {
-      return false;
-    }
+    if (kIsWeb) throw Failure.presentation('this feature is not available in web');
+
+    final pdfData = await _generatePdf();
+    await Printing.sharePdf(bytes: pdfData, filename: buildFileName());
+    return true;
   }
 
   /// Generates and prints the PDF
@@ -44,6 +45,9 @@ class PrescriptionItemsPdfGenerator {
 
   /// Saves the generated PDF to local storage
   Future<bool> save() async {
+
+    if (kIsWeb) throw Failure.presentation('this feature is not available in web');
+
     final pdfData = await _generatePdf();
     final filePath = await _savePdfToFile(pdfData);
     return filePath != null;
