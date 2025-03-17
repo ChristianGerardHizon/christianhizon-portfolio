@@ -105,16 +105,16 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               factory: $PatientsPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/patient/:id',
-              factory: $PatientPageRouteExtension._fromState,
-            ),
-            GoRouteData.$route(
               path: '/updatePatient/:id',
               factory: $PatientUpdatePageRouteExtension._fromState,
             ),
             GoRouteData.$route(
               path: '/newPatient',
               factory: $PatientCreatePageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/patient/:id',
+              factory: $PatientPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
               path: '/medicalRecord/:medicalRecordId',
@@ -129,16 +129,16 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               factory: $ProductsPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/product/:id',
-              factory: $ProductPageRouteExtension._fromState,
+              path: '/updateproduct//:id',
+              factory: $ProductUpdatePageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/product/create',
+              path: '/newProduct',
               factory: $ProductCreatePageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/product/update/:id',
-              factory: $ProductUpdatePageRouteExtension._fromState,
+              path: '/product/:id',
+              factory: $ProductPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -241,30 +241,6 @@ extension $PatientsPageRouteExtension on PatientsPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $PatientPageRouteExtension on PatientPageRoute {
-  static PatientPageRoute _fromState(GoRouterState state) => PatientPageRoute(
-        state.pathParameters['id']!,
-        page: _$convertMapValue('page', state.uri.queryParameters, int.parse) ??
-            0,
-      );
-
-  String get location => GoRouteData.$location(
-        '/patient/${Uri.encodeComponent(id)}',
-        queryParams: {
-          if (page != 0) 'page': page.toString(),
-        },
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
-
 extension $PatientUpdatePageRouteExtension on PatientUpdatePageRoute {
   static PatientUpdatePageRoute _fromState(GoRouterState state) =>
       PatientUpdatePageRoute(
@@ -291,6 +267,30 @@ extension $PatientCreatePageRouteExtension on PatientCreatePageRoute {
 
   String get location => GoRouteData.$location(
         '/newPatient',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $PatientPageRouteExtension on PatientPageRoute {
+  static PatientPageRoute _fromState(GoRouterState state) => PatientPageRoute(
+        state.pathParameters['id']!,
+        page: _$convertMapValue('page', state.uri.queryParameters, int.parse) ??
+            0,
+      );
+
+  String get location => GoRouteData.$location(
+        '/patient/${Uri.encodeComponent(id)}',
+        queryParams: {
+          if (page != 0) 'page': page.toString(),
+        },
       );
 
   void go(BuildContext context) => context.go(location);
@@ -342,13 +342,14 @@ extension $ProductsPageRouteExtension on ProductsPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $ProductPageRouteExtension on ProductPageRoute {
-  static ProductPageRoute _fromState(GoRouterState state) => ProductPageRoute(
+extension $ProductUpdatePageRouteExtension on ProductUpdatePageRoute {
+  static ProductUpdatePageRoute _fromState(GoRouterState state) =>
+      ProductUpdatePageRoute(
         state.pathParameters['id']!,
       );
 
   String get location => GoRouteData.$location(
-        '/product/${Uri.encodeComponent(id)}',
+        '/updateproduct//${Uri.encodeComponent(id)}',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -366,7 +367,7 @@ extension $ProductCreatePageRouteExtension on ProductCreatePageRoute {
       const ProductCreatePageRoute();
 
   String get location => GoRouteData.$location(
-        '/product/create',
+        '/newProduct',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -379,14 +380,13 @@ extension $ProductCreatePageRouteExtension on ProductCreatePageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $ProductUpdatePageRouteExtension on ProductUpdatePageRoute {
-  static ProductUpdatePageRoute _fromState(GoRouterState state) =>
-      ProductUpdatePageRoute(
+extension $ProductPageRouteExtension on ProductPageRoute {
+  static ProductPageRoute _fromState(GoRouterState state) => ProductPageRoute(
         state.pathParameters['id']!,
       );
 
   String get location => GoRouteData.$location(
-        '/product/update/${Uri.encodeComponent(id)}',
+        '/product/${Uri.encodeComponent(id)}',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -807,12 +807,12 @@ RouteBase get $productsPageRoute => GoRouteData.$route(
     );
 
 RouteBase get $productCreatePageRoute => GoRouteData.$route(
-      path: '/product/create',
+      path: '/newProduct',
       factory: $ProductCreatePageRouteExtension._fromState,
     );
 
 RouteBase get $productUpdatePageRoute => GoRouteData.$route(
-      path: '/product/update/:id',
+      path: '/updateproduct//:id',
       factory: $ProductUpdatePageRouteExtension._fromState,
     );
 

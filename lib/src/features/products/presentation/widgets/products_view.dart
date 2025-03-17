@@ -7,7 +7,7 @@ import 'package:gym_system/src/core/widgets/page_actions.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/text_search_bar.dart';
-import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product_search.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/products_controller.dart';
@@ -16,8 +16,8 @@ import 'package:gym_system/src/features/products/presentation/widgets/products_t
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductsView extends HookConsumerWidget {
-  final Patient patient;
-  const ProductsView({super.key, required this.patient});
+  final Product product;
+  const ProductsView({super.key, required this.product});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -112,7 +112,7 @@ class ProductsView extends HookConsumerWidget {
                   );
                 },
                 onCreate: () {
-                  // ProductCreateSheet.show(context, patient: patient);
+                  PatientCreatePageRoute().push(context);
                 },
               ),
             ),

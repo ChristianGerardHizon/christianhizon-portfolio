@@ -25,7 +25,7 @@ GoRouter router(Ref ref) {
 
   return GoRouter(
     initialLocation: RootRoute.path,
-    debugLogDiagnostics: false,
+    debugLogDiagnostics: true,
     navigatorKey: rootKey,
     redirect: (context, state) {
       final auth = ref.read(authControllerProvider);

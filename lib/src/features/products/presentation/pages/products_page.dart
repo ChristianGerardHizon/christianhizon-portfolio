@@ -87,9 +87,12 @@ class ProductsPage extends HookConsumerWidget {
                   },
                   onSearch: () {
                     searchNotif.updateParams(
-                        ProductSearch.buildQuery(searchCtrl.text));
+                      ProductSearch.buildQuery(searchCtrl.text),
+                    );
                   },
-                  onCreate: () => ProductCreatePageRoute().push(context),
+                  onCreate: () {
+                    ProductCreatePageRoute().push(context);
+                  },
                 ),
               ),
 
@@ -103,18 +106,24 @@ class ProductsPage extends HookConsumerWidget {
                 loading: () => SliverPadding(
                   padding: const EdgeInsets.all(20.0),
                   sliver: SliverToBoxAdapter(
-                      child: Center(
-                    child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: CircularProgressIndicator()),
-                  )),
-                ),
-                error: (error, stackTrace) => SliverToBoxAdapter(
-                  child: Center(
-                    child: Text(error.toString()),
+                    child: Center(
+                      child: SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: CircularProgressIndicator()),
+                    ),
                   ),
                 ),
+                error: (error, stackTrace) => SliverMainAxisGroup(slivers: [
+                  SliverAppBar(
+                    title: Text('Sample'),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Center(
+                      child: Text(error.toString()),
+                    ),
+                  ),
+                ]),
                 data: (data) {
                   final list = data.items;
 

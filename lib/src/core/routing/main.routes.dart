@@ -103,9 +103,9 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<PatientsBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<PatientsPageRoute>(path: PatientsPageRoute.path),
-        TypedGoRoute<PatientPageRoute>(path: PatientPageRoute.path),
         TypedGoRoute<PatientUpdatePageRoute>(path: PatientUpdatePageRoute.path),
         TypedGoRoute<PatientCreatePageRoute>(path: PatientCreatePageRoute.path),
+        TypedGoRoute<PatientPageRoute>(path: PatientPageRoute.path),
         TypedGoRoute<PatientMedicalRecordPageRoute>(
           path: PatientMedicalRecordPageRoute.path,
         ),
@@ -118,9 +118,9 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<ProductsBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<ProductsPageRoute>(path: ProductsPageRoute.path),
-        TypedGoRoute<ProductPageRoute>(path: ProductPageRoute.path),
-        TypedGoRoute<ProductCreatePageRoute>(path: ProductCreatePageRoute.path),
         TypedGoRoute<ProductUpdatePageRoute>(path: ProductUpdatePageRoute.path),
+        TypedGoRoute<ProductCreatePageRoute>(path: ProductCreatePageRoute.path),
+        TypedGoRoute<ProductPageRoute>(path: ProductPageRoute.path),
       ],
     ),
 
