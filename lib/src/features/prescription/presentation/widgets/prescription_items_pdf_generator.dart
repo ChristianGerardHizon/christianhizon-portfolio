@@ -2,7 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
-import 'package:gym_system/src/features/prescription/presentation/widgets/logo_svg.dart';
+import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
+import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -11,18 +12,10 @@ import 'package:gym_system/src/features/prescription/domain/prescription_item.da
 
 class PrescriptionItemsPdfGenerator {
   final List<PrescriptionItem> items;
+  final Patient patient;
+  final MedicalRecord record;
 
-  PrescriptionItemsPdfGenerator({required this.items});
-
-  /// Static method to print the prescription items
-  static Future<bool> printStatic(List<PrescriptionItem> items) async {
-    return PrescriptionItemsPdfGenerator(items: items).print();
-  }
-
-  /// Static method to share the prescription items
-  static Future<bool> shareStatic(List<PrescriptionItem> items) async {
-    return PrescriptionItemsPdfGenerator(items: items).share();
-  }
+  PrescriptionItemsPdfGenerator({required this.items, required this.patient, required this.record});
 
   String buildFileName() {
     final fileName = 'prescription-${DateTime.now().yyyyMMdd()}.pdf';
@@ -66,9 +59,10 @@ class PrescriptionItemsPdfGenerator {
           return pw.Column(
             children: [
               _buildHeader(),
+              pw.SizedBox(height: 10),
               _buildPatient(),
-              pw.SizedBox(height: 20),
-              _buildTable(),
+              pw.SizedBox(height: 40),
+              _buildMedications(),
               pw.SizedBox(height: 30),
               pw.Container(
                   alignment: pw.Alignment.topLeft,
@@ -78,6 +72,13 @@ class PrescriptionItemsPdfGenerator {
                       children: [
                         pw.Text(
                           "Doctor: __________________________________",
+                          style: pw.TextStyle(
+                            fontSize: 10,
+                          ),
+                        ),
+                        pw.SizedBox(height: 10),
+                        pw.Text(
+                          "Visit Date: ${record.visitDate.yyyyMMddHHmmA()}",
                           style: pw.TextStyle(
                             fontSize: 10,
                           ),
@@ -108,37 +109,73 @@ class PrescriptionItemsPdfGenerator {
         children: [
           pw.Row(
             children: [
-              pw.Text(
-                "Patient: _________________________",
-                style: pw.TextStyle(
-                  fontSize: 10,
+              pw.Row(children: [
+                pw.Text(
+                  "Patient: ",
+                  style: pw.TextStyle(
+                    fontSize: 10,
+                  ),
                 ),
-              ),
+                _underlineText(pw.Text(
+                  "${patient.name}",
+                  style: pw.TextStyle(
+                    fontSize: 10,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                )),
+              ]),
               pw.SizedBox(width: 10),
-              pw.Text(
-                "Species: _________________________",
-                style: pw.TextStyle(
-                  fontSize: 10,
+              pw.Row(children: [
+                pw.Text(
+                  "Species: ",
+                  style: pw.TextStyle(
+                    fontSize: 10,
+                  ),
                 ),
-              ),
+                _underlineText(pw.Text(
+                  "${patient.species}",
+                  style: pw.TextStyle(
+                    fontSize: 10,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                )),
+              ]),
             ],
           ),
           pw.SizedBox(height: 10),
           pw.Row(
             children: [
-              pw.Text(
-                "Breed: _________________________",
-                style: pw.TextStyle(
-                  fontSize: 10,
+              pw.Row(children: [
+                pw.Text(
+                  "Breed: ",
+                  style: pw.TextStyle(
+                    fontSize: 10,
+                  ),
                 ),
-              ),
+                _underlineText(pw.Text(
+                  "${patient.breed}",
+                  style: pw.TextStyle(
+                    fontSize: 10,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                )),
+              ]),
               pw.SizedBox(width: 10),
-              pw.Text(
-                "Age: ___________",
-                style: pw.TextStyle(
-                  fontSize: 10,
+              pw.Row(children: [
+                pw.Text(
+                  "Date of Birth: ",
+                  style: pw.TextStyle(
+                    fontSize: 10,
+                  ),
                 ),
-              ),
+                _underlineText(pw.Text(
+                  "${patient.dateOfBirth?.yyyyMMdd()}",
+                  style: pw.TextStyle(
+                    fontSize: 10,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                )),
+              ])
             ],
           ),
         ],
@@ -146,13 +183,25 @@ class PrescriptionItemsPdfGenerator {
     );
   }
 
+  pw.Widget _underlineText(pw.Text widget) {
+    return pw.Column(children: [
+      widget,
+      pw.SizedBox(height: 5, width: 130, child: pw.Divider()),
+    ]);
+  }
+
   pw.Widget _buildHeader() {
-    // final logoPath = Assets.icons.appIconTransparent.path;
+    final logoPath = 'assets/icons/app_icon_transparent.png';
 
     return pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       children: [
-        pw.SvgImage(svg: LogoSvg.logo, width: 80),
+        pw.Image(
+          pw.MemoryImage(
+            File(logoPath).readAsBytesSync(),
+          ),
+          width: 80,
+        ),
         pw.SizedBox(width: 10),
         pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.end,
@@ -189,18 +238,23 @@ class PrescriptionItemsPdfGenerator {
   }
 
   /// Builds a table for the prescription items without borders
-  pw.Widget _buildTable() {
+  pw.Widget _buildMedications() {
     return pw.TableHelper.fromTextArray(
       headerDecoration: pw.BoxDecoration(
         border:
             pw.Border(bottom: pw.BorderSide(width: 1, color: PdfColors.black)),
       ),
-      headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.normal),
+      headerStyle: pw.TextStyle(
+        fontSize: 10,
+        fontWeight: pw.FontWeight.bold,
+      ),
       headers: ["#", "Medication", "Dosage", "Instructions"],
+
       textStyleBuilder: (index, data, rowNum) => pw.TextStyle(
-        fontSize: 12,
+        fontSize: 10,
         fontWeight: pw.FontWeight.normal,
       ),
+      headerAlignment: pw.Alignment.topLeft,
       data: items
           .mapWithIndex((item, index) => [
                 (index + 1).toString(),

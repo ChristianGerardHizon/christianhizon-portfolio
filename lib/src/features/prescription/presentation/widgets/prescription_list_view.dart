@@ -5,6 +5,7 @@ import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
 import 'package:gym_system/src/features/prescription/data/prescription_item_repository.dart';
 import 'package:gym_system/src/features/prescription/domain/prescription_item.dart';
 import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_all_items_controller.dart';
@@ -51,7 +52,10 @@ class PrescriptionListView extends HookConsumerWidget {
     onPrint(List<PrescriptionItem> list) async {
       final result = await TaskResult.tryCatch(() async {
         AppSnackBar.root(message: 'Print Starting...');
-        await PrescriptionItemsPdfGenerator.printStatic(list);
+        final patient =
+            await ref.read(patientControllerProvider(record.patient).future);
+        await PrescriptionItemsPdfGenerator(items: list, patient: patient, record: record)
+            .print();
       }, Failure.tryCatchPresentation)
           .run();
 
@@ -63,7 +67,10 @@ class PrescriptionListView extends HookConsumerWidget {
     onShare(List<PrescriptionItem> list) async {
       final result = await TaskResult.tryCatch(() async {
         AppSnackBar.root(message: 'Share Starting...');
-        await PrescriptionItemsPdfGenerator.shareStatic(list);
+        final patient =
+            await ref.read(patientControllerProvider(record.patient).future);
+        await PrescriptionItemsPdfGenerator(items: list, patient: patient, record: record)
+            .share();
       }, Failure.tryCatchPresentation)
           .run();
 
