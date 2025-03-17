@@ -90,7 +90,7 @@ class PatientsPage extends HookConsumerWidget {
                   onSearch: () {
                     searchNotif.change(searchCtrl.text);
                   },
-                  onCreate: () => PatientCreatePageRoute().go(context),
+                  onCreate: () => PatientCreatePageRoute().push(context),
                 ),
               ),
 

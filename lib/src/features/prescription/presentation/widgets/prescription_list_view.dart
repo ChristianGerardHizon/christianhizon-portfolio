@@ -62,7 +62,7 @@ class PrescriptionListView extends HookConsumerWidget {
 
     onShare(List<PrescriptionItem> list) async {
       final result = await TaskResult.tryCatch(() async {
-        AppSnackBar.root(message: 'Print Starting...');
+        AppSnackBar.root(message: 'Share Starting...');
         await PrescriptionItemsPdfGenerator.shareStatic(list);
       }, Failure.tryCatchPresentation)
           .run();

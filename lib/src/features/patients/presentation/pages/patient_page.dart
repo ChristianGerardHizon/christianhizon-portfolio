@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_record_page_controller.dart';
 import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_records_controller.dart';
 import 'package:gym_system/src/features/medical_records/presentation/widgets/medical_records_view.dart';
@@ -61,19 +62,9 @@ class PatientPage extends HookConsumerWidget {
                     SliverAppBar(
                       title: Text(patient.name),
                       actions: [
-                        // IconButton(
-                        //   icon: const Icon(Icons.edit),
-                        //   onPressed: () =>
-                        //       PatientUpdatePageRoute(id).go(context),
-                        // ),
-                        // IconButton(
-                        //   icon: const Icon(Icons.delete),
-                        //   onPressed: () => onDelete(),
-                        // ),
-                        // IconButton(
-                        //   icon: const Icon(Icons.refresh),
-                        //   onPressed: () => refresh(),
-                        // )
+                        RefreshButton(onPressed: () {
+                          refresh();
+                        })
                       ],
                     ),
 

@@ -63,9 +63,6 @@ class ProductUpdatePage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        // leading: BackButton(
-        //   onPressed: () => ProductPageRoute(id).go(context),
-        // ),
         title: Text('Product Update Page'),
         actions: [
           IconButton(

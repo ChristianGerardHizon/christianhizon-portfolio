@@ -40,9 +40,6 @@ class AccountPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: CloseButton(
-          onPressed: () => PatientsPageRoute().go(context),
-        ),
         title: const Text('Account'),
       ),
       body: RefreshIndicator(

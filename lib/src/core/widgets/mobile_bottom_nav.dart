@@ -26,7 +26,7 @@ class MobileBottomNav extends StatelessWidget {
       icon: Icon(MIcons.homeCircleOutline),
       label: 'Account',
       onTap: () {
-        YourAccountPageRoute().go(context);
+        YourAccountPageRoute().push(context);
       },
     );
 

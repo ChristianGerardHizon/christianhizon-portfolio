@@ -50,9 +50,6 @@ class ProductCreatePage extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: CloseButton(
-          onPressed: () => ProductsPageRoute().go(context),
-        ),
         title: Text('Product Create Page'),
       ),
       body: FormBuilder(

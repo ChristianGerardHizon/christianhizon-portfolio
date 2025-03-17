@@ -58,9 +58,6 @@ class UserPage extends HookConsumerWidget {
               /// AppBar
               ///
               SliverAppBar(
-                leading: BackButton(
-                  onPressed: () => UsersPageRoute().go(context),
-                ),
                 title: Text(user.name),
                 actions: [
                   IconButton(

@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:fpdart/fpdart.dart';
-import 'package:gym_system/src/core/assets/assets.gen.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+import 'package:gym_system/src/features/prescription/presentation/widgets/logo_svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -24,10 +24,15 @@ class PrescriptionItemsPdfGenerator {
     return PrescriptionItemsPdfGenerator(items: items).share();
   }
 
+  String buildFileName() {
+    final fileName = 'prescription-${DateTime.now().yyyyMMdd()}.pdf';
+    return fileName;
+  }
+
   Future<bool> share() async {
     try {
       final pdfData = await _generatePdf();
-      await Printing.sharePdf(bytes: pdfData);
+      await Printing.sharePdf(bytes: pdfData, filename: buildFileName());
       return true;
     } catch (e) {
       return false;
@@ -36,38 +41,31 @@ class PrescriptionItemsPdfGenerator {
 
   /// Generates and prints the PDF
   Future<bool> print() async {
-    try {
-      final pdfData = await _generatePdf();
-      await Printing.layoutPdf(onLayout: (format) async => pdfData);
-      return true;
-    } catch (e) {
-      return false;
-    }
+    final pdfData = await _generatePdf();
+    await Printing.layoutPdf(
+      onLayout: (format) async => pdfData,
+      name: buildFileName(),
+    );
+    return true;
   }
 
   /// Saves the generated PDF to local storage
   Future<bool> save() async {
-    try {
-      final pdfData = await _generatePdf();
-      final filePath = await _savePdfToFile(pdfData);
-      return filePath != null;
-    } catch (e) {
-      return false;
-    }
+    final pdfData = await _generatePdf();
+    final filePath = await _savePdfToFile(pdfData);
+    return filePath != null;
   }
 
   /// Generates the prescription PDF
   Future<Uint8List> _generatePdf() async {
     final pdf = pw.Document();
-    final logoPath = Assets.icons.appIconTransparent.path;
-
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
           return pw.Column(
             children: [
-              _buildHeader(logoPath),
+              _buildHeader(),
               _buildPatient(),
               pw.SizedBox(height: 20),
               _buildTable(),
@@ -148,14 +146,13 @@ class PrescriptionItemsPdfGenerator {
     );
   }
 
-  pw.Widget _buildHeader(String logoPath) {
+  pw.Widget _buildHeader() {
+    // final logoPath = Assets.icons.appIconTransparent.path;
+
     return pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       children: [
-        // pw.Image(
-        //   pw.MemoryImage(File(logoPath).readAsBytesSync()),
-        //   width: 80,
-        // ),
+        pw.SvgImage(svg: LogoSvg.logo, width: 80),
         pw.SizedBox(width: 10),
         pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.end,

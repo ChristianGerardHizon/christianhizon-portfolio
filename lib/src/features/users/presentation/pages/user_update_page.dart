@@ -103,16 +103,13 @@ class UserUpdatePage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: "Success");
-          UserPageRoute(id).go(context);
+          if (context.canPop()) context.pop();
         },
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(
-          onPressed: () => UserPageRoute(id).go(context),
-        ),
         title: Text('User Update'),
         actions: [
           IconButton(

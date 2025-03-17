@@ -68,10 +68,6 @@ class ProductsPage extends HookConsumerWidget {
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.invalidate(productsControllerProvider),
           ),
-          // IconButton(
-          //   icon: Icon(MIcons.plusCircle),
-          //   onPressed: () => PatientCreatePageRoute().go(context),
-          // )
         ],
       ),
       body: Stack(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
@@ -108,16 +109,14 @@ class PatientUpdatePage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: "Success");
-          PatientPageRoute(id).go(context);
+          ref.invalidate(patientControllerProvider(id));
+          if (context.canPop()) context.pop();
         },
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        // leading: BackButton(
-        //   onPressed: () => PatientPageRoute(id).go(context),
-        // ),
         title: Text('Patient Update Page'),
         actions: [
           IconButton(
@@ -189,22 +188,66 @@ class PatientUpdatePage extends HookConsumerWidget {
                       verticalGap: 10,
                       horizontalGap: 10,
                       children: [
-                        FormTypeaheadCustom(
-                          allowCustomInput: true,
-                          suggestionsCallback: (p0) => ['test'],
-                          itemBuilder: (context, suggestion) {
-                            return ListTile(
-                              title: Text(suggestion),
-                            );
-                          },
+                        // FormTypeaheadCustom(
+                        //   allowCustomInput: true,
+                        //   suggestionsCallback: (p0) => ['test'],
+                        //   itemBuilder: (context, suggestion) {
+                        //     return ListTile(
+                        //       title: Text(suggestion),
+                        //     );
+                        //   },
+                        //   name: PatientField.species,
+                        //   decoration: InputDecoration(
+                        //     contentPadding: EdgeInsets.only(
+                        //       bottom: 10,
+                        //       right: 8,
+                        //       left: 8,
+                        //       top: 30,
+                        //     ),
+                        //     labelText: 'Species',
+                        //     filled: true,
+                        //     fillColor: Theme.of(context)
+                        //         .colorScheme
+                        //         .surfaceContainerLow,
+                        //     border: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(8),
+                        //     ),
+                        //   ),
+                        // ),
+                        // FormTypeaheadCustom(
+                        //   allowCustomInput: true,
+                        //   suggestionsCallback: (p0) => ['test'],
+                        //   itemBuilder: (context, suggestion) {
+                        //     return ListTile(
+                        //       title: Text(suggestion),
+                        //     );
+                        //   },
+                        //   name: PatientField.breed,
+                        //   decoration: InputDecoration(
+                        //     contentPadding: EdgeInsets.only(
+                        //       bottom: 10,
+                        //       right: 8,
+                        //       left: 8,
+                        //       top: 30,
+                        //     ),
+                        //     labelText: 'Breed',
+                        //     filled: true,
+                        //     fillColor: Theme.of(context)
+                        //         .colorScheme
+                        //         .surfaceContainerLow,
+                        //     border: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(8),
+                        //     ),
+                        //   ),
+                        // )
+                        FormBuilderTextField(
                           name: PatientField.species,
+                          validator: FormBuilderValidators.compose([
+                            FormBuilderValidators.required(),
+                          ]),
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(
-                              bottom: 10,
-                              right: 8,
-                              left: 8,
-                              top: 30,
-                            ),
+                                bottom: 10, right: 8, left: 8, top: 30),
                             labelText: 'Species',
                             filled: true,
                             fillColor: Theme.of(context)
@@ -215,22 +258,14 @@ class PatientUpdatePage extends HookConsumerWidget {
                             ),
                           ),
                         ),
-                        FormTypeaheadCustom(
-                          allowCustomInput: true,
-                          suggestionsCallback: (p0) => ['test'],
-                          itemBuilder: (context, suggestion) {
-                            return ListTile(
-                              title: Text(suggestion),
-                            );
-                          },
+                        FormBuilderTextField(
                           name: PatientField.breed,
+                          validator: FormBuilderValidators.compose([
+                            FormBuilderValidators.required(),
+                          ]),
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(
-                              bottom: 10,
-                              right: 8,
-                              left: 8,
-                              top: 30,
-                            ),
+                                bottom: 10, right: 8, left: 8, top: 30),
                             labelText: 'Breed',
                             filled: true,
                             fillColor: Theme.of(context)
@@ -240,7 +275,7 @@ class PatientUpdatePage extends HookConsumerWidget {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
 
@@ -251,6 +286,9 @@ class PatientUpdatePage extends HookConsumerWidget {
                     ///
                     FormBuilderDropdown<String>(
                       name: PatientField.sex,
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(),
+                      ]),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(
                             bottom: 10, right: 8, left: 8, top: 30),

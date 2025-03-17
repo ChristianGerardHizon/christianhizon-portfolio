@@ -48,9 +48,6 @@ class UserCreatePage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: CloseButton(
-          onPressed: () => PatientsPageRoute().go(context),
-        ),
         title: Text('User Create Page'),
       ),
       body: FormBuilder(

@@ -7,9 +7,6 @@ class SalesPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        // leading: BackButton(
-        //   onPressed: () => YourAccountPageRoute().go(context),
-        // ),
         title: Text('Sales'),
       ),
     );

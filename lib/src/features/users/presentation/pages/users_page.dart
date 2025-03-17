@@ -129,7 +129,8 @@ class UsersPage extends HookConsumerWidget {
                     list: list,
                     selected: selected.value,
                     onSelected: (p0) => selected.value = p0,
-                    onRowTap: (row) => UserPageRoute(list[row].id).go(context),
+                    onRowTap: (row) =>
+                        UserPageRoute(list[row].id).push(context),
                   );
                 },
               ),
