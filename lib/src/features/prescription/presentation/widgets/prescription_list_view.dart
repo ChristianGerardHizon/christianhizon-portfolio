@@ -86,33 +86,6 @@ class PrescriptionListView extends HookConsumerWidget {
     }
 
     buildActions({List<PrescriptionItem>? list}) {
-      final children = [
-        TextButton.icon(
-          label: Text('Add Prescription'),
-          icon: Icon(Icons.add),
-          onPressed: onPrescriptionAdd,
-        ),
-        if (list is List)
-          SizedBox(
-            width: 120,
-            child: TextButton.icon(
-              label: Text('Print'),
-              icon: Icon(MIcons.printer),
-              onPressed: () => onPrint(list!),
-            ),
-          ),
-        if (list is List)
-          kIsWeb == false && (Platform.isAndroid || Platform.isIOS)
-              ? SizedBox(
-                  width: 120,
-                  child: TextButton.icon(
-                    label: Text('Share'),
-                    icon: Icon(MIcons.share),
-                    onPressed: () => onShare(list!),
-                  ),
-                )
-              : SizedBox(),
-      ];
 
       return ResponsiveBuilder(builder: (context, si) {
         if (si.isMobile) {
@@ -120,7 +93,36 @@ class PrescriptionListView extends HookConsumerWidget {
             margin: EdgeInsets.only(top: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: children,
+              children: [
+                TextButton.icon(
+                  label: Text('Add Prescription'),
+                  icon: Icon(Icons.add),
+                  onPressed: onPrescriptionAdd,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (list is List)
+                      SizedBox(
+                        width: 120,
+                        child: TextButton.icon(
+                          label: Text('Print'),
+                          icon: Icon(MIcons.printer),
+                          onPressed: () => onPrint(list!),
+                        ),
+                      ),
+                    if (list is List)
+                      SizedBox(
+                        width: 120,
+                        child: TextButton.icon(
+                          label: Text('Share'),
+                          icon: Icon(MIcons.share),
+                          onPressed: () => onShare(list!),
+                        ),
+                      )
+                  ],
+                ),
+              ],
             ),
           );
         }
@@ -129,7 +131,31 @@ class PrescriptionListView extends HookConsumerWidget {
           margin: EdgeInsets.only(top: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: children,
+            children: [
+              TextButton.icon(
+                label: Text('Add Prescription'),
+                icon: Icon(Icons.add),
+                onPressed: onPrescriptionAdd,
+              ),
+              if (list is List)
+                SizedBox(
+                  width: 120,
+                  child: TextButton.icon(
+                    label: Text('Print'),
+                    icon: Icon(MIcons.printer),
+                    onPressed: () => onPrint(list!),
+                  ),
+                ),
+              if (list is List)
+                SizedBox(
+                  width: 120,
+                  child: TextButton.icon(
+                    label: Text('Share'),
+                    icon: Icon(MIcons.share),
+                    onPressed: () => onShare(list!),
+                  ),
+                ),
+            ],
           ),
         );
       });
