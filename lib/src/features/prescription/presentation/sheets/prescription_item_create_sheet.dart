@@ -216,17 +216,9 @@ class PrescriptionItemCreateSheet extends HookConsumerWidget {
     );
 
     return ResponsiveBuilder(builder: (context, si) {
-      if (isFullScreen.value) {
+      if (isFullScreen.value || si.isMobile) {
         return Dialog.fullscreen(
           child: content,
-        );
-      }
-
-      if (si.isMobile) {
-        return Dialog(
-          child: SizedBox(
-            child: content,
-          ),
         );
       }
 
@@ -238,5 +230,6 @@ class PrescriptionItemCreateSheet extends HookConsumerWidget {
         ),
       );
     });
+
   }
 }

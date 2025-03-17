@@ -14,6 +14,7 @@ import 'package:gym_system/src/features/treatments/presentation/controllers/trea
 import 'package:gym_system/src/features/treatments/presentation/widgets/treatment_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class TreatmentRecordCreateSheet extends HookConsumerWidget {
   final Treatment? treatment;
@@ -251,17 +252,20 @@ class TreatmentRecordCreateSheet extends HookConsumerWidget {
       ),
     );
 
-    if (isFullScreen.value) {
-      return Dialog.fullscreen(
-        child: content,
+    return ResponsiveBuilder(builder: (context, si) {
+      if (isFullScreen.value || si.isMobile) {
+        return Dialog.fullscreen(
+          child: content,
+        );
+      }
+
+      return Dialog(
+        child: SizedBox(
+          width: screenSize.width / 2,
+          height: screenSize.width / 1.5,
+          child: content,
+        ),
       );
-    }
-    return Dialog(
-      child: SizedBox(
-        width: screenSize.width / 2,
-        height: screenSize.width / 1.5,
-        child: content,
-      ),
-    );
+    });
   }
 }

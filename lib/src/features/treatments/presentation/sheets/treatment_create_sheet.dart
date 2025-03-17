@@ -8,6 +8,7 @@ import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/treatments/data/treatment/treatment_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class TreatmentCreateSheet extends HookConsumerWidget {
   final Map<String, dynamic>? formData;
@@ -130,14 +131,21 @@ class TreatmentCreateSheet extends HookConsumerWidget {
       ),
     );
 
-    if (isFullScreen.value) {
-      return Dialog.fullscreen(
-        child: content,
-      );
-    }
+    return ResponsiveBuilder(builder: (context, si) {
+      if (isFullScreen.value || si.isMobile) {
+        return Dialog.fullscreen(
+          child: content,
+        );
+      }
 
-    return Dialog(
-      child: content,
-    );
+      return Dialog(
+        child: SizedBox(
+          width: screenSize.width / 2,
+          height: screenSize.width / 1.5,
+          child: content,
+        ),
+      );
+    });
+
   }
 }
