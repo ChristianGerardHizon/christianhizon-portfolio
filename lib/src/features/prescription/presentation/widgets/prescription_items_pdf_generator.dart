@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:gym_system/src/core/assets/assets.gen.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
@@ -26,7 +28,8 @@ class PrescriptionItemsPdfGenerator {
   }
 
   Future<bool> share() async {
-    if (kIsWeb) throw Failure.presentation('this feature is not available in web');
+    if (kIsWeb)
+      throw Failure.presentation('this feature is not available in web');
 
     final pdfData = await _generatePdf();
     await Printing.sharePdf(bytes: pdfData, filename: buildFileName());
@@ -45,8 +48,8 @@ class PrescriptionItemsPdfGenerator {
 
   /// Saves the generated PDF to local storage
   Future<bool> save() async {
-
-    if (kIsWeb) throw Failure.presentation('this feature is not available in web');
+    if (kIsWeb)
+      throw Failure.presentation('this feature is not available in web');
 
     final pdfData = await _generatePdf();
     final filePath = await _savePdfToFile(pdfData);
@@ -56,13 +59,14 @@ class PrescriptionItemsPdfGenerator {
   /// Generates the prescription PDF
   Future<Uint8List> _generatePdf() async {
     final pdf = pw.Document();
+    final header = await _buildHeader();
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
           return pw.Column(
             children: [
-              _buildHeader(),
+              header,
               pw.SizedBox(height: 10),
               _buildPatient(),
               pw.SizedBox(height: 40),
@@ -194,18 +198,25 @@ class PrescriptionItemsPdfGenerator {
     ]);
   }
 
-  pw.Widget _buildHeader() {
-    final logoPath = 'assets/icons/app_icon_transparent.png';
+  Future<List<pw.Widget>> _loadLogo(String path) async {
+    try {
+      final ByteData data = await rootBundle.load(path);
+      final Uint8List bytes = data.buffer.asUint8List();
+      return [pw.Image(pw.MemoryImage(bytes), height: 60)];
+    } catch (e) {
+      return []; // If the logo is missing, return an empty list
+    }
+  }
+
+  Future<pw.Widget> _buildHeader() async {
+    final logoPath = Assets.icons.appIconTransparent.path;
+
+    final logo = await _loadLogo(logoPath);
 
     return pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       children: [
-        pw.Image(
-          pw.MemoryImage(
-            File(logoPath).readAsBytesSync(),
-          ),
-          width: 80,
-        ),
+        ...logo,
         pw.SizedBox(width: 10),
         pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.end,

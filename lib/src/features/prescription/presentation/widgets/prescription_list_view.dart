@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
@@ -12,6 +15,7 @@ import 'package:gym_system/src/features/prescription/presentation/controllers/pr
 import 'package:gym_system/src/features/prescription/presentation/sheets/prescription_item_create_sheet.dart';
 import 'package:gym_system/src/features/prescription/presentation/widgets/prescription_items_pdf_generator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class PrescriptionListView extends HookConsumerWidget {
   final MedicalRecord record;
@@ -54,7 +58,8 @@ class PrescriptionListView extends HookConsumerWidget {
         AppSnackBar.root(message: 'Print Starting...');
         final patient =
             await ref.read(patientControllerProvider(record.patient).future);
-        await PrescriptionItemsPdfGenerator(items: list, patient: patient, record: record)
+        await PrescriptionItemsPdfGenerator(
+                items: list, patient: patient, record: record)
             .print();
       }, Failure.tryCatchPresentation)
           .run();
@@ -69,7 +74,8 @@ class PrescriptionListView extends HookConsumerWidget {
         AppSnackBar.root(message: 'Share Starting...');
         final patient =
             await ref.read(patientControllerProvider(record.patient).future);
-        await PrescriptionItemsPdfGenerator(items: list, patient: patient, record: record)
+        await PrescriptionItemsPdfGenerator(
+                items: list, patient: patient, record: record)
             .share();
       }, Failure.tryCatchPresentation)
           .run();
@@ -80,37 +86,53 @@ class PrescriptionListView extends HookConsumerWidget {
     }
 
     buildActions({List<PrescriptionItem>? list}) {
-      return Container(
-        margin: EdgeInsets.only(top: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton.icon(
-              label: Text('Add Prescription'),
-              icon: Icon(Icons.add),
-              onPressed: onPrescriptionAdd,
-            ),
-            if (list is List)
-              SizedBox(
-                width: 120,
-                child: TextButton.icon(
-                  label: Text('Print'),
-                  icon: Icon(MIcons.printer),
-                  onPressed: () => onPrint(list!),
-                ),
-              ),
-            if (list is List)
-              SizedBox(
-                width: 120,
-                child: TextButton.icon(
-                  label: Text('Share'),
-                  icon: Icon(MIcons.share),
-                  onPressed: () => onShare(list!),
-                ),
-              ),
-          ],
+      final children = [
+        TextButton.icon(
+          label: Text('Add Prescription'),
+          icon: Icon(Icons.add),
+          onPressed: onPrescriptionAdd,
         ),
-      );
+        if (list is List)
+          SizedBox(
+            width: 120,
+            child: TextButton.icon(
+              label: Text('Print'),
+              icon: Icon(MIcons.printer),
+              onPressed: () => onPrint(list!),
+            ),
+          ),
+        if (list is List)
+          kIsWeb == false && (Platform.isAndroid || Platform.isIOS)
+              ? SizedBox(
+                  width: 120,
+                  child: TextButton.icon(
+                    label: Text('Share'),
+                    icon: Icon(MIcons.share),
+                    onPressed: () => onShare(list!),
+                  ),
+                )
+              : SizedBox(),
+      ];
+
+      return ResponsiveBuilder(builder: (context, si) {
+        if (si.isMobile) {
+          return Container(
+            margin: EdgeInsets.only(top: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: children,
+            ),
+          );
+        }
+
+        return Container(
+          margin: EdgeInsets.only(top: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: children,
+          ),
+        );
+      });
     }
 
     return state.when(
