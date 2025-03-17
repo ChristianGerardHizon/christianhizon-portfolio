@@ -152,10 +152,10 @@ class PrescriptionItemsPdfGenerator {
     return pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       children: [
-        pw.Image(
-          pw.MemoryImage(File(logoPath).readAsBytesSync()),
-          width: 80,
-        ),
+        // pw.Image(
+        //   pw.MemoryImage(File(logoPath).readAsBytesSync()),
+        //   width: 80,
+        // ),
         pw.SizedBox(width: 10),
         pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.end,
@@ -199,7 +199,7 @@ class PrescriptionItemsPdfGenerator {
             pw.Border(bottom: pw.BorderSide(width: 1, color: PdfColors.black)),
       ),
       headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.normal),
-      headers: ["#","Medication", "Dosage", "Instructions"],
+      headers: ["#", "Medication", "Dosage", "Instructions"],
       textStyleBuilder: (index, data, rowNum) => pw.TextStyle(
         fontSize: 12,
         fontWeight: pw.FontWeight.normal,
