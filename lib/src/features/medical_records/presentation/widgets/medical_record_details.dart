@@ -2,22 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/card_group.dart';
 import 'package:gym_system/src/core/widgets/collapsing_card.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
-import 'package:gym_system/src/core/widgets/pdf_generator.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/medical_records/data/medical_record_repository.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
+import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_record_controller.dart';
 import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_records_controller.dart';
-import 'package:gym_system/src/features/prescription/domain/prescription_item.dart';
+import 'package:gym_system/src/features/medical_records/presentation/sheets/medical_record_update_sheet.dart';
 import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_all_items_controller.dart';
-import 'package:gym_system/src/features/prescription/presentation/sheets/prescription_item_create_sheet.dart';
-import 'package:gym_system/src/features/prescription/presentation/widgets/prescription_items_pdf_generator.dart';
 import 'package:gym_system/src/features/prescription/presentation/widgets/prescription_list_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -39,6 +35,7 @@ class MedicalRecordDetails extends HookConsumerWidget {
               (r) {
                 ref.invalidate(medicalRecordsControllerProvider);
                 AppSnackBar.root(message: 'Successfully Deleted');
+                ref.invalidate(medicalRecordControllerProvider(record.id));
                 if (context.canPop()) context.pop();
               },
             );
@@ -49,7 +46,9 @@ class MedicalRecordDetails extends HookConsumerWidget {
     ///
     ///
     ///
-    onTap(MedicalRecord record) {}
+    onTap(MedicalRecord record) {
+      MedicalRecordUpdateSheet.show(context, record: record);
+    }
 
     return CustomScrollView(
       slivers: [

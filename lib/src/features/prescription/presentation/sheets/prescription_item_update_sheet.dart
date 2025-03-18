@@ -7,36 +7,36 @@ import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/form_builders/hidden_form_field.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
-import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
 import 'package:gym_system/src/features/prescription/data/prescription_item_repository.dart';
-import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_item_page_controller.dart';
+import 'package:gym_system/src/features/prescription/domain/prescription_item.dart';
+import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_all_items_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-class PrescriptionItemCreateSheet extends HookConsumerWidget {
-  final MedicalRecord medicalRecord;
+class PrescriptionItemUpdateSheet extends HookConsumerWidget {
+  final PrescriptionItem item;
 
   final Map<String, dynamic>? formData;
 
-  const PrescriptionItemCreateSheet({
+  const PrescriptionItemUpdateSheet({
     super.key,
-    required this.medicalRecord,
+    required this.item,
     this.formData,
   });
 
   static Future show(
     BuildContext context, {
-    required MedicalRecord record,
+    required PrescriptionItem item,
     Map<String, dynamic>? formData,
   }) async {
-    // final screenSize = MediaQuery.of(context).size;
+    final screenSize = MediaQuery.of(context).size;
 
     return showDialog(
       context: context,
       useRootNavigator: true,
       useSafeArea: true,
-      builder: (_) => PrescriptionItemCreateSheet(
-        medicalRecord: record,
+      builder: (_) => PrescriptionItemUpdateSheet(
+        item: item,
         formData: formData,
       ),
     );
@@ -65,14 +65,14 @@ class PrescriptionItemCreateSheet extends HookConsumerWidget {
 
       final result = await ref
           .read(prescriptionItemRepositoryProvider)
-          .create(value)
+          .update(item, value)
           .run();
       isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          ref.invalidate(prescriptionItemsPageControllerProvider);
+          ref.invalidate(prescriptionAllItemsControllerProvider(id: item.medicalRecord));
           context.pop(r);
         },
       );
@@ -86,14 +86,17 @@ class PrescriptionItemCreateSheet extends HookConsumerWidget {
           key: formKey,
           initialValue: {
             PrescriptionItemField.id: formData?[PrescriptionItemField.id],
-            PrescriptionItemField.medicalRecord: medicalRecord.id,
+            PrescriptionItemField.medicalRecord: item.medicalRecord,
+            PrescriptionItemField.medication: item.medication,
+            PrescriptionItemField.dosage: item.dosage,
+            PrescriptionItemField.instructions: item.instructions,
           },
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
                 backgroundColor: Colors.transparent,
                 leading: CloseButton(),
-                title: Text('New Prescription Item'),
+                title: Text('Update Prescription Item'),
               ),
 
               SliverList.list(
@@ -224,12 +227,11 @@ class PrescriptionItemCreateSheet extends HookConsumerWidget {
 
       return Dialog(
         child: SizedBox(
-          width: screenSize.width / 2,
+          width: screenSize.width / 1.5,
           height: screenSize.width / 1.5,
           child: content,
         ),
       );
     });
-
   }
 }

@@ -1,6 +1,4 @@
-import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
@@ -13,6 +11,7 @@ import 'package:gym_system/src/features/prescription/data/prescription_item_repo
 import 'package:gym_system/src/features/prescription/domain/prescription_item.dart';
 import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_all_items_controller.dart';
 import 'package:gym_system/src/features/prescription/presentation/sheets/prescription_item_create_sheet.dart';
+import 'package:gym_system/src/features/prescription/presentation/sheets/prescription_item_update_sheet.dart';
 import 'package:gym_system/src/features/prescription/presentation/widgets/prescription_items_pdf_generator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -86,7 +85,6 @@ class PrescriptionListView extends HookConsumerWidget {
     }
 
     buildActions({List<PrescriptionItem>? list}) {
-
       return ResponsiveBuilder(builder: (context, si) {
         if (si.isMobile) {
           return Container(
@@ -194,6 +192,11 @@ class PrescriptionListView extends HookConsumerWidget {
           );
         }
 
+        onTap(PrescriptionItem item) async {
+          final result =
+              await PrescriptionItemUpdateSheet.show(context, item: item);
+        }
+
         return Column(
           children: [
             ListView.builder(
@@ -204,6 +207,7 @@ class PrescriptionListView extends HookConsumerWidget {
                 final item = list[index];
 
                 return ListTile(
+                  onTap: () => onTap(item),
                   isThreeLine: true,
                   leading: CircleAvatar(
                     backgroundColor: theme.colorScheme.primaryFixedDim,

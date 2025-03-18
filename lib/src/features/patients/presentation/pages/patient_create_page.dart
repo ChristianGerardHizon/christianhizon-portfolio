@@ -3,10 +3,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/form_typeahead_custom.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/core/widgets/responsive_two_fields.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
@@ -248,7 +246,7 @@ class PatientCreatePage extends HookConsumerWidget {
                   /// Date Of Birth
                   ///
                   FormBuilderDateTimePicker(
-                    initialEntryMode: DatePickerEntryMode.inputOnly,
+                          initialEntryMode: DatePickerEntryMode.calendar,
                     inputType: InputType.date,
                     name: PatientField.dateOfBirth,
                     decoration: InputDecoration(

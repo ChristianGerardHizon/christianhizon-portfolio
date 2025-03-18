@@ -122,6 +122,7 @@ class TreatmentRecordCreateSheet extends HookConsumerWidget {
                     SizedBox(height: 10),
                     FormBuilderDateTimePicker(
                       name: TreatmentRecordField.date,
+                      initialEntryMode: DatePickerEntryMode.calendar,
                       valueTransformer: (value) => value?.toIso8601String(),
                       firstDate:
                           DateTime.now().subtract(Duration(days: 365 * 5)),
@@ -185,7 +186,8 @@ class TreatmentRecordCreateSheet extends HookConsumerWidget {
                     ),
                     SizedBox(height: 4),
                     FormBuilderDateTimePicker(
-                      name: TreatmentRecordField.date,
+                      name: TreatmentRecordField.followUpDate,
+                      initialEntryMode: DatePickerEntryMode.calendar,
                       valueTransformer: (value) => value?.toIso8601String(),
                       firstDate:
                           DateTime.now().subtract(Duration(days: 365 * 5)),

@@ -164,7 +164,7 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
                       verticalGap: 8,
                       children: [
                         FormBuilderDateTimePicker(
-                          initialEntryMode: DatePickerEntryMode.inputOnly,
+                          initialEntryMode: DatePickerEntryMode.calendar,
                           inputType: InputType.date,
                           name: MedicalRecordField.vistDate,
                           decoration: InputDecoration(
@@ -186,7 +186,7 @@ class MedicalRecordCreateSheet extends HookConsumerWidget {
                           },
                         ),
                         FormBuilderDateTimePicker(
-                          initialEntryMode: DatePickerEntryMode.inputOnly,
+                          initialEntryMode: DatePickerEntryMode.calendar,
                           inputType: InputType.date,
                           name: MedicalRecordField.followUpDate,
                           decoration: InputDecoration(

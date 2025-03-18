@@ -20,8 +20,7 @@ class YourAccountPage extends HookConsumerWidget {
       );
     }
 
-    final state = ref.watch(authControllerProvider);
-
+ 
     return Scaffold(
       body: CustomScrollView(
         slivers: [

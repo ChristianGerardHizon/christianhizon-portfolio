@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_record_controller.dart';
 import 'package:gym_system/src/features/medical_records/presentation/widgets/medical_record_details.dart';
 import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_all_items_controller.dart';
@@ -41,6 +42,9 @@ class MedicalRecordPage extends HookConsumerWidget {
             return Scaffold(
               appBar: AppBar(
                 title: Text('Medical Record Details'),
+                actions: [
+                  RefreshButton(onPressed: () => ref.invalidate(provider)),
+                ],
               ),
               body: MedicalRecordDetails(record: record),
             );
