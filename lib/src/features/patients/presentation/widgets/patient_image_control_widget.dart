@@ -30,59 +30,36 @@ class PatientImageControlWidget extends StatelessWidget {
       builder: (url) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18),
-          child: ResponsiveBuilder(builder: (context, si) {
-            if (si.isMobile) {
-              return Column(
+          child: Column(
+            children: [
+              SizedBox(height: 20),
+              PatientCircleImage(
+                fit: BoxFit.cover,
+                patient: patient,
+                radius: 250,
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  PatientCircleImage(patient: patient),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FilledButton.icon(
-                          onPressed: onUpload,
-                          icon: const Icon(Icons.upload),
-                          label: Text('Upload')),
-                      SizedBox(width: 8),
-                      FilledButton.icon(
-                        onPressed: onImageDiscard,
-                        style: FilledButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.error,
-                        ),
-                        icon: const Icon(Icons.delete_outline),
-                        label: Text('Delete'),
-                      ),
-                    ],
+                  FilledButton.icon(
+                      onPressed: onUpload,
+                      icon: const Icon(Icons.upload),
+                      label: Text('Upload')),
+                  SizedBox(width: 8),
+                  FilledButton.icon(
+                    onPressed: onImageDiscard,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                    ),
+                    icon: const Icon(Icons.delete_outline),
+                    label: Text('Delete'),
                   ),
-                  SizedBox(height: 10),
                 ],
-              );
-            }
-            return Row(
-              children: [
-                InkWell(
-                    onTap: () => PhotoViewer.show(context, url),
-                    child: CircleAvatar(
-                      radius: 60,
-                      backgroundImage: CachedNetworkImageProvider(url),
-                    )),
-                Spacer(),
-                FilledButton.icon(
-                    onPressed: onUpload,
-                    icon: const Icon(Icons.upload),
-                    label: Text('Upload')),
-                SizedBox(width: 8),
-                FilledButton.icon(
-                  onPressed: () {},
-                  style: FilledButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.error,
-                  ),
-                  icon: const Icon(Icons.delete_outline),
-                  label: Text('Delete'),
-                ),
-              ],
-            );
-          }),
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
         );
       },
     );

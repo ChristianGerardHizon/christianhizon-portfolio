@@ -24,6 +24,9 @@ class ProductMapper extends ClassMapperBase<Product> {
   static const Field<Product, String> _f$id = Field('id', _$id);
   static String _$name(Product v) => v.name;
   static const Field<Product, String> _f$name = Field('name', _$name);
+  static String? _$notes(Product v) => v.notes;
+  static const Field<Product, String> _f$notes =
+      Field('notes', _$notes, opt: true);
   static String? _$category(Product v) => v.category;
   static const Field<Product, String> _f$category =
       Field('category', _$category, opt: true);
@@ -41,6 +44,7 @@ class ProductMapper extends ClassMapperBase<Product> {
   final MappableFields<Product> fields = const {
     #id: _f$id,
     #name: _f$name,
+    #notes: _f$notes,
     #category: _f$category,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
@@ -51,6 +55,7 @@ class ProductMapper extends ClassMapperBase<Product> {
     return Product(
         id: data.dec(_f$id),
         name: data.dec(_f$name),
+        notes: data.dec(_f$notes),
         category: data.dec(_f$category),
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
@@ -110,6 +115,7 @@ abstract class ProductCopyWith<$R, $In extends Product, $Out>
   $R call(
       {String? id,
       String? name,
+      String? notes,
       String? category,
       bool? isDeleted,
       DateTime? created,
@@ -129,6 +135,7 @@ class _ProductCopyWithImpl<$R, $Out>
   $R call(
           {String? id,
           String? name,
+          Object? notes = $none,
           Object? category = $none,
           bool? isDeleted,
           Object? created = $none,
@@ -136,6 +143,7 @@ class _ProductCopyWithImpl<$R, $Out>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (name != null) #name: name,
+        if (notes != $none) #notes: notes,
         if (category != $none) #category: category,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
@@ -145,6 +153,7 @@ class _ProductCopyWithImpl<$R, $Out>
   Product $make(CopyWithData data) => Product(
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
+      notes: data.get(#notes, or: $value.notes),
       category: data.get(#category, or: $value.category),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),

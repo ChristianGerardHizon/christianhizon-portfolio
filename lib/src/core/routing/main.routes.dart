@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/pages/more_page.dart';
@@ -5,9 +7,11 @@ import 'package:gym_system/src/core/pages/not_found_page.dart';
 import 'package:gym_system/src/core/pages/splash_page.dart';
 import 'package:gym_system/src/core/pages/app_root.dart';
 import 'package:gym_system/src/features/admins/presentation/pages/admins_page.dart';
+import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_recovery_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/admin_login_page.dart';
+import 'package:gym_system/src/features/authentication/presentation/pages/email_validation_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/user_login_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:gym_system/src/features/medical_records/presentation/pages/medical_record_page.dart';
@@ -28,6 +32,7 @@ import 'package:gym_system/src/features/users/presentation/pages/user_page.dart'
 import 'package:gym_system/src/features/users/presentation/pages/user_update_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/users_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/your_account_page.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 part 'main.routes.g.dart';
 part 'routes/admins.routes.dart';
@@ -201,4 +206,14 @@ class RootRouteData extends StatefulShellRouteData {
     StatefulNavigationShell navigationShell,
   ) =>
       AppRoot(shell: navigationShell, state: state);
+
+  // @override
+  // FutureOr<String?> redirect(BuildContext context, GoRouterState state) async {
+  //   final provider = ProviderScope.containerOf(context);
+  //   final auth = await provider.read(authControllerProvider);
+
+  //   if (auth.isLoading) return SplashPageRoute.path;
+
+  //   return null;
+  // }
 }

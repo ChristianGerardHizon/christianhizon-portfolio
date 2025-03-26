@@ -8,6 +8,7 @@ class User with UserMappable {
   final String name;
   final String email;
   final String? avatar;
+  final bool verified;
 
   final DateTime? created;
   final DateTime? updated;
@@ -19,6 +20,7 @@ class User with UserMappable {
     this.created,
     this.updated,
     this.avatar,
+    this.verified = false,
   });
 
   static const fromMap = UserMapper.fromMap;

@@ -46,12 +46,11 @@ class AccountCircleImage extends HookConsumerWidget {
               );
 
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Row(
                 children: availableWidth >= requiredWidth
                     ? [
                         image,
-                        SizedBox(width: 8),
                         ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: 110),
                           child: Column(
@@ -66,8 +65,8 @@ class AccountCircleImage extends HookConsumerWidget {
                               if (type != null)
                                 Text(
                                   type,
-                                  overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: Theme.of(context).textTheme.bodySmall,
                                 )
                             ],

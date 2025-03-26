@@ -27,6 +27,9 @@ abstract class UserRepository {
 
   TaskResult<User> create(Map<String, dynamic> payload);
   TaskResult<void> softDeleteMulti(List<String> ids);
+
+  TaskResult<void> requestVerification(String email);
+  TaskResult<void> confirmVerification(String token);
 }
 
 @Riverpod(keepAlive: true)
@@ -118,5 +121,25 @@ class UserRepositoryImpl extends UserRepository {
 
       await batch.send();
     }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<void> confirmVerification(String token) {
+    return TaskResult.tryCatch(
+      () async {
+        await collection.confirmVerification(token);
+      },
+      Failure.tryCatchData,
+    );
+  }
+
+  @override
+  TaskResult<void> requestVerification(String email) {
+    return TaskResult.tryCatch(
+      () async {
+        await collection.requestVerification(email);
+      },
+      Failure.tryCatchData,
+    );
   }
 }

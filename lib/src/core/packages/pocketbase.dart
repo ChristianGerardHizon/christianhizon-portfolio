@@ -6,7 +6,7 @@ part 'pocketbase.g.dart';
 
 @Riverpod(keepAlive: true)
 PocketBase pocketbase(Ref ref) {
-  // return PocketBase('https://sannjosevet.xyz');
-  return PocketBase('https://fox-expect.pockethost.io');
+  return PocketBase('https://sannjosevet.xyz');
+  // return PocketBase('https://fox-expect.pockethost.io');
   // return PocketBase('http://127.0.0.1:8090');
 }

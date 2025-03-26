@@ -7,6 +7,7 @@ class Product with ProductMappable {
   final String id;
 
   final String name;
+  final String? notes;
   final String? category;
 
   final bool isDeleted;
@@ -16,6 +17,7 @@ class Product with ProductMappable {
   Product({
     required this.id,
     required this.name,
+    this.notes,
     this.category,
     this.isDeleted = false,
     required this.created,

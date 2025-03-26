@@ -10,6 +10,7 @@ class Admin with AdminMappable {
   final String email;
   final String? avatar;
   final bool isDeleted;
+  final bool verified;
 
   Admin({
     required this.id,
@@ -17,6 +18,7 @@ class Admin with AdminMappable {
     this.email = '',
     this.avatar,
     this.isDeleted = false,
+    this.verified = false,
   });
 
   static const fromMap = AdminMapper.fromMap;
@@ -24,4 +26,3 @@ class Admin with AdminMappable {
 
   bool get hasAvatar => avatar is String && avatar!.isNotEmpty;
 }
-

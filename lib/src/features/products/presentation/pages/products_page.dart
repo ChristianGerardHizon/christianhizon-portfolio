@@ -1,63 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/card_ink_well.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/page_actions.dart';
-import 'package:gym_system/src/core/widgets/page_selector.dart';
-import 'package:gym_system/src/core/widgets/text_search_bar.dart';
+import 'package:gym_system/src/core/widgets/dynamic_list/responsive_pagination_list_with_delete_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
+import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_search.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/products_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/products_page_controller.dart';
-import 'package:gym_system/src/features/products/presentation/widgets/products_table.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductsPage extends HookConsumerWidget {
   const ProductsPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pageState = ref.watch(productsPageControllerProvider);
-    final searchNotif = ref.read(productSearchControllerProvider.notifier);
-    final state = ref.watch(productsControllerProvider);
-    final selected = useState<List<int>>([]);
+    final controller = useMemoized(() => DynamicTableController());
     final searchCtrl = useTextEditingController();
 
-    final hasNext = useState(false);
-
-    ///
-    /// on start
-    ///
-    useEffect(() {
-      ref.listen(productsControllerProvider, (prev, next) {
-        final value = next.value;
-        if (value != null) {
-          hasNext.value = value.items.length == value.perPage;
-        }
-      });
-
-      return null;
-    }, [pageState]);
-
-    ///
-    /// on Delete
-    ///
-    onDelete() async {
-      final confirm = await ConfirmModal.show(context);
-      if (confirm != true) return;
-      final repo = ref.read(productRepositoryProvider);
-      final ids = selected.value.map((e) => state.value!.items[e].id).toList();
-      repo.softDeleteMulti(ids).run().then((result) {
-        result.fold(
-          (l) => AppSnackBar.rootFailure(l),
-          (r) {
-            selected.value = [];
-            ref.invalidate(productsControllerProvider);
-            AppSnackBar.root(message: 'Successfully Deleted');
-            ref.invalidate(productsControllerProvider);
-          },
-        );
-      });
+    onTap(Product product) {
+      ProductPageRoute(product.id).push(context);
     }
 
     return Scaffold(
@@ -70,131 +35,101 @@ class ProductsPage extends HookConsumerWidget {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          CustomScrollView(
-            slivers: [
-              ///
-              /// Serch Bar
-              ///
-              SliverToBoxAdapter(
-                child: TextSearchBar(
-                  controller: searchCtrl,
-                  onClear: () {
-                    searchCtrl.clear();
-                    searchNotif.updateParams(
-                        ProductSearch.buildQuery(searchCtrl.text));
-                  },
-                  onSearch: () {
-                    searchNotif.updateParams(
-                      ProductSearch.buildQuery(searchCtrl.text),
-                    );
-                  },
-                  onCreate: () {
-                    ProductCreatePageRoute().push(context);
-                  },
-                ),
-              ),
+      body:
 
-              ///
-              /// list
-              ///
-              state.when(
-                skipError: false,
-                skipLoadingOnRefresh: false,
-                skipLoadingOnReload: false,
-                loading: () => SliverPadding(
-                  padding: const EdgeInsets.all(20.0),
-                  sliver: SliverToBoxAdapter(
-                    child: Center(
-                      child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: CircularProgressIndicator()),
-                    ),
-                  ),
-                ),
-                error: (error, stackTrace) => SliverMainAxisGroup(slivers: [
-                  SliverAppBar(
-                    title: Text('Sample'),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Center(
-                      child: Text(error.toString()),
-                    ),
-                  ),
-                ]),
-                data: (data) {
-                  final list = data.items;
-
-                  if (list.isEmpty) {
-                    return SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: 100,
-                        child: Center(
-                          child: Text('No products found'),
-                        ),
-                      ),
-                    );
-                  }
-                  return ProductsTable(
-                    list: list,
-                    selected: selected.value,
-                    onSelected: (p0) => selected.value = p0,
-                    onRowTap: (row) {
-                      ProductPageRoute(list[row].id).push(context);
-                    },
-                  );
-                },
-              ),
-
-              ///
-              /// page
-              ///
-              SliverPadding(
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 20,
-                  bottom: 8,
-                ),
-                sliver: SliverToBoxAdapter(
-                  child: PageSelector(
-                    hasNext: hasNext.value,
-                    page: pageState.page,
-                    onPageChange: (value) {
-                      /// clear selected after
-                      ///
-                      selected.value = [];
-                      ref
-                          .read(productsPageControllerProvider.notifier)
-                          .changePage(value);
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Positioned(
-            bottom: 30,
-            left: 20,
-            right: 20,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: selected.value.isNotEmpty
-                  ? PageActions(
-                      size: selected.value.length,
-                      onDelete: () {
-                        onDelete();
-                      },
-                      onReset: () {
-                        selected.value = [];
-                      },
-                    )
-                  : SizedBox(),
+          ///
+          /// Table
+          ///
+          ResponsivePaginationListWithDeleteView<Product>(
+        controller: controller,
+        onPageChange:
+            ref.read(productsPageControllerProvider.notifier).changePage,
+        errorMessage: ref.watch(productsControllerProvider).maybeWhen(
+            skipError: false,
+            skipLoadingOnRefresh: true,
+            skipLoadingOnReload: true,
+            error: (error, stackTrace) => 'generic error',
+            orElse: () => null),
+        results: ref.watch(productsControllerProvider).when(
+              skipError: true,
+              skipLoadingOnRefresh: false,
+              skipLoadingOnReload: false,
+              data: (x) => x,
+              error: (error, stackTrace) => null,
+              loading: () => null,
             ),
-          )
+        onDelete: (items) async {
+          final confirm = await ConfirmModal.show(context);
+          if (confirm != true) return;
+          final repo = ref.read(productRepositoryProvider);
+          final ids = items.map((e) => e.id).toList();
+          final result = await repo.softDeleteMulti(ids).run();
+          result.fold(
+            (l) => AppSnackBar.rootFailure(l),
+            (r) {
+              controller.clear();
+              ref.invalidate(productsControllerProvider);
+              AppSnackBar.root(message: 'Successfully Deleted');
+              if (context.canPop()) context.pop();
+            },
+          );
+        },
+
+        ///
+        /// Search Features
+        ///
+        searchCtrl: searchCtrl,
+        onClear: () {},
+        onCreate: () {
+          ProductCreatePageRoute().push(context);
+        },
+        onSearch: () {
+          final query = searchCtrl.text.trim();
+          ref
+              .read(productSearchControllerProvider.notifier)
+              .updateParams(ProductSearch(name: query));
+        },
+
+        ///
+        /// Table Data
+        ///
+        onHeaderTap: (headerKey) {},
+        onTap: onTap,
+        data: [
+          TableColumn(
+            header: 'Name',
+            builder: (context, data, extra) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('${data.name}'),
+                  Text('${extra.row} ${extra.column} ${extra.isSelected}'),
+                ],
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Status',
+            builder: (context, product, extra) {
+              return Text(product.name);
+            },
+          ),
+          TableColumn(header: 'Date Created', width: 150),
+          TableColumn(header: 'Date Updated', width: 150),
         ],
+
+        ///
+        /// Builder for mobile
+        ///
+        mobileBuilder: (context, index, value, selected) => Card(
+          child: CardInkWell(
+            onTap: () => onTap(value),
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: Text(value.name),
+            ),
+          ),
+        ),
       ),
     );
   }

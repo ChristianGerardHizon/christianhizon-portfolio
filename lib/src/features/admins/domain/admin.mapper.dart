@@ -33,6 +33,9 @@ class AdminMapper extends ClassMapperBase<Admin> {
   static bool _$isDeleted(Admin v) => v.isDeleted;
   static const Field<Admin, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
+  static bool _$verified(Admin v) => v.verified;
+  static const Field<Admin, bool> _f$verified =
+      Field('verified', _$verified, opt: true, def: false);
 
   @override
   final MappableFields<Admin> fields = const {
@@ -41,6 +44,7 @@ class AdminMapper extends ClassMapperBase<Admin> {
     #email: _f$email,
     #avatar: _f$avatar,
     #isDeleted: _f$isDeleted,
+    #verified: _f$verified,
   };
 
   static Admin _instantiate(DecodingData data) {
@@ -49,7 +53,8 @@ class AdminMapper extends ClassMapperBase<Admin> {
         name: data.dec(_f$name),
         email: data.dec(_f$email),
         avatar: data.dec(_f$avatar),
-        isDeleted: data.dec(_f$isDeleted));
+        isDeleted: data.dec(_f$isDeleted),
+        verified: data.dec(_f$verified));
   }
 
   @override
@@ -103,7 +108,8 @@ abstract class AdminCopyWith<$R, $In extends Admin, $Out>
       String? name,
       String? email,
       String? avatar,
-      bool? isDeleted});
+      bool? isDeleted,
+      bool? verified});
   AdminCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -119,13 +125,15 @@ class _AdminCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Admin, $Out>
           String? name,
           String? email,
           Object? avatar = $none,
-          bool? isDeleted}) =>
+          bool? isDeleted,
+          bool? verified}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (email != null) #email: email,
         if (avatar != $none) #avatar: avatar,
-        if (isDeleted != null) #isDeleted: isDeleted
+        if (isDeleted != null) #isDeleted: isDeleted,
+        if (verified != null) #verified: verified
       }));
   @override
   Admin $make(CopyWithData data) => Admin(
@@ -133,7 +141,8 @@ class _AdminCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Admin, $Out>
       name: data.get(#name, or: $value.name),
       email: data.get(#email, or: $value.email),
       avatar: data.get(#avatar, or: $value.avatar),
-      isDeleted: data.get(#isDeleted, or: $value.isDeleted));
+      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
+      verified: data.get(#verified, or: $value.verified));
 
   @override
   AdminCopyWith<$R2, Admin, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

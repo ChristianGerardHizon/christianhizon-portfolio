@@ -105,8 +105,8 @@ class AppRoot extends HookConsumerWidget {
                 backgroundColor: theme.appBarTheme.backgroundColor,
                 builder: (data) => SideMenuData(
                   header: Logo(
-                    width: null,
-                    height: null,
+                    width: 200,
+                    height: 80,
                   ),
                   items: items.mapWithIndex((e, index) {
                     return SideMenuItemDataTile(

@@ -13,6 +13,7 @@ List<RouteBase> get $appRoutes => [
       $adminsPageRoute,
       $adminPageRoute,
       $loginPageRoute,
+      $emailValidationPageRoute,
       $adminLoginPageRoute,
       $accountPageRoute,
       $yourAccountPageRoute,
@@ -633,6 +634,29 @@ extension $LoginPageRouteExtension on LoginPageRoute {
 
   String get location => GoRouteData.$location(
         '/login/user',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $emailValidationPageRoute => GoRouteData.$route(
+      path: '/email/validation',
+      factory: $EmailValidationPageRouteExtension._fromState,
+    );
+
+extension $EmailValidationPageRouteExtension on EmailValidationPageRoute {
+  static EmailValidationPageRoute _fromState(GoRouterState state) =>
+      const EmailValidationPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/email/validation',
       );
 
   void go(BuildContext context) => context.go(location);

@@ -1,6 +1,7 @@
 import 'package:cross_file/cross_file.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
+import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/admins/domain/admin.dart';
@@ -29,6 +30,10 @@ abstract class AdminRepository {
     required Map<String, dynamic> params,
     List<MultipartFile> files = const [],
   });
+  TaskResult<void> softDeleteMulti(List<String> ids);
+
+  TaskResult<void> requestVerification(String email);
+  TaskResult<void> confirmVerification(String token);
 }
 
 @Riverpod(keepAlive: true)
@@ -41,7 +46,7 @@ AdminRepository adminRepository(Ref ref) {
 class AdminRepositoryImpl implements AdminRepository {
   final PocketBase pb;
 
-  RecordService get collection => pb.collection('admins');
+  RecordService get collection => pb.collection(PocketBaseCollections.admins);
 
   AdminRepositoryImpl({required this.pb});
 
@@ -143,6 +148,39 @@ class AdminRepositoryImpl implements AdminRepository {
           totalItems: result.totalItems,
           totalPages: result.totalPages,
         );
+      },
+      Failure.tryCatchData,
+    );
+  }
+
+  @override
+  TaskResult<void> softDeleteMulti(List<String> ids) {
+    return TaskResult.tryCatch(() async {
+      final batch = pb.createBatch();
+      final batchCollection = batch.collection(PocketBaseCollections.admins);
+      for (final id in ids) {
+        batchCollection.update(id, body: {'isDeleted': true});
+      }
+
+      await batch.send();
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<void> confirmVerification(String token) {
+    return TaskResult.tryCatch(
+      () async {
+        await collection.confirmVerification(token);
+      },
+      Failure.tryCatchData,
+    );
+  }
+
+  @override
+  TaskResult<void> requestVerification(String email) {
+    return TaskResult.tryCatch(
+      () async {
+        await collection.requestVerification(email);
       },
       Failure.tryCatchData,
     );

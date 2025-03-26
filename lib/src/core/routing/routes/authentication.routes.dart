@@ -8,7 +8,6 @@ class AuthenticationBranchData extends StatefulShellBranchData {
   const AuthenticationBranchData();
 }
 
-
 @TypedGoRoute<LoginPageRoute>(path: LoginPageRoute.path)
 class LoginPageRoute extends GoRouteData {
   const LoginPageRoute();
@@ -16,7 +15,28 @@ class LoginPageRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const UserLoginPage();
+    return UserLoginPage();
+  }
+
+  @override
+  FutureOr<String?> redirect(BuildContext context, GoRouterState state) async {
+    final provider = ProviderScope.containerOf(context);
+    final auth = await provider.read(authControllerProvider);
+
+    if (auth.isLoading) return SplashPageRoute.path;
+
+    return null;
+  }
+}
+
+@TypedGoRoute<EmailValidationPageRoute>(path: EmailValidationPageRoute.path)
+class EmailValidationPageRoute extends GoRouteData {
+  const EmailValidationPageRoute();
+  static const path = '/email/validation';
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const EmailValidationPage();
   }
 }
 
@@ -54,7 +74,6 @@ class AccountPageRoute extends GoRouteData {
     return const AccountPage();
   }
 }
-
 
 @TypedGoRoute<YourAccountPageRoute>(path: YourAccountPageRoute.path)
 class YourAccountPageRoute extends GoRouteData {

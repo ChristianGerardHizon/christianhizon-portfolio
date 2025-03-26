@@ -30,11 +30,6 @@ class ProductPage extends HookConsumerWidget {
     final state = ref.watch(provider);
     final product = useState<Product?>(null);
 
-    /// for medical records tab. preloading the data
-    ref.watch(medicalRecordsPageControllerProvider);
-    ref.watch(medicalRecordSearchControllerProvider.notifier);
-    ref.watch(medicalRecordsControllerProvider(id: id));
-
     ///
     /// onDelete
     ///
@@ -57,138 +52,146 @@ class ProductPage extends HookConsumerWidget {
     ///
     /// Refresh
     ///
-    refresh() {
+    refresh() async {
       ref.invalidate(provider);
       ref.invalidate(productsControllerProvider);
     }
 
     return Scaffold(
-      body: state.when(
-        skipError: false,
-        skipLoadingOnRefresh: false,
-        skipLoadingOnReload: false,
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(child: Text(error.toString())),
-        data: (product) {
-          return CustomScrollView(
-            slivers: [
-              ///
-              /// AppBar
-              ///
-              SliverAppBar(
-                title: Text(product.name),
-              ),
+      body: RefreshIndicator(
+        onRefresh: refresh,
+        child: state.when(
+          skipError: false,
+          skipLoadingOnRefresh: false,
+          skipLoadingOnReload: false,
+          loading: () => Scaffold(
+            appBar: AppBar(
+              title: Text('Loading...'),
+            ),
+            body: const Center(child: CircularProgressIndicator()),
+          ),
+          error: (error, stackTrace) => Center(child: Text(error.toString())),
+          data: (product) {
+            return CustomScrollView(
+              slivers: [
+                ///
+                /// AppBar
+                ///
+                SliverAppBar(
+                  title: Text(product.name),
+                ),
 
-              ///
-              /// Content
-              ///
-              SliverList.list(
-                children: [
-                  SizedBox(height: 20),
+                ///
+                /// Content
+                ///
+                SliverList.list(
+                  children: [
+                    SizedBox(height: 20),
 
-                  ///
-                  /// Product General Info
-                  ///
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: SizedBox(
-                      child: CollapsingCard(
-                        header: Text(
-                          'Product Info',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        child: Column(
-                          children: [
-                            ///
-                            /// name
-                            ///
-                            DynamicListTile.divider(
-                              title: Text('Name: '),
-                              content: Text(product.name),
-                            ),
+                    ///
+                    /// Product General Info
+                    ///
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: SizedBox(
+                        child: CollapsingCard(
+                          header: Text(
+                            'Product Info',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          child: Column(
+                            children: [
+                              ///
+                              /// name
+                              ///
+                              DynamicListTile.divider(
+                                title: Text('Name: '),
+                                content: Text(product.name),
+                              ),
 
-                            ///
-                            /// name
-                            ///
-                            DynamicListTile(
-                              title: Text('Name: '),
-                              content: Text(product.name),
-                            ),
-                          ],
+                              ///
+                              /// name
+                              ///
+                              DynamicListTile(
+                                title: Text('Notes: '),
+                                content: Text(product.notes.optional()),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  ///
-                  /// System Details
-                  ///
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: SizedBox(
-                      child: CollapsingCard(
-                        header: Text(
-                          'Other Info',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        child: Column(
-                          children: [
-                            DynamicListTile(
-                              title: Text('Created At: '),
-                              content: Text(
-                                  (product.created?.toLocal().yyyyMMddHHmmA())
-                                      .optional()),
-                            ),
-                            Divider(),
-                            DynamicListTile(
-                              title: Text('Updated At: '),
-                              content: Text(
-                                  (product.updated?.toLocal().yyyyMMddHHmmA())
-                                      .optional()),
-                            ),
-                          ],
+                    ///
+                    /// System Details
+                    ///
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: SizedBox(
+                        child: CollapsingCard(
+                          header: Text(
+                            'Other Info',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          child: Column(
+                            children: [
+                              DynamicListTile(
+                                title: Text('Created At: '),
+                                content: Text(
+                                    (product.created?.toLocal().yyyyMMddHHmmA())
+                                        .optional()),
+                              ),
+                              Divider(),
+                              DynamicListTile(
+                                title: Text('Updated At: '),
+                                content: Text(
+                                    (product.updated?.toLocal().yyyyMMddHHmmA())
+                                        .optional()),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: CardGroup(
-                      header: 'Actions',
-                      children: [
-                        ListTile(
-                          leading: const Icon(Icons.edit_outlined),
-                          title: const Text('Edit Product Information'),
-                          trailing: const Icon(
-                            Icons.chevron_right_outlined,
-                            size: 24,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: CardGroup(
+                        header: 'Actions',
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.edit_outlined),
+                            title: const Text('Edit Product Information'),
+                            trailing: const Icon(
+                              Icons.chevron_right_outlined,
+                              size: 24,
+                            ),
+                            onTap: () => ProductUpdatePageRoute(product.id)
+                                .push(context),
                           ),
-                          onTap: () =>
-                              ProductUpdatePageRoute(product.id).push(context),
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.delete_outlined),
-                          title: const Text('Delete Product Permanently'),
-                          trailing: const Icon(
-                            Icons.chevron_right_outlined,
-                            size: 24,
+                          ListTile(
+                            leading: const Icon(Icons.delete_outlined),
+                            title: const Text('Delete Product Permanently'),
+                            trailing: const Icon(
+                              Icons.chevron_right_outlined,
+                              size: 24,
+                            ),
+                            onTap: () => onDelete(product),
                           ),
-                          onTap: () => onDelete(product),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
 
-                  ///
-                  /// Spacer
-                  ///
-                  SizedBox(height: 50),
-                ],
-              )
-            ],
-          );
-        },
+                    ///
+                    /// Spacer
+                    ///
+                    SizedBox(height: 50),
+                  ],
+                )
+              ],
+            );
+          },
+        ),
       ),
     );
   }

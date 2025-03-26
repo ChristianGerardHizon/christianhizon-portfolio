@@ -124,22 +124,27 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   TaskResult<void> logout() {
-    return TaskResult.tryCatch(() async {
-      authStore.clear();
-      await storage.delete(key: authKey);
-    }, Failure.tryCatchData);
+    return TaskResult.tryCatch(
+      () async {
+        authStore.clear();
+        await storage.delete(key: authKey);
+      },
+      Failure.tryCatchData,
+    );
   }
 
   TaskResult<AuthData> refresh() {
     return TaskResult.tryCatch(
       () async {
-        final id = authStore.record?.id;
+        final id = authStore.record?.collectionId;
 
         if (id == null) {
           throw Failure('collectionId is null', StackTrace.current);
         }
 
-        return await pb.collection(id).authRefresh();
+        final auth = await pb.collection(id).authRefresh();
+
+        return auth;
       },
       Failure.tryCatchData,
     ).flatMap(_saveToStorage);
@@ -163,8 +168,7 @@ class AuthRepositoryImpl implements AuthRepository {
         final oldCollectionId = map['collectionId'];
         authStore.save(oldtoken, null);
 
-        final authModel =
-            await pb.collection(oldCollectionId).authRefresh();
+        final authModel = await pb.collection(oldCollectionId).authRefresh();
 
         authStore.save(authModel.token, authModel.record);
 
@@ -192,8 +196,8 @@ class AuthRepositoryImpl implements AuthRepository {
         }
         throw 'unknown user type';
       },
-      (error,stack) {
-        return Failure.tryCatchData(error,stack);
+      (error, stack) {
+        return Failure.tryCatchData(error, stack);
       },
     );
   }

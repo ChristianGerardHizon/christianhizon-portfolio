@@ -21,9 +21,11 @@ class ProductSearchMapper extends ClassMapperBase<ProductSearch> {
   final String id = 'ProductSearch';
 
   static String? _$id(ProductSearch v) => v.id;
-  static const Field<ProductSearch, String> _f$id = Field('id', _$id);
+  static const Field<ProductSearch, String> _f$id =
+      Field('id', _$id, opt: true);
   static String? _$name(ProductSearch v) => v.name;
-  static const Field<ProductSearch, String> _f$name = Field('name', _$name);
+  static const Field<ProductSearch, String> _f$name =
+      Field('name', _$name, opt: true);
 
   @override
   final MappableFields<ProductSearch> fields = const {

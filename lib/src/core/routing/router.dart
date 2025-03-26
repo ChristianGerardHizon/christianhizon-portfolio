@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -19,6 +21,7 @@ GoRouter router(Ref ref) {
     LoginPageRoute.path,
     AdminLoginPageRoute.path,
     DomainPageRoute.path,
+    SplashPageRoute.path,
   ];
 
   // final storeOwnerRoutes = <String>[];
@@ -28,26 +31,43 @@ GoRouter router(Ref ref) {
     debugLogDiagnostics: true,
     navigatorKey: rootKey,
     redirect: (context, state) {
-      final auth = ref.read(authControllerProvider);
+      final ignoredRoutes = <String>[
+        LoginPageRoute.path,
+        AdminLoginPageRoute.path,
+        DomainPageRoute.path,
+        SplashPageRoute.path,
+      ];
 
-      final isAuthenticated = auth.valueOrNull is AuthData;
-      final isLoading = auth is AsyncLoading;
+      // If the current path is in ignored routes, do not redirect
+      final isIgnored = ignoredRoutes
+          .any((route) => state.fullPath?.contains(route) ?? false);
+      if (isIgnored) return null;
 
-      ///
-      /// authentication
-      ///
+      final authAsync = ref.read(authControllerProvider);
 
-      if (isLoading) return SplashPageRoute.path;
+      // If auth is still loading, show splash screen
+      if (authAsync.isLoading) {
+        return SplashPageRoute.path;
+      }
 
-      // if fullPath is found in ignoredRoutes
-      final results = ignoredRoutes.where(
-        (x) => state.fullPath?.contains(x) ?? false,
-      );
-      if (results.isNotEmpty) return null;
+      // If auth has an error or no user is found, go to login page
+      if (authAsync.hasError || authAsync.value == null) {
+        return LoginPageRoute.path;
+      }
 
-      if (isAuthenticated) return null;
+      // Authenticated user
+      final authData = authAsync.value;
 
-      return LoginPageRoute.path;
+      if (authData is AuthUser && authData.record.verified != true) {
+        return EmailValidationPageRoute.path;
+      }
+
+      if (authData is AuthAdmin && authData.record.verified != true) {
+        return EmailValidationPageRoute.path;
+      }
+
+      // All checks passed, continue with normal routing
+      return null;
     },
     routes: $appRoutes,
     errorBuilder: const NotFoundRoute().build,

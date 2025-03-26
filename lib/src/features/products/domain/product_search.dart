@@ -7,7 +7,7 @@ class ProductSearch with ProductSearchMappable {
   final String? id;
   final String? name;
 
-  ProductSearch({required this.id, required this.name});
+  ProductSearch({this.id, this.name});
 
   static const fromMap = ProductSearchMapper.fromMap;
   static const fromJson = ProductSearchMapper.fromMap;

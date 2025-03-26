@@ -37,6 +37,9 @@ class UserMapper extends ClassMapperBase<User> {
   static String? _$avatar(User v) => v.avatar;
   static const Field<User, String> _f$avatar =
       Field('avatar', _$avatar, opt: true);
+  static bool _$verified(User v) => v.verified;
+  static const Field<User, bool> _f$verified =
+      Field('verified', _$verified, opt: true, def: false);
 
   @override
   final MappableFields<User> fields = const {
@@ -46,6 +49,7 @@ class UserMapper extends ClassMapperBase<User> {
     #created: _f$created,
     #updated: _f$updated,
     #avatar: _f$avatar,
+    #verified: _f$verified,
   };
 
   static User _instantiate(DecodingData data) {
@@ -55,7 +59,8 @@ class UserMapper extends ClassMapperBase<User> {
         email: data.dec(_f$email),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated),
-        avatar: data.dec(_f$avatar));
+        avatar: data.dec(_f$avatar),
+        verified: data.dec(_f$verified));
   }
 
   @override
@@ -110,7 +115,8 @@ abstract class UserCopyWith<$R, $In extends User, $Out>
       String? email,
       DateTime? created,
       DateTime? updated,
-      String? avatar});
+      String? avatar,
+      bool? verified});
   UserCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -127,14 +133,16 @@ class _UserCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, User, $Out>
           String? email,
           Object? created = $none,
           Object? updated = $none,
-          Object? avatar = $none}) =>
+          Object? avatar = $none,
+          bool? verified}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (email != null) #email: email,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated,
-        if (avatar != $none) #avatar: avatar
+        if (avatar != $none) #avatar: avatar,
+        if (verified != null) #verified: verified
       }));
   @override
   User $make(CopyWithData data) => User(
@@ -143,7 +151,8 @@ class _UserCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, User, $Out>
       email: data.get(#email, or: $value.email),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated),
-      avatar: data.get(#avatar, or: $value.avatar));
+      avatar: data.get(#avatar, or: $value.avatar),
+      verified: data.get(#verified, or: $value.verified));
 
   @override
   UserCopyWith<$R2, User, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

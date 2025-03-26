@@ -41,6 +41,9 @@ class PageResults<T> with PageResultsMappable {
     );
   }
 
+  // has next if current page is less than total pages and if page is not zero
+  bool get hasNext => page < totalPages && page != 0;
+
   static const fromMap = PageResultsMapper.fromMap;
   static const fromJson = PageResultsMapper.fromJson;
 }
