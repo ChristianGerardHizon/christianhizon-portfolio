@@ -606,7 +606,7 @@ RouteBase get $adminPageRoute => GoRouteData.$route(
 
 extension $AdminPageRouteExtension on AdminPageRoute {
   static AdminPageRoute _fromState(GoRouterState state) => AdminPageRoute(
-        id: state.pathParameters['id']!,
+        state.pathParameters['id']!,
       );
 
   String get location => GoRouteData.$location(

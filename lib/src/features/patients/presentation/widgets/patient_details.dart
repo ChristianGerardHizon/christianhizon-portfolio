@@ -8,10 +8,10 @@ import 'package:gym_system/src/core/widgets/card_group.dart';
 import 'package:gym_system/src/core/widgets/collapsing_card.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
+import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_circle_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientDetails extends HookConsumerWidget {
@@ -44,9 +44,11 @@ class PatientDetails extends HookConsumerWidget {
 
         SizedBox(
           height: 250,
-          child: PatientCircleImage(
+          child: PbImageCircle(
             radius: 120,
-            patient: patient,
+            collection: patient.collectionId,
+            recordId: patient.id,
+            file: patient.avatar,
           ),
         ),
 

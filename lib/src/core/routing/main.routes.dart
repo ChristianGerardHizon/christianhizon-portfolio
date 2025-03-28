@@ -6,6 +6,7 @@ import 'package:gym_system/src/core/pages/more_page.dart';
 import 'package:gym_system/src/core/pages/not_found_page.dart';
 import 'package:gym_system/src/core/pages/splash_page.dart';
 import 'package:gym_system/src/core/pages/app_root.dart';
+import 'package:gym_system/src/features/admins/presentation/pages/admin_page.dart';
 import 'package:gym_system/src/features/admins/presentation/pages/admins_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_page.dart';

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/strings/strings.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_circle_image.dart';
 import 'package:material_table_view/material_table_view.dart';
 import 'package:material_table_view/sliver_table_view.dart';
 
@@ -146,10 +146,11 @@ class PatientsTable extends HookWidget {
                 case 1:
                   return Padding(
                     padding: EdgeInsets.all(8),
-                    child: PatientCircleImage(
+                    child: PbImageCircle(
                       radius: 120,
-                      patient: patient,
-                      fit: BoxFit.cover,
+                      collection: patient.collectionId,
+                      recordId: patient.id,
+                      file: patient.avatar,
                     ),
                   );
                 case 2:

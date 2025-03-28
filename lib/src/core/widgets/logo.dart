@@ -17,14 +17,19 @@ class Logo extends StatelessWidget {
     return Padding(
       padding: padding,
       child: DecoratedBox(
-          decoration: BoxDecoration(
-              // border: Border.all(color: Colors.black),
-              ),
-          // child: Assets.icons.appIconTransparent.image(width: width, height: height),
+        decoration: BoxDecoration(
+            // border: Border.all(color: Colors.black),
+            ),
+        // child: Assets.icons.appIconTransparent.image(width: width, height: height),
+        child: SizedBox(
+          width: width,
+          height: height,
           child: Placeholder(
             fallbackHeight: height ?? 400,
             fallbackWidth: width ?? 400,
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

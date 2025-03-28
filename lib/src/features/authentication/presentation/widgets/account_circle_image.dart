@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
 import 'package:gym_system/src/features/admins/presentation/widgets/admin_circle_image.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
@@ -50,7 +51,10 @@ class AccountCircleImage extends HookConsumerWidget {
               child: Row(
                 children: availableWidth >= requiredWidth
                     ? [
-                        image,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8, right: 8),
+                          child: image,
+                        ),
                         ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: 110),
                           child: Column(
@@ -82,47 +86,57 @@ class AccountCircleImage extends HookConsumerWidget {
     }
 
     return state.when(
-      data: (user) {
-        if (user is AuthUser) {
-          return buildName(
-            Container(
-              height: (radius * 1.5).toDouble(),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.secondary,
-                  width: 4,
-                ),
+      data: (auth) {
+        final email = auth.map<String>(
+          (u) => u.record.email,
+          (a) => a.record.email,
+        );
+
+        final avatar = auth.map<String?>(
+          (u) => u.record.avatar,
+          (a) => a.record.avatar,
+        );
+
+        final name = auth.map<String?>(
+          (u) => u.record.name,
+          (a) => a.record.name,
+        );
+
+        final id = auth.map<String>(
+          (u) => u.record.id,
+          (a) => a.record.id,
+        );
+
+        final collection = auth.map<String>(
+          (u) => u.collectionId,
+          (a) => a.collectionId,
+        );
+
+        final type = auth.map<String>(
+          (u) => 'Staff',
+          (a) => 'Admin',
+        );
+
+        return buildName(
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                width: 2,
+                color: Theme.of(context).colorScheme.primary,
               ),
-              child: UserCircleImage(
-                  isInteractable: false, user: user.record, radius: radius),
+              shape: BoxShape.circle,
             ),
-            name: user.record.name,
-            showName: showName,
-            type: 'Staff',
-          );
-        }
-
-        if (user is AuthAdmin) {
-          return buildName(
-              Container(
-                height: (radius * 1.5).toDouble(),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                    width: 4,
-                  ),
-                ),
-                child: AdminCircleImage(
-                    isInteractable: false, admin: user.record, radius: radius),
-              ),
-              name: user.record.name,
-              showName: showName,
-              type: 'Admin');
-        }
-
-        return SizedBox();
+            child: PbImageCircle(
+              file: avatar,
+              recordId: id,
+              collection: collection,
+              radius: 40,
+            ),
+          ),
+          name: name.optional(),
+          showName: showName,
+          type: type,
+        );
       },
       error: (error, stackTrace) => const Text('Error loading user'),
       loading: () => const CircularProgressIndicator(),

@@ -24,7 +24,12 @@ class Patient with PatientMappable {
   final DateTime? created;
   final DateTime? updated;
 
+  final String collectionId;
+  final String collectionName;
+
   Patient({
+    this.collectionId = '',
+    this.collectionName = '',
     required this.id,
     this.name = '',
     this.images = const [],

@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
-import 'package:gym_system/src/core/widgets/image_viewer.dart';
+import 'package:gym_system/src/core/widgets/pb_image_loader.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -21,8 +21,8 @@ class UserImageControlWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ImageViewer(
-      feature: PocketBaseCollections.users,
+    return PbImageLoader(
+      collection: PocketBaseCollections.users,
       file: user.avatar ?? '',
       id: user.id,
       placeholder: SizedBox(),

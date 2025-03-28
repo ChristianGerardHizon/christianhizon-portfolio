@@ -7,6 +7,7 @@ import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/utils/form_utils.dart';
+import 'package:gym_system/src/core/widgets/logo.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -68,7 +69,7 @@ class AdminLoginPage extends HookConsumerWidget {
                 enabled: !isLoading.value,
                 child: Column(
                   children: [
-                    Assets.icons.appIconTransparent.image(width: 250),
+                    Logo(width: 250, height: 250),
                     SizedBox(
                       height: 40,
                       child: Center(

@@ -1,4 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 
 part 'auth_data.mapper.dart';
 
@@ -20,8 +23,8 @@ abstract class AuthData with AuthDataMappable {
   });
 
   AuthDataType get type {
-    switch (collectionId) {
-      case 'admins':
+    switch (collectionName) {
+      case PocketBaseCollections.admins:
         return AuthDataType.admins;
       default:
         return AuthDataType.users;
@@ -40,5 +43,29 @@ abstract class AuthData with AuthDataMappable {
         'collectionId': raw['record']['collectionId'],
       },
     );
+  }
+
+  /*
+
+     final email = user.map(
+                (u) => u.record.email,
+                (a) => a.record.email,
+              );
+
+  */
+
+  /// maps AuthData to a value of type R
+  /// if this is of type users, calls [onUser] with the user record
+  /// if this is of type admins, calls [onAdmin] with the admin record
+  R map<R>(
+    R Function(AuthUser user) onUser,
+    R Function(AuthAdmin admin) onAdmin,
+  ) {
+    switch (type) {
+      case AuthDataType.users:
+        return onUser(this as AuthUser);
+      case AuthDataType.admins:
+        return onAdmin(this as AuthAdmin);
+    }
   }
 }

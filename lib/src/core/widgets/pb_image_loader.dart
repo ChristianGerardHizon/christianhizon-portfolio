@@ -4,19 +4,19 @@ import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ImageViewer extends ConsumerWidget {
-  const ImageViewer({
+class PbImageLoader extends ConsumerWidget {
+  const PbImageLoader({
     super.key,
     required this.builder,
     this.placeholder,
-    required this.feature,
+    required this.collection,
     required this.file,
     required this.id,
     this.loader,
     this.error,
   });
 
-  final String feature;
+  final String collection;
   final String id;
   final String file;
   final Widget? placeholder;
@@ -32,7 +32,7 @@ class ImageViewer extends ConsumerWidget {
       data: (setting) {
         final pb = ref.read(pocketbaseProvider);
 
-        final url = '${pb.baseURL}/api/files/$feature/$id/$file';
+        final url = '${pb.baseURL}/api/files/$collection/$id/$file';
         return builder(url);
       },
       error: (error, stack) => Center(

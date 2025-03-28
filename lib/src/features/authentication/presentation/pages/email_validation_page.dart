@@ -63,7 +63,7 @@ class EmailValidationPage extends HookConsumerWidget {
       countdownTimer.value?.cancel();
       attempts.value = 0;
 
-      timer.value = Timer.periodic(const Duration(seconds: 5), (t) async {
+      timer.value = Timer.periodic(const Duration(seconds: 10), (t) async {
         attempts.value++;
         countdown.value = 5;
         startCountdown();
@@ -112,51 +112,57 @@ class EmailValidationPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: CloseButton(
+          onPressed: () => const LoginPageRoute().go(context),
+        ),
         title: const Text('Email Validation'),
       ),
       body: ref.watch(authControllerProvider).maybeWhen(
-            data: (user) {
-              if (user is AuthUser) {
-                final isWaiting = attempts.value > 0 && attempts.value < 10;
-                final hasTimedOut = attempts.value >= 10;
+            data: (auth) {
+              final email = auth.map<String>(
+                (u) => u.record.email,
+                (a) => a.record.email,
+              );
 
-                return Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text('Check your email for validation link'),
-                      const SizedBox(height: 20),
-                      TextButton(
-                        onPressed: (isWaiting || isRefreshing.value)
-                            ? null
-                            : () => sendEmailVerification(user.record.email),
-                        child: Text(
-                          isWaiting || isRefreshing.value
-                              ? 'Verifying...'
-                              : 'Send Verification',
-                        ),
+              final isWaiting = attempts.value > 0 && attempts.value < 10;
+              final hasTimedOut = attempts.value >= 10;
+
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Check your email for validation link'),
+                    Text(email),
+                    const SizedBox(height: 20),
+                    TextButton(
+                      onPressed: (isWaiting || isRefreshing.value)
+                          ? null
+                          : () => sendEmailVerification(email),
+                      child: Text(
+                        isWaiting || isRefreshing.value
+                            ? 'Verifying...'
+                            : 'Send Verification',
                       ),
-                      if (isWaiting) ...[
-                        const SizedBox(height: 10),
-                        Text('Checking verification... (${attempts.value}/10)'),
-                        const SizedBox(height: 5),
-                        Text('Checking in ... ${countdown.value}s'),
-                      ],
-                      if (hasTimedOut) ...[
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: () {
-                            attempts.value = 0;
-                            sendEmailVerification(user.record.email);
-                          },
-                          child: const Text('Try Again'),
-                        ),
-                      ],
+                    ),
+                    if (isWaiting) ...[
+                      const SizedBox(height: 10),
+                      Text('Checking verification... (${attempts.value}/10)'),
+                      const SizedBox(height: 5),
+                      Text('Checking in ... ${countdown.value}s'),
                     ],
-                  ),
-                );
-              }
-              return const Text('Please wait...');
+                    if (hasTimedOut) ...[
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          attempts.value = 0;
+                          sendEmailVerification(email);
+                        },
+                        child: const Text('Try Again'),
+                      ),
+                    ],
+                  ],
+                ),
+              );
             },
             orElse: () => const Center(child: CircularProgressIndicator()),
           ),

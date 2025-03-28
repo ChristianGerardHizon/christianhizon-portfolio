@@ -17,13 +17,13 @@ class AdminsPageRoute extends GoRouteData {
 
 @TypedGoRoute<AdminPageRoute>(path: AdminPageRoute.path)
 class AdminPageRoute extends GoRouteData {
-  const AdminPageRoute({required this.id});
+  const AdminPageRoute(this.id);
   static const path = '/admin/:id';
 
   final String id;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const AdminsPage();
+    return AdminPage(id: id);
   }
 }

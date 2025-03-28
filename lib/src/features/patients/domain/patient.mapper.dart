@@ -20,6 +20,12 @@ class PatientMapper extends ClassMapperBase<Patient> {
   @override
   final String id = 'Patient';
 
+  static String _$collectionId(Patient v) => v.collectionId;
+  static const Field<Patient, String> _f$collectionId =
+      Field('collectionId', _$collectionId, opt: true, def: '');
+  static String _$collectionName(Patient v) => v.collectionName;
+  static const Field<Patient, String> _f$collectionName =
+      Field('collectionName', _$collectionName, opt: true, def: '');
   static String _$id(Patient v) => v.id;
   static const Field<Patient, String> _f$id = Field('id', _$id);
   static String _$name(Patient v) => v.name;
@@ -66,6 +72,8 @@ class PatientMapper extends ClassMapperBase<Patient> {
 
   @override
   final MappableFields<Patient> fields = const {
+    #collectionId: _f$collectionId,
+    #collectionName: _f$collectionName,
     #id: _f$id,
     #name: _f$name,
     #images: _f$images,
@@ -85,6 +93,8 @@ class PatientMapper extends ClassMapperBase<Patient> {
 
   static Patient _instantiate(DecodingData data) {
     return Patient(
+        collectionId: data.dec(_f$collectionId),
+        collectionName: data.dec(_f$collectionName),
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         images: data.dec(_f$images),
@@ -154,7 +164,9 @@ abstract class PatientCopyWith<$R, $In extends Patient, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>> get images;
   $R call(
-      {String? id,
+      {String? collectionId,
+      String? collectionName,
+      String? id,
       String? name,
       List<String>? images,
       String? owner,
@@ -186,7 +198,9 @@ class _PatientCopyWithImpl<$R, $Out>
           (v) => call(images: v));
   @override
   $R call(
-          {String? id,
+          {String? collectionId,
+          String? collectionName,
+          String? id,
           String? name,
           List<String>? images,
           Object? owner = $none,
@@ -202,6 +216,8 @@ class _PatientCopyWithImpl<$R, $Out>
           Object? created = $none,
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
+        if (collectionId != null) #collectionId: collectionId,
+        if (collectionName != null) #collectionName: collectionName,
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (images != null) #images: images,
@@ -220,6 +236,8 @@ class _PatientCopyWithImpl<$R, $Out>
       }));
   @override
   Patient $make(CopyWithData data) => Patient(
+      collectionId: data.get(#collectionId, or: $value.collectionId),
+      collectionName: data.get(#collectionName, or: $value.collectionName),
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       images: data.get(#images, or: $value.images),

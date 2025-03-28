@@ -153,7 +153,10 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
       sliver: SliverToBoxAdapter(
         child: PageSelector(
           page: results?.page ?? 0,
-          onPageChange: onPageChange,
+          onPageChange: (x) {
+            controller.clear();
+            onPageChange?.call(x);
+          },
           hasNext: results?.hasNext ?? false,
         ),
       ),
@@ -231,8 +234,12 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
       ///
       /// Mobile Builder
       ///
-      mobileBuilder: (context, value) =>
-          mobileBuilder(context, value.row, items[value.row], value.isSelected),
+      mobileBuilder: (context, value) => mobileBuilder(
+        context,
+        value.row,
+        items[value.row],
+        value.isSelected,
+      ),
     );
   }
 }

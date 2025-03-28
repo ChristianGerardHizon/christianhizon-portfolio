@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
-import 'package:gym_system/src/core/widgets/image_viewer.dart';
+import 'package:gym_system/src/core/widgets/pb_image_loader.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 
@@ -31,8 +31,8 @@ class UserCircleImage extends StatelessWidget {
         ),
       );
     }
-    return ImageViewer(
-      feature: PocketBaseCollections.users,
+    return PbImageLoader(
+      collection: PocketBaseCollections.users,
       file: file,
       id: user.id,
       placeholder: SizedBox(),
@@ -45,7 +45,7 @@ class UserCircleImage extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
                 image: CachedNetworkImageProvider(url),
               ),
             ),
