@@ -99,6 +99,16 @@ class AppRoot extends HookConsumerWidget {
               UsersPageRoute().go(context);
             },
           ),
+        if (isAdmin)
+          CustomNavigationBarItem(
+            route: AdminsPageRoute.path,
+            icon: Icon(MIcons.accountSupervisorOutline),
+            selectedIcon: Icon(MIcons.accountSupervisor),
+            label: 'Admins',
+            onTap: () {
+              AdminsPageRoute().go(context);
+            },
+          ),
       ];
     }
 
@@ -123,8 +133,7 @@ class AppRoot extends HookConsumerWidget {
                         backgroundColor: theme.appBarTheme.backgroundColor,
                         builder: (data) => SideMenuData(
                           header: Logo(
-                            width: 200,
-                            height: 80,
+                            height: 200,
                           ),
                           items: items.mapWithIndex((e, index) {
                             return SideMenuItemDataTile(

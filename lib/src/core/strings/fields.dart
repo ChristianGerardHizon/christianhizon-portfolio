@@ -17,8 +17,14 @@ class UserField {
 class AdminField {
   static const String id = 'id';
   static const String name = 'name';
-  static const String profilePhoto = 'profilePhoto';
+  static const String email = 'email';
+  static const String avatar = 'avatar';
   static const String contactNumber = 'contactNumber';
+  static const String password = 'password';
+  static const String oldPassword = 'oldPassword';
+  static const String passwordConfirm = 'passwordConfirm';
+  static const String emailVisibility = 'emailVisibility';
+  static const String verified = 'verified';
   static const String created = 'created';
   static const String updated = 'updated';
   static const String isDeleted = 'isDeleted';

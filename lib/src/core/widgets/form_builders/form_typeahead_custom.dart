@@ -10,6 +10,7 @@ class FormTypeaheadCustom extends HookWidget {
   final InputDecoration decoration;
   final Widget Function(BuildContext, String) itemBuilder;
   final FutureOr<List<String>?> Function(String) suggestionsCallback;
+  final bool canAddNewItem;
   final Function()? onAdd;
   const FormTypeaheadCustom({
     required this.name,
@@ -19,6 +20,7 @@ class FormTypeaheadCustom extends HookWidget {
     this.allowCustomInput = true,
     this.onAdd,
     required this.suggestionsCallback,
+    this.canAddNewItem = false,
   });
   @override
   Widget build(BuildContext context) {
@@ -36,11 +38,12 @@ class FormTypeaheadCustom extends HookWidget {
                 return list[index];
               },
             ),
-            ListTile(
-              onTap: () => onAdd?.call(),
-              trailing: Icon(Icons.add),
-              title: Text('Add new item'),
-            )
+            if (canAddNewItem)
+              ListTile(
+                onTap: () => onAdd?.call(),
+                trailing: Icon(Icons.add),
+                title: Text('Add new item'),
+              )
           ],
         );
       },

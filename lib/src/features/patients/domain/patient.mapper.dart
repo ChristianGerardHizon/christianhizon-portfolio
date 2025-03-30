@@ -13,6 +13,7 @@ class PatientMapper extends ClassMapperBase<Patient> {
   static PatientMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = PatientMapper._());
+      PatientRecordExpandMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -69,6 +70,9 @@ class PatientMapper extends ClassMapperBase<Patient> {
   static DateTime? _$updated(Patient v) => v.updated;
   static const Field<Patient, DateTime> _f$updated =
       Field('updated', _$updated, opt: true);
+  static PatientRecordExpand? _$expand(Patient v) => v.expand;
+  static const Field<Patient, PatientRecordExpand> _f$expand =
+      Field('expand', _$expand, opt: true);
 
   @override
   final MappableFields<Patient> fields = const {
@@ -89,6 +93,7 @@ class PatientMapper extends ClassMapperBase<Patient> {
     #dateOfBirth: _f$dateOfBirth,
     #created: _f$created,
     #updated: _f$updated,
+    #expand: _f$expand,
   };
 
   static Patient _instantiate(DecodingData data) {
@@ -109,7 +114,8 @@ class PatientMapper extends ClassMapperBase<Patient> {
         address: data.dec(_f$address),
         dateOfBirth: data.dec(_f$dateOfBirth),
         created: data.dec(_f$created),
-        updated: data.dec(_f$updated));
+        updated: data.dec(_f$updated),
+        expand: data.dec(_f$expand));
   }
 
   @override
@@ -163,6 +169,8 @@ extension PatientValueCopy<$R, $Out> on ObjectCopyWith<$R, Patient, $Out> {
 abstract class PatientCopyWith<$R, $In extends Patient, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>> get images;
+  PatientRecordExpandCopyWith<$R, PatientRecordExpand, PatientRecordExpand>?
+      get expand;
   $R call(
       {String? collectionId,
       String? collectionName,
@@ -180,7 +188,8 @@ abstract class PatientCopyWith<$R, $In extends Patient, $Out>
       String? address,
       DateTime? dateOfBirth,
       DateTime? created,
-      DateTime? updated});
+      DateTime? updated,
+      PatientRecordExpand? expand});
   PatientCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -196,6 +205,9 @@ class _PatientCopyWithImpl<$R, $Out>
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>> get images =>
       ListCopyWith($value.images, (v, t) => ObjectCopyWith(v, $identity, t),
           (v) => call(images: v));
+  @override
+  PatientRecordExpandCopyWith<$R, PatientRecordExpand, PatientRecordExpand>?
+      get expand => $value.expand?.copyWith.$chain((v) => call(expand: v));
   @override
   $R call(
           {String? collectionId,
@@ -214,7 +226,8 @@ class _PatientCopyWithImpl<$R, $Out>
           Object? address = $none,
           Object? dateOfBirth = $none,
           Object? created = $none,
-          Object? updated = $none}) =>
+          Object? updated = $none,
+          Object? expand = $none}) =>
       $apply(FieldCopyWithData({
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
@@ -232,7 +245,8 @@ class _PatientCopyWithImpl<$R, $Out>
         if (address != $none) #address: address,
         if (dateOfBirth != $none) #dateOfBirth: dateOfBirth,
         if (created != $none) #created: created,
-        if (updated != $none) #updated: updated
+        if (updated != $none) #updated: updated,
+        if (expand != $none) #expand: expand
       }));
   @override
   Patient $make(CopyWithData data) => Patient(
@@ -252,9 +266,137 @@ class _PatientCopyWithImpl<$R, $Out>
       address: data.get(#address, or: $value.address),
       dateOfBirth: data.get(#dateOfBirth, or: $value.dateOfBirth),
       created: data.get(#created, or: $value.created),
-      updated: data.get(#updated, or: $value.updated));
+      updated: data.get(#updated, or: $value.updated),
+      expand: data.get(#expand, or: $value.expand));
 
   @override
   PatientCopyWith<$R2, Patient, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
       _PatientCopyWithImpl<$R2, $Out2>($value, $cast, t);
+}
+
+class PatientRecordExpandMapper extends ClassMapperBase<PatientRecordExpand> {
+  PatientRecordExpandMapper._();
+
+  static PatientRecordExpandMapper? _instance;
+  static PatientRecordExpandMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = PatientRecordExpandMapper._());
+      PatientSpeciesMapper.ensureInitialized();
+      PatientBreedMapper.ensureInitialized();
+    }
+    return _instance!;
+  }
+
+  @override
+  final String id = 'PatientRecordExpand';
+
+  static PatientSpecies? _$species(PatientRecordExpand v) => v.species;
+  static const Field<PatientRecordExpand, PatientSpecies> _f$species =
+      Field('species', _$species, opt: true);
+  static PatientBreed? _$breed(PatientRecordExpand v) => v.breed;
+  static const Field<PatientRecordExpand, PatientBreed> _f$breed =
+      Field('breed', _$breed, opt: true);
+
+  @override
+  final MappableFields<PatientRecordExpand> fields = const {
+    #species: _f$species,
+    #breed: _f$breed,
+  };
+
+  static PatientRecordExpand _instantiate(DecodingData data) {
+    return PatientRecordExpand(
+        species: data.dec(_f$species), breed: data.dec(_f$breed));
+  }
+
+  @override
+  final Function instantiate = _instantiate;
+
+  static PatientRecordExpand fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<PatientRecordExpand>(map);
+  }
+
+  static PatientRecordExpand fromJson(String json) {
+    return ensureInitialized().decodeJson<PatientRecordExpand>(json);
+  }
+}
+
+mixin PatientRecordExpandMappable {
+  String toJson() {
+    return PatientRecordExpandMapper.ensureInitialized()
+        .encodeJson<PatientRecordExpand>(this as PatientRecordExpand);
+  }
+
+  Map<String, dynamic> toMap() {
+    return PatientRecordExpandMapper.ensureInitialized()
+        .encodeMap<PatientRecordExpand>(this as PatientRecordExpand);
+  }
+
+  PatientRecordExpandCopyWith<PatientRecordExpand, PatientRecordExpand,
+      PatientRecordExpand> get copyWith => _PatientRecordExpandCopyWithImpl<
+          PatientRecordExpand, PatientRecordExpand>(
+      this as PatientRecordExpand, $identity, $identity);
+  @override
+  String toString() {
+    return PatientRecordExpandMapper.ensureInitialized()
+        .stringifyValue(this as PatientRecordExpand);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return PatientRecordExpandMapper.ensureInitialized()
+        .equalsValue(this as PatientRecordExpand, other);
+  }
+
+  @override
+  int get hashCode {
+    return PatientRecordExpandMapper.ensureInitialized()
+        .hashValue(this as PatientRecordExpand);
+  }
+}
+
+extension PatientRecordExpandValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, PatientRecordExpand, $Out> {
+  PatientRecordExpandCopyWith<$R, PatientRecordExpand, $Out>
+      get $asPatientRecordExpand => $base.as(
+          (v, t, t2) => _PatientRecordExpandCopyWithImpl<$R, $Out>(v, t, t2));
+}
+
+abstract class PatientRecordExpandCopyWith<$R, $In extends PatientRecordExpand,
+    $Out> implements ClassCopyWith<$R, $In, $Out> {
+  PatientSpeciesCopyWith<$R, PatientSpecies, PatientSpecies>? get species;
+  PatientBreedCopyWith<$R, PatientBreed, PatientBreed>? get breed;
+  $R call({PatientSpecies? species, PatientBreed? breed});
+  PatientRecordExpandCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+      Then<$Out2, $R2> t);
+}
+
+class _PatientRecordExpandCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, PatientRecordExpand, $Out>
+    implements PatientRecordExpandCopyWith<$R, PatientRecordExpand, $Out> {
+  _PatientRecordExpandCopyWithImpl(super.value, super.then, super.then2);
+
+  @override
+  late final ClassMapperBase<PatientRecordExpand> $mapper =
+      PatientRecordExpandMapper.ensureInitialized();
+  @override
+  PatientSpeciesCopyWith<$R, PatientSpecies, PatientSpecies>? get species =>
+      $value.species?.copyWith.$chain((v) => call(species: v));
+  @override
+  PatientBreedCopyWith<$R, PatientBreed, PatientBreed>? get breed =>
+      $value.breed?.copyWith.$chain((v) => call(breed: v));
+  @override
+  $R call({Object? species = $none, Object? breed = $none}) =>
+      $apply(FieldCopyWithData({
+        if (species != $none) #species: species,
+        if (breed != $none) #breed: breed
+      }));
+  @override
+  PatientRecordExpand $make(CopyWithData data) => PatientRecordExpand(
+      species: data.get(#species, or: $value.species),
+      breed: data.get(#breed, or: $value.breed));
+
+  @override
+  PatientRecordExpandCopyWith<$R2, PatientRecordExpand, $Out2>
+      $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+          _PatientRecordExpandCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

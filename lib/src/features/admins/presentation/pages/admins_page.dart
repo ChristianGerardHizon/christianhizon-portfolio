@@ -5,6 +5,10 @@ class AdminsPage extends HookConsumerWidget {
   const AdminsPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Admins'),
+      ),
+    );
   }
 }

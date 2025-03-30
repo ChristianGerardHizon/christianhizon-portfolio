@@ -6,11 +6,12 @@ class Logo extends StatelessWidget {
   final double? width;
   final double? height;
 
-  const Logo(
-      {super.key,
-      this.padding = const EdgeInsets.all(10),
-      this.width,
-      this.height});
+  const Logo({
+    super.key,
+    this.padding = const EdgeInsets.all(10),
+    this.width,
+    this.height,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +21,17 @@ class Logo extends StatelessWidget {
         decoration: BoxDecoration(
             // border: Border.all(color: Colors.black),
             ),
-        // child: Assets.icons.appIconTransparent.image(width: width, height: height),
-        child: SizedBox(
-          width: width,
-          height: height,
-          child: Placeholder(
-            fallbackHeight: height ?? 400,
-            fallbackWidth: width ?? 400,
+        child: Builder(
+          builder: (context) => SizedBox(
+            width: width,
+            height: height,
+            child: Assets.icons.appIconTransparent.image(
+              fit: BoxFit.fill,
+            ),
+            // child: Placeholder(
+            //   fallbackHeight: height ?? 400,
+            //   fallbackWidth: width ?? 400,
+            // ),
           ),
         ),
       ),

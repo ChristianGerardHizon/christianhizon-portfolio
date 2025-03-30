@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'patient_update_controller.dart';
+part of 'admin_update_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$patientUpdateControllerHash() =>
-    r'ac1c89c8d866f8804331d7cbdf0b3854cf928e7a';
+String _$adminUpdateControllerHash() =>
+    r'd7e037029341bf35a69e63c41ef11710153a639b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,37 +30,36 @@ class _SystemHash {
   }
 }
 
-abstract class _$PatientUpdateController
-    extends BuildlessAutoDisposeAsyncNotifier<PatientUpdateState> {
+abstract class _$AdminUpdateController
+    extends BuildlessAutoDisposeAsyncNotifier<AdminUpdateState> {
   late final String id;
 
-  FutureOr<PatientUpdateState> build(
+  FutureOr<AdminUpdateState> build(
     String id,
   );
 }
 
-/// See also [PatientUpdateController].
-@ProviderFor(PatientUpdateController)
-const patientUpdateControllerProvider = PatientUpdateControllerFamily();
+/// See also [AdminUpdateController].
+@ProviderFor(AdminUpdateController)
+const adminUpdateControllerProvider = AdminUpdateControllerFamily();
 
-/// See also [PatientUpdateController].
-class PatientUpdateControllerFamily
-    extends Family<AsyncValue<PatientUpdateState>> {
-  /// See also [PatientUpdateController].
-  const PatientUpdateControllerFamily();
+/// See also [AdminUpdateController].
+class AdminUpdateControllerFamily extends Family<AsyncValue<AdminUpdateState>> {
+  /// See also [AdminUpdateController].
+  const AdminUpdateControllerFamily();
 
-  /// See also [PatientUpdateController].
-  PatientUpdateControllerProvider call(
+  /// See also [AdminUpdateController].
+  AdminUpdateControllerProvider call(
     String id,
   ) {
-    return PatientUpdateControllerProvider(
+    return AdminUpdateControllerProvider(
       id,
     );
   }
 
   @override
-  PatientUpdateControllerProvider getProviderOverride(
-    covariant PatientUpdateControllerProvider provider,
+  AdminUpdateControllerProvider getProviderOverride(
+    covariant AdminUpdateControllerProvider provider,
   ) {
     return call(
       provider.id,
@@ -79,31 +78,31 @@ class PatientUpdateControllerFamily
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'patientUpdateControllerProvider';
+  String? get name => r'adminUpdateControllerProvider';
 }
 
-/// See also [PatientUpdateController].
-class PatientUpdateControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<PatientUpdateController,
-        PatientUpdateState> {
-  /// See also [PatientUpdateController].
-  PatientUpdateControllerProvider(
+/// See also [AdminUpdateController].
+class AdminUpdateControllerProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<AdminUpdateController,
+        AdminUpdateState> {
+  /// See also [AdminUpdateController].
+  AdminUpdateControllerProvider(
     String id,
   ) : this._internal(
-          () => PatientUpdateController()..id = id,
-          from: patientUpdateControllerProvider,
-          name: r'patientUpdateControllerProvider',
+          () => AdminUpdateController()..id = id,
+          from: adminUpdateControllerProvider,
+          name: r'adminUpdateControllerProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$patientUpdateControllerHash,
-          dependencies: PatientUpdateControllerFamily._dependencies,
+                  : _$adminUpdateControllerHash,
+          dependencies: AdminUpdateControllerFamily._dependencies,
           allTransitiveDependencies:
-              PatientUpdateControllerFamily._allTransitiveDependencies,
+              AdminUpdateControllerFamily._allTransitiveDependencies,
           id: id,
         );
 
-  PatientUpdateControllerProvider._internal(
+  AdminUpdateControllerProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -116,8 +115,8 @@ class PatientUpdateControllerProvider
   final String id;
 
   @override
-  FutureOr<PatientUpdateState> runNotifierBuild(
-    covariant PatientUpdateController notifier,
+  FutureOr<AdminUpdateState> runNotifierBuild(
+    covariant AdminUpdateController notifier,
   ) {
     return notifier.build(
       id,
@@ -125,10 +124,10 @@ class PatientUpdateControllerProvider
   }
 
   @override
-  Override overrideWith(PatientUpdateController Function() create) {
+  Override overrideWith(AdminUpdateController Function() create) {
     return ProviderOverride(
       origin: this,
-      override: PatientUpdateControllerProvider._internal(
+      override: AdminUpdateControllerProvider._internal(
         () => create()..id = id,
         from: from,
         name: null,
@@ -141,14 +140,14 @@ class PatientUpdateControllerProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<PatientUpdateController,
-      PatientUpdateState> createElement() {
-    return _PatientUpdateControllerProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<AdminUpdateController,
+      AdminUpdateState> createElement() {
+    return _AdminUpdateControllerProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is PatientUpdateControllerProvider && other.id == id;
+    return other is AdminUpdateControllerProvider && other.id == id;
   }
 
   @override
@@ -162,19 +161,19 @@ class PatientUpdateControllerProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin PatientUpdateControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<PatientUpdateState> {
+mixin AdminUpdateControllerRef
+    on AutoDisposeAsyncNotifierProviderRef<AdminUpdateState> {
   /// The parameter `id` of this provider.
   String get id;
 }
 
-class _PatientUpdateControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<PatientUpdateController,
-        PatientUpdateState> with PatientUpdateControllerRef {
-  _PatientUpdateControllerProviderElement(super.provider);
+class _AdminUpdateControllerProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<AdminUpdateController,
+        AdminUpdateState> with AdminUpdateControllerRef {
+  _AdminUpdateControllerProviderElement(super.provider);
 
   @override
-  String get id => (origin as PatientUpdateControllerProvider).id;
+  String get id => (origin as AdminUpdateControllerProvider).id;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

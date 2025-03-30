@@ -8,8 +8,10 @@ import 'package:gym_system/src/core/widgets/page_actions.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
 import 'package:gym_system/src/core/widgets/text_search_bar.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/breeds/patient_breeds_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_page_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/species/patient_species_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patients_table.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -17,6 +19,9 @@ class PatientsPage extends HookConsumerWidget {
   const PatientsPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(patientBreedsControllerProvider);
+    ref.watch(patientSpeciesControllerProvider);
+
     final pageState = ref.watch(patientsPageControllerProvider);
     final searchNotif = ref.read(patientSearchControllerProvider.notifier);
     final state = ref.watch(patientsControllerProvider);

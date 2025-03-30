@@ -36,6 +36,12 @@ class AdminMapper extends ClassMapperBase<Admin> {
   static bool _$verified(Admin v) => v.verified;
   static const Field<Admin, bool> _f$verified =
       Field('verified', _$verified, opt: true, def: false);
+  static DateTime? _$created(Admin v) => v.created;
+  static const Field<Admin, DateTime> _f$created =
+      Field('created', _$created, opt: true);
+  static DateTime? _$updated(Admin v) => v.updated;
+  static const Field<Admin, DateTime> _f$updated =
+      Field('updated', _$updated, opt: true);
 
   @override
   final MappableFields<Admin> fields = const {
@@ -45,6 +51,8 @@ class AdminMapper extends ClassMapperBase<Admin> {
     #avatar: _f$avatar,
     #isDeleted: _f$isDeleted,
     #verified: _f$verified,
+    #created: _f$created,
+    #updated: _f$updated,
   };
 
   static Admin _instantiate(DecodingData data) {
@@ -54,7 +62,9 @@ class AdminMapper extends ClassMapperBase<Admin> {
         email: data.dec(_f$email),
         avatar: data.dec(_f$avatar),
         isDeleted: data.dec(_f$isDeleted),
-        verified: data.dec(_f$verified));
+        verified: data.dec(_f$verified),
+        created: data.dec(_f$created),
+        updated: data.dec(_f$updated));
   }
 
   @override
@@ -109,7 +119,9 @@ abstract class AdminCopyWith<$R, $In extends Admin, $Out>
       String? email,
       String? avatar,
       bool? isDeleted,
-      bool? verified});
+      bool? verified,
+      DateTime? created,
+      DateTime? updated});
   AdminCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -126,14 +138,18 @@ class _AdminCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Admin, $Out>
           String? email,
           Object? avatar = $none,
           bool? isDeleted,
-          bool? verified}) =>
+          bool? verified,
+          Object? created = $none,
+          Object? updated = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (email != null) #email: email,
         if (avatar != $none) #avatar: avatar,
         if (isDeleted != null) #isDeleted: isDeleted,
-        if (verified != null) #verified: verified
+        if (verified != null) #verified: verified,
+        if (created != $none) #created: created,
+        if (updated != $none) #updated: updated
       }));
   @override
   Admin $make(CopyWithData data) => Admin(
@@ -142,7 +158,9 @@ class _AdminCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Admin, $Out>
       email: data.get(#email, or: $value.email),
       avatar: data.get(#avatar, or: $value.avatar),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
-      verified: data.get(#verified, or: $value.verified));
+      verified: data.get(#verified, or: $value.verified),
+      created: data.get(#created, or: $value.created),
+      updated: data.get(#updated, or: $value.updated));
 
   @override
   AdminCopyWith<$R2, Admin, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

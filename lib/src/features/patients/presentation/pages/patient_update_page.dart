@@ -15,7 +15,9 @@ import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_update_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_breed_form_field.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_image_control_widget.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_species_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientUpdatePage extends HookConsumerWidget {
@@ -186,94 +188,21 @@ class PatientUpdatePage extends HookConsumerWidget {
                       verticalGap: 10,
                       horizontalGap: 10,
                       children: [
-                        // FormTypeaheadCustom(
-                        //   allowCustomInput: true,
-                        //   suggestionsCallback: (p0) => ['test'],
-                        //   itemBuilder: (context, suggestion) {
-                        //     return ListTile(
-                        //       title: Text(suggestion),
-                        //     );
-                        //   },
-                        //   name: PatientField.species,
-                        //   decoration: InputDecoration(
-                        //     contentPadding: EdgeInsets.only(
-                        //       bottom: 10,
-                        //       right: 8,
-                        //       left: 8,
-                        //       top: 30,
-                        //     ),
-                        //     labelText: 'Species',
-                        //     filled: true,
-                        //     fillColor: Theme.of(context)
-                        //         .colorScheme
-                        //         .surfaceContainerLow,
-                        //     border: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(8),
-                        //     ),
-                        //   ),
-                        // ),
-                        // FormTypeaheadCustom(
-                        //   allowCustomInput: true,
-                        //   suggestionsCallback: (p0) => ['test'],
-                        //   itemBuilder: (context, suggestion) {
-                        //     return ListTile(
-                        //       title: Text(suggestion),
-                        //     );
-                        //   },
-                        //   name: PatientField.breed,
-                        //   decoration: InputDecoration(
-                        //     contentPadding: EdgeInsets.only(
-                        //       bottom: 10,
-                        //       right: 8,
-                        //       left: 8,
-                        //       top: 30,
-                        //     ),
-                        //     labelText: 'Breed',
-                        //     filled: true,
-                        //     fillColor: Theme.of(context)
-                        //         .colorScheme
-                        //         .surfaceContainerLow,
-                        //     border: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(8),
-                        //     ),
-                        //   ),
-                        // )
-                        FormBuilderTextField(
+                        ///
+                        /// Species
+                        ///
+                        PatientSpeciesFormField(
+                          list: updateState.species,
                           name: PatientField.species,
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                          ]),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(
-                                bottom: 10, right: 8, left: 8, top: 30),
-                            labelText: 'Species',
-                            filled: true,
-                            fillColor: Theme.of(context)
-                                .colorScheme
-                                .surfaceContainerLow,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
                         ),
-                        FormBuilderTextField(
+
+                        ///
+                        /// Breeds
+                        ///
+                        PatientBreedFormField(
+                          list: updateState.breeds,
                           name: PatientField.breed,
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                          ]),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(
-                                bottom: 10, right: 8, left: 8, top: 30),
-                            labelText: 'Breed',
-                            filled: true,
-                            fillColor: Theme.of(context)
-                                .colorScheme
-                                .surfaceContainerLow,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
+                        )
                       ],
                     ),
 

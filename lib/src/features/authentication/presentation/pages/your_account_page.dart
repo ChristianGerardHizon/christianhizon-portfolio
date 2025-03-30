@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -16,6 +15,9 @@ class YourAccountPage extends HookConsumerWidget {
     ///
     ///
     onLogout() async {
+      final confirm = await ConfirmModal.show(context);
+      if (confirm != true) return;
+
       final result =
           await ref.read(authControllerProvider.notifier).logout().run();
       result.fold(

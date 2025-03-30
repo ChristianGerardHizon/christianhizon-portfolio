@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
-import 'package:gym_system/src/features/admins/presentation/widgets/admin_circle_image.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
-import 'package:gym_system/src/features/users/presentation/widgets/user_circle_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AccountCircleImage extends HookConsumerWidget {
@@ -87,11 +83,6 @@ class AccountCircleImage extends HookConsumerWidget {
 
     return state.when(
       data: (auth) {
-        final email = auth.map<String>(
-          (u) => u.record.email,
-          (a) => a.record.email,
-        );
-
         final avatar = auth.map<String?>(
           (u) => u.record.avatar,
           (a) => a.record.avatar,

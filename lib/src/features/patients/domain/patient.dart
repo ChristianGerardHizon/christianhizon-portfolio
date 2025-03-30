@@ -1,4 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/strings/fields.dart';
+import 'package:gym_system/src/features/patients/domain/patient_breed.dart';
+import 'package:gym_system/src/features/patients/domain/patient_species.dart';
 
 part 'patient.mapper.dart';
 
@@ -27,6 +30,8 @@ class Patient with PatientMappable {
   final String collectionId;
   final String collectionName;
 
+  final PatientRecordExpand? expand;
+
   Patient({
     this.collectionId = '',
     this.collectionName = '',
@@ -45,6 +50,7 @@ class Patient with PatientMappable {
     this.dateOfBirth,
     this.created,
     this.updated,
+    this.expand,
   });
 
   static const fromMap = PatientMapper.fromMap;
@@ -53,20 +59,44 @@ class Patient with PatientMappable {
   Map<String, dynamic> toForm() {
     return {
       ...toMap(),
-      'dateOfBirth': dateOfBirth,
-      'created': created,
-      'updated': created,
+      PatientField.dateOfBirth: dateOfBirth,
+      PatientField.species: expand?.species,
+      PatientField.breed: expand?.breed,
+      PatientField.created: created,
+      PatientField.updated: created,
     };
   }
 
   static Patient customFromMap(Map<String, dynamic> raw) {
     // if dateOfBirth is '' empty string, it will be null
-    final dateOfBirth = raw['dateOfBirth'];
+    final dateOfBirth = raw[PatientField.dateOfBirth];
     final updatedDateOfBirth = dateOfBirth == '' ? null : dateOfBirth;
     return fromMap(
       {
         ...raw,
-        'dateOfBirth': updatedDateOfBirth,
+        PatientField.dateOfBirth: updatedDateOfBirth,
+      },
+    );
+  }
+}
+
+@MappableClass()
+class PatientRecordExpand with PatientRecordExpandMappable {
+  final PatientSpecies? species;
+  final PatientBreed? breed;
+
+  static const fromMap = PatientRecordExpandMapper.fromMap;
+  static const fromJson = PatientRecordExpandMapper.fromMap;
+
+  PatientRecordExpand({
+    this.species,
+    this.breed,
+  });
+
+  static PatientRecordExpand customFromMap(Map<String, dynamic> raw) {
+    return fromMap(
+      {
+        ...raw,
       },
     );
   }

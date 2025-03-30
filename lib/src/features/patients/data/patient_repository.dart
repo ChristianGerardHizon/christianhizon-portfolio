@@ -1,6 +1,7 @@
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
+import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
@@ -41,12 +42,14 @@ class PatientRepositoryImpl extends PatientRepository {
 
   PatientRepositoryImpl({required this.pb});
 
+  final String expand = 'species,breed';
+
   RecordService get collection => pb.collection(PocketBaseCollections.patients);
 
   @override
   TaskResult<Patient> get(String id) {
     return TaskResult.tryCatch(() async {
-      final result = await collection.getOne(id);
+      final result = await collection.getOne(id, expand: expand);
       return Patient.customFromMap(result.toJson());
     }, Failure.tryCatchData);
   }
@@ -54,7 +57,7 @@ class PatientRepositoryImpl extends PatientRepository {
   @override
   TaskResult<Patient> create(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(body: payload);
+      final response = await collection.create(body: payload, expand: expand);
       return Patient.customFromMap(response.toJson());
     }, Failure.tryCatchData);
   }
@@ -77,6 +80,7 @@ class PatientRepositoryImpl extends PatientRepository {
         filter: filter,
         page: pageNo,
         perPage: pageSize,
+        expand: expand,
       );
       return PageResults(
         page: result.page,
@@ -103,6 +107,7 @@ class PatientRepositoryImpl extends PatientRepository {
         patient.id,
         body: combinedMap,
         files: files,
+        expand: expand,
       );
       return Patient.customFromMap(result.toJson());
     }, Failure.tryCatchData);
@@ -114,7 +119,7 @@ class PatientRepositoryImpl extends PatientRepository {
       final batch = pb.createBatch();
       final batchCollection = batch.collection(PocketBaseCollections.patients);
       for (final id in ids) {
-        batchCollection.update(id, body: {'isDeleted': true});
+        batchCollection.update(id, body: {PatientField.isDeleted: true});
       }
 
       await batch.send();

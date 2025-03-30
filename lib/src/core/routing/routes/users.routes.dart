@@ -4,8 +4,6 @@ class UsersBranchData extends StatefulShellBranchData {
   const UsersBranchData();
 }
 
-
-
 @TypedGoRoute<UsersPageRoute>(path: UsersPageRoute.path)
 class UsersPageRoute extends GoRouteData {
   const UsersPageRoute();
@@ -33,7 +31,7 @@ class UserPageRoute extends GoRouteData {
 @TypedGoRoute<UserCreatePageRoute>(path: UserCreatePageRoute.path)
 class UserCreatePageRoute extends GoRouteData {
   const UserCreatePageRoute();
-  static const path = '/newUser';
+  static const path = '/new/user';
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
@@ -44,7 +42,7 @@ class UserCreatePageRoute extends GoRouteData {
 @TypedGoRoute<UserUpdatePageRoute>(path: UserUpdatePageRoute.path)
 class UserUpdatePageRoute extends GoRouteData {
   const UserUpdatePageRoute(this.id);
-  static const path = '/updateUser/:id';
+  static const path = '/update/user/:id';
 
   final String id;
 

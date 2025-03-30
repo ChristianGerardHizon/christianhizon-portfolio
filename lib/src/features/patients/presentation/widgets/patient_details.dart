@@ -5,6 +5,7 @@ import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/card_group.dart';
+import 'package:gym_system/src/core/widgets/circle_widget.dart';
 import 'package:gym_system/src/core/widgets/collapsing_card.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
@@ -42,8 +43,8 @@ class PatientDetails extends HookConsumerWidget {
       children: [
         SizedBox(height: 20),
 
-        SizedBox(
-          height: 250,
+        CircleWidget(
+          size: 250,
           child: PbImageCircle(
             radius: 120,
             collection: patient.collectionId,

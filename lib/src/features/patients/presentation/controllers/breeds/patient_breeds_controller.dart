@@ -7,16 +7,16 @@ part 'patient_breeds_controller.g.dart';
 
 @riverpod
 class PatientBreedsController extends _$PatientBreedsController {
-  String? _buildFilter(String speciesId) {
-    return "${PatientBreedField.species} = '$speciesId' && ${PatientBreedField.isDeleted} = false";
+  String? _buildFilter() {
+    return "${PatientBreedField.isDeleted} = false";
   }
 
   @override
-  Future<List<PatientBreed>> build(String speciesId) async {
+  Future<List<PatientBreed>> build() async {
     final repo = ref.read(patientBreedRepositoryProvider);
     final result = await repo
         .listAll(
-          filter: _buildFilter(speciesId),
+          filter: _buildFilter(),
         )
         .run();
     return result.fold(Future.error, (x) => Future.value(x));

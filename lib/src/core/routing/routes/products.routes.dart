@@ -18,7 +18,7 @@ class ProductsPageRoute extends GoRouteData {
 @TypedGoRoute<ProductCreatePageRoute>(path: ProductCreatePageRoute.path)
 class ProductCreatePageRoute extends GoRouteData {
   const ProductCreatePageRoute();
-  static const path = '/newProduct';
+  static const path = '/create/product';
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
@@ -29,7 +29,7 @@ class ProductCreatePageRoute extends GoRouteData {
 @TypedGoRoute<ProductUpdatePageRoute>(path: ProductUpdatePageRoute.path)
 class ProductUpdatePageRoute extends GoRouteData {
   const ProductUpdatePageRoute(this.id);
-  static const path = '/updateproduct//:id';
+  static const path = '/update/product/:id';
 
   final String id;
 

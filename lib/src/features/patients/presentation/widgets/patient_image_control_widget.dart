@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
+import 'package:gym_system/src/core/widgets/circle_widget.dart';
 import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
 import 'package:gym_system/src/core/widgets/pb_image_loader.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
@@ -30,11 +31,15 @@ class PatientImageControlWidget extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: 20),
-              PbImageCircle(
-                radius: 250,
-                collection: patient.collectionId,
-                recordId: patient.id,
-                file: patient.avatar,
+              CircleWidget(
+                size: 250,
+                child: PbImageCircle(
+                  radius: 250,
+                  collection: patient.collectionId,
+                  recordId: patient.id,
+                  file: patient.avatar,
+                  fit: BoxFit.cover,
+                ),
               ),
               SizedBox(height: 20),
               Row(

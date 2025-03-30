@@ -22,8 +22,8 @@ abstract class AdminRepository {
   TaskResult<Admin> get(String id);
   TaskResult<void> delete(String id);
   TaskResult<Admin> update(
-    Admin admin, {
-    Map<String, dynamic> params = const {},
+    Admin admin,
+    Map<String, dynamic> params, {
     List<MultipartFile> files = const [],
   });
   TaskResult<Admin> create({
@@ -55,8 +55,8 @@ class AdminRepositoryImpl implements AdminRepository {
   ///
   @override
   TaskResult<Admin> update(
-    Admin admin, {
-    Map<String, dynamic> params = const {},
+    Admin admin,
+    Map<String, dynamic> params, {
     List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(

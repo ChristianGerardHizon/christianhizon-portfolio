@@ -24,6 +24,19 @@ class AdminPageRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return AdminPage(id: id);
+    return AdminPage(id);
+  }
+}
+
+@TypedGoRoute<AdminUpdatePageRoute>(path: AdminUpdatePageRoute.path)
+class AdminUpdatePageRoute extends GoRouteData {
+  const AdminUpdatePageRoute(this.id);
+  static const path = '/update/admin/:id';
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return AdminUpdatePage(id);
   }
 }

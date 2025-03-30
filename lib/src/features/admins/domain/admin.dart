@@ -12,6 +12,9 @@ class Admin with AdminMappable {
   final bool isDeleted;
   final bool verified;
 
+  final DateTime? created;
+  final DateTime? updated;
+
   Admin({
     required this.id,
     required this.name,
@@ -19,7 +22,17 @@ class Admin with AdminMappable {
     this.avatar,
     this.isDeleted = false,
     this.verified = false,
+    this.created,
+    this.updated,
   });
+
+  Map<String, dynamic> toForm() {
+    return {
+      ...toMap(),
+      'created': created,
+      'updated': created,
+    };
+  }
 
   static const fromMap = AdminMapper.fromMap;
   static const fromJson = AdminMapper.fromJson;
