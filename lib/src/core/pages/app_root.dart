@@ -147,7 +147,7 @@ class AppRoot extends HookConsumerWidget {
                           footer: Padding(
                             padding: const EdgeInsets.only(bottom: 20),
                             child: InkWell(
-                              onTap: () => YourAccountPageRoute().push(context),
+                              onTap: () => YourAccountPageRoute().go(context),
                               child: AccountCircleImage(
                                 radius: !sideMenuCtrl.isCollapsed() ? 30 : 40,
                                 showName: !sideMenuCtrl.isCollapsed(),

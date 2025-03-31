@@ -120,11 +120,13 @@ class SliverDynamicBaseList extends HookConsumerWidget {
         freezePriority: 1,
         builder: (context, index) => Checkbox(
             tristate: true,
-            value: controller.selected.length == itemCount
-                ? true
-                : controller.selected.isNotEmpty
-                    ? null
-                    : false,
+            value: itemCount == 0
+                ? false
+                : controller.selected.length == itemCount
+                    ? true
+                    : controller.selected.isNotEmpty
+                        ? null
+                        : false,
             onChanged: (x) {
               if (x == true) {
                 controller.selectAll(itemCount);

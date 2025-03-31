@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
@@ -217,18 +216,16 @@ class PrescriptionListView extends HookConsumerWidget {
                     ),
                   ),
                   title: Text(
-                    item.medication.optional(placeholder: 'no medication'),
+                    item.medication.optional(placeholder: ''),
                     style: theme.textTheme.titleMedium
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(item.dosage.optional(placeholder: '')),
                       Text(
-                          item.dosage.optional(placeholder: 'no dosage given')),
-                      Text(
-                        item.instructions
-                            .optional(placeholder: 'no instructions'),
+                        item.instructions.optional(placeholder: ''),
                       ),
                     ],
                   ),

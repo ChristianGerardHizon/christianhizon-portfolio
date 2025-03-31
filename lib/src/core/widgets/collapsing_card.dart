@@ -44,14 +44,17 @@ class CollapsingCard extends HookWidget {
                   bottomRight: Radius.circular(isExpanded.value ? 0 : 10),
                 ),
               ),
-              onTap: () => isExpanded.value = !isExpanded.value,
+              onTap: canCollapse
+                  ? () => isExpanded.value = !isExpanded.value
+                  : null,
               minTileHeight: 0,
               contentPadding: contentPadding ??
                   EdgeInsets.only(
-                      top: 10,
-                      left: 16,
-                      right: 16,
-                      bottom: !isExpanded.value ? 10 : 10),
+                    top: 10,
+                    left: 16,
+                    right: 16,
+                    bottom: !isExpanded.value ? 10 : 10,
+                  ),
               title: header,
               subtitle: subtitle,
               trailing: canCollapse

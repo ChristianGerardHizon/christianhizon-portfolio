@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/assets/assets.gen.dart';
 
@@ -25,13 +26,17 @@ class Logo extends StatelessWidget {
           builder: (context) => SizedBox(
             width: width,
             height: height,
-            child: Assets.icons.appIconTransparent.image(
-              fit: BoxFit.fill,
-            ),
-            // child: Placeholder(
-            //   fallbackHeight: height ?? 400,
-            //   fallbackWidth: width ?? 400,
-            // ),
+            child: Builder(builder: (context) {
+              if (kDebugMode)
+                return Placeholder(
+                  fallbackHeight: height ?? 400,
+                  fallbackWidth: width ?? 400,
+                );
+
+              return Assets.icons.appIconTransparent.image(
+                fit: BoxFit.fill,
+              );
+            }),
           ),
         ),
       ),

@@ -10,6 +10,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class TableColumn<T> {
   final String header;
   final String? headerKey;
+  final Alignment? alignment;
+  final EdgeInsets? padding;
+  final TextStyle? style;
   final double width;
   final Widget Function(
     BuildContext context,
@@ -22,6 +25,9 @@ class TableColumn<T> {
     this.headerKey,
     this.width = 100,
     this.builder,
+    this.style,
+    this.alignment,
+    this.padding,
   });
 }
 
@@ -42,6 +48,8 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
   final Function(T data)? onTap;
   final String? headerKey;
   final List<TableColumn<T>> data;
+  final TextStyle? headerTextStyle;
+  final Widget? emptyWidget;
   final Widget Function(
     BuildContext context,
     int index,
@@ -61,11 +69,13 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
     required this.onSearch,
     required this.onClear,
     required this.onCreate,
+    this.headerTextStyle,
     this.headerKey,
     this.onHeaderTap,
     required this.data,
     this.onTap,
     required this.mobileBuilder,
+    this.emptyWidget,
   });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -74,6 +84,7 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
     ///
     /// Table Controller
     ///
+    final items = results?.items ?? [];
     return Stack(
       children: [
         CustomScrollView(
@@ -98,15 +109,36 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
                 child: SizedBox(height: 200, child: Text(errorMessage!)),
               ),
 
+            if (items.isEmpty)
+              SliverToBoxAdapter(
+                child: emptyWidget ??
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: Center(
+                        child: emptyWidget ??
+                            Text(
+                              'No Data Found',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium
+                                  ?.copyWith(
+                                    color: Theme.of(context).disabledColor,
+                                  ),
+                            ),
+                      ),
+                    ),
+              ),
+
             ///
             ///  Content
             ///
-            buildContent(
-              result: results,
-              columns: data,
-              tableController: controller,
-              onRowTap: onTap,
-            ),
+            if (items.isNotEmpty)
+              buildContent(
+                result: results,
+                columns: data,
+                tableController: controller,
+                onRowTap: onTap,
+              ),
 
             ///
             /// Page Selector
@@ -165,10 +197,20 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
 
   Widget buildHeader(BuildContext context, TableColumn<T> column) => InkWell(
         onTap: () => onHeaderTap?.call(column.headerKey),
-        child: DecoratedBox(
-          decoration: BoxDecoration(),
-          child: Center(
-            child: Text(column.header),
+        child: Padding(
+          padding: column.padding ??
+              const EdgeInsets.symmetric(
+                horizontal: 8.0,
+              ),
+          child: DecoratedBox(
+            decoration: BoxDecoration(),
+            child: Align(
+              alignment: column.alignment ?? Alignment.center,
+              child: Text(
+                column.header,
+                style: column.style ?? headerTextStyle,
+              ),
+            ),
           ),
         ),
       );
