@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'dynamic_field.dart';
-import 'fields/form_field_image.dart';
+import 'fields/dynamic_form_field_image.dart';
 import 'fields/dynamic_form_field_text.dart';
 import 'fields/dynamic_form_field_checkbox.dart';
 import 'fields/dynamic_form_field_select.dart';

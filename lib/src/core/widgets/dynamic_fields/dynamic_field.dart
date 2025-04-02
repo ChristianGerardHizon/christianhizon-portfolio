@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Base abstract class for all dynamic fields.
+/// Base abstract class for all dynamic form fields.
+/// Contains common properties like `name`, `isRequired`, `placeholder`, and `helperText`.
 abstract class DynamicField {
   final String name;
   final bool isRequired;
@@ -15,6 +16,8 @@ abstract class DynamicField {
   });
 }
 
+/// Represents a dynamic text input field with optional label, length,
+/// number of lines, and line constraints.
 class DynamicTextField extends DynamicField {
   final String? label;
   final int? minLength;
@@ -37,6 +40,7 @@ class DynamicTextField extends DynamicField {
   });
 }
 
+/// Represents a dynamic checkbox field with an optional initial value.
 class DynamicCheckboxField extends DynamicField {
   final bool initialValue;
 
@@ -49,6 +53,7 @@ class DynamicCheckboxField extends DynamicField {
   });
 }
 
+/// Model class representing an individual option in a select/dropdown field.
 class SelectOption<T> {
   final T value;
   final String display;
@@ -59,6 +64,7 @@ class SelectOption<T> {
   });
 }
 
+/// Represents a dynamic dropdown/select field with a list of options and an optional initial value.
 class DynamicSelectField<T> extends DynamicField {
   final List<SelectOption<T>> options;
   final T? initialValue;
@@ -73,6 +79,7 @@ class DynamicSelectField<T> extends DynamicField {
   });
 }
 
+/// Represents a dynamic date picker field with optional date boundaries and initial value.
 class DynamicDateField extends DynamicField {
   final DateTime? initialDate;
   final DateTime? firstDate;
@@ -89,6 +96,7 @@ class DynamicDateField extends DynamicField {
   });
 }
 
+/// Represents a dynamic file upload field with an optional label describing the expected file type.
 class DynamicFileField extends DynamicField {
   final String? fileTypeLabel;
 
@@ -101,6 +109,7 @@ class DynamicFileField extends DynamicField {
   });
 }
 
+/// Represents a dynamic image upload field with optional file type label, max file size, and image quality settings.
 class DynamicImageField extends DynamicField {
   final String? fileTypeLabel;
   final int maxSizeKB;
