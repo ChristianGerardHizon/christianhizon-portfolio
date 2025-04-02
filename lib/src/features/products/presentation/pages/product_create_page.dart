@@ -4,10 +4,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/dynamic_fields/dynamic_field.dart';
+import 'package:gym_system/src/core/widgets/dynamic_fields/dynamic_form_field.dart';
+import 'package:gym_system/src/core/widgets/dynamic_fields/dynamic_form_field_builder.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/products_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart';
 
 class ProductCreatePage extends HookConsumerWidget {
   const ProductCreatePage({super.key});
@@ -20,21 +24,11 @@ class ProductCreatePage extends HookConsumerWidget {
     ///
     /// Submit
     ///
-    void onSubmit() async {
+    void onSubmit(Map<String, dynamic> value, List<MultipartFile> files) async {
       isLoading.value = true;
-      final form = formKey.currentState;
-      if (form == null) {
-        isLoading.value = false;
-        return;
-      }
-      final isValid = form.saveAndValidate();
-      if (!isValid) {
-        isLoading.value = false;
-        return;
-      }
 
       final result =
-          await ref.read(productRepositoryProvider).create(form.value).run();
+          await ref.read(productRepositoryProvider).create(value).run();
       isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
@@ -51,63 +45,28 @@ class ProductCreatePage extends HookConsumerWidget {
       appBar: AppBar(
         title: Text('Product Create Page'),
       ),
-      body: FormBuilder(
-        key: formKey,
-        child: CustomScrollView(
-          slivers: [
-            ///
-            /// Product Details
-            ///
-            SliverPadding(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                sliver: SliverList.list(children: [
-                  SizedBox(height: 10),
-
-                  ListTile(
-                    contentPadding: EdgeInsets.all(0),
-                    title: Text(
-                      'Product Info',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-
-                  SizedBox(height: 10),
-
-                  //
-                  /// Name
-                  ///
-                  FormBuilderTextField(
-                    name: ProductField.name,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(
-                          bottom: 10, right: 8, left: 8, top: 30),
-                      labelText: 'Product name',
-                      filled: true,
-                      fillColor:
-                          Theme.of(context).colorScheme.surfaceContainerLow,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ])),
-
-            ///
-            /// Save Button
-            ///
-            SliverPadding(
-              padding: const EdgeInsets.only(
-                  left: 10, right: 10, top: 30, bottom: 20),
-              sliver: SliverToBoxAdapter(
-                child: LoadingFilledButton(
-                  isLoading: isLoading.value,
-                  child: Text('Save'),
-                  onPressed: onSubmit,
-                ),
-              ),
-            ),
-          ],
-        ),
+      body: DynamicFormBuilder(
+        formKey: formKey,
+        isLoading: isLoading.value,
+        fields: [
+          DynamicTextField(
+            name: ProductField.name,
+            label: 'Name',
+          ),
+          DynamicFileField(
+            name: 'fileA',
+            fileTypeLabel: 'Upload File A (PDF/Image)',
+            isRequired: true,
+          ),
+          DynamicImageField(
+            name: 'profilePicture',
+            fileTypeLabel: 'Upload Profile Picture',
+            isRequired: true,
+            maxSizeKB: 300,
+            quality: 85,
+          ),
+        ],
+        onSubmit: onSubmit,
       ),
     );
   }

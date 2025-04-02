@@ -10,7 +10,6 @@ import 'package:gym_system/src/core/widgets/dynamic_list/responsive_pagination_l
 import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/selectable_card.dart';
-import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_search.dart';
@@ -66,6 +65,17 @@ class ProductsPage extends HookConsumerWidget {
       );
     }
 
+    bool buildIsLoading() {
+      if (isLoading.value) return true;
+      return provider.maybeWhen(
+        skipError: true,
+        skipLoadingOnRefresh: false,
+        skipLoadingOnReload: false,
+        loading: () => true,
+        orElse: () => false,
+      );
+    }
+
     ///
     /// OnCreate
     ///
@@ -79,6 +89,14 @@ class ProductsPage extends HookConsumerWidget {
     onSearch() {
       final query = searchCtrl.text.trim();
       searchNotifier.updateParams(ProductSearch(name: query));
+    }
+
+    ///
+    /// Handle Clear
+    ///
+    onClear() {
+      searchCtrl.clear();
+      searchNotifier.updateParams(ProductSearch(name: ''));
     }
 
     return Scaffold(
@@ -95,126 +113,127 @@ class ProductsPage extends HookConsumerWidget {
           ///
           /// Table
           ///
-          StackLoader(
-        isLoading: isLoading.value,
-        child: ResponsivePaginationListWithDeleteView<Product>(
-          controller: controller,
-          onPageChange: notifier.changePage,
-          errorMessage: provider.maybeWhen(
-            skipError: false,
-            skipLoadingOnRefresh: true,
-            skipLoadingOnReload: true,
-            error: (error, stackTrace) => 'generic error',
-            orElse: () => null,
-          ),
-          results: provider.when(
-            skipError: true,
-            skipLoadingOnRefresh: false,
-            skipLoadingOnReload: false,
-            data: (x) => x,
-            error: (error, stackTrace) => null,
-            loading: () => null,
-          ),
-          onDelete: onDelete,
-
-          ///
-          /// Search Features
-          ///
-          searchCtrl: searchCtrl,
-          onClear: () {},
-          onCreate: onCreate,
-          onSearch: onSearch,
-
-          ///
-          /// Table Data
-          ///
-          onHeaderTap: (headerKey) {},
-          onTap: onTap,
-          data: [
-            TableColumn(
-              header: 'Name',
-              width: 200,
-              alignment: Alignment.centerLeft,
-              builder: (context, data, extra) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    overflow: TextOverflow.ellipsis,
-                    '${data.name}',
-                  ),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Status',
-              alignment: Alignment.centerLeft,
-              builder: (context, product, extra) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(product.name, overflow: TextOverflow.ellipsis),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Date Created',
-              alignment: Alignment.centerLeft,
-              width: 150,
-              builder: (context, product, extra) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text((product.created?.yyyyMMddHHmmA()).optional(),
-                      overflow: TextOverflow.ellipsis),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Date Updated',
-              alignment: Alignment.centerLeft,
-              width: 150,
-              builder: (context, product, extra) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text((product.updated?.yyyyMMddHHmmA()).optional(),
-                      overflow: TextOverflow.ellipsis),
-                );
-              },
-            ),
-          ],
-
-          ///
-          /// Builder for mobile
-          ///
-          mobileBuilder: (context, index, value, selected) {
-            return SelectableCard(
-              margin: EdgeInsets.all(8),
-              onLongPress: () {
-                if (selected) {
-                  controller.select(index);
-                } else {
-                  controller.toggle(index);
-                }
-              },
-              onTap: () {
-                if (selected) {
-                  controller.toggle(index);
-                } else {
-                  onTap(value);
-                }
-              },
-              selected: selected,
-              child: Padding(
-                padding: EdgeInsets.all(8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(value.name),
-                    Text(value.category.optional()),
-                  ],
-                ),
-              ),
-            );
-          },
+          ResponsivePaginationListWithDeleteView<Product>(
+        controller: controller,
+        onPageChange: notifier.changePage,
+        errorMessage: provider.maybeWhen(
+          skipError: false,
+          skipLoadingOnRefresh: true,
+          skipLoadingOnReload: true,
+          error: (error, stackTrace) => 'generic error',
+          orElse: () => null,
         ),
+        isLoading: buildIsLoading(),
+        results: provider.when(
+          skipError: true,
+          skipLoadingOnRefresh: false,
+          skipLoadingOnReload: false,
+          data: (x) => x,
+          error: (error, stackTrace) => null,
+          loading: () => null,
+        ),
+        onDelete: onDelete,
+
+        ///
+        /// Search Features
+        ///
+        searchCtrl: searchCtrl,
+        onClear: onClear,
+        onCreate: onCreate,
+        onSearch: onSearch,
+
+        ///
+        /// Table Data
+        ///
+        onHeaderTap: (headerKey) {},
+        onTap: onTap,
+        data: [
+          TableColumn(
+            header: 'Name',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, extra) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  '${data.name}',
+                ),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Status',
+            alignment: Alignment.centerLeft,
+            builder: (context, product, extra) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(product.name, overflow: TextOverflow.ellipsis),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Date Created',
+            alignment: Alignment.centerLeft,
+            width: 150,
+            builder: (context, product, extra) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text((product.created?.yyyyMMddHHmmA()).optional(),
+                    overflow: TextOverflow.ellipsis),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Date Updated',
+            alignment: Alignment.centerLeft,
+            width: 150,
+            builder: (context, product, extra) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text((product.updated?.yyyyMMddHHmmA()).optional(),
+                    overflow: TextOverflow.ellipsis),
+              );
+            },
+          ),
+        ],
+
+        ///
+        /// Builder for mobile
+        ///
+        mobileBuilder: (context, index, value, selected) {
+          return SelectableCard(
+            margin: EdgeInsets.all(8),
+            onLongPress: () {
+              if (selected) {
+                controller.select(index);
+              } else {
+                controller.toggle(index);
+              }
+            },
+            onTap: () {
+              final isSelecting = controller.selected.isNotEmpty;
+
+              if (isSelecting) {
+                controller.toggle(index);
+                return;
+              }
+
+              onTap(value);
+            },
+            selected: selected,
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(value.name),
+                  Text(value.category.optional()),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

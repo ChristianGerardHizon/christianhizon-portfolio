@@ -4,6 +4,7 @@ import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
 import 'package:gym_system/src/core/widgets/page_actions.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
+import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/core/widgets/text_search_bar.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -33,6 +34,8 @@ class TableColumn<T> {
 
 class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
   final bool isLoading;
+  final Widget? emptyWidget;
+
   final PageResults<T>? results;
   final String? errorMessage;
   final Function(int page)? onPageChange;
@@ -49,7 +52,6 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
   final String? headerKey;
   final List<TableColumn<T>> data;
   final TextStyle? headerTextStyle;
-  final Widget? emptyWidget;
   final Widget Function(
     BuildContext context,
     int index,
@@ -85,73 +87,83 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
     /// Table Controller
     ///
     final items = results?.items ?? [];
-    return Stack(
-      children: [
-        CustomScrollView(
-          slivers: [
-            ///
-            /// Serch Bar
-            ///
-            SliverToBoxAdapter(
-              child: TextSearchBar(
-                controller: searchCtrl,
-                onClear: onClear,
-                onSearch: onSearch,
-                onCreate: onCreate,
-              ),
-            ),
-
-            ///
-            /// on error
-            ///
-            if (errorMessage != null)
+    return StackLoader(
+      opacity: .1,
+      isLoading: isLoading,
+      child: Stack(
+        children: [
+          CustomScrollView(
+            slivers: [
+              ///
+              /// Serch Bar
+              ///
               SliverToBoxAdapter(
-                child: SizedBox(height: 200, child: Text(errorMessage!)),
+                child: TextSearchBar(
+                  controller: searchCtrl,
+                  onClear: onClear,
+                  onSearch: onSearch,
+                  onCreate: onCreate,
+                ),
               ),
 
-            if (items.isEmpty)
-              SliverToBoxAdapter(
-                child: emptyWidget ??
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.7,
-                      child: Center(
-                        child: emptyWidget ??
-                            Text(
-                              'No Data Found',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium
-                                  ?.copyWith(
-                                    color: Theme.of(context).disabledColor,
+              ///
+              /// on error
+              ///
+              if (errorMessage != null)
+                SliverToBoxAdapter(
+                  child: SizedBox(height: 200, child: Text(errorMessage!)),
+                ),
+
+              if (items.isEmpty)
+                SliverToBoxAdapter(
+                  child: emptyWidget ??
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        child: Center(
+                          child: emptyWidget ??
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'We could not find any results',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium
+                                        ?.copyWith(
+                                          color:
+                                              Theme.of(context).disabledColor,
+                                        ),
                                   ),
-                            ),
+                                ],
+                              ),
+                        ),
                       ),
-                    ),
-              ),
+                ),
 
-            ///
-            ///  Content
-            ///
-            if (items.isNotEmpty)
-              buildContent(
-                result: results,
-                columns: data,
-                tableController: controller,
-                onRowTap: onTap,
-              ),
+              ///
+              ///  Content
+              ///
+              if (items.isNotEmpty)
+                buildContent(
+                  result: results,
+                  columns: data,
+                  tableController: controller,
+                  onRowTap: onTap,
+                ),
 
-            ///
-            /// Page Selector
-            ///
-            buildPageSelector(results),
-          ],
-        ),
-        buildActions(controller, onDelete: () {
-          onDelete?.call(
-            controller.selected.map((e) => results!.items[e]).toList(),
-          );
-        }),
-      ],
+              ///
+              /// Page Selector
+              ///
+              buildPageSelector(results),
+            ],
+          ),
+          buildActions(controller, onDelete: () {
+            onDelete?.call(
+              controller.selected.map((e) => results!.items[e]).toList(),
+            );
+          }),
+        ],
+      ),
     );
   }
 

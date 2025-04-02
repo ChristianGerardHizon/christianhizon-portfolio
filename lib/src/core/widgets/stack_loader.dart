@@ -4,9 +4,15 @@ class StackLoader extends StatelessWidget {
   final Widget child;
   final Widget? loader;
   final bool isLoading;
+  final double opacity;
 
-  const StackLoader(
-      {super.key, this.isLoading = false, required this.child, this.loader});
+  const StackLoader({
+    super.key,
+    this.isLoading = false,
+    required this.child,
+    this.loader,
+    this.opacity = 0.3,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +21,7 @@ class StackLoader extends StatelessWidget {
       if (isLoading)
         (loader ??
             Container(
-              color: Colors.white.withValues(alpha: 0.3),
+              color: Colors.white.withValues(alpha: opacity),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,

@@ -26,7 +26,7 @@ class TextSearchBar extends HookWidget {
 
     useEffect(() {
       controller.addListener(() {
-        isEmpty.value = controller.text.isEmpty;
+        if (context.mounted) isEmpty.value = controller.text.isEmpty;
       });
       return null;
     });
