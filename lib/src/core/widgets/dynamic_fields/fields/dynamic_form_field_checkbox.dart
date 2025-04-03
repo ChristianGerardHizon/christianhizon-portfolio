@@ -13,11 +13,12 @@ class DynamicCheckboxFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormBuilderCheckbox(
       name: field.name,
-      initialValue: field.initialValue,
+      decoration: field.decoration ?? const InputDecoration(),
       title: Text(field.name),
       validator: FormBuilderValidators.compose([
         if (field.isRequired) FormBuilderValidators.equal(true),
       ]),
+      valueTransformer: field.valueTransformer,
     );
   }
 }

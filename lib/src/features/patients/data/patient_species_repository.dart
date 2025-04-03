@@ -49,11 +49,15 @@ class PatientSpeciesRepositoryImpl extends PatientSpeciesRepository {
   RecordService get collection =>
       pb.collection(PocketBaseCollections.patientSpecies);
 
+  PatientSpecies mapToData(Map<String, dynamic> map) {
+    return mapToData({...map, 'domain': pb.baseURL});
+  }
+
   @override
   TaskResult<PatientSpecies> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
-      return PatientSpecies.customFromMap(result.toJson());
+      return PatientSpecies.fromMap(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -61,7 +65,7 @@ class PatientSpeciesRepositoryImpl extends PatientSpeciesRepository {
   TaskResult<PatientSpecies> create(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload);
-      return PatientSpecies.customFromMap(response.toJson());
+      return PatientSpecies.fromMap(response.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -90,7 +94,7 @@ class PatientSpeciesRepositoryImpl extends PatientSpeciesRepository {
         totalItems: result.totalItems,
         totalPages: result.totalPages,
         items: result.items.map<PatientSpecies>((e) {
-          return PatientSpecies.customFromMap(e.toJson());
+          return PatientSpecies.fromMap(e.toJson());
         }).toList(),
       );
     }, Failure.tryCatchData);
@@ -110,7 +114,7 @@ class PatientSpeciesRepositoryImpl extends PatientSpeciesRepository {
         body: combinedMap,
         files: files,
       );
-      return PatientSpecies.customFromMap(result.toJson());
+      return PatientSpecies.fromMap(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -139,8 +143,7 @@ class PatientSpeciesRepositoryImpl extends PatientSpeciesRepository {
           filter: filter,
         );
         return result
-            .map<PatientSpecies>(
-                (e) => PatientSpecies.customFromMap(e.toJson()))
+            .map<PatientSpecies>((e) => PatientSpecies.fromMap(e.toJson()))
             .toList();
       },
       Failure.tryCatchData,

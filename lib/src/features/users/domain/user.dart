@@ -13,7 +13,14 @@ class User with UserMappable {
   final DateTime? created;
   final DateTime? updated;
 
+  final String collectionId;
+  final String collectionName;
+  final String domain;
+
   User({
+    required this.domain,
+    required this.collectionId,
+    required this.collectionName,
     required this.id,
     this.name = '',
     this.email = '',

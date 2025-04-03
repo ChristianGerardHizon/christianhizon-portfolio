@@ -2,6 +2,7 @@ import 'package:cross_file/cross_file.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
+import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/admins/domain/admin.dart';
@@ -50,6 +51,10 @@ class AdminRepositoryImpl implements AdminRepository {
 
   AdminRepositoryImpl({required this.pb});
 
+  Admin mapToData(Map<String, dynamic> map) {
+    return Admin.fromMap({...map, 'domain': pb.baseURL});
+  }
+
   ///
   /// Update an admin
   ///
@@ -70,7 +75,7 @@ class AdminRepositoryImpl implements AdminRepository {
           files: files,
         );
         final map = Map<String, dynamic>.from(response.data);
-        return Admin.fromMap(map);
+        return mapToData(map);
       },
       Failure.tryCatchData,
     );
@@ -90,7 +95,7 @@ class AdminRepositoryImpl implements AdminRepository {
           body: params,
           files: files,
         );
-        return Admin.fromMap(response.toJson());
+        return mapToData(response.toJson());
       },
       Failure.tryCatchData,
     );
@@ -117,7 +122,7 @@ class AdminRepositoryImpl implements AdminRepository {
     return TaskResult.tryCatch(
       () async {
         final result = await collection.getOne(id);
-        return Admin.fromMap(result.toJson());
+        return mapToData(result.toJson());
       },
       Failure.tryCatchData,
     );
@@ -141,7 +146,7 @@ class AdminRepositoryImpl implements AdminRepository {
 
         return PageResults<Admin>(
           items: result.items.map<Admin>((e) {
-            return Admin.fromMap(e.toJson());
+            return mapToData(e.toJson());
           }).toList(),
           page: result.page,
           perPage: result.perPage,
@@ -159,7 +164,7 @@ class AdminRepositoryImpl implements AdminRepository {
       final batch = pb.createBatch();
       final batchCollection = batch.collection(PocketBaseCollections.admins);
       for (final id in ids) {
-        batchCollection.update(id, body: {'isDeleted': true});
+        batchCollection.update(id, body: {AdminField.isDeleted: true});
       }
 
       await batch.send();

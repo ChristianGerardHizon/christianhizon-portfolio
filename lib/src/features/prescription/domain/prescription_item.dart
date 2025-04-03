@@ -16,7 +16,14 @@ class PrescriptionItem with PrescriptionItemMappable {
   final DateTime? created;
   final DateTime? updated;
 
+  final String collectionId;
+  final String collectionName;
+  final String domain;
+
   PrescriptionItem({
+    required this.collectionId,
+    required this.collectionName,
+    required this.domain,
     required this.id,
     required this.medicalRecord,
     this.medication = '',

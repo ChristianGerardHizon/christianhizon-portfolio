@@ -13,15 +13,10 @@ class DynamicSelectFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormBuilderDropdown(
       name: field.name,
-      decoration: InputDecoration(
-        labelText: field.name,
-        hintText: field.placeholder,
-        helperText: field.helperText,
-      ),
+      decoration: field.decoration,
       validator: FormBuilderValidators.compose([
         if (field.isRequired) FormBuilderValidators.required(),
       ]),
-      initialValue: field.initialValue,
       items: field.options
           .map((opt) => DropdownMenuItem(
                 value: opt.value,

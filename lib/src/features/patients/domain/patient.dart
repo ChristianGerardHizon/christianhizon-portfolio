@@ -29,12 +29,14 @@ class Patient with PatientMappable {
 
   final String collectionId;
   final String collectionName;
+  final String domain;
 
   final PatientRecordExpand? expand;
 
   Patient({
-    this.collectionId = '',
-    this.collectionName = '',
+    required this.collectionId,
+    required this.collectionName,
+    required this.domain,
     required this.id,
     this.name = '',
     this.images = const [],
@@ -53,7 +55,18 @@ class Patient with PatientMappable {
     this.expand,
   });
 
-  static const fromMap = PatientMapper.fromMap;
+  static fromMap(Map<String, dynamic> raw) {
+    // if dateOfBirth is '' empty string, it will be null
+    final dateOfBirth = raw[PatientField.dateOfBirth];
+    final updatedDateOfBirth = dateOfBirth == '' ? null : dateOfBirth;
+    return PatientMapper.fromMap(
+      {
+        ...raw,
+        PatientField.dateOfBirth: updatedDateOfBirth,
+      },
+    );
+  }
+
   static const fromJson = PatientMapper.fromMap;
 
   Map<String, dynamic> toForm() {
@@ -65,18 +78,6 @@ class Patient with PatientMappable {
       PatientField.created: created,
       PatientField.updated: created,
     };
-  }
-
-  static Patient customFromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    final dateOfBirth = raw[PatientField.dateOfBirth];
-    final updatedDateOfBirth = dateOfBirth == '' ? null : dateOfBirth;
-    return fromMap(
-      {
-        ...raw,
-        PatientField.dateOfBirth: updatedDateOfBirth,
-      },
-    );
   }
 }
 

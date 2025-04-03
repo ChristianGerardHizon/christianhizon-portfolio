@@ -32,7 +32,10 @@ abstract class ProductRepository {
     List<MultipartFile> files = const [],
   });
 
-  TaskResult<Product> create(Map<String, dynamic> payload);
+  TaskResult<Product> create(
+    Map<String, dynamic> payload, {
+    List<MultipartFile> files = const [],
+  });
 }
 
 @Riverpod(keepAlive: true)
@@ -49,19 +52,26 @@ class ProductRepositoryImpl extends ProductRepository {
 
   RecordService get collection => pb.collection(PocketBaseCollections.products);
 
+  Product mapToData(Map<String, dynamic> map) {
+    return Product.fromMap({...map, 'domain': pb.baseURL});
+  }
+
   @override
   TaskResult<Product> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
-      return Product.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
   @override
-  TaskResult<Product> create(Map<String, dynamic> payload) {
+  TaskResult<Product> create(
+    Map<String, dynamic> payload, {
+    List<MultipartFile> files = const [],
+  }) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(body: payload);
-      return Product.customFromMap(response.toJson());
+      final response = await collection.create(body: payload, files: files);
+      return mapToData(response.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -92,7 +102,7 @@ class ProductRepositoryImpl extends ProductRepository {
         totalItems: result.totalItems,
         totalPages: result.totalPages,
         items: result.items.map<Product>((e) {
-          return Product.customFromMap(e.toJson());
+          return mapToData(e.toJson());
         }).toList(),
       );
     }, Failure.tryCatchData);
@@ -112,7 +122,7 @@ class ProductRepositoryImpl extends ProductRepository {
         body: combinedMap,
         files: files,
       );
-      return Product.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -139,9 +149,7 @@ class ProductRepositoryImpl extends ProductRepository {
         final result = await collection.getFullList(
           filter: filter,
         );
-        return result
-            .map<Product>((e) => Product.customFromMap(e.toJson()))
-            .toList();
+        return result.map<Product>((e) => mapToData(e.toJson())).toList();
       },
       Failure.tryCatchData,
     );

@@ -20,6 +20,14 @@ class AdminMapper extends ClassMapperBase<Admin> {
   @override
   final String id = 'Admin';
 
+  static String _$collectionId(Admin v) => v.collectionId;
+  static const Field<Admin, String> _f$collectionId =
+      Field('collectionId', _$collectionId);
+  static String _$collectionName(Admin v) => v.collectionName;
+  static const Field<Admin, String> _f$collectionName =
+      Field('collectionName', _$collectionName);
+  static String _$domain(Admin v) => v.domain;
+  static const Field<Admin, String> _f$domain = Field('domain', _$domain);
   static String _$id(Admin v) => v.id;
   static const Field<Admin, String> _f$id = Field('id', _$id);
   static String _$name(Admin v) => v.name;
@@ -45,6 +53,9 @@ class AdminMapper extends ClassMapperBase<Admin> {
 
   @override
   final MappableFields<Admin> fields = const {
+    #collectionId: _f$collectionId,
+    #collectionName: _f$collectionName,
+    #domain: _f$domain,
     #id: _f$id,
     #name: _f$name,
     #email: _f$email,
@@ -57,6 +68,9 @@ class AdminMapper extends ClassMapperBase<Admin> {
 
   static Admin _instantiate(DecodingData data) {
     return Admin(
+        collectionId: data.dec(_f$collectionId),
+        collectionName: data.dec(_f$collectionName),
+        domain: data.dec(_f$domain),
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         email: data.dec(_f$email),
@@ -114,7 +128,10 @@ extension AdminValueCopy<$R, $Out> on ObjectCopyWith<$R, Admin, $Out> {
 abstract class AdminCopyWith<$R, $In extends Admin, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {String? id,
+      {String? collectionId,
+      String? collectionName,
+      String? domain,
+      String? id,
       String? name,
       String? email,
       String? avatar,
@@ -133,7 +150,10 @@ class _AdminCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Admin, $Out>
   late final ClassMapperBase<Admin> $mapper = AdminMapper.ensureInitialized();
   @override
   $R call(
-          {String? id,
+          {String? collectionId,
+          String? collectionName,
+          String? domain,
+          String? id,
           String? name,
           String? email,
           Object? avatar = $none,
@@ -142,6 +162,9 @@ class _AdminCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Admin, $Out>
           Object? created = $none,
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
+        if (collectionId != null) #collectionId: collectionId,
+        if (collectionName != null) #collectionName: collectionName,
+        if (domain != null) #domain: domain,
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (email != null) #email: email,
@@ -153,6 +176,9 @@ class _AdminCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Admin, $Out>
       }));
   @override
   Admin $make(CopyWithData data) => Admin(
+      collectionId: data.get(#collectionId, or: $value.collectionId),
+      collectionName: data.get(#collectionName, or: $value.collectionName),
+      domain: data.get(#domain, or: $value.domain),
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       email: data.get(#email, or: $value.email),

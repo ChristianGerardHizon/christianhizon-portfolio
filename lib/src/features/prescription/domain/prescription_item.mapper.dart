@@ -20,6 +20,15 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
   @override
   final String id = 'PrescriptionItem';
 
+  static String _$collectionId(PrescriptionItem v) => v.collectionId;
+  static const Field<PrescriptionItem, String> _f$collectionId =
+      Field('collectionId', _$collectionId);
+  static String _$collectionName(PrescriptionItem v) => v.collectionName;
+  static const Field<PrescriptionItem, String> _f$collectionName =
+      Field('collectionName', _$collectionName);
+  static String _$domain(PrescriptionItem v) => v.domain;
+  static const Field<PrescriptionItem, String> _f$domain =
+      Field('domain', _$domain);
   static String _$id(PrescriptionItem v) => v.id;
   static const Field<PrescriptionItem, String> _f$id = Field('id', _$id);
   static String _$medicalRecord(PrescriptionItem v) => v.medicalRecord;
@@ -46,6 +55,9 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
 
   @override
   final MappableFields<PrescriptionItem> fields = const {
+    #collectionId: _f$collectionId,
+    #collectionName: _f$collectionName,
+    #domain: _f$domain,
     #id: _f$id,
     #medicalRecord: _f$medicalRecord,
     #medication: _f$medication,
@@ -58,6 +70,9 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
 
   static PrescriptionItem _instantiate(DecodingData data) {
     return PrescriptionItem(
+        collectionId: data.dec(_f$collectionId),
+        collectionName: data.dec(_f$collectionName),
+        domain: data.dec(_f$domain),
         id: data.dec(_f$id),
         medicalRecord: data.dec(_f$medicalRecord),
         medication: data.dec(_f$medication),
@@ -124,7 +139,10 @@ extension PrescriptionItemValueCopy<$R, $Out>
 abstract class PrescriptionItemCopyWith<$R, $In extends PrescriptionItem, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {String? id,
+      {String? collectionId,
+      String? collectionName,
+      String? domain,
+      String? id,
       String? medicalRecord,
       String? medication,
       String? instructions,
@@ -146,7 +164,10 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
       PrescriptionItemMapper.ensureInitialized();
   @override
   $R call(
-          {String? id,
+          {String? collectionId,
+          String? collectionName,
+          String? domain,
+          String? id,
           String? medicalRecord,
           Object? medication = $none,
           Object? instructions = $none,
@@ -155,6 +176,9 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
           Object? updated = $none,
           bool? isDeleted}) =>
       $apply(FieldCopyWithData({
+        if (collectionId != null) #collectionId: collectionId,
+        if (collectionName != null) #collectionName: collectionName,
+        if (domain != null) #domain: domain,
         if (id != null) #id: id,
         if (medicalRecord != null) #medicalRecord: medicalRecord,
         if (medication != $none) #medication: medication,
@@ -166,6 +190,9 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
       }));
   @override
   PrescriptionItem $make(CopyWithData data) => PrescriptionItem(
+      collectionId: data.get(#collectionId, or: $value.collectionId),
+      collectionName: data.get(#collectionName, or: $value.collectionName),
+      domain: data.get(#domain, or: $value.domain),
       id: data.get(#id, or: $value.id),
       medicalRecord: data.get(#medicalRecord, or: $value.medicalRecord),
       medication: data.get(#medication, or: $value.medication),

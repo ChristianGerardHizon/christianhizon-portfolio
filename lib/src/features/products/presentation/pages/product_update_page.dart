@@ -6,12 +6,15 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
+import 'package:gym_system/src/core/widgets/dynamic_fields/dynamic_field.dart';
+import 'package:gym_system/src/core/widgets/dynamic_fields/dynamic_form_field_builder.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_update_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart';
 
 class ProductUpdatePage extends HookConsumerWidget {
   const ProductUpdatePage(this.id, {super.key});
@@ -32,22 +35,16 @@ class ProductUpdatePage extends HookConsumerWidget {
       ref.invalidate(provider);
     }
 
-    void onSubmit(Product product) async {
+    void onSubmit(
+      Product product,
+      Map<String, dynamic> value,
+      List<MultipartFile> files,
+    ) async {
       isLoading.value = true;
-      final form = formKey.currentState;
-      if (form == null) {
-        isLoading.value = false;
-        return;
-      }
-      final isValid = form.saveAndValidate();
-      if (!isValid) {
-        isLoading.value = false;
-        return;
-      }
 
       final result = await ref
           .read(productRepositoryProvider)
-          .update(product, form.value)
+          .update(product, value)
           .run();
 
       if (!context.mounted) return;
@@ -61,85 +58,43 @@ class ProductUpdatePage extends HookConsumerWidget {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Product Update Page'),
-        actions: [
-          IconButton(
-            onPressed: onRefresh,
-            icon: Icon(Icons.refresh),
+    return ref.watch(productUpdateControllerProvider(id)).when(
+          error: (error, stack) => Text('Error'),
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
           ),
-        ],
-      ),
-      body: state.when(
-        skipError: false,
-        skipLoadingOnRefresh: false,
-        skipLoadingOnReload: false,
-        error: (error, stack) {
-          return Text(error.toString());
-        },
-        loading: () => CenteredProgressIndicator(),
-        data: (updateState) {
-          final product = updateState.product;
-          // final settings = updateState.settings;
-          final map = product.toForm();
-          return FormBuilder(
-            key: formKey,
-            initialValue: map,
-            child: CustomScrollView(
-              slivers: [
-                SliverPadding(
-                  padding: EdgeInsets.only(left: 10, right: 10, top: 35),
-                  sliver: SliverList.list(children: [
-                    SizedBox(height: 10),
-
-                    ///
-                    /// name
-                    ///
-                    FormBuilderTextField(
-                      name: ProductField.name,
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                      ]),
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(
-                            bottom: 10, right: 8, left: 8, top: 30),
-                        labelText: 'Product Name',
-                        filled: true,
-                        fillColor:
-                            Theme.of(context).colorScheme.surfaceContainerLow,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(height: 10),
-                  ]),
-                ),
-
-                ///
-                /// Save button
-                ///
-                SliverToBoxAdapter(
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 300),
-                      child: LoadingFilledButton(
-                        isLoading: isLoading.value,
-                        child: Text('Save'),
-                        onPressed: () => onSubmit(product),
-                      ),
-                    ),
+          data: (updateState) {
+            final product = updateState.product;
+            return Scaffold(
+              backgroundColor: Colors.white,
+              appBar: AppBar(
+                title: Text('Product Create Page'),
+              ),
+              body: DynamicFormBuilder(
+                formKey: formKey,
+                isLoading: isLoading.value,
+                fields: [
+                  DynamicTextField(
+                    name: ProductField.name,
+                    label: 'Name',
                   ),
-                ),
-
-                SliverToBoxAdapter(child: SizedBox(height: 20))
-              ],
-            ),
-          );
-        },
-      ),
-    );
+                  // DynamicFileField(
+                  //   name: 'fileA',
+                  //   fileTypeLabel: 'Upload File A (PDF/Image)',
+                  //   isRequired: false,
+                  // ),
+                  DynamicImageField(
+                    name: 'image',
+                    fileTypeLabel: 'Upload Profile Picture',
+                    isRequired: true,
+                    maxSizeKB: 300,
+                    compressionQuality: 85,
+                  ),
+                ],
+                onSubmit: (value, files) => onSubmit(product, value, files),
+              ),
+            );
+          },
+        );
   }
 }

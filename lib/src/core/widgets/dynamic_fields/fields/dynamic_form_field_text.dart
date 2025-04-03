@@ -13,12 +13,7 @@ class DynamicTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormBuilderTextField(
       name: field.name,
-      decoration: field.decoration ??
-          InputDecoration(
-            labelText: field.label ?? field.name,
-            hintText: field.placeholder,
-            helperText: field.helperText,
-          ),
+      decoration: field.decoration,
       validator: FormBuilderValidators.compose([
         if (field.isRequired) FormBuilderValidators.required(),
         if (field.minLength != null)

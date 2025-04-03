@@ -32,7 +32,10 @@ abstract class MedicalRecordRepository {
     List<MultipartFile> files = const [],
   });
 
-  TaskResult<MedicalRecord> create(Map<String, dynamic> payload);
+  TaskResult<MedicalRecord> create(
+    Map<String, dynamic> payload, {
+    List<MultipartFile> files = const [],
+  });
 }
 
 @Riverpod(keepAlive: true)
@@ -50,19 +53,26 @@ class MedicalRecordRepositoryImpl extends MedicalRecordRepository {
   RecordService get collection =>
       pb.collection(PocketBaseCollections.medicalRecords);
 
+  MedicalRecord mapToData(Map<String, dynamic> map) {
+    return MedicalRecord.fromMap({...map, 'domain': pb.baseURL});
+  }
+
   @override
   TaskResult<MedicalRecord> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
-      return MedicalRecord.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
   @override
-  TaskResult<MedicalRecord> create(Map<String, dynamic> payload) {
+  TaskResult<MedicalRecord> create(
+    Map<String, dynamic> payload, {
+    List<MultipartFile> files = const [],
+  }) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(body: payload);
-      return MedicalRecord.customFromMap(response.toJson());
+      final response = await collection.create(body: payload, files: files);
+      return mapToData(response.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -93,7 +103,7 @@ class MedicalRecordRepositoryImpl extends MedicalRecordRepository {
         totalItems: result.totalItems,
         totalPages: result.totalPages,
         items: result.items.map<MedicalRecord>((e) {
-          return MedicalRecord.customFromMap(e.toJson());
+          return mapToData(e.toJson());
         }).toList(),
       );
     }, Failure.tryCatchData);
@@ -113,7 +123,7 @@ class MedicalRecordRepositoryImpl extends MedicalRecordRepository {
         body: combinedMap,
         files: files,
       );
-      return MedicalRecord.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -141,9 +151,7 @@ class MedicalRecordRepositoryImpl extends MedicalRecordRepository {
         final result = await collection.getFullList(
           filter: filter,
         );
-        return result
-            .map<MedicalRecord>((e) => MedicalRecord.customFromMap(e.toJson()))
-            .toList();
+        return result.map<MedicalRecord>((e) => mapToData(e.toJson())).toList();
       },
       Failure.tryCatchData,
     );

@@ -20,6 +20,14 @@ class ProductMapper extends ClassMapperBase<Product> {
   @override
   final String id = 'Product';
 
+  static String _$collectionId(Product v) => v.collectionId;
+  static const Field<Product, String> _f$collectionId =
+      Field('collectionId', _$collectionId);
+  static String _$collectionName(Product v) => v.collectionName;
+  static const Field<Product, String> _f$collectionName =
+      Field('collectionName', _$collectionName);
+  static String _$domain(Product v) => v.domain;
+  static const Field<Product, String> _f$domain = Field('domain', _$domain);
   static String _$id(Product v) => v.id;
   static const Field<Product, String> _f$id = Field('id', _$id);
   static String _$name(Product v) => v.name;
@@ -42,6 +50,9 @@ class ProductMapper extends ClassMapperBase<Product> {
 
   @override
   final MappableFields<Product> fields = const {
+    #collectionId: _f$collectionId,
+    #collectionName: _f$collectionName,
+    #domain: _f$domain,
     #id: _f$id,
     #name: _f$name,
     #notes: _f$notes,
@@ -53,6 +64,9 @@ class ProductMapper extends ClassMapperBase<Product> {
 
   static Product _instantiate(DecodingData data) {
     return Product(
+        collectionId: data.dec(_f$collectionId),
+        collectionName: data.dec(_f$collectionName),
+        domain: data.dec(_f$domain),
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         notes: data.dec(_f$notes),
@@ -113,7 +127,10 @@ extension ProductValueCopy<$R, $Out> on ObjectCopyWith<$R, Product, $Out> {
 abstract class ProductCopyWith<$R, $In extends Product, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {String? id,
+      {String? collectionId,
+      String? collectionName,
+      String? domain,
+      String? id,
       String? name,
       String? notes,
       String? category,
@@ -133,7 +150,10 @@ class _ProductCopyWithImpl<$R, $Out>
       ProductMapper.ensureInitialized();
   @override
   $R call(
-          {String? id,
+          {String? collectionId,
+          String? collectionName,
+          String? domain,
+          String? id,
           String? name,
           Object? notes = $none,
           Object? category = $none,
@@ -141,6 +161,9 @@ class _ProductCopyWithImpl<$R, $Out>
           Object? created = $none,
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
+        if (collectionId != null) #collectionId: collectionId,
+        if (collectionName != null) #collectionName: collectionName,
+        if (domain != null) #domain: domain,
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (notes != $none) #notes: notes,
@@ -151,6 +174,9 @@ class _ProductCopyWithImpl<$R, $Out>
       }));
   @override
   Product $make(CopyWithData data) => Product(
+      collectionId: data.get(#collectionId, or: $value.collectionId),
+      collectionName: data.get(#collectionName, or: $value.collectionName),
+      domain: data.get(#domain, or: $value.domain),
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       notes: data.get(#notes, or: $value.notes),

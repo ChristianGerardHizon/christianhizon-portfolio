@@ -46,11 +46,15 @@ class PatientRepositoryImpl extends PatientRepository {
 
   RecordService get collection => pb.collection(PocketBaseCollections.patients);
 
+  Patient mapToData(Map<String, dynamic> map) {
+    return Patient.fromMap({...map, 'domain': pb.baseURL});
+  }
+
   @override
   TaskResult<Patient> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id, expand: expand);
-      return Patient.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -58,7 +62,7 @@ class PatientRepositoryImpl extends PatientRepository {
   TaskResult<Patient> create(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload, expand: expand);
-      return Patient.customFromMap(response.toJson());
+      return mapToData(response.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -88,7 +92,7 @@ class PatientRepositoryImpl extends PatientRepository {
         totalItems: result.totalItems,
         totalPages: result.totalPages,
         items: result.items.map<Patient>((e) {
-          return Patient.customFromMap(e.toJson());
+          return mapToData(e.toJson());
         }).toList(),
       );
     }, Failure.tryCatchData);
@@ -109,7 +113,7 @@ class PatientRepositoryImpl extends PatientRepository {
         files: files,
         expand: expand,
       );
-      return Patient.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 

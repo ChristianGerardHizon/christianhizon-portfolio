@@ -20,10 +20,14 @@ class TreatmentRecord with TreatmentRecordMappable {
   final DateTime? created;
   final DateTime? updated;
 
-  static const fromMap = TreatmentRecordMapper.fromMap;
-  static const fromJson = TreatmentRecordMapper.fromMap;
+  final String collectionId;
+  final String collectionName;
+  final String domain;
 
   TreatmentRecord({
+    required this.collectionId,
+    required this.collectionName,
+    required this.domain,
     required this.id,
     required this.type,
     required this.patient,
@@ -35,20 +39,20 @@ class TreatmentRecord with TreatmentRecordMappable {
     required this.updated,
   });
 
-  static TreatmentRecord customFromMap(Map<String, dynamic> raw) {
-    return fromMap(
-      {
-        ...raw,
-        TreatmentRecordField.followUpDate:
-            raw[TreatmentRecordField.followUpDate] == ''
-                ? null
-                : raw[TreatmentRecordField.followUpDate],
-        TreatmentRecordField.date: raw[TreatmentRecordField.date] == ''
-            ? null
-            : raw[TreatmentRecordField.date],
-      },
-    );
+  static fromMap(Map<String, dynamic> raw) {
+    return {
+      ...raw,
+      TreatmentRecordField.followUpDate:
+          raw[TreatmentRecordField.followUpDate] == ''
+              ? null
+              : raw[TreatmentRecordField.followUpDate],
+      TreatmentRecordField.date: raw[TreatmentRecordField.date] == ''
+          ? null
+          : raw[TreatmentRecordField.date],
+    };
   }
+
+  static const fromJson = TreatmentRecordMapper.fromMap;
 }
 
 @MappableClass()

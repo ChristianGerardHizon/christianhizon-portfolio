@@ -10,12 +10,9 @@ class DynamicFileFormField extends StatelessWidget {
   const DynamicFileFormField(this.field, {super.key});
   @override
   Widget build(BuildContext context) {
-    throw FormBuilderFilePicker(
+    return FormBuilderFilePicker(
       name: field.name,
-      decoration: InputDecoration(
-        labelText: field.fileTypeLabel ?? field.name,
-        helperText: field.helperText,
-      ),
+      decoration: field.decoration,
       previewImages: true,
       allowMultiple: false,
       maxFiles: 1,
@@ -35,6 +32,7 @@ class DynamicFileFormField extends StatelessWidget {
         if (field.isRequired)
           FormBuilderValidators.minLength(1, errorText: 'File is required'),
       ]),
+      valueTransformer: field.valueTransformer,
     );
   }
 }

@@ -13,18 +13,14 @@ class DynamicDateFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormBuilderDateTimePicker(
       name: field.name,
-      initialValue: field.initialDate,
       firstDate: field.firstDate,
       lastDate: field.lastDate,
       inputType: InputType.date,
-      decoration: InputDecoration(
-        labelText: field.name,
-        hintText: field.placeholder,
-        helperText: field.helperText,
-      ),
+      decoration: field.decoration,
       validator: FormBuilderValidators.compose([
         if (field.isRequired) FormBuilderValidators.required(),
       ]),
+      valueTransformer: field.valueTransformer,
     );
   }
 }

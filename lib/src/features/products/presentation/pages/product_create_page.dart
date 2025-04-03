@@ -5,9 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_fields/dynamic_field.dart';
-import 'package:gym_system/src/core/widgets/dynamic_fields/dynamic_form_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/products_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -27,8 +25,10 @@ class ProductCreatePage extends HookConsumerWidget {
     void onSubmit(Map<String, dynamic> value, List<MultipartFile> files) async {
       isLoading.value = true;
 
-      final result =
-          await ref.read(productRepositoryProvider).create(value).run();
+      final result = await ref
+          .read(productRepositoryProvider)
+          .create(value, files: files)
+          .run();
       isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
@@ -56,14 +56,19 @@ class ProductCreatePage extends HookConsumerWidget {
           DynamicFileField(
             name: 'fileA',
             fileTypeLabel: 'Upload File A (PDF/Image)',
-            isRequired: true,
+            isRequired: false,
           ),
           DynamicImageField(
-            name: 'profilePicture',
+            name: 'image',
             fileTypeLabel: 'Upload Profile Picture',
             isRequired: true,
             maxSizeKB: 300,
-            quality: 85,
+            compressionQuality: 85,
+            initialValue: [
+              Uri.parse(
+                'https://2.img-dpreview.com/files/p/TS1200x900~sample_galleries/1330372094/0024739717.jpg',
+              )
+            ],
           ),
         ],
         onSubmit: onSubmit,

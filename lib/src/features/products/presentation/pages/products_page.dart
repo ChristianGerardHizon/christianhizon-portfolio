@@ -120,7 +120,7 @@ class ProductsPage extends HookConsumerWidget {
           skipError: false,
           skipLoadingOnRefresh: true,
           skipLoadingOnReload: true,
-          error: (error, stackTrace) => 'generic error',
+          error: (error, stackTrace) => error.toString(),
           orElse: () => null,
         ),
         isLoading: buildIsLoading(),

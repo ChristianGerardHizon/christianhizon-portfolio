@@ -8,7 +8,16 @@ part 'auth_user.mapper.dart';
 class AuthUser extends AuthData with AuthUserMappable {
   final User record;
 
-  static const fromMap = AuthUserMapper.fromMap;
+  static fromMap(Map<String, dynamic> raw) {
+    // if dateOfBirth is '' empty string, it will be null
+    return fromMap(
+      {
+        ...raw,
+        'id': raw['record']['id'],
+      },
+    );
+  }
+
   static const fromJson = AuthUserMapper.fromJson;
 
   AuthUser({
@@ -18,14 +27,4 @@ class AuthUser extends AuthData with AuthUserMappable {
     required super.collectionId,
     required super.collectionName,
   });
-
-  static AuthUser customFromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    return fromMap(
-      {
-        ...raw,
-        'id': raw['record']['id'],
-      },
-    );
-  }
 }

@@ -20,6 +20,15 @@ class PatientSpeciesMapper extends ClassMapperBase<PatientSpecies> {
   @override
   final String id = 'PatientSpecies';
 
+  static String _$collectionId(PatientSpecies v) => v.collectionId;
+  static const Field<PatientSpecies, String> _f$collectionId =
+      Field('collectionId', _$collectionId);
+  static String _$collectionName(PatientSpecies v) => v.collectionName;
+  static const Field<PatientSpecies, String> _f$collectionName =
+      Field('collectionName', _$collectionName);
+  static String _$domain(PatientSpecies v) => v.domain;
+  static const Field<PatientSpecies, String> _f$domain =
+      Field('domain', _$domain);
   static String _$id(PatientSpecies v) => v.id;
   static const Field<PatientSpecies, String> _f$id = Field('id', _$id);
   static String _$name(PatientSpecies v) => v.name;
@@ -37,6 +46,9 @@ class PatientSpeciesMapper extends ClassMapperBase<PatientSpecies> {
 
   @override
   final MappableFields<PatientSpecies> fields = const {
+    #collectionId: _f$collectionId,
+    #collectionName: _f$collectionName,
+    #domain: _f$domain,
     #id: _f$id,
     #name: _f$name,
     #isDeleted: _f$isDeleted,
@@ -46,6 +58,9 @@ class PatientSpeciesMapper extends ClassMapperBase<PatientSpecies> {
 
   static PatientSpecies _instantiate(DecodingData data) {
     return PatientSpecies(
+        collectionId: data.dec(_f$collectionId),
+        collectionName: data.dec(_f$collectionName),
+        domain: data.dec(_f$domain),
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         isDeleted: data.dec(_f$isDeleted),
@@ -108,7 +123,10 @@ extension PatientSpeciesValueCopy<$R, $Out>
 abstract class PatientSpeciesCopyWith<$R, $In extends PatientSpecies, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {String? id,
+      {String? collectionId,
+      String? collectionName,
+      String? domain,
+      String? id,
       String? name,
       bool? isDeleted,
       DateTime? created,
@@ -127,12 +145,18 @@ class _PatientSpeciesCopyWithImpl<$R, $Out>
       PatientSpeciesMapper.ensureInitialized();
   @override
   $R call(
-          {String? id,
+          {String? collectionId,
+          String? collectionName,
+          String? domain,
+          String? id,
           String? name,
           bool? isDeleted,
           Object? created = $none,
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
+        if (collectionId != null) #collectionId: collectionId,
+        if (collectionName != null) #collectionName: collectionName,
+        if (domain != null) #domain: domain,
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (isDeleted != null) #isDeleted: isDeleted,
@@ -141,6 +165,9 @@ class _PatientSpeciesCopyWithImpl<$R, $Out>
       }));
   @override
   PatientSpecies $make(CopyWithData data) => PatientSpecies(
+      collectionId: data.get(#collectionId, or: $value.collectionId),
+      collectionName: data.get(#collectionName, or: $value.collectionName),
+      domain: data.get(#domain, or: $value.domain),
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),

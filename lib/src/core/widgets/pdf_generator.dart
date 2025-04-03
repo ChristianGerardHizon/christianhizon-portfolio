@@ -1,6 +1,5 @@
-import 'dart:io';
 import 'dart:typed_data';
-import 'package:path_provider/path_provider.dart';
+import 'package:gym_system/src/core/utils/file_utils/file_utils.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -71,13 +70,6 @@ class PdfGenerator {
   }
 
   static Future<String?> _savePdfToFile(Uint8List pdfData) async {
-    try {
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/generated.pdf');
-      await file.writeAsBytes(pdfData);
-      return file.path;
-    } catch (e) {
-      return null;
-    }
+    return saveBytesToFile(bytes: pdfData, filename: 'prescription.pdf');
   }
 }

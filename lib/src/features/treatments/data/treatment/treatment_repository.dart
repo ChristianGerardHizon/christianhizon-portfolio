@@ -48,13 +48,17 @@ class TreatmentRepositoryImpl extends TreatmentRepository {
   RecordService get collection =>
       pb.collection(PocketBaseCollections.treatments);
 
+  Treatment mapToData(Map<String, dynamic> map) {
+    return Treatment.fromMap({...map, 'domain': pb.baseURL});
+  }
+
   @override
   TaskResult<Treatment> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(
         id,
       );
-      return Treatment.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -62,7 +66,7 @@ class TreatmentRepositoryImpl extends TreatmentRepository {
   TaskResult<Treatment> create(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload);
-      return Treatment.customFromMap(response.toJson());
+      return mapToData(response.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -91,7 +95,7 @@ class TreatmentRepositoryImpl extends TreatmentRepository {
         totalItems: result.totalItems,
         totalPages: result.totalPages,
         items: result.items.map<Treatment>((e) {
-          return Treatment.customFromMap(e.toJson());
+          return mapToData(e.toJson());
         }).toList(),
       );
     }, Failure.tryCatchData);
@@ -111,7 +115,7 @@ class TreatmentRepositoryImpl extends TreatmentRepository {
         body: combinedMap,
         files: files,
       );
-      return Treatment.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -140,7 +144,7 @@ class TreatmentRepositoryImpl extends TreatmentRepository {
       );
       return result
           .map<Treatment>(
-            (e) => Treatment.customFromMap(e.toJson()),
+            (e) => mapToData(e.toJson()),
           )
           .toList();
     }, Failure.tryCatchData);

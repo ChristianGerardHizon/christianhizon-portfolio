@@ -47,11 +47,15 @@ class PatientBreedRepositoryImpl extends PatientBreedRepository {
   RecordService get collection =>
       pb.collection(PocketBaseCollections.patientBreeds);
 
+  PatientBreed mapToData(Map<String, dynamic> map) {
+    return PatientBreed.fromMap({...map, 'domain': pb.baseURL});
+  }
+
   @override
   TaskResult<PatientBreed> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
-      return PatientBreed.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -59,7 +63,7 @@ class PatientBreedRepositoryImpl extends PatientBreedRepository {
   TaskResult<PatientBreed> create(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload);
-      return PatientBreed.customFromMap(response.toJson());
+      return mapToData(response.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -88,7 +92,7 @@ class PatientBreedRepositoryImpl extends PatientBreedRepository {
         totalItems: result.totalItems,
         totalPages: result.totalPages,
         items: result.items.map<PatientBreed>((e) {
-          return PatientBreed.customFromMap(e.toJson());
+          return mapToData(e.toJson());
         }).toList(),
       );
     }, Failure.tryCatchData);
@@ -108,7 +112,7 @@ class PatientBreedRepositoryImpl extends PatientBreedRepository {
         body: combinedMap,
         files: files,
       );
-      return PatientBreed.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -136,9 +140,7 @@ class PatientBreedRepositoryImpl extends PatientBreedRepository {
         final result = await collection.getFullList(
           filter: filter,
         );
-        return result
-            .map<PatientBreed>((e) => PatientBreed.customFromMap(e.toJson()))
-            .toList();
+        return result.map<PatientBreed>((e) => mapToData(e.toJson())).toList();
       },
       Failure.tryCatchData,
     );

@@ -52,11 +52,15 @@ class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
 
   final expand = 'type';
 
+  TreatmentRecord mapToData(Map<String, dynamic> map) {
+    return mapToData({...map, 'domain': pb.baseURL});
+  }
+
   @override
   TaskResult<TreatmentRecord> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id, expand: expand);
-      return TreatmentRecord.customFromMap(result.toJson());
+      return TreatmentRecord.fromMap(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -64,7 +68,7 @@ class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
   TaskResult<TreatmentRecord> create(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload);
-      return TreatmentRecord.customFromMap(response.toJson());
+      return mapToData(response.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -96,7 +100,7 @@ class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
         totalItems: result.totalItems,
         totalPages: result.totalPages,
         items: result.items.map<TreatmentRecord>((e) {
-          return TreatmentRecord.customFromMap({
+          return mapToData({
             ...e.toJson(),
             'expand': {
               'type': e.get('expand.type'),
@@ -122,7 +126,7 @@ class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
         files: files,
         expand: expand,
       );
-      return TreatmentRecord.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -152,8 +156,7 @@ class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
           expand: expand,
         );
         return result
-            .map<TreatmentRecord>(
-                (e) => TreatmentRecord.customFromMap(e.toJson()))
+            .map<TreatmentRecord>((e) => mapToData(e.toJson()))
             .toList();
       },
       Failure.tryCatchData,

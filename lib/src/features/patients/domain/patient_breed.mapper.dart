@@ -20,6 +20,15 @@ class PatientBreedMapper extends ClassMapperBase<PatientBreed> {
   @override
   final String id = 'PatientBreed';
 
+  static String _$collectionId(PatientBreed v) => v.collectionId;
+  static const Field<PatientBreed, String> _f$collectionId =
+      Field('collectionId', _$collectionId);
+  static String _$collectionName(PatientBreed v) => v.collectionName;
+  static const Field<PatientBreed, String> _f$collectionName =
+      Field('collectionName', _$collectionName);
+  static String _$domain(PatientBreed v) => v.domain;
+  static const Field<PatientBreed, String> _f$domain =
+      Field('domain', _$domain);
   static String _$id(PatientBreed v) => v.id;
   static const Field<PatientBreed, String> _f$id = Field('id', _$id);
   static String _$name(PatientBreed v) => v.name;
@@ -40,6 +49,9 @@ class PatientBreedMapper extends ClassMapperBase<PatientBreed> {
 
   @override
   final MappableFields<PatientBreed> fields = const {
+    #collectionId: _f$collectionId,
+    #collectionName: _f$collectionName,
+    #domain: _f$domain,
     #id: _f$id,
     #name: _f$name,
     #species: _f$species,
@@ -50,6 +62,9 @@ class PatientBreedMapper extends ClassMapperBase<PatientBreed> {
 
   static PatientBreed _instantiate(DecodingData data) {
     return PatientBreed(
+        collectionId: data.dec(_f$collectionId),
+        collectionName: data.dec(_f$collectionName),
+        domain: data.dec(_f$domain),
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         species: data.dec(_f$species),
@@ -112,7 +127,10 @@ extension PatientBreedValueCopy<$R, $Out>
 abstract class PatientBreedCopyWith<$R, $In extends PatientBreed, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {String? id,
+      {String? collectionId,
+      String? collectionName,
+      String? domain,
+      String? id,
       String? name,
       String? species,
       bool? isDeleted,
@@ -131,13 +149,19 @@ class _PatientBreedCopyWithImpl<$R, $Out>
       PatientBreedMapper.ensureInitialized();
   @override
   $R call(
-          {String? id,
+          {String? collectionId,
+          String? collectionName,
+          String? domain,
+          String? id,
           String? name,
           String? species,
           bool? isDeleted,
           Object? created = $none,
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
+        if (collectionId != null) #collectionId: collectionId,
+        if (collectionName != null) #collectionName: collectionName,
+        if (domain != null) #domain: domain,
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (species != null) #species: species,
@@ -147,6 +171,9 @@ class _PatientBreedCopyWithImpl<$R, $Out>
       }));
   @override
   PatientBreed $make(CopyWithData data) => PatientBreed(
+      collectionId: data.get(#collectionId, or: $value.collectionId),
+      collectionName: data.get(#collectionName, or: $value.collectionName),
+      domain: data.get(#domain, or: $value.domain),
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       species: data.get(#species, or: $value.species),

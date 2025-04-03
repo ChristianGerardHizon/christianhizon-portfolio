@@ -62,7 +62,7 @@ class AuthRepositoryImpl implements AuthRepository {
             collectionId: record.collectionId,
             id: record.id,
             token: token,
-            record: User.fromMap(record.data),
+            record: User.fromMap({...record.data, 'domain': pb.baseURL}),
           );
         }
 
@@ -72,7 +72,7 @@ class AuthRepositoryImpl implements AuthRepository {
             collectionId: record.collectionId,
             id: record.id,
             token: token,
-            record: Admin.fromMap(record.data),
+            record: Admin.fromMap({...record.data, 'domain': pb.baseURL}),
           );
         }
         if (data == null) throw 'unknown user type';
@@ -181,7 +181,7 @@ class AuthRepositoryImpl implements AuthRepository {
             collectionId: record.collectionId,
             id: record.id,
             token: token,
-            record: User.fromMap(record.data),
+            record: User.fromMap({...record.data, 'domain': pb.baseURL}),
           );
         }
 
@@ -191,7 +191,7 @@ class AuthRepositoryImpl implements AuthRepository {
             collectionId: record.collectionId,
             id: record.id,
             token: token,
-            record: Admin.fromMap(record.data),
+            record: Admin.fromMap({...record.data, 'domain': pb.baseURL}),
           );
         }
         throw 'unknown user type';

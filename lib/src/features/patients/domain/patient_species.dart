@@ -12,7 +12,14 @@ class PatientSpecies with PatientSpeciesMappable {
   final DateTime? created;
   final DateTime? updated;
 
+  final String collectionId;
+  final String collectionName;
+  final String domain;
+
   PatientSpecies({
+    required this.collectionId,
+    required this.collectionName,
+    required this.domain,
     required this.id,
     this.name = '',
     this.isDeleted = false,
@@ -22,12 +29,4 @@ class PatientSpecies with PatientSpeciesMappable {
 
   static const fromMap = PatientSpeciesMapper.fromMap;
   static const fromJson = PatientSpeciesMapper.fromMap;
-
-  static PatientSpecies customFromMap(Map<String, dynamic> raw) {
-    return fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
 }

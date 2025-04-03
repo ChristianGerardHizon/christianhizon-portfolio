@@ -1,10 +1,10 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/assets/assets.gen.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
+import 'package:gym_system/src/core/utils/file_utils/file_utils.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:path_provider/path_provider.dart';
@@ -285,10 +285,7 @@ class PrescriptionItemsPdfGenerator {
   /// Saves the PDF to a file
   static Future<String?> _savePdfToFile(Uint8List pdfData) async {
     try {
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/prescription_items.pdf');
-      await file.writeAsBytes(pdfData);
-      return file.path;
+      return saveBytesToFile(bytes: pdfData, filename: 'prescription.pdf');
     } catch (e) {
       return null;
     }

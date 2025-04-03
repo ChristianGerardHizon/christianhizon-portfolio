@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:cross_file/cross_file.dart';
 
 /// Base abstract class for all dynamic form fields.
 /// Contains common properties like `name`, `isRequired`, `placeholder`, and `helperText`.
 abstract class DynamicField {
   final String name;
+  final dynamic initialValue;
   final bool isRequired;
-  final String? placeholder;
-  final String? helperText;
+  final InputDecoration decoration;
+  final dynamic Function(dynamic)? valueTransformer;
 
   const DynamicField({
     required this.name,
+    this.initialValue,
     this.isRequired = false,
-    this.placeholder,
-    this.helperText,
+    this.decoration = const InputDecoration(),
+    this.valueTransformer,
   });
 }
 
@@ -24,32 +27,32 @@ class DynamicTextField extends DynamicField {
   final int? maxLength;
   final int? minLines;
   final int? maxLines;
-  final InputDecoration? decoration;
+  final String? initialValue;
 
   const DynamicTextField({
     required super.name,
+    this.initialValue,
     super.isRequired = false,
-    super.placeholder,
-    super.helperText,
+    super.valueTransformer,
     this.label,
     this.minLength,
     this.maxLength,
     this.minLines,
     this.maxLines,
-    this.decoration,
+    super.decoration,
   });
 }
 
 /// Represents a dynamic checkbox field with an optional initial value.
 class DynamicCheckboxField extends DynamicField {
-  final bool initialValue;
+  final bool? initialValue;
 
   const DynamicCheckboxField({
     required super.name,
+    this.initialValue,
     super.isRequired = false,
-    super.placeholder,
-    super.helperText,
-    this.initialValue = false,
+    super.valueTransformer,
+    super.decoration,
   });
 }
 
@@ -71,26 +74,26 @@ class DynamicSelectField<T> extends DynamicField {
 
   const DynamicSelectField({
     required super.name,
-    super.isRequired = false,
-    super.placeholder,
-    super.helperText,
-    required this.options,
     this.initialValue,
+    super.isRequired = false,
+    super.valueTransformer,
+    required this.options,
+    super.decoration,
   });
 }
 
 /// Represents a dynamic date picker field with optional date boundaries and initial value.
 class DynamicDateField extends DynamicField {
-  final DateTime? initialDate;
   final DateTime? firstDate;
   final DateTime? lastDate;
+  final DateTime? initialValue;
 
   const DynamicDateField({
     required super.name,
+    this.initialValue,
+    super.decoration,
     super.isRequired = false,
-    super.placeholder,
-    super.helperText,
-    this.initialDate,
+    super.valueTransformer,
     this.firstDate,
     this.lastDate,
   });
@@ -99,12 +102,14 @@ class DynamicDateField extends DynamicField {
 /// Represents a dynamic file upload field with an optional label describing the expected file type.
 class DynamicFileField extends DynamicField {
   final String? fileTypeLabel;
+  final List<XFile>? initialValue;
 
   const DynamicFileField({
     required super.name,
+    this.initialValue,
     super.isRequired = false,
-    super.placeholder,
-    super.helperText,
+    super.decoration,
+    super.valueTransformer,
     this.fileTypeLabel,
   });
 }
@@ -113,15 +118,22 @@ class DynamicFileField extends DynamicField {
 class DynamicImageField extends DynamicField {
   final String? fileTypeLabel;
   final int maxSizeKB;
-  final int quality;
+  final int compressionQuality;
+  final bool allowCompression;
+  final int maxFiles;
+  final List<String>? allowedExtensions;
+  final List<dynamic>? initialValue;
 
   const DynamicImageField({
     required super.name,
+    super.decoration,
+    this.initialValue,
     super.isRequired = false,
-    super.placeholder,
-    super.helperText,
+    this.allowCompression = false,
+    this.allowedExtensions,
+    this.maxFiles = 1,
     this.fileTypeLabel,
     this.maxSizeKB = 300, // target ~300KB
-    this.quality = 85, // JPEG quality
+    this.compressionQuality = 85, // JPEG quality,
   });
 }

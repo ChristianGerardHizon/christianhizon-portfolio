@@ -13,7 +13,14 @@ class PatientBreed with PatientBreedMappable {
   final DateTime? created;
   final DateTime? updated;
 
+  final String collectionId;
+  final String collectionName;
+  final String domain;
+
   PatientBreed({
+    required this.collectionId,
+    required this.collectionName,
+    required this.domain,
     required this.id,
     this.name = '',
     required this.species,
@@ -24,12 +31,4 @@ class PatientBreed with PatientBreedMappable {
 
   static const fromMap = PatientBreedMapper.fromMap;
   static const fromJson = PatientBreedMapper.fromMap;
-
-  static PatientBreed customFromMap(Map<String, dynamic> raw) {
-    return fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
 }

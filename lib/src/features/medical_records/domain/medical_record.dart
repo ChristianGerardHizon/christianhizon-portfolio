@@ -31,7 +31,16 @@ class MedicalRecord with MedicalRecordMappable {
     this.note,
   });
 
-  static const fromMap = MedicalRecordMapper.fromMap;
+  static fromMap(Map<String, dynamic> raw) {
+    return MedicalRecordMapper.fromMap({
+      ...raw,
+      MedicalRecordField.followUpDate:
+          raw[MedicalRecordField.followUpDate] == ''
+              ? null
+              : raw[MedicalRecordField.followUpDate],
+    });
+  }
+
   static const fromJson = MedicalRecordMapper.fromMap;
 
   Map<String, dynamic> toForm() {
@@ -40,18 +49,5 @@ class MedicalRecord with MedicalRecordMappable {
       'created': created,
       'updated': created,
     };
-  }
-
-  static MedicalRecord customFromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    return fromMap(
-      {
-        ...raw,
-        MedicalRecordField.followUpDate:
-            raw[MedicalRecordField.followUpDate] == ''
-                ? null
-                : raw[MedicalRecordField.followUpDate],
-      },
-    );
   }
 }

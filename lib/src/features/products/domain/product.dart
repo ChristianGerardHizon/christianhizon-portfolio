@@ -14,7 +14,14 @@ class Product with ProductMappable {
   final DateTime? created;
   final DateTime? updated;
 
+  final String collectionId;
+  final String collectionName;
+  final String domain;
+
   Product({
+    required this.collectionId,
+    required this.collectionName,
+    required this.domain,
     required this.id,
     required this.name,
     this.notes,
@@ -24,8 +31,16 @@ class Product with ProductMappable {
     required this.updated,
   });
 
-  static const fromMap = ProductMapper.fromMap;
-  static const fromJson = ProductMapper.fromMap;
+  static fromMap(Map<String, dynamic> raw) {
+    // if dateOfBirth is '' empty string, it will be null
+    return ProductMapper.fromMap(
+      {
+        ...raw,
+      },
+    );
+  }
+
+  static const fromJson = ProductMapper.fromJson;
 
   Map<String, dynamic> toForm() {
     return {
@@ -33,14 +48,5 @@ class Product with ProductMappable {
       'created': created,
       'updated': created,
     };
-  }
-
-  static Product customFromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    return fromMap(
-      {
-        ...raw,
-      },
-    );
   }
 }
