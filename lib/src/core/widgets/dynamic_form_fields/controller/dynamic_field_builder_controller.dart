@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:cross_file/cross_file.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
-import 'package:gym_system/src/core/widgets/dynamic_fields/dynamic_field.dart';
+import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:http/http.dart' as http show get;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -45,7 +45,7 @@ Future<Map<String, dynamic>> buildInitialValues(
     final String name = field.name;
     final value = field.initialValue;
 
-    if (field is DynamicImageField) {
+    if (field is DynamicImageField || field is DynamicFileField) {
       if (value is XFile) {
         initialValues[name] = await _xFileToPlatformFile(value);
       } else if (value is List) {

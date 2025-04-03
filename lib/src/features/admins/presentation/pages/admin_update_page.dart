@@ -11,7 +11,6 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/admins/domain/admin.dart';
 import 'package:gym_system/src/features/admins/data/admin_repository.dart';
-import 'package:gym_system/src/features/admins/domain/admin.dart';
 import 'package:gym_system/src/features/admins/presentation/controllers/admin_controller.dart';
 import 'package:gym_system/src/features/admins/presentation/controllers/admin_update_controller.dart';
 import 'package:gym_system/src/features/admins/presentation/widgets/admin_image_control_widget.dart';

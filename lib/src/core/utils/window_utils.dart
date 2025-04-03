@@ -29,6 +29,7 @@ class WindowUtils {
       size: Size(1000, 700),
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.normal,
     );
     // * Wait until the window is ready be shown
     windowManager.waitUntilReadyToShow(windowOptions, () async {

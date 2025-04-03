@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_record_page_controller.dart';
 import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_records_controller.dart';

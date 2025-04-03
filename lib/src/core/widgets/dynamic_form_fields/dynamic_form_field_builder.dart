@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:gym_system/src/core/widgets/dynamic_fields/controller/dynamic_field_builder_controller.dart';
+import 'package:gym_system/src/core/widgets/dynamic_form_fields/controller/dynamic_field_builder_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 

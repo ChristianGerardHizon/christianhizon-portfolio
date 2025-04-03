@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
-import 'package:gym_system/src/core/widgets/dynamic_fields/dynamic_field.dart';
-import 'package:gym_system/src/core/widgets/dynamic_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
+import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
+import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_controller.dart';

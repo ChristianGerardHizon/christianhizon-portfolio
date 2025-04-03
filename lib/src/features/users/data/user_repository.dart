@@ -50,7 +50,7 @@ class UserRepositoryImpl extends UserRepository {
   TaskResult<User> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
-      return User.customFromMap(result.toJson());
+      return User.fromMap(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -58,7 +58,7 @@ class UserRepositoryImpl extends UserRepository {
   TaskResult<User> create(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload);
-      return User.customFromMap(response.toJson());
+      return User.fromMap(response.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -86,7 +86,7 @@ class UserRepositoryImpl extends UserRepository {
         totalItems: result.totalItems,
         totalPages: result.totalPages,
         items: result.items.map<User>((e) {
-          return User.customFromMap(e.toJson());
+          return User.fromMap(e.toJson());
         }).toList(),
       );
     }, Failure.tryCatchData);
@@ -106,7 +106,7 @@ class UserRepositoryImpl extends UserRepository {
         body: combinedMap,
         files: files,
       );
-      return User.customFromMap(result.toJson());
+      return User.fromMap(result.toJson());
     }, Failure.tryCatchData);
   }
 

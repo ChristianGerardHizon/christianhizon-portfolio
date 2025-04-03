@@ -45,4 +45,9 @@ class Admin with AdminMappable {
   static const fromJson = AdminMapper.fromJson;
 
   bool get hasAvatar => avatar is String && avatar!.isNotEmpty;
+
+  Uri? get avatarUri {
+    if (avatar == null || avatar!.isEmpty) return null;
+    return Uri.tryParse('$domain/$collectionId/$avatar');
+  }
 }

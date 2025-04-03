@@ -1,14 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/responsive_pagination_list_with_delete_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
-import 'package:gym_system/src/features/products/data/product_repository.dart';
-import 'package:gym_system/src/features/products/domain/product.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/products_controller.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/products_page_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class DashboardPage extends HookConsumerWidget {

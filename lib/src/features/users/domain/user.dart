@@ -30,7 +30,15 @@ class User with UserMappable {
     this.verified = false,
   });
 
-  static const fromMap = UserMapper.fromMap;
+  // static const fromMap = UserMapper.fromMap;
+  static fromMap(Map<String, dynamic> raw) {
+    return UserMapper.fromMap(
+      {
+        ...raw,
+      },
+    );
+  }
+
   static const fromJson = UserMapper.fromMap;
 
   Map<String, dynamic> toForm() {
@@ -39,14 +47,5 @@ class User with UserMappable {
       'created': created,
       'updated': created,
     };
-  }
-
-  static User customFromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    return fromMap(
-      {
-        ...raw,
-      },
-    );
   }
 }
