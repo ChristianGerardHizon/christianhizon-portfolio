@@ -48,11 +48,15 @@ class PrescriptionItemRepositoryImpl extends PrescriptionItemRepository {
   RecordService get collection =>
       pb.collection(PocketBaseCollections.prescriptionItems);
 
+  PrescriptionItem mapToData(Map<String, dynamic> map) {
+    return PrescriptionItem.fromMap({...map, 'domain': pb.baseURL});
+  }
+
   @override
   TaskResult<PrescriptionItem> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
-      return PrescriptionItem.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -60,7 +64,7 @@ class PrescriptionItemRepositoryImpl extends PrescriptionItemRepository {
   TaskResult<PrescriptionItem> create(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload);
-      return PrescriptionItem.customFromMap(response.toJson());
+      return mapToData(response.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -89,7 +93,7 @@ class PrescriptionItemRepositoryImpl extends PrescriptionItemRepository {
         totalItems: result.totalItems,
         totalPages: result.totalPages,
         items: result.items.map<PrescriptionItem>((e) {
-          return PrescriptionItem.customFromMap(e.toJson());
+          return mapToData(e.toJson());
         }).toList(),
       );
     }, Failure.tryCatchData);
@@ -109,7 +113,7 @@ class PrescriptionItemRepositoryImpl extends PrescriptionItemRepository {
         body: combinedMap,
         files: files,
       );
-      return PrescriptionItem.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -138,8 +142,7 @@ class PrescriptionItemRepositoryImpl extends PrescriptionItemRepository {
           filter: filter,
         );
         return result
-            .map<PrescriptionItem>(
-                (e) => PrescriptionItem.customFromMap(e.toJson()))
+            .map<PrescriptionItem>((e) => mapToData(e.toJson()))
             .toList();
       },
       Failure.tryCatchData,

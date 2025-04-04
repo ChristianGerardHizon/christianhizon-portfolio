@@ -34,7 +34,15 @@ class PrescriptionItem with PrescriptionItemMappable {
     this.isDeleted = false,
   });
 
-  static const fromMap = PrescriptionItemMapper.fromMap;
+  static PrescriptionItem fromMap(Map<String, dynamic> raw) {
+    // if dateOfBirth is '' empty string, it will be null
+    return PrescriptionItemMapper.fromMap(
+      {
+        ...raw,
+      },
+    );
+  }
+
   static const fromJson = PrescriptionItemMapper.fromMap;
 
   Map<String, dynamic> toForm() {
@@ -43,14 +51,5 @@ class PrescriptionItem with PrescriptionItemMappable {
       'created': created,
       'updated': created,
     };
-  }
-
-  static PrescriptionItem customFromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    return fromMap(
-      {
-        ...raw,
-      },
-    );
   }
 }

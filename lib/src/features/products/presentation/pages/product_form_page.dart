@@ -94,6 +94,7 @@ class ProductFormPage extends HookConsumerWidget {
                 DynamicPBImagesField(
                   name: 'image',
                   fileTypeLabel: 'Upload Profile Picture',
+                  maxFiles: 10,
                   allowCompression: false,
                   maxSizeKB: 300,
                   compressionQuality: 85,

@@ -53,14 +53,14 @@ class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
   final expand = 'type';
 
   TreatmentRecord mapToData(Map<String, dynamic> map) {
-    return mapToData({...map, 'domain': pb.baseURL});
+    return TreatmentRecord.fromMap({...map, 'domain': pb.baseURL});
   }
 
   @override
   TaskResult<TreatmentRecord> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id, expand: expand);
-      return TreatmentRecord.fromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 

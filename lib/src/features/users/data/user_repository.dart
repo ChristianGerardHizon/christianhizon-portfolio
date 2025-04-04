@@ -46,11 +46,15 @@ class UserRepositoryImpl extends UserRepository {
 
   RecordService get collection => pb.collection(PocketBaseCollections.users);
 
+  User mapToData(Map<String, dynamic> map) {
+    return User.fromMap({...map, 'domain': pb.baseURL});
+  }
+
   @override
   TaskResult<User> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
-      return User.fromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -58,7 +62,7 @@ class UserRepositoryImpl extends UserRepository {
   TaskResult<User> create(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload);
-      return User.fromMap(response.toJson());
+      return mapToData(response.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -86,7 +90,7 @@ class UserRepositoryImpl extends UserRepository {
         totalItems: result.totalItems,
         totalPages: result.totalPages,
         items: result.items.map<User>((e) {
-          return User.fromMap(e.toJson());
+          return mapToData(e.toJson());
         }).toList(),
       );
     }, Failure.tryCatchData);
@@ -106,7 +110,7 @@ class UserRepositoryImpl extends UserRepository {
         body: combinedMap,
         files: files,
       );
-      return User.fromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
