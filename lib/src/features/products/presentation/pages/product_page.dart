@@ -164,7 +164,7 @@ class ProductPage extends HookConsumerWidget {
                               Icons.chevron_right_outlined,
                               size: 24,
                             ),
-                            onTap: () => ProductUpdatePageRoute(product.id)
+                            onTap: () => ProductFormPageRoute(id: product.id)
                                 .push(context),
                           ),
                           ListTile(

@@ -30,12 +30,14 @@ class DynamicFormFieldPBImages extends StatelessWidget {
         final isMaxReached = displayImages.length >= field.maxFiles;
        
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (field.fileTypeLabel != null)
-              Text(
+              SizedBox(
+                width: double.maxFinite,
+                child: Text(
                 field.fileTypeLabel!,
                 style: Theme.of(context).textTheme.labelLarge,
+              ),
               ),
             const SizedBox(height: 10),
             Wrap(
@@ -60,7 +62,7 @@ class DynamicFormFieldPBImages extends StatelessWidget {
                       if (!context.mounted) return;
                       formField.didChange(updated.isEmpty ? null : updated);
                     },
-                    size: field.previewSize,
+                    size: field.previewSize / 2,
                   ),
               ],
             ),
@@ -114,12 +116,25 @@ class _PBImagePreviewTile extends StatelessWidget {
       orElse: () => Icon(Icons.image_not_supported, size: size),
     );
 
+    final name = image.maybeMap(
+      network: (image) => image.uri.toString(),
+      local: (image) => image.name,
+      memory: (image) => image.fullFilename,
+      orElse: () => '',
+    );
+
     return Stack(
       alignment: Alignment.topRight,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: imageWidget,
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: imageWidget,
+            ),
+            Text(name),
+          ],
         ),
         Positioned(
           right: 0,
@@ -163,6 +178,8 @@ class _PBImageAddButtonWithLoading extends HookWidget {
         field: field,
         existingImages: existingImages,
       );
+
+      if(!context.mounted) return;
 
       onImagesPicked(updated);
       isLoading.value = false;

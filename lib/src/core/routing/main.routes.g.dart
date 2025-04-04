@@ -33,9 +33,7 @@ List<RouteBase> get $appRoutes => [
       $morePageRoute,
       $salesPageRoute,
       $productsPageRoute,
-      $productCreatePageRoute,
       $productFormPageRoute,
-      $productUpdatePageRoute,
       $productPageRoute,
       $medicalRecordsPageRoute,
       $medicalRecordPageRoute,
@@ -130,14 +128,6 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/products',
               factory: $ProductsPageRouteExtension._fromState,
-            ),
-            GoRouteData.$route(
-              path: '/update/product/:id',
-              factory: $ProductUpdatePageRouteExtension._fromState,
-            ),
-            GoRouteData.$route(
-              path: '/create/product',
-              factory: $ProductCreatePageRouteExtension._fromState,
             ),
             GoRouteData.$route(
               path: '/product/:id',
@@ -353,44 +343,6 @@ extension $ProductsPageRouteExtension on ProductsPageRoute {
 
   String get location => GoRouteData.$location(
         '/products',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
-
-extension $ProductUpdatePageRouteExtension on ProductUpdatePageRoute {
-  static ProductUpdatePageRoute _fromState(GoRouterState state) =>
-      ProductUpdatePageRoute(
-        state.pathParameters['id']!,
-      );
-
-  String get location => GoRouteData.$location(
-        '/update/product/${Uri.encodeComponent(id)}',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
-
-extension $ProductCreatePageRouteExtension on ProductCreatePageRoute {
-  static ProductCreatePageRoute _fromState(GoRouterState state) =>
-      const ProductCreatePageRoute();
-
-  String get location => GoRouteData.$location(
-        '/create/product',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -900,19 +852,9 @@ RouteBase get $productsPageRoute => GoRouteData.$route(
       factory: $ProductsPageRouteExtension._fromState,
     );
 
-RouteBase get $productCreatePageRoute => GoRouteData.$route(
-      path: '/create/product',
-      factory: $ProductCreatePageRouteExtension._fromState,
-    );
-
 RouteBase get $productFormPageRoute => GoRouteData.$route(
       path: '/form/product',
       factory: $ProductFormPageRouteExtension._fromState,
-    );
-
-RouteBase get $productUpdatePageRoute => GoRouteData.$route(
-      path: '/update/product/:id',
-      factory: $ProductUpdatePageRouteExtension._fromState,
     );
 
 RouteBase get $productPageRoute => GoRouteData.$route(
