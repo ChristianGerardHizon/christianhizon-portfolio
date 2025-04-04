@@ -3,8 +3,6 @@ import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 
-
-
 class FormUtils {
   ///
   /// get the form state

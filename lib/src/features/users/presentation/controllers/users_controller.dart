@@ -1,4 +1,4 @@
-import 'package:gym_system/src/core/type_defs/page_results.dart';
+import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:gym_system/src/features/users/presentation/controllers/user_search_controller.dart';

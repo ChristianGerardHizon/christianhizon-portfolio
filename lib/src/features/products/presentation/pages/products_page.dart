@@ -32,7 +32,7 @@ class ProductsPage extends HookConsumerWidget {
     /// onTap
     ///
     onTap(Product product) {
-      ProductPageRoute(product.id).push(context);
+      ProductFormPageRoute(id: product.id).push(context);
     }
 
     ///
@@ -80,7 +80,7 @@ class ProductsPage extends HookConsumerWidget {
     /// OnCreate
     ///
     onCreate() {
-      ProductCreatePageRoute().push(context);
+      ProductFormPageRoute().push(context);
     }
 
     ///

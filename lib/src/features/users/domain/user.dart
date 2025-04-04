@@ -1,4 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/utils/pb_utils.dart';
 
 part 'user.mapper.dart';
 
@@ -47,5 +48,17 @@ class User with UserMappable {
       'created': created,
       'updated': created,
     };
+  }
+
+  bool get hasAvatar => avatar is String && avatar!.isNotEmpty;
+
+  Uri? get avatarUri {
+    if (avatar == null || avatar!.isEmpty) return null;
+    return PBUtils.imageBuilder(
+      collection: collectionId,
+      id: id,
+      domain: domain,
+      fileName: avatar!,
+    );
   }
 }

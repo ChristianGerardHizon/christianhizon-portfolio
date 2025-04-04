@@ -32,6 +32,9 @@ class ProductMapper extends ClassMapperBase<Product> {
   static const Field<Product, String> _f$id = Field('id', _$id);
   static String _$name(Product v) => v.name;
   static const Field<Product, String> _f$name = Field('name', _$name);
+  static String? _$image(Product v) => v.image;
+  static const Field<Product, String> _f$image =
+      Field('image', _$image, opt: true);
   static String? _$notes(Product v) => v.notes;
   static const Field<Product, String> _f$notes =
       Field('notes', _$notes, opt: true);
@@ -55,6 +58,7 @@ class ProductMapper extends ClassMapperBase<Product> {
     #domain: _f$domain,
     #id: _f$id,
     #name: _f$name,
+    #image: _f$image,
     #notes: _f$notes,
     #category: _f$category,
     #isDeleted: _f$isDeleted,
@@ -69,6 +73,7 @@ class ProductMapper extends ClassMapperBase<Product> {
         domain: data.dec(_f$domain),
         id: data.dec(_f$id),
         name: data.dec(_f$name),
+        image: data.dec(_f$image),
         notes: data.dec(_f$notes),
         category: data.dec(_f$category),
         isDeleted: data.dec(_f$isDeleted),
@@ -132,6 +137,7 @@ abstract class ProductCopyWith<$R, $In extends Product, $Out>
       String? domain,
       String? id,
       String? name,
+      String? image,
       String? notes,
       String? category,
       bool? isDeleted,
@@ -155,6 +161,7 @@ class _ProductCopyWithImpl<$R, $Out>
           String? domain,
           String? id,
           String? name,
+          Object? image = $none,
           Object? notes = $none,
           Object? category = $none,
           bool? isDeleted,
@@ -166,6 +173,7 @@ class _ProductCopyWithImpl<$R, $Out>
         if (domain != null) #domain: domain,
         if (id != null) #id: id,
         if (name != null) #name: name,
+        if (image != $none) #image: image,
         if (notes != $none) #notes: notes,
         if (category != $none) #category: category,
         if (isDeleted != null) #isDeleted: isDeleted,
@@ -179,6 +187,7 @@ class _ProductCopyWithImpl<$R, $Out>
       domain: data.get(#domain, or: $value.domain),
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
+      image: data.get(#image, or: $value.image),
       notes: data.get(#notes, or: $value.notes),
       category: data.get(#category, or: $value.category),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),

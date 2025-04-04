@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/type_defs/page_results.dart';
+import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/features/prescription/data/prescription_item_repository.dart';
 import 'package:gym_system/src/features/prescription/domain/prescription_item.dart';
 import 'package:gym_system/src/features/prescription/domain/prescription_search.dart';

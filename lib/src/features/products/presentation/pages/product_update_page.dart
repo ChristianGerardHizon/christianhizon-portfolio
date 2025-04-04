@@ -80,10 +80,9 @@ class ProductUpdatePage extends HookConsumerWidget {
                   //   fileTypeLabel: 'Upload File A (PDF/Image)',
                   //   isRequired: false,
                   // ),
-                  DynamicImageField(
+                  DynamicImagesField(
                     name: 'image',
                     fileTypeLabel: 'Upload Profile Picture',
-                    isRequired: true,
                     maxSizeKB: 300,
                     compressionQuality: 85,
                   ),

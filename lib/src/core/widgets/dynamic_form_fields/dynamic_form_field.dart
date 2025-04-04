@@ -2,14 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_pb_images.dart';
 
 import 'dynamic_field.dart';
-import 'fields/dynamic_form_field_image.dart';
+import 'fields/dynamic_form_field_images.dart';
 import 'fields/dynamic_form_field_text.dart';
 import 'fields/dynamic_form_field_checkbox.dart';
 import 'fields/dynamic_form_field_select.dart';
 import 'fields/dynamic_form_field_date.dart';
-import 'fields/dynamic_form_field_file.dart';
+import 'fields/dynamic_form_field_files.dart';
 
 class DynamicFormField extends HookWidget {
   final DynamicField field;
@@ -22,27 +23,31 @@ class DynamicFormField extends HookWidget {
   @override
   Widget build(BuildContext context) {
     if (field is DynamicTextField) {
-      return DynamicTextFormField(field as DynamicTextField);
+      return DynamicFormFieldText(field as DynamicTextField);
     }
 
     if (field is DynamicCheckboxField) {
-      return DynamicCheckboxFormField(field as DynamicCheckboxField);
+      return DynamicFormFieldCheckbox(field as DynamicCheckboxField);
     }
 
     if (field is DynamicSelectField) {
-      return DynamicSelectFormField(field as DynamicSelectField);
+      return DynamicFormFieldSelect(field as DynamicSelectField);
     }
 
     if (field is DynamicDateField) {
-      return DynamicDateFormField(field as DynamicDateField);
+      return DynamicFormFieldDate(field as DynamicDateField);
     }
 
-    if (field is DynamicFileField) {
-      return DynamicFileFormField(field as DynamicFileField);
+    if (field is DynamicFilesField) {
+      return DynamicFormFieldFiles(field as DynamicFilesField);
     }
 
-    if (field is DynamicImageField) {
-      return DynamicImageFormField(field as DynamicImageField);
+    if (field is DynamicImagesField) {
+      return DynamicFormFieldImages(field as DynamicImagesField);
+    }
+
+    if (field is DynamicPBImagesField) {
+      return DynamicFormFieldPBImages(field as DynamicPBImagesField);
     }
 
     return const SizedBox.shrink();

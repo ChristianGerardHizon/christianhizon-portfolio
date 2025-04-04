@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 
 import '../dynamic_field.dart';
 
-class DynamicImageFormField extends StatelessWidget {
-  final DynamicImageField field;
+class DynamicFormFieldImages extends StatelessWidget {
+  final DynamicImagesField field;
 
-  const DynamicImageFormField(this.field, {super.key});
+  const DynamicFormFieldImages(this.field, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +71,7 @@ class DynamicImageFormField extends StatelessWidget {
       //     });
       //   }
       // },
-      validator: FormBuilderValidators.compose([
-        if (field.isRequired)
-          FormBuilderValidators.minLength(1, errorText: 'Image required'),
-      ]),
+      validator: field.validator,
     );
   }
 }

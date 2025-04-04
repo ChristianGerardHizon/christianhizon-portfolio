@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/type_defs/page_results.dart';
+import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/features/medical_records/data/medical_record_repository.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
 import 'package:gym_system/src/features/medical_records/domain/medical_record_search.dart';

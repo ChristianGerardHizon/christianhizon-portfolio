@@ -34,6 +34,7 @@ List<RouteBase> get $appRoutes => [
       $salesPageRoute,
       $productsPageRoute,
       $productCreatePageRoute,
+      $productFormPageRoute,
       $productUpdatePageRoute,
       $productPageRoute,
       $medicalRecordsPageRoute,
@@ -141,6 +142,10 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/product/:id',
               factory: $ProductPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/form/product',
+              factory: $ProductFormPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -405,6 +410,29 @@ extension $ProductPageRouteExtension on ProductPageRoute {
 
   String get location => GoRouteData.$location(
         '/product/${Uri.encodeComponent(id)}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $ProductFormPageRouteExtension on ProductFormPageRoute {
+  static ProductFormPageRoute _fromState(GoRouterState state) =>
+      ProductFormPageRoute(
+        id: state.uri.queryParameters['id'],
+      );
+
+  String get location => GoRouteData.$location(
+        '/form/product',
+        queryParams: {
+          if (id != null) 'id': id,
+        },
       );
 
   void go(BuildContext context) => context.go(location);
@@ -875,6 +903,11 @@ RouteBase get $productsPageRoute => GoRouteData.$route(
 RouteBase get $productCreatePageRoute => GoRouteData.$route(
       path: '/create/product',
       factory: $ProductCreatePageRouteExtension._fromState,
+    );
+
+RouteBase get $productFormPageRoute => GoRouteData.$route(
+      path: '/form/product',
+      factory: $ProductFormPageRouteExtension._fromState,
     );
 
 RouteBase get $productUpdatePageRoute => GoRouteData.$route(

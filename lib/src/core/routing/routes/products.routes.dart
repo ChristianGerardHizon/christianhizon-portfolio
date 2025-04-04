@@ -26,6 +26,19 @@ class ProductCreatePageRoute extends GoRouteData {
   }
 }
 
+@TypedGoRoute<ProductFormPageRoute>(path: ProductFormPageRoute.path)
+class ProductFormPageRoute extends GoRouteData {
+  const ProductFormPageRoute({this.id});
+  static const path = '/form/product';
+
+  final String? id;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ProductFormPage(id: id);
+  }
+}
+
 @TypedGoRoute<ProductUpdatePageRoute>(path: ProductUpdatePageRoute.path)
 class ProductUpdatePageRoute extends GoRouteData {
   const ProductUpdatePageRoute(this.id);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/type_defs/page_results.dart';
+import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
 import 'package:gym_system/src/core/widgets/page_actions.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';

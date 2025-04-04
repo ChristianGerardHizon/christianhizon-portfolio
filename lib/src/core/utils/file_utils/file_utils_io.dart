@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 Future<PlatformFile> createPlatformFileFromBytes({
   required String name,
   required List<int> bytes,
+  String? identifier,
 }) async {
   final tempDir = await getTemporaryDirectory();
   final filePath = '${tempDir.path}/$name';

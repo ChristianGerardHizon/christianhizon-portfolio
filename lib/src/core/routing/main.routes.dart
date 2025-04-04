@@ -22,6 +22,7 @@ import 'package:gym_system/src/features/patients/presentation/pages/patient_page
 import 'package:gym_system/src/features/patients/presentation/pages/patient_update_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product_create_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/product_form_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product_update_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/products_page.dart';
@@ -128,6 +129,7 @@ class SplashPageRoute extends GoRouteData {
         TypedGoRoute<ProductUpdatePageRoute>(path: ProductUpdatePageRoute.path),
         TypedGoRoute<ProductCreatePageRoute>(path: ProductCreatePageRoute.path),
         TypedGoRoute<ProductPageRoute>(path: ProductPageRoute.path),
+        TypedGoRoute<ProductFormPageRoute>(path: ProductFormPageRoute.path),
       ],
     ),
 

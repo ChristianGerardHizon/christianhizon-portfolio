@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 
 import '../dynamic_field.dart';
 
-class DynamicFileFormField extends StatelessWidget {
-  final DynamicFileField field;
+class DynamicFormFieldFiles extends StatelessWidget {
+  final DynamicFilesField field;
 
-  const DynamicFileFormField(this.field, {super.key});
+  const DynamicFormFieldFiles(this.field, {super.key});
   @override
   Widget build(BuildContext context) {
     return FormBuilderFilePicker(
@@ -28,10 +27,7 @@ class DynamicFileFormField extends StatelessWidget {
           ),
         ),
       ],
-      validator: FormBuilderValidators.compose([
-        if (field.isRequired)
-          FormBuilderValidators.minLength(1, errorText: 'File is required'),
-      ]),
+      validator: field.validator,
       valueTransformer: field.valueTransformer,
     );
   }

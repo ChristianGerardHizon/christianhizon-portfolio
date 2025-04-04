@@ -1,10 +1,14 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 
-class ImageCompressor {
-  /// Compress an image using isolate, returning a new [XFile]
+class ImageCompressorUtils {
+  /// Compress an image using isolate, returning a new [XFile] with a file path
   static Future<XFile?> compress({
     required XFile file,
     required int maxSizeKB,
@@ -24,14 +28,23 @@ class ImageCompressor {
 
     if (resultBytes == null) return null;
 
-    return XFile.fromData(
-      resultBytes,
-      name: '${path.basenameWithoutExtension(file.name)}-compressed.jpg',
+    // Write to temp file
+    final tempDir = await getTemporaryDirectory();
+    final compressedFilePath = path.join(
+      tempDir.path,
+      '${path.basenameWithoutExtension(file.name)}-compressed.jpg',
+    );
+
+    final compressedFile =
+        await File(compressedFilePath).writeAsBytes(resultBytes);
+
+    return XFile(
+      compressedFile.path,
       mimeType: 'image/jpeg',
+      name: path.basename(compressedFile.path),
     );
   }
 
-  /// The actual compression logic running in an isolate
   static Uint8List? _compressInIsolate(_CompressImageArgs args) {
     final image = img.decodeImage(args.bytes);
     if (image == null) return null;

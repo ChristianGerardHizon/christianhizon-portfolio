@@ -53,22 +53,16 @@ class ProductCreatePage extends HookConsumerWidget {
             name: ProductField.name,
             label: 'Name',
           ),
-          DynamicFileField(
+          DynamicFilesField(
             name: 'fileA',
             fileTypeLabel: 'Upload File A (PDF/Image)',
-            isRequired: false,
           ),
-          DynamicImageField(
+          DynamicImagesField(
             name: 'image',
             fileTypeLabel: 'Upload Profile Picture',
-            isRequired: true,
             maxSizeKB: 300,
             compressionQuality: 85,
-            initialValue: [
-              Uri.parse(
-                'https://2.img-dpreview.com/files/p/TS1200x900~sample_galleries/1330372094/0024739717.jpg',
-              )
-            ],
+            initialValue: [],
           ),
         ],
         onSubmit: onSubmit,

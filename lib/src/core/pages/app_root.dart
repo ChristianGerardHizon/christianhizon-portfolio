@@ -4,7 +4,7 @@ import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
-import 'package:gym_system/src/core/type_defs/custom_navbar_item.dart';
+import 'package:gym_system/src/core/widgets/custom_navbar_item.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/logo.dart';

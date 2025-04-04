@@ -1,4 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/utils/pb_utils.dart';
 
 part 'product.mapper.dart';
 
@@ -14,6 +15,8 @@ class Product with ProductMappable {
   final DateTime? created;
   final DateTime? updated;
 
+  final String? image;
+
   final String collectionId;
   final String collectionName;
   final String domain;
@@ -24,6 +27,7 @@ class Product with ProductMappable {
     required this.domain,
     required this.id,
     required this.name,
+    this.image,
     this.notes,
     this.category,
     this.isDeleted = false,
@@ -48,5 +52,16 @@ class Product with ProductMappable {
       'created': created,
       'updated': created,
     };
+  }
+
+  bool get hasImage => image == null || image!.isEmpty;
+  Uri? get imageUri {
+    if (hasImage) return null;
+    return PBUtils.imageBuilder(
+      collection: collectionId,
+      id: id,
+      domain: domain,
+      fileName: image!,
+    );
   }
 }
