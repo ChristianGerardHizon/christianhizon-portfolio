@@ -15,6 +15,35 @@ sealed class PBImage with PBImageMappable {
     this.id,
     this.isDeleted = false,
   });
+
+  Future<MultipartFile> toMultipart() async {
+    final value = this;
+    if (value is PBLocalImage) {
+      return MultipartFile.fromPath(
+        value.field!,
+        value.path,
+        filename: value.name,
+      );
+    } else if (value is PBMemoryImage) {
+      return MultipartFile.fromBytes(
+        value.field!,
+        value.bytes,
+        filename: value.fullFilename,
+      );
+    } else if (value is PBNetworkImage) {
+      return Future.error(Exception('Image is not local or network'));
+    } else {
+      return Future.error(Exception('Image is not local or network'));
+    }
+  }
+
+  bool get isLocal => this is PBLocalImage;
+  bool get isNetwork => this is PBNetworkImage;
+  bool get isMemory => this is PBMemoryImage;
+  bool get isPlaceholder => this is PBPlaceholderImage;
+
+  bool get isCreate => id == null;
+  bool get isUpdate => id != null && isDeleted == false;
 }
 
 @MappableClass(discriminatorValue: 'local')
@@ -68,37 +97,6 @@ class PBPlaceholderImage extends PBImage with PBPlaceholderImageMappable {
     super.id = '',
     super.isDeleted = false,
   });
-}
-
-extension PbImageExtension on PBImage {
-  bool get isLocal => this is PBLocalImage;
-  bool get isNetwork => this is PBNetworkImage;
-  bool get isMemory => this is PBMemoryImage;
-  bool get isPlaceholder => this is PBPlaceholderImage;
-
-  bool get isCreate => id == null;
-  bool get isUpdate => id != null && isDeleted == false;
-
-  Future<MultipartFile> toMultipart() async {
-    final value = this;
-    if (value is PBLocalImage) {
-      return MultipartFile.fromPath(
-        value.field!,
-        value.path,
-        filename: value.name,
-      );
-    } else if (value is PBMemoryImage) {
-      return MultipartFile.fromBytes(
-        value.field!,
-        value.bytes,
-        filename: value.fullFilename,
-      );
-    } else if (value is PBNetworkImage) {
-      return Future.error(Exception('Image is not local or network'));
-    } else {
-      return Future.error(Exception('Image is not local or network'));
-    }
-  }
 }
 
 extension PBImageMaybeMapX on PBImage {

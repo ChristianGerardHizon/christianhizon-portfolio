@@ -9,7 +9,6 @@ import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_fie
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/products_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:http/http.dart';
 
 class ProductCreatePage extends HookConsumerWidget {
   const ProductCreatePage({super.key});
@@ -22,8 +21,12 @@ class ProductCreatePage extends HookConsumerWidget {
     ///
     /// Submit
     ///
-    void onSubmit(Map<String, dynamic> value, List<MultipartFile> files) async {
+    void onSave(
+      DynamicFormResult formResult,
+    ) async {
       isLoading.value = true;
+      final value = formResult.values;
+      final files = formResult.files;
 
       final result = await ref
           .read(productRepositoryProvider)
@@ -65,7 +68,7 @@ class ProductCreatePage extends HookConsumerWidget {
             initialValue: [],
           ),
         ],
-        onSubmit: onSubmit,
+        onSubmit: (result) => onSave(result),
       ),
     );
   }

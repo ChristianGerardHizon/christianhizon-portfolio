@@ -34,10 +34,11 @@ class ProductUpdatePage extends HookConsumerWidget {
 
     void onSubmit(
       Product product,
-      Map<String, dynamic> value,
-      List<MultipartFile> files,
+      DynamicFormResult formResult,
     ) async {
       isLoading.value = true;
+      final value = formResult.values;
+      final files = formResult.files;
 
       final result = await ref
           .read(productRepositoryProvider)
@@ -87,7 +88,7 @@ class ProductUpdatePage extends HookConsumerWidget {
                     compressionQuality: 85,
                   ),
                 ],
-                onSubmit: (value, files) => onSubmit(product, value, files),
+                onSubmit: (result) => onSubmit(product, result),
               ),
             );
           },

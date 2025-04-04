@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/classes/pb_image.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
+import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
@@ -12,7 +13,6 @@ import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_form_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/products_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:http/http.dart';
 
 class ProductFormPage extends HookConsumerWidget {
   const ProductFormPage({super.key, this.id});
@@ -30,12 +30,13 @@ class ProductFormPage extends HookConsumerWidget {
     ///
     void onSave(
       Product? product,
-      Map<String, dynamic> value,
-      List<MultipartFile> files,
+      DynamicFormResult formResult,
     ) async {
       isLoading.value = true;
 
       final repository = ref.read(productRepositoryProvider);
+      final value = formResult.values;
+      final files = formResult.files;
 
       final task = (product == null
           ? repository.create(value, files: files)
@@ -53,6 +54,21 @@ class ProductFormPage extends HookConsumerWidget {
           context.pop();
         },
       );
+    }
+
+    List<PBImage>? buildInitialImages(Product? product) {
+      if (product == null) return null;
+      if (!product.hasImage ||  product.imageUri == null) return null;
+      final images = [product.image];
+      return images
+          .map(
+            (e) => PBNetworkImage(
+              uri: product.imageUri!,
+              field: 'image',
+              id: product.id,
+            ),
+          )
+          .toList();
     }
 
     return Scaffold(
@@ -75,29 +91,19 @@ class ProductFormPage extends HookConsumerWidget {
                   label: 'Name',
                   initialValue: product?.name,
                 ),
-                // DynamicFileField(
-                //   name: 'fileA',
-                //   fileTypeLabel: 'Upload File A (PDF/Image)',
-                // ),
                 DynamicPBImagesField(
                   name: 'image',
                   fileTypeLabel: 'Upload Profile Picture',
+                  allowCompression: false,
                   maxSizeKB: 300,
                   compressionQuality: 85,
-                  initialValue: product == null
-                      ? []
-                      : [
-                          product.hasImage
-                              ? PBNetworkImage(
-                                  field: 'image',
-                                  id: product.image!,
-                                  uri: product.imageUri!,
-                                )
-                              : null
-                        ].whereType<PBImage>().toList(),
+                  previewSize: 200,
+                  fieldTransformer: (list) => PBUtils.defaultFieldTransformer(list, isSingleFile: true),
+                  fileTransformer: PBUtils.defaultFileTransformer,
+                  initialValue: buildInitialImages(product),
                 ),
               ],
-              onSubmit: (value, files) => onSave(product, value, files),
+              onSubmit: (result) => onSave(product, result),
             );
           }),
     );

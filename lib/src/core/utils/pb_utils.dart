@@ -11,6 +11,28 @@ class PBUtils {
     return Uri.tryParse('$domain/api/files/$collection/$id/$fileName');
   }
 
+  ///
+  /// PBImage Handlers
+  ///
+  static dynamic defaultFieldTransformer(
+    List<PBImage>? list, {
+    bool isSingleFile = true,
+  }) {
+    final value = [...list ?? []];
+    final result = value.where((x) => x.isUpdate).map((x) => x.id);
+    if (isSingleFile) return result.firstOrNull;
+    return result.toList();
+  }
+
+  static List<Future<MultipartFile>> defaultFileTransformer(list) {
+    final value = [...list ?? []];
+    return value
+        .where((x) => x.isCreate)
+        .map((x) => x.toMultipart())
+        .whereType<Future<MultipartFile>>()
+        .toList();
+  }
+
   static Future<(Map<String, dynamic>, List<MultipartFile>)> transformForm(
     Map<String, dynamic> values,
   ) async {

@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:cross_file/cross_file.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:gym_system/src/core/classes/pb_image.dart';
 import 'package:gym_system/src/core/utils/image_compressor_utils.dart';
@@ -11,18 +13,22 @@ import '../dynamic_field.dart';
 class DynamicFormFieldPBImages extends StatelessWidget {
   final DynamicPBImagesField field;
 
-  const DynamicFormFieldPBImages(this.field, {super.key});
+  const DynamicFormFieldPBImages(
+    this.field, {
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FormBuilderField<List<PBImage>>(
       name: field.name,
       validator: field.validator,
+      initialValue: field.initialValue,
       builder: (formField) {
-        final value = formField.value ?? [];
-
-        final isMaxReached = value.length >= field.maxFiles;
-
+        final value = formField.value;
+        final displayImages = value ?? [];
+        final isMaxReached = displayImages.length >= field.maxFiles;
+       
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -36,27 +42,25 @@ class DynamicFormFieldPBImages extends StatelessWidget {
               spacing: 8,
               runSpacing: 8,
               children: [
-                ...value.map(
+                ...displayImages.map(
                   (image) => _PBImagePreviewTile(
                     image: image,
                     onDelete: () {
-                      final updated =
-                          [...value].where((x) => x != image).toList();
-                      formField.didChange(updated);
+                      final updated = [...displayImages]..remove(image);
+                      formField.didChange(updated.isEmpty ? null : updated);
                     },
+                    size: field.previewSize,
                   ),
                 ),
                 if (!isMaxReached)
-                  _PBImageAddButton(
-                    onAdd: () async {
-                      final updated = await _pickAndCompressImages(
-                        field: field,
-                        existingImages: value,
-                      );
-                      if (updated != null) {
-                        formField.didChange(updated);
-                      }
+                  _PBImageAddButtonWithLoading(
+                    field: field,
+                    existingImages: displayImages,
+                    onImagesPicked: (updated) {
+                      if (!context.mounted) return;
+                      formField.didChange(updated.isEmpty ? null : updated);
                     },
+                    size: field.previewSize,
                   ),
               ],
             ),
@@ -73,103 +77,41 @@ class DynamicFormFieldPBImages extends StatelessWidget {
       },
     );
   }
-
-  Future<List<PBImage>?> _pickAndCompressImages({
-    required DynamicPBImagesField field,
-    required List<PBImage> existingImages,
-  }) async {
-    final result = await FilePicker.platform.pickFiles(
-      allowMultiple: field.maxFiles > 1,
-      type: FileType.image,
-      allowedExtensions: field.allowedExtensions,
-      withData: true,
-    );
-
-    if (result == null) return null;
-
-    final List<PBImage> newImages = [];
-
-    for (final file in result.files) {
-      final originalXFile = XFile.fromData(
-        file.bytes!,
-        name: file.name,
-        path: file.path,
-        length: file.size,
-      );
-
-      final compressed = field.allowCompression
-          ? await ImageCompressorUtils.compress(
-              file: originalXFile,
-              maxSizeKB: field.maxSizeKB,
-              quality: field.compressionQuality,
-            )
-          : originalXFile;
-
-      if (compressed != null) {
-        final compressedBytes = await compressed.readAsBytes();
-
-        if (compressedBytes.isNotEmpty && compressed.path.isNotEmpty) {
-          newImages.add(
-            PBLocalImage(
-              field: field.name,
-              name: compressed.name,
-              size: compressedBytes.length,
-              bytes: compressedBytes,
-              path: compressed.path,
-            ),
-          );
-        } else if (compressedBytes.isNotEmpty) {
-          newImages.add(
-            PBMemoryImage(
-              fullFilename: compressed.name,
-              field: field.name,
-              bytes: compressedBytes,
-            ),
-          );
-        }
-      }
-    }
-
-    if (field.maxFiles == 1) {
-      return newImages.isNotEmpty ? [newImages.first] : existingImages;
-    }
-
-    final combined = [...existingImages, ...newImages];
-    return combined.take(field.maxFiles).toList(); // truncate if needed
-  }
 }
 
 class _PBImagePreviewTile extends StatelessWidget {
   final PBImage image;
   final VoidCallback? onDelete;
+  final double size; // 👈 image preview size
 
   const _PBImagePreviewTile({
     required this.image,
     this.onDelete,
+    required this.size,
   });
 
   @override
   Widget build(BuildContext context) {
-    Widget imageWidget = image.maybeMap(
-      network: (image) => Image.network(
-        image.uri.toString(),
-        width: 80,
-        height: 80,
+    final imageWidget = image.maybeMap(
+      network: (image) => CachedNetworkImage(
+        imageUrl: image.uri.toString(),
+        width: size,
+        height: size,
         fit: BoxFit.cover,
       ),
       local: (image) => Image.memory(
         image.bytes,
-        width: 80,
-        height: 80,
+        width: size,
+        height: size,
         fit: BoxFit.cover,
       ),
       memory: (image) => Image.memory(
         image.bytes,
-        width: 80,
-        height: 80,
+        width: size,
+        height: size,
         fit: BoxFit.cover,
       ),
-      orElse: () => const Icon(Icons.image_not_supported, size: 80),
+      orElse: () => Icon(Icons.image_not_supported, size: size),
     );
 
     return Stack(
@@ -197,26 +139,118 @@ class _PBImagePreviewTile extends StatelessWidget {
   }
 }
 
-class _PBImageAddButton extends StatelessWidget {
-  final VoidCallback onAdd;
+class _PBImageAddButtonWithLoading extends HookWidget {
+  final DynamicPBImagesField field;
+  final List<PBImage> existingImages;
+  final void Function(List<PBImage>) onImagesPicked;
+  final double size;
 
-  const _PBImageAddButton({required this.onAdd});
+  const _PBImageAddButtonWithLoading({
+    required this.field,
+    required this.existingImages,
+    required this.onImagesPicked,
+    required this.size,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = useState(false);
+
+    Future<void> _pickImages() async {
+      isLoading.value = true;
+
+      final updated = await pickAndCompressImages(
+        field: field,
+        existingImages: existingImages,
+      );
+
+      onImagesPicked(updated);
+      isLoading.value = false;
+    }
+
     return InkWell(
-      onTap: onAdd,
+      onTap: isLoading.value ? null : _pickImages,
       child: Container(
-        width: 80,
-        height: 80,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Center(
-          child: Icon(Icons.add_a_photo, size: 30),
+          child: isLoading.value
+              ? SizedBox(
+                  width: size * 0.4,
+                  height: size * 0.4,
+                  child: const CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Icon(Icons.add_a_photo, size: size * 0.375),
         ),
       ),
     );
   }
+}
+
+Future<List<PBImage>> pickAndCompressImages({
+  required DynamicPBImagesField field,
+  required List<PBImage> existingImages,
+}) async {
+  final result = await FilePicker.platform.pickFiles(
+    allowMultiple: field.maxFiles > 1,
+    type: FileType.image,
+    allowedExtensions: field.allowedExtensions,
+    withData: true,
+  );
+
+  if (result == null) return existingImages;
+
+  final List<PBImage> newImages = [];
+
+  for (final file in result.files) {
+    final originalXFile = XFile.fromData(
+      file.bytes!,
+      name: file.name,
+      path: file.path,
+      length: file.size,
+    );
+
+    final compressed = field.allowCompression
+        ? await ImageCompressorUtils.compress(
+            file: originalXFile,
+            maxSizeKB: field.maxSizeKB,
+            quality: field.compressionQuality,
+          )
+        : originalXFile;
+
+    if (compressed != null) {
+      final compressedBytes = await compressed.readAsBytes();
+
+      if (compressedBytes.isNotEmpty && compressed.path.isNotEmpty) {
+        newImages.add(
+          PBLocalImage(
+            field: field.name,
+            name: compressed.name,
+            size: compressedBytes.length,
+            bytes: compressedBytes,
+            path: compressed.path,
+          ),
+        );
+      } else if (compressedBytes.isNotEmpty) {
+        newImages.add(
+          PBMemoryImage(
+            fullFilename: compressed.name,
+            field: field.name,
+            bytes: compressedBytes,
+          ),
+        );
+      }
+    }
+  }
+
+  if (field.maxFiles == 1) {
+    return newImages.isNotEmpty ? [newImages.first] : existingImages;
+  }
+
+  final combined = [...existingImages, ...newImages];
+  return combined.take(field.maxFiles).toList();
 }

@@ -54,9 +54,9 @@ class Product with ProductMappable {
     };
   }
 
-  bool get hasImage => image == null || image!.isEmpty;
+  bool get hasImage => image != null && image!.isNotEmpty;
   Uri? get imageUri {
-    if (hasImage) return null;
+    if (!hasImage) return null;
     return PBUtils.imageBuilder(
       collection: collectionId,
       id: id,

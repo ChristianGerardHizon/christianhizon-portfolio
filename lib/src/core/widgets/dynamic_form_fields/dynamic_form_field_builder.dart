@@ -1,9 +1,7 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:gym_system/src/core/extensions/platform_file.dart';
-import 'package:gym_system/src/core/utils/form_utils.dart';
-import 'package:gym_system/src/core/utils/pb_utils.dart';
+import 'package:gym_system/src/core/classes/pb_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,13 +11,17 @@ import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'dynamic_field.dart';
 import 'dynamic_form_fields.dart';
 
+class DynamicFormResult {
+  final Map<String, dynamic> values;
+  final List<http.MultipartFile> files;
+
+  DynamicFormResult({required this.values, required this.files});
+}
+
 class DynamicFormBuilder extends HookConsumerWidget {
   final GlobalKey<FormBuilderState> formKey;
   final List<DynamicField> fields;
-  final void Function(
-    Map<String, dynamic> fields,
-    List<http.MultipartFile> files,
-  ) onSubmit;
+  final void Function(DynamicFormResult result) onSubmit;
   final void Function(Map<String, dynamic> value)? onChange;
   final bool isLoading;
 
@@ -32,20 +34,55 @@ class DynamicFormBuilder extends HookConsumerWidget {
     this.isLoading = false,
   });
 
-  Map<String, dynamic> buildInitial() {
-    final result = <String, dynamic>{};
-    for (var field in fields) {
-      result[field.name] = field.initialValue;
-    }
-    return result;
-  }
 
-  onFormSubmit() async {
+  onFormSubmit(List<DynamicField> fields) async {
     if (formKey.currentState?.saveAndValidate() ?? false) {
-      final values = formKey.currentState!.value;
-      final extracted = await PBUtils.transformForm(values);
-      print(extracted);
-      // onSubmit(extracted.$1, extracted.$2);
+      final rawValues = formKey.currentState!.value;
+
+      final transformedValues = <String, dynamic>{};
+      for (final field in fields) {
+        final value = rawValues[field.name];
+
+        // Apply the fieldTransformer if it exists
+        final transformed = switch (field) {
+          DynamicTextField f when f.fieldTransformer != null =>
+            f.fieldTransformer!(value as String?),
+          DynamicCheckboxField f when f.fieldTransformer != null =>
+            f.fieldTransformer!(value as bool?),
+          DynamicSelectField f when f.fieldTransformer != null =>
+            f.fieldTransformer!(value),
+          DynamicDateField f when f.fieldTransformer != null =>
+            f.fieldTransformer!(value as DateTime?),
+          DynamicFilesField f when f.fieldTransformer != null =>
+            f.fieldTransformer!(value as List<PlatformFile>?),
+          DynamicImagesField f when f.fieldTransformer != null =>
+            f.fieldTransformer!(value as List<PlatformFile>?),
+          DynamicPBImagesField f when f.fieldTransformer != null =>
+            f.fieldTransformer!(value as List<PBImage>?),
+          _ => value,
+        };
+        transformedValues[field.name] = transformed;
+      }
+
+      final transformedFiles = List<http.MultipartFile>.empty(growable: true);
+      for (final field in fields) {
+        final value = rawValues[field.name];
+
+        // Apply the fieldTransformer if it exists
+        final transformed = switch (field) {
+          DynamicPBImagesField f when f.fileTransformer != null =>
+            f.fileTransformer!(value as List<PBImage>?),
+          _ => value,
+        };
+        if (transformed is List<Future<http.MultipartFile>>)
+          transformedFiles.addAll(await Future.wait(transformed));
+      }
+
+      // Now you can use transformedValues as needed
+      print('Transformed Values: $transformedValues');
+      print('Transformed Files: $transformedFiles');
+      // e.g. await someRepo.submitForm(transformedValues);
+      onSubmit(DynamicFormResult(values: transformedValues, files: transformedFiles));
     }
   }
 
@@ -80,7 +117,7 @@ class DynamicFormBuilder extends HookConsumerWidget {
                 child: LoadingFilledButton(
                   isLoading: isLoading,
                   child: const Text('Save'),
-                  onPressed: onFormSubmit,
+                  onPressed: () => onFormSubmit(fields),
                 ),
               ),
             ),

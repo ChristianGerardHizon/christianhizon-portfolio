@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:gym_system/src/core/classes/pb_image.dart';
+import 'package:http/http.dart';
 
 /// Base abstract class for all dynamic form fields.
 /// Contains common properties like `name`, `placeholder`, and `helperText`.
@@ -22,7 +23,6 @@ abstract class DynamicField {
 extension DynamicFiledListExtension on List<DynamicField> {
   Map<String, dynamic> toInitialValues() {
     final map = <String, dynamic>{};
-
     for (final field in this) {
       map[field.name] = field.initialValue;
     }
@@ -40,6 +40,7 @@ class DynamicTextField extends DynamicField {
   final int? maxLines;
   final String? initialValue;
   final String? Function(String?)? validator;
+  final dynamic Function(String?)? fieldTransformer;
 
   const DynamicTextField({
     required super.name,
@@ -52,6 +53,7 @@ class DynamicTextField extends DynamicField {
     this.minLines,
     this.maxLines,
     super.decoration,
+    this.fieldTransformer,
   });
 }
 
@@ -59,6 +61,7 @@ class DynamicTextField extends DynamicField {
 class DynamicCheckboxField extends DynamicField {
   final bool? initialValue;
   final String? Function(bool?)? validator;
+  final dynamic Function(bool?)? fieldTransformer;
 
   const DynamicCheckboxField({
     required super.name,
@@ -66,6 +69,7 @@ class DynamicCheckboxField extends DynamicField {
     this.validator,
     super.valueTransformer,
     super.decoration,
+    this.fieldTransformer,
   });
 }
 
@@ -85,6 +89,7 @@ class DynamicSelectField<T> extends DynamicField {
   final List<SelectOption<T>> options;
   final T? initialValue;
   final String? Function(T?)? validator;
+  final dynamic Function(T?)? fieldTransformer;
 
   const DynamicSelectField({
     required super.name,
@@ -93,6 +98,7 @@ class DynamicSelectField<T> extends DynamicField {
     super.valueTransformer,
     required this.options,
     super.decoration,
+    this.fieldTransformer,
   });
 }
 
@@ -102,6 +108,7 @@ class DynamicDateField extends DynamicField {
   final DateTime? lastDate;
   final DateTime? initialValue;
   final String? Function(DateTime?)? validator;
+  final dynamic Function(DateTime?)? fieldTransformer;
 
   const DynamicDateField({
     required super.name,
@@ -111,6 +118,7 @@ class DynamicDateField extends DynamicField {
     super.valueTransformer,
     this.firstDate,
     this.lastDate,
+    this.fieldTransformer,
   });
 }
 
@@ -119,6 +127,7 @@ class DynamicFilesField extends DynamicField {
   final String? fileTypeLabel;
   final List<XFile>? initialValue;
   final String? Function(List<PlatformFile>?)? validator;
+  final dynamic Function(List<PlatformFile>?)? fieldTransformer;
 
   const DynamicFilesField({
     required super.name,
@@ -127,6 +136,7 @@ class DynamicFilesField extends DynamicField {
     super.decoration,
     super.valueTransformer,
     this.fileTypeLabel,
+    this.fieldTransformer,
   });
 }
 
@@ -136,67 +146,56 @@ class DynamicImagesField extends DynamicField {
   final int maxSizeKB;
   final int compressionQuality;
   final bool allowCompression;
+  final double previewSize;
   final int maxFiles;
   final List<String>? allowedExtensions;
   final List<dynamic>? initialValue;
   final String? Function(List<PlatformFile>?)? validator;
+  final dynamic Function(List<PlatformFile>?)? fieldTransformer;
 
   const DynamicImagesField({
     required super.name,
     super.decoration,
     this.initialValue,
+    this.previewSize = 80,
     this.validator,
     this.allowCompression = false,
     this.allowedExtensions,
     this.maxFiles = 1,
     this.fileTypeLabel,
-    this.maxSizeKB = 300, // target ~300KB
-    this.compressionQuality = 85, // JPEG quality
+    this.maxSizeKB = 300,
+    this.compressionQuality = 85,
+    this.fieldTransformer,
   });
 }
 
+/// Represents a dynamic image upload field specifically using PBImage model.
 class DynamicPBImagesField extends DynamicField {
   final String? fileTypeLabel;
   final int maxSizeKB;
   final int compressionQuality;
   final bool allowCompression;
+  final double previewSize;
   final int maxFiles;
   final List<String>? allowedExtensions;
   final List<PBImage>? initialValue;
   final String? Function(List<PBImage>?)? validator;
+  final dynamic Function(List<PBImage>?)? fieldTransformer;
+  final List<Future<MultipartFile>> Function(List<PBImage>?)? fileTransformer;
 
   const DynamicPBImagesField({
     required super.name,
     super.decoration,
     this.initialValue,
     this.validator,
+    this.previewSize = 80,
     this.allowCompression = false,
     this.allowedExtensions,
     this.maxFiles = 1,
     this.fileTypeLabel,
-    this.maxSizeKB = 300, // target ~300KB
-    this.compressionQuality = 85, // JPEG quality
-  });
-}
-
-class DynamicImageField extends DynamicField {
-  final String? fileTypeLabel;
-  final int maxSizeKB;
-  final int compressionQuality;
-  final bool allowCompression;
-  final List<String>? allowedExtensions;
-  final List<dynamic>? initialValue;
-  final String? Function(PlatformFile?)? validator;
-
-  const DynamicImageField({
-    required super.name,
-    super.decoration,
-    this.initialValue,
-    this.validator,
-    this.allowCompression = false,
-    this.allowedExtensions,
-    this.fileTypeLabel,
-    this.maxSizeKB = 300, // target ~300KB
-    this.compressionQuality = 85, // JPEG quality
+    this.maxSizeKB = 300,
+    this.compressionQuality = 85,
+    this.fieldTransformer,
+    this.fileTransformer,
   });
 }
