@@ -34,7 +34,6 @@ class DynamicFormBuilder extends HookConsumerWidget {
     this.isLoading = false,
   });
 
-
   onFormSubmit(List<DynamicField> fields) async {
     if (formKey.currentState?.saveAndValidate() ?? false) {
       final rawValues = formKey.currentState!.value;
@@ -47,6 +46,8 @@ class DynamicFormBuilder extends HookConsumerWidget {
         final transformed = switch (field) {
           DynamicTextField f when f.fieldTransformer != null =>
             f.fieldTransformer!(value as String?),
+          DynamicTypeAheadField f when f.fieldTransformer != null =>
+            f.fieldTransformer!(value),
           DynamicCheckboxField f when f.fieldTransformer != null =>
             f.fieldTransformer!(value as bool?),
           DynamicSelectField f when f.fieldTransformer != null =>
@@ -82,7 +83,8 @@ class DynamicFormBuilder extends HookConsumerWidget {
       print('Transformed Values: $transformedValues');
       print('Transformed Files: $transformedFiles');
       // e.g. await someRepo.submitForm(transformedValues);
-      onSubmit(DynamicFormResult(values: transformedValues, files: transformedFiles));
+      onSubmit(DynamicFormResult(
+          values: transformedValues, files: transformedFiles));
     }
   }
 

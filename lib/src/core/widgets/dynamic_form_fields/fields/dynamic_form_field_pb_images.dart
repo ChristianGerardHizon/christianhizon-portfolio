@@ -241,7 +241,6 @@ Future<List<PBImage>> pickAndCompressImages({
 
     if (compressed != null) {
       final compressedBytes = await compressed.readAsBytes();
-
       if (compressedBytes.isNotEmpty && compressed.path.isNotEmpty) {
         newImages.add(
           PBLocalImage(

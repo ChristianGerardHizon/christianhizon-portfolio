@@ -122,6 +122,26 @@ class DynamicDateField extends DynamicField {
   });
 }
 
+class DynamicTypeAheadField<T> extends DynamicField {
+  final T? initialValue;
+  final Future<List<T>> Function(String) onSearch;
+  final String? Function(dynamic)? validator;
+  final dynamic Function(T)? fieldTransformer;
+  final Widget Function(BuildContext, T) itemBuilder;
+
+  const DynamicTypeAheadField({
+    required super.name,
+    this.initialValue,
+    this.validator,
+    super.decoration,
+    required this.onSearch,
+    required this.itemBuilder,
+    super.valueTransformer,
+    this.fieldTransformer,
+  });
+}
+
+
 /// Represents a dynamic file upload field with an optional label describing the expected file type.
 class DynamicFilesField extends DynamicField {
   final String? fileTypeLabel;
