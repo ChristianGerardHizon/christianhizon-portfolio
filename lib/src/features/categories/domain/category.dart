@@ -20,8 +20,13 @@ class Category with CategoryMappable {
     required this.updated,
   });
 
-  static const fromMap = CategoryMapper.fromMap;
-  static const fromJson = CategoryMapper.fromMap;
+  static fromMap(Map<String, dynamic> raw) {
+    return CategoryMapper.fromMap(
+      {
+        ...raw,
+      },
+    );
+  }  static const fromJson = CategoryMapper.fromMap;
 
   Map<String, dynamic> toForm() {
     return {
@@ -31,11 +36,4 @@ class Category with CategoryMappable {
     };
   }
 
-  static Category customFromMap(Map<String, dynamic> raw) {
-    return fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
 }

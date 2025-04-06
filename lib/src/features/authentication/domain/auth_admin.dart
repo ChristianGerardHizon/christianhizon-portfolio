@@ -8,8 +8,14 @@ part 'auth_admin.mapper.dart';
 class AuthAdmin extends AuthData with AuthAdminMappable {
   final Admin record;
 
-  static const fromMap = AuthAdminMapper.fromMap;
-  static const fromJson = AuthAdminMapper.fromJson;
+  static fromMap(Map<String, dynamic> raw) {
+    return AuthAdminMapper.fromMap(
+      {
+        ...raw,
+        'id': raw['record']['id'],
+      },
+    );
+  }  static const fromJson = AuthAdminMapper.fromJson;
 
   AuthAdmin({
     required super.id,
@@ -19,13 +25,5 @@ class AuthAdmin extends AuthData with AuthAdminMappable {
     required super.collectionName,
   });
 
-  static AuthAdmin customFromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    return fromMap(
-      {
-        ...raw,
-        'id': raw['record']['id'],
-      },
-    );
-  }
+
 }

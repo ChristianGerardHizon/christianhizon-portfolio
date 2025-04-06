@@ -9,5 +9,6 @@ class PocketBaseCollections {
   static const medicalRecords = 'medicalRecords';
   static const prescriptionItems = 'prescriptionItems';
   static const products = 'products';
+  static const productInventoryStatus = 'productInventoryStatus';
   static const branches = 'branches';
 }

@@ -9,8 +9,13 @@ class PrescriptionItemSearch with PrescriptionItemSearchMappable {
 
   PrescriptionItemSearch({required this.treatment, required this.diagnosis});
 
-  static const fromMap = PrescriptionItemSearchMapper.fromMap;
-  static const fromJson = PrescriptionItemSearchMapper.fromMap;
+  static fromMap(Map<String, dynamic> raw) {
+    return PrescriptionItemSearchMapper.fromMap(
+      {
+        ...raw,
+      },
+    );
+  }  static const fromJson = PrescriptionItemSearchMapper.fromMap;
 
   static PrescriptionItemSearch buildQuery(
     String query, {
@@ -23,11 +28,4 @@ class PrescriptionItemSearch with PrescriptionItemSearchMappable {
     );
   }
 
-  static PrescriptionItemSearch customFromMap(Map<String, dynamic> raw) {
-    return fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
 }

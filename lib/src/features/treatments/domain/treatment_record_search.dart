@@ -9,7 +9,13 @@ class TreatmentRecordSearch with TreatmentRecordSearchMappable {
 
   TreatmentRecordSearch({this.id});
 
-  static const fromMap = TreatmentRecordSearchMapper.fromMap;
+  static fromMap(Map<String, dynamic> raw) {
+    return TreatmentRecordSearchMapper.fromMap(
+      {
+        ...raw,
+      },
+    );
+  }
   static const fromJson = TreatmentRecordSearchMapper.fromMap;
 
   static TreatmentRecordSearch buildQuery(
@@ -22,11 +28,4 @@ class TreatmentRecordSearch with TreatmentRecordSearchMappable {
     );
   }
 
-  static TreatmentRecordSearch customFromMap(Map<String, dynamic> raw) {
-    return fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
 }

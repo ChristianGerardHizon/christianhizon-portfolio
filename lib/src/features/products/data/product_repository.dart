@@ -36,6 +36,10 @@ abstract class ProductRepository {
     Map<String, dynamic> payload, {
     List<MultipartFile> files = const [],
   });
+
+  ///
+  /// Custom Functions
+  ///
 }
 
 @Riverpod(keepAlive: true)

@@ -9,8 +9,13 @@ class ProductSearch with ProductSearchMappable {
 
   ProductSearch({this.id, this.name});
 
-  static const fromMap = ProductSearchMapper.fromMap;
-  static const fromJson = ProductSearchMapper.fromMap;
+  static fromMap(Map<String, dynamic> raw) {
+    return ProductSearchMapper.fromMap(
+      {
+        ...raw,
+      },
+    );
+  }  static const fromJson = ProductSearchMapper.fromMap;
 
   static ProductSearch buildQuery(
     String query, {
@@ -23,11 +28,4 @@ class ProductSearch with ProductSearchMappable {
     );
   }
 
-  static ProductSearch customFromMap(Map<String, dynamic> raw) {
-    return fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
 }

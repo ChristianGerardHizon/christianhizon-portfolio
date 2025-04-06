@@ -59,18 +59,17 @@ class TreatmentRecord with TreatmentRecordMappable {
 class TreatmentRecordExpand with TreatmentRecordExpandMappable {
   final Treatment? type;
 
-  static const fromMap = TreatmentRecordExpandMapper.fromMap;
-  static const fromJson = TreatmentRecordExpandMapper.fromMap;
+  static fromMap(Map<String, dynamic> raw) {
+    return TreatmentRecordExpandMapper.fromMap(
+      {
+        ...raw,
+      },
+    );
+  }  static const fromJson = TreatmentRecordExpandMapper.fromMap;
 
   TreatmentRecordExpand({
     this.type,
   });
 
-  static TreatmentRecordExpand customFromMap(Map<String, dynamic> raw) {
-    return fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
+
 }

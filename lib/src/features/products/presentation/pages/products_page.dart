@@ -162,6 +162,16 @@ class ProductsPage extends HookConsumerWidget {
               );
             },
           ),
+           TableColumn(
+            header: 'Branch',
+            alignment: Alignment.centerLeft,
+            builder: (context, product, extra) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(product.branch.optional(), overflow: TextOverflow.ellipsis),
+              );
+            },
+          ),
           TableColumn(
             header: 'Status',
             alignment: Alignment.centerLeft,

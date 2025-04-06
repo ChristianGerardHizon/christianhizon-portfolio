@@ -86,19 +86,19 @@ class PatientRecordExpand with PatientRecordExpandMappable {
   final PatientSpecies? species;
   final PatientBreed? breed;
 
-  static const fromMap = PatientRecordExpandMapper.fromMap;
+  static fromMap(Map<String, dynamic> raw) {
+    // if dateOfBirth is '' empty string, it will be null
+    return PatientRecordExpandMapper.fromMap(
+      {
+        ...raw,
+      },
+    );
+  }
+
   static const fromJson = PatientRecordExpandMapper.fromMap;
 
   PatientRecordExpand({
     this.species,
     this.breed,
   });
-
-  static PatientRecordExpand customFromMap(Map<String, dynamic> raw) {
-    return fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
 }

@@ -9,7 +9,13 @@ class MedicalRecordSearch with MedicalRecordSearchMappable {
 
   MedicalRecordSearch({required this.treatment, required this.diagnosis});
 
-  static const fromMap = MedicalRecordSearchMapper.fromMap;
+  static fromMap(Map<String, dynamic> raw) {
+    return MedicalRecordSearchMapper.fromMap(
+      {
+        ...raw,
+      },
+    );
+  }
   static const fromJson = MedicalRecordSearchMapper.fromMap;
 
   static MedicalRecordSearch buildQuery(
@@ -23,11 +29,4 @@ class MedicalRecordSearch with MedicalRecordSearchMappable {
     );
   }
 
-  static MedicalRecordSearch customFromMap(Map<String, dynamic> raw) {
-    return fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
 }

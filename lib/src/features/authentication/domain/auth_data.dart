@@ -31,12 +31,8 @@ abstract class AuthData with AuthDataMappable {
     }
   }
 
-  static const fromMap = AuthDataMapper.fromMap;
-  static const fromJson = AuthDataMapper.fromJson;
-
-  static AuthData customFromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    return fromMap(
+  static fromMap(Map<String, dynamic> raw) {
+    return AuthDataMapper.fromMap(
       {
         ...raw,
         'id': raw['record']['id'],
@@ -44,6 +40,8 @@ abstract class AuthData with AuthDataMappable {
       },
     );
   }
+
+  static const fromJson = AuthDataMapper.fromJson;
 
   /*
 

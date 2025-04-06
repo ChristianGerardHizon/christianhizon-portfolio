@@ -12,8 +12,13 @@ class Treatment with TreatmentMappable {
   final DateTime? created;
   final DateTime? updated;
 
-  static const fromMap = TreatmentMapper.fromMap;
-  static const fromJson = TreatmentMapper.fromMap;
+  static fromMap(Map<String, dynamic> raw) {
+    return TreatmentMapper.fromMap(
+      {
+        ...raw,
+      },
+    );
+  }  static const fromJson = TreatmentMapper.fromMap;
 
   Treatment({
     required this.id,
@@ -23,11 +28,5 @@ class Treatment with TreatmentMappable {
     required this.updated,
   });
 
-  static Treatment customFromMap(Map<String, dynamic> raw) {
-    return fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
+
 }

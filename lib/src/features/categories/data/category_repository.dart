@@ -47,6 +47,12 @@ class CategoryRepositoryImpl extends CategoryRepository {
 
   CategoryRepositoryImpl({required this.pb});
 
+
+  Category mapToData(Map<String, dynamic> map) {
+    return Category.fromMap({...map, 'domain': pb.baseURL});
+  }
+
+
   RecordService get collection =>
       pb.collection(PocketBaseCollections.medicalRecords);
 
@@ -54,7 +60,7 @@ class CategoryRepositoryImpl extends CategoryRepository {
   TaskResult<Category> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
-      return Category.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -62,7 +68,7 @@ class CategoryRepositoryImpl extends CategoryRepository {
   TaskResult<Category> create(Map<String, dynamic> payload) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload);
-      return Category.customFromMap(response.toJson());
+      return mapToData(response.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -93,7 +99,7 @@ class CategoryRepositoryImpl extends CategoryRepository {
         totalItems: result.totalItems,
         totalPages: result.totalPages,
         items: result.items.map<Category>((e) {
-          return Category.customFromMap(e.toJson());
+          return mapToData(e.toJson());
         }).toList(),
       );
     }, Failure.tryCatchData);
@@ -113,7 +119,7 @@ class CategoryRepositoryImpl extends CategoryRepository {
         body: combinedMap,
         files: files,
       );
-      return Category.customFromMap(result.toJson());
+      return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
 
@@ -142,7 +148,7 @@ class CategoryRepositoryImpl extends CategoryRepository {
           filter: filter,
         );
         return result
-            .map<Category>((e) => Category.customFromMap(e.toJson()))
+            .map<Category>((e) => mapToData(e.toJson()))
             .toList();
       },
       Failure.tryCatchData,

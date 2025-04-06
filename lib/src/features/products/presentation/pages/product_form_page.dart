@@ -56,20 +56,20 @@ class ProductFormPage extends HookConsumerWidget {
       );
     }
 
-    List<PBImage>? buildInitialImages(Product? product) {
-      if (product == null) return null;
-      if (!product.hasImage || product.imageUri == null) return null;
-      final images = [product.image];
-      return images
-          .map(
-            (e) => PBNetworkImage(
-              uri: product.imageUri!,
-              field: 'image',
-              id: product.id,
-            ),
-          )
-          .toList();
-    }
+    // List<PBImage>? buildInitialImages(Product? product) {
+    //   if (product == null) return null;
+    //   if (!product.hasImage || product.imageUri == null) return null;
+    //   final images = [product.image];
+    //   return images
+    //       .map(
+    //         (e) => PBNetworkImage(
+    //           uri: product.imageUri!,
+    //           field: 'image',
+    //           id: product.id,
+    //         ),
+    //       )
+    //       .toList();
+    // }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -81,6 +81,7 @@ class ProductFormPage extends HookConsumerWidget {
           error: (error, stack) => Center(child: Text('Form Error')),
           data: (formState) {
             final product = formState.product;
+            final branches = formState.branches;
 
             return DynamicFormBuilder(
               formKey: formKey,
@@ -90,33 +91,44 @@ class ProductFormPage extends HookConsumerWidget {
                   name: ProductField.name,
                   initialValue: product?.name,
                 ),
-                DynamicTypeAheadField(
-                  name: ProductField.name,
-                  initialValue: product?.name,
-                  selectionToString: (x) => x.toString(),
-                  itemBuilder: (context, item) {
-                    if(item is Product) return Text(item.name);
-                    return Text(item.toString());
-                  },
-                  onSearch: (p0) async {
+                DynamicSelectField(
+                  name: ProductField.branch,
+                  options: branches
+                      .map(
+                        (e) => SelectOption(
+                          value: e.id,
+                          display: e.name,
+                        ),
+                      )
+                      .toList(),
+                ),
+                // DynamicTypeAheadField(
+                //   name: ProductField.branch,
+                //   initialValue: product?.branch,
+                //   selectionToString: (x) => x.toString(),
+                //   itemBuilder: (context, item) {
+                //     if(item is Product) return Text(item.name);
+                //     return Text(item.toString());
+                //   },
+                //   onSearch: (p0) async {
 
-                    await Future.delayed(Duration(seconds: 2));
-                    return Future.value(['test', 'test1', 'test2']);
-                  },
-                ),
-                DynamicPBImagesField(
-                  name: 'image',
-                  fileTypeLabel: 'Upload Profile Picture',
-                  maxFiles: 10,
-                  allowCompression: false,
-                  maxSizeKB: 300,
-                  compressionQuality: 85,
-                  previewSize: 200,
-                  fieldTransformer: (list) =>
-                      PBUtils.defaultFieldTransformer(list, isSingleFile: true),
-                  fileTransformer: PBUtils.defaultFileTransformer,
-                  initialValue: buildInitialImages(product),
-                ),
+                //     await Future.delayed(Duration(seconds: 2));
+                //     return Future.value(['test', 'test1', 'test2']);
+                //   },
+                // ),
+                // DynamicPBImagesField(
+                //   name: 'image',
+                //   fileTypeLabel: 'Upload Profile Picture',
+                //   maxFiles: 10,
+                //   allowCompression: false,
+                //   maxSizeKB: 300,
+                //   compressionQuality: 85,
+                //   previewSize: 200,
+                //   fieldTransformer: (list) =>
+                //       PBUtils.defaultFieldTransformer(list, isSingleFile: true),
+                //   fileTransformer: PBUtils.defaultFileTransformer,
+                //   initialValue: buildInitialImages(product),
+                // ),
               ],
               onSubmit: (result) => onSave(product, result),
             );
