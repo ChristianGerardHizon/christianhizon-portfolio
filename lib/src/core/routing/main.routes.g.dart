@@ -13,6 +13,9 @@ List<RouteBase> get $appRoutes => [
       $adminsPageRoute,
       $adminPageRoute,
       $adminUpdatePageRoute,
+      $branchesPageRoute,
+      $branchFormPageRoute,
+      $branchPageRoute,
       $loginPageRoute,
       $emailValidationPageRoute,
       $adminLoginPageRoute,
@@ -144,6 +147,22 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/sales',
               factory: $SalesPageRouteExtension._fromState,
+            ),
+          ],
+        ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/branches',
+              factory: $BranchesPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/branch/:id',
+              factory: $BranchPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/form/branch',
+              factory: $BranchFormPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -415,6 +434,66 @@ extension $SalesPageRouteExtension on SalesPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
+extension $BranchesPageRouteExtension on BranchesPageRoute {
+  static BranchesPageRoute _fromState(GoRouterState state) =>
+      const BranchesPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/branches',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $BranchPageRouteExtension on BranchPageRoute {
+  static BranchPageRoute _fromState(GoRouterState state) => BranchPageRoute(
+        state.pathParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/branch/${Uri.encodeComponent(id)}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $BranchFormPageRouteExtension on BranchFormPageRoute {
+  static BranchFormPageRoute _fromState(GoRouterState state) =>
+      BranchFormPageRoute(
+        id: state.uri.queryParameters['id'],
+      );
+
+  String get location => GoRouteData.$location(
+        '/form/branch',
+        queryParams: {
+          if (id != null) 'id': id,
+        },
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
 extension $UsersPageRouteExtension on UsersPageRoute {
   static UsersPageRoute _fromState(GoRouterState state) =>
       const UsersPageRoute();
@@ -643,6 +722,21 @@ RouteBase get $adminPageRoute => GoRouteData.$route(
 RouteBase get $adminUpdatePageRoute => GoRouteData.$route(
       path: '/update/admin/:id',
       factory: $AdminUpdatePageRouteExtension._fromState,
+    );
+
+RouteBase get $branchesPageRoute => GoRouteData.$route(
+      path: '/branches',
+      factory: $BranchesPageRouteExtension._fromState,
+    );
+
+RouteBase get $branchFormPageRoute => GoRouteData.$route(
+      path: '/form/branch',
+      factory: $BranchFormPageRouteExtension._fromState,
+    );
+
+RouteBase get $branchPageRoute => GoRouteData.$route(
+      path: '/branch/:id',
+      factory: $BranchPageRouteExtension._fromState,
     );
 
 RouteBase get $loginPageRoute => GoRouteData.$route(

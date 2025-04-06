@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_pb_images.dart';
+import 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_typeahead.dart';
 
 import 'dynamic_field.dart';
 import 'fields/dynamic_form_field_images.dart';
@@ -48,6 +49,10 @@ class DynamicFormField extends HookWidget {
 
     if (field is DynamicPBImagesField) {
       return DynamicFormFieldPBImages(field as DynamicPBImagesField);
+    }
+
+    if (field is DynamicTypeAheadField) {
+      return DynamicFormFieldTypeAhead(field as DynamicTypeAheadField);
     }
 
     return const SizedBox.shrink();

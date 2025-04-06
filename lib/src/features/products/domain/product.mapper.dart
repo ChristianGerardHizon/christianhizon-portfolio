@@ -41,6 +41,9 @@ class ProductMapper extends ClassMapperBase<Product> {
   static String? _$category(Product v) => v.category;
   static const Field<Product, String> _f$category =
       Field('category', _$category, opt: true);
+  static String? _$branch(Product v) => v.branch;
+  static const Field<Product, String> _f$branch =
+      Field('branch', _$branch, opt: true);
   static bool _$isDeleted(Product v) => v.isDeleted;
   static const Field<Product, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
@@ -61,6 +64,7 @@ class ProductMapper extends ClassMapperBase<Product> {
     #image: _f$image,
     #notes: _f$notes,
     #category: _f$category,
+    #branch: _f$branch,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
@@ -76,6 +80,7 @@ class ProductMapper extends ClassMapperBase<Product> {
         image: data.dec(_f$image),
         notes: data.dec(_f$notes),
         category: data.dec(_f$category),
+        branch: data.dec(_f$branch),
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated));
@@ -140,6 +145,7 @@ abstract class ProductCopyWith<$R, $In extends Product, $Out>
       String? image,
       String? notes,
       String? category,
+      String? branch,
       bool? isDeleted,
       DateTime? created,
       DateTime? updated});
@@ -164,6 +170,7 @@ class _ProductCopyWithImpl<$R, $Out>
           Object? image = $none,
           Object? notes = $none,
           Object? category = $none,
+          Object? branch = $none,
           bool? isDeleted,
           Object? created = $none,
           Object? updated = $none}) =>
@@ -176,6 +183,7 @@ class _ProductCopyWithImpl<$R, $Out>
         if (image != $none) #image: image,
         if (notes != $none) #notes: notes,
         if (category != $none) #category: category,
+        if (branch != $none) #branch: branch,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated
@@ -190,6 +198,7 @@ class _ProductCopyWithImpl<$R, $Out>
       image: data.get(#image, or: $value.image),
       notes: data.get(#notes, or: $value.notes),
       category: data.get(#category, or: $value.category),
+      branch: data.get(#branch, or: $value.branch),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated));

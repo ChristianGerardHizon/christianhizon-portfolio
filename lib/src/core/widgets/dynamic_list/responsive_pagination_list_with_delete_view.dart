@@ -114,7 +114,7 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
                   child: SizedBox(height: 200, child: Text(errorMessage!)),
                 ),
 
-              if (items.isEmpty)
+              if (items.isEmpty && isLoading == false)
                 SliverToBoxAdapter(
                   child: emptyWidget ??
                       SizedBox(

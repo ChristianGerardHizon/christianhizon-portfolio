@@ -1,0 +1,158 @@
+import 'package:gym_system/src/core/failures/failure.dart';
+import 'package:gym_system/src/core/packages/pocketbase.dart';
+import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
+import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
+import 'package:gym_system/src/core/classes/page_results.dart';
+import 'package:gym_system/src/core/strings/fields.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/features/branches/domain/branch.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart';
+import 'package:pocketbase/pocketbase.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'branch_repository.g.dart';
+
+abstract class BranchRepository {
+  TaskResult<Branch> get(String id);
+  TaskResult<PageResults<Branch>> list({
+    String? filter,
+    required int pageNo,
+    required int pageSize,
+    PocketbaseSortValue? sort,
+  });
+  TaskResult<List<Branch>> listAll({
+    int batch = 500,
+    String? filter,
+  });
+  TaskResult<void> delete(String id);
+  TaskResult<void> softDeleteMulti(List<String> ids);
+  TaskResult<Branch> update(
+    Branch history,
+    Map<String, dynamic> update, {
+    List<MultipartFile> files = const [],
+  });
+
+  TaskResult<Branch> create(
+    Map<String, dynamic> payload, {
+    List<MultipartFile> files = const [],
+  });
+}
+
+@Riverpod(keepAlive: true)
+BranchRepository branchRepository(Ref ref) {
+  return BranchRepositoryImpl(
+    pb: ref.watch(pocketbaseProvider),
+  );
+}
+
+class BranchRepositoryImpl extends BranchRepository {
+  final PocketBase pb;
+
+  BranchRepositoryImpl({required this.pb});
+
+  RecordService get collection => pb.collection(PocketBaseCollections.branches);
+
+  Branch mapToData(Map<String, dynamic> map) {
+    return Branch.fromMap({...map, 'domain': pb.baseURL});
+  }
+
+  @override
+  TaskResult<Branch> get(String id) {
+    return TaskResult.tryCatch(() async {
+      final result = await collection.getOne(id);
+      return mapToData(result.toJson());
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<Branch> create(
+    Map<String, dynamic> payload, {
+    List<MultipartFile> files = const [],
+  }) {
+    return TaskResult.tryCatch(() async {
+      final response = await collection.create(body: payload, files: files);
+      return mapToData(response.toJson());
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<void> delete(String id) {
+    return TaskResult.tryCatch(() async {
+      await collection.delete(id);
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<PageResults<Branch>> list({
+    String? filter,
+    required int pageNo,
+    required int pageSize,
+    PocketbaseSortValue? sort,
+  }) {
+    return TaskResult.tryCatch(() async {
+      final result = await collection.getList(
+        filter: filter,
+        page: pageNo,
+        perPage: pageSize,
+        sort: sort?.value,
+      );
+      return PageResults(
+        page: result.page,
+        perPage: result.perPage,
+        totalItems: result.totalItems,
+        totalPages: result.totalPages,
+        items: result.items.map<Branch>((e) {
+          return mapToData(e.toJson());
+        }).toList(),
+      );
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<Branch> update(
+    Branch history,
+    Map<String, dynamic> update, {
+    List<MultipartFile> files = const [],
+  }) {
+    return TaskResult.tryCatch(() async {
+      final historyMap = history.toMap();
+      final combinedMap = {...historyMap, ...update};
+      final result = await collection.update(
+        history.id,
+        body: combinedMap,
+        files: files,
+      );
+      return mapToData(result.toJson());
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<void> softDeleteMulti(List<String> ids) {
+    return TaskResult.tryCatch(() async {
+      final batch = pb.createBatch();
+      final batchCollection = batch.collection(PocketBaseCollections.branches);
+      for (final id in ids) {
+        batchCollection.update(id, body: {BranchField.isDeleted: true});
+      }
+
+      await batch.send();
+    }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<List<Branch>> listAll({
+    int batch = 500,
+    String? filter,
+  }) {
+    return TaskResult.tryCatch(
+      () async {
+        final result = await collection.getFullList(
+          filter: filter,
+        );
+        return result.map<Branch>((e) => mapToData(e.toJson())).toList();
+      },
+      Failure.tryCatchData,
+    );
+  }
+}

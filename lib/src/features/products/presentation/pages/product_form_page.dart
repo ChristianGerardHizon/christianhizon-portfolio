@@ -58,7 +58,7 @@ class ProductFormPage extends HookConsumerWidget {
 
     List<PBImage>? buildInitialImages(Product? product) {
       if (product == null) return null;
-      if (!product.hasImage ||  product.imageUri == null) return null;
+      if (!product.hasImage || product.imageUri == null) return null;
       final images = [product.image];
       return images
           .map(
@@ -88,8 +88,21 @@ class ProductFormPage extends HookConsumerWidget {
               fields: [
                 DynamicTextField(
                   name: ProductField.name,
-                  label: 'Name',
                   initialValue: product?.name,
+                ),
+                DynamicTypeAheadField(
+                  name: ProductField.name,
+                  initialValue: product?.name,
+                  selectionToString: (x) => x.toString(),
+                  itemBuilder: (context, item) {
+                    if(item is Product) return Text(item.name);
+                    return Text(item.toString());
+                  },
+                  onSearch: (p0) async {
+
+                    await Future.delayed(Duration(seconds: 2));
+                    return Future.value(['test', 'test1', 'test2']);
+                  },
                 ),
                 DynamicPBImagesField(
                   name: 'image',
@@ -99,7 +112,8 @@ class ProductFormPage extends HookConsumerWidget {
                   maxSizeKB: 300,
                   compressionQuality: 85,
                   previewSize: 200,
-                  fieldTransformer: (list) => PBUtils.defaultFieldTransformer(list, isSingleFile: true),
+                  fieldTransformer: (list) =>
+                      PBUtils.defaultFieldTransformer(list, isSingleFile: true),
                   fileTransformer: PBUtils.defaultFileTransformer,
                   initialValue: buildInitialImages(product),
                 ),

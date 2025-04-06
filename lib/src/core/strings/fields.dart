@@ -117,6 +117,15 @@ class ProductField {
   static const String id = 'id';
   static const String name = 'name';
   static const String category = 'category';
+  static const String branch = 'branch';
+  static const String created = 'created';
+  static const String updated = 'updated';
+  static const String isDeleted = 'isDeleted';
+}
+
+class BranchField {
+  static const String id = 'id';
+  static const String name = 'name';
   static const String created = 'created';
   static const String updated = 'updated';
   static const String isDeleted = 'isDeleted';

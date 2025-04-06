@@ -33,7 +33,6 @@ extension DynamicFiledListExtension on List<DynamicField> {
 /// Represents a dynamic text input field with optional label, length,
 /// number of lines, and line constraints.
 class DynamicTextField extends DynamicField {
-  final String? label;
   final int? minLength;
   final int? maxLength;
   final int? minLines;
@@ -47,7 +46,6 @@ class DynamicTextField extends DynamicField {
     this.initialValue,
     this.validator,
     super.valueTransformer,
-    this.label,
     this.minLength,
     this.maxLength,
     this.minLines,
@@ -122,13 +120,13 @@ class DynamicDateField extends DynamicField {
   });
 }
 
-class DynamicTypeAheadField<T> extends DynamicField {
-  final T? initialValue;
-  final Future<List<T>> Function(String) onSearch;
+class DynamicTypeAheadField extends DynamicField {
+  final dynamic initialValue;
+  final Future<List<dynamic>> Function(String) onSearch;
+final String Function(dynamic) selectionToString; 
   final String? Function(dynamic)? validator;
-  final dynamic Function(T)? fieldTransformer;
-  final Widget Function(BuildContext, T) itemBuilder;
-
+  final dynamic Function(dynamic)? fieldTransformer;
+  final Widget Function(BuildContext, dynamic) itemBuilder;
   const DynamicTypeAheadField({
     required super.name,
     this.initialValue,
@@ -138,6 +136,7 @@ class DynamicTypeAheadField<T> extends DynamicField {
     required this.itemBuilder,
     super.valueTransformer,
     this.fieldTransformer,
+    required this.selectionToString,
   });
 }
 

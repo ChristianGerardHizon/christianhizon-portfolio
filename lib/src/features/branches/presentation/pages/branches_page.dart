@@ -10,46 +10,46 @@ import 'package:gym_system/src/core/widgets/dynamic_list/responsive_pagination_l
 import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/selectable_card.dart';
-import 'package:gym_system/src/features/products/data/product_repository.dart';
-import 'package:gym_system/src/features/products/domain/product.dart';
-import 'package:gym_system/src/features/products/domain/product_search.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/products_controller.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/products_page_controller.dart';
+import 'package:gym_system/src/features/branches/data/branch_repository.dart';
+import 'package:gym_system/src/features/branches/domain/branch.dart';
+import 'package:gym_system/src/features/branches/domain/branch_search.dart';
+import 'package:gym_system/src/features/branches/presentation/controllers/branches_controller.dart';
+import 'package:gym_system/src/features/branches/presentation/controllers/branches_page_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ProductsPage extends HookConsumerWidget {
-  const ProductsPage({super.key});
+class BranchesPage extends HookConsumerWidget {
+  const BranchesPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useMemoized(() => DynamicTableController());
     final searchCtrl = useTextEditingController();
-    final notifier = ref.read(productsPageControllerProvider.notifier);
-    final provider = ref.watch(productsControllerProvider);
-    final searchNotifier = ref.read(productSearchControllerProvider.notifier);
+    final notifier = ref.read(branchesPageControllerProvider.notifier);
+    final provider = ref.watch(branchesControllerProvider);
+    final searchNotifier = ref.read(branchSearchControllerProvider.notifier);
     final isLoading = useState(false);
 
     ///
     /// onTap
     ///
-    onTap(Product product) {
-      ProductPageRoute(product.id).push(context);
+    onTap(Branch branch) {
+      BranchPageRoute(branch.id).push(context);
     }
 
     ///
     /// onRefresh
     ///
     onRefresh() {
-      ref.invalidate(productsControllerProvider);
+      ref.invalidate(branchesControllerProvider);
       controller.clear();
     }
 
     ///
     /// onDelete
     ///
-    onDelete(List<Product> items) async {
+    onDelete(List<Branch> items) async {
       final confirm = await ConfirmModal.show(context);
       if (confirm != true) return;
-      final repo = ref.read(productRepositoryProvider);
+      final repo = ref.read(branchRepositoryProvider);
       final ids = items.map((e) => e.id).toList();
       isLoading.value = true;
       final result = await repo.softDeleteMulti(ids).run();
@@ -58,7 +58,7 @@ class ProductsPage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           controller.clear();
-          ref.invalidate(productsControllerProvider);
+          ref.invalidate(branchesControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
           if (context.canPop()) context.pop();
         },
@@ -80,7 +80,7 @@ class ProductsPage extends HookConsumerWidget {
     /// OnCreate
     ///
     onCreate() {
-      ProductFormPageRoute().push(context);
+      BranchFormPageRoute().push(context);
     }
 
     ///
@@ -88,7 +88,7 @@ class ProductsPage extends HookConsumerWidget {
     ///
     onSearch() {
       final query = searchCtrl.text.trim();
-      searchNotifier.updateParams(ProductSearch(name: query));
+      searchNotifier.updateParams(BranchSearch(name: query));
     }
 
     ///
@@ -96,12 +96,12 @@ class ProductsPage extends HookConsumerWidget {
     ///
     onClear() {
       searchCtrl.clear();
-      searchNotifier.updateParams(ProductSearch(name: ''));
+      searchNotifier.updateParams(BranchSearch(name: ''));
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Products'),
+        title: Text('Branches'),
         actions: [
           RefreshButton(
             onPressed: onRefresh,
@@ -113,7 +113,7 @@ class ProductsPage extends HookConsumerWidget {
           ///
           /// Table
           ///
-          ResponsivePaginationListWithDeleteView<Product>(
+          ResponsivePaginationListWithDeleteView<Branch>(
         controller: controller,
         onPageChange: notifier.changePage,
         errorMessage: provider.maybeWhen(
@@ -165,10 +165,10 @@ class ProductsPage extends HookConsumerWidget {
           TableColumn(
             header: 'Status',
             alignment: Alignment.centerLeft,
-            builder: (context, product, extra) {
+            builder: (context, branch, extra) {
               return Align(
                 alignment: Alignment.centerLeft,
-                child: Text(product.name, overflow: TextOverflow.ellipsis),
+                child: Text(branch.name, overflow: TextOverflow.ellipsis),
               );
             },
           ),
@@ -176,10 +176,10 @@ class ProductsPage extends HookConsumerWidget {
             header: 'Date Created',
             alignment: Alignment.centerLeft,
             width: 150,
-            builder: (context, product, extra) {
+            builder: (context, branch, extra) {
               return Align(
                 alignment: Alignment.centerLeft,
-                child: Text((product.created?.yyyyMMddHHmmA()).optional(),
+                child: Text((branch.created?.yyyyMMddHHmmA()).optional(),
                     overflow: TextOverflow.ellipsis),
               );
             },
@@ -188,10 +188,10 @@ class ProductsPage extends HookConsumerWidget {
             header: 'Date Updated',
             alignment: Alignment.centerLeft,
             width: 150,
-            builder: (context, product, extra) {
+            builder: (context, branch, extra) {
               return Align(
                 alignment: Alignment.centerLeft,
-                child: Text((product.updated?.yyyyMMddHHmmA()).optional(),
+                child: Text((branch.updated?.yyyyMMddHHmmA()).optional(),
                     overflow: TextOverflow.ellipsis),
               );
             },
@@ -228,7 +228,6 @@ class ProductsPage extends HookConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(value.name),
-                  Text(value.category.optional()),
                 ],
               ),
             ),

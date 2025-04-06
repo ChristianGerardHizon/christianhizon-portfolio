@@ -91,6 +91,16 @@ class AppRoot extends HookConsumerWidget {
         ),
         if (isAdmin)
           CustomNavigationBarItem(
+            route: BranchesPageRoute.path,
+            icon: Icon(MIcons.storeOutline),
+            selectedIcon: Icon(MIcons.store),
+            label: 'Branches',
+            onTap: () {
+              BranchesPageRoute().go(context);
+            },
+          ),
+        if (isAdmin)
+          CustomNavigationBarItem(
             route: UsersPageRoute.path,
             icon: Icon(MIcons.accountGroupOutline),
             selectedIcon: Icon(MIcons.accountGroup),

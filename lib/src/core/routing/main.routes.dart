@@ -15,6 +15,9 @@ import 'package:gym_system/src/features/authentication/presentation/pages/accoun
 import 'package:gym_system/src/features/authentication/presentation/pages/admin_login_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/email_validation_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/user_login_page.dart';
+import 'package:gym_system/src/features/branches/presentation/pages/branch_form_page.dart';
+import 'package:gym_system/src/features/branches/presentation/pages/branch_page.dart';
+import 'package:gym_system/src/features/branches/presentation/pages/branches_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:gym_system/src/features/medical_records/presentation/pages/medical_record_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_create_page.dart';
@@ -37,6 +40,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 part 'main.routes.g.dart';
 part 'routes/admins.routes.dart';
+part 'routes/branches.routes.dart';
 part 'routes/authentication.routes.dart';
 part 'routes/users.routes.dart';
 part 'routes/settings.routes.dart';
@@ -135,6 +139,17 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<SalesBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<SalesPageRoute>(path: SalesPageRoute.path),
+      ],
+    ),
+
+    ///
+    /// Branches
+    ///
+    TypedStatefulShellBranch<BranchesBranchData>(
+      routes: <TypeRouteData>[
+        TypedGoRoute<BranchesPageRoute>(path: BranchesPageRoute.path),
+        TypedGoRoute<BranchPageRoute>(path: BranchPageRoute.path),
+        TypedGoRoute<BranchFormPageRoute>(path: BranchFormPageRoute.path),
       ],
     ),
 
