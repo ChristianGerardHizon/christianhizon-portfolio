@@ -11,12 +11,14 @@ class DynamicFormFieldTypeAhead extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormBuilderTypeAhead(
+      key: field.formFieldKey,
       name: field.name,
       decoration: field.decoration,
       validator: field.validator,
-      itemBuilder: field.itemBuilder,
+      itemBuilder: field.itemBuilder as Widget Function(BuildContext, dynamic),
       suggestionsCallback: field.onSearch,
-      selectionToTextTransformer: field.selectionToString,
+      selectionToTextTransformer:
+          field.selectionToString as String Function(dynamic),
     );
   }
 }

@@ -28,53 +28,50 @@ class DynamicFormFieldPBImages extends StatelessWidget {
         final value = formField.value;
         final displayImages = value ?? [];
         final isMaxReached = displayImages.length >= field.maxFiles;
-       
-        return Column(
-          children: [
-            if (field.fileTypeLabel != null)
-              SizedBox(
-                width: double.maxFinite,
-                child: Text(
-                field.fileTypeLabel!,
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
-              ),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                ...displayImages.map(
-                  (image) => _PBImagePreviewTile(
-                    image: image,
-                    onDelete: () {
-                      final updated = [...displayImages]..remove(image);
-                      formField.didChange(updated.isEmpty ? null : updated);
-                    },
-                    size: field.previewSize,
+
+        return InputDecorator(
+          decoration: field.decoration.copyWith(
+            errorText: formField.errorText,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // if (field.fileTypeLabel != null)
+              //   Padding(
+              //     padding: const EdgeInsets.only(bottom: 8.0),
+              //     child: Text(
+              //       field.fileTypeLabel!,
+              //       style: Theme.of(context).textTheme.labelLarge,
+              //     ),
+              //   ),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  ...displayImages.map(
+                    (image) => _PBImagePreviewTile(
+                      image: image,
+                      onDelete: () {
+                        final updated = [...displayImages]..remove(image);
+                        formField.didChange(updated.isEmpty ? null : updated);
+                      },
+                      size: field.previewSize,
+                    ),
                   ),
-                ),
-                if (!isMaxReached)
-                  _PBImageAddButtonWithLoading(
-                    field: field,
-                    existingImages: displayImages,
-                    onImagesPicked: (updated) {
-                      if (!context.mounted) return;
-                      formField.didChange(updated.isEmpty ? null : updated);
-                    },
-                    size: field.previewSize / 2,
-                  ),
-              ],
-            ),
-            if (formField.hasError)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  formField.errorText ?? '',
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                ),
+                  if (!isMaxReached)
+                    _PBImageAddButtonWithLoading(
+                      field: field,
+                      existingImages: displayImages,
+                      onImagesPicked: (updated) {
+                        if (!context.mounted) return;
+                        formField.didChange(updated.isEmpty ? null : updated);
+                      },
+                      size: field.previewSize / 2,
+                    ),
+                ],
               ),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -179,7 +176,7 @@ class _PBImageAddButtonWithLoading extends HookWidget {
         existingImages: existingImages,
       );
 
-      if(!context.mounted) return;
+      if (!context.mounted) return;
 
       onImagesPicked(updated);
       isLoading.value = false;

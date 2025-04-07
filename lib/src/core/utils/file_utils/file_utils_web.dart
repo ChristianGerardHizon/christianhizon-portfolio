@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:pdf/widgets.dart' show Widget;
 
 Future<PlatformFile> createPlatformFileFromBytes({
   required String name,

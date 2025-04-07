@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:cross_file/cross_file.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gym_system/src/core/classes/pb_image.dart';
 import 'package:http/http.dart';
 
@@ -11,12 +12,16 @@ abstract class DynamicField {
   final dynamic initialValue;
   final InputDecoration decoration;
   final dynamic Function(dynamic)? valueTransformer;
+  final EdgeInsets? margin;
+  final dynamic Function(dynamic)? onChange;
 
   const DynamicField({
     required this.name,
     this.initialValue,
     this.decoration = const InputDecoration(),
     this.valueTransformer,
+    this.margin,
+    this.onChange,
   });
 }
 
@@ -40,8 +45,10 @@ class DynamicTextField extends DynamicField {
   final String? initialValue;
   final String? Function(String?)? validator;
   final dynamic Function(String?)? fieldTransformer;
+  final GlobalKey<FormBuilderFieldState>? formFieldKey;
 
   const DynamicTextField({
+    this.formFieldKey,
     required super.name,
     this.initialValue,
     this.validator,
@@ -52,6 +59,8 @@ class DynamicTextField extends DynamicField {
     this.maxLines,
     super.decoration,
     this.fieldTransformer,
+    super.margin,
+    super.onChange,
   });
 }
 
@@ -60,14 +69,17 @@ class DynamicCheckboxField extends DynamicField {
   final bool? initialValue;
   final String? Function(bool?)? validator;
   final dynamic Function(bool?)? fieldTransformer;
+  final GlobalKey<FormBuilderFieldState>? formFieldKey;
 
   const DynamicCheckboxField({
+    this.formFieldKey,
     required super.name,
     this.initialValue,
     this.validator,
     super.valueTransformer,
     super.decoration,
     this.fieldTransformer,
+    super.onChange,
   });
 }
 
@@ -88,8 +100,10 @@ class DynamicSelectField<T> extends DynamicField {
   final T? initialValue;
   final String? Function(T?)? validator;
   final dynamic Function(T?)? fieldTransformer;
+  final GlobalKey<FormBuilderFieldState>? formFieldKey;
 
   const DynamicSelectField({
+    this.formFieldKey,
     required super.name,
     this.initialValue,
     this.validator,
@@ -97,6 +111,8 @@ class DynamicSelectField<T> extends DynamicField {
     required this.options,
     super.decoration,
     this.fieldTransformer,
+    super.margin,
+    super.onChange,
   });
 }
 
@@ -107,8 +123,10 @@ class DynamicDateField extends DynamicField {
   final DateTime? initialValue;
   final String? Function(DateTime?)? validator;
   final dynamic Function(DateTime?)? fieldTransformer;
+  final GlobalKey<FormBuilderFieldState>? formFieldKey;
 
   const DynamicDateField({
+    this.formFieldKey,
     required super.name,
     this.initialValue,
     this.validator,
@@ -117,17 +135,23 @@ class DynamicDateField extends DynamicField {
     this.firstDate,
     this.lastDate,
     this.fieldTransformer,
+    super.margin,
+    super.onChange,
   });
 }
 
-class DynamicTypeAheadField extends DynamicField {
+/// Represents a dynamic searchable dropdown field.
+class DynamicTypeAheadField<T> extends DynamicField {
   final dynamic initialValue;
-  final Future<List<dynamic>> Function(String) onSearch;
-final String Function(dynamic) selectionToString; 
-  final String? Function(dynamic)? validator;
-  final dynamic Function(dynamic)? fieldTransformer;
-  final Widget Function(BuildContext, dynamic) itemBuilder;
+  final Future<List<T>> Function(String) onSearch;
+  final String Function(T) selectionToString;
+  final String? Function(T)? validator;
+  final dynamic Function(T)? fieldTransformer;
+  final Widget Function(BuildContext, T) itemBuilder;
+  final GlobalKey<FormBuilderFieldState>? formFieldKey;
+
   const DynamicTypeAheadField({
+    this.formFieldKey,
     required super.name,
     this.initialValue,
     this.validator,
@@ -137,9 +161,10 @@ final String Function(dynamic) selectionToString;
     super.valueTransformer,
     this.fieldTransformer,
     required this.selectionToString,
+    super.margin,
+    super.onChange,
   });
 }
-
 
 /// Represents a dynamic file upload field with an optional label describing the expected file type.
 class DynamicFilesField extends DynamicField {
@@ -156,6 +181,8 @@ class DynamicFilesField extends DynamicField {
     super.valueTransformer,
     this.fileTypeLabel,
     this.fieldTransformer,
+    super.margin,
+    super.onChange,
   });
 }
 
@@ -185,12 +212,13 @@ class DynamicImagesField extends DynamicField {
     this.maxSizeKB = 300,
     this.compressionQuality = 85,
     this.fieldTransformer,
+    super.margin,
+    super.onChange,
   });
 }
 
 /// Represents a dynamic image upload field specifically using PBImage model.
 class DynamicPBImagesField extends DynamicField {
-  final String? fileTypeLabel;
   final int maxSizeKB;
   final int compressionQuality;
   final bool allowCompression;
@@ -211,10 +239,11 @@ class DynamicPBImagesField extends DynamicField {
     this.allowCompression = false,
     this.allowedExtensions,
     this.maxFiles = 1,
-    this.fileTypeLabel,
     this.maxSizeKB = 300,
     this.compressionQuality = 85,
     this.fieldTransformer,
     this.fileTransformer,
+    super.margin,
+    super.onChange,
   });
 }

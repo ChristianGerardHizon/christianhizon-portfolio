@@ -15,46 +15,51 @@ import 'fields/dynamic_form_field_files.dart';
 
 class DynamicFormField extends HookWidget {
   final DynamicField field;
+  final EdgeInsets? margin;
 
-  const DynamicFormField({
-    super.key,
-    required this.field,
-  });
+  const DynamicFormField({super.key, required this.field, this.margin});
 
   @override
   Widget build(BuildContext context) {
-    if (field is DynamicTextField) {
-      return DynamicFormFieldText(field as DynamicTextField);
-    }
+    return Padding(
+      padding: field.margin ?? margin ?? const EdgeInsets.all(0),
+      child: Builder(
+        builder: (context) {
+          if (field is DynamicTextField) {
+            return DynamicFormFieldText(field as DynamicTextField);
+          }
 
-    if (field is DynamicCheckboxField) {
-      return DynamicFormFieldCheckbox(field as DynamicCheckboxField);
-    }
+          if (field is DynamicCheckboxField) {
+            return DynamicFormFieldCheckbox(field as DynamicCheckboxField);
+          }
 
-    if (field is DynamicSelectField) {
-      return DynamicFormFieldSelect(field as DynamicSelectField);
-    }
+          if (field is DynamicSelectField) {
+            return DynamicFormFieldSelect(field as DynamicSelectField);
+          }
 
-    if (field is DynamicDateField) {
-      return DynamicFormFieldDate(field as DynamicDateField);
-    }
+          if (field is DynamicDateField) {
+            return DynamicFormFieldDate(field as DynamicDateField);
+          }
 
-    if (field is DynamicFilesField) {
-      return DynamicFormFieldFiles(field as DynamicFilesField);
-    }
+          if (field is DynamicFilesField) {
+            return DynamicFormFieldFiles(field as DynamicFilesField);
+          }
 
-    if (field is DynamicImagesField) {
-      return DynamicFormFieldImages(field as DynamicImagesField);
-    }
+          if (field is DynamicImagesField) {
+            return DynamicFormFieldImages(field as DynamicImagesField);
+          }
 
-    if (field is DynamicPBImagesField) {
-      return DynamicFormFieldPBImages(field as DynamicPBImagesField);
-    }
+          if (field is DynamicPBImagesField) {
+            return DynamicFormFieldPBImages(field as DynamicPBImagesField);
+          }
 
-    if (field is DynamicTypeAheadField) {
-      return DynamicFormFieldTypeAhead(field as DynamicTypeAheadField);
-    }
+          if (field is DynamicTypeAheadField) {
+            return DynamicFormFieldTypeAhead(field as DynamicTypeAheadField);
+          }
 
-    return const SizedBox.shrink();
+          return const SizedBox.shrink();
+        },
+      ),
+    );
   }
 }

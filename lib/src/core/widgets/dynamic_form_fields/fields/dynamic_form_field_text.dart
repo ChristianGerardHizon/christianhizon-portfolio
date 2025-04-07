@@ -11,6 +11,7 @@ class DynamicFormFieldText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
+      key: field.formFieldKey,
       name: field.name,
       decoration: field.decoration,
       validator: field.validator,

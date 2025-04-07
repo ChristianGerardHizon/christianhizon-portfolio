@@ -24,6 +24,7 @@ class DynamicFormBuilder extends HookConsumerWidget {
   final void Function(DynamicFormResult result) onSubmit;
   final void Function(Map<String, dynamic> value)? onChange;
   final bool isLoading;
+  final EdgeInsets? itemPadding;
 
   const DynamicFormBuilder({
     super.key,
@@ -32,6 +33,7 @@ class DynamicFormBuilder extends HookConsumerWidget {
     required this.onSubmit,
     this.onChange,
     this.isLoading = false,
+    this.itemPadding,
   });
 
   onFormSubmit(List<DynamicField> fields) async {
@@ -108,7 +110,12 @@ class DynamicFormBuilder extends HookConsumerWidget {
             ///
             /// Widgets
             ///
-            SliverList.list(children: [DynamicFormFields(fields: fields)]),
+            SliverList.list(children: [
+              DynamicFormFields(
+                fields: fields,
+                itemPadding: itemPadding,
+              )
+            ]),
 
             ///
             /// Save Button

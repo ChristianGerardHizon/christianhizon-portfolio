@@ -11,7 +11,9 @@ class DynamicFormFieldSelect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormBuilderDropdown(
+      key: field.formFieldKey,
       name: field.name,
+      onChanged: field.onChange,
       decoration: field.decoration,
       validator: field.validator,
       items: field.options

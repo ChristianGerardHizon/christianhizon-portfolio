@@ -1,32 +1,36 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
-part 'category.mapper.dart';
+part 'product_category.mapper.dart';
 
 @MappableClass()
-class Category with CategoryMappable {
+class ProductCategory with ProductCategoryMappable {
   final String id;
 
   final String name;
+  final String? parent;
 
   final bool isDeleted;
   final DateTime? created;
   final DateTime? updated;
 
-  Category({
+  ProductCategory({
     required this.id,
     required this.name,
+    this.parent,
     this.isDeleted = false,
     required this.created,
     required this.updated,
   });
 
   static fromMap(Map<String, dynamic> raw) {
-    return CategoryMapper.fromMap(
+    return ProductCategoryMapper.fromMap(
       {
         ...raw,
       },
     );
-  }  static const fromJson = CategoryMapper.fromMap;
+  }
+
+  static const fromJson = ProductCategoryMapper.fromMap;
 
   Map<String, dynamic> toForm() {
     return {
@@ -35,5 +39,4 @@ class Category with CategoryMappable {
       'updated': created,
     };
   }
-
 }

@@ -116,6 +116,7 @@ class PrescriptionItemField {
 class ProductField {
   static const String id = 'id';
   static const String name = 'name';
+  static const String image = 'image';
   static const String category = 'category';
   static const String branch = 'branch';
   static const String created = 'created';
