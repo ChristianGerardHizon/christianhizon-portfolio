@@ -130,38 +130,16 @@ class ProductFormPage extends HookConsumerWidget {
                     ],
                   ),
                 ),
-                DynamicSelectField(
-                  name: ProductField.branch,
-                  options: branches
-                      .map(
-                        (e) => SelectOption(
-                          value: e.id,
-                          display: e.name,
-                        ),
-                      )
-                      .toList(),
+                DynamicTextField(
+                  name: ProductField.notes,
+                  initialValue: product?.name,
+                  minLines: 2,
+                  maxLines: 10,
                   decoration: InputDecoration(
-                    label: Text('Branch'),
+                    label: Text('Product Notes'),
                     border: OutlineInputBorder(),
                   ),
-                  validator: FormBuilderValidators.compose(
-                    [
-                      FormBuilderValidators.required(),
-                    ],
-                  ),
-                ),
-                DynamicTypeAheadField<Branch>(
-                  name: ProductField.branch,
-                  initialValue: product?.branch,
-                  selectionToString: (x) => x.toString(),
-                  itemBuilder: (context, item) {
-                    if (item is Product) return Text(item.name);
-                    return Text(item.toString());
-                  },
-                  onSearch: (p0) async {
-                    await Future.delayed(Duration(seconds: 2));
-                    return Future.value(branches);
-                  },
+                  validator: FormBuilderValidators.compose([]),
                 ),
               ],
               onSubmit: (result) => onSave(product, result),

@@ -25,6 +25,7 @@ class DynamicFormBuilder extends HookConsumerWidget {
   final void Function(Map<String, dynamic> value)? onChange;
   final bool isLoading;
   final EdgeInsets? itemPadding;
+  final AutovalidateMode? validateMode;
 
   const DynamicFormBuilder({
     super.key,
@@ -34,6 +35,7 @@ class DynamicFormBuilder extends HookConsumerWidget {
     this.onChange,
     this.isLoading = false,
     this.itemPadding,
+    this.validateMode
   });
 
   onFormSubmit(List<DynamicField> fields) async {
@@ -98,7 +100,7 @@ class DynamicFormBuilder extends HookConsumerWidget {
       child: FormBuilder(
         key: formKey,
         initialValue: fields.toInitialValues(),
-        autovalidateMode: AutovalidateMode.onUserInteraction,
+        autovalidateMode: validateMode,
         onChanged: () {
           if (onChange != null) {
             final current = formKey.currentState?.instantValue ?? {};

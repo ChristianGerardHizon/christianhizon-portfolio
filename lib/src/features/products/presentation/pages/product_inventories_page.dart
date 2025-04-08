@@ -17,8 +17,8 @@ import 'package:gym_system/src/features/products/presentation/controllers/produc
 import 'package:gym_system/src/features/products/presentation/widgets/product_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ProductsPage extends HookConsumerWidget {
-  const ProductsPage({super.key});
+class ProductInventoriesPage extends HookConsumerWidget {
+  const ProductInventoriesPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useMemoized(() => DynamicTableController());

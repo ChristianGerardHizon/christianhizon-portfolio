@@ -13,6 +13,7 @@ class ProductMapper extends ClassMapperBase<Product> {
   static ProductMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ProductMapper._());
+      ProductExpandMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -44,6 +45,9 @@ class ProductMapper extends ClassMapperBase<Product> {
   static String? _$branch(Product v) => v.branch;
   static const Field<Product, String> _f$branch =
       Field('branch', _$branch, opt: true);
+  static ProductExpand _$expand(Product v) => v.expand;
+  static const Field<Product, ProductExpand> _f$expand =
+      Field('expand', _$expand);
   static bool _$isDeleted(Product v) => v.isDeleted;
   static const Field<Product, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
@@ -65,6 +69,7 @@ class ProductMapper extends ClassMapperBase<Product> {
     #notes: _f$notes,
     #category: _f$category,
     #branch: _f$branch,
+    #expand: _f$expand,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
@@ -81,6 +86,7 @@ class ProductMapper extends ClassMapperBase<Product> {
         notes: data.dec(_f$notes),
         category: data.dec(_f$category),
         branch: data.dec(_f$branch),
+        expand: data.dec(_f$expand),
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated));
@@ -136,6 +142,7 @@ extension ProductValueCopy<$R, $Out> on ObjectCopyWith<$R, Product, $Out> {
 
 abstract class ProductCopyWith<$R, $In extends Product, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
+  ProductExpandCopyWith<$R, ProductExpand, ProductExpand> get expand;
   $R call(
       {String? collectionId,
       String? collectionName,
@@ -146,6 +153,7 @@ abstract class ProductCopyWith<$R, $In extends Product, $Out>
       String? notes,
       String? category,
       String? branch,
+      ProductExpand? expand,
       bool? isDeleted,
       DateTime? created,
       DateTime? updated});
@@ -161,6 +169,9 @@ class _ProductCopyWithImpl<$R, $Out>
   late final ClassMapperBase<Product> $mapper =
       ProductMapper.ensureInitialized();
   @override
+  ProductExpandCopyWith<$R, ProductExpand, ProductExpand> get expand =>
+      $value.expand.copyWith.$chain((v) => call(expand: v));
+  @override
   $R call(
           {String? collectionId,
           String? collectionName,
@@ -171,6 +182,7 @@ class _ProductCopyWithImpl<$R, $Out>
           Object? notes = $none,
           Object? category = $none,
           Object? branch = $none,
+          ProductExpand? expand,
           bool? isDeleted,
           Object? created = $none,
           Object? updated = $none}) =>
@@ -184,6 +196,7 @@ class _ProductCopyWithImpl<$R, $Out>
         if (notes != $none) #notes: notes,
         if (category != $none) #category: category,
         if (branch != $none) #branch: branch,
+        if (expand != null) #expand: expand,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated
@@ -199,6 +212,7 @@ class _ProductCopyWithImpl<$R, $Out>
       notes: data.get(#notes, or: $value.notes),
       category: data.get(#category, or: $value.category),
       branch: data.get(#branch, or: $value.branch),
+      expand: data.get(#expand, or: $value.expand),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated));
@@ -206,4 +220,114 @@ class _ProductCopyWithImpl<$R, $Out>
   @override
   ProductCopyWith<$R2, Product, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
       _ProductCopyWithImpl<$R2, $Out2>($value, $cast, t);
+}
+
+class ProductExpandMapper extends ClassMapperBase<ProductExpand> {
+  ProductExpandMapper._();
+
+  static ProductExpandMapper? _instance;
+  static ProductExpandMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = ProductExpandMapper._());
+      BranchMapper.ensureInitialized();
+    }
+    return _instance!;
+  }
+
+  @override
+  final String id = 'ProductExpand';
+
+  static Branch? _$branch(ProductExpand v) => v.branch;
+  static const Field<ProductExpand, Branch> _f$branch =
+      Field('branch', _$branch, opt: true);
+
+  @override
+  final MappableFields<ProductExpand> fields = const {
+    #branch: _f$branch,
+  };
+
+  static ProductExpand _instantiate(DecodingData data) {
+    return ProductExpand(branch: data.dec(_f$branch));
+  }
+
+  @override
+  final Function instantiate = _instantiate;
+
+  static ProductExpand fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<ProductExpand>(map);
+  }
+
+  static ProductExpand fromJson(String json) {
+    return ensureInitialized().decodeJson<ProductExpand>(json);
+  }
+}
+
+mixin ProductExpandMappable {
+  String toJson() {
+    return ProductExpandMapper.ensureInitialized()
+        .encodeJson<ProductExpand>(this as ProductExpand);
+  }
+
+  Map<String, dynamic> toMap() {
+    return ProductExpandMapper.ensureInitialized()
+        .encodeMap<ProductExpand>(this as ProductExpand);
+  }
+
+  ProductExpandCopyWith<ProductExpand, ProductExpand, ProductExpand>
+      get copyWith => _ProductExpandCopyWithImpl<ProductExpand, ProductExpand>(
+          this as ProductExpand, $identity, $identity);
+  @override
+  String toString() {
+    return ProductExpandMapper.ensureInitialized()
+        .stringifyValue(this as ProductExpand);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return ProductExpandMapper.ensureInitialized()
+        .equalsValue(this as ProductExpand, other);
+  }
+
+  @override
+  int get hashCode {
+    return ProductExpandMapper.ensureInitialized()
+        .hashValue(this as ProductExpand);
+  }
+}
+
+extension ProductExpandValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, ProductExpand, $Out> {
+  ProductExpandCopyWith<$R, ProductExpand, $Out> get $asProductExpand =>
+      $base.as((v, t, t2) => _ProductExpandCopyWithImpl<$R, $Out>(v, t, t2));
+}
+
+abstract class ProductExpandCopyWith<$R, $In extends ProductExpand, $Out>
+    implements ClassCopyWith<$R, $In, $Out> {
+  BranchCopyWith<$R, Branch, Branch>? get branch;
+  $R call({Branch? branch});
+  ProductExpandCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+}
+
+class _ProductExpandCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, ProductExpand, $Out>
+    implements ProductExpandCopyWith<$R, ProductExpand, $Out> {
+  _ProductExpandCopyWithImpl(super.value, super.then, super.then2);
+
+  @override
+  late final ClassMapperBase<ProductExpand> $mapper =
+      ProductExpandMapper.ensureInitialized();
+  @override
+  BranchCopyWith<$R, Branch, Branch>? get branch =>
+      $value.branch?.copyWith.$chain((v) => call(branch: v));
+  @override
+  $R call({Object? branch = $none}) =>
+      $apply(FieldCopyWithData({if (branch != $none) #branch: branch}));
+  @override
+  ProductExpand $make(CopyWithData data) =>
+      ProductExpand(branch: data.get(#branch, or: $value.branch));
+
+  @override
+  ProductExpandCopyWith<$R2, ProductExpand, $Out2> $chain<$R2, $Out2>(
+          Then<$Out2, $R2> t) =>
+      _ProductExpandCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

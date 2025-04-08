@@ -1,5 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
+import 'package:gym_system/src/features/branches/domain/branch.dart';
 
 part 'product.mapper.dart';
 
@@ -22,6 +23,8 @@ class Product with ProductMappable {
   final String collectionName;
   final String domain;
 
+  final ProductExpand expand;
+
   Product({
     required this.collectionId,
     required this.collectionName,
@@ -32,6 +35,7 @@ class Product with ProductMappable {
     this.notes,
     this.category,
     this.branch,
+    required this.expand,
     this.isDeleted = false,
     required this.created,
     required this.updated,
@@ -66,4 +70,24 @@ class Product with ProductMappable {
       fileName: image!,
     );
   }
+}
+
+@MappableClass()
+class ProductExpand with ProductExpandMappable {
+  final Branch? branch;
+
+  ProductExpand({
+    this.branch,
+  });
+
+    static fromMap(Map<String, dynamic> raw) {
+    // if dateOfBirth is '' empty string, it will be null
+    return ProductExpandMapper.fromMap(
+      {
+        ...raw,
+      },
+    );
+  }
+
+  static const fromJson = ProductExpandMapper.fromMap;
 }

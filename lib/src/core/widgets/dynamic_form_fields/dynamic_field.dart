@@ -141,13 +141,13 @@ class DynamicDateField extends DynamicField {
 }
 
 /// Represents a dynamic searchable dropdown field.
-class DynamicTypeAheadField<T> extends DynamicField {
+class DynamicTypeAheadField extends DynamicField {
   final dynamic initialValue;
-  final Future<List<T>> Function(String) onSearch;
-  final String Function(T) selectionToString;
-  final String? Function(T)? validator;
-  final dynamic Function(T)? fieldTransformer;
-  final Widget Function(BuildContext, T) itemBuilder;
+  final Future<List<dynamic>> Function(String) onSearch;
+  final String Function(dynamic) selectionToString;
+  final String? Function(dynamic)? validator;
+  final dynamic Function(dynamic)? fieldTransformer;
+  final Widget Function(BuildContext, dynamic) itemBuilder;
   final GlobalKey<FormBuilderFieldState>? formFieldKey;
 
   const DynamicTypeAheadField({

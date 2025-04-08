@@ -27,7 +27,7 @@ abstract class ProductRepository {
   TaskResult<void> delete(String id);
   TaskResult<void> softDeleteMulti(List<String> ids);
   TaskResult<Product> update(
-    Product history,
+    Product product,
     Map<String, dynamic> update, {
     List<MultipartFile> files = const [],
   });
@@ -60,10 +60,12 @@ class ProductRepositoryImpl extends ProductRepository {
     return Product.fromMap({...map, 'domain': pb.baseURL});
   }
 
+  final expand = 'branch';
+
   @override
   TaskResult<Product> get(String id) {
     return TaskResult.tryCatch(() async {
-      final result = await collection.getOne(id);
+      final result = await collection.getOne(id, expand: expand);
       return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
@@ -99,6 +101,7 @@ class ProductRepositoryImpl extends ProductRepository {
         page: pageNo,
         perPage: pageSize,
         sort: sort?.value,
+        expand: expand,
       );
       return PageResults(
         page: result.page,
@@ -114,17 +117,18 @@ class ProductRepositoryImpl extends ProductRepository {
 
   @override
   TaskResult<Product> update(
-    Product history,
+    Product product,
     Map<String, dynamic> update, {
     List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
-      final historyMap = history.toMap();
-      final combinedMap = {...historyMap, ...update};
+      final productMap = product.toMap();
+      final combinedMap = {...productMap, ...update};
       final result = await collection.update(
-        history.id,
+        product.id,
         body: combinedMap,
         files: files,
+        expand: expand,
       );
       return mapToData(result.toJson());
     }, Failure.tryCatchData);
@@ -152,6 +156,7 @@ class ProductRepositoryImpl extends ProductRepository {
       () async {
         final result = await collection.getFullList(
           filter: filter,
+          expand: expand,
         );
         return result.map<Product>((e) => mapToData(e.toJson())).toList();
       },
