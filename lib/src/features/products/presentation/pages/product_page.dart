@@ -12,8 +12,8 @@ import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_controller.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/product_controller.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/products_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product/product_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product/products_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductPage extends HookConsumerWidget {
@@ -116,8 +116,8 @@ class ProductPage extends HookConsumerWidget {
                               /// name
                               ///
                               DynamicListTile(
-                                title: Text('Notes: '),
-                                content: Text(product.notes.optional()),
+                                title: Text('Description: '),
+                                content: Text(product.description.optional()),
                               ),
                             ],
                           ),

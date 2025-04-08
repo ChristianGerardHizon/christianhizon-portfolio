@@ -9,15 +9,14 @@ class Product with ProductMappable {
   final String id;
 
   final String name;
-  final String? notes;
+  final String? description;
   final String? category;
+  final String? image;
+  final String? branch;
 
   final bool isDeleted;
   final DateTime? created;
   final DateTime? updated;
-
-  final String? image;
-  final String? branch;
 
   final String collectionId;
   final String collectionName;
@@ -32,7 +31,7 @@ class Product with ProductMappable {
     required this.id,
     required this.name,
     this.image,
-    this.notes,
+    this.description,
     this.category,
     this.branch,
     required this.expand,
@@ -80,7 +79,7 @@ class ProductExpand with ProductExpandMappable {
     this.branch,
   });
 
-    static fromMap(Map<String, dynamic> raw) {
+  static fromMap(Map<String, dynamic> raw) {
     // if dateOfBirth is '' empty string, it will be null
     return ProductExpandMapper.fromMap(
       {

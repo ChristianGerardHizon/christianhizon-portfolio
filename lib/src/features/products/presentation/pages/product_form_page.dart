@@ -3,17 +3,15 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/classes/pb_image.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/features/branches/domain/branch.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/product_form_controller.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/products_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product/product_form_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product/products_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductFormPage extends HookConsumerWidget {
@@ -70,6 +68,7 @@ class ProductFormPage extends HookConsumerWidget {
             final product = formState.product;
             final branches = formState.branches;
             final images = formState.images;
+            final categories = formState.categories;
 
             return DynamicFormBuilder(
               itemPadding: const EdgeInsets.only(
@@ -111,6 +110,21 @@ class ProductFormPage extends HookConsumerWidget {
                       ],
                     )),
                 DynamicSelectField(
+                  name: ProductField.category,
+                  options: categories
+                      .map(
+                        (e) => SelectOption(
+                          value: e.id,
+                          display: e.name,
+                        ),
+                      )
+                      .toList(),
+                  decoration: InputDecoration(
+                    label: Text('Category'),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                DynamicSelectField(
                   name: ProductField.branch,
                   options: branches
                       .map(
@@ -131,12 +145,12 @@ class ProductFormPage extends HookConsumerWidget {
                   ),
                 ),
                 DynamicTextField(
-                  name: ProductField.notes,
+                  name: ProductField.description,
                   initialValue: product?.name,
                   minLines: 2,
                   maxLines: 10,
                   decoration: InputDecoration(
-                    label: Text('Product Notes'),
+                    label: Text('Product Descriptions'),
                     border: OutlineInputBorder(),
                   ),
                   validator: FormBuilderValidators.compose([]),

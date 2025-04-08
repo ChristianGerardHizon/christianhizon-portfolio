@@ -19,7 +19,7 @@ class ProductFormState with ProductFormStateMappable {
   final Product? product;
   final List<Branch> branches;
   final List<PBImage>? images;
-  final List<ProductCategory>? categories;
+  final List<ProductCategory> categories;
 
   ProductFormState({
     required this.product,

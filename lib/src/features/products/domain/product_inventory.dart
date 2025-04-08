@@ -3,14 +3,8 @@ import 'package:gym_system/src/features/products/domain/product.dart';
 
 part 'product_inventory.mapper.dart';
 
-
 @MappableEnum()
-enum ProductStatus {
-  inStock,
-  outOfStock,
-  lowStock
-}
-
+enum ProductStatus { inStock, outOfStock, lowStock }
 
 @MappableClass()
 class ProductInventory with ProductInventoryMappable {
@@ -18,6 +12,11 @@ class ProductInventory with ProductInventoryMappable {
 
   final String product;
   final ProductStatus status;
+  final String name;
+  final String? description;
+  final String? category;
+  final String? image;
+  final String? branch;
 
   final DateTime? created;
   final DateTime? updated;
@@ -27,7 +26,7 @@ class ProductInventory with ProductInventoryMappable {
   final String collectionName;
   final String domain;
 
-  final ProductInventoryExpand? expand;
+  final ProductInventoryExpand expand;
 
   ProductInventory({
     required this.collectionId,
@@ -37,6 +36,11 @@ class ProductInventory with ProductInventoryMappable {
     required this.product,
     required this.status,
     required this.expand,
+    required this.name,
+    this.description,
+    this.category,
+    this.image,
+    this.branch,
     this.isDeleted = false,
     required this.created,
     required this.updated,
@@ -80,4 +84,9 @@ class ProductInventoryExpand with ProductInventoryExpandMappable {
   ProductInventoryExpand({
     required this.product,
   });
+}
+
+extension ListProductInventory on List<ProductInventory> {
+  List<Product> get products =>
+      map((e) => e.expand?.product).whereType<Product>().toList();
 }

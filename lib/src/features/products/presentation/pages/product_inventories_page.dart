@@ -11,9 +11,11 @@ import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_lis
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
-import 'package:gym_system/src/features/products/domain/product_search.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/products_controller.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/products_page_controller.dart';
+import 'package:gym_system/src/features/products/domain/product_inventory.dart';
+import 'package:gym_system/src/features/products/domain/product_inventory_search.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product/products_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product_inventory/product_inventories_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product_inventory/product_inventories_page_controller.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -23,9 +25,11 @@ class ProductInventoriesPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useMemoized(() => DynamicTableController());
     final searchCtrl = useTextEditingController();
-    final notifier = ref.read(productsPageControllerProvider.notifier);
-    final provider = ref.watch(productsControllerProvider);
-    final searchNotifier = ref.read(productSearchControllerProvider.notifier);
+    final notifier =
+        ref.read(productInventoriesPageControllerProvider.notifier);
+    final provider = ref.watch(productInventoriesControllerProvider);
+    final searchNotifier =
+        ref.read(productInventorySearchControllerProvider.notifier);
     final isLoading = useState(false);
 
     ///
@@ -88,7 +92,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
     ///
     onSearch() {
       final query = searchCtrl.text.trim();
-      searchNotifier.updateParams(ProductSearch(name: query));
+      searchNotifier.updateParams(ProductInventorySearch(name: query));
     }
 
     ///
@@ -96,7 +100,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
     ///
     onClear() {
       searchCtrl.clear();
-      searchNotifier.updateParams(ProductSearch(name: ''));
+      searchNotifier.updateParams(ProductInventorySearch(name: ''));
     }
 
     return Scaffold(
@@ -113,7 +117,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
           ///
           /// Table
           ///
-          ResponsivePaginationListWithDeleteView<Product>(
+          ResponsivePaginationListWithDeleteView<ProductInventory>(
         controller: controller,
         onPageChange: notifier.changePage,
         errorMessage: provider.maybeWhen(
@@ -132,7 +136,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
           error: (error, stackTrace) => null,
           loading: () => null,
         ),
-        onDelete: onDelete,
+        onDelete: (list) => onDelete([]),
 
         ///
         /// Search Features
@@ -146,7 +150,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
         /// Table Data
         ///
         onHeaderTap: (headerKey) {},
-        onTap: onTap,
+        onTap: (data) => onTap(data.expand.product),
         data: [
           TableColumn(
             header: 'Name',
@@ -162,13 +166,14 @@ class ProductInventoriesPage extends HookConsumerWidget {
               );
             },
           ),
-           TableColumn(
+          TableColumn(
             header: 'Branch',
             alignment: Alignment.centerLeft,
             builder: (context, product, extra) {
               return Align(
                 alignment: Alignment.centerLeft,
-                child: Text(product.branch.optional(), overflow: TextOverflow.ellipsis),
+                child: Text(product.branch.optional(),
+                    overflow: TextOverflow.ellipsis),
               );
             },
           ),
@@ -211,7 +216,8 @@ class ProductInventoriesPage extends HookConsumerWidget {
         ///
         /// Builder for mobile
         ///
-        mobileBuilder: (context, index, product, selected) {
+        mobileBuilder: (context, index, productInventory, selected) {
+          final product = productInventory.expand.product;
           return ProductCard(
             product: product,
             onTap: () => onTap(product),

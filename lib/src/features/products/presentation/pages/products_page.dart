@@ -12,8 +12,8 @@ import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_search.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/products_controller.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/products_page_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product/products_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product/products_page_controller.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -162,13 +162,14 @@ class ProductsPage extends HookConsumerWidget {
               );
             },
           ),
-           TableColumn(
+          TableColumn(
             header: 'Branch',
             alignment: Alignment.centerLeft,
             builder: (context, product, extra) {
               return Align(
                 alignment: Alignment.centerLeft,
-                child: Text(product.branch.optional(), overflow: TextOverflow.ellipsis),
+                child: Text(product.branch.optional(),
+                    overflow: TextOverflow.ellipsis),
               );
             },
           ),

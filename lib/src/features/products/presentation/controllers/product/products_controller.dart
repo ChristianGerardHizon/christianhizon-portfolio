@@ -5,7 +5,7 @@ import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_search.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/products_page_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product/products_page_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'products_controller.g.dart';

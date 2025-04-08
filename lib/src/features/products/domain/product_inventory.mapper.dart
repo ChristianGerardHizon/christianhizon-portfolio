@@ -89,9 +89,23 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   static ProductStatus _$status(ProductInventory v) => v.status;
   static const Field<ProductInventory, ProductStatus> _f$status =
       Field('status', _$status);
-  static ProductInventoryExpand? _$expand(ProductInventory v) => v.expand;
+  static ProductInventoryExpand _$expand(ProductInventory v) => v.expand;
   static const Field<ProductInventory, ProductInventoryExpand> _f$expand =
       Field('expand', _$expand);
+  static String _$name(ProductInventory v) => v.name;
+  static const Field<ProductInventory, String> _f$name = Field('name', _$name);
+  static String? _$description(ProductInventory v) => v.description;
+  static const Field<ProductInventory, String> _f$description =
+      Field('description', _$description, opt: true);
+  static String? _$category(ProductInventory v) => v.category;
+  static const Field<ProductInventory, String> _f$category =
+      Field('category', _$category, opt: true);
+  static String? _$image(ProductInventory v) => v.image;
+  static const Field<ProductInventory, String> _f$image =
+      Field('image', _$image, opt: true);
+  static String? _$branch(ProductInventory v) => v.branch;
+  static const Field<ProductInventory, String> _f$branch =
+      Field('branch', _$branch, opt: true);
   static bool _$isDeleted(ProductInventory v) => v.isDeleted;
   static const Field<ProductInventory, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
@@ -111,6 +125,11 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
     #product: _f$product,
     #status: _f$status,
     #expand: _f$expand,
+    #name: _f$name,
+    #description: _f$description,
+    #category: _f$category,
+    #image: _f$image,
+    #branch: _f$branch,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
@@ -125,6 +144,11 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
         product: data.dec(_f$product),
         status: data.dec(_f$status),
         expand: data.dec(_f$expand),
+        name: data.dec(_f$name),
+        description: data.dec(_f$description),
+        category: data.dec(_f$category),
+        image: data.dec(_f$image),
+        branch: data.dec(_f$branch),
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated));
@@ -186,7 +210,7 @@ extension ProductInventoryValueCopy<$R, $Out>
 abstract class ProductInventoryCopyWith<$R, $In extends ProductInventory, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   ProductInventoryExpandCopyWith<$R, ProductInventoryExpand,
-      ProductInventoryExpand>? get expand;
+      ProductInventoryExpand> get expand;
   $R call(
       {String? collectionId,
       String? collectionName,
@@ -195,6 +219,11 @@ abstract class ProductInventoryCopyWith<$R, $In extends ProductInventory, $Out>
       String? product,
       ProductStatus? status,
       ProductInventoryExpand? expand,
+      String? name,
+      String? description,
+      String? category,
+      String? image,
+      String? branch,
       bool? isDeleted,
       DateTime? created,
       DateTime? updated});
@@ -212,8 +241,8 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
       ProductInventoryMapper.ensureInitialized();
   @override
   ProductInventoryExpandCopyWith<$R, ProductInventoryExpand,
-          ProductInventoryExpand>?
-      get expand => $value.expand?.copyWith.$chain((v) => call(expand: v));
+          ProductInventoryExpand>
+      get expand => $value.expand.copyWith.$chain((v) => call(expand: v));
   @override
   $R call(
           {String? collectionId,
@@ -222,7 +251,12 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
           String? id,
           String? product,
           ProductStatus? status,
-          Object? expand = $none,
+          ProductInventoryExpand? expand,
+          String? name,
+          Object? description = $none,
+          Object? category = $none,
+          Object? image = $none,
+          Object? branch = $none,
           bool? isDeleted,
           Object? created = $none,
           Object? updated = $none}) =>
@@ -233,7 +267,12 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
         if (id != null) #id: id,
         if (product != null) #product: product,
         if (status != null) #status: status,
-        if (expand != $none) #expand: expand,
+        if (expand != null) #expand: expand,
+        if (name != null) #name: name,
+        if (description != $none) #description: description,
+        if (category != $none) #category: category,
+        if (image != $none) #image: image,
+        if (branch != $none) #branch: branch,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated
@@ -247,6 +286,11 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
       product: data.get(#product, or: $value.product),
       status: data.get(#status, or: $value.status),
       expand: data.get(#expand, or: $value.expand),
+      name: data.get(#name, or: $value.name),
+      description: data.get(#description, or: $value.description),
+      category: data.get(#category, or: $value.category),
+      image: data.get(#image, or: $value.image),
+      branch: data.get(#branch, or: $value.branch),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated));

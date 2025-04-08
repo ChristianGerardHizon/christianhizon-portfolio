@@ -24,14 +24,13 @@ abstract class ProductInventoryRepository {
     String? filter,
   });
 
-
   ///
   /// Custom Functions
   ///
 }
 
 @Riverpod(keepAlive: true)
-ProductInventoryRepository productRepository(Ref ref) {
+ProductInventoryRepository productInventoryRepository(Ref ref) {
   return ProductInventoryRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
@@ -42,7 +41,10 @@ class ProductInventoryRepositoryImpl extends ProductInventoryRepository {
 
   ProductInventoryRepositoryImpl({required this.pb});
 
-  RecordService get collection => pb.collection(PocketBaseCollections.productInventoryStatus);
+  RecordService get collection =>
+      pb.collection(PocketBaseCollections.productInventoryStatus);
+
+  final expand = 'product,product.expand';
 
   ProductInventory mapToData(Map<String, dynamic> map) {
     return ProductInventory.fromMap({...map, 'domain': pb.baseURL});
@@ -51,13 +53,10 @@ class ProductInventoryRepositoryImpl extends ProductInventoryRepository {
   @override
   TaskResult<ProductInventory> get(String id) {
     return TaskResult.tryCatch(() async {
-      final result = await collection.getOne(id);
+      final result = await collection.getOne(id, expand: expand);
       return mapToData(result.toJson());
     }, Failure.tryCatchData);
   }
-
-
-
 
   @override
   TaskResult<PageResults<ProductInventory>> list({
@@ -94,8 +93,11 @@ class ProductInventoryRepositoryImpl extends ProductInventoryRepository {
       () async {
         final result = await collection.getFullList(
           filter: filter,
+          expand: expand,
         );
-        return result.map<ProductInventory>((e) => mapToData(e.toJson())).toList();
+        return result
+            .map<ProductInventory>((e) => mapToData(e.toJson()))
+            .toList();
       },
       Failure.tryCatchData,
     );

@@ -30,8 +30,7 @@ class ProductFormStateMapper extends ClassMapperBase<ProductFormState> {
   static List<Branch> _$branches(ProductFormState v) => v.branches;
   static const Field<ProductFormState, List<Branch>> _f$branches =
       Field('branches', _$branches, opt: true, def: const []);
-  static List<ProductCategory>? _$categories(ProductFormState v) =>
-      v.categories;
+  static List<ProductCategory> _$categories(ProductFormState v) => v.categories;
   static const Field<ProductFormState, List<ProductCategory>> _f$categories =
       Field('categories', _$categories, opt: true, def: const []);
   static List<PBImage>? _$images(ProductFormState v) => v.images;
@@ -112,7 +111,7 @@ abstract class ProductFormStateCopyWith<$R, $In extends ProductFormState, $Out>
   ProductCopyWith<$R, Product, Product>? get product;
   ListCopyWith<$R, Branch, BranchCopyWith<$R, Branch, Branch>> get branches;
   ListCopyWith<$R, ProductCategory,
-          ProductCategoryCopyWith<$R, ProductCategory, ProductCategory>>?
+          ProductCategoryCopyWith<$R, ProductCategory, ProductCategory>>
       get categories;
   ListCopyWith<$R, PBImage, ObjectCopyWith<$R, PBImage, PBImage>>? get images;
   $R call(
@@ -141,11 +140,9 @@ class _ProductFormStateCopyWithImpl<$R, $Out>
           (v) => call(branches: v));
   @override
   ListCopyWith<$R, ProductCategory,
-          ProductCategoryCopyWith<$R, ProductCategory, ProductCategory>>?
-      get categories => $value.categories != null
-          ? ListCopyWith($value.categories!, (v, t) => v.copyWith.$chain(t),
-              (v) => call(categories: v))
-          : null;
+          ProductCategoryCopyWith<$R, ProductCategory, ProductCategory>>
+      get categories => ListCopyWith($value.categories,
+          (v, t) => v.copyWith.$chain(t), (v) => call(categories: v));
   @override
   ListCopyWith<$R, PBImage, ObjectCopyWith<$R, PBImage, PBImage>>? get images =>
       $value.images != null
@@ -156,12 +153,12 @@ class _ProductFormStateCopyWithImpl<$R, $Out>
   $R call(
           {Object? product = $none,
           List<Branch>? branches,
-          Object? categories = $none,
+          List<ProductCategory>? categories,
           Object? images = $none}) =>
       $apply(FieldCopyWithData({
         if (product != $none) #product: product,
         if (branches != null) #branches: branches,
-        if (categories != $none) #categories: categories,
+        if (categories != null) #categories: categories,
         if (images != $none) #images: images
       }));
   @override

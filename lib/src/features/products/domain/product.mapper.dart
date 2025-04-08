@@ -36,9 +36,9 @@ class ProductMapper extends ClassMapperBase<Product> {
   static String? _$image(Product v) => v.image;
   static const Field<Product, String> _f$image =
       Field('image', _$image, opt: true);
-  static String? _$notes(Product v) => v.notes;
-  static const Field<Product, String> _f$notes =
-      Field('notes', _$notes, opt: true);
+  static String? _$description(Product v) => v.description;
+  static const Field<Product, String> _f$description =
+      Field('description', _$description, opt: true);
   static String? _$category(Product v) => v.category;
   static const Field<Product, String> _f$category =
       Field('category', _$category, opt: true);
@@ -66,7 +66,7 @@ class ProductMapper extends ClassMapperBase<Product> {
     #id: _f$id,
     #name: _f$name,
     #image: _f$image,
-    #notes: _f$notes,
+    #description: _f$description,
     #category: _f$category,
     #branch: _f$branch,
     #expand: _f$expand,
@@ -83,7 +83,7 @@ class ProductMapper extends ClassMapperBase<Product> {
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         image: data.dec(_f$image),
-        notes: data.dec(_f$notes),
+        description: data.dec(_f$description),
         category: data.dec(_f$category),
         branch: data.dec(_f$branch),
         expand: data.dec(_f$expand),
@@ -150,7 +150,7 @@ abstract class ProductCopyWith<$R, $In extends Product, $Out>
       String? id,
       String? name,
       String? image,
-      String? notes,
+      String? description,
       String? category,
       String? branch,
       ProductExpand? expand,
@@ -179,7 +179,7 @@ class _ProductCopyWithImpl<$R, $Out>
           String? id,
           String? name,
           Object? image = $none,
-          Object? notes = $none,
+          Object? description = $none,
           Object? category = $none,
           Object? branch = $none,
           ProductExpand? expand,
@@ -193,7 +193,7 @@ class _ProductCopyWithImpl<$R, $Out>
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (image != $none) #image: image,
-        if (notes != $none) #notes: notes,
+        if (description != $none) #description: description,
         if (category != $none) #category: category,
         if (branch != $none) #branch: branch,
         if (expand != null) #expand: expand,
@@ -209,7 +209,7 @@ class _ProductCopyWithImpl<$R, $Out>
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       image: data.get(#image, or: $value.image),
-      notes: data.get(#notes, or: $value.notes),
+      description: data.get(#description, or: $value.description),
       category: data.get(#category, or: $value.category),
       branch: data.get(#branch, or: $value.branch),
       expand: data.get(#expand, or: $value.expand),
