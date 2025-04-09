@@ -26,9 +26,6 @@ class PatientBreedMapper extends ClassMapperBase<PatientBreed> {
   static String _$collectionName(PatientBreed v) => v.collectionName;
   static const Field<PatientBreed, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$domain(PatientBreed v) => v.domain;
-  static const Field<PatientBreed, String> _f$domain =
-      Field('domain', _$domain);
   static String _$id(PatientBreed v) => v.id;
   static const Field<PatientBreed, String> _f$id = Field('id', _$id);
   static String _$name(PatientBreed v) => v.name;
@@ -51,7 +48,6 @@ class PatientBreedMapper extends ClassMapperBase<PatientBreed> {
   final MappableFields<PatientBreed> fields = const {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #domain: _f$domain,
     #id: _f$id,
     #name: _f$name,
     #species: _f$species,
@@ -64,7 +60,6 @@ class PatientBreedMapper extends ClassMapperBase<PatientBreed> {
     return PatientBreed(
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        domain: data.dec(_f$domain),
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         species: data.dec(_f$species),
@@ -129,7 +124,6 @@ abstract class PatientBreedCopyWith<$R, $In extends PatientBreed, $Out>
   $R call(
       {String? collectionId,
       String? collectionName,
-      String? domain,
       String? id,
       String? name,
       String? species,
@@ -151,7 +145,6 @@ class _PatientBreedCopyWithImpl<$R, $Out>
   $R call(
           {String? collectionId,
           String? collectionName,
-          String? domain,
           String? id,
           String? name,
           String? species,
@@ -161,7 +154,6 @@ class _PatientBreedCopyWithImpl<$R, $Out>
       $apply(FieldCopyWithData({
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (domain != null) #domain: domain,
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (species != null) #species: species,
@@ -173,7 +165,6 @@ class _PatientBreedCopyWithImpl<$R, $Out>
   PatientBreed $make(CopyWithData data) => PatientBreed(
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      domain: data.get(#domain, or: $value.domain),
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       species: data.get(#species, or: $value.species),

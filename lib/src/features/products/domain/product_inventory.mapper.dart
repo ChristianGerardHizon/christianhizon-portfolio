@@ -31,6 +31,8 @@ class ProductStatusMapper extends EnumMapper<ProductStatus> {
         return ProductStatus.outOfStock;
       case r'lowStock':
         return ProductStatus.lowStock;
+      case r'noThreshold':
+        return ProductStatus.noThreshold;
       default:
         throw MapperException.unknownEnumValue(value);
     }
@@ -45,6 +47,8 @@ class ProductStatusMapper extends EnumMapper<ProductStatus> {
         return r'outOfStock';
       case ProductStatus.lowStock:
         return r'lowStock';
+      case ProductStatus.noThreshold:
+        return r'noThreshold';
     }
   }
 }
@@ -64,7 +68,6 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ProductInventoryMapper._());
       ProductStatusMapper.ensureInitialized();
-      ProductInventoryExpandMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -78,9 +81,6 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   static String _$collectionName(ProductInventory v) => v.collectionName;
   static const Field<ProductInventory, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$domain(ProductInventory v) => v.domain;
-  static const Field<ProductInventory, String> _f$domain =
-      Field('domain', _$domain);
   static String _$id(ProductInventory v) => v.id;
   static const Field<ProductInventory, String> _f$id = Field('id', _$id);
   static String _$product(ProductInventory v) => v.product;
@@ -89,14 +89,14 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   static ProductStatus _$status(ProductInventory v) => v.status;
   static const Field<ProductInventory, ProductStatus> _f$status =
       Field('status', _$status);
-  static ProductInventoryExpand _$expand(ProductInventory v) => v.expand;
-  static const Field<ProductInventory, ProductInventoryExpand> _f$expand =
-      Field('expand', _$expand);
   static String _$name(ProductInventory v) => v.name;
   static const Field<ProductInventory, String> _f$name = Field('name', _$name);
   static String? _$description(ProductInventory v) => v.description;
   static const Field<ProductInventory, String> _f$description =
       Field('description', _$description, opt: true);
+  static String? _$branchName(ProductInventory v) => v.branchName;
+  static const Field<ProductInventory, String> _f$branchName =
+      Field('branchName', _$branchName, opt: true);
   static String? _$category(ProductInventory v) => v.category;
   static const Field<ProductInventory, String> _f$category =
       Field('category', _$category, opt: true);
@@ -120,13 +120,12 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   final MappableFields<ProductInventory> fields = const {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #domain: _f$domain,
     #id: _f$id,
     #product: _f$product,
     #status: _f$status,
-    #expand: _f$expand,
     #name: _f$name,
     #description: _f$description,
+    #branchName: _f$branchName,
     #category: _f$category,
     #image: _f$image,
     #branch: _f$branch,
@@ -139,13 +138,12 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
     return ProductInventory(
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        domain: data.dec(_f$domain),
         id: data.dec(_f$id),
         product: data.dec(_f$product),
         status: data.dec(_f$status),
-        expand: data.dec(_f$expand),
         name: data.dec(_f$name),
         description: data.dec(_f$description),
+        branchName: data.dec(_f$branchName),
         category: data.dec(_f$category),
         image: data.dec(_f$image),
         branch: data.dec(_f$branch),
@@ -209,18 +207,15 @@ extension ProductInventoryValueCopy<$R, $Out>
 
 abstract class ProductInventoryCopyWith<$R, $In extends ProductInventory, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  ProductInventoryExpandCopyWith<$R, ProductInventoryExpand,
-      ProductInventoryExpand> get expand;
   $R call(
       {String? collectionId,
       String? collectionName,
-      String? domain,
       String? id,
       String? product,
       ProductStatus? status,
-      ProductInventoryExpand? expand,
       String? name,
       String? description,
+      String? branchName,
       String? category,
       String? image,
       String? branch,
@@ -240,20 +235,15 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
   late final ClassMapperBase<ProductInventory> $mapper =
       ProductInventoryMapper.ensureInitialized();
   @override
-  ProductInventoryExpandCopyWith<$R, ProductInventoryExpand,
-          ProductInventoryExpand>
-      get expand => $value.expand.copyWith.$chain((v) => call(expand: v));
-  @override
   $R call(
           {String? collectionId,
           String? collectionName,
-          String? domain,
           String? id,
           String? product,
           ProductStatus? status,
-          ProductInventoryExpand? expand,
           String? name,
           Object? description = $none,
+          Object? branchName = $none,
           Object? category = $none,
           Object? image = $none,
           Object? branch = $none,
@@ -263,13 +253,12 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
       $apply(FieldCopyWithData({
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (domain != null) #domain: domain,
         if (id != null) #id: id,
         if (product != null) #product: product,
         if (status != null) #status: status,
-        if (expand != null) #expand: expand,
         if (name != null) #name: name,
         if (description != $none) #description: description,
+        if (branchName != $none) #branchName: branchName,
         if (category != $none) #category: category,
         if (image != $none) #image: image,
         if (branch != $none) #branch: branch,
@@ -281,13 +270,12 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
   ProductInventory $make(CopyWithData data) => ProductInventory(
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      domain: data.get(#domain, or: $value.domain),
       id: data.get(#id, or: $value.id),
       product: data.get(#product, or: $value.product),
       status: data.get(#status, or: $value.status),
-      expand: data.get(#expand, or: $value.expand),
       name: data.get(#name, or: $value.name),
       description: data.get(#description, or: $value.description),
+      branchName: data.get(#branchName, or: $value.branchName),
       category: data.get(#category, or: $value.category),
       image: data.get(#image, or: $value.image),
       branch: data.get(#branch, or: $value.branch),
@@ -299,122 +287,4 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
   ProductInventoryCopyWith<$R2, ProductInventory, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
       _ProductInventoryCopyWithImpl<$R2, $Out2>($value, $cast, t);
-}
-
-class ProductInventoryExpandMapper
-    extends ClassMapperBase<ProductInventoryExpand> {
-  ProductInventoryExpandMapper._();
-
-  static ProductInventoryExpandMapper? _instance;
-  static ProductInventoryExpandMapper ensureInitialized() {
-    if (_instance == null) {
-      MapperContainer.globals.use(_instance = ProductInventoryExpandMapper._());
-      ProductMapper.ensureInitialized();
-    }
-    return _instance!;
-  }
-
-  @override
-  final String id = 'ProductInventoryExpand';
-
-  static Product _$product(ProductInventoryExpand v) => v.product;
-  static const Field<ProductInventoryExpand, Product> _f$product =
-      Field('product', _$product);
-
-  @override
-  final MappableFields<ProductInventoryExpand> fields = const {
-    #product: _f$product,
-  };
-
-  static ProductInventoryExpand _instantiate(DecodingData data) {
-    return ProductInventoryExpand(product: data.dec(_f$product));
-  }
-
-  @override
-  final Function instantiate = _instantiate;
-
-  static ProductInventoryExpand fromMap(Map<String, dynamic> map) {
-    return ensureInitialized().decodeMap<ProductInventoryExpand>(map);
-  }
-
-  static ProductInventoryExpand fromJson(String json) {
-    return ensureInitialized().decodeJson<ProductInventoryExpand>(json);
-  }
-}
-
-mixin ProductInventoryExpandMappable {
-  String toJson() {
-    return ProductInventoryExpandMapper.ensureInitialized()
-        .encodeJson<ProductInventoryExpand>(this as ProductInventoryExpand);
-  }
-
-  Map<String, dynamic> toMap() {
-    return ProductInventoryExpandMapper.ensureInitialized()
-        .encodeMap<ProductInventoryExpand>(this as ProductInventoryExpand);
-  }
-
-  ProductInventoryExpandCopyWith<ProductInventoryExpand, ProductInventoryExpand,
-          ProductInventoryExpand>
-      get copyWith => _ProductInventoryExpandCopyWithImpl<
-              ProductInventoryExpand, ProductInventoryExpand>(
-          this as ProductInventoryExpand, $identity, $identity);
-  @override
-  String toString() {
-    return ProductInventoryExpandMapper.ensureInitialized()
-        .stringifyValue(this as ProductInventoryExpand);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return ProductInventoryExpandMapper.ensureInitialized()
-        .equalsValue(this as ProductInventoryExpand, other);
-  }
-
-  @override
-  int get hashCode {
-    return ProductInventoryExpandMapper.ensureInitialized()
-        .hashValue(this as ProductInventoryExpand);
-  }
-}
-
-extension ProductInventoryExpandValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, ProductInventoryExpand, $Out> {
-  ProductInventoryExpandCopyWith<$R, ProductInventoryExpand, $Out>
-      get $asProductInventoryExpand => $base.as((v, t, t2) =>
-          _ProductInventoryExpandCopyWithImpl<$R, $Out>(v, t, t2));
-}
-
-abstract class ProductInventoryExpandCopyWith<
-    $R,
-    $In extends ProductInventoryExpand,
-    $Out> implements ClassCopyWith<$R, $In, $Out> {
-  ProductCopyWith<$R, Product, Product> get product;
-  $R call({Product? product});
-  ProductInventoryExpandCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
-}
-
-class _ProductInventoryExpandCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, ProductInventoryExpand, $Out>
-    implements
-        ProductInventoryExpandCopyWith<$R, ProductInventoryExpand, $Out> {
-  _ProductInventoryExpandCopyWithImpl(super.value, super.then, super.then2);
-
-  @override
-  late final ClassMapperBase<ProductInventoryExpand> $mapper =
-      ProductInventoryExpandMapper.ensureInitialized();
-  @override
-  ProductCopyWith<$R, Product, Product> get product =>
-      $value.product.copyWith.$chain((v) => call(product: v));
-  @override
-  $R call({Product? product}) =>
-      $apply(FieldCopyWithData({if (product != null) #product: product}));
-  @override
-  ProductInventoryExpand $make(CopyWithData data) =>
-      ProductInventoryExpand(product: data.get(#product, or: $value.product));
-
-  @override
-  ProductInventoryExpandCopyWith<$R2, ProductInventoryExpand, $Out2>
-      $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _ProductInventoryExpandCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

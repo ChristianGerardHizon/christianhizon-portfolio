@@ -22,12 +22,10 @@ class TreatmentRecord with TreatmentRecordMappable {
 
   final String collectionId;
   final String collectionName;
-  final String domain;
 
   TreatmentRecord({
     required this.collectionId,
     required this.collectionName,
-    required this.domain,
     required this.id,
     required this.type,
     required this.patient,
@@ -65,11 +63,11 @@ class TreatmentRecordExpand with TreatmentRecordExpandMappable {
         ...raw,
       },
     );
-  }  static const fromJson = TreatmentRecordExpandMapper.fromMap;
+  }
+
+  static const fromJson = TreatmentRecordExpandMapper.fromMap;
 
   TreatmentRecordExpand({
     this.type,
   });
-
-
 }

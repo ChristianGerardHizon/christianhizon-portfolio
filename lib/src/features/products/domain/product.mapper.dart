@@ -27,8 +27,6 @@ class ProductMapper extends ClassMapperBase<Product> {
   static String _$collectionName(Product v) => v.collectionName;
   static const Field<Product, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$domain(Product v) => v.domain;
-  static const Field<Product, String> _f$domain = Field('domain', _$domain);
   static String _$id(Product v) => v.id;
   static const Field<Product, String> _f$id = Field('id', _$id);
   static String _$name(Product v) => v.name;
@@ -45,6 +43,9 @@ class ProductMapper extends ClassMapperBase<Product> {
   static String? _$branch(Product v) => v.branch;
   static const Field<Product, String> _f$branch =
       Field('branch', _$branch, opt: true);
+  static int? _$stockThreshold(Product v) => v.stockThreshold;
+  static const Field<Product, int> _f$stockThreshold =
+      Field('stockThreshold', _$stockThreshold, opt: true);
   static ProductExpand _$expand(Product v) => v.expand;
   static const Field<Product, ProductExpand> _f$expand =
       Field('expand', _$expand);
@@ -62,13 +63,13 @@ class ProductMapper extends ClassMapperBase<Product> {
   final MappableFields<Product> fields = const {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #domain: _f$domain,
     #id: _f$id,
     #name: _f$name,
     #image: _f$image,
     #description: _f$description,
     #category: _f$category,
     #branch: _f$branch,
+    #stockThreshold: _f$stockThreshold,
     #expand: _f$expand,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
@@ -79,13 +80,13 @@ class ProductMapper extends ClassMapperBase<Product> {
     return Product(
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        domain: data.dec(_f$domain),
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         image: data.dec(_f$image),
         description: data.dec(_f$description),
         category: data.dec(_f$category),
         branch: data.dec(_f$branch),
+        stockThreshold: data.dec(_f$stockThreshold),
         expand: data.dec(_f$expand),
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
@@ -146,13 +147,13 @@ abstract class ProductCopyWith<$R, $In extends Product, $Out>
   $R call(
       {String? collectionId,
       String? collectionName,
-      String? domain,
       String? id,
       String? name,
       String? image,
       String? description,
       String? category,
       String? branch,
+      int? stockThreshold,
       ProductExpand? expand,
       bool? isDeleted,
       DateTime? created,
@@ -175,13 +176,13 @@ class _ProductCopyWithImpl<$R, $Out>
   $R call(
           {String? collectionId,
           String? collectionName,
-          String? domain,
           String? id,
           String? name,
           Object? image = $none,
           Object? description = $none,
           Object? category = $none,
           Object? branch = $none,
+          Object? stockThreshold = $none,
           ProductExpand? expand,
           bool? isDeleted,
           Object? created = $none,
@@ -189,13 +190,13 @@ class _ProductCopyWithImpl<$R, $Out>
       $apply(FieldCopyWithData({
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (domain != null) #domain: domain,
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (image != $none) #image: image,
         if (description != $none) #description: description,
         if (category != $none) #category: category,
         if (branch != $none) #branch: branch,
+        if (stockThreshold != $none) #stockThreshold: stockThreshold,
         if (expand != null) #expand: expand,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
@@ -205,13 +206,13 @@ class _ProductCopyWithImpl<$R, $Out>
   Product $make(CopyWithData data) => Product(
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      domain: data.get(#domain, or: $value.domain),
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       image: data.get(#image, or: $value.image),
       description: data.get(#description, or: $value.description),
       category: data.get(#category, or: $value.category),
       branch: data.get(#branch, or: $value.branch),
+      stockThreshold: data.get(#stockThreshold, or: $value.stockThreshold),
       expand: data.get(#expand, or: $value.expand),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),

@@ -26,9 +26,6 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
   static String _$collectionName(PrescriptionItem v) => v.collectionName;
   static const Field<PrescriptionItem, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$domain(PrescriptionItem v) => v.domain;
-  static const Field<PrescriptionItem, String> _f$domain =
-      Field('domain', _$domain);
   static String _$id(PrescriptionItem v) => v.id;
   static const Field<PrescriptionItem, String> _f$id = Field('id', _$id);
   static String _$medicalRecord(PrescriptionItem v) => v.medicalRecord;
@@ -57,7 +54,6 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
   final MappableFields<PrescriptionItem> fields = const {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #domain: _f$domain,
     #id: _f$id,
     #medicalRecord: _f$medicalRecord,
     #medication: _f$medication,
@@ -72,7 +68,6 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
     return PrescriptionItem(
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        domain: data.dec(_f$domain),
         id: data.dec(_f$id),
         medicalRecord: data.dec(_f$medicalRecord),
         medication: data.dec(_f$medication),
@@ -141,7 +136,6 @@ abstract class PrescriptionItemCopyWith<$R, $In extends PrescriptionItem, $Out>
   $R call(
       {String? collectionId,
       String? collectionName,
-      String? domain,
       String? id,
       String? medicalRecord,
       String? medication,
@@ -166,7 +160,6 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
   $R call(
           {String? collectionId,
           String? collectionName,
-          String? domain,
           String? id,
           String? medicalRecord,
           Object? medication = $none,
@@ -178,7 +171,6 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
       $apply(FieldCopyWithData({
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (domain != null) #domain: domain,
         if (id != null) #id: id,
         if (medicalRecord != null) #medicalRecord: medicalRecord,
         if (medication != $none) #medication: medication,
@@ -192,7 +184,6 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
   PrescriptionItem $make(CopyWithData data) => PrescriptionItem(
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      domain: data.get(#domain, or: $value.domain),
       id: data.get(#id, or: $value.id),
       medicalRecord: data.get(#medicalRecord, or: $value.medicalRecord),
       medication: data.get(#medication, or: $value.medication),

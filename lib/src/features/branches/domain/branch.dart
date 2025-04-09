@@ -14,12 +14,10 @@ class Branch with BranchMappable {
 
   final String collectionId;
   final String collectionName;
-  final String domain;
 
   Branch({
     required this.collectionId,
     required this.collectionName,
-    required this.domain,
     required this.id,
     required this.name,
     this.isDeleted = false,
@@ -45,5 +43,4 @@ class Branch with BranchMappable {
       'updated': created,
     };
   }
-
 }

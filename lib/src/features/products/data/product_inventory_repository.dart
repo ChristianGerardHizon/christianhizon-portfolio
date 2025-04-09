@@ -71,15 +71,17 @@ class ProductInventoryRepositoryImpl extends ProductInventoryRepository {
         page: pageNo,
         perPage: pageSize,
         sort: sort?.value,
+        expand: expand,
       );
+      final items = result.items.map<ProductInventory>((e) {
+        return mapToData(e.toJson());
+      }).toList();
       return PageResults(
         page: result.page,
         perPage: result.perPage,
         totalItems: result.totalItems,
         totalPages: result.totalPages,
-        items: result.items.map<ProductInventory>((e) {
-          return mapToData(e.toJson());
-        }).toList(),
+        items: items,
       );
     }, Failure.tryCatchData);
   }

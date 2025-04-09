@@ -69,7 +69,8 @@ class ProductPage extends HookConsumerWidget {
             body: const Center(child: CircularProgressIndicator()),
           ),
           error: (error, stackTrace) => Center(child: Text(error.toString())),
-          data: (product) {
+          data: (productState) {
+            final product = productState.product;
             return CustomScrollView(
               slivers: [
                 ///

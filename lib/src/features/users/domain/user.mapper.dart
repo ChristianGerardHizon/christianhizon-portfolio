@@ -20,8 +20,6 @@ class UserMapper extends ClassMapperBase<User> {
   @override
   final String id = 'User';
 
-  static String _$domain(User v) => v.domain;
-  static const Field<User, String> _f$domain = Field('domain', _$domain);
   static String _$collectionId(User v) => v.collectionId;
   static const Field<User, String> _f$collectionId =
       Field('collectionId', _$collectionId);
@@ -51,7 +49,6 @@ class UserMapper extends ClassMapperBase<User> {
 
   @override
   final MappableFields<User> fields = const {
-    #domain: _f$domain,
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
     #id: _f$id,
@@ -65,7 +62,6 @@ class UserMapper extends ClassMapperBase<User> {
 
   static User _instantiate(DecodingData data) {
     return User(
-        domain: data.dec(_f$domain),
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
         id: data.dec(_f$id),
@@ -124,8 +120,7 @@ extension UserValueCopy<$R, $Out> on ObjectCopyWith<$R, User, $Out> {
 abstract class UserCopyWith<$R, $In extends User, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {String? domain,
-      String? collectionId,
+      {String? collectionId,
       String? collectionName,
       String? id,
       String? name,
@@ -145,8 +140,7 @@ class _UserCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, User, $Out>
   late final ClassMapperBase<User> $mapper = UserMapper.ensureInitialized();
   @override
   $R call(
-          {String? domain,
-          String? collectionId,
+          {String? collectionId,
           String? collectionName,
           String? id,
           String? name,
@@ -156,7 +150,6 @@ class _UserCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, User, $Out>
           Object? avatar = $none,
           bool? verified}) =>
       $apply(FieldCopyWithData({
-        if (domain != null) #domain: domain,
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
         if (id != null) #id: id,
@@ -169,7 +162,6 @@ class _UserCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, User, $Out>
       }));
   @override
   User $make(CopyWithData data) => User(
-      domain: data.get(#domain, or: $value.domain),
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
       id: data.get(#id, or: $value.id),

@@ -1,12 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'product_controller.dart';
+part of 'product_inventory_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$productControllerHash() => r'be1f4502888daa35d5a2205d5c43b7ec56f67945';
+String _$productInventoryControllerHash() =>
+    r'13f999366730c304e2c265eb806902477af90b69';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,36 +30,37 @@ class _SystemHash {
   }
 }
 
-abstract class _$ProductController
-    extends BuildlessAutoDisposeAsyncNotifier<ProductState> {
+abstract class _$ProductInventoryController
+    extends BuildlessAutoDisposeAsyncNotifier<ProductInventory> {
   late final String id;
 
-  FutureOr<ProductState> build(
+  FutureOr<ProductInventory> build(
     String id,
   );
 }
 
-/// See also [ProductController].
-@ProviderFor(ProductController)
-const productControllerProvider = ProductControllerFamily();
+/// See also [ProductInventoryController].
+@ProviderFor(ProductInventoryController)
+const productInventoryControllerProvider = ProductInventoryControllerFamily();
 
-/// See also [ProductController].
-class ProductControllerFamily extends Family<AsyncValue<ProductState>> {
-  /// See also [ProductController].
-  const ProductControllerFamily();
+/// See also [ProductInventoryController].
+class ProductInventoryControllerFamily
+    extends Family<AsyncValue<ProductInventory>> {
+  /// See also [ProductInventoryController].
+  const ProductInventoryControllerFamily();
 
-  /// See also [ProductController].
-  ProductControllerProvider call(
+  /// See also [ProductInventoryController].
+  ProductInventoryControllerProvider call(
     String id,
   ) {
-    return ProductControllerProvider(
+    return ProductInventoryControllerProvider(
       id,
     );
   }
 
   @override
-  ProductControllerProvider getProviderOverride(
-    covariant ProductControllerProvider provider,
+  ProductInventoryControllerProvider getProviderOverride(
+    covariant ProductInventoryControllerProvider provider,
   ) {
     return call(
       provider.id,
@@ -77,30 +79,31 @@ class ProductControllerFamily extends Family<AsyncValue<ProductState>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'productControllerProvider';
+  String? get name => r'productInventoryControllerProvider';
 }
 
-/// See also [ProductController].
-class ProductControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    ProductController, ProductState> {
-  /// See also [ProductController].
-  ProductControllerProvider(
+/// See also [ProductInventoryController].
+class ProductInventoryControllerProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<ProductInventoryController,
+        ProductInventory> {
+  /// See also [ProductInventoryController].
+  ProductInventoryControllerProvider(
     String id,
   ) : this._internal(
-          () => ProductController()..id = id,
-          from: productControllerProvider,
-          name: r'productControllerProvider',
+          () => ProductInventoryController()..id = id,
+          from: productInventoryControllerProvider,
+          name: r'productInventoryControllerProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$productControllerHash,
-          dependencies: ProductControllerFamily._dependencies,
+                  : _$productInventoryControllerHash,
+          dependencies: ProductInventoryControllerFamily._dependencies,
           allTransitiveDependencies:
-              ProductControllerFamily._allTransitiveDependencies,
+              ProductInventoryControllerFamily._allTransitiveDependencies,
           id: id,
         );
 
-  ProductControllerProvider._internal(
+  ProductInventoryControllerProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -113,8 +116,8 @@ class ProductControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
   final String id;
 
   @override
-  FutureOr<ProductState> runNotifierBuild(
-    covariant ProductController notifier,
+  FutureOr<ProductInventory> runNotifierBuild(
+    covariant ProductInventoryController notifier,
   ) {
     return notifier.build(
       id,
@@ -122,10 +125,10 @@ class ProductControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  Override overrideWith(ProductController Function() create) {
+  Override overrideWith(ProductInventoryController Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ProductControllerProvider._internal(
+      override: ProductInventoryControllerProvider._internal(
         () => create()..id = id,
         from: from,
         name: null,
@@ -138,14 +141,14 @@ class ProductControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<ProductController, ProductState>
-      createElement() {
-    return _ProductControllerProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<ProductInventoryController,
+      ProductInventory> createElement() {
+    return _ProductInventoryControllerProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ProductControllerProvider && other.id == id;
+    return other is ProductInventoryControllerProvider && other.id == id;
   }
 
   @override
@@ -159,19 +162,19 @@ class ProductControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ProductControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<ProductState> {
+mixin ProductInventoryControllerRef
+    on AutoDisposeAsyncNotifierProviderRef<ProductInventory> {
   /// The parameter `id` of this provider.
   String get id;
 }
 
-class _ProductControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<ProductController,
-        ProductState> with ProductControllerRef {
-  _ProductControllerProviderElement(super.provider);
+class _ProductInventoryControllerProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<ProductInventoryController,
+        ProductInventory> with ProductInventoryControllerRef {
+  _ProductInventoryControllerProviderElement(super.provider);
 
   @override
-  String get id => (origin as ProductControllerProvider).id;
+  String get id => (origin as ProductInventoryControllerProvider).id;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

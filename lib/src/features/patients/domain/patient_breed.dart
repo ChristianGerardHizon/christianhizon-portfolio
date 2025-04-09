@@ -15,12 +15,10 @@ class PatientBreed with PatientBreedMappable {
 
   final String collectionId;
   final String collectionName;
-  final String domain;
 
   PatientBreed({
     required this.collectionId,
     required this.collectionName,
-    required this.domain,
     required this.id,
     this.name = '',
     required this.species,

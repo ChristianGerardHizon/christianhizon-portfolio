@@ -27,8 +27,6 @@ class PatientMapper extends ClassMapperBase<Patient> {
   static String _$collectionName(Patient v) => v.collectionName;
   static const Field<Patient, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$domain(Patient v) => v.domain;
-  static const Field<Patient, String> _f$domain = Field('domain', _$domain);
   static String _$id(Patient v) => v.id;
   static const Field<Patient, String> _f$id = Field('id', _$id);
   static String _$name(Patient v) => v.name;
@@ -80,7 +78,6 @@ class PatientMapper extends ClassMapperBase<Patient> {
   final MappableFields<Patient> fields = const {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #domain: _f$domain,
     #id: _f$id,
     #name: _f$name,
     #images: _f$images,
@@ -103,7 +100,6 @@ class PatientMapper extends ClassMapperBase<Patient> {
     return Patient(
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        domain: data.dec(_f$domain),
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         images: data.dec(_f$images),
@@ -178,7 +174,6 @@ abstract class PatientCopyWith<$R, $In extends Patient, $Out>
   $R call(
       {String? collectionId,
       String? collectionName,
-      String? domain,
       String? id,
       String? name,
       List<String>? images,
@@ -217,7 +212,6 @@ class _PatientCopyWithImpl<$R, $Out>
   $R call(
           {String? collectionId,
           String? collectionName,
-          String? domain,
           String? id,
           String? name,
           List<String>? images,
@@ -237,7 +231,6 @@ class _PatientCopyWithImpl<$R, $Out>
       $apply(FieldCopyWithData({
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (domain != null) #domain: domain,
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (images != null) #images: images,
@@ -259,7 +252,6 @@ class _PatientCopyWithImpl<$R, $Out>
   Patient $make(CopyWithData data) => Patient(
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      domain: data.get(#domain, or: $value.domain),
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       images: data.get(#images, or: $value.images),

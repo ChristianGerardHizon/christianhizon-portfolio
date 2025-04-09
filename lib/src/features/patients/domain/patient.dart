@@ -29,14 +29,12 @@ class Patient with PatientMappable {
 
   final String collectionId;
   final String collectionName;
-  final String domain;
 
   final PatientRecordExpand? expand;
 
   Patient({
     required this.collectionId,
     required this.collectionName,
-    required this.domain,
     required this.id,
     this.name = '',
     this.images = const [],

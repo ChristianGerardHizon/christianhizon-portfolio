@@ -27,9 +27,6 @@ class TreatmentRecordMapper extends ClassMapperBase<TreatmentRecord> {
   static String _$collectionName(TreatmentRecord v) => v.collectionName;
   static const Field<TreatmentRecord, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$domain(TreatmentRecord v) => v.domain;
-  static const Field<TreatmentRecord, String> _f$domain =
-      Field('domain', _$domain);
   static String _$id(TreatmentRecord v) => v.id;
   static const Field<TreatmentRecord, String> _f$id = Field('id', _$id);
   static String _$type(TreatmentRecord v) => v.type;
@@ -60,7 +57,6 @@ class TreatmentRecordMapper extends ClassMapperBase<TreatmentRecord> {
   final MappableFields<TreatmentRecord> fields = const {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #domain: _f$domain,
     #id: _f$id,
     #type: _f$type,
     #patient: _f$patient,
@@ -76,7 +72,6 @@ class TreatmentRecordMapper extends ClassMapperBase<TreatmentRecord> {
     return TreatmentRecord(
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        domain: data.dec(_f$domain),
         id: data.dec(_f$id),
         type: data.dec(_f$type),
         patient: data.dec(_f$patient),
@@ -147,7 +142,6 @@ abstract class TreatmentRecordCopyWith<$R, $In extends TreatmentRecord, $Out>
   $R call(
       {String? collectionId,
       String? collectionName,
-      String? domain,
       String? id,
       String? type,
       String? patient,
@@ -177,7 +171,6 @@ class _TreatmentRecordCopyWithImpl<$R, $Out>
   $R call(
           {String? collectionId,
           String? collectionName,
-          String? domain,
           String? id,
           String? type,
           String? patient,
@@ -190,7 +183,6 @@ class _TreatmentRecordCopyWithImpl<$R, $Out>
       $apply(FieldCopyWithData({
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (domain != null) #domain: domain,
         if (id != null) #id: id,
         if (type != null) #type: type,
         if (patient != null) #patient: patient,
@@ -205,7 +197,6 @@ class _TreatmentRecordCopyWithImpl<$R, $Out>
   TreatmentRecord $make(CopyWithData data) => TreatmentRecord(
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      domain: data.get(#domain, or: $value.domain),
       id: data.get(#id, or: $value.id),
       type: data.get(#type, or: $value.type),
       patient: data.get(#patient, or: $value.patient),

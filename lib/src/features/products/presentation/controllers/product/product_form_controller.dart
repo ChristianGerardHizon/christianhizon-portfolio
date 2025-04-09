@@ -1,8 +1,10 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_image.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
+import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/features/branches/data/branch_repository.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
 import 'package:gym_system/src/features/products/data/product_category_repository.dart';
@@ -49,7 +51,8 @@ class ProductFormController extends _$ProductFormController {
       }
 
       final product = await $(productRepo.get(id));
-      final images = await $(_buildInitialImages(product));
+      final domain = ref.read(pocketbaseProvider).baseURL;
+      final images = await $(_buildInitialImages(product, domain));
 
       return ProductFormState(
         product: product,
@@ -81,15 +84,27 @@ class ProductFormController extends _$ProductFormController {
   }
 }
 
-TaskResult<List<PBImage>?> _buildInitialImages(Product? product) {
+TaskResult<List<PBImage>?> _buildInitialImages(
+    Product? product, String domain) {
   return TaskResult.tryCatch(() async {
-    if (product == null || !product.hasImage || product.imageUri == null) {
+    if (product == null || !product.hasImage) {
+      return null;
+    }
+
+    final imageUri = PBUtils.imageBuilder(
+      collection: product.collectionId,
+      domain: domain,
+      fileName: product.image!,
+      id: product.id,
+    );
+
+    if (imageUri == null) {
       return null;
     }
 
     return [
       PBNetworkImage(
-        uri: product.imageUri!,
+        uri: imageUri,
         field: ProductField.image,
         id: product.id,
       )

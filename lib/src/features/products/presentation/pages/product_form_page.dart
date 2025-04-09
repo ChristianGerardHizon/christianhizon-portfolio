@@ -150,7 +150,7 @@ class ProductFormPage extends HookConsumerWidget {
                   minLines: 2,
                   maxLines: 10,
                   decoration: InputDecoration(
-                    label: Text('Product Descriptions'),
+                    label: Text('Product Description'),
                     border: OutlineInputBorder(),
                   ),
                   validator: FormBuilderValidators.compose([]),

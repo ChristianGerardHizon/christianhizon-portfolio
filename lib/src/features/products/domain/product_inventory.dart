@@ -1,10 +1,9 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/features/products/domain/product.dart';
 
 part 'product_inventory.mapper.dart';
 
 @MappableEnum()
-enum ProductStatus { inStock, outOfStock, lowStock }
+enum ProductStatus { inStock, outOfStock, lowStock, noThreshold }
 
 @MappableClass()
 class ProductInventory with ProductInventoryMappable {
@@ -17,6 +16,7 @@ class ProductInventory with ProductInventoryMappable {
   final String? category;
   final String? image;
   final String? branch;
+  final String? branchName;
 
   final DateTime? created;
   final DateTime? updated;
@@ -24,20 +24,16 @@ class ProductInventory with ProductInventoryMappable {
   final bool isDeleted;
   final String collectionId;
   final String collectionName;
-  final String domain;
-
-  final ProductInventoryExpand expand;
 
   ProductInventory({
     required this.collectionId,
     required this.collectionName,
-    required this.domain,
     required this.id,
     required this.product,
     required this.status,
-    required this.expand,
     required this.name,
     this.description,
+    this.branchName,
     this.category,
     this.image,
     this.branch,
@@ -64,29 +60,4 @@ class ProductInventory with ProductInventoryMappable {
       'updated': created,
     };
   }
-}
-
-@MappableClass()
-class ProductInventoryExpand with ProductInventoryExpandMappable {
-  final Product product;
-
-  static fromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    return ProductInventoryExpandMapper.fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
-
-  static const fromJson = ProductInventoryExpandMapper.fromMap;
-
-  ProductInventoryExpand({
-    required this.product,
-  });
-}
-
-extension ListProductInventory on List<ProductInventory> {
-  List<Product> get products =>
-      map((e) => e.expand?.product).whereType<Product>().toList();
 }

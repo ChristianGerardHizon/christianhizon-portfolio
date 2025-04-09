@@ -17,12 +17,10 @@ class Admin with AdminMappable {
 
   final String collectionId;
   final String collectionName;
-  final String domain;
 
   Admin({
     required this.collectionId,
     required this.collectionName,
-    required this.domain,
     required this.id,
     required this.name,
     this.email = '',
@@ -46,7 +44,7 @@ class Admin with AdminMappable {
 
   bool get hasAvatar => avatar is String && avatar!.isNotEmpty;
 
-  Uri? get avatarUri {
+  Uri? avatarUri(String domain) {
     if (avatar == null || avatar!.isEmpty) return null;
     return Uri.tryParse('$domain/$collectionId/$avatar');
   }

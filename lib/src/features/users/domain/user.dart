@@ -16,10 +16,8 @@ class User with UserMappable {
 
   final String collectionId;
   final String collectionName;
-  final String domain;
 
   User({
-    required this.domain,
     required this.collectionId,
     required this.collectionName,
     required this.id,
@@ -52,7 +50,7 @@ class User with UserMappable {
 
   bool get hasAvatar => avatar is String && avatar!.isNotEmpty;
 
-  Uri? get avatarUri {
+  Uri? avatarUri(String domain) {
     if (avatar == null || avatar!.isEmpty) return null;
     return PBUtils.imageBuilder(
       collection: collectionId,

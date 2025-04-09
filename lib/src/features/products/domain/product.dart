@@ -13,6 +13,7 @@ class Product with ProductMappable {
   final String? category;
   final String? image;
   final String? branch;
+  final int? stockThreshold;
 
   final bool isDeleted;
   final DateTime? created;
@@ -20,20 +21,19 @@ class Product with ProductMappable {
 
   final String collectionId;
   final String collectionName;
-  final String domain;
 
   final ProductExpand expand;
 
   Product({
     required this.collectionId,
     required this.collectionName,
-    required this.domain,
     required this.id,
     required this.name,
     this.image,
     this.description,
     this.category,
     this.branch,
+    this.stockThreshold,
     required this.expand,
     this.isDeleted = false,
     required this.created,
@@ -60,15 +60,6 @@ class Product with ProductMappable {
   }
 
   bool get hasImage => image != null && image!.isNotEmpty;
-  Uri? get imageUri {
-    if (!hasImage) return null;
-    return PBUtils.imageBuilder(
-      collection: collectionId,
-      id: id,
-      domain: domain,
-      fileName: image!,
-    );
-  }
 }
 
 @MappableClass()

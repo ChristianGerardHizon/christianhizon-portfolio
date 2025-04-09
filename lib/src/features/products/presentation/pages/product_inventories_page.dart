@@ -17,6 +17,7 @@ import 'package:gym_system/src/features/products/presentation/controllers/produc
 import 'package:gym_system/src/features/products/presentation/controllers/product_inventory/product_inventories_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_inventory/product_inventories_page_controller.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_card.dart';
+import 'package:gym_system/src/features/products/presentation/widgets/product_inventory_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductInventoriesPage extends HookConsumerWidget {
@@ -35,7 +36,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
     ///
     /// onTap
     ///
-    onTap(Product product) {
+    onTap(ProductInventory product) {
       ProductPageRoute(product.id).push(context);
     }
 
@@ -43,7 +44,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
     /// onRefresh
     ///
     onRefresh() {
-      ref.invalidate(productsControllerProvider);
+      ref.invalidate(productInventoriesControllerProvider);
       controller.clear();
     }
 
@@ -150,7 +151,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
         /// Table Data
         ///
         onHeaderTap: (headerKey) {},
-        onTap: (data) => onTap(data.expand.product),
+        onTap: (data) => onTap(data),
         data: [
           TableColumn(
             header: 'Name',
@@ -172,7 +173,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
             builder: (context, product, extra) {
               return Align(
                 alignment: Alignment.centerLeft,
-                child: Text(product.branch.optional(),
+                child: Text(product.branchName.optional(),
                     overflow: TextOverflow.ellipsis),
               );
             },
@@ -183,7 +184,8 @@ class ProductInventoriesPage extends HookConsumerWidget {
             builder: (context, product, extra) {
               return Align(
                 alignment: Alignment.centerLeft,
-                child: Text(product.name, overflow: TextOverflow.ellipsis),
+                child:
+                    Text(product.status.name, overflow: TextOverflow.ellipsis),
               );
             },
           ),
@@ -217,10 +219,9 @@ class ProductInventoriesPage extends HookConsumerWidget {
         /// Builder for mobile
         ///
         mobileBuilder: (context, index, productInventory, selected) {
-          final product = productInventory.expand.product;
-          return ProductCard(
-            product: product,
-            onTap: () => onTap(product),
+          return ProductInventoryCard(
+            productInventory: productInventory,
+            onTap: () => onTap(productInventory),
             selected: selected,
             onLongPress: () {
               controller.toggle(index);

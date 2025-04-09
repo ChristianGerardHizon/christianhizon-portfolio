@@ -26,8 +26,6 @@ class BranchMapper extends ClassMapperBase<Branch> {
   static String _$collectionName(Branch v) => v.collectionName;
   static const Field<Branch, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$domain(Branch v) => v.domain;
-  static const Field<Branch, String> _f$domain = Field('domain', _$domain);
   static String _$id(Branch v) => v.id;
   static const Field<Branch, String> _f$id = Field('id', _$id);
   static String _$name(Branch v) => v.name;
@@ -44,7 +42,6 @@ class BranchMapper extends ClassMapperBase<Branch> {
   final MappableFields<Branch> fields = const {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #domain: _f$domain,
     #id: _f$id,
     #name: _f$name,
     #isDeleted: _f$isDeleted,
@@ -56,7 +53,6 @@ class BranchMapper extends ClassMapperBase<Branch> {
     return Branch(
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        domain: data.dec(_f$domain),
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         isDeleted: data.dec(_f$isDeleted),
@@ -113,7 +109,6 @@ abstract class BranchCopyWith<$R, $In extends Branch, $Out>
   $R call(
       {String? collectionId,
       String? collectionName,
-      String? domain,
       String? id,
       String? name,
       bool? isDeleted,
@@ -132,7 +127,6 @@ class _BranchCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Branch, $Out>
   $R call(
           {String? collectionId,
           String? collectionName,
-          String? domain,
           String? id,
           String? name,
           bool? isDeleted,
@@ -141,7 +135,6 @@ class _BranchCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Branch, $Out>
       $apply(FieldCopyWithData({
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (domain != null) #domain: domain,
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (isDeleted != null) #isDeleted: isDeleted,
@@ -152,7 +145,6 @@ class _BranchCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Branch, $Out>
   Branch $make(CopyWithData data) => Branch(
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      domain: data.get(#domain, or: $value.domain),
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
