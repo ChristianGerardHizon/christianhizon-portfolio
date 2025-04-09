@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:gym_system/src/core/widgets/responsive_row_column.dart';
 import 'package:gym_system/src/features/dashboard/presentation/widgets/kpis/kpi_card.dart';
 
 class DashboardKpis extends StatelessWidget {
@@ -7,34 +8,30 @@ class DashboardKpis extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: KpiCard(
+        ResponsiveRowColumn(
+          first: KpiCard(
             title: 'Total Patients',
             value: '100',
             icon: Icon(Icons.person),
           ),
-        ),
-        Expanded(
-          child: KpiCard(
+          second: KpiCard(
             title: 'Total Expired Products',
             value: '10',
             icon: Icon(Icons.warning),
           ),
         ),
-        Expanded(
-          child: KpiCard(
-            title: 'Total Available Products',
+        ResponsiveRowColumn(
+          first: KpiCard(
+            title: 'Total Patients',
             value: '100',
-            icon: Icon(Icons.inventory),
+            icon: Icon(Icons.person),
           ),
-        ),
-        Expanded(
-          child: KpiCard(
-            title: 'Monthly Visits',
-            value: '100',
-            icon: Icon(Icons.calendar_month),
+          second: KpiCard(
+            title: 'Total Expired Products',
+            value: '10',
+            icon: Icon(Icons.warning),
           ),
         ),
       ],

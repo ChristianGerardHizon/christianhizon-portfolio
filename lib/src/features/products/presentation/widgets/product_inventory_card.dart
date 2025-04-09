@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/selectable_card.dart';
 import 'package:gym_system/src/features/products/domain/product_inventory.dart';
 
@@ -22,11 +23,14 @@ class ProductInventoryCard extends StatelessWidget {
     return SelectableCard(
       margin: EdgeInsets.all(8),
       onLongPress: onLongPress,
+      onTap: onTap,
       selected: selected,
-      child: Padding(
-        padding: EdgeInsets.all(8),
-        child: Column(
+      child: ListTile(
+        leading: Icon(MIcons.abacus),
+        title: Text(productInventory.name),
+        subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(productInventory.name),
             Text(productInventory.category.optional()),

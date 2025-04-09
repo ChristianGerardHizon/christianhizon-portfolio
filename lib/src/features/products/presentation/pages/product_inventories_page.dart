@@ -16,7 +16,6 @@ import 'package:gym_system/src/features/products/domain/product_inventory_search
 import 'package:gym_system/src/features/products/presentation/controllers/product/products_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_inventory/product_inventories_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_inventory/product_inventories_page_controller.dart';
-import 'package:gym_system/src/features/products/presentation/widgets/product_card.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_inventory_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -36,7 +35,17 @@ class ProductInventoriesPage extends HookConsumerWidget {
     ///
     /// onTap
     ///
-    onTap(ProductInventory product) {
+    onTap(int index, ProductInventory product, bool selected) {
+      if (!selected && controller.selected.isNotEmpty) {
+        controller.toggle(index);
+        return;
+      }
+
+      if (selected) {
+        controller.toggle(index);
+        return;
+      }
+
       ProductPageRoute(product.id).push(context);
     }
 
@@ -151,7 +160,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
         /// Table Data
         ///
         onHeaderTap: (headerKey) {},
-        onTap: (data) => onTap(data),
+        onTap: (data) => onTap(0, data, false),
         data: [
           TableColumn(
             header: 'Name',
@@ -221,7 +230,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
         mobileBuilder: (context, index, productInventory, selected) {
           return ProductInventoryCard(
             productInventory: productInventory,
-            onTap: () => onTap(productInventory),
+            onTap: () => onTap(index, productInventory, selected),
             selected: selected,
             onLongPress: () {
               controller.toggle(index);

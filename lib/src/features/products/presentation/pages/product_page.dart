@@ -110,7 +110,7 @@ class ProductPage extends HookConsumerWidget {
 
                               DynamicListTile.divider(
                                 title: Text('Branch: '),
-                                content: Text(product.branch.optional()),
+                                content: Text((product.expand.branch?.name).optional()),
                               ),
 
                               ///

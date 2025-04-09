@@ -19,20 +19,22 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  SelectableCard(
-            margin: EdgeInsets.all(8),
-            onLongPress: onLongPress,
-            selected: selected,
-            child: Padding(
-              padding: EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(product.name),
-                  Text(product.category.optional()),
-                ],
-              ),
-            ),
-          );
+    return SelectableCard(
+      margin: EdgeInsets.all(8),
+      onLongPress: onLongPress,
+      onTap: onTap,
+      selected: selected,
+      child: ListTile(
+          leading: Icon(Icons.abc),
+          title: Text(product.name),
+          subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(product.name),
+            Text(product.category.optional()),
+          ],
+        )
+      ),
+    );
   }
 }

@@ -31,7 +31,15 @@ class ProductsPage extends HookConsumerWidget {
     ///
     /// onTap
     ///
-    onTap(Product product) {
+    onTap(int index, Product product, bool selected) {
+      if (!selected && controller.selected.isNotEmpty) {
+        controller.toggle(index);
+        return;
+      }
+     if (selected) {
+        controller.toggle(index);
+        return;
+      }
       ProductPageRoute(product.id).push(context);
     }
 
@@ -146,7 +154,7 @@ class ProductsPage extends HookConsumerWidget {
         /// Table Data
         ///
         onHeaderTap: (headerKey) {},
-        onTap: onTap,
+        onTap: (x) => onTap(0, x, false),
         data: [
           TableColumn(
             header: 'Name',
@@ -215,7 +223,7 @@ class ProductsPage extends HookConsumerWidget {
         mobileBuilder: (context, index, product, selected) {
           return ProductCard(
             product: product,
-            onTap: () => onTap(product),
+            onTap: () => onTap(index, product, selected),
             selected: selected,
             onLongPress: () {
               controller.toggle(index);
