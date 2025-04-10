@@ -67,6 +67,7 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   static ProductInventoryMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ProductInventoryMapper._());
+      PbObjectMapper.ensureInitialized();
       ProductStatusMapper.ensureInitialized();
     }
     return _instance!;
@@ -75,14 +76,14 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   @override
   final String id = 'ProductInventory';
 
+  static String _$id(ProductInventory v) => v.id;
+  static const Field<ProductInventory, String> _f$id = Field('id', _$id);
   static String _$collectionId(ProductInventory v) => v.collectionId;
   static const Field<ProductInventory, String> _f$collectionId =
       Field('collectionId', _$collectionId);
   static String _$collectionName(ProductInventory v) => v.collectionName;
   static const Field<ProductInventory, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$id(ProductInventory v) => v.id;
-  static const Field<ProductInventory, String> _f$id = Field('id', _$id);
   static String _$product(ProductInventory v) => v.product;
   static const Field<ProductInventory, String> _f$product =
       Field('product', _$product);
@@ -94,9 +95,6 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   static String? _$description(ProductInventory v) => v.description;
   static const Field<ProductInventory, String> _f$description =
       Field('description', _$description, opt: true);
-  static String? _$branchName(ProductInventory v) => v.branchName;
-  static const Field<ProductInventory, String> _f$branchName =
-      Field('branchName', _$branchName, opt: true);
   static String? _$category(ProductInventory v) => v.category;
   static const Field<ProductInventory, String> _f$category =
       Field('category', _$category, opt: true);
@@ -106,29 +104,32 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   static String? _$branch(ProductInventory v) => v.branch;
   static const Field<ProductInventory, String> _f$branch =
       Field('branch', _$branch, opt: true);
+  static String? _$branchName(ProductInventory v) => v.branchName;
+  static const Field<ProductInventory, String> _f$branchName =
+      Field('branchName', _$branchName, opt: true);
   static bool _$isDeleted(ProductInventory v) => v.isDeleted;
   static const Field<ProductInventory, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
   static DateTime? _$created(ProductInventory v) => v.created;
   static const Field<ProductInventory, DateTime> _f$created =
-      Field('created', _$created);
+      Field('created', _$created, opt: true);
   static DateTime? _$updated(ProductInventory v) => v.updated;
   static const Field<ProductInventory, DateTime> _f$updated =
-      Field('updated', _$updated);
+      Field('updated', _$updated, opt: true);
 
   @override
   final MappableFields<ProductInventory> fields = const {
+    #id: _f$id,
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #id: _f$id,
     #product: _f$product,
     #status: _f$status,
     #name: _f$name,
     #description: _f$description,
-    #branchName: _f$branchName,
     #category: _f$category,
     #image: _f$image,
     #branch: _f$branch,
+    #branchName: _f$branchName,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
@@ -136,17 +137,17 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
 
   static ProductInventory _instantiate(DecodingData data) {
     return ProductInventory(
+        id: data.dec(_f$id),
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        id: data.dec(_f$id),
         product: data.dec(_f$product),
         status: data.dec(_f$status),
         name: data.dec(_f$name),
         description: data.dec(_f$description),
-        branchName: data.dec(_f$branchName),
         category: data.dec(_f$category),
         image: data.dec(_f$image),
         branch: data.dec(_f$branch),
+        branchName: data.dec(_f$branchName),
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated));
@@ -206,19 +207,20 @@ extension ProductInventoryValueCopy<$R, $Out>
 }
 
 abstract class ProductInventoryCopyWith<$R, $In extends ProductInventory, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+    implements PbObjectCopyWith<$R, $In, $Out> {
+  @override
   $R call(
-      {String? collectionId,
+      {String? id,
+      String? collectionId,
       String? collectionName,
-      String? id,
       String? product,
       ProductStatus? status,
       String? name,
       String? description,
-      String? branchName,
       String? category,
       String? image,
       String? branch,
+      String? branchName,
       bool? isDeleted,
       DateTime? created,
       DateTime? updated});
@@ -236,49 +238,49 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
       ProductInventoryMapper.ensureInitialized();
   @override
   $R call(
-          {String? collectionId,
+          {String? id,
+          String? collectionId,
           String? collectionName,
-          String? id,
           String? product,
           ProductStatus? status,
           String? name,
           Object? description = $none,
-          Object? branchName = $none,
           Object? category = $none,
           Object? image = $none,
           Object? branch = $none,
+          Object? branchName = $none,
           bool? isDeleted,
           Object? created = $none,
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
+        if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (id != null) #id: id,
         if (product != null) #product: product,
         if (status != null) #status: status,
         if (name != null) #name: name,
         if (description != $none) #description: description,
-        if (branchName != $none) #branchName: branchName,
         if (category != $none) #category: category,
         if (image != $none) #image: image,
         if (branch != $none) #branch: branch,
+        if (branchName != $none) #branchName: branchName,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated
       }));
   @override
   ProductInventory $make(CopyWithData data) => ProductInventory(
+      id: data.get(#id, or: $value.id),
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      id: data.get(#id, or: $value.id),
       product: data.get(#product, or: $value.product),
       status: data.get(#status, or: $value.status),
       name: data.get(#name, or: $value.name),
       description: data.get(#description, or: $value.description),
-      branchName: data.get(#branchName, or: $value.branchName),
       category: data.get(#category, or: $value.category),
       image: data.get(#image, or: $value.image),
       branch: data.get(#branch, or: $value.branch),
+      branchName: data.get(#branchName, or: $value.branchName),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated));

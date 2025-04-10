@@ -13,6 +13,7 @@ class ProductMapper extends ClassMapperBase<Product> {
   static ProductMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ProductMapper._());
+      PbObjectMapper.ensureInitialized();
       ProductExpandMapper.ensureInitialized();
     }
     return _instance!;
@@ -21,14 +22,14 @@ class ProductMapper extends ClassMapperBase<Product> {
   @override
   final String id = 'Product';
 
+  static String _$id(Product v) => v.id;
+  static const Field<Product, String> _f$id = Field('id', _$id);
   static String _$collectionId(Product v) => v.collectionId;
   static const Field<Product, String> _f$collectionId =
       Field('collectionId', _$collectionId);
   static String _$collectionName(Product v) => v.collectionName;
   static const Field<Product, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$id(Product v) => v.id;
-  static const Field<Product, String> _f$id = Field('id', _$id);
   static String _$name(Product v) => v.name;
   static const Field<Product, String> _f$name = Field('name', _$name);
   static String? _$image(Product v) => v.image;
@@ -54,16 +55,16 @@ class ProductMapper extends ClassMapperBase<Product> {
       Field('isDeleted', _$isDeleted, opt: true, def: false);
   static DateTime? _$created(Product v) => v.created;
   static const Field<Product, DateTime> _f$created =
-      Field('created', _$created);
+      Field('created', _$created, opt: true);
   static DateTime? _$updated(Product v) => v.updated;
   static const Field<Product, DateTime> _f$updated =
-      Field('updated', _$updated);
+      Field('updated', _$updated, opt: true);
 
   @override
   final MappableFields<Product> fields = const {
+    #id: _f$id,
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #id: _f$id,
     #name: _f$name,
     #image: _f$image,
     #description: _f$description,
@@ -78,9 +79,9 @@ class ProductMapper extends ClassMapperBase<Product> {
 
   static Product _instantiate(DecodingData data) {
     return Product(
+        id: data.dec(_f$id),
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        id: data.dec(_f$id),
         name: data.dec(_f$name),
         image: data.dec(_f$image),
         description: data.dec(_f$description),
@@ -142,12 +143,13 @@ extension ProductValueCopy<$R, $Out> on ObjectCopyWith<$R, Product, $Out> {
 }
 
 abstract class ProductCopyWith<$R, $In extends Product, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+    implements PbObjectCopyWith<$R, $In, $Out> {
   ProductExpandCopyWith<$R, ProductExpand, ProductExpand> get expand;
+  @override
   $R call(
-      {String? collectionId,
+      {String? id,
+      String? collectionId,
       String? collectionName,
-      String? id,
       String? name,
       String? image,
       String? description,
@@ -174,9 +176,9 @@ class _ProductCopyWithImpl<$R, $Out>
       $value.expand.copyWith.$chain((v) => call(expand: v));
   @override
   $R call(
-          {String? collectionId,
+          {String? id,
+          String? collectionId,
           String? collectionName,
-          String? id,
           String? name,
           Object? image = $none,
           Object? description = $none,
@@ -188,9 +190,9 @@ class _ProductCopyWithImpl<$R, $Out>
           Object? created = $none,
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
+        if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (id != null) #id: id,
         if (name != null) #name: name,
         if (image != $none) #image: image,
         if (description != $none) #description: description,
@@ -204,9 +206,9 @@ class _ProductCopyWithImpl<$R, $Out>
       }));
   @override
   Product $make(CopyWithData data) => Product(
+      id: data.get(#id, or: $value.id),
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       image: data.get(#image, or: $value.image),
       description: data.get(#description, or: $value.description),

@@ -13,6 +13,7 @@ class PatientSpeciesMapper extends ClassMapperBase<PatientSpecies> {
   static PatientSpeciesMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = PatientSpeciesMapper._());
+      PbObjectMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -20,14 +21,14 @@ class PatientSpeciesMapper extends ClassMapperBase<PatientSpecies> {
   @override
   final String id = 'PatientSpecies';
 
+  static String _$id(PatientSpecies v) => v.id;
+  static const Field<PatientSpecies, String> _f$id = Field('id', _$id);
   static String _$collectionId(PatientSpecies v) => v.collectionId;
   static const Field<PatientSpecies, String> _f$collectionId =
       Field('collectionId', _$collectionId);
   static String _$collectionName(PatientSpecies v) => v.collectionName;
   static const Field<PatientSpecies, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$id(PatientSpecies v) => v.id;
-  static const Field<PatientSpecies, String> _f$id = Field('id', _$id);
   static String _$name(PatientSpecies v) => v.name;
   static const Field<PatientSpecies, String> _f$name =
       Field('name', _$name, opt: true, def: '');
@@ -43,9 +44,9 @@ class PatientSpeciesMapper extends ClassMapperBase<PatientSpecies> {
 
   @override
   final MappableFields<PatientSpecies> fields = const {
+    #id: _f$id,
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #id: _f$id,
     #name: _f$name,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
@@ -54,9 +55,9 @@ class PatientSpeciesMapper extends ClassMapperBase<PatientSpecies> {
 
   static PatientSpecies _instantiate(DecodingData data) {
     return PatientSpecies(
+        id: data.dec(_f$id),
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        id: data.dec(_f$id),
         name: data.dec(_f$name),
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
@@ -116,11 +117,12 @@ extension PatientSpeciesValueCopy<$R, $Out>
 }
 
 abstract class PatientSpeciesCopyWith<$R, $In extends PatientSpecies, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+    implements PbObjectCopyWith<$R, $In, $Out> {
+  @override
   $R call(
-      {String? collectionId,
+      {String? id,
+      String? collectionId,
       String? collectionName,
-      String? id,
       String? name,
       bool? isDeleted,
       DateTime? created,
@@ -139,17 +141,17 @@ class _PatientSpeciesCopyWithImpl<$R, $Out>
       PatientSpeciesMapper.ensureInitialized();
   @override
   $R call(
-          {String? collectionId,
+          {String? id,
+          String? collectionId,
           String? collectionName,
-          String? id,
           String? name,
           bool? isDeleted,
           Object? created = $none,
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
+        if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (id != null) #id: id,
         if (name != null) #name: name,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
@@ -157,9 +159,9 @@ class _PatientSpeciesCopyWithImpl<$R, $Out>
       }));
   @override
   PatientSpecies $make(CopyWithData data) => PatientSpecies(
+      id: data.get(#id, or: $value.id),
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),

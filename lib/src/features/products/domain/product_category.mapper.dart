@@ -13,6 +13,7 @@ class ProductCategoryMapper extends ClassMapperBase<ProductCategory> {
   static ProductCategoryMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ProductCategoryMapper._());
+      PbObjectMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -22,6 +23,12 @@ class ProductCategoryMapper extends ClassMapperBase<ProductCategory> {
 
   static String _$id(ProductCategory v) => v.id;
   static const Field<ProductCategory, String> _f$id = Field('id', _$id);
+  static String _$collectionId(ProductCategory v) => v.collectionId;
+  static const Field<ProductCategory, String> _f$collectionId =
+      Field('collectionId', _$collectionId);
+  static String _$collectionName(ProductCategory v) => v.collectionName;
+  static const Field<ProductCategory, String> _f$collectionName =
+      Field('collectionName', _$collectionName);
   static String _$name(ProductCategory v) => v.name;
   static const Field<ProductCategory, String> _f$name = Field('name', _$name);
   static String? _$parent(ProductCategory v) => v.parent;
@@ -32,14 +39,16 @@ class ProductCategoryMapper extends ClassMapperBase<ProductCategory> {
       Field('isDeleted', _$isDeleted, opt: true, def: false);
   static DateTime? _$created(ProductCategory v) => v.created;
   static const Field<ProductCategory, DateTime> _f$created =
-      Field('created', _$created);
+      Field('created', _$created, opt: true);
   static DateTime? _$updated(ProductCategory v) => v.updated;
   static const Field<ProductCategory, DateTime> _f$updated =
-      Field('updated', _$updated);
+      Field('updated', _$updated, opt: true);
 
   @override
   final MappableFields<ProductCategory> fields = const {
     #id: _f$id,
+    #collectionId: _f$collectionId,
+    #collectionName: _f$collectionName,
     #name: _f$name,
     #parent: _f$parent,
     #isDeleted: _f$isDeleted,
@@ -50,6 +59,8 @@ class ProductCategoryMapper extends ClassMapperBase<ProductCategory> {
   static ProductCategory _instantiate(DecodingData data) {
     return ProductCategory(
         id: data.dec(_f$id),
+        collectionId: data.dec(_f$collectionId),
+        collectionName: data.dec(_f$collectionName),
         name: data.dec(_f$name),
         parent: data.dec(_f$parent),
         isDeleted: data.dec(_f$isDeleted),
@@ -110,9 +121,12 @@ extension ProductCategoryValueCopy<$R, $Out>
 }
 
 abstract class ProductCategoryCopyWith<$R, $In extends ProductCategory, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+    implements PbObjectCopyWith<$R, $In, $Out> {
+  @override
   $R call(
       {String? id,
+      String? collectionId,
+      String? collectionName,
       String? name,
       String? parent,
       bool? isDeleted,
@@ -133,6 +147,8 @@ class _ProductCategoryCopyWithImpl<$R, $Out>
   @override
   $R call(
           {String? id,
+          String? collectionId,
+          String? collectionName,
           String? name,
           Object? parent = $none,
           bool? isDeleted,
@@ -140,6 +156,8 @@ class _ProductCategoryCopyWithImpl<$R, $Out>
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
+        if (collectionId != null) #collectionId: collectionId,
+        if (collectionName != null) #collectionName: collectionName,
         if (name != null) #name: name,
         if (parent != $none) #parent: parent,
         if (isDeleted != null) #isDeleted: isDeleted,
@@ -149,6 +167,8 @@ class _ProductCategoryCopyWithImpl<$R, $Out>
   @override
   ProductCategory $make(CopyWithData data) => ProductCategory(
       id: data.get(#id, or: $value.id),
+      collectionId: data.get(#collectionId, or: $value.collectionId),
+      collectionName: data.get(#collectionName, or: $value.collectionName),
       name: data.get(#name, or: $value.name),
       parent: data.get(#parent, or: $value.parent),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),

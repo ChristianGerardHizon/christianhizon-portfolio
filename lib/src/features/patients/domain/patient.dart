@@ -1,4 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/classes/pb_object.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/features/patients/domain/patient_breed.dart';
 import 'package:gym_system/src/features/patients/domain/patient_species.dart';
@@ -6,14 +7,10 @@ import 'package:gym_system/src/features/patients/domain/patient_species.dart';
 part 'patient.mapper.dart';
 
 @MappableClass()
-class Patient with PatientMappable {
-  final String id;
-
+class Patient extends PbObject with PatientMappable {
   final String name;
   final List<String> images;
-
   final String? avatar;
-
   final String? species;
   final String? owner;
   final String? contactNumber;
@@ -24,48 +21,41 @@ class Patient with PatientMappable {
   final String? sex;
   final DateTime? dateOfBirth;
 
-  final DateTime? created;
-  final DateTime? updated;
-
-  final String collectionId;
-  final String collectionName;
-
   final PatientRecordExpand? expand;
 
   Patient({
-    required this.collectionId,
-    required this.collectionName,
-    required this.id,
+    required super.id,
+    required super.collectionId,
+    required super.collectionName,
     this.name = '',
     this.images = const [],
-    this.owner,
     this.avatar,
     this.species,
-    this.breed,
-    this.sex,
-    this.color,
+    this.owner,
     this.contactNumber,
     this.email,
     this.address,
+    this.breed,
+    this.color,
+    this.sex,
     this.dateOfBirth,
-    this.created,
-    this.updated,
     this.expand,
+    super.isDeleted = false,
+    super.created,
+    super.updated,
   });
 
   static fromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
     final dateOfBirth = raw[PatientField.dateOfBirth];
     final updatedDateOfBirth = dateOfBirth == '' ? null : dateOfBirth;
-    return PatientMapper.fromMap(
-      {
-        ...raw,
-        PatientField.dateOfBirth: updatedDateOfBirth,
-      },
-    );
+
+    return PatientMapper.fromMap({
+      ...raw,
+      PatientField.dateOfBirth: updatedDateOfBirth,
+    });
   }
 
-  static const fromJson = PatientMapper.fromMap;
+  static const fromJson = PatientMapper.fromJson;
 
   Map<String, dynamic> toForm() {
     return {
@@ -74,7 +64,7 @@ class Patient with PatientMappable {
       PatientField.species: expand?.species,
       PatientField.breed: expand?.breed,
       PatientField.created: created,
-      PatientField.updated: created,
+      PatientField.updated: updated,
     };
   }
 }
@@ -84,19 +74,16 @@ class PatientRecordExpand with PatientRecordExpandMappable {
   final PatientSpecies? species;
   final PatientBreed? breed;
 
-  static fromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    return PatientRecordExpandMapper.fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
-
-  static const fromJson = PatientRecordExpandMapper.fromMap;
-
   PatientRecordExpand({
     this.species,
     this.breed,
   });
+
+  static fromMap(Map<String, dynamic> raw) {
+    return PatientRecordExpandMapper.fromMap({
+      ...raw,
+    });
+  }
+
+  static const fromJson = PatientRecordExpandMapper.fromJson;
 }

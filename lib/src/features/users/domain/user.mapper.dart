@@ -13,6 +13,7 @@ class UserMapper extends ClassMapperBase<User> {
   static UserMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = UserMapper._());
+      PbObjectMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -20,57 +21,62 @@ class UserMapper extends ClassMapperBase<User> {
   @override
   final String id = 'User';
 
+  static String _$id(User v) => v.id;
+  static const Field<User, String> _f$id = Field('id', _$id);
   static String _$collectionId(User v) => v.collectionId;
   static const Field<User, String> _f$collectionId =
       Field('collectionId', _$collectionId);
   static String _$collectionName(User v) => v.collectionName;
   static const Field<User, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$id(User v) => v.id;
-  static const Field<User, String> _f$id = Field('id', _$id);
   static String _$name(User v) => v.name;
   static const Field<User, String> _f$name =
       Field('name', _$name, opt: true, def: '');
   static String _$email(User v) => v.email;
   static const Field<User, String> _f$email =
       Field('email', _$email, opt: true, def: '');
-  static DateTime? _$created(User v) => v.created;
-  static const Field<User, DateTime> _f$created =
-      Field('created', _$created, opt: true);
-  static DateTime? _$updated(User v) => v.updated;
-  static const Field<User, DateTime> _f$updated =
-      Field('updated', _$updated, opt: true);
   static String? _$avatar(User v) => v.avatar;
   static const Field<User, String> _f$avatar =
       Field('avatar', _$avatar, opt: true);
   static bool _$verified(User v) => v.verified;
   static const Field<User, bool> _f$verified =
       Field('verified', _$verified, opt: true, def: false);
+  static bool _$isDeleted(User v) => v.isDeleted;
+  static const Field<User, bool> _f$isDeleted =
+      Field('isDeleted', _$isDeleted, opt: true, def: false);
+  static DateTime? _$created(User v) => v.created;
+  static const Field<User, DateTime> _f$created =
+      Field('created', _$created, opt: true);
+  static DateTime? _$updated(User v) => v.updated;
+  static const Field<User, DateTime> _f$updated =
+      Field('updated', _$updated, opt: true);
 
   @override
   final MappableFields<User> fields = const {
+    #id: _f$id,
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #id: _f$id,
     #name: _f$name,
     #email: _f$email,
-    #created: _f$created,
-    #updated: _f$updated,
     #avatar: _f$avatar,
     #verified: _f$verified,
+    #isDeleted: _f$isDeleted,
+    #created: _f$created,
+    #updated: _f$updated,
   };
 
   static User _instantiate(DecodingData data) {
     return User(
+        id: data.dec(_f$id),
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        id: data.dec(_f$id),
         name: data.dec(_f$name),
         email: data.dec(_f$email),
-        created: data.dec(_f$created),
-        updated: data.dec(_f$updated),
         avatar: data.dec(_f$avatar),
-        verified: data.dec(_f$verified));
+        verified: data.dec(_f$verified),
+        isDeleted: data.dec(_f$isDeleted),
+        created: data.dec(_f$created),
+        updated: data.dec(_f$updated));
   }
 
   @override
@@ -118,17 +124,19 @@ extension UserValueCopy<$R, $Out> on ObjectCopyWith<$R, User, $Out> {
 }
 
 abstract class UserCopyWith<$R, $In extends User, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+    implements PbObjectCopyWith<$R, $In, $Out> {
+  @override
   $R call(
-      {String? collectionId,
+      {String? id,
+      String? collectionId,
       String? collectionName,
-      String? id,
       String? name,
       String? email,
-      DateTime? created,
-      DateTime? updated,
       String? avatar,
-      bool? verified});
+      bool? verified,
+      bool? isDeleted,
+      DateTime? created,
+      DateTime? updated});
   UserCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -140,37 +148,40 @@ class _UserCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, User, $Out>
   late final ClassMapperBase<User> $mapper = UserMapper.ensureInitialized();
   @override
   $R call(
-          {String? collectionId,
+          {String? id,
+          String? collectionId,
           String? collectionName,
-          String? id,
           String? name,
           String? email,
-          Object? created = $none,
-          Object? updated = $none,
           Object? avatar = $none,
-          bool? verified}) =>
+          bool? verified,
+          bool? isDeleted,
+          Object? created = $none,
+          Object? updated = $none}) =>
       $apply(FieldCopyWithData({
+        if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (id != null) #id: id,
         if (name != null) #name: name,
         if (email != null) #email: email,
-        if (created != $none) #created: created,
-        if (updated != $none) #updated: updated,
         if (avatar != $none) #avatar: avatar,
-        if (verified != null) #verified: verified
+        if (verified != null) #verified: verified,
+        if (isDeleted != null) #isDeleted: isDeleted,
+        if (created != $none) #created: created,
+        if (updated != $none) #updated: updated
       }));
   @override
   User $make(CopyWithData data) => User(
+      id: data.get(#id, or: $value.id),
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       email: data.get(#email, or: $value.email),
-      created: data.get(#created, or: $value.created),
-      updated: data.get(#updated, or: $value.updated),
       avatar: data.get(#avatar, or: $value.avatar),
-      verified: data.get(#verified, or: $value.verified));
+      verified: data.get(#verified, or: $value.verified),
+      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
+      created: data.get(#created, or: $value.created),
+      updated: data.get(#updated, or: $value.updated));
 
   @override
   UserCopyWith<$R2, User, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

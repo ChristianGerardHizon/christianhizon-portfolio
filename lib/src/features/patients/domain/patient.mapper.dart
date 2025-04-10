@@ -13,6 +13,7 @@ class PatientMapper extends ClassMapperBase<Patient> {
   static PatientMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = PatientMapper._());
+      PbObjectMapper.ensureInitialized();
       PatientRecordExpandMapper.ensureInitialized();
     }
     return _instance!;
@@ -21,37 +22,29 @@ class PatientMapper extends ClassMapperBase<Patient> {
   @override
   final String id = 'Patient';
 
+  static String _$id(Patient v) => v.id;
+  static const Field<Patient, String> _f$id = Field('id', _$id);
   static String _$collectionId(Patient v) => v.collectionId;
   static const Field<Patient, String> _f$collectionId =
       Field('collectionId', _$collectionId);
   static String _$collectionName(Patient v) => v.collectionName;
   static const Field<Patient, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$id(Patient v) => v.id;
-  static const Field<Patient, String> _f$id = Field('id', _$id);
   static String _$name(Patient v) => v.name;
   static const Field<Patient, String> _f$name =
       Field('name', _$name, opt: true, def: '');
   static List<String> _$images(Patient v) => v.images;
   static const Field<Patient, List<String>> _f$images =
       Field('images', _$images, opt: true, def: const []);
-  static String? _$owner(Patient v) => v.owner;
-  static const Field<Patient, String> _f$owner =
-      Field('owner', _$owner, opt: true);
   static String? _$avatar(Patient v) => v.avatar;
   static const Field<Patient, String> _f$avatar =
       Field('avatar', _$avatar, opt: true);
   static String? _$species(Patient v) => v.species;
   static const Field<Patient, String> _f$species =
       Field('species', _$species, opt: true);
-  static String? _$breed(Patient v) => v.breed;
-  static const Field<Patient, String> _f$breed =
-      Field('breed', _$breed, opt: true);
-  static String? _$sex(Patient v) => v.sex;
-  static const Field<Patient, String> _f$sex = Field('sex', _$sex, opt: true);
-  static String? _$color(Patient v) => v.color;
-  static const Field<Patient, String> _f$color =
-      Field('color', _$color, opt: true);
+  static String? _$owner(Patient v) => v.owner;
+  static const Field<Patient, String> _f$owner =
+      Field('owner', _$owner, opt: true);
   static String? _$contactNumber(Patient v) => v.contactNumber;
   static const Field<Patient, String> _f$contactNumber =
       Field('contactNumber', _$contactNumber, opt: true);
@@ -61,61 +54,74 @@ class PatientMapper extends ClassMapperBase<Patient> {
   static String? _$address(Patient v) => v.address;
   static const Field<Patient, String> _f$address =
       Field('address', _$address, opt: true);
+  static String? _$breed(Patient v) => v.breed;
+  static const Field<Patient, String> _f$breed =
+      Field('breed', _$breed, opt: true);
+  static String? _$color(Patient v) => v.color;
+  static const Field<Patient, String> _f$color =
+      Field('color', _$color, opt: true);
+  static String? _$sex(Patient v) => v.sex;
+  static const Field<Patient, String> _f$sex = Field('sex', _$sex, opt: true);
   static DateTime? _$dateOfBirth(Patient v) => v.dateOfBirth;
   static const Field<Patient, DateTime> _f$dateOfBirth =
       Field('dateOfBirth', _$dateOfBirth, opt: true);
+  static PatientRecordExpand? _$expand(Patient v) => v.expand;
+  static const Field<Patient, PatientRecordExpand> _f$expand =
+      Field('expand', _$expand, opt: true);
+  static bool _$isDeleted(Patient v) => v.isDeleted;
+  static const Field<Patient, bool> _f$isDeleted =
+      Field('isDeleted', _$isDeleted, opt: true, def: false);
   static DateTime? _$created(Patient v) => v.created;
   static const Field<Patient, DateTime> _f$created =
       Field('created', _$created, opt: true);
   static DateTime? _$updated(Patient v) => v.updated;
   static const Field<Patient, DateTime> _f$updated =
       Field('updated', _$updated, opt: true);
-  static PatientRecordExpand? _$expand(Patient v) => v.expand;
-  static const Field<Patient, PatientRecordExpand> _f$expand =
-      Field('expand', _$expand, opt: true);
 
   @override
   final MappableFields<Patient> fields = const {
+    #id: _f$id,
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #id: _f$id,
     #name: _f$name,
     #images: _f$images,
-    #owner: _f$owner,
     #avatar: _f$avatar,
     #species: _f$species,
-    #breed: _f$breed,
-    #sex: _f$sex,
-    #color: _f$color,
+    #owner: _f$owner,
     #contactNumber: _f$contactNumber,
     #email: _f$email,
     #address: _f$address,
+    #breed: _f$breed,
+    #color: _f$color,
+    #sex: _f$sex,
     #dateOfBirth: _f$dateOfBirth,
+    #expand: _f$expand,
+    #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
-    #expand: _f$expand,
   };
 
   static Patient _instantiate(DecodingData data) {
     return Patient(
+        id: data.dec(_f$id),
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        id: data.dec(_f$id),
         name: data.dec(_f$name),
         images: data.dec(_f$images),
-        owner: data.dec(_f$owner),
         avatar: data.dec(_f$avatar),
         species: data.dec(_f$species),
-        breed: data.dec(_f$breed),
-        sex: data.dec(_f$sex),
-        color: data.dec(_f$color),
+        owner: data.dec(_f$owner),
         contactNumber: data.dec(_f$contactNumber),
         email: data.dec(_f$email),
         address: data.dec(_f$address),
+        breed: data.dec(_f$breed),
+        color: data.dec(_f$color),
+        sex: data.dec(_f$sex),
         dateOfBirth: data.dec(_f$dateOfBirth),
+        expand: data.dec(_f$expand),
+        isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
-        updated: data.dec(_f$updated),
-        expand: data.dec(_f$expand));
+        updated: data.dec(_f$updated));
   }
 
   @override
@@ -167,29 +173,31 @@ extension PatientValueCopy<$R, $Out> on ObjectCopyWith<$R, Patient, $Out> {
 }
 
 abstract class PatientCopyWith<$R, $In extends Patient, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+    implements PbObjectCopyWith<$R, $In, $Out> {
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>> get images;
   PatientRecordExpandCopyWith<$R, PatientRecordExpand, PatientRecordExpand>?
       get expand;
+  @override
   $R call(
-      {String? collectionId,
+      {String? id,
+      String? collectionId,
       String? collectionName,
-      String? id,
       String? name,
       List<String>? images,
-      String? owner,
       String? avatar,
       String? species,
-      String? breed,
-      String? sex,
-      String? color,
+      String? owner,
       String? contactNumber,
       String? email,
       String? address,
+      String? breed,
+      String? color,
+      String? sex,
       DateTime? dateOfBirth,
+      PatientRecordExpand? expand,
+      bool? isDeleted,
       DateTime? created,
-      DateTime? updated,
-      PatientRecordExpand? expand});
+      DateTime? updated});
   PatientCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -210,64 +218,67 @@ class _PatientCopyWithImpl<$R, $Out>
       get expand => $value.expand?.copyWith.$chain((v) => call(expand: v));
   @override
   $R call(
-          {String? collectionId,
+          {String? id,
+          String? collectionId,
           String? collectionName,
-          String? id,
           String? name,
           List<String>? images,
-          Object? owner = $none,
           Object? avatar = $none,
           Object? species = $none,
-          Object? breed = $none,
-          Object? sex = $none,
-          Object? color = $none,
+          Object? owner = $none,
           Object? contactNumber = $none,
           Object? email = $none,
           Object? address = $none,
+          Object? breed = $none,
+          Object? color = $none,
+          Object? sex = $none,
           Object? dateOfBirth = $none,
+          Object? expand = $none,
+          bool? isDeleted,
           Object? created = $none,
-          Object? updated = $none,
-          Object? expand = $none}) =>
+          Object? updated = $none}) =>
       $apply(FieldCopyWithData({
+        if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (id != null) #id: id,
         if (name != null) #name: name,
         if (images != null) #images: images,
-        if (owner != $none) #owner: owner,
         if (avatar != $none) #avatar: avatar,
         if (species != $none) #species: species,
-        if (breed != $none) #breed: breed,
-        if (sex != $none) #sex: sex,
-        if (color != $none) #color: color,
+        if (owner != $none) #owner: owner,
         if (contactNumber != $none) #contactNumber: contactNumber,
         if (email != $none) #email: email,
         if (address != $none) #address: address,
+        if (breed != $none) #breed: breed,
+        if (color != $none) #color: color,
+        if (sex != $none) #sex: sex,
         if (dateOfBirth != $none) #dateOfBirth: dateOfBirth,
+        if (expand != $none) #expand: expand,
+        if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
-        if (updated != $none) #updated: updated,
-        if (expand != $none) #expand: expand
+        if (updated != $none) #updated: updated
       }));
   @override
   Patient $make(CopyWithData data) => Patient(
+      id: data.get(#id, or: $value.id),
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       images: data.get(#images, or: $value.images),
-      owner: data.get(#owner, or: $value.owner),
       avatar: data.get(#avatar, or: $value.avatar),
       species: data.get(#species, or: $value.species),
-      breed: data.get(#breed, or: $value.breed),
-      sex: data.get(#sex, or: $value.sex),
-      color: data.get(#color, or: $value.color),
+      owner: data.get(#owner, or: $value.owner),
       contactNumber: data.get(#contactNumber, or: $value.contactNumber),
       email: data.get(#email, or: $value.email),
       address: data.get(#address, or: $value.address),
+      breed: data.get(#breed, or: $value.breed),
+      color: data.get(#color, or: $value.color),
+      sex: data.get(#sex, or: $value.sex),
       dateOfBirth: data.get(#dateOfBirth, or: $value.dateOfBirth),
+      expand: data.get(#expand, or: $value.expand),
+      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),
-      updated: data.get(#updated, or: $value.updated),
-      expand: data.get(#expand, or: $value.expand));
+      updated: data.get(#updated, or: $value.updated));
 
   @override
   PatientCopyWith<$R2, Patient, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

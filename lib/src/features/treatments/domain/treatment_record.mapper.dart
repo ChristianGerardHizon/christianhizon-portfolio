@@ -13,6 +13,7 @@ class TreatmentRecordMapper extends ClassMapperBase<TreatmentRecord> {
   static TreatmentRecordMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = TreatmentRecordMapper._());
+      PbObjectMapper.ensureInitialized();
       TreatmentRecordExpandMapper.ensureInitialized();
     }
     return _instance!;
@@ -21,14 +22,14 @@ class TreatmentRecordMapper extends ClassMapperBase<TreatmentRecord> {
   @override
   final String id = 'TreatmentRecord';
 
+  static String _$id(TreatmentRecord v) => v.id;
+  static const Field<TreatmentRecord, String> _f$id = Field('id', _$id);
   static String _$collectionId(TreatmentRecord v) => v.collectionId;
   static const Field<TreatmentRecord, String> _f$collectionId =
       Field('collectionId', _$collectionId);
   static String _$collectionName(TreatmentRecord v) => v.collectionName;
   static const Field<TreatmentRecord, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$id(TreatmentRecord v) => v.id;
-  static const Field<TreatmentRecord, String> _f$id = Field('id', _$id);
   static String _$type(TreatmentRecord v) => v.type;
   static const Field<TreatmentRecord, String> _f$type = Field('type', _$type);
   static String _$patient(TreatmentRecord v) => v.patient;
@@ -46,39 +47,44 @@ class TreatmentRecordMapper extends ClassMapperBase<TreatmentRecord> {
   static TreatmentRecordExpand? _$expand(TreatmentRecord v) => v.expand;
   static const Field<TreatmentRecord, TreatmentRecordExpand> _f$expand =
       Field('expand', _$expand, opt: true);
+  static bool _$isDeleted(TreatmentRecord v) => v.isDeleted;
+  static const Field<TreatmentRecord, bool> _f$isDeleted =
+      Field('isDeleted', _$isDeleted, opt: true, def: false);
   static DateTime? _$created(TreatmentRecord v) => v.created;
   static const Field<TreatmentRecord, DateTime> _f$created =
-      Field('created', _$created);
+      Field('created', _$created, opt: true);
   static DateTime? _$updated(TreatmentRecord v) => v.updated;
   static const Field<TreatmentRecord, DateTime> _f$updated =
-      Field('updated', _$updated);
+      Field('updated', _$updated, opt: true);
 
   @override
   final MappableFields<TreatmentRecord> fields = const {
+    #id: _f$id,
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #id: _f$id,
     #type: _f$type,
     #patient: _f$patient,
     #followUpDate: _f$followUpDate,
     #date: _f$date,
     #notes: _f$notes,
     #expand: _f$expand,
+    #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
   };
 
   static TreatmentRecord _instantiate(DecodingData data) {
     return TreatmentRecord(
+        id: data.dec(_f$id),
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        id: data.dec(_f$id),
         type: data.dec(_f$type),
         patient: data.dec(_f$patient),
         followUpDate: data.dec(_f$followUpDate),
         date: data.dec(_f$date),
         notes: data.dec(_f$notes),
         expand: data.dec(_f$expand),
+        isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated));
   }
@@ -136,19 +142,21 @@ extension TreatmentRecordValueCopy<$R, $Out>
 }
 
 abstract class TreatmentRecordCopyWith<$R, $In extends TreatmentRecord, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+    implements PbObjectCopyWith<$R, $In, $Out> {
   TreatmentRecordExpandCopyWith<$R, TreatmentRecordExpand,
       TreatmentRecordExpand>? get expand;
+  @override
   $R call(
-      {String? collectionId,
+      {String? id,
+      String? collectionId,
       String? collectionName,
-      String? id,
       String? type,
       String? patient,
       DateTime? followUpDate,
       DateTime? date,
       String? notes,
       TreatmentRecordExpand? expand,
+      bool? isDeleted,
       DateTime? created,
       DateTime? updated});
   TreatmentRecordCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
@@ -169,41 +177,44 @@ class _TreatmentRecordCopyWithImpl<$R, $Out>
       get expand => $value.expand?.copyWith.$chain((v) => call(expand: v));
   @override
   $R call(
-          {String? collectionId,
+          {String? id,
+          String? collectionId,
           String? collectionName,
-          String? id,
           String? type,
           String? patient,
           Object? followUpDate = $none,
           Object? date = $none,
           Object? notes = $none,
           Object? expand = $none,
+          bool? isDeleted,
           Object? created = $none,
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
+        if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (id != null) #id: id,
         if (type != null) #type: type,
         if (patient != null) #patient: patient,
         if (followUpDate != $none) #followUpDate: followUpDate,
         if (date != $none) #date: date,
         if (notes != $none) #notes: notes,
         if (expand != $none) #expand: expand,
+        if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated
       }));
   @override
   TreatmentRecord $make(CopyWithData data) => TreatmentRecord(
+      id: data.get(#id, or: $value.id),
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      id: data.get(#id, or: $value.id),
       type: data.get(#type, or: $value.type),
       patient: data.get(#patient, or: $value.patient),
       followUpDate: data.get(#followUpDate, or: $value.followUpDate),
       date: data.get(#date, or: $value.date),
       notes: data.get(#notes, or: $value.notes),
       expand: data.get(#expand, or: $value.expand),
+      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated));
 

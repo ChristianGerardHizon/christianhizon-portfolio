@@ -13,6 +13,7 @@ class BranchMapper extends ClassMapperBase<Branch> {
   static BranchMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = BranchMapper._());
+      PbObjectMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -20,29 +21,31 @@ class BranchMapper extends ClassMapperBase<Branch> {
   @override
   final String id = 'Branch';
 
+  static String _$id(Branch v) => v.id;
+  static const Field<Branch, String> _f$id = Field('id', _$id);
   static String _$collectionId(Branch v) => v.collectionId;
   static const Field<Branch, String> _f$collectionId =
       Field('collectionId', _$collectionId);
   static String _$collectionName(Branch v) => v.collectionName;
   static const Field<Branch, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$id(Branch v) => v.id;
-  static const Field<Branch, String> _f$id = Field('id', _$id);
   static String _$name(Branch v) => v.name;
   static const Field<Branch, String> _f$name = Field('name', _$name);
   static bool _$isDeleted(Branch v) => v.isDeleted;
   static const Field<Branch, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
   static DateTime? _$created(Branch v) => v.created;
-  static const Field<Branch, DateTime> _f$created = Field('created', _$created);
+  static const Field<Branch, DateTime> _f$created =
+      Field('created', _$created, opt: true);
   static DateTime? _$updated(Branch v) => v.updated;
-  static const Field<Branch, DateTime> _f$updated = Field('updated', _$updated);
+  static const Field<Branch, DateTime> _f$updated =
+      Field('updated', _$updated, opt: true);
 
   @override
   final MappableFields<Branch> fields = const {
+    #id: _f$id,
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #id: _f$id,
     #name: _f$name,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
@@ -51,9 +54,9 @@ class BranchMapper extends ClassMapperBase<Branch> {
 
   static Branch _instantiate(DecodingData data) {
     return Branch(
+        id: data.dec(_f$id),
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        id: data.dec(_f$id),
         name: data.dec(_f$name),
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
@@ -105,11 +108,12 @@ extension BranchValueCopy<$R, $Out> on ObjectCopyWith<$R, Branch, $Out> {
 }
 
 abstract class BranchCopyWith<$R, $In extends Branch, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+    implements PbObjectCopyWith<$R, $In, $Out> {
+  @override
   $R call(
-      {String? collectionId,
+      {String? id,
+      String? collectionId,
       String? collectionName,
-      String? id,
       String? name,
       bool? isDeleted,
       DateTime? created,
@@ -125,17 +129,17 @@ class _BranchCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Branch, $Out>
   late final ClassMapperBase<Branch> $mapper = BranchMapper.ensureInitialized();
   @override
   $R call(
-          {String? collectionId,
+          {String? id,
+          String? collectionId,
           String? collectionName,
-          String? id,
           String? name,
           bool? isDeleted,
           Object? created = $none,
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
+        if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (id != null) #id: id,
         if (name != null) #name: name,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
@@ -143,9 +147,9 @@ class _BranchCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Branch, $Out>
       }));
   @override
   Branch $make(CopyWithData data) => Branch(
+      id: data.get(#id, or: $value.id),
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),

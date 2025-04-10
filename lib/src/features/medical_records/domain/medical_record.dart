@@ -1,12 +1,11 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/classes/pb_object.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 
 part 'medical_record.mapper.dart';
 
 @MappableClass()
-class MedicalRecord with MedicalRecordMappable {
-  final String id;
-
+class MedicalRecord extends PbObject with MedicalRecordMappable {
   final String patient;
   final String? diagnosis;
   final DateTime visitDate;
@@ -14,21 +13,19 @@ class MedicalRecord with MedicalRecordMappable {
   final DateTime? followUpDate;
   final String? note;
 
-  final bool isDeleted;
-  final DateTime? created;
-  final DateTime? updated;
-
   MedicalRecord({
-    required this.id,
+    required super.id,
+    required super.collectionId,
+    required super.collectionName,
     required this.patient,
-    this.created,
-    this.updated,
-    this.isDeleted = false,
     this.diagnosis,
     required this.visitDate,
     this.treatment,
     this.followUpDate,
     this.note,
+    super.isDeleted = false,
+    super.created,
+    super.updated,
   });
 
   static fromMap(Map<String, dynamic> raw) {
@@ -41,13 +38,13 @@ class MedicalRecord with MedicalRecordMappable {
     });
   }
 
-  static const fromJson = MedicalRecordMapper.fromMap;
+  static const fromJson = MedicalRecordMapper.fromJson;
 
   Map<String, dynamic> toForm() {
     return {
       ...toMap(),
       'created': created,
-      'updated': created,
+      'updated': updated,
     };
   }
 }

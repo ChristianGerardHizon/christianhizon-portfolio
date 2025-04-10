@@ -1,50 +1,42 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/classes/pb_object.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
 
 part 'user.mapper.dart';
 
 @MappableClass()
-class User with UserMappable {
-  final String id;
+class User extends PbObject with UserMappable {
   final String name;
   final String email;
   final String? avatar;
   final bool verified;
 
-  final DateTime? created;
-  final DateTime? updated;
-
-  final String collectionId;
-  final String collectionName;
-
   User({
-    required this.collectionId,
-    required this.collectionName,
-    required this.id,
+    required super.id,
+    required super.collectionId,
+    required super.collectionName,
     this.name = '',
     this.email = '',
-    this.created,
-    this.updated,
     this.avatar,
     this.verified = false,
+    super.isDeleted = false,
+    super.created,
+    super.updated,
   });
 
-  // static const fromMap = UserMapper.fromMap;
   static fromMap(Map<String, dynamic> raw) {
-    return UserMapper.fromMap(
-      {
-        ...raw,
-      },
-    );
+    return UserMapper.fromMap({
+      ...raw,
+    });
   }
 
-  static const fromJson = UserMapper.fromMap;
+  static const fromJson = UserMapper.fromJson;
 
   Map<String, dynamic> toForm() {
     return {
       ...toMap(),
       'created': created,
-      'updated': created,
+      'updated': updated,
     };
   }
 

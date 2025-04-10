@@ -13,6 +13,7 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
   static MedicalRecordMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = MedicalRecordMapper._());
+      PbObjectMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -22,18 +23,15 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
 
   static String _$id(MedicalRecord v) => v.id;
   static const Field<MedicalRecord, String> _f$id = Field('id', _$id);
+  static String _$collectionId(MedicalRecord v) => v.collectionId;
+  static const Field<MedicalRecord, String> _f$collectionId =
+      Field('collectionId', _$collectionId);
+  static String _$collectionName(MedicalRecord v) => v.collectionName;
+  static const Field<MedicalRecord, String> _f$collectionName =
+      Field('collectionName', _$collectionName);
   static String _$patient(MedicalRecord v) => v.patient;
   static const Field<MedicalRecord, String> _f$patient =
       Field('patient', _$patient);
-  static DateTime? _$created(MedicalRecord v) => v.created;
-  static const Field<MedicalRecord, DateTime> _f$created =
-      Field('created', _$created, opt: true);
-  static DateTime? _$updated(MedicalRecord v) => v.updated;
-  static const Field<MedicalRecord, DateTime> _f$updated =
-      Field('updated', _$updated, opt: true);
-  static bool _$isDeleted(MedicalRecord v) => v.isDeleted;
-  static const Field<MedicalRecord, bool> _f$isDeleted =
-      Field('isDeleted', _$isDeleted, opt: true, def: false);
   static String? _$diagnosis(MedicalRecord v) => v.diagnosis;
   static const Field<MedicalRecord, String> _f$diagnosis =
       Field('diagnosis', _$diagnosis, opt: true);
@@ -49,33 +47,46 @@ class MedicalRecordMapper extends ClassMapperBase<MedicalRecord> {
   static String? _$note(MedicalRecord v) => v.note;
   static const Field<MedicalRecord, String> _f$note =
       Field('note', _$note, opt: true);
+  static bool _$isDeleted(MedicalRecord v) => v.isDeleted;
+  static const Field<MedicalRecord, bool> _f$isDeleted =
+      Field('isDeleted', _$isDeleted, opt: true, def: false);
+  static DateTime? _$created(MedicalRecord v) => v.created;
+  static const Field<MedicalRecord, DateTime> _f$created =
+      Field('created', _$created, opt: true);
+  static DateTime? _$updated(MedicalRecord v) => v.updated;
+  static const Field<MedicalRecord, DateTime> _f$updated =
+      Field('updated', _$updated, opt: true);
 
   @override
   final MappableFields<MedicalRecord> fields = const {
     #id: _f$id,
+    #collectionId: _f$collectionId,
+    #collectionName: _f$collectionName,
     #patient: _f$patient,
-    #created: _f$created,
-    #updated: _f$updated,
-    #isDeleted: _f$isDeleted,
     #diagnosis: _f$diagnosis,
     #visitDate: _f$visitDate,
     #treatment: _f$treatment,
     #followUpDate: _f$followUpDate,
     #note: _f$note,
+    #isDeleted: _f$isDeleted,
+    #created: _f$created,
+    #updated: _f$updated,
   };
 
   static MedicalRecord _instantiate(DecodingData data) {
     return MedicalRecord(
         id: data.dec(_f$id),
+        collectionId: data.dec(_f$collectionId),
+        collectionName: data.dec(_f$collectionName),
         patient: data.dec(_f$patient),
-        created: data.dec(_f$created),
-        updated: data.dec(_f$updated),
-        isDeleted: data.dec(_f$isDeleted),
         diagnosis: data.dec(_f$diagnosis),
         visitDate: data.dec(_f$visitDate),
         treatment: data.dec(_f$treatment),
         followUpDate: data.dec(_f$followUpDate),
-        note: data.dec(_f$note));
+        note: data.dec(_f$note),
+        isDeleted: data.dec(_f$isDeleted),
+        created: data.dec(_f$created),
+        updated: data.dec(_f$updated));
   }
 
   @override
@@ -130,18 +141,21 @@ extension MedicalRecordValueCopy<$R, $Out>
 }
 
 abstract class MedicalRecordCopyWith<$R, $In extends MedicalRecord, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+    implements PbObjectCopyWith<$R, $In, $Out> {
+  @override
   $R call(
       {String? id,
+      String? collectionId,
+      String? collectionName,
       String? patient,
-      DateTime? created,
-      DateTime? updated,
-      bool? isDeleted,
       String? diagnosis,
       DateTime? visitDate,
       String? treatment,
       DateTime? followUpDate,
-      String? note});
+      String? note,
+      bool? isDeleted,
+      DateTime? created,
+      DateTime? updated});
   MedicalRecordCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -156,39 +170,45 @@ class _MedicalRecordCopyWithImpl<$R, $Out>
   @override
   $R call(
           {String? id,
+          String? collectionId,
+          String? collectionName,
           String? patient,
-          Object? created = $none,
-          Object? updated = $none,
-          bool? isDeleted,
           Object? diagnosis = $none,
           DateTime? visitDate,
           Object? treatment = $none,
           Object? followUpDate = $none,
-          Object? note = $none}) =>
+          Object? note = $none,
+          bool? isDeleted,
+          Object? created = $none,
+          Object? updated = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
+        if (collectionId != null) #collectionId: collectionId,
+        if (collectionName != null) #collectionName: collectionName,
         if (patient != null) #patient: patient,
-        if (created != $none) #created: created,
-        if (updated != $none) #updated: updated,
-        if (isDeleted != null) #isDeleted: isDeleted,
         if (diagnosis != $none) #diagnosis: diagnosis,
         if (visitDate != null) #visitDate: visitDate,
         if (treatment != $none) #treatment: treatment,
         if (followUpDate != $none) #followUpDate: followUpDate,
-        if (note != $none) #note: note
+        if (note != $none) #note: note,
+        if (isDeleted != null) #isDeleted: isDeleted,
+        if (created != $none) #created: created,
+        if (updated != $none) #updated: updated
       }));
   @override
   MedicalRecord $make(CopyWithData data) => MedicalRecord(
       id: data.get(#id, or: $value.id),
+      collectionId: data.get(#collectionId, or: $value.collectionId),
+      collectionName: data.get(#collectionName, or: $value.collectionName),
       patient: data.get(#patient, or: $value.patient),
-      created: data.get(#created, or: $value.created),
-      updated: data.get(#updated, or: $value.updated),
-      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       diagnosis: data.get(#diagnosis, or: $value.diagnosis),
       visitDate: data.get(#visitDate, or: $value.visitDate),
       treatment: data.get(#treatment, or: $value.treatment),
       followUpDate: data.get(#followUpDate, or: $value.followUpDate),
-      note: data.get(#note, or: $value.note));
+      note: data.get(#note, or: $value.note),
+      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
+      created: data.get(#created, or: $value.created),
+      updated: data.get(#updated, or: $value.updated));
 
   @override
   MedicalRecordCopyWith<$R2, MedicalRecord, $Out2> $chain<$R2, $Out2>(

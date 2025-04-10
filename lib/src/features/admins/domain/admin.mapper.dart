@@ -13,6 +13,7 @@ class AdminMapper extends ClassMapperBase<Admin> {
   static AdminMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = AdminMapper._());
+      PbObjectMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -20,14 +21,14 @@ class AdminMapper extends ClassMapperBase<Admin> {
   @override
   final String id = 'Admin';
 
+  static String _$id(Admin v) => v.id;
+  static const Field<Admin, String> _f$id = Field('id', _$id);
   static String _$collectionId(Admin v) => v.collectionId;
   static const Field<Admin, String> _f$collectionId =
       Field('collectionId', _$collectionId);
   static String _$collectionName(Admin v) => v.collectionName;
   static const Field<Admin, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$id(Admin v) => v.id;
-  static const Field<Admin, String> _f$id = Field('id', _$id);
   static String _$name(Admin v) => v.name;
   static const Field<Admin, String> _f$name = Field('name', _$name);
   static String _$email(Admin v) => v.email;
@@ -36,12 +37,12 @@ class AdminMapper extends ClassMapperBase<Admin> {
   static String? _$avatar(Admin v) => v.avatar;
   static const Field<Admin, String> _f$avatar =
       Field('avatar', _$avatar, opt: true);
-  static bool _$isDeleted(Admin v) => v.isDeleted;
-  static const Field<Admin, bool> _f$isDeleted =
-      Field('isDeleted', _$isDeleted, opt: true, def: false);
   static bool _$verified(Admin v) => v.verified;
   static const Field<Admin, bool> _f$verified =
       Field('verified', _$verified, opt: true, def: false);
+  static bool _$isDeleted(Admin v) => v.isDeleted;
+  static const Field<Admin, bool> _f$isDeleted =
+      Field('isDeleted', _$isDeleted, opt: true, def: false);
   static DateTime? _$created(Admin v) => v.created;
   static const Field<Admin, DateTime> _f$created =
       Field('created', _$created, opt: true);
@@ -51,28 +52,28 @@ class AdminMapper extends ClassMapperBase<Admin> {
 
   @override
   final MappableFields<Admin> fields = const {
+    #id: _f$id,
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #id: _f$id,
     #name: _f$name,
     #email: _f$email,
     #avatar: _f$avatar,
-    #isDeleted: _f$isDeleted,
     #verified: _f$verified,
+    #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
   };
 
   static Admin _instantiate(DecodingData data) {
     return Admin(
+        id: data.dec(_f$id),
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        id: data.dec(_f$id),
         name: data.dec(_f$name),
         email: data.dec(_f$email),
         avatar: data.dec(_f$avatar),
-        isDeleted: data.dec(_f$isDeleted),
         verified: data.dec(_f$verified),
+        isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated));
   }
@@ -122,16 +123,17 @@ extension AdminValueCopy<$R, $Out> on ObjectCopyWith<$R, Admin, $Out> {
 }
 
 abstract class AdminCopyWith<$R, $In extends Admin, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+    implements PbObjectCopyWith<$R, $In, $Out> {
+  @override
   $R call(
-      {String? collectionId,
+      {String? id,
+      String? collectionId,
       String? collectionName,
-      String? id,
       String? name,
       String? email,
       String? avatar,
-      bool? isDeleted,
       bool? verified,
+      bool? isDeleted,
       DateTime? created,
       DateTime? updated});
   AdminCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
@@ -145,38 +147,38 @@ class _AdminCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Admin, $Out>
   late final ClassMapperBase<Admin> $mapper = AdminMapper.ensureInitialized();
   @override
   $R call(
-          {String? collectionId,
+          {String? id,
+          String? collectionId,
           String? collectionName,
-          String? id,
           String? name,
           String? email,
           Object? avatar = $none,
-          bool? isDeleted,
           bool? verified,
+          bool? isDeleted,
           Object? created = $none,
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
+        if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (id != null) #id: id,
         if (name != null) #name: name,
         if (email != null) #email: email,
         if (avatar != $none) #avatar: avatar,
-        if (isDeleted != null) #isDeleted: isDeleted,
         if (verified != null) #verified: verified,
+        if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated
       }));
   @override
   Admin $make(CopyWithData data) => Admin(
+      id: data.get(#id, or: $value.id),
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       email: data.get(#email, or: $value.email),
       avatar: data.get(#avatar, or: $value.avatar),
-      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       verified: data.get(#verified, or: $value.verified),
+      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated));
 

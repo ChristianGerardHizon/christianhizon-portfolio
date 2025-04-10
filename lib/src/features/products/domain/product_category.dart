@@ -1,42 +1,37 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/classes/pb_object.dart';
 
 part 'product_category.mapper.dart';
 
 @MappableClass()
-class ProductCategory with ProductCategoryMappable {
-  final String id;
-
+class ProductCategory extends PbObject with ProductCategoryMappable {
   final String name;
   final String? parent;
 
-  final bool isDeleted;
-  final DateTime? created;
-  final DateTime? updated;
-
   ProductCategory({
-    required this.id,
+    required super.id,
+    required super.collectionId,
+    required super.collectionName,
     required this.name,
     this.parent,
-    this.isDeleted = false,
-    required this.created,
-    required this.updated,
+    super.isDeleted = false,
+    super.created,
+    super.updated,
   });
 
   static fromMap(Map<String, dynamic> raw) {
-    return ProductCategoryMapper.fromMap(
-      {
-        ...raw,
-      },
-    );
+    return ProductCategoryMapper.fromMap({
+      ...raw,
+    });
   }
 
-  static const fromJson = ProductCategoryMapper.fromMap;
+  static const fromJson = ProductCategoryMapper.fromJson;
 
   Map<String, dynamic> toForm() {
     return {
       ...toMap(),
       'created': created,
-      'updated': created,
+      'updated': updated,
     };
   }
 }

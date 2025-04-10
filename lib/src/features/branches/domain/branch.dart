@@ -1,37 +1,26 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/classes/pb_object.dart';
 
 part 'branch.mapper.dart';
 
 @MappableClass()
-class Branch with BranchMappable {
-  final String id;
-
+class Branch extends PbObject with BranchMappable {
   final String name;
 
-  final bool isDeleted;
-  final DateTime? created;
-  final DateTime? updated;
-
-  final String collectionId;
-  final String collectionName;
-
   Branch({
-    required this.collectionId,
-    required this.collectionName,
-    required this.id,
+    required super.id,
+    required super.collectionId,
+    required super.collectionName,
     required this.name,
-    this.isDeleted = false,
-    required this.created,
-    required this.updated,
+    super.isDeleted = false,
+    super.created,
+    super.updated,
   });
 
   static fromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    return BranchMapper.fromMap(
-      {
-        ...raw,
-      },
-    );
+    return BranchMapper.fromMap({
+      ...raw,
+    });
   }
 
   static const fromJson = BranchMapper.fromJson;
@@ -40,7 +29,7 @@ class Branch with BranchMappable {
     return {
       ...toMap(),
       'created': created,
-      'updated': created,
+      'updated': updated,
     };
   }
 }

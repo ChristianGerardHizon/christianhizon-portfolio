@@ -1,44 +1,37 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/classes/pb_object.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/features/treatments/domain/treatment.dart';
 
 part 'treatment_record.mapper.dart';
 
 @MappableClass()
-class TreatmentRecord with TreatmentRecordMappable {
-  final String id;
-
+class TreatmentRecord extends PbObject with TreatmentRecordMappable {
   final String type;
   final String patient;
-
   final DateTime? followUpDate;
   final DateTime? date;
   final String? notes;
 
   final TreatmentRecordExpand? expand;
 
-  final DateTime? created;
-  final DateTime? updated;
-
-  final String collectionId;
-  final String collectionName;
-
   TreatmentRecord({
-    required this.collectionId,
-    required this.collectionName,
-    required this.id,
+    required super.id,
+    required super.collectionId,
+    required super.collectionName,
     required this.type,
     required this.patient,
     this.followUpDate,
     this.date,
     this.notes,
     this.expand,
-    required this.created,
-    required this.updated,
+    super.isDeleted = false,
+    super.created,
+    super.updated,
   });
 
   static fromMap(Map<String, dynamic> raw) {
-    return {
+    return TreatmentRecordMapper.fromMap({
       ...raw,
       TreatmentRecordField.followUpDate:
           raw[TreatmentRecordField.followUpDate] == ''
@@ -47,27 +40,25 @@ class TreatmentRecord with TreatmentRecordMappable {
       TreatmentRecordField.date: raw[TreatmentRecordField.date] == ''
           ? null
           : raw[TreatmentRecordField.date],
-    };
+    });
   }
 
-  static const fromJson = TreatmentRecordMapper.fromMap;
+  static const fromJson = TreatmentRecordMapper.fromJson;
 }
 
 @MappableClass()
 class TreatmentRecordExpand with TreatmentRecordExpandMappable {
   final Treatment? type;
 
-  static fromMap(Map<String, dynamic> raw) {
-    return TreatmentRecordExpandMapper.fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
-
-  static const fromJson = TreatmentRecordExpandMapper.fromMap;
-
   TreatmentRecordExpand({
     this.type,
   });
+
+  static fromMap(Map<String, dynamic> raw) {
+    return TreatmentRecordExpandMapper.fromMap({
+      ...raw,
+    });
+  }
+
+  static const fromJson = TreatmentRecordExpandMapper.fromJson;
 }

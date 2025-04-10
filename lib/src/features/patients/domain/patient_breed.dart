@@ -1,32 +1,24 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/classes/pb_object.dart';
 
 part 'patient_breed.mapper.dart';
 
 @MappableClass()
-class PatientBreed with PatientBreedMappable {
-  final String id;
-
+class PatientBreed extends PbObject with PatientBreedMappable {
   final String name;
   final String species;
 
-  final bool isDeleted;
-  final DateTime? created;
-  final DateTime? updated;
-
-  final String collectionId;
-  final String collectionName;
-
   PatientBreed({
-    required this.collectionId,
-    required this.collectionName,
-    required this.id,
+    required super.id,
+    required super.collectionId,
+    required super.collectionName,
     this.name = '',
     required this.species,
-    this.isDeleted = false,
-    this.created,
-    this.updated,
+    super.isDeleted = false,
+    super.created,
+    super.updated,
   });
 
   static const fromMap = PatientBreedMapper.fromMap;
-  static const fromJson = PatientBreedMapper.fromMap;
+  static const fromJson = PatientBreedMapper.fromJson;
 }

@@ -1,4 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/classes/pb_object.dart';
 
 part 'product_inventory.mapper.dart';
 
@@ -6,9 +7,7 @@ part 'product_inventory.mapper.dart';
 enum ProductStatus { inStock, outOfStock, lowStock, noThreshold }
 
 @MappableClass()
-class ProductInventory with ProductInventoryMappable {
-  final String id;
-
+class ProductInventory extends PbObject with ProductInventoryMappable {
   final String product;
   final ProductStatus status;
   final String name;
@@ -18,37 +17,27 @@ class ProductInventory with ProductInventoryMappable {
   final String? branch;
   final String? branchName;
 
-  final DateTime? created;
-  final DateTime? updated;
-
-  final bool isDeleted;
-  final String collectionId;
-  final String collectionName;
-
   ProductInventory({
-    required this.collectionId,
-    required this.collectionName,
-    required this.id,
+    required super.id,
+    required super.collectionId,
+    required super.collectionName,
     required this.product,
     required this.status,
     required this.name,
     this.description,
-    this.branchName,
     this.category,
     this.image,
     this.branch,
-    this.isDeleted = false,
-    required this.created,
-    required this.updated,
+    this.branchName,
+    super.isDeleted = false,
+    super.created,
+    super.updated,
   });
 
   static fromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    return ProductInventoryMapper.fromMap(
-      {
-        ...raw,
-      },
-    );
+    return ProductInventoryMapper.fromMap({
+      ...raw,
+    });
   }
 
   static const fromJson = ProductInventoryMapper.fromJson;
@@ -57,7 +46,7 @@ class ProductInventory with ProductInventoryMappable {
     return {
       ...toMap(),
       'created': created,
-      'updated': created,
+      'updated': updated,
     };
   }
 }

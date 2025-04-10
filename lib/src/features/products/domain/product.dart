@@ -1,12 +1,11 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/classes/pb_object.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
 
 part 'product.mapper.dart';
 
 @MappableClass()
-class Product with ProductMappable {
-  final String id;
-
+class Product extends PbObject with ProductMappable {
   final String name;
   final String? description;
   final String? category;
@@ -14,19 +13,12 @@ class Product with ProductMappable {
   final String? branch;
   final int? stockThreshold;
 
-  final bool isDeleted;
-  final DateTime? created;
-  final DateTime? updated;
-
-  final String collectionId;
-  final String collectionName;
-
   final ProductExpand expand;
 
   Product({
-    required this.collectionId,
-    required this.collectionName,
-    required this.id,
+    required super.id,
+    required super.collectionId,
+    required super.collectionName,
     required this.name,
     this.image,
     this.description,
@@ -34,18 +26,15 @@ class Product with ProductMappable {
     this.branch,
     this.stockThreshold,
     required this.expand,
-    this.isDeleted = false,
-    required this.created,
-    required this.updated,
+    super.isDeleted = false,
+    super.created,
+    super.updated,
   });
 
   static fromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    return ProductMapper.fromMap(
-      {
-        ...raw,
-      },
-    );
+    return ProductMapper.fromMap({
+      ...raw,
+    });
   }
 
   static const fromJson = ProductMapper.fromJson;
@@ -54,7 +43,7 @@ class Product with ProductMappable {
     return {
       ...toMap(),
       'created': created,
-      'updated': created,
+      'updated': updated,
     };
   }
 
@@ -70,13 +59,10 @@ class ProductExpand with ProductExpandMappable {
   });
 
   static fromMap(Map<String, dynamic> raw) {
-    // if dateOfBirth is '' empty string, it will be null
-    return ProductExpandMapper.fromMap(
-      {
-        ...raw,
-      },
-    );
+    return ProductExpandMapper.fromMap({
+      ...raw,
+    });
   }
 
-  static const fromJson = ProductExpandMapper.fromMap;
+  static const fromJson = ProductExpandMapper.fromJson;
 }
