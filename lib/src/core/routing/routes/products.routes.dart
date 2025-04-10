@@ -11,6 +11,18 @@ class ProductsPageRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
+    return const ProductsPage();
+  }
+}
+
+@TypedGoRoute<ProductInventoriesPageRoute>(
+    path: ProductInventoriesPageRoute.path)
+class ProductInventoriesPageRoute extends GoRouteData {
+  const ProductInventoriesPageRoute();
+  static const path = '/productInventories';
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
     return const ProductInventoriesPage();
   }
 }

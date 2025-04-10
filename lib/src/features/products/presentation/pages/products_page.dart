@@ -36,7 +36,7 @@ class ProductsPage extends HookConsumerWidget {
         controller.toggle(index);
         return;
       }
-     if (selected) {
+      if (selected) {
         controller.toggle(index);
         return;
       }
@@ -176,18 +176,8 @@ class ProductsPage extends HookConsumerWidget {
             builder: (context, product, extra) {
               return Align(
                 alignment: Alignment.centerLeft,
-                child: Text(product.branch.optional(),
+                child: Text((product.expand.branch?.name).optional(),
                     overflow: TextOverflow.ellipsis),
-              );
-            },
-          ),
-          TableColumn(
-            header: 'Status',
-            alignment: Alignment.centerLeft,
-            builder: (context, product, extra) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: Text(product.name, overflow: TextOverflow.ellipsis),
               );
             },
           ),
@@ -204,14 +194,13 @@ class ProductsPage extends HookConsumerWidget {
             },
           ),
           TableColumn(
-            header: 'Date Updated',
+            header: 'Actions',
             alignment: Alignment.centerLeft,
             width: 150,
             builder: (context, product, extra) {
               return Align(
                 alignment: Alignment.centerLeft,
-                child: Text((product.updated?.yyyyMMddHHmmA()).optional(),
-                    overflow: TextOverflow.ellipsis),
+                child: TextButton(onPressed: () {}, child: Text('Add Stock')),
               );
             },
           ),

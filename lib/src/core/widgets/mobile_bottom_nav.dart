@@ -48,6 +48,7 @@ class MobileBottomNav extends StatelessWidget {
         DashboardPageRoute.path,
         PatientsPageRoute.path,
         ProductsPageRoute.path,
+        ProductInventoriesPageRoute.path,
         YourAccountPageRoute.path,
       ];
       return routes.contains(path);

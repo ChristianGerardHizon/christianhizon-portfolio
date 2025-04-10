@@ -175,23 +175,11 @@ class BranchesPage extends HookConsumerWidget {
           TableColumn(
             header: 'Date Created',
             alignment: Alignment.centerLeft,
-            width: 150,
+            width: 200,
             builder: (context, branch, extra) {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: Text((branch.created?.yyyyMMddHHmmA()).optional(),
-                    overflow: TextOverflow.ellipsis),
-              );
-            },
-          ),
-          TableColumn(
-            header: 'Date Updated',
-            alignment: Alignment.centerLeft,
-            width: 150,
-            builder: (context, branch, extra) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: Text((branch.updated?.yyyyMMddHHmmA()).optional(),
                     overflow: TextOverflow.ellipsis),
               );
             },

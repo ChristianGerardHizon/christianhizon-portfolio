@@ -36,6 +36,7 @@ List<RouteBase> get $appRoutes => [
       $morePageRoute,
       $salesPageRoute,
       $productsPageRoute,
+      $productInventoriesPageRoute,
       $productFormPageRoute,
       $productPageRoute,
       $medicalRecordsPageRoute,
@@ -131,6 +132,10 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/products',
               factory: $ProductsPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/productInventories',
+              factory: $ProductInventoriesPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
               path: '/product/:id',
@@ -362,6 +367,24 @@ extension $ProductsPageRouteExtension on ProductsPageRoute {
 
   String get location => GoRouteData.$location(
         '/products',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $ProductInventoriesPageRouteExtension on ProductInventoriesPageRoute {
+  static ProductInventoriesPageRoute _fromState(GoRouterState state) =>
+      const ProductInventoriesPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/productInventories',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -944,6 +967,11 @@ RouteBase get $salesPageRoute => GoRouteData.$route(
 RouteBase get $productsPageRoute => GoRouteData.$route(
       path: '/products',
       factory: $ProductsPageRouteExtension._fromState,
+    );
+
+RouteBase get $productInventoriesPageRoute => GoRouteData.$route(
+      path: '/productInventories',
+      factory: $ProductInventoriesPageRouteExtension._fromState,
     );
 
 RouteBase get $productFormPageRoute => GoRouteData.$route(

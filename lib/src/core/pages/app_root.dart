@@ -72,12 +72,12 @@ class AppRoot extends HookConsumerWidget {
           },
         ),
         CustomNavigationBarItem(
-          route: ProductsPageRoute.path,
+          route: ProductInventoriesPageRoute.path,
           icon: Icon(MIcons.shoppingOutline),
           selectedIcon: Icon(MIcons.shopping),
           label: 'Products',
           onTap: () {
-            ProductsPageRoute().go(context);
+            ProductInventoriesPageRoute().go(context);
           },
         ),
         CustomNavigationBarItem(

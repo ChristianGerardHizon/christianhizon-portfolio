@@ -115,7 +115,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Products'),
+        title: Text('Products Inventories'),
         actions: [
           RefreshButton(
             onPressed: onRefresh,

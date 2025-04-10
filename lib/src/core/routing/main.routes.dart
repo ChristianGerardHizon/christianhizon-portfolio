@@ -129,6 +129,8 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<ProductsBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<ProductsPageRoute>(path: ProductsPageRoute.path),
+        TypedGoRoute<ProductInventoriesPageRoute>(
+            path: ProductInventoriesPageRoute.path),
         TypedGoRoute<ProductPageRoute>(path: ProductPageRoute.path),
         TypedGoRoute<ProductFormPageRoute>(path: ProductFormPageRoute.path),
       ],
