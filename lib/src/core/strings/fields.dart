@@ -1,4 +1,4 @@
-abstract class Field {
+abstract class PbField {
   static const String id = 'id';
   static const String created = 'created';
   static const String updated = 'updated';
@@ -6,10 +6,10 @@ abstract class Field {
 }
 
 class UserField {
-  static const String id = Field.id;
-  static const String created = Field.created;
-  static const String updated = Field.updated;
-  static const String isDeleted = Field.isDeleted;
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
 
   static const String name = 'name';
   static const String email = 'email';
@@ -23,10 +23,10 @@ class UserField {
 }
 
 class AdminField {
-  static const String id = Field.id;
-  static const String created = Field.created;
-  static const String updated = Field.updated;
-  static const String isDeleted = Field.isDeleted;
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
 
   static const String name = 'name';
   static const String email = 'email';
@@ -40,10 +40,10 @@ class AdminField {
 }
 
 class PatientField {
-  static const String id = Field.id;
-  static const String created = Field.created;
-  static const String updated = Field.updated;
-  static const String isDeleted = Field.isDeleted;
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
 
   static const String name = 'name';
   static const String address = 'address';
@@ -60,39 +60,39 @@ class PatientField {
 }
 
 class PatientSpeciesField {
-  static const String id = Field.id;
-  static const String created = Field.created;
-  static const String updated = Field.updated;
-  static const String isDeleted = Field.isDeleted;
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
 
   static const String name = 'name';
 }
 
 class PatientBreedField {
-  static const String id = Field.id;
-  static const String created = Field.created;
-  static const String updated = Field.updated;
-  static const String isDeleted = Field.isDeleted;
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
 
   static const String name = 'name';
   static const String species = 'species';
 }
 
 class TreatmentField {
-  static const String id = Field.id;
-  static const String created = Field.created;
-  static const String updated = Field.updated;
-  static const String isDeleted = Field.isDeleted;
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
 
   static const String name = 'name';
   static const String icon = 'icon';
 }
 
 class TreatmentRecordField {
-  static const String id = Field.id;
-  static const String created = Field.created;
-  static const String updated = Field.updated;
-  static const String isDeleted = Field.isDeleted;
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
 
   static const String type = 'type';
   static const String patient = 'patient';
@@ -102,10 +102,10 @@ class TreatmentRecordField {
 }
 
 class MedicalRecordField {
-  static const String id = Field.id;
-  static const String created = Field.created;
-  static const String updated = Field.updated;
-  static const String isDeleted = Field.isDeleted;
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
 
   static const String patient = 'patient';
   static const String diagnosis = 'diagnosis';
@@ -118,10 +118,10 @@ class MedicalRecordField {
 }
 
 class PrescriptionItemField {
-  static const String id = Field.id;
-  static const String created = Field.created;
-  static const String updated = Field.updated;
-  static const String isDeleted = Field.isDeleted;
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
 
   static const String medication = 'medication';
   static const String medicalRecord = 'medicalRecord';
@@ -130,10 +130,10 @@ class PrescriptionItemField {
 }
 
 class ProductField {
-  static const String id = Field.id;
-  static const String created = Field.created;
-  static const String updated = Field.updated;
-  static const String isDeleted = Field.isDeleted;
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
 
   static const String name = 'name';
   static const String description = 'description';
@@ -143,28 +143,28 @@ class ProductField {
 }
 
 class BranchField {
-  static const String id = Field.id;
-  static const String created = Field.created;
-  static const String updated = Field.updated;
-  static const String isDeleted = Field.isDeleted;
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
 
   static const String name = 'name';
 }
 
 class CategoryField {
-  static const String id = Field.id;
-  static const String created = Field.created;
-  static const String updated = Field.updated;
-  static const String isDeleted = Field.isDeleted;
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
 
   static const String name = 'name';
 }
 
 class ProductStockField {
-  static const String id = Field.id;
-  static const String created = Field.created;
-  static const String updated = Field.updated;
-  static const String isDeleted = Field.isDeleted;
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
 
   static const String name = 'name';
 }
