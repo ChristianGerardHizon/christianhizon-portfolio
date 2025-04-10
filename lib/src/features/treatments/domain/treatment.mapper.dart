@@ -13,7 +13,7 @@ class TreatmentMapper extends ClassMapperBase<Treatment> {
   static TreatmentMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = TreatmentMapper._());
-      PbObjectMapper.ensureInitialized();
+      PbRecordMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -118,7 +118,7 @@ extension TreatmentValueCopy<$R, $Out> on ObjectCopyWith<$R, Treatment, $Out> {
 }
 
 abstract class TreatmentCopyWith<$R, $In extends Treatment, $Out>
-    implements PbObjectCopyWith<$R, $In, $Out> {
+    implements PbRecordCopyWith<$R, $In, $Out> {
   @override
   $R call(
       {String? id,

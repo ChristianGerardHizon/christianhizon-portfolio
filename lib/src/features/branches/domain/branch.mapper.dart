@@ -13,7 +13,7 @@ class BranchMapper extends ClassMapperBase<Branch> {
   static BranchMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = BranchMapper._());
-      PbObjectMapper.ensureInitialized();
+      PbRecordMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -108,7 +108,7 @@ extension BranchValueCopy<$R, $Out> on ObjectCopyWith<$R, Branch, $Out> {
 }
 
 abstract class BranchCopyWith<$R, $In extends Branch, $Out>
-    implements PbObjectCopyWith<$R, $In, $Out> {
+    implements PbRecordCopyWith<$R, $In, $Out> {
   @override
   $R call(
       {String? id,

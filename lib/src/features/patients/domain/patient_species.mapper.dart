@@ -13,7 +13,7 @@ class PatientSpeciesMapper extends ClassMapperBase<PatientSpecies> {
   static PatientSpeciesMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = PatientSpeciesMapper._());
-      PbObjectMapper.ensureInitialized();
+      PbRecordMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -117,7 +117,7 @@ extension PatientSpeciesValueCopy<$R, $Out>
 }
 
 abstract class PatientSpeciesCopyWith<$R, $In extends PatientSpecies, $Out>
-    implements PbObjectCopyWith<$R, $In, $Out> {
+    implements PbRecordCopyWith<$R, $In, $Out> {
   @override
   $R call(
       {String? id,

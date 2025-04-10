@@ -1,10 +1,10 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/classes/pb_object.dart';
+import 'package:gym_system/src/core/classes/pb_record.dart';
 
 part 'product_category.mapper.dart';
 
 @MappableClass()
-class ProductCategory extends PbObject with ProductCategoryMappable {
+class ProductCategory extends PbRecord with ProductCategoryMappable {
   final String name;
   final String? parent;
 

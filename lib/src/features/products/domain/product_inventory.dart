@@ -1,5 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/classes/pb_object.dart';
+import 'package:gym_system/src/core/classes/pb_record.dart';
 
 part 'product_inventory.mapper.dart';
 
@@ -7,7 +7,7 @@ part 'product_inventory.mapper.dart';
 enum ProductStatus { inStock, outOfStock, lowStock, noThreshold }
 
 @MappableClass()
-class ProductInventory extends PbObject with ProductInventoryMappable {
+class ProductInventory extends PbRecord with ProductInventoryMappable {
   final String product;
   final ProductStatus status;
   final String name;

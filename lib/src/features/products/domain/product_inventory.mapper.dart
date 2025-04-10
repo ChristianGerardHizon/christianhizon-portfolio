@@ -67,7 +67,7 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   static ProductInventoryMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ProductInventoryMapper._());
-      PbObjectMapper.ensureInitialized();
+      PbRecordMapper.ensureInitialized();
       ProductStatusMapper.ensureInitialized();
     }
     return _instance!;
@@ -207,7 +207,7 @@ extension ProductInventoryValueCopy<$R, $Out>
 }
 
 abstract class ProductInventoryCopyWith<$R, $In extends ProductInventory, $Out>
-    implements PbObjectCopyWith<$R, $In, $Out> {
+    implements PbRecordCopyWith<$R, $In, $Out> {
   @override
   $R call(
       {String? id,

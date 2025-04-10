@@ -1,10 +1,10 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/classes/pb_object.dart';
+import 'package:gym_system/src/core/classes/pb_record.dart';
 
 part 'treatment.mapper.dart';
 
 @MappableClass()
-class Treatment extends PbObject with TreatmentMappable {
+class Treatment extends PbRecord with TreatmentMappable {
   final String name;
   final String? icon;
 

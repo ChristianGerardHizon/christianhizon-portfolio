@@ -1,9 +1,9 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
-part 'pb_object.mapper.dart';
+part 'pb_record.mapper.dart';
 
 @MappableClass()
-abstract class PbObject with PbObjectMappable {
+abstract class PbRecord with PbRecordMappable {
   final String id;
   final DateTime? created;
   final DateTime? updated;
@@ -12,7 +12,7 @@ abstract class PbObject with PbObjectMappable {
   final String collectionId;
   final String collectionName;
 
-  PbObject({
+  PbRecord({
     required this.id,
     required this.isDeleted,
     required this.collectionId,
@@ -22,12 +22,12 @@ abstract class PbObject with PbObjectMappable {
   });
 
   static fromMap(Map<String, dynamic> raw) {
-    return PbObjectMapper.fromMap(
+    return PbRecordMapper.fromMap(
       {
         ...raw,
       },
     );
   }
 
-  static const fromJson = PbObjectMapper.fromJson;
+  static const fromJson = PbRecordMapper.fromJson;
 }

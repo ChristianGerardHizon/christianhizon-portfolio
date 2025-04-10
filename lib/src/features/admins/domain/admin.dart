@@ -1,10 +1,10 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/classes/pb_object.dart';
+import 'package:gym_system/src/core/classes/pb_record.dart';
 
 part 'admin.mapper.dart';
 
 @MappableClass()
-class Admin extends PbObject with AdminMappable {
+class Admin extends PbRecord with AdminMappable {
   final String name;
   final String email;
   final String? avatar;

@@ -13,7 +13,7 @@ class ProductCategoryMapper extends ClassMapperBase<ProductCategory> {
   static ProductCategoryMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ProductCategoryMapper._());
-      PbObjectMapper.ensureInitialized();
+      PbRecordMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -121,7 +121,7 @@ extension ProductCategoryValueCopy<$R, $Out>
 }
 
 abstract class ProductCategoryCopyWith<$R, $In extends ProductCategory, $Out>
-    implements PbObjectCopyWith<$R, $In, $Out> {
+    implements PbRecordCopyWith<$R, $In, $Out> {
   @override
   $R call(
       {String? id,

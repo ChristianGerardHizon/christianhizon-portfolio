@@ -1,10 +1,10 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/classes/pb_object.dart';
+import 'package:gym_system/src/core/classes/pb_record.dart';
 
 part 'product_stock.mapper.dart';
 
 @MappableClass()
-class ProductStock extends PbObject with ProductStockMappable {
+class ProductStock extends PbRecord with ProductStockMappable {
   ProductStock({
     required super.id,
     required super.collectionId,
@@ -15,12 +15,12 @@ class ProductStock extends PbObject with ProductStockMappable {
   });
 
   static fromMap(Map<String, dynamic> raw) {
-    return PbObjectMapper.fromMap(
+    return PbRecordMapper.fromMap(
       {
         ...raw,
       },
     );
   }
 
-  static const fromJson = PbObjectMapper.fromJson;
+  static const fromJson = PbRecordMapper.fromJson;
 }

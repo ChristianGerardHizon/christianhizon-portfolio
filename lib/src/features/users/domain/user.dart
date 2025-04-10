@@ -1,11 +1,11 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/classes/pb_object.dart';
+import 'package:gym_system/src/core/classes/pb_record.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
 
 part 'user.mapper.dart';
 
 @MappableClass()
-class User extends PbObject with UserMappable {
+class User extends PbRecord with UserMappable {
   final String name;
   final String email;
   final String? avatar;

@@ -13,7 +13,7 @@ class AdminMapper extends ClassMapperBase<Admin> {
   static AdminMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = AdminMapper._());
-      PbObjectMapper.ensureInitialized();
+      PbRecordMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -123,7 +123,7 @@ extension AdminValueCopy<$R, $Out> on ObjectCopyWith<$R, Admin, $Out> {
 }
 
 abstract class AdminCopyWith<$R, $In extends Admin, $Out>
-    implements PbObjectCopyWith<$R, $In, $Out> {
+    implements PbRecordCopyWith<$R, $In, $Out> {
   @override
   $R call(
       {String? id,

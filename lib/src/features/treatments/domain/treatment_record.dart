@@ -1,12 +1,12 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/classes/pb_object.dart';
+import 'package:gym_system/src/core/classes/pb_record.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/features/treatments/domain/treatment.dart';
 
 part 'treatment_record.mapper.dart';
 
 @MappableClass()
-class TreatmentRecord extends PbObject with TreatmentRecordMappable {
+class TreatmentRecord extends PbRecord with TreatmentRecordMappable {
   final String type;
   final String patient;
   final DateTime? followUpDate;

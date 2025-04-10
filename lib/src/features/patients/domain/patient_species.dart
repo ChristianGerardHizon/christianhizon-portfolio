@@ -1,10 +1,10 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/classes/pb_object.dart';
+import 'package:gym_system/src/core/classes/pb_record.dart';
 
 part 'patient_species.mapper.dart';
 
 @MappableClass()
-class PatientSpecies extends PbObject with PatientSpeciesMappable {
+class PatientSpecies extends PbRecord with PatientSpeciesMappable {
   final String name;
 
   PatientSpecies({

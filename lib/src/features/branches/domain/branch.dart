@@ -1,10 +1,10 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/classes/pb_object.dart';
+import 'package:gym_system/src/core/classes/pb_record.dart';
 
 part 'branch.mapper.dart';
 
 @MappableClass()
-class Branch extends PbObject with BranchMappable {
+class Branch extends PbRecord with BranchMappable {
   final String name;
 
   Branch({
