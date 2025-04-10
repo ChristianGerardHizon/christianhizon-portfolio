@@ -1,7 +1,9 @@
+import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
+import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/prescription/domain/prescription_item.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,36 +13,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'prescription_item_repository.g.dart';
 
-abstract class PrescriptionItemRepository {
-  TaskResult<PrescriptionItem> get(String id);
-  TaskResult<PageResults<PrescriptionItem>> list({
-    String? filter,
-    required int pageNo,
-    required int pageSize,
-  });
-  TaskResult<List<PrescriptionItem>> listAll({
-    int batch = 500,
-    String? filter,
-  });
-  TaskResult<void> delete(String id);
-  TaskResult<void> softDeleteMulti(List<String> ids);
-  TaskResult<PrescriptionItem> update(
-    PrescriptionItem prescription,
-    Map<String, dynamic> update, {
-    List<MultipartFile> files = const [],
-  });
-
-  TaskResult<PrescriptionItem> create(Map<String, dynamic> payload);
-}
-
 @Riverpod(keepAlive: true)
-PrescriptionItemRepository prescriptionItemRepository(Ref ref) {
+PBCollectionRepository<PrescriptionItem> prescriptionItemRepository(Ref ref) {
   return PrescriptionItemRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class PrescriptionItemRepositoryImpl extends PrescriptionItemRepository {
+class PrescriptionItemRepositoryImpl
+    extends PBCollectionRepository<PrescriptionItem> {
   final PocketBase pb;
 
   PrescriptionItemRepositoryImpl({required this.pb});
@@ -61,7 +42,10 @@ class PrescriptionItemRepositoryImpl extends PrescriptionItemRepository {
   }
 
   @override
-  TaskResult<PrescriptionItem> create(Map<String, dynamic> payload) {
+  TaskResult<PrescriptionItem> create(
+    Map<String, dynamic> payload, {
+    List<MultipartFile> files = const [],
+  }) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload);
       return mapToData(response.toJson());
@@ -80,6 +64,7 @@ class PrescriptionItemRepositoryImpl extends PrescriptionItemRepository {
     String? filter,
     required int pageNo,
     required int pageSize,
+    PocketbaseSortValue? sort,
   }) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getList(

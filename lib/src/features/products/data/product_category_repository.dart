@@ -1,3 +1,4 @@
+import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
@@ -12,37 +13,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_category_repository.g.dart';
 
-abstract class ProductCategoryRepository {
-  TaskResult<ProductCategory> get(String id);
-  TaskResult<PageResults<ProductCategory>> list({
-    String? filter,
-    required int pageNo,
-    required int pageSize,
-    PocketbaseSortValue? sort,
-  });
-  TaskResult<List<ProductCategory>> listAll({
-    int batch = 500,
-    String? filter,
-  });
-  TaskResult<void> delete(String id);
-  TaskResult<void> softDeleteMulti(List<String> ids);
-  TaskResult<ProductCategory> update(
-    ProductCategory history,
-    Map<String, dynamic> update, {
-    List<MultipartFile> files = const [],
-  });
-
-  TaskResult<ProductCategory> create(Map<String, dynamic> payload);
-}
-
 @Riverpod(keepAlive: true)
-ProductCategoryRepository productCategoryRepository(Ref ref) {
+PBCollectionRepository<ProductCategory> productCategoryRepository(Ref ref) {
   return ProductCategoryRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class ProductCategoryRepositoryImpl extends ProductCategoryRepository {
+class ProductCategoryRepositoryImpl
+    extends PBCollectionRepository<ProductCategory> {
   final PocketBase pb;
 
   ProductCategoryRepositoryImpl({required this.pb});
@@ -63,9 +42,15 @@ class ProductCategoryRepositoryImpl extends ProductCategoryRepository {
   }
 
   @override
-  TaskResult<ProductCategory> create(Map<String, dynamic> payload) {
+  TaskResult<ProductCategory> create(
+    Map<String, dynamic> payload, {
+    List<MultipartFile> files = const [],
+  }) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(body: payload);
+      final response = await collection.create(
+        body: payload,
+        files: files,
+      );
       return mapToData(response.toJson());
     }, Failure.tryCatchData);
   }

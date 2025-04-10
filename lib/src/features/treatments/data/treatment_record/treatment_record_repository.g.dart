@@ -7,12 +7,12 @@ part of 'treatment_record_repository.dart';
 // **************************************************************************
 
 String _$treatmentRecordRepositoryHash() =>
-    r'f9dabe9f2e20cd7d360f0d4562263d15283fd892';
+    r'077f35e20c664730e6450a567e4faa149c85a9a2';
 
 /// See also [treatmentRecordRepository].
 @ProviderFor(treatmentRecordRepository)
 final treatmentRecordRepositoryProvider =
-    Provider<TreatmentRecordRepository>.internal(
+    Provider<PBCollectionRepository<TreatmentRecord>>.internal(
   treatmentRecordRepository,
   name: r'treatmentRecordRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -24,6 +24,7 @@ final treatmentRecordRepositoryProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef TreatmentRecordRepositoryRef = ProviderRef<TreatmentRecordRepository>;
+typedef TreatmentRecordRepositoryRef
+    = ProviderRef<PBCollectionRepository<TreatmentRecord>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

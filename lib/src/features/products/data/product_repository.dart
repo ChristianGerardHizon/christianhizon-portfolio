@@ -1,3 +1,4 @@
+import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
@@ -12,44 +13,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_repository.g.dart';
 
-abstract class ProductRepository {
-  TaskResult<Product> get(String id);
-  TaskResult<PageResults<Product>> list({
-    String? filter,
-    required int pageNo,
-    required int pageSize,
-    PocketbaseSortValue? sort,
-  });
-  TaskResult<List<Product>> listAll({
-    int batch = 500,
-    String? filter,
-  });
-  TaskResult<void> delete(String id);
-  TaskResult<void> softDeleteMulti(List<String> ids);
-  TaskResult<Product> update(
-    Product product,
-    Map<String, dynamic> update, {
-    List<MultipartFile> files = const [],
-  });
-
-  TaskResult<Product> create(
-    Map<String, dynamic> payload, {
-    List<MultipartFile> files = const [],
-  });
-
-  ///
-  /// Custom Functions
-  ///
-}
-
 @Riverpod(keepAlive: true)
-ProductRepository productRepository(Ref ref) {
+PBCollectionRepository<Product> productRepository(Ref ref) {
   return ProductRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class ProductRepositoryImpl extends ProductRepository {
+class ProductRepositoryImpl extends PBCollectionRepository<Product> {
   final PocketBase pb;
 
   ProductRepositoryImpl({required this.pb});

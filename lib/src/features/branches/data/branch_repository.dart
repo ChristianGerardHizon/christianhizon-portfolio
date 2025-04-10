@@ -1,3 +1,4 @@
+import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
@@ -13,40 +14,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'branch_repository.g.dart';
 
-abstract class BranchRepository {
-  TaskResult<Branch> get(String id);
-  TaskResult<PageResults<Branch>> list({
-    String? filter,
-    required int pageNo,
-    required int pageSize,
-    PocketbaseSortValue? sort,
-  });
-  TaskResult<List<Branch>> listAll({
-    int batch = 500,
-    String? filter,
-  });
-  TaskResult<void> delete(String id);
-  TaskResult<void> softDeleteMulti(List<String> ids);
-  TaskResult<Branch> update(
-    Branch history,
-    Map<String, dynamic> update, {
-    List<MultipartFile> files = const [],
-  });
-
-  TaskResult<Branch> create(
-    Map<String, dynamic> payload, {
-    List<MultipartFile> files = const [],
-  });
-}
-
 @Riverpod(keepAlive: true)
-BranchRepository branchRepository(Ref ref) {
+PBCollectionRepository<Branch> branchRepository(Ref ref) {
   return BranchRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class BranchRepositoryImpl extends BranchRepository {
+class BranchRepositoryImpl extends PBCollectionRepository<Branch> {
   final PocketBase pb;
 
   BranchRepositoryImpl({required this.pb});

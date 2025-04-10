@@ -1,3 +1,4 @@
+import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
@@ -12,37 +13,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'treatment_record_repository.g.dart';
 
-abstract class TreatmentRecordRepository {
-  TaskResult<TreatmentRecord> get(String id);
-  TaskResult<PageResults<TreatmentRecord>> list({
-    String? filter,
-    required int pageNo,
-    required int pageSize,
-    PocketbaseSortValue? sort,
-  });
-  TaskResult<List<TreatmentRecord>> listAll({
-    int batch = 500,
-    String? filter,
-  });
-  TaskResult<void> delete(String id);
-  TaskResult<void> softDeleteMulti(List<String> ids);
-  TaskResult<TreatmentRecord> update(
-    TreatmentRecord treatment,
-    Map<String, dynamic> update, {
-    List<MultipartFile> files = const [],
-  });
-
-  TaskResult<TreatmentRecord> create(Map<String, dynamic> payload);
-}
-
 @Riverpod(keepAlive: true)
-TreatmentRecordRepository treatmentRecordRepository(Ref ref) {
+PBCollectionRepository<TreatmentRecord> treatmentRecordRepository(Ref ref) {
   return TreatmentRecordRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
+class TreatmentRecordRepositoryImpl
+    extends PBCollectionRepository<TreatmentRecord> {
   final PocketBase pb;
 
   TreatmentRecordRepositoryImpl({required this.pb});
@@ -65,9 +44,12 @@ class TreatmentRecordRepositoryImpl extends TreatmentRecordRepository {
   }
 
   @override
-  TaskResult<TreatmentRecord> create(Map<String, dynamic> payload) {
+  TaskResult<TreatmentRecord> create(
+    Map<String, dynamic> payload, {
+    List<MultipartFile> files = const [],
+  }) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(body: payload);
+      final response = await collection.create(body: payload, files: files);
       return mapToData(response.toJson());
     }, Failure.tryCatchData);
   }

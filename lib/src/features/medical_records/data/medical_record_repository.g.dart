@@ -7,12 +7,12 @@ part of 'medical_record_repository.dart';
 // **************************************************************************
 
 String _$medicalRecordRepositoryHash() =>
-    r'c7d4969a1771adad0c12936aa931f80e1fe342b9';
+    r'cde2b2e64caff7a9e26ba3ce444a47479f343562';
 
 /// See also [medicalRecordRepository].
 @ProviderFor(medicalRecordRepository)
 final medicalRecordRepositoryProvider =
-    Provider<MedicalRecordRepository>.internal(
+    Provider<PBCollectionRepository<MedicalRecord>>.internal(
   medicalRecordRepository,
   name: r'medicalRecordRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -24,6 +24,7 @@ final medicalRecordRepositoryProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef MedicalRecordRepositoryRef = ProviderRef<MedicalRecordRepository>;
+typedef MedicalRecordRepositoryRef
+    = ProviderRef<PBCollectionRepository<MedicalRecord>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

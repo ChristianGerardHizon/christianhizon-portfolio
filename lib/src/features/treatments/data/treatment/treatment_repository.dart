@@ -1,7 +1,9 @@
+import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
+import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/treatments/domain/treatment.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,36 +13,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'treatment_repository.g.dart';
 
-abstract class TreatmentRepository {
-  TaskResult<Treatment> get(String id);
-  TaskResult<PageResults<Treatment>> list({
-    String? filter,
-    required int pageNo,
-    required int pageSize,
-  });
-  TaskResult<List<Treatment>> listAll({
-    int batch = 500,
-    String? filter,
-  });
-  TaskResult<void> delete(String id);
-  TaskResult<void> softDeleteMulti(List<String> ids);
-  TaskResult<Treatment> update(
-    Treatment historyType,
-    Map<String, dynamic> update, {
-    List<MultipartFile> files = const [],
-  });
-
-  TaskResult<Treatment> create(Map<String, dynamic> payload);
-}
-
 @Riverpod(keepAlive: true)
-TreatmentRepository treatmentRepository(Ref ref) {
+PBCollectionRepository<Treatment> treatmentRepository(Ref ref) {
   return TreatmentRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class TreatmentRepositoryImpl extends TreatmentRepository {
+class TreatmentRepositoryImpl extends PBCollectionRepository<Treatment> {
   final PocketBase pb;
 
   TreatmentRepositoryImpl({required this.pb});
@@ -63,9 +43,15 @@ class TreatmentRepositoryImpl extends TreatmentRepository {
   }
 
   @override
-  TaskResult<Treatment> create(Map<String, dynamic> payload) {
+  TaskResult<Treatment> create(
+    Map<String, dynamic> payload, {
+    List<MultipartFile> files = const [],
+  }) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(body: payload);
+      final response = await collection.create(
+        body: payload,
+        files: files,
+      );
       return mapToData(response.toJson());
     }, Failure.tryCatchData);
   }
@@ -82,12 +68,14 @@ class TreatmentRepositoryImpl extends TreatmentRepository {
     String? filter,
     required int pageNo,
     required int pageSize,
+    PocketbaseSortValue? sort,
   }) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getList(
         filter: filter,
         page: pageNo,
         perPage: pageSize,
+        sort: sort?.value,
       );
       return PageResults(
         page: result.page,

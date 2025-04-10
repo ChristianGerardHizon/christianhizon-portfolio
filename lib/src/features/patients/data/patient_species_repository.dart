@@ -1,7 +1,9 @@
+import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
+import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/patients/domain/patient_species.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,37 +13,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'patient_species_repository.g.dart';
 
-abstract class PatientSpeciesRepository {
-  TaskResult<PatientSpecies> get(String id);
-  TaskResult<PageResults<PatientSpecies>> list({
-    String? filter,
-    required int pageNo,
-    required int pageSize,
-  });
-  TaskResult<void> delete(String id);
-  TaskResult<void> softDeleteMulti(List<String> ids);
-  TaskResult<PatientSpecies> update(
-    PatientSpecies patientSpecies,
-    Map<String, dynamic> update, {
-    List<MultipartFile> files = const [],
-  });
-
-  TaskResult<PatientSpecies> create(Map<String, dynamic> payload);
-
-  TaskResult<List<PatientSpecies>> listAll({
-    int batch = 500,
-    String? filter,
-  });
-}
-
 @Riverpod(keepAlive: true)
-PatientSpeciesRepository patientSpeciesRepository(Ref ref) {
+PBCollectionRepository<PatientSpecies> patientSpeciesRepository(Ref ref) {
   return PatientSpeciesRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class PatientSpeciesRepositoryImpl extends PatientSpeciesRepository {
+class PatientSpeciesRepositoryImpl
+    extends PBCollectionRepository<PatientSpecies> {
   final PocketBase pb;
 
   PatientSpeciesRepositoryImpl({required this.pb});
@@ -62,7 +42,10 @@ class PatientSpeciesRepositoryImpl extends PatientSpeciesRepository {
   }
 
   @override
-  TaskResult<PatientSpecies> create(Map<String, dynamic> payload) {
+  TaskResult<PatientSpecies> create(
+    Map<String, dynamic> payload, {
+    List<MultipartFile> files = const [],
+  }) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload);
       return PatientSpecies.fromMap(response.toJson());
@@ -81,6 +64,7 @@ class PatientSpeciesRepositoryImpl extends PatientSpeciesRepository {
     String? filter,
     required int pageNo,
     required int pageSize,
+    PocketbaseSortValue? sort,
   }) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getList(

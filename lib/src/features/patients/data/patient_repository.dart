@@ -1,6 +1,8 @@
+import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
+import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
@@ -12,32 +14,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'patient_repository.g.dart';
 
-abstract class PatientRepository {
-  TaskResult<Patient> get(String id);
-  TaskResult<PageResults<Patient>> list({
-    String? filter,
-    required int pageNo,
-    required int pageSize,
-  });
-  TaskResult<void> delete(String id);
-  TaskResult<void> softDeleteMulti(List<String> ids);
-  TaskResult<Patient> update(
-    Patient patient,
-    Map<String, dynamic> update, {
-    List<MultipartFile> files = const [],
-  });
-
-  TaskResult<Patient> create(Map<String, dynamic> payload);
-}
-
 @Riverpod(keepAlive: true)
-PatientRepository patientRepository(Ref ref) {
+PBCollectionRepository<Patient> patientRepository(Ref ref) {
   return PatientRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class PatientRepositoryImpl extends PatientRepository {
+class PatientRepositoryImpl extends PBCollectionRepository<Patient> {
   final PocketBase pb;
 
   PatientRepositoryImpl({required this.pb});
@@ -59,7 +43,10 @@ class PatientRepositoryImpl extends PatientRepository {
   }
 
   @override
-  TaskResult<Patient> create(Map<String, dynamic> payload) {
+  TaskResult<Patient> create(
+    Map<String, dynamic> payload, {
+    List<MultipartFile> files = const [],
+  }) {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload, expand: expand);
       return mapToData(response.toJson());
@@ -78,6 +65,7 @@ class PatientRepositoryImpl extends PatientRepository {
     String? filter,
     required int pageNo,
     required int pageSize,
+    PocketbaseSortValue? sort,
   }) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getList(
@@ -128,5 +116,18 @@ class PatientRepositoryImpl extends PatientRepository {
 
       await batch.send();
     }, Failure.tryCatchData);
+  }
+
+  @override
+  TaskResult<List<Patient>> listAll({int batch = 500, String? filter}) {
+    return TaskResult.tryCatch(
+      () async {
+        final result = await collection.getFullList(
+          filter: filter,
+        );
+        return result.map<Patient>((e) => mapToData(e.toJson())).toList();
+      },
+      Failure.tryCatchData,
+    );
   }
 }

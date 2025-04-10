@@ -6,11 +6,11 @@ part of 'admin_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$adminRepositoryHash() => r'd59c375a0bc0a5f5ed863fde935804b2b82ae3c8';
+String _$adminRepositoryHash() => r'a4b523e3f0c5cf992975e02bec70631a52e14ff2';
 
 /// See also [adminRepository].
 @ProviderFor(adminRepository)
-final adminRepositoryProvider = Provider<AdminRepository>.internal(
+final adminRepositoryProvider = Provider<PBAuthRepository<Admin>>.internal(
   adminRepository,
   name: r'adminRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,6 +22,6 @@ final adminRepositoryProvider = Provider<AdminRepository>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef AdminRepositoryRef = ProviderRef<AdminRepository>;
+typedef AdminRepositoryRef = ProviderRef<PBAuthRepository<Admin>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -1,4 +1,5 @@
 import 'package:cross_file/cross_file.dart';
+import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
@@ -14,37 +15,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 part 'admin_repository.g.dart';
 
-abstract class AdminRepository {
-  TaskResult<PageResults<Admin>> list({
-    String? query,
-    required int pageNo,
-    required int pageSize,
-  });
-  TaskResult<Admin> get(String id);
-  TaskResult<void> delete(String id);
-  TaskResult<Admin> update(
-    Admin admin,
-    Map<String, dynamic> params, {
-    List<MultipartFile> files = const [],
-  });
-  TaskResult<Admin> create({
-    required Map<String, dynamic> params,
-    List<MultipartFile> files = const [],
-  });
-  TaskResult<void> softDeleteMulti(List<String> ids);
-
-  TaskResult<void> requestVerification(String email);
-  TaskResult<void> confirmVerification(String token);
-}
-
 @Riverpod(keepAlive: true)
-AdminRepository adminRepository(Ref ref) {
+PBAuthRepository<Admin> adminRepository(Ref ref) {
   return AdminRepositoryImpl(
     pb: ref.read(pocketbaseProvider),
   );
 }
 
-class AdminRepositoryImpl implements AdminRepository {
+class AdminRepositoryImpl implements PBAuthRepository<Admin> {
   final PocketBase pb;
 
   RecordService get collection => pb.collection(PocketBaseCollections.admins);
@@ -85,8 +63,8 @@ class AdminRepositoryImpl implements AdminRepository {
   /// Create a new admin
   ///
   @override
-  TaskResult<Admin> create({
-    required Map<String, dynamic> params,
+  TaskResult<Admin> create(
+    Map<String, dynamic> params, {
     List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(
@@ -133,7 +111,7 @@ class AdminRepositoryImpl implements AdminRepository {
   ///
   @override
   TaskResult<PageResults<Admin>> list({
-    String? query,
+    String? filter,
     required int pageNo,
     required int pageSize,
   }) {

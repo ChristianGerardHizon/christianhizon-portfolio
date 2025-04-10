@@ -1,3 +1,4 @@
+import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
@@ -12,40 +13,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'medical_record_repository.g.dart';
 
-abstract class MedicalRecordRepository {
-  TaskResult<MedicalRecord> get(String id);
-  TaskResult<PageResults<MedicalRecord>> list({
-    String? filter,
-    required int pageNo,
-    required int pageSize,
-    PocketbaseSortValue? sort,
-  });
-  TaskResult<List<MedicalRecord>> listAll({
-    int batch = 500,
-    String? filter,
-  });
-  TaskResult<void> delete(String id);
-  TaskResult<void> softDeleteMulti(List<String> ids);
-  TaskResult<MedicalRecord> update(
-    MedicalRecord history,
-    Map<String, dynamic> update, {
-    List<MultipartFile> files = const [],
-  });
-
-  TaskResult<MedicalRecord> create(
-    Map<String, dynamic> payload, {
-    List<MultipartFile> files = const [],
-  });
-}
-
 @Riverpod(keepAlive: true)
-MedicalRecordRepository medicalRecordRepository(Ref ref) {
+PBCollectionRepository<MedicalRecord> medicalRecordRepository(Ref ref) {
   return MedicalRecordRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class MedicalRecordRepositoryImpl extends MedicalRecordRepository {
+class MedicalRecordRepositoryImpl
+    extends PBCollectionRepository<MedicalRecord> {
   final PocketBase pb;
 
   MedicalRecordRepositoryImpl({required this.pb});

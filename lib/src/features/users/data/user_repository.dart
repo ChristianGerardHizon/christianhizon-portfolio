@@ -1,7 +1,9 @@
+import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
+import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,35 +13,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_repository.g.dart';
 
-abstract class UserRepository {
-  TaskResult<User> get(String id);
-  TaskResult<PageResults<User>> list({
-    String? filter,
-    required int pageNo,
-    required int pageSize,
-  });
-  TaskResult<void> delete(String id);
-  TaskResult<User> update(
-    User user,
-    Map<String, dynamic> update, {
-    List<MultipartFile> files = const [],
-  });
-
-  TaskResult<User> create(Map<String, dynamic> payload);
-  TaskResult<void> softDeleteMulti(List<String> ids);
-
-  TaskResult<void> requestVerification(String email);
-  TaskResult<void> confirmVerification(String token);
-}
-
 @Riverpod(keepAlive: true)
-UserRepository userRepository(Ref ref) {
+PBAuthRepository<User> userRepository(Ref ref) {
   return UserRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class UserRepositoryImpl extends UserRepository {
+class UserRepositoryImpl extends PBAuthRepository<User> {
   final PocketBase pb;
 
   UserRepositoryImpl({required this.pb});
@@ -59,9 +40,12 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  TaskResult<User> create(Map<String, dynamic> payload) {
+  TaskResult<User> create(
+    Map<String, dynamic> payload, {
+    List<MultipartFile> files = const [],
+  }) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(body: payload);
+      final response = await collection.create(body: payload, files: files);
       return mapToData(response.toJson());
     }, Failure.tryCatchData);
   }
@@ -78,6 +62,7 @@ class UserRepositoryImpl extends UserRepository {
     String? filter,
     required int pageNo,
     required int pageSize,
+    PocketbaseSortValue? sort,
   }) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getList(

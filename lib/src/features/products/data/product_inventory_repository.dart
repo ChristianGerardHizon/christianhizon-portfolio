@@ -1,3 +1,4 @@
+import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
@@ -11,32 +12,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_inventory_repository.g.dart';
 
-abstract class ProductInventoryRepository {
-  TaskResult<ProductInventory> get(String id);
-  TaskResult<PageResults<ProductInventory>> list({
-    String? filter,
-    required int pageNo,
-    required int pageSize,
-    PocketbaseSortValue? sort,
-  });
-  TaskResult<List<ProductInventory>> listAll({
-    int batch = 500,
-    String? filter,
-  });
-
-  ///
-  /// Custom Functions
-  ///
-}
-
 @Riverpod(keepAlive: true)
-ProductInventoryRepository productInventoryRepository(Ref ref) {
+PBViewRepository<ProductInventory> productInventoryRepository(Ref ref) {
   return ProductInventoryRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class ProductInventoryRepositoryImpl extends ProductInventoryRepository {
+class ProductInventoryRepositoryImpl
+    extends PBViewRepository<ProductInventory> {
   final PocketBase pb;
 
   ProductInventoryRepositoryImpl({required this.pb});
