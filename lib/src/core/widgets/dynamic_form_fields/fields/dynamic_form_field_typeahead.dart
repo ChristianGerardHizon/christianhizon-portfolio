@@ -14,8 +14,9 @@ class DynamicFormFieldTypeAhead extends StatelessWidget {
       key: field.formFieldKey,
       name: field.name,
       decoration: field.decoration,
+      enabled: field.enabled,
       validator: field.validator,
-      itemBuilder:field.itemBuilder,
+      itemBuilder: field.itemBuilder,
       suggestionsCallback: field.onSearch,
       selectionToTextTransformer: field.selectionToString,
     );

@@ -40,6 +40,23 @@ class ProductFormPageRoute extends GoRouteData {
   }
 }
 
+@TypedGoRoute<ProductStockFormPageRoute>(path: ProductStockFormPageRoute.path)
+class ProductStockFormPageRoute extends GoRouteData {
+  const ProductStockFormPageRoute({this.id, required this.productId});
+  static const path = '/form/productStock';
+
+  final String? id;
+  final String productId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ProductStockFormPage(
+      id: id,
+      productId: productId,
+    );
+  }
+}
+
 @TypedGoRoute<ProductPageRoute>(path: ProductPageRoute.path)
 class ProductPageRoute extends GoRouteData {
   const ProductPageRoute(this.id);
@@ -50,5 +67,18 @@ class ProductPageRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ProductPage(id);
+  }
+}
+
+@TypedGoRoute<ProductStockPageRoute>(path: ProductStockPageRoute.path)
+class ProductStockPageRoute extends GoRouteData {
+  const ProductStockPageRoute(this.id);
+  static const path = '/product/form/:id';
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ProductStockPage(id);
   }
 }

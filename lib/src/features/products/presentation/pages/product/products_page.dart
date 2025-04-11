@@ -124,11 +124,13 @@ class ProductsPage extends HookConsumerWidget {
           ResponsivePaginationListWithDeleteView<Product>(
         controller: controller,
         onPageChange: notifier.changePage,
-        errorMessage: provider.maybeWhen(
+        error: provider.maybeWhen(
           skipError: false,
           skipLoadingOnRefresh: true,
           skipLoadingOnReload: true,
-          error: (error, stackTrace) => error.toString(),
+          error: (error, stackTrace) => Center(
+            child: Text(error.toString()),
+          ),
           orElse: () => null,
         ),
         isLoading: buildIsLoading(),

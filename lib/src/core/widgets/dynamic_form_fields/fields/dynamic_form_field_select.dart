@@ -13,6 +13,7 @@ class DynamicFormFieldSelect extends StatelessWidget {
     return FormBuilderDropdown(
       key: field.formFieldKey,
       name: field.name,
+      enabled: field.enabled,
       onChanged: field.onChange,
       decoration: field.decoration,
       validator: field.validator,

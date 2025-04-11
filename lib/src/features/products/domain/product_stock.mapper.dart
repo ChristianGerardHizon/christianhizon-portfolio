@@ -38,12 +38,15 @@ class ProductStockMapper extends ClassMapperBase<ProductStock> {
   static DateTime? _$updated(ProductStock v) => v.updated;
   static const Field<ProductStock, DateTime> _f$updated =
       Field('updated', _$updated);
+  static String _$product(ProductStock v) => v.product;
+  static const Field<ProductStock, String> _f$product =
+      Field('product', _$product);
   static String? _$lotNo(ProductStock v) => v.lotNo;
   static const Field<ProductStock, String> _f$lotNo =
       Field('lotNo', _$lotNo, opt: true);
-  static DateTime? _$expiryDate(ProductStock v) => v.expiryDate;
-  static const Field<ProductStock, DateTime> _f$expiryDate =
-      Field('expiryDate', _$expiryDate, opt: true);
+  static DateTime? _$expiration(ProductStock v) => v.expiration;
+  static const Field<ProductStock, DateTime> _f$expiration =
+      Field('expiration', _$expiration, opt: true);
   static String? _$notes(ProductStock v) => v.notes;
   static const Field<ProductStock, String> _f$notes =
       Field('notes', _$notes, opt: true);
@@ -56,8 +59,9 @@ class ProductStockMapper extends ClassMapperBase<ProductStock> {
     #created: _f$created,
     #isDeleted: _f$isDeleted,
     #updated: _f$updated,
+    #product: _f$product,
     #lotNo: _f$lotNo,
-    #expiryDate: _f$expiryDate,
+    #expiration: _f$expiration,
     #notes: _f$notes,
   };
 
@@ -69,8 +73,9 @@ class ProductStockMapper extends ClassMapperBase<ProductStock> {
         created: data.dec(_f$created),
         isDeleted: data.dec(_f$isDeleted),
         updated: data.dec(_f$updated),
+        product: data.dec(_f$product),
         lotNo: data.dec(_f$lotNo),
-        expiryDate: data.dec(_f$expiryDate),
+        expiration: data.dec(_f$expiration),
         notes: data.dec(_f$notes));
   }
 
@@ -135,8 +140,9 @@ abstract class ProductStockCopyWith<$R, $In extends ProductStock, $Out>
       DateTime? created,
       bool? isDeleted,
       DateTime? updated,
+      String? product,
       String? lotNo,
-      DateTime? expiryDate,
+      DateTime? expiration,
       String? notes});
   ProductStockCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
@@ -157,8 +163,9 @@ class _ProductStockCopyWithImpl<$R, $Out>
           Object? created = $none,
           bool? isDeleted,
           Object? updated = $none,
+          String? product,
           Object? lotNo = $none,
-          Object? expiryDate = $none,
+          Object? expiration = $none,
           Object? notes = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
@@ -167,8 +174,9 @@ class _ProductStockCopyWithImpl<$R, $Out>
         if (created != $none) #created: created,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (updated != $none) #updated: updated,
+        if (product != null) #product: product,
         if (lotNo != $none) #lotNo: lotNo,
-        if (expiryDate != $none) #expiryDate: expiryDate,
+        if (expiration != $none) #expiration: expiration,
         if (notes != $none) #notes: notes
       }));
   @override
@@ -179,8 +187,9 @@ class _ProductStockCopyWithImpl<$R, $Out>
       created: data.get(#created, or: $value.created),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       updated: data.get(#updated, or: $value.updated),
+      product: data.get(#product, or: $value.product),
       lotNo: data.get(#lotNo, or: $value.lotNo),
-      expiryDate: data.get(#expiryDate, or: $value.expiryDate),
+      expiration: data.get(#expiration, or: $value.expiration),
       notes: data.get(#notes, or: $value.notes));
 
   @override

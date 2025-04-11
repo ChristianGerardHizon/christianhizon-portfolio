@@ -37,7 +37,7 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
   final Widget? emptyWidget;
 
   final PageResults<T>? results;
-  final String? errorMessage;
+  final Widget? error;
   final Function(int page)? onPageChange;
   final Function(List<T> item)? onDelete;
   final DynamicTableController controller;
@@ -63,7 +63,7 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
     super.key,
     required this.controller,
     this.results,
-    this.errorMessage,
+    this.error,
     this.onPageChange,
     this.onDelete,
     this.isLoading = false,
@@ -109,9 +109,9 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
               ///
               /// on error
               ///
-              if (errorMessage != null)
+              if (error != null)
                 SliverToBoxAdapter(
-                  child: SizedBox(height: 200, child: Text(errorMessage!)),
+                  child: error,
                 ),
 
               if (items.isEmpty && isLoading == false)

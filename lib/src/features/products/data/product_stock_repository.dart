@@ -30,7 +30,7 @@ class ProductStockRepositoryImpl extends PBCollectionRepository<ProductStock> {
   }
 
   RecordService get collection =>
-      pb.collection(PocketBaseCollections.productCategories);
+      pb.collection(PocketBaseCollections.productStocks);
 
   @override
   TaskResult<ProductStock> get(String id) {

@@ -12,6 +12,7 @@ class DynamicFormFieldCheckbox extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormBuilderCheckbox(
       key: field.formFieldKey,
+      enabled: field.enabled,
       name: field.name,
       decoration: field.decoration,
       title: Text(field.name),

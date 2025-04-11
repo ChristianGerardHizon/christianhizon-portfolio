@@ -12,6 +12,7 @@ class DynamicFormFieldDate extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormBuilderDateTimePicker(
       key: field.formFieldKey,
+      enabled: field.enabled,
       name: field.name,
       firstDate: field.firstDate,
       lastDate: field.lastDate,

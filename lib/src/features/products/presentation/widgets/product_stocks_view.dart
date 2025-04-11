@@ -32,7 +32,7 @@ class ProductStocksView extends HookConsumerWidget {
     ///
     /// onTap
     ///
-    onTap(int index, ProductStock product, bool selected) {
+    onTap(int index, ProductStock stock, bool selected) {
       if (!selected && controller.selected.isNotEmpty) {
         controller.toggle(index);
         return;
@@ -41,7 +41,7 @@ class ProductStocksView extends HookConsumerWidget {
         controller.toggle(index);
         return;
       }
-      ProductPageRoute(product.id).push(context);
+      ProductStockPageRoute(stock.id).push(context);
     }
 
     ///
@@ -89,7 +89,7 @@ class ProductStocksView extends HookConsumerWidget {
     /// OnCreate
     ///
     onCreate() {
-      ProductFormPageRoute().push(context);
+      ProductStockFormPageRoute(productId: product.id).push(context);
     }
 
     ///
@@ -111,11 +111,16 @@ class ProductStocksView extends HookConsumerWidget {
     return ResponsivePaginationListWithDeleteView<ProductStock>(
       controller: controller,
       onPageChange: notifier.changePage,
-      errorMessage: provider.maybeWhen(
+      error: provider.maybeWhen(
         skipError: false,
         skipLoadingOnRefresh: true,
         skipLoadingOnReload: true,
-        error: (error, stackTrace) => error.toString(),
+        error: (error, stackTrace) {
+          print(error);
+          return Center(
+            child: Text(error.toString()),
+          );
+        },
         orElse: () => null,
       ),
       isLoading: buildIsLoading(),

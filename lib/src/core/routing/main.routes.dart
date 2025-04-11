@@ -28,6 +28,8 @@ import 'package:gym_system/src/features/products/presentation/pages/product/prod
 import 'package:gym_system/src/features/products/presentation/pages/product/products_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product/product_form_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product_inventory/product_inventories_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/product_stock/product_stock_form_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/product_stock/product_stock_page.dart';
 import 'package:gym_system/src/features/sales/presentation/pages/sales_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/settings_page.dart';

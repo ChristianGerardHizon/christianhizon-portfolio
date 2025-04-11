@@ -1,13 +1,15 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
+import 'package:gym_system/src/core/strings/fields.dart';
 
 part 'product_stock.mapper.dart';
 
 @MappableClass()
 class ProductStock extends PbRecord with ProductStockMappable {
   final String? lotNo;
-  final DateTime? expiryDate;
+  final DateTime? expiration;
   final String? notes;
+  final String product;
 
   ProductStock({
     required super.id,
@@ -20,18 +22,26 @@ class ProductStock extends PbRecord with ProductStockMappable {
     ///
     ///
     ///
+    required this.product,
     this.lotNo,
-    this.expiryDate,
+    this.expiration,
     this.notes,
   });
 
   static fromMap(Map<String, dynamic> raw) {
-    return PbRecordMapper.fromMap(
-      {
-        ...raw,
-      },
-    );
+    try {
+      return ProductStockMapper.fromMap(
+        {
+          ...raw,
+          ProductStockField.expiration: raw[ProductStockField.expiration] == ''
+              ? null
+              : raw[ProductStockField.expiration],
+        },
+      );
+    } catch (e) {
+      throw 'Parse Failure $e';
+    }
   }
 
-  static const fromJson = PbRecordMapper.fromJson;
+  static const fromJson = ProductStockMapper.fromJson;
 }

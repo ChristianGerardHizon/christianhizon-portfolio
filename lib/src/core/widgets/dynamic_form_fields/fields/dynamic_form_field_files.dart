@@ -14,6 +14,7 @@ class DynamicFormFieldFiles extends StatelessWidget {
       decoration: field.decoration,
       previewImages: true,
       allowMultiple: false,
+      enabled: field.enabled,
       maxFiles: 1,
       typeSelectors: [
         TypeSelector(

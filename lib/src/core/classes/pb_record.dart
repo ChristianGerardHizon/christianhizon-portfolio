@@ -20,14 +20,4 @@ abstract class PbRecord with PbRecordMappable {
     this.created,
     this.updated,
   });
-
-  static fromMap(Map<String, dynamic> raw) {
-    return PbRecordMapper.fromMap(
-      {
-        ...raw,
-      },
-    );
-  }
-
-  static const fromJson = PbRecordMapper.fromJson;
 }

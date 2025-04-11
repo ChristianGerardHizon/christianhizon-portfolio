@@ -4,12 +4,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
+import 'package:gym_system/src/features/products/data/product_stock_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
+import 'package:gym_system/src/features/products/domain/product_stock.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product/products_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_stock/product_stock_form_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -31,18 +32,18 @@ class ProductStockFormPage extends HookConsumerWidget {
     /// Submit
     ///
     void onSave(
-      Product? product,
+      ProductStock? stock,
       DynamicFormResult formResult,
     ) async {
       isLoading.value = true;
 
-      final repository = ref.read(productRepositoryProvider);
+      final repository = ref.read(productStockRepositoryProvider);
       final value = formResult.values;
       final files = formResult.files;
 
-      final task = (product == null
+      final task = (stock == null
           ? repository.create(value, files: files)
-          : repository.update(product, value, files: files));
+          : repository.update(stock, value, files: files));
 
       final result = await task.run();
 
@@ -80,66 +81,41 @@ class ProductStockFormPage extends HookConsumerWidget {
               formKey: formKey,
               isLoading: isLoading.value,
               fields: [
-                DynamicTextField(
-                    name: ProductField.name,
-                    initialValue: product.name,
-                    decoration: InputDecoration(
-                      label: Text('Product Name'),
-                      border: OutlineInputBorder(),
-                    ),
+                DynamicViewField(
+                    name: ProductStockField.product,
+                    initialValue: product,
                     validator: FormBuilderValidators.compose(
                       [
                         FormBuilderValidators.required(),
                       ],
-                    )),
-                DynamicSelectField(
-                  name: ProductField.category,
-                  options: categories
-                      .map(
-                        (e) => SelectOption(
-                          value: e.id,
-                          display: e.name,
-                        ),
-                      )
-                      .toList(),
-                  decoration: InputDecoration(
-                    label: Text('Category'),
+                    ),
+                    builder: (value) {
+                      if (value is! Product) return SizedBox();
+                      return ListTile(
+                        title: Text(value.name),
+                        subtitle: Text('Product'),
+                      );
+                    },
+                    valueTransformer: (value) {
+                      if (value is Product) return value.id;
+                      return value;
+                    }),
+                DynamicDateField(
+                  name: ProductStockField.expiration,
+                  decoration: const InputDecoration(
+                    label: Text('Expiry Date'),
                     border: OutlineInputBorder(),
                   ),
                 ),
-                DynamicSelectField(
-                  name: ProductField.branch,
-                  options: branches
-                      .map(
-                        (e) => SelectOption(
-                          value: e.id,
-                          display: e.name,
-                        ),
-                      )
-                      .toList(),
+                DynamicNumberField(
+                  name: ProductStockField.quantity,
                   decoration: InputDecoration(
-                    label: Text('Branch'),
+                    label: Text('Quantity'),
                     border: OutlineInputBorder(),
                   ),
-                  validator: FormBuilderValidators.compose(
-                    [
-                      FormBuilderValidators.required(),
-                    ],
-                  ),
-                ),
-                DynamicTextField(
-                  name: ProductField.description,
-                  initialValue: product.name,
-                  minLines: 2,
-                  maxLines: 10,
-                  decoration: InputDecoration(
-                    label: Text('Product Description'),
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: FormBuilderValidators.compose([]),
                 ),
               ],
-              onSubmit: (result) => onSave(product, result),
+              onSubmit: (result) => onSave(productStock, result),
             );
           }),
     );

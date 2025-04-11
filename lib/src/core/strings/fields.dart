@@ -168,7 +168,8 @@ class ProductStockField {
 
   static const String name = 'name';
   static const String product = 'product';
-  static const String expiryDate = 'expiryDate';
+  static const String expiration = 'expiration';
   static const String lotNo = 'lotNo';
   static const String notes = 'notes';
+  static const String quantity = 'quantity';
 }

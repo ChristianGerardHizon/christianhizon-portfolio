@@ -6,7 +6,6 @@ import 'package:gym_system/src/core/classes/pb_image.dart';
 import 'package:http/http.dart';
 
 /// Base abstract class for all dynamic form fields.
-/// Contains common properties like `name`, `placeholder`, and `helperText`.
 abstract class DynamicField {
   final String name;
   final dynamic initialValue;
@@ -14,6 +13,7 @@ abstract class DynamicField {
   final dynamic Function(dynamic)? valueTransformer;
   final EdgeInsets? margin;
   final dynamic Function(dynamic)? onChange;
+  final bool enabled;
 
   const DynamicField({
     required this.name,
@@ -22,6 +22,7 @@ abstract class DynamicField {
     this.valueTransformer,
     this.margin,
     this.onChange,
+    this.enabled = true,
   });
 }
 
@@ -35,8 +36,16 @@ extension DynamicFiledListExtension on List<DynamicField> {
   }
 }
 
-/// Represents a dynamic text input field with optional label, length,
-/// number of lines, and line constraints.
+class SelectOption<T> {
+  final T value;
+  final String display;
+
+  const SelectOption({
+    required this.value,
+    required this.display,
+  });
+}
+
 class DynamicTextField extends DynamicField {
   final int? minLength;
   final int? maxLength;
@@ -61,10 +70,10 @@ class DynamicTextField extends DynamicField {
     this.fieldTransformer,
     super.margin,
     super.onChange,
+    super.enabled,
   });
 }
 
-/// Represents a dynamic checkbox field with an optional initial value and validator.
 class DynamicCheckboxField extends DynamicField {
   final bool? initialValue;
   final String? Function(bool?)? validator;
@@ -80,21 +89,47 @@ class DynamicCheckboxField extends DynamicField {
     super.decoration,
     this.fieldTransformer,
     super.onChange,
+    super.margin,
+    super.enabled,
   });
 }
 
-/// Model class representing an individual option in a select/dropdown field.
-class SelectOption<T> {
-  final T value;
-  final String display;
+class DynamicViewField extends DynamicField {
+  final dynamic initialValue;
+  final String? Function(dynamic)? validator;
+  final dynamic Function(dynamic)? fieldTransformer;
+  final GlobalKey<FormBuilderFieldState>? formFieldKey;
+  final Widget Function(dynamic) builder;
 
-  const SelectOption({
-    required this.value,
-    required this.display,
+  const DynamicViewField({
+    this.formFieldKey,
+    required super.name,
+    this.initialValue,
+    this.validator,
+    super.valueTransformer,
+    this.fieldTransformer,
+    super.enabled,
+    required this.builder,
   });
 }
 
-/// Represents a dynamic dropdown/select field with a list of options and an optional initial value.
+class DynamicHiddenField extends DynamicField {
+  final dynamic initialValue;
+  final String? Function(dynamic)? validator;
+  final dynamic Function(dynamic)? fieldTransformer;
+  final GlobalKey<FormBuilderFieldState>? formFieldKey;
+
+  const DynamicHiddenField({
+    this.formFieldKey,
+    required super.name,
+    this.initialValue,
+    this.validator,
+    super.valueTransformer,
+    this.fieldTransformer,
+    super.enabled,
+  });
+}
+
 class DynamicSelectField<T> extends DynamicField {
   final List<SelectOption<T>> options;
   final T? initialValue;
@@ -113,10 +148,10 @@ class DynamicSelectField<T> extends DynamicField {
     this.fieldTransformer,
     super.margin,
     super.onChange,
+    super.enabled,
   });
 }
 
-/// Represents a dynamic date picker field with optional date boundaries and initial value.
 class DynamicDateField extends DynamicField {
   final DateTime? firstDate;
   final DateTime? lastDate;
@@ -137,10 +172,10 @@ class DynamicDateField extends DynamicField {
     this.fieldTransformer,
     super.margin,
     super.onChange,
+    super.enabled,
   });
 }
 
-/// Represents a dynamic searchable dropdown field.
 class DynamicTypeAheadField extends DynamicField {
   final dynamic initialValue;
   final Future<List<dynamic>> Function(String) onSearch;
@@ -163,10 +198,10 @@ class DynamicTypeAheadField extends DynamicField {
     required this.selectionToString,
     super.margin,
     super.onChange,
+    super.enabled,
   });
 }
 
-/// Represents a dynamic file upload field with an optional label describing the expected file type.
 class DynamicFilesField extends DynamicField {
   final String? fileTypeLabel;
   final List<XFile>? initialValue;
@@ -183,10 +218,10 @@ class DynamicFilesField extends DynamicField {
     this.fieldTransformer,
     super.margin,
     super.onChange,
+    super.enabled,
   });
 }
 
-/// Represents a dynamic image upload field with optional file type label, max file size, and image quality settings.
 class DynamicImagesField extends DynamicField {
   final String? fileTypeLabel;
   final int maxSizeKB;
@@ -214,10 +249,10 @@ class DynamicImagesField extends DynamicField {
     this.fieldTransformer,
     super.margin,
     super.onChange,
+    super.enabled,
   });
 }
 
-/// Represents a dynamic image upload field specifically using PBImage model.
 class DynamicPBImagesField extends DynamicField {
   final int maxSizeKB;
   final int compressionQuality;
@@ -245,5 +280,53 @@ class DynamicPBImagesField extends DynamicField {
     this.fileTransformer,
     super.margin,
     super.onChange,
+    super.enabled,
+  });
+}
+
+class DynamicNumberField extends DynamicField {
+  final num? min;
+  final num? max;
+  final num? initialValue;
+  final String? Function(dynamic)? validator;
+  final dynamic Function(dynamic)? fieldTransformer;
+  final GlobalKey<FormBuilderFieldState>? formFieldKey;
+
+  const DynamicNumberField({
+    this.formFieldKey,
+    required super.name,
+    this.initialValue,
+    this.validator,
+    super.valueTransformer,
+    this.min,
+    this.max,
+    this.fieldTransformer,
+    super.decoration,
+    super.margin,
+    super.onChange,
+    super.enabled,
+  });
+}
+
+/// Represents a dynamic password input field with optional validation and transformation.
+class DynamicPasswordField extends DynamicField {
+  final String? initialValue;
+  final String? Function(String?)? validator;
+  final dynamic Function(String?)? fieldTransformer;
+  final GlobalKey<FormBuilderFieldState>? formFieldKey;
+  final bool obscureText;
+
+  const DynamicPasswordField({
+    this.formFieldKey,
+    required super.name,
+    this.initialValue,
+    this.validator,
+    super.valueTransformer,
+    this.fieldTransformer,
+    super.decoration,
+    super.margin,
+    super.onChange,
+    this.obscureText = true,
+    super.enabled,
   });
 }

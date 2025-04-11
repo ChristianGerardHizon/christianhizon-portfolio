@@ -22,6 +22,7 @@ class DynamicFormFieldPBImages extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormBuilderField<List<PBImage>>(
       name: field.name,
+      enabled: field.enabled,
       validator: field.validator,
       initialValue: field.initialValue,
       builder: (formField) {

@@ -12,6 +12,8 @@ class DynamicFormFieldImages extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormBuilderFilePicker(
       name: field.name,
+      enabled: field.enabled,
+
       decoration: field.decoration,
       previewImages: true,
       allowMultiple: false,
