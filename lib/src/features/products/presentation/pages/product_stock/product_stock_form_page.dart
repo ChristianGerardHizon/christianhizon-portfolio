@@ -7,12 +7,12 @@ import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/data/product_stock_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_stock.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product/products_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_stock/product_stock_form_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product_stock/product_stocks_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductStockFormPage extends HookConsumerWidget {
@@ -53,7 +53,7 @@ class ProductStockFormPage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          ref.invalidate(productsControllerProvider);
+          ref.invalidate(productStocksControllerProvider);
           context.pop();
         },
       );
@@ -106,12 +106,23 @@ class ProductStockFormPage extends HookConsumerWidget {
                     label: Text('Expiry Date'),
                     border: OutlineInputBorder(),
                   ),
+                  valueTransformer: (date) {
+                    if (date is DateTime) return date.toIso8601String();
+                    return date;
+                  },
                 ),
                 DynamicNumberField(
                   name: ProductStockField.quantity,
+                  initialValue: productStock?.quantity,
                   decoration: InputDecoration(
                     label: Text('Quantity'),
                     border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(),
+                      FormBuilderValidators.numeric(),
+                    ],
                   ),
                 ),
               ],

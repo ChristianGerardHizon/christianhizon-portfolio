@@ -10,6 +10,7 @@ class ProductStock extends PbRecord with ProductStockMappable {
   final DateTime? expiration;
   final String? notes;
   final String product;
+  final int? quantity;
 
   ProductStock({
     required super.id,
@@ -26,21 +27,18 @@ class ProductStock extends PbRecord with ProductStockMappable {
     this.lotNo,
     this.expiration,
     this.notes,
+    this.quantity,
   });
 
   static fromMap(Map<String, dynamic> raw) {
-    try {
-      return ProductStockMapper.fromMap(
-        {
-          ...raw,
-          ProductStockField.expiration: raw[ProductStockField.expiration] == ''
-              ? null
-              : raw[ProductStockField.expiration],
-        },
-      );
-    } catch (e) {
-      throw 'Parse Failure $e';
-    }
+    return ProductStockMapper.fromMap(
+      {
+        ...raw,
+        ProductStockField.expiration: raw[ProductStockField.expiration] == ''
+            ? null
+            : raw[ProductStockField.expiration],
+      },
+    );
   }
 
   static const fromJson = ProductStockMapper.fromJson;

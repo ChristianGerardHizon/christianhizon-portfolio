@@ -147,6 +147,10 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               path: '/form/product',
               factory: $ProductFormPageRouteExtension._fromState,
             ),
+            GoRouteData.$route(
+              path: '/form/productStock',
+              factory: $ProductStockFormPageRouteExtension._fromState,
+            ),
           ],
         ),
         StatefulShellBranchData.$branch(
@@ -428,6 +432,31 @@ extension $ProductFormPageRouteExtension on ProductFormPageRoute {
         '/form/product',
         queryParams: {
           if (id != null) 'id': id,
+        },
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $ProductStockFormPageRouteExtension on ProductStockFormPageRoute {
+  static ProductStockFormPageRoute _fromState(GoRouterState state) =>
+      ProductStockFormPageRoute(
+        id: state.uri.queryParameters['id'],
+        productId: state.uri.queryParameters['product-id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/form/productStock',
+        queryParams: {
+          if (id != null) 'id': id,
+          'product-id': productId,
         },
       );
 
@@ -985,31 +1014,6 @@ RouteBase get $productStockFormPageRoute => GoRouteData.$route(
       path: '/form/productStock',
       factory: $ProductStockFormPageRouteExtension._fromState,
     );
-
-extension $ProductStockFormPageRouteExtension on ProductStockFormPageRoute {
-  static ProductStockFormPageRoute _fromState(GoRouterState state) =>
-      ProductStockFormPageRoute(
-        id: state.uri.queryParameters['id'],
-        productId: state.uri.queryParameters['product-id']!,
-      );
-
-  String get location => GoRouteData.$location(
-        '/form/productStock',
-        queryParams: {
-          if (id != null) 'id': id,
-          'product-id': productId,
-        },
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
 
 RouteBase get $productPageRoute => GoRouteData.$route(
       path: '/product/:id',

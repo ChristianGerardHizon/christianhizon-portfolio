@@ -50,6 +50,9 @@ class ProductStockMapper extends ClassMapperBase<ProductStock> {
   static String? _$notes(ProductStock v) => v.notes;
   static const Field<ProductStock, String> _f$notes =
       Field('notes', _$notes, opt: true);
+  static int? _$quantity(ProductStock v) => v.quantity;
+  static const Field<ProductStock, int> _f$quantity =
+      Field('quantity', _$quantity, opt: true);
 
   @override
   final MappableFields<ProductStock> fields = const {
@@ -63,6 +66,7 @@ class ProductStockMapper extends ClassMapperBase<ProductStock> {
     #lotNo: _f$lotNo,
     #expiration: _f$expiration,
     #notes: _f$notes,
+    #quantity: _f$quantity,
   };
 
   static ProductStock _instantiate(DecodingData data) {
@@ -76,7 +80,8 @@ class ProductStockMapper extends ClassMapperBase<ProductStock> {
         product: data.dec(_f$product),
         lotNo: data.dec(_f$lotNo),
         expiration: data.dec(_f$expiration),
-        notes: data.dec(_f$notes));
+        notes: data.dec(_f$notes),
+        quantity: data.dec(_f$quantity));
   }
 
   @override
@@ -143,7 +148,8 @@ abstract class ProductStockCopyWith<$R, $In extends ProductStock, $Out>
       String? product,
       String? lotNo,
       DateTime? expiration,
-      String? notes});
+      String? notes,
+      int? quantity});
   ProductStockCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -166,7 +172,8 @@ class _ProductStockCopyWithImpl<$R, $Out>
           String? product,
           Object? lotNo = $none,
           Object? expiration = $none,
-          Object? notes = $none}) =>
+          Object? notes = $none,
+          Object? quantity = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
@@ -177,7 +184,8 @@ class _ProductStockCopyWithImpl<$R, $Out>
         if (product != null) #product: product,
         if (lotNo != $none) #lotNo: lotNo,
         if (expiration != $none) #expiration: expiration,
-        if (notes != $none) #notes: notes
+        if (notes != $none) #notes: notes,
+        if (quantity != $none) #quantity: quantity
       }));
   @override
   ProductStock $make(CopyWithData data) => ProductStock(
@@ -190,7 +198,8 @@ class _ProductStockCopyWithImpl<$R, $Out>
       product: data.get(#product, or: $value.product),
       lotNo: data.get(#lotNo, or: $value.lotNo),
       expiration: data.get(#expiration, or: $value.expiration),
-      notes: data.get(#notes, or: $value.notes));
+      notes: data.get(#notes, or: $value.notes),
+      quantity: data.get(#quantity, or: $value.quantity));
 
   @override
   ProductStockCopyWith<$R2, ProductStock, $Out2> $chain<$R2, $Out2>(
