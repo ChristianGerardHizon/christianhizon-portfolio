@@ -2,7 +2,6 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:file_saver/file_saver.dart';
-import 'package:gym_system/src/core/utils/file_utils/file_utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
 

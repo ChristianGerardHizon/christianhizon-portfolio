@@ -1,5 +1,4 @@
 import 'package:gym_system/src/features/products/domain/product_inventory_search.dart';
-import 'package:gym_system/src/features/products/domain/product_search.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_inventories_page_controller.g.dart';

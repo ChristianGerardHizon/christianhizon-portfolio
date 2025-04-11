@@ -1,5 +1,3 @@
-import 'package:gym_system/src/features/products/domain/product_inventory_search.dart';
-import 'package:gym_system/src/features/products/domain/product_search.dart';
 import 'package:gym_system/src/features/products/domain/product_stock_search.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

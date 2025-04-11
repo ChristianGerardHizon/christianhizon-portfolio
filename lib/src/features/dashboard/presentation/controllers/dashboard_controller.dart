@@ -1,8 +1,6 @@
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

@@ -4,16 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/data/product_stock_repository.dart';
-import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_stock.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/product/product_form_controller.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/product/products_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_stock/product_stock_form_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_stock/product_stocks_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -90,7 +85,7 @@ class ProductStockStockFormPage extends HookConsumerWidget {
               fields: [
                 DynamicTextField(
                     name: ProductStockField.name,
-                    initialValue: product?.name,
+                    initialValue: product.name,
                     decoration: InputDecoration(
                       label: Text('ProductStock Name'),
                       border: OutlineInputBorder(),
@@ -102,7 +97,7 @@ class ProductStockStockFormPage extends HookConsumerWidget {
                     )),
                 DynamicTextField(
                   name: ProductStockField.product,
-                  initialValue: product?.name,
+                  initialValue: product.name,
                   minLines: 2,
                   maxLines: 10,
                   decoration: InputDecoration(
