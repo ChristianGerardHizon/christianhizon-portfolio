@@ -29,10 +29,52 @@ class DynamicTableBuilderValue {
   });
 }
 
+class HeaderKey {
+  final String key;
+  final bool isAscending;
+
+  HeaderKey({required this.key, this.isAscending = false});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HeaderKey &&
+          runtimeType == other.runtimeType &&
+          key == other.key &&
+          isAscending == other.isAscending;
+
+  @override
+  int get hashCode => key.hashCode ^ isAscending.hashCode;
+
+  HeaderKey copyWith({
+    String? key,
+    bool? isAscending,
+  }) =>
+      HeaderKey(
+        key: key ?? this.key,
+        isAscending: isAscending ?? this.isAscending,
+      );
+}
+
 class DynamicTableController extends ChangeNotifier {
   List<int> _selected = [];
 
   List<int> get selected => _selected;
+
+  HeaderKey? _headerKey;
+
+  set updateHeaderKey(HeaderKey? value) {
+    _headerKey = value;
+    notifyListeners();
+  }
+
+  tooggleHeaderKey(HeaderKey? value) {
+    final isAsc = !(value?.isAscending ?? false);
+    _headerKey = HeaderKey(key: value!.key, isAscending: isAsc);
+    notifyListeners();
+  }
+
+  HeaderKey? get headerKey => _headerKey;
 
   set selected(List<int> value) {
     _selected = value;

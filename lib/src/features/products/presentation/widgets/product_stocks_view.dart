@@ -145,12 +145,16 @@ class ProductStocksView extends HookConsumerWidget {
       ///
       /// Table Data
       ///
-      onHeaderTap: (headerKey) {},
+      onHeaderTap: (headerKey) {
+        if (headerKey == null) return;
+        controller.tooggleHeaderKey(headerKey);
+      },
       onTap: (x) => onTap(0, x, false),
       data: [
         TableColumn(
           header: 'Id',
           width: 200,
+          headerKey: HeaderKey(key: 'id'),
           alignment: Alignment.centerLeft,
           builder: (context, data, extra) {
             return Align(
@@ -164,6 +168,7 @@ class ProductStocksView extends HookConsumerWidget {
         ),
         TableColumn(
           header: 'Lot No.',
+          headerKey: HeaderKey(key: 'lot no'),
           width: 200,
           alignment: Alignment.centerLeft,
           builder: (context, data, extra) {
@@ -178,6 +183,7 @@ class ProductStocksView extends HookConsumerWidget {
         ),
         TableColumn(
           header: 'Expiration',
+          headerKey: HeaderKey(key: 'expiration'),
           width: 200,
           alignment: Alignment.centerLeft,
           builder: (context, data, extra) {
@@ -192,6 +198,7 @@ class ProductStocksView extends HookConsumerWidget {
         ),
         TableColumn(
           header: 'Date Created',
+          headerKey: HeaderKey(key: 'date-created'),
           alignment: Alignment.centerLeft,
           width: 150,
           builder: (context, product, extra) {

@@ -10,7 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class TableColumn<T> {
   final String header;
-  final String? headerKey;
+  final HeaderKey? headerKey;
   final Alignment? alignment;
   final EdgeInsets? padding;
   final TextStyle? style;
@@ -47,9 +47,8 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
   final Function() onClear;
   final Function() onCreate;
 
-  final Function(String? headerKey)? onHeaderTap;
+  final Function(HeaderKey? headerKey)? onHeaderTap;
   final Function(T data)? onTap;
-  final String? headerKey;
   final List<TableColumn<T>> data;
   final TextStyle? headerTextStyle;
   final Widget Function(
@@ -72,7 +71,6 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
     required this.onClear,
     required this.onCreate,
     this.headerTextStyle,
-    this.headerKey,
     this.onHeaderTap,
     required this.data,
     this.onTap,
@@ -113,6 +111,19 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
                 SliverToBoxAdapter(
                   child: error,
                 ),
+
+              SliverToBoxAdapter(
+                child: Builder(
+                  builder: (context) {
+                    return Text(
+                      {
+                        'key': controller.headerKey?.key,
+                        'isAsc': controller.headerKey?.isAscending,
+                      }.toString(),
+                    );
+                  },
+                ),
+              ),
 
               if (items.isEmpty && isLoading == false)
                 SliverToBoxAdapter(
@@ -207,8 +218,15 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
     );
   }
 
-  Widget buildHeader(BuildContext context, TableColumn<T> column) => InkWell(
-        onTap: () => onHeaderTap?.call(column.headerKey),
+  Widget buildHeader(
+    BuildContext context,
+    TableColumn<T> column,
+    HeaderKey? headerKey,
+  ) =>
+      InkWell(
+        onTap: column.headerKey != null
+            ? () => onHeaderTap?.call(column.headerKey)
+            : null,
         child: Padding(
           padding: column.padding ??
               const EdgeInsets.symmetric(
@@ -218,14 +236,35 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
             decoration: BoxDecoration(),
             child: Align(
               alignment: column.alignment ?? Alignment.center,
-              child: Text(
-                column.header,
-                style: column.style ?? headerTextStyle,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    column.header,
+                    style: column.style ?? headerTextStyle,
+                  ),
+                  if (headerKey == column.headerKey)
+                    headerKeyBuilder(column.headerKey)
+                ],
               ),
             ),
           ),
         ),
       );
+
+  Widget headerKeyBuilder(HeaderKey? hKey) {
+    final isAsc = hKey?.isAscending == true;
+
+    if (hKey == null) return const SizedBox();
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (isAsc) const Icon(Icons.arrow_upward),
+        if (!isAsc) const Icon(Icons.arrow_downward),
+      ],
+    );
+  }
 
   Widget buildContent({
     required PageResults? result,
@@ -262,7 +301,8 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
           .map(
             (column) => DynamicTableColumn(
               width: column.width,
-              builder: (context, _) => buildHeader(context, column),
+              builder: (context, _) =>
+                  buildHeader(context, column, controller.headerKey),
             ),
           )
           .toList(),
