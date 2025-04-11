@@ -14,7 +14,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'product_stock_repository.g.dart';
 
 @Riverpod(keepAlive: true)
-PBCollectionRepository<ProductStock> productCategoryRepository(Ref ref) {
+PBCollectionRepository<ProductStock> productStockRepository(Ref ref) {
   return ProductStockRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );

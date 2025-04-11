@@ -5,6 +5,10 @@ part 'product_stock.mapper.dart';
 
 @MappableClass()
 class ProductStock extends PbRecord with ProductStockMappable {
+  final String? lotNo;
+  final DateTime? expiryDate;
+  final String? notes;
+
   ProductStock({
     required super.id,
     required super.collectionId,
@@ -12,6 +16,13 @@ class ProductStock extends PbRecord with ProductStockMappable {
     required super.created,
     required super.isDeleted,
     required super.updated,
+
+    ///
+    ///
+    ///
+    this.lotNo,
+    this.expiryDate,
+    this.notes,
   });
 
   static fromMap(Map<String, dynamic> raw) {
