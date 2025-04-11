@@ -81,6 +81,9 @@ class ProductStockFormPage extends HookConsumerWidget {
               formKey: formKey,
               isLoading: isLoading.value,
               fields: [
+                ///
+                /// Product Display
+                ///
                 DynamicViewField(
                     name: ProductStockField.product,
                     initialValue: product,
@@ -100,6 +103,10 @@ class ProductStockFormPage extends HookConsumerWidget {
                       if (value is Product) return value.id;
                       return value;
                     }),
+
+                ///
+                /// Expiry Date
+                ///
                 DynamicDateField(
                   name: ProductStockField.expiration,
                   decoration: const InputDecoration(
@@ -111,6 +118,10 @@ class ProductStockFormPage extends HookConsumerWidget {
                     return date;
                   },
                 ),
+
+                ///
+                /// Quantity
+                ///
                 DynamicNumberField(
                   name: ProductStockField.quantity,
                   initialValue: productStock?.quantity,

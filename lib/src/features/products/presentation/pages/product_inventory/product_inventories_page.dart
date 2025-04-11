@@ -201,6 +201,28 @@ class ProductInventoriesPage extends HookConsumerWidget {
             },
           ),
           TableColumn(
+            header: 'Status',
+            alignment: Alignment.centerLeft,
+            builder: (context, product, extra) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(product.totalQuantityAvailable.toString(),
+                    overflow: TextOverflow.ellipsis),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Total Quantity',
+            alignment: Alignment.centerLeft,
+            builder: (context, product, extra) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(product.totalQuantity.toString(),
+                    overflow: TextOverflow.ellipsis),
+              );
+            },
+          ),
+          TableColumn(
             header: 'Date Created',
             alignment: Alignment.centerLeft,
             width: 150,

@@ -163,14 +163,44 @@ class ProductStocksView extends HookConsumerWidget {
           },
         ),
         TableColumn(
+          header: 'Lot No.',
+          width: 200,
+          alignment: Alignment.centerLeft,
+          builder: (context, data, extra) {
+            return Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                overflow: TextOverflow.ellipsis,
+                '${data.lotNo.optional()}',
+              ),
+            );
+          },
+        ),
+        TableColumn(
+          header: 'Expiration',
+          width: 200,
+          alignment: Alignment.centerLeft,
+          builder: (context, data, extra) {
+            return Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                overflow: TextOverflow.ellipsis,
+                '${data.expiration?.yyyyMMdd().optional()}',
+              ),
+            );
+          },
+        ),
+        TableColumn(
           header: 'Date Created',
           alignment: Alignment.centerLeft,
           width: 150,
           builder: (context, product, extra) {
             return Align(
               alignment: Alignment.centerLeft,
-              child: Text((product.created?.yyyyMMddHHmmA()).optional(),
-                  overflow: TextOverflow.ellipsis),
+              child: Text(
+                (product.created?.yyyyMMddHHmmA()).optional(),
+                overflow: TextOverflow.ellipsis,
+              ),
             );
           },
         ),

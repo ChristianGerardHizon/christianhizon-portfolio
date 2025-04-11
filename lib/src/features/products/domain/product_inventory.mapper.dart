@@ -110,6 +110,14 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   static bool _$isDeleted(ProductInventory v) => v.isDeleted;
   static const Field<ProductInventory, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
+  static int _$totalQuantity(ProductInventory v) => v.totalQuantity;
+  static const Field<ProductInventory, int> _f$totalQuantity =
+      Field('totalQuantity', _$totalQuantity, opt: true, def: 0);
+  static int _$totalQuantityAvailable(ProductInventory v) =>
+      v.totalQuantityAvailable;
+  static const Field<ProductInventory, int> _f$totalQuantityAvailable = Field(
+      'totalQuantityAvailable', _$totalQuantityAvailable,
+      opt: true, def: 0);
   static DateTime? _$created(ProductInventory v) => v.created;
   static const Field<ProductInventory, DateTime> _f$created =
       Field('created', _$created, opt: true);
@@ -131,6 +139,8 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
     #branch: _f$branch,
     #branchName: _f$branchName,
     #isDeleted: _f$isDeleted,
+    #totalQuantity: _f$totalQuantity,
+    #totalQuantityAvailable: _f$totalQuantityAvailable,
     #created: _f$created,
     #updated: _f$updated,
   };
@@ -149,6 +159,8 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
         branch: data.dec(_f$branch),
         branchName: data.dec(_f$branchName),
         isDeleted: data.dec(_f$isDeleted),
+        totalQuantity: data.dec(_f$totalQuantity),
+        totalQuantityAvailable: data.dec(_f$totalQuantityAvailable),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated));
   }
@@ -222,6 +234,8 @@ abstract class ProductInventoryCopyWith<$R, $In extends ProductInventory, $Out>
       String? branch,
       String? branchName,
       bool? isDeleted,
+      int? totalQuantity,
+      int? totalQuantityAvailable,
       DateTime? created,
       DateTime? updated});
   ProductInventoryCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
@@ -250,6 +264,8 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
           Object? branch = $none,
           Object? branchName = $none,
           bool? isDeleted,
+          int? totalQuantity,
+          int? totalQuantityAvailable,
           Object? created = $none,
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
@@ -265,6 +281,9 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
         if (branch != $none) #branch: branch,
         if (branchName != $none) #branchName: branchName,
         if (isDeleted != null) #isDeleted: isDeleted,
+        if (totalQuantity != null) #totalQuantity: totalQuantity,
+        if (totalQuantityAvailable != null)
+          #totalQuantityAvailable: totalQuantityAvailable,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated
       }));
@@ -282,6 +301,9 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
       branch: data.get(#branch, or: $value.branch),
       branchName: data.get(#branchName, or: $value.branchName),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
+      totalQuantity: data.get(#totalQuantity, or: $value.totalQuantity),
+      totalQuantityAvailable:
+          data.get(#totalQuantityAvailable, or: $value.totalQuantityAvailable),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated));
 
