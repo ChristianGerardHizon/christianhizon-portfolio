@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gym_system/src/core/widgets/dynamic_list/header_key.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_table_view/material_table_view.dart';
 import 'package:material_table_view/sliver_table_view.dart';
@@ -27,33 +28,6 @@ class DynamicTableBuilderValue {
     required this.column,
     this.isSelected = false,
   });
-}
-
-class HeaderKey {
-  final String key;
-  final bool isAscending;
-
-  HeaderKey({required this.key, this.isAscending = false});
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is HeaderKey &&
-          runtimeType == other.runtimeType &&
-          key == other.key &&
-          isAscending == other.isAscending;
-
-  @override
-  int get hashCode => key.hashCode ^ isAscending.hashCode;
-
-  HeaderKey copyWith({
-    String? key,
-    bool? isAscending,
-  }) =>
-      HeaderKey(
-        key: key ?? this.key,
-        isAscending: isAscending ?? this.isAscending,
-      );
 }
 
 class DynamicTableController extends ChangeNotifier {

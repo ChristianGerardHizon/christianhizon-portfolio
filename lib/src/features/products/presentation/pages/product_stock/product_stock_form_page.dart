@@ -10,6 +10,8 @@ import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_fie
 import 'package:gym_system/src/features/products/data/product_stock_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_stock.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product_inventory/product_inventory_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product_stock/product_stock_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_stock/product_stock_form_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_stock/product_stocks_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -52,7 +54,9 @@ class ProductStockFormPage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
+          ref.invalidate(productInventoryControllerProvider);
           ref.invalidate(productStocksControllerProvider);
+          ref.invalidate(productStockControllerProvider(r.id));
           context.pop();
         },
       );

@@ -1,15 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/pages/app_root.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:gym_system/src/features/dashboard/presentation/widgets/kpis/dashboard_kpis.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class DashboardPage extends HookConsumerWidget {
   const DashboardPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(dashboardControllerProvider);
+    final scaffoldKey = ref.watch(scaffoldKeyProvider);
+
     return Scaffold(
+      appBar: getValueForScreenType(
+        context: context,
+        mobile: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => scaffoldKey.currentState?.openDrawer(),
+          ),
+        ),
+        desktop: null,
+        tablet: null,
+        watch: null,
+      ),
       body: state.when(
         error: (error, stack) => Center(child: Text(error.toString())),
         loading: () => CenteredProgressIndicator(),

@@ -151,6 +151,10 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               path: '/form/productStock',
               factory: $ProductStockFormPageRouteExtension._fromState,
             ),
+            GoRouteData.$route(
+              path: '/product/form/:id',
+              factory: $ProductStockPageRouteExtension._fromState,
+            ),
           ],
         ),
         StatefulShellBranchData.$branch(
@@ -458,6 +462,26 @@ extension $ProductStockFormPageRouteExtension on ProductStockFormPageRoute {
           if (id != null) 'id': id,
           'product-id': productId,
         },
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $ProductStockPageRouteExtension on ProductStockPageRoute {
+  static ProductStockPageRoute _fromState(GoRouterState state) =>
+      ProductStockPageRoute(
+        state.pathParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/product/form/${Uri.encodeComponent(id)}',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -1024,26 +1048,6 @@ RouteBase get $productStockPageRoute => GoRouteData.$route(
       path: '/product/form/:id',
       factory: $ProductStockPageRouteExtension._fromState,
     );
-
-extension $ProductStockPageRouteExtension on ProductStockPageRoute {
-  static ProductStockPageRoute _fromState(GoRouterState state) =>
-      ProductStockPageRoute(
-        state.pathParameters['id']!,
-      );
-
-  String get location => GoRouteData.$location(
-        '/product/form/${Uri.encodeComponent(id)}',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
 
 RouteBase get $medicalRecordsPageRoute => GoRouteData.$route(
       path: '/medicalRecords',

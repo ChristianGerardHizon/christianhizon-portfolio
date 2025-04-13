@@ -137,6 +137,7 @@ class SplashPageRoute extends GoRouteData {
         TypedGoRoute<ProductFormPageRoute>(path: ProductFormPageRoute.path),
         TypedGoRoute<ProductStockFormPageRoute>(
             path: ProductStockFormPageRoute.path),
+        TypedGoRoute<ProductStockPageRoute>(path: ProductStockPageRoute.path),
       ],
     ),
 

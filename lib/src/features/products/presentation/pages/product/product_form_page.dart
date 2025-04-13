@@ -10,6 +10,7 @@ import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.da
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product/product_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product/product_form_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product/products_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -51,6 +52,8 @@ class ProductFormPage extends HookConsumerWidget {
         (r) {
           AppSnackBar.root(message: 'Success');
           ref.invalidate(productsControllerProvider);
+          ref.invalidate(productControllerProvider(r.id));
+
           context.pop();
         },
       );

@@ -98,6 +98,9 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   static String? _$category(ProductInventory v) => v.category;
   static const Field<ProductInventory, String> _f$category =
       Field('category', _$category, opt: true);
+  static int _$totalExpired(ProductInventory v) => v.totalExpired;
+  static const Field<ProductInventory, int> _f$totalExpired =
+      Field('totalExpired', _$totalExpired, opt: true, def: 0);
   static String? _$image(ProductInventory v) => v.image;
   static const Field<ProductInventory, String> _f$image =
       Field('image', _$image, opt: true);
@@ -135,6 +138,7 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
     #name: _f$name,
     #description: _f$description,
     #category: _f$category,
+    #totalExpired: _f$totalExpired,
     #image: _f$image,
     #branch: _f$branch,
     #branchName: _f$branchName,
@@ -155,6 +159,7 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
         name: data.dec(_f$name),
         description: data.dec(_f$description),
         category: data.dec(_f$category),
+        totalExpired: data.dec(_f$totalExpired),
         image: data.dec(_f$image),
         branch: data.dec(_f$branch),
         branchName: data.dec(_f$branchName),
@@ -230,6 +235,7 @@ abstract class ProductInventoryCopyWith<$R, $In extends ProductInventory, $Out>
       String? name,
       String? description,
       String? category,
+      int? totalExpired,
       String? image,
       String? branch,
       String? branchName,
@@ -260,6 +266,7 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
           String? name,
           Object? description = $none,
           Object? category = $none,
+          int? totalExpired,
           Object? image = $none,
           Object? branch = $none,
           Object? branchName = $none,
@@ -277,6 +284,7 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
         if (name != null) #name: name,
         if (description != $none) #description: description,
         if (category != $none) #category: category,
+        if (totalExpired != null) #totalExpired: totalExpired,
         if (image != $none) #image: image,
         if (branch != $none) #branch: branch,
         if (branchName != $none) #branchName: branchName,
@@ -297,6 +305,7 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
       name: data.get(#name, or: $value.name),
       description: data.get(#description, or: $value.description),
       category: data.get(#category, or: $value.category),
+      totalExpired: data.get(#totalExpired, or: $value.totalExpired),
       image: data.get(#image, or: $value.image),
       branch: data.get(#branch, or: $value.branch),
       branchName: data.get(#branchName, or: $value.branchName),

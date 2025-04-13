@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+import 'package:gym_system/src/core/extensions/int.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/dynamic_list/header_key.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list/responsive_pagination_list_with_delete_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
+import 'package:gym_system/src/core/widgets/dynamic_list/table_column.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_stock.dart';
@@ -111,6 +114,7 @@ class ProductStocksView extends HookConsumerWidget {
     return ResponsivePaginationListWithDeleteView<ProductStock>(
       controller: controller,
       onPageChange: notifier.changePage,
+
       error: provider.maybeWhen(
         skipError: false,
         skipLoadingOnRefresh: true,
@@ -146,29 +150,12 @@ class ProductStocksView extends HookConsumerWidget {
       /// Table Data
       ///
       onHeaderTap: (headerKey) {
-        if (headerKey == null) return;
-        controller.tooggleHeaderKey(headerKey);
+        print(headerKey?.toJson());
       },
       onTap: (x) => onTap(0, x, false),
       data: [
         TableColumn(
-          header: 'Id',
-          width: 200,
-          headerKey: HeaderKey(key: 'id'),
-          alignment: Alignment.centerLeft,
-          builder: (context, data, extra) {
-            return Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                overflow: TextOverflow.ellipsis,
-                '${data.id}',
-              ),
-            );
-          },
-        ),
-        TableColumn(
           header: 'Lot No.',
-          headerKey: HeaderKey(key: 'lot no'),
           width: 200,
           alignment: Alignment.centerLeft,
           builder: (context, data, extra) {
@@ -182,8 +169,34 @@ class ProductStocksView extends HookConsumerWidget {
           },
         ),
         TableColumn(
+          header: 'Used Quantity',
+          width: 120,
+          alignment: Alignment.centerLeft,
+          builder: (context, data, extra) {
+            return Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                overflow: TextOverflow.ellipsis,
+                data.usedQuantity.optional(),
+              ),
+            );
+          },
+        ),
+        TableColumn(
+          header: 'Quantity',
+          alignment: Alignment.centerLeft,
+          builder: (context, data, extra) {
+            return Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                overflow: TextOverflow.ellipsis,
+                data.quantity.optional(),
+              ),
+            );
+          },
+        ),
+        TableColumn(
           header: 'Expiration',
-          headerKey: HeaderKey(key: 'expiration'),
           width: 200,
           alignment: Alignment.centerLeft,
           builder: (context, data, extra) {
@@ -198,7 +211,6 @@ class ProductStocksView extends HookConsumerWidget {
         ),
         TableColumn(
           header: 'Date Created',
-          headerKey: HeaderKey(key: 'date-created'),
           alignment: Alignment.centerLeft,
           width: 150,
           builder: (context, product, extra) {

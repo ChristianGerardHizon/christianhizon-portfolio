@@ -1,39 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/widgets/responsive_row_column.dart';
 import 'package:gym_system/src/features/dashboard/presentation/widgets/kpis/kpi_card.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class DashboardKpis extends StatelessWidget {
   const DashboardKpis({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ResponsiveRowColumn(
-          first: KpiCard(
-            title: 'Total Patients',
-            value: '100',
-            icon: Icon(Icons.person),
+    final widgets = [
+      KpiCard(
+        title: 'Patients',
+        value: '100',
+        icon: Icons.person,
+      ),
+      KpiCard(
+        title: 'Expiring Products',
+        value: '10',
+        icon: Icons.warning,
+      ),
+      KpiCard(
+        title: 'Products Sold',
+        value: '10',
+        icon: Icons.warning,
+      ),
+      KpiCard(
+        title: 'Products Sold',
+        value: '10',
+        icon: Icons.warning,
+      ),
+    ];
+
+    return getValueForScreenType(
+      context: context,
+      mobile: Column(
+        children: widgets,
+      ),
+      desktop: Row(
+        children: widgets.map((el) => Expanded(child: el)).toList(),
+      ),
+      tablet: Column(
+        children: [
+          Row(
+            children: widgets
+                .sublist(0, (widgets.length / 2).ceil())
+                .map((el) => Expanded(child: el))
+                .toList(),
           ),
-          second: KpiCard(
-            title: 'Total Expired Products',
-            value: '10',
-            icon: Icon(Icons.warning),
+          Row(
+            children: widgets
+                .sublist((widgets.length / 2).ceil())
+                .map((el) => Expanded(child: el))
+                .toList(),
           ),
-        ),
-        ResponsiveRowColumn(
-          first: KpiCard(
-            title: 'Total Patients',
-            value: '100',
-            icon: Icon(Icons.person),
-          ),
-          second: KpiCard(
-            title: 'Total Expired Products',
-            value: '10',
-            icon: Icon(Icons.warning),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -8,6 +8,8 @@ import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list/responsive_pagination_list_with_delete_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
+import 'package:gym_system/src/core/widgets/dynamic_list/table_column.dart'
+    show TableColumn;
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/selectable_card.dart';
 import 'package:gym_system/src/features/branches/data/branch_repository.dart';

@@ -9,6 +9,7 @@ import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/logo.dart';
 import 'package:gym_system/src/core/widgets/mobile_bottom_nav.dart';
+import 'package:gym_system/src/core/widgets/mobile_drawer.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
@@ -18,6 +19,10 @@ import 'package:gym_system/src/features/settings/presentation/controllers/settin
 import 'package:gym_system/src/features/treatments/presentation/controllers/treatment/treatments_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+
+final scaffoldKeyProvider = Provider<GlobalKey<ScaffoldState>>((ref) {
+  return GlobalKey<ScaffoldState>();
+});
 
 class AppRoot extends HookConsumerWidget {
   final StatefulNavigationShell shell;
@@ -31,6 +36,8 @@ class AppRoot extends HookConsumerWidget {
     /// theme of the app.
     ///
     final theme = Theme.of(context);
+
+    final scaffoldKey = ref.watch(scaffoldKeyProvider);
 
     ref.watch(settingsControllerProvider);
     ref.watch(treatmentsControllerProvider);
@@ -133,6 +140,8 @@ class AppRoot extends HookConsumerWidget {
             return ResponsiveBuilder(builder: (context, sizeInfo) {
               if (sizeInfo.isTablet || sizeInfo.isDesktop) {
                 return Scaffold(
+                  key: scaffoldKey,
+                  drawer: MobileDrawer(rootContext: context),
                   body: Row(
                     children: [
                       SideMenu(
@@ -185,7 +194,9 @@ class AppRoot extends HookConsumerWidget {
                   }
                 },
                 child: Scaffold(
+                  key: scaffoldKey,
                   body: shell,
+                  drawer: MobileDrawer(rootContext: context),
                   bottomNavigationBar: MobileBottomNav(
                     index: shell.currentIndex,
                     list: items,

@@ -287,6 +287,7 @@ class DynamicPBImagesField extends DynamicField {
 class DynamicNumberField extends DynamicField {
   final num? min;
   final num? max;
+  final num? step;
   final num? initialValue;
   final String? Function(dynamic)? validator;
   final dynamic Function(dynamic)? fieldTransformer;
@@ -301,6 +302,7 @@ class DynamicNumberField extends DynamicField {
     this.min,
     this.max,
     this.fieldTransformer,
+    this.step,
     super.decoration,
     super.margin,
     super.onChange,
