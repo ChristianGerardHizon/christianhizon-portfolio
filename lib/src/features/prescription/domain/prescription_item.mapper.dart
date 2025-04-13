@@ -28,9 +28,9 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
       Field('collectionName', _$collectionName);
   static String _$id(PrescriptionItem v) => v.id;
   static const Field<PrescriptionItem, String> _f$id = Field('id', _$id);
-  static String _$medicalRecord(PrescriptionItem v) => v.medicalRecord;
-  static const Field<PrescriptionItem, String> _f$medicalRecord =
-      Field('medicalRecord', _$medicalRecord);
+  static String _$patientRecord(PrescriptionItem v) => v.patientRecord;
+  static const Field<PrescriptionItem, String> _f$patientRecord =
+      Field('patientRecord', _$patientRecord);
   static String? _$medication(PrescriptionItem v) => v.medication;
   static const Field<PrescriptionItem, String> _f$medication =
       Field('medication', _$medication, opt: true, def: '');
@@ -55,7 +55,7 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
     #id: _f$id,
-    #medicalRecord: _f$medicalRecord,
+    #patientRecord: _f$patientRecord,
     #medication: _f$medication,
     #instructions: _f$instructions,
     #dosage: _f$dosage,
@@ -69,7 +69,7 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
         id: data.dec(_f$id),
-        medicalRecord: data.dec(_f$medicalRecord),
+        patientRecord: data.dec(_f$patientRecord),
         medication: data.dec(_f$medication),
         instructions: data.dec(_f$instructions),
         dosage: data.dec(_f$dosage),
@@ -137,7 +137,7 @@ abstract class PrescriptionItemCopyWith<$R, $In extends PrescriptionItem, $Out>
       {String? collectionId,
       String? collectionName,
       String? id,
-      String? medicalRecord,
+      String? patientRecord,
       String? medication,
       String? instructions,
       String? dosage,
@@ -161,7 +161,7 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
           {String? collectionId,
           String? collectionName,
           String? id,
-          String? medicalRecord,
+          String? patientRecord,
           Object? medication = $none,
           Object? instructions = $none,
           Object? dosage = $none,
@@ -172,7 +172,7 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
         if (id != null) #id: id,
-        if (medicalRecord != null) #medicalRecord: medicalRecord,
+        if (patientRecord != null) #patientRecord: patientRecord,
         if (medication != $none) #medication: medication,
         if (instructions != $none) #instructions: instructions,
         if (dosage != $none) #dosage: dosage,
@@ -185,7 +185,7 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
       id: data.get(#id, or: $value.id),
-      medicalRecord: data.get(#medicalRecord, or: $value.medicalRecord),
+      patientRecord: data.get(#patientRecord, or: $value.patientRecord),
       medication: data.get(#medication, or: $value.medication),
       instructions: data.get(#instructions, or: $value.instructions),
       dosage: data.get(#dosage, or: $value.dosage),

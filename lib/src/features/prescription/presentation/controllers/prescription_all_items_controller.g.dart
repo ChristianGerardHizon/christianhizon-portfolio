@@ -7,7 +7,7 @@ part of 'prescription_all_items_controller.dart';
 // **************************************************************************
 
 String _$prescriptionAllItemsControllerHash() =>
-    r'4fdd967c681af4c099d58da67f6102867ea6ca59';
+    r'2fb7889555ea19fb81a352734084e7cdef4baa0f';
 
 /// Copied from Dart SDK
 class _SystemHash {

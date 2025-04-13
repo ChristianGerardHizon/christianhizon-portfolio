@@ -5,7 +5,7 @@ import 'package:gym_system/src/core/assets/assets.gen.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/utils/file_utils/file_utils.dart';
-import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
+import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -15,7 +15,7 @@ import 'package:gym_system/src/features/prescription/domain/prescription_item.da
 class PrescriptionItemsPdfGenerator {
   final List<PrescriptionItem> items;
   final Patient patient;
-  final MedicalRecord record;
+  final PatientRecord record;
 
   PrescriptionItemsPdfGenerator(
       {required this.items, required this.patient, required this.record});

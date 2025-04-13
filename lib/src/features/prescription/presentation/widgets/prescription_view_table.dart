@@ -38,7 +38,7 @@ class PrescriptionViewTable extends HookConsumerWidget {
       prescriptions.value = [
         ...prescriptions.value,
         PrescriptionItemCreate(
-          medicalRecord: id,
+          patientRecord: id,
           medication: null,
           dosage: null,
           instruction: null,

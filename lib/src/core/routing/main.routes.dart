@@ -19,7 +19,8 @@ import 'package:gym_system/src/features/branches/presentation/pages/branch_form_
 import 'package:gym_system/src/features/branches/presentation/pages/branch_page.dart';
 import 'package:gym_system/src/features/branches/presentation/pages/branches_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:gym_system/src/features/medical_records/presentation/pages/medical_record_page.dart';
+import 'package:gym_system/src/features/patient_records/presentation/pages/patient_record_page.dart';
+import 'package:gym_system/src/features/patient_treatment_records/presentation/pages/treatment_record_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_create_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_update_page.dart';
@@ -33,7 +34,6 @@ import 'package:gym_system/src/features/products/presentation/pages/product_stoc
 import 'package:gym_system/src/features/sales/presentation/pages/sales_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/settings_page.dart';
-import 'package:gym_system/src/features/treatments/presentation/pages/treatment_record_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_create_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_update_page.dart';
@@ -52,8 +52,8 @@ part 'routes/dashboard.routes.dart';
 part 'routes/others.routes.dart';
 part 'routes/sales.routes.dart';
 part 'routes/products.routes.dart';
-part 'routes/medical_records.routes.dart';
-part 'routes/treatment_records.routes.dart';
+part 'routes/patient_records.routes.dart';
+part 'routes/patient_treatment_records.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
@@ -119,8 +119,8 @@ class SplashPageRoute extends GoRouteData {
         TypedGoRoute<PatientUpdatePageRoute>(path: PatientUpdatePageRoute.path),
         TypedGoRoute<PatientCreatePageRoute>(path: PatientCreatePageRoute.path),
         TypedGoRoute<PatientPageRoute>(path: PatientPageRoute.path),
-        TypedGoRoute<PatientMedicalRecordPageRoute>(
-          path: PatientMedicalRecordPageRoute.path,
+        TypedGoRoute<PatientPatientRecordPageRoute>(
+          path: PatientPatientRecordPageRoute.path,
         ),
       ],
     ),
@@ -205,23 +205,23 @@ class SplashPageRoute extends GoRouteData {
     ///
     /// Medical Records
     ///
-    // TypedStatefulShellBranch<MedicalRecordsBranchData>(
+    // TypedStatefulShellBranch<PatientRecordsBranchData>(
     //   routes: <TypeRouteData>[
-    //     TypedGoRoute<MedicalRecordsPageRoute>(
-    //         path: MedicalRecordsPageRoute.path),
-    //     TypedGoRoute<MedicalRecordPageRoute>(path: MedicalRecordPageRoute.path),
+    //     TypedGoRoute<PatientRecordsPageRoute>(
+    //         path: PatientRecordsPageRoute.path),
+    //     TypedGoRoute<PatientRecordPageRoute>(path: PatientRecordPageRoute.path),
     //   ],
     // ),
 
     ///
-    /// Treatment Records
+    /// PatientTreatment Records
     ///
-    TypedStatefulShellBranch<TreatmentRecordsBranchData>(
+    TypedStatefulShellBranch<PatientTreatmentRecordsBranchData>(
       routes: <TypeRouteData>[
-        TypedGoRoute<TreatmentRecordsPageRoute>(
-            path: TreatmentRecordsPageRoute.path),
-        TypedGoRoute<TreatmentRecordPageRoute>(
-            path: TreatmentRecordPageRoute.path),
+        TypedGoRoute<PatientTreatmentRecordsPageRoute>(
+            path: PatientTreatmentRecordsPageRoute.path),
+        TypedGoRoute<PatientTreatmentRecordPageRoute>(
+            path: PatientTreatmentRecordPageRoute.path),
       ],
     ),
   ],

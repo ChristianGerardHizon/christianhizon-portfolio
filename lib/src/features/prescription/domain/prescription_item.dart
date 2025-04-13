@@ -6,7 +6,7 @@ part 'prescription_item.mapper.dart';
 class PrescriptionItem with PrescriptionItemMappable {
   final String id;
 
-  final String medicalRecord;
+  final String patientRecord;
   final String? medication;
 
   final String? instructions;
@@ -23,7 +23,7 @@ class PrescriptionItem with PrescriptionItemMappable {
     required this.collectionId,
     required this.collectionName,
     required this.id,
-    required this.medicalRecord,
+    required this.patientRecord,
     this.medication = '',
     this.instructions,
     this.dosage,

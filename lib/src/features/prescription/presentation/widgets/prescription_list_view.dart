@@ -4,7 +4,7 @@ import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
+import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
 import 'package:gym_system/src/features/prescription/data/prescription_item_repository.dart';
 import 'package:gym_system/src/features/prescription/domain/prescription_item.dart';
@@ -16,7 +16,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class PrescriptionListView extends HookConsumerWidget {
-  final MedicalRecord record;
+  final PatientRecord record;
 
   const PrescriptionListView({super.key, required this.record});
   @override

@@ -7,26 +7,26 @@ import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/form_builders/hidden_form_field.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
-import 'package:gym_system/src/features/medical_records/domain/medical_record.dart';
+import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
 import 'package:gym_system/src/features/prescription/data/prescription_item_repository.dart';
 import 'package:gym_system/src/features/prescription/presentation/controllers/prescription_item_page_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class PrescriptionItemCreateSheet extends HookConsumerWidget {
-  final MedicalRecord medicalRecord;
+  final PatientRecord patientRecord;
 
   final Map<String, dynamic>? formData;
 
   const PrescriptionItemCreateSheet({
     super.key,
-    required this.medicalRecord,
+    required this.patientRecord,
     this.formData,
   });
 
   static Future show(
     BuildContext context, {
-    required MedicalRecord record,
+    required PatientRecord record,
     Map<String, dynamic>? formData,
   }) async {
     // final screenSize = MediaQuery.of(context).size;
@@ -36,7 +36,7 @@ class PrescriptionItemCreateSheet extends HookConsumerWidget {
       useRootNavigator: true,
       useSafeArea: true,
       builder: (_) => PrescriptionItemCreateSheet(
-        medicalRecord: record,
+        patientRecord: record,
         formData: formData,
       ),
     );
@@ -86,7 +86,7 @@ class PrescriptionItemCreateSheet extends HookConsumerWidget {
           key: formKey,
           initialValue: {
             PrescriptionItemField.id: formData?[PrescriptionItemField.id],
-            PrescriptionItemField.medicalRecord: medicalRecord.id,
+            PrescriptionItemField.patientRecord: patientRecord.id,
           },
           child: CustomScrollView(
             slivers: [
@@ -98,7 +98,7 @@ class PrescriptionItemCreateSheet extends HookConsumerWidget {
 
               SliverList.list(
                 children: [
-                  HiddenFormField(name: PrescriptionItemField.medicalRecord),
+                  HiddenFormField(name: PrescriptionItemField.patientRecord),
 
                   ///
                   /// Medication
@@ -230,6 +230,5 @@ class PrescriptionItemCreateSheet extends HookConsumerWidget {
         ),
       );
     });
-
   }
 }

@@ -7,17 +7,16 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'prescription_all_items_controller.g.dart';
 
 @riverpod
-class PrescriptionAllItemsController
-    extends _$PrescriptionAllItemsController {
+class PrescriptionAllItemsController extends _$PrescriptionAllItemsController {
   String _buildFilter({
-    String? medicalRecordId,
+    String? patientRecordId,
   }) {
     final baseFilter = '${PrescriptionItemField.isDeleted} = false';
 
-    final medicationFilter = Option.of(medicalRecordId)
+    final medicationFilter = Option.of(patientRecordId)
         .map((q) => (q ?? '').trim())
         .filter((q) => q.isNotEmpty)
-        .map((q) => '${PrescriptionItemField.medicalRecord} ~ "$q"');
+        .map((q) => '${PrescriptionItemField.patientRecord} ~ "$q"');
 
     final result = [
       medicationFilter,
@@ -32,7 +31,7 @@ class PrescriptionAllItemsController
     final repo = ref.read(prescriptionItemRepositoryProvider);
     final result = await repo
         .listAll(
-          filter: _buildFilter(medicalRecordId: id),
+          filter: _buildFilter(patientRecordId: id),
         )
         .run();
     return result.fold(Future.error, (x) => Future.value(x));

@@ -21,9 +21,9 @@ class PrescriptionItemCreateMapper
   @override
   final String id = 'PrescriptionItemCreate';
 
-  static String _$medicalRecord(PrescriptionItemCreate v) => v.medicalRecord;
-  static const Field<PrescriptionItemCreate, String> _f$medicalRecord =
-      Field('medicalRecord', _$medicalRecord);
+  static String _$patientRecord(PrescriptionItemCreate v) => v.patientRecord;
+  static const Field<PrescriptionItemCreate, String> _f$patientRecord =
+      Field('patientRecord', _$patientRecord);
   static String? _$medication(PrescriptionItemCreate v) => v.medication;
   static const Field<PrescriptionItemCreate, String> _f$medication =
       Field('medication', _$medication, opt: true);
@@ -36,7 +36,7 @@ class PrescriptionItemCreateMapper
 
   @override
   final MappableFields<PrescriptionItemCreate> fields = const {
-    #medicalRecord: _f$medicalRecord,
+    #patientRecord: _f$patientRecord,
     #medication: _f$medication,
     #dosage: _f$dosage,
     #instruction: _f$instruction,
@@ -44,7 +44,7 @@ class PrescriptionItemCreateMapper
 
   static PrescriptionItemCreate _instantiate(DecodingData data) {
     return PrescriptionItemCreate(
-        medicalRecord: data.dec(_f$medicalRecord),
+        patientRecord: data.dec(_f$patientRecord),
         medication: data.dec(_f$medication),
         dosage: data.dec(_f$dosage),
         instruction: data.dec(_f$instruction));
@@ -109,7 +109,7 @@ abstract class PrescriptionItemCreateCopyWith<
     $In extends PrescriptionItemCreate,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {String? medicalRecord,
+      {String? patientRecord,
       String? medication,
       String? dosage,
       String? instruction});
@@ -128,19 +128,19 @@ class _PrescriptionItemCreateCopyWithImpl<$R, $Out>
       PrescriptionItemCreateMapper.ensureInitialized();
   @override
   $R call(
-          {String? medicalRecord,
+          {String? patientRecord,
           Object? medication = $none,
           Object? dosage = $none,
           Object? instruction = $none}) =>
       $apply(FieldCopyWithData({
-        if (medicalRecord != null) #medicalRecord: medicalRecord,
+        if (patientRecord != null) #patientRecord: patientRecord,
         if (medication != $none) #medication: medication,
         if (dosage != $none) #dosage: dosage,
         if (instruction != $none) #instruction: instruction
       }));
   @override
   PrescriptionItemCreate $make(CopyWithData data) => PrescriptionItemCreate(
-      medicalRecord: data.get(#medicalRecord, or: $value.medicalRecord),
+      patientRecord: data.get(#patientRecord, or: $value.patientRecord),
       medication: data.get(#medication, or: $value.medication),
       dosage: data.get(#dosage, or: $value.dosage),
       instruction: data.get(#instruction, or: $value.instruction));

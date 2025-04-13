@@ -88,7 +88,7 @@ class TreatmentField {
   static const String icon = 'icon';
 }
 
-class TreatmentRecordField {
+class PatientTreatmentRecordField {
   static const String id = PbField.id;
   static const String created = PbField.created;
   static const String updated = PbField.updated;
@@ -101,7 +101,7 @@ class TreatmentRecordField {
   static const String followUpDate = 'followUpDate';
 }
 
-class MedicalRecordField {
+class PatientRecordField {
   static const String id = PbField.id;
   static const String created = PbField.created;
   static const String updated = PbField.updated;
@@ -124,7 +124,7 @@ class PrescriptionItemField {
   static const String isDeleted = PbField.isDeleted;
 
   static const String medication = 'medication';
-  static const String medicalRecord = 'medicalRecord';
+  static const String patientRecord = 'patientRecord';
   static const String dosage = 'dosage';
   static const String instructions = 'instructions';
 }

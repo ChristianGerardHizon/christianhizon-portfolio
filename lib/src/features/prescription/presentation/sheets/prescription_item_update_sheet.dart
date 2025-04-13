@@ -72,7 +72,8 @@ class PrescriptionItemUpdateSheet extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          ref.invalidate(prescriptionAllItemsControllerProvider(id: item.medicalRecord));
+          ref.invalidate(
+              prescriptionAllItemsControllerProvider(id: item.patientRecord));
           context.pop(r);
         },
       );
@@ -86,7 +87,7 @@ class PrescriptionItemUpdateSheet extends HookConsumerWidget {
           key: formKey,
           initialValue: {
             PrescriptionItemField.id: formData?[PrescriptionItemField.id],
-            PrescriptionItemField.medicalRecord: item.medicalRecord,
+            PrescriptionItemField.patientRecord: item.patientRecord,
             PrescriptionItemField.medication: item.medication,
             PrescriptionItemField.dosage: item.dosage,
             PrescriptionItemField.instructions: item.instructions,
@@ -101,7 +102,7 @@ class PrescriptionItemUpdateSheet extends HookConsumerWidget {
 
               SliverList.list(
                 children: [
-                  HiddenFormField(name: PrescriptionItemField.medicalRecord),
+                  HiddenFormField(name: PrescriptionItemField.patientRecord),
 
                   ///
                   /// Medication

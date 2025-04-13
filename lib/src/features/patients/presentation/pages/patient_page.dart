@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_record_page_controller.dart';
-import 'package:gym_system/src/features/medical_records/presentation/controllers/medical_records_controller.dart';
-import 'package:gym_system/src/features/medical_records/presentation/widgets/medical_records_view.dart';
+import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_record_page_controller.dart';
+import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_records_controller.dart';
+import 'package:gym_system/src/features/patient_records/presentation/widgets/patient_records_view.dart';
+import 'package:gym_system/src/features/patient_treatment_records/presentation/controllers/treatment_record/patient_treatment_record_page_controller.dart';
+import 'package:gym_system/src/features/patient_treatment_records/presentation/widgets/patient_treatment_record_view.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
-import 'package:gym_system/src/features/treatments/presentation/controllers/treatment/treatments_controller.dart';
+import 'package:gym_system/src/features/patient_treatment_records/presentation/controllers/treatment/treatments_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_details.dart';
-import 'package:gym_system/src/features/treatments/presentation/controllers/treatment_record/treatment_record_page_controller.dart';
-import 'package:gym_system/src/features/treatments/presentation/widgets/patient_treatment_record_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientPage extends HookConsumerWidget {
@@ -23,10 +23,10 @@ class PatientPage extends HookConsumerWidget {
     final state = ref.watch(provider);
 
     /// for medical records tab. preloading the data
-    ref.watch(medicalRecordsPageControllerProvider);
-    ref.watch(medicalRecordSearchControllerProvider.notifier);
-    ref.watch(medicalRecordsControllerProvider(id: id));
-    ref.watch(treatmentRecordSearchControllerProvider);
+    ref.watch(patientRecordsPageControllerProvider);
+    ref.watch(patientRecordSearchControllerProvider.notifier);
+    ref.watch(patientRecordsControllerProvider(id: id));
+    ref.watch(patientTreatmentRecordSearchControllerProvider);
 
     ///
     /// Refresh
@@ -108,7 +108,7 @@ class PatientPage extends HookConsumerWidget {
                   child: TabBarView(
                     children: [
                       PatientDetails(patient: patient),
-                      MedicalRecordsView(patient: patient),
+                      PatientRecordsView(patient: patient),
                       PatientTreatmentRecordView(patient: patient),
                       Center(
                         child: Text('No Files'),

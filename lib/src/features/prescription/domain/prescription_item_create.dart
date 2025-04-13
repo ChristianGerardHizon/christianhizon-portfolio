@@ -4,13 +4,13 @@ part 'prescription_item_create.mapper.dart';
 
 @MappableClass()
 class PrescriptionItemCreate with PrescriptionItemCreateMappable {
-  final String medicalRecord;
+  final String patientRecord;
   final String? medication;
   final String? dosage;
   final String? instruction;
 
   PrescriptionItemCreate({
-    required this.medicalRecord,
+    required this.patientRecord,
     this.medication,
     this.dosage,
     this.instruction,
