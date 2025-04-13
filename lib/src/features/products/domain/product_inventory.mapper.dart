@@ -92,14 +92,16 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
       Field('status', _$status);
   static String _$name(ProductInventory v) => v.name;
   static const Field<ProductInventory, String> _f$name = Field('name', _$name);
+  static num _$price(ProductInventory v) => v.price;
+  static const Field<ProductInventory, num> _f$price = Field('price', _$price);
   static String? _$description(ProductInventory v) => v.description;
   static const Field<ProductInventory, String> _f$description =
       Field('description', _$description, opt: true);
   static String? _$category(ProductInventory v) => v.category;
   static const Field<ProductInventory, String> _f$category =
       Field('category', _$category, opt: true);
-  static int _$totalExpired(ProductInventory v) => v.totalExpired;
-  static const Field<ProductInventory, int> _f$totalExpired =
+  static num _$totalExpired(ProductInventory v) => v.totalExpired;
+  static const Field<ProductInventory, num> _f$totalExpired =
       Field('totalExpired', _$totalExpired, opt: true, def: 0);
   static String? _$image(ProductInventory v) => v.image;
   static const Field<ProductInventory, String> _f$image =
@@ -113,12 +115,12 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   static bool _$isDeleted(ProductInventory v) => v.isDeleted;
   static const Field<ProductInventory, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
-  static int _$totalQuantity(ProductInventory v) => v.totalQuantity;
-  static const Field<ProductInventory, int> _f$totalQuantity =
+  static num _$totalQuantity(ProductInventory v) => v.totalQuantity;
+  static const Field<ProductInventory, num> _f$totalQuantity =
       Field('totalQuantity', _$totalQuantity, opt: true, def: 0);
-  static int _$totalQuantityAvailable(ProductInventory v) =>
+  static num _$totalQuantityAvailable(ProductInventory v) =>
       v.totalQuantityAvailable;
-  static const Field<ProductInventory, int> _f$totalQuantityAvailable = Field(
+  static const Field<ProductInventory, num> _f$totalQuantityAvailable = Field(
       'totalQuantityAvailable', _$totalQuantityAvailable,
       opt: true, def: 0);
   static DateTime? _$created(ProductInventory v) => v.created;
@@ -136,6 +138,7 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
     #product: _f$product,
     #status: _f$status,
     #name: _f$name,
+    #price: _f$price,
     #description: _f$description,
     #category: _f$category,
     #totalExpired: _f$totalExpired,
@@ -157,6 +160,7 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
         product: data.dec(_f$product),
         status: data.dec(_f$status),
         name: data.dec(_f$name),
+        price: data.dec(_f$price),
         description: data.dec(_f$description),
         category: data.dec(_f$category),
         totalExpired: data.dec(_f$totalExpired),
@@ -233,15 +237,16 @@ abstract class ProductInventoryCopyWith<$R, $In extends ProductInventory, $Out>
       String? product,
       ProductStatus? status,
       String? name,
+      num? price,
       String? description,
       String? category,
-      int? totalExpired,
+      num? totalExpired,
       String? image,
       String? branch,
       String? branchName,
       bool? isDeleted,
-      int? totalQuantity,
-      int? totalQuantityAvailable,
+      num? totalQuantity,
+      num? totalQuantityAvailable,
       DateTime? created,
       DateTime? updated});
   ProductInventoryCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
@@ -264,15 +269,16 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
           String? product,
           ProductStatus? status,
           String? name,
+          num? price,
           Object? description = $none,
           Object? category = $none,
-          int? totalExpired,
+          num? totalExpired,
           Object? image = $none,
           Object? branch = $none,
           Object? branchName = $none,
           bool? isDeleted,
-          int? totalQuantity,
-          int? totalQuantityAvailable,
+          num? totalQuantity,
+          num? totalQuantityAvailable,
           Object? created = $none,
           Object? updated = $none}) =>
       $apply(FieldCopyWithData({
@@ -282,6 +288,7 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
         if (product != null) #product: product,
         if (status != null) #status: status,
         if (name != null) #name: name,
+        if (price != null) #price: price,
         if (description != $none) #description: description,
         if (category != $none) #category: category,
         if (totalExpired != null) #totalExpired: totalExpired,
@@ -303,6 +310,7 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
       product: data.get(#product, or: $value.product),
       status: data.get(#status, or: $value.status),
       name: data.get(#name, or: $value.name),
+      price: data.get(#price, or: $value.price),
       description: data.get(#description, or: $value.description),
       category: data.get(#category, or: $value.category),
       totalExpired: data.get(#totalExpired, or: $value.totalExpired),

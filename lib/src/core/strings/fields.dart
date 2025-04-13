@@ -140,6 +140,7 @@ class ProductField {
   static const String image = 'image';
   static const String category = 'category';
   static const String branch = 'branch';
+  static const String stockThreshold = 'stockThreshold';
 }
 
 class BranchField {

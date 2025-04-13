@@ -16,7 +16,7 @@ import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/authentication/presentation/widgets/account_circle_image.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
-import 'package:gym_system/src/features/patient_treatment_records/presentation/controllers/treatment/treatments_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/treatment/patient_treatments_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 

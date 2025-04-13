@@ -7,16 +7,16 @@ import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/header_key.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list/responsive_pagination_list_with_delete_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list/table_column.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
+import 'package:gym_system/src/features/products/data/product_stock_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_stock.dart';
 import 'package:gym_system/src/features/products/domain/product_stock_search.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/product_stock/product_stocks_controller.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/product_stock/product_stocks_page_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/stock/product_stocks_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/stock/product_stocks_page_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductStocksView extends HookConsumerWidget {
@@ -61,7 +61,7 @@ class ProductStocksView extends HookConsumerWidget {
     onDelete(List<ProductStock> items) async {
       final confirm = await ConfirmModal.show(context);
       if (confirm != true) return;
-      final repo = ref.read(productRepositoryProvider);
+      final repo = ref.read(productStockRepositoryProvider);
       final ids = items.map((e) => e.id).toList();
       isLoading.value = true;
       final result = await repo.softDeleteMulti(ids).run();

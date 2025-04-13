@@ -3,7 +3,7 @@ import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_inventory.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/product_inventory/product_inventory_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/inventory/product_inventory_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_controller.g.dart';

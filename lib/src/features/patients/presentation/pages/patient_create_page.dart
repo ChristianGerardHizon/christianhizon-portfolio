@@ -8,13 +8,13 @@ import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/responsive_two_fields.dart';
-import 'package:gym_system/src/features/patients/data/patient_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/breeds/patient_breeds_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_create_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/species/patient_species_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_breed_form_field.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_species_form_field.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/breeds/patient_breed_form_field.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/species/patient_species_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientCreatePage extends HookConsumerWidget {

@@ -1,5 +1,5 @@
 import 'package:gym_system/src/core/classes/page_results.dart';
-import 'package:gym_system/src/features/patients/data/patient_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_page_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

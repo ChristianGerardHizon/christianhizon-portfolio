@@ -4,6 +4,7 @@ import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
+import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/products/domain/product_stock.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -120,9 +121,9 @@ class ProductStockRepositoryImpl extends PBCollectionRepository<ProductStock> {
       () async {
         final batch = pb.createBatch();
         final batchCollection =
-            batch.collection(PocketBaseCollections.productCategories);
+            batch.collection(PocketBaseCollections.productStocks);
         for (final id in ids) {
-          batchCollection.update(id, body: {'isDeleted': true});
+          batchCollection.update(id, body: {ProductStockField.isDeleted: true});
         }
 
         await batch.send();

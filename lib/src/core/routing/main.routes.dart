@@ -19,8 +19,8 @@ import 'package:gym_system/src/features/branches/presentation/pages/branch_form_
 import 'package:gym_system/src/features/branches/presentation/pages/branch_page.dart';
 import 'package:gym_system/src/features/branches/presentation/pages/branches_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:gym_system/src/features/patient_records/presentation/pages/patient_record_page.dart';
-import 'package:gym_system/src/features/patient_treatment_records/presentation/pages/treatment_record_page.dart';
+import 'package:gym_system/src/features/patients/presentation/pages/patient_record_page.dart';
+import 'package:gym_system/src/features/patients/presentation/pages/treatment_record_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_create_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_update_page.dart';
@@ -28,9 +28,9 @@ import 'package:gym_system/src/features/patients/presentation/pages/patients_pag
 import 'package:gym_system/src/features/products/presentation/pages/product/product_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product/products_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product/product_form_page.dart';
-import 'package:gym_system/src/features/products/presentation/pages/product_inventory/product_inventories_page.dart';
-import 'package:gym_system/src/features/products/presentation/pages/product_stock/product_stock_form_page.dart';
-import 'package:gym_system/src/features/products/presentation/pages/product_stock/product_stock_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/inventory/product_inventories_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/stock/product_stock_form_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/stock/product_stock_page.dart';
 import 'package:gym_system/src/features/sales/presentation/pages/sales_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/settings_page.dart';

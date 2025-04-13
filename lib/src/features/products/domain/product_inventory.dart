@@ -17,9 +17,10 @@ class ProductInventory extends PbRecord with ProductInventoryMappable {
   final String? branch;
   final String? branchName;
 
-  final int totalQuantity;
-  final int totalQuantityAvailable;
-  final int totalExpired;
+  final num totalQuantity;
+  final num totalQuantityAvailable;
+  final num totalExpired;
+  final num price;
 
   ProductInventory({
     required super.id,
@@ -28,6 +29,7 @@ class ProductInventory extends PbRecord with ProductInventoryMappable {
     required this.product,
     required this.status,
     required this.name,
+    required this.price,
     this.description,
     this.category,
     this.totalExpired = 0,

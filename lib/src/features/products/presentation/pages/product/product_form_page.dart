@@ -101,17 +101,34 @@ class ProductFormPage extends HookConsumerWidget {
                   validator: FormBuilderValidators.compose([]),
                 ),
                 DynamicTextField(
-                    name: ProductField.name,
-                    initialValue: product?.name,
-                    decoration: InputDecoration(
-                      label: Text('Product Name'),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: FormBuilderValidators.compose(
-                      [
-                        FormBuilderValidators.required(),
-                      ],
-                    )),
+                  name: ProductField.name,
+                  initialValue: product?.name,
+                  decoration: InputDecoration(
+                    label: Text('Product Name'),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(),
+                    ],
+                  ),
+                ),
+                DynamicNumberField(
+                  name: ProductField.stockThreshold,
+                  initialValue: product?.stockThreshold,
+                  decoration: InputDecoration(
+                    label: Text('Stock Threshold'),
+                    helperText: 'How much stock to notify',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(),
+                      FormBuilderValidators.numeric(),
+                      FormBuilderValidators.min(0)
+                    ],
+                  ),
+                ),
                 DynamicSelectField(
                   name: ProductField.category,
                   options: categories
@@ -129,6 +146,7 @@ class ProductFormPage extends HookConsumerWidget {
                 ),
                 DynamicSelectField(
                   name: ProductField.branch,
+                  initialValue: product?.branch,
                   options: branches
                       .map(
                         (e) => SelectOption(

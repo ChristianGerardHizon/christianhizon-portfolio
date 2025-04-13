@@ -104,6 +104,7 @@ TaskResult<List<PBImage>?> _buildInitialImages(
 
     return [
       PBNetworkImage(
+        fileName: product.image!,
         uri: imageUri,
         field: ProductField.image,
         id: product.id,

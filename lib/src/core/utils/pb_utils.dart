@@ -19,7 +19,10 @@ class PBUtils {
     bool isSingleFile = true,
   }) {
     final value = [...list ?? []];
-    final result = value.where((x) => x.isUpdate).map((x) => x.id);
+    final result = value.where((x) => x.isUpdate).map((x) {
+      if (x is PBNetworkImage) return x.fileName;
+      return x.id;
+    });
     if (isSingleFile) return result.firstOrNull;
     return result.toList();
   }

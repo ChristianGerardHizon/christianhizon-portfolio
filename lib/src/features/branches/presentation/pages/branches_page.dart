@@ -167,16 +167,6 @@ class BranchesPage extends HookConsumerWidget {
             },
           ),
           TableColumn(
-            header: 'Status',
-            alignment: Alignment.centerLeft,
-            builder: (context, branch, extra) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: Text(branch.name, overflow: TextOverflow.ellipsis),
-              );
-            },
-          ),
-          TableColumn(
             header: 'Date Created',
             alignment: Alignment.centerLeft,
             width: 200,

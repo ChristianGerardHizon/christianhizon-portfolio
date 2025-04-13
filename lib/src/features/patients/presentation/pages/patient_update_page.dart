@@ -11,13 +11,13 @@ import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/core/widgets/responsive_two_fields.dart';
-import 'package:gym_system/src/features/patients/data/patient_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_update_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_breed_form_field.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/breeds/patient_breed_form_field.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_image_control_widget.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_species_form_field.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/species/patient_species_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientUpdatePage extends HookConsumerWidget {

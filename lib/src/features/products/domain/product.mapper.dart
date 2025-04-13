@@ -32,6 +32,8 @@ class ProductMapper extends ClassMapperBase<Product> {
       Field('collectionName', _$collectionName);
   static String _$name(Product v) => v.name;
   static const Field<Product, String> _f$name = Field('name', _$name);
+  static num _$price(Product v) => v.price;
+  static const Field<Product, num> _f$price = Field('price', _$price);
   static String? _$image(Product v) => v.image;
   static const Field<Product, String> _f$image =
       Field('image', _$image, opt: true);
@@ -44,8 +46,8 @@ class ProductMapper extends ClassMapperBase<Product> {
   static String? _$branch(Product v) => v.branch;
   static const Field<Product, String> _f$branch =
       Field('branch', _$branch, opt: true);
-  static int? _$stockThreshold(Product v) => v.stockThreshold;
-  static const Field<Product, int> _f$stockThreshold =
+  static num? _$stockThreshold(Product v) => v.stockThreshold;
+  static const Field<Product, num> _f$stockThreshold =
       Field('stockThreshold', _$stockThreshold, opt: true);
   static ProductExpand _$expand(Product v) => v.expand;
   static const Field<Product, ProductExpand> _f$expand =
@@ -66,6 +68,7 @@ class ProductMapper extends ClassMapperBase<Product> {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
     #name: _f$name,
+    #price: _f$price,
     #image: _f$image,
     #description: _f$description,
     #category: _f$category,
@@ -83,6 +86,7 @@ class ProductMapper extends ClassMapperBase<Product> {
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
         name: data.dec(_f$name),
+        price: data.dec(_f$price),
         image: data.dec(_f$image),
         description: data.dec(_f$description),
         category: data.dec(_f$category),
@@ -151,11 +155,12 @@ abstract class ProductCopyWith<$R, $In extends Product, $Out>
       String? collectionId,
       String? collectionName,
       String? name,
+      num? price,
       String? image,
       String? description,
       String? category,
       String? branch,
-      int? stockThreshold,
+      num? stockThreshold,
       ProductExpand? expand,
       bool? isDeleted,
       DateTime? created,
@@ -180,6 +185,7 @@ class _ProductCopyWithImpl<$R, $Out>
           String? collectionId,
           String? collectionName,
           String? name,
+          num? price,
           Object? image = $none,
           Object? description = $none,
           Object? category = $none,
@@ -194,6 +200,7 @@ class _ProductCopyWithImpl<$R, $Out>
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
         if (name != null) #name: name,
+        if (price != null) #price: price,
         if (image != $none) #image: image,
         if (description != $none) #description: description,
         if (category != $none) #category: category,
@@ -210,6 +217,7 @@ class _ProductCopyWithImpl<$R, $Out>
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
       name: data.get(#name, or: $value.name),
+      price: data.get(#price, or: $value.price),
       image: data.get(#image, or: $value.image),
       description: data.get(#description, or: $value.description),
       category: data.get(#category, or: $value.category),

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_record_page_controller.dart';
-import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_records_controller.dart';
-import 'package:gym_system/src/features/patient_records/presentation/widgets/patient_records_view.dart';
-import 'package:gym_system/src/features/patient_treatment_records/presentation/controllers/treatment_record/patient_treatment_record_page_controller.dart';
-import 'package:gym_system/src/features/patient_treatment_records/presentation/widgets/patient_treatment_record_view.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_record_page_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_records_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_records_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_record/patient_records_view.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/treatment_record/patient_treatment_record_page_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/treatment_records/patient_treatment_record_view.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
-import 'package:gym_system/src/features/patient_treatment_records/presentation/controllers/treatment/treatments_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_details.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/treatment/patient_treatments_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patients/patient_details.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientPage extends HookConsumerWidget {

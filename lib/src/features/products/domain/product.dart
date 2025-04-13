@@ -11,7 +11,8 @@ class Product extends PbRecord with ProductMappable {
   final String? category;
   final String? image;
   final String? branch;
-  final int? stockThreshold;
+  final num? stockThreshold;
+  final num price;
 
   final ProductExpand expand;
 
@@ -20,6 +21,7 @@ class Product extends PbRecord with ProductMappable {
     required super.collectionId,
     required super.collectionName,
     required this.name,
+    required this.price,
     this.image,
     this.description,
     this.category,

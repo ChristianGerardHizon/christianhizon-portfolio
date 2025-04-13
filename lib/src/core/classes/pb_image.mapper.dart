@@ -260,6 +260,9 @@ class PBNetworkImageMapper extends SubClassMapperBase<PBNetworkImage> {
       Field('id', _$id, opt: true);
   static Uri _$uri(PBNetworkImage v) => v.uri;
   static const Field<PBNetworkImage, Uri> _f$uri = Field('uri', _$uri);
+  static String _$fileName(PBNetworkImage v) => v.fileName;
+  static const Field<PBNetworkImage, String> _f$fileName =
+      Field('fileName', _$fileName);
   static bool _$isDeleted(PBNetworkImage v) => v.isDeleted;
   static const Field<PBNetworkImage, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
@@ -269,6 +272,7 @@ class PBNetworkImageMapper extends SubClassMapperBase<PBNetworkImage> {
     #field: _f$field,
     #id: _f$id,
     #uri: _f$uri,
+    #fileName: _f$fileName,
     #isDeleted: _f$isDeleted,
   };
 
@@ -284,6 +288,7 @@ class PBNetworkImageMapper extends SubClassMapperBase<PBNetworkImage> {
         field: data.dec(_f$field),
         id: data.dec(_f$id),
         uri: data.dec(_f$uri),
+        fileName: data.dec(_f$fileName),
         isDeleted: data.dec(_f$isDeleted));
   }
 
@@ -342,7 +347,8 @@ extension PBNetworkImageValueCopy<$R, $Out>
 abstract class PBNetworkImageCopyWith<$R, $In extends PBNetworkImage, $Out>
     implements PBImageCopyWith<$R, $In, $Out> {
   @override
-  $R call({String? field, String? id, Uri? uri, bool? isDeleted});
+  $R call(
+      {String? field, String? id, Uri? uri, String? fileName, bool? isDeleted});
   PBNetworkImageCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -360,11 +366,13 @@ class _PBNetworkImageCopyWithImpl<$R, $Out>
           {Object? field = $none,
           Object? id = $none,
           Uri? uri,
+          String? fileName,
           bool? isDeleted}) =>
       $apply(FieldCopyWithData({
         if (field != $none) #field: field,
         if (id != $none) #id: id,
         if (uri != null) #uri: uri,
+        if (fileName != null) #fileName: fileName,
         if (isDeleted != null) #isDeleted: isDeleted
       }));
   @override
@@ -372,6 +380,7 @@ class _PBNetworkImageCopyWithImpl<$R, $Out>
       field: data.get(#field, or: $value.field),
       id: data.get(#id, or: $value.id),
       uri: data.get(#uri, or: $value.uri),
+      fileName: data.get(#fileName, or: $value.fileName),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted));
 
   @override

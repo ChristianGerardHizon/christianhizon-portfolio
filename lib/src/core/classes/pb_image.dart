@@ -67,11 +67,13 @@ class PBLocalImage extends PBImage with PBLocalImageMappable {
 @MappableClass(discriminatorValue: 'network')
 class PBNetworkImage extends PBImage with PBNetworkImageMappable {
   final Uri uri;
+  final String fileName;
 
   const PBNetworkImage({
     super.field,
     super.id,
     required this.uri,
+    required this.fileName,
     super.isDeleted = false,
   });
 }
