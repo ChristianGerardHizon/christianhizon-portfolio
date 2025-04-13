@@ -1,6 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/widgets.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/header_key.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
 
 part 'table_column.mapper.dart';

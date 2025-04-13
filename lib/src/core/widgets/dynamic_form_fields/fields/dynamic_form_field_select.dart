@@ -10,19 +10,52 @@ class DynamicFormFieldSelect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FormBuilderDropdown(
+    return FormBuilderField<dynamic>(
       key: field.formFieldKey,
       name: field.name,
       enabled: field.enabled,
-      onChanged: field.onChange,
-      decoration: field.decoration,
       validator: field.validator,
-      items: field.options
-          .map((opt) => DropdownMenuItem(
-                value: opt.value,
-                child: Text(opt.display),
-              ))
-          .toList(),
+      onChanged: field.onChange,
+      builder: (FormFieldState<dynamic> state) {
+        return InputDecorator(
+          decoration: field.decoration.copyWith(
+            suffixIcon: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (state.value != null)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: IconButton(
+                      tooltip: 'Clear selection',
+                      icon: const Icon(Icons.clear),
+                      onPressed: () => state.didChange(null),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          isEmpty: state.value == null,
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<dynamic>(
+              isExpanded: true,
+              value: state.value,
+              hint: Text(field.decoration.hintText ?? ''),
+              onChanged: field.enabled
+                  ? (val) {
+                      state.didChange(val);
+                      field.onChange?.call(val);
+                    }
+                  : null,
+              items: field.options
+                  .map((opt) => DropdownMenuItem(
+                        value: opt.value,
+                        child: Text(opt.display),
+                      ))
+                  .toList(),
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -37,7 +37,7 @@ class PatientPage extends HookConsumerWidget {
     }
 
     return DefaultTabController(
-      length: 3,
+      length: 4,
       initialIndex: page ?? 0,
       child: Scaffold(
         body: state.when(
@@ -78,7 +78,7 @@ class PatientPage extends HookConsumerWidget {
                                 Theme.of(context).appBarTheme.backgroundColor,
                           ),
                           child: TabBar(
-                            isScrollable: false,
+                            isScrollable: true,
                             tabs: [
                               Tab(
                                 icon: Icon(MIcons.accountOutline),
@@ -91,6 +91,10 @@ class PatientPage extends HookConsumerWidget {
                               Tab(
                                 icon: Icon(MIcons.hospitalBoxOutline),
                                 child: Text('Treatments'),
+                              ),
+                              Tab(
+                                icon: Icon(MIcons.fileOutline),
+                                child: Text('Files'),
                               ),
                             ],
                           ),
@@ -106,6 +110,9 @@ class PatientPage extends HookConsumerWidget {
                       PatientDetails(patient: patient),
                       MedicalRecordsView(patient: patient),
                       PatientTreatmentRecordView(patient: patient),
+                      Center(
+                        child: Text('No Files'),
+                      ),
                     ],
                   ),
                 ),

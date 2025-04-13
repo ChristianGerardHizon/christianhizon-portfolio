@@ -29,6 +29,8 @@ class ProductStockFormPage extends HookConsumerWidget {
     final provider =
         ref.watch(productStockFormControllerProvider(id, productId));
 
+    final theme = Theme.of(context);
+
     ///
     /// Submit
     ///
@@ -97,9 +99,15 @@ class ProductStockFormPage extends HookConsumerWidget {
                     ),
                     builder: (value) {
                       if (value is! Product) return SizedBox();
-                      return ListTile(
-                        title: Text(value.name),
-                        subtitle: Text('Product'),
+                      return Card(
+                        margin: EdgeInsets.zero,
+                        child: ListTile(
+                          title: Text(
+                            value.name,
+                            style: theme.textTheme.titleSmall,
+                          ),
+                          subtitle: Text('Creating Stock for this product'),
+                        ),
                       );
                     },
                     valueTransformer: (value) {
@@ -110,12 +118,25 @@ class ProductStockFormPage extends HookConsumerWidget {
                 ///
                 /// Expiry Date
                 ///
+                DynamicTextField(
+                  name: ProductStockField.lotNo,
+                  decoration: const InputDecoration(
+                    label: Text('Lot Number'),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+
+                ///
+                /// Expiry Date
+                ///
                 DynamicDateField(
                   name: ProductStockField.expiration,
                   decoration: const InputDecoration(
                     label: Text('Expiry Date'),
+                    helperText: 'When this stock will expire',
                     border: OutlineInputBorder(),
                   ),
+                  initialValue: productStock?.expiration,
                   valueTransformer: (date) {
                     if (date is DateTime) return date.toIso8601String();
                     return date;
@@ -130,12 +151,34 @@ class ProductStockFormPage extends HookConsumerWidget {
                   initialValue: productStock?.quantity,
                   decoration: InputDecoration(
                     label: Text('Quantity'),
+                    helperText: 'Total quantity of this stock',
                     border: OutlineInputBorder(),
                   ),
                   validator: FormBuilderValidators.compose(
                     [
                       FormBuilderValidators.required(),
                       FormBuilderValidators.numeric(),
+                      FormBuilderValidators.min(0)
+                    ],
+                  ),
+                ),
+
+                ///
+                /// Quantity
+                ///
+                DynamicNumberField(
+                  name: ProductStockField.usedQuantity,
+                  initialValue: productStock?.quantity,
+                  decoration: InputDecoration(
+                    label: Text('Used Quantity'),
+                    helperText: 'The amount that has already been used',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(),
+                      FormBuilderValidators.numeric(),
+                      FormBuilderValidators.min(0)
                     ],
                   ),
                 ),

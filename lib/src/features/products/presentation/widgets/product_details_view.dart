@@ -85,40 +85,24 @@ class ProductDetailsView extends HookConsumerWidget {
                       ///
                       /// name
                       ///
-                      DynamicListTile(
+                      DynamicListTile.divider(
                         title: Text('Description: '),
                         content: Text(product.description.optional()),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
 
-            ///
-            /// System Details
-            ///
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: SizedBox(
-                child: CollapsingCard(
-                  header: Text(
-                    'Other Info',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  child: Column(
-                    children: [
-                      DynamicListTile(
-                        title: Text('Created At: '),
-                        content: Text(
-                            (product.created?.toLocal().yyyyMMddHHmmA())
-                                .optional()),
-                      ),
-                      Divider(),
-                      DynamicListTile(
-                        title: Text('Updated At: '),
+                      ///
+                      /// System Information
+                      ///
+                      DynamicListTile.divider(
+                        title: Text('Last Updated:'),
                         content: Text(
                             (product.updated?.toLocal().yyyyMMddHHmmA())
+                                .optional()),
+                      ),
+                      DynamicListTile(
+                        title: Text('Created At:'),
+                        content: Text(
+                            (product.created?.toLocal().yyyyMMddHHmmA())
                                 .optional()),
                       ),
                     ],

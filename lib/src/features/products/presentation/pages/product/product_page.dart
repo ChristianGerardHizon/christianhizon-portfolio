@@ -37,6 +37,7 @@ class ProductPage extends HookConsumerWidget {
                   /// AppBar
                   ///
                   SliverAppBar(
+                    leading: BackButton(),
                     title: Text(product.name),
                     actions: [
                       RefreshButton(onPressed: () {

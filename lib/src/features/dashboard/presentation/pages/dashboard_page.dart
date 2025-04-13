@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/pages/app_root.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:gym_system/src/features/dashboard/presentation/widgets/kpis/dashboard_kpis.dart';
@@ -14,18 +15,6 @@ class DashboardPage extends HookConsumerWidget {
     final scaffoldKey = ref.watch(scaffoldKeyProvider);
 
     return Scaffold(
-      appBar: getValueForScreenType(
-        context: context,
-        mobile: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () => scaffoldKey.currentState?.openDrawer(),
-          ),
-        ),
-        desktop: null,
-        tablet: null,
-        watch: null,
-      ),
       body: state.when(
         error: (error, stack) => Center(child: Text(error.toString())),
         loading: () => CenteredProgressIndicator(),
@@ -45,11 +34,19 @@ class DashboardPage extends HookConsumerWidget {
               SliverPadding(
                 padding: const EdgeInsets.only(left: 18, top: 30, right: 18),
                 sliver: SliverToBoxAdapter(
-                  child: Text(
-                    'Welcome ${name}',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () => scaffoldKey.currentState?.openDrawer(),
+                        icon: Icon(MIcons.menu),
+                      ),
+                      Text(
+                        'Welcome ${name}',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      )
+                    ],
                   ),
                 ),
               ),

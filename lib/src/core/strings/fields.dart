@@ -172,4 +172,5 @@ class ProductStockField {
   static const String lotNo = 'lotNo';
   static const String notes = 'notes';
   static const String quantity = 'quantity';
+  static const String usedQuantity = 'usedQuantity';
 }
