@@ -19,6 +19,7 @@ class DynamicFormFieldSelect extends StatelessWidget {
       builder: (FormFieldState<dynamic> state) {
         return InputDecorator(
           decoration: field.decoration.copyWith(
+            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             errorText: state.errorText,
             suffixIcon: Row(
               mainAxisSize: MainAxisSize.min,

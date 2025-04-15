@@ -170,7 +170,7 @@ class ProductStocksView extends HookConsumerWidget {
         ),
         TableColumn(
           header: 'Used Quantity',
-          width: 120,
+          width: 150,
           alignment: Alignment.centerLeft,
           builder: (context, data, extra) {
             return Align(

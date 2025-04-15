@@ -11,22 +11,22 @@ class DashboardKpis extends StatelessWidget {
     final widgets = [
       KpiCard(
         title: "Today's Appointments ",
-        value: '10',
+        value: '-',
         icon: MIcons.clockOutline,
       ),
       KpiCard(
         title: 'Patients',
-        value: '100',
+        value: '-',
         icon: MIcons.accountOutline,
       ),
       KpiCard(
         title: 'Products Near Expiration',
-        value: '10',
+        value: '-',
         icon: MIcons.alertOutline,
       ),
       KpiCard(
         title: "Today's Sales Total",
-        value: 'P100.00',
+        value: '-',
         icon: MIcons.walletOutline,
       ),
     ];
@@ -35,9 +35,6 @@ class DashboardKpis extends StatelessWidget {
       context: context,
       mobile: Column(
         children: widgets,
-      ),
-      desktop: Row(
-        children: widgets.map((el) => Expanded(child: el)).toList(),
       ),
       tablet: Column(
         children: [
