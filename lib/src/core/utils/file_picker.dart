@@ -19,7 +19,7 @@ class FilePickerUtil {
 
         return Future.wait(listResult);
       },
-      Failure.presentation,
+      Failure.handle,
     );
   }
 }

@@ -41,7 +41,7 @@ class PatientTreatmentRecordRepositoryImpl
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id, expand: expand);
       return mapToData(result.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -52,14 +52,14 @@ class PatientTreatmentRecordRepositoryImpl
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload, files: files);
       return mapToData(response.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
   TaskResult<void> delete(String id) {
     return TaskResult.tryCatch(() async {
       await collection.delete(id);
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -91,7 +91,7 @@ class PatientTreatmentRecordRepositoryImpl
           });
         }).toList(),
       );
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -110,7 +110,7 @@ class PatientTreatmentRecordRepositoryImpl
         expand: expand,
       );
       return mapToData(result.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -124,7 +124,7 @@ class PatientTreatmentRecordRepositoryImpl
       }
 
       await batch.send();
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -142,7 +142,7 @@ class PatientTreatmentRecordRepositoryImpl
             .map<PatientTreatmentRecord>((e) => mapToData(e.toJson()))
             .toList();
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 }

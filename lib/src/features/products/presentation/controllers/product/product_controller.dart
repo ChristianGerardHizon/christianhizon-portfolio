@@ -33,12 +33,12 @@ class ProductController extends _$ProductController {
       final repo = ref.read(productRepositoryProvider);
       final result = await repo.get(id).run();
       return result.fold(Future.error, (x) => Future.value(x));
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   TaskResult<ProductInventory> _getProductInventory(String id) {
     return TaskResult.tryCatch(() async {
       return await ref.read(productInventoryControllerProvider(id).future);
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 }

@@ -131,7 +131,10 @@ class _PBImagePreviewTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               child: imageWidget,
             ),
-            Text(name),
+            Text(
+              name,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
         Positioned(

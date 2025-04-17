@@ -31,7 +31,7 @@ class SettingRepository {
     return TaskResult.tryCatch(() async {
       _storage.write(key: _settingsKey, value: jsonEncode(settings.toJson()));
       return settings;
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   TaskResult<Settings> get() {
@@ -43,7 +43,7 @@ class SettingRepository {
       }
 
       return Settings.fromJson(result);
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   TaskResult<Settings> update({String? domain}) {

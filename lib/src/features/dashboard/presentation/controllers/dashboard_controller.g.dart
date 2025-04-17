@@ -7,7 +7,7 @@ part of 'dashboard_controller.dart';
 // **************************************************************************
 
 String _$dashboardControllerHash() =>
-    r'bb7b5914cdfc9d0967a89be32ab358a17f53c6df';
+    r'820d004e6729aa4eed5e94fcaf8c2bac66f419ec';
 
 /// See also [DashboardController].
 @ProviderFor(DashboardController)

@@ -38,7 +38,7 @@ class ProductCategoryRepositoryImpl
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
       return mapToData(result.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -52,14 +52,14 @@ class ProductCategoryRepositoryImpl
         files: files,
       );
       return mapToData(response.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
   TaskResult<void> delete(String id) {
     return TaskResult.tryCatch(() async {
       await collection.delete(id);
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -85,7 +85,7 @@ class ProductCategoryRepositoryImpl
           return mapToData(e.toJson());
         }).toList(),
       );
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -103,7 +103,7 @@ class ProductCategoryRepositoryImpl
         files: files,
       );
       return mapToData(result.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -117,7 +117,7 @@ class ProductCategoryRepositoryImpl
       }
 
       await batch.send();
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -134,7 +134,7 @@ class ProductCategoryRepositoryImpl
             .map<ProductCategory>((e) => mapToData(e.toJson()))
             .toList();
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 }

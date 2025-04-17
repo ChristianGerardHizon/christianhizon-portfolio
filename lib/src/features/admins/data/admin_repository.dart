@@ -55,7 +55,7 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
         final map = Map<String, dynamic>.from(response.data);
         return mapToData(map);
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 
@@ -75,7 +75,7 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
         );
         return mapToData(response.toJson());
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 
@@ -88,7 +88,7 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
       () async {
         await collection.delete(id);
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 
@@ -102,7 +102,7 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
         final result = await collection.getOne(id);
         return mapToData(result.toJson());
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 
@@ -132,7 +132,7 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
           totalPages: result.totalPages,
         );
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 
@@ -146,7 +146,7 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
       }
 
       await batch.send();
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -155,7 +155,7 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
       () async {
         await collection.confirmVerification(token);
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 
@@ -165,7 +165,7 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
       () async {
         await collection.requestVerification(email);
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 }

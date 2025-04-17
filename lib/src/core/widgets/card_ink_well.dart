@@ -15,7 +15,7 @@ class CardInkWell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(12),
       onLongPress: onLongPress,
       onTap: onTap,
       child: child,

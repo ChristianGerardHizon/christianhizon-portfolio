@@ -39,7 +39,7 @@ class ProductInventoryRepositoryImpl
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id, expand: expand);
       return mapToData(result.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -67,7 +67,7 @@ class ProductInventoryRepositoryImpl
         totalPages: result.totalPages,
         items: items,
       );
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -85,7 +85,7 @@ class ProductInventoryRepositoryImpl
             .map<ProductInventory>((e) => mapToData(e.toJson()))
             .toList();
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 }

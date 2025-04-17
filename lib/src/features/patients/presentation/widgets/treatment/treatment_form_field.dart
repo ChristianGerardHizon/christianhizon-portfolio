@@ -42,7 +42,7 @@ class TreatmentFormField extends HookConsumerWidget {
               .where((x) => x.name.toLowerCase().contains(query.toLowerCase()))
               .toList();
         },
-        Failure.tryCatchPresentation,
+        Failure.handle,
       ).run();
       return result.fold(Future.error, Future.value);
     }

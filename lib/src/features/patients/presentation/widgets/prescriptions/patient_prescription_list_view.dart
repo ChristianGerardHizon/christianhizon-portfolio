@@ -60,7 +60,7 @@ class PrescriptionListView extends HookConsumerWidget {
             await ref.read(patientControllerProvider(record.patient).future);
         await PatientPdfGenerator(items: list, patient: patient, record: record)
             .print();
-      }, Failure.tryCatchPresentation)
+      }, Failure.handle)
           .run();
 
       result.fold((l) {
@@ -75,7 +75,7 @@ class PrescriptionListView extends HookConsumerWidget {
             await ref.read(patientControllerProvider(record.patient).future);
         await PatientPdfGenerator(items: list, patient: patient, record: record)
             .share();
-      }, Failure.tryCatchPresentation)
+      }, Failure.handle)
           .run();
 
       result.fold((l) {

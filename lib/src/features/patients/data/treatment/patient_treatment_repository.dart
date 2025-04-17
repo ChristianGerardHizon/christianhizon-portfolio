@@ -39,7 +39,7 @@ class TreatmentRepositoryImpl extends PBCollectionRepository<PatientTreatment> {
         id,
       );
       return mapToData(result.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -53,14 +53,14 @@ class TreatmentRepositoryImpl extends PBCollectionRepository<PatientTreatment> {
         files: files,
       );
       return mapToData(response.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
   TaskResult<void> delete(String id) {
     return TaskResult.tryCatch(() async {
       await collection.delete(id);
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -86,7 +86,7 @@ class TreatmentRepositoryImpl extends PBCollectionRepository<PatientTreatment> {
           return mapToData(e.toJson());
         }).toList(),
       );
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -104,7 +104,7 @@ class TreatmentRepositoryImpl extends PBCollectionRepository<PatientTreatment> {
         files: files,
       );
       return mapToData(result.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -118,7 +118,7 @@ class TreatmentRepositoryImpl extends PBCollectionRepository<PatientTreatment> {
       }
 
       await batch.send();
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -135,6 +135,6 @@ class TreatmentRepositoryImpl extends PBCollectionRepository<PatientTreatment> {
             (e) => mapToData(e.toJson()),
           )
           .toList();
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 }

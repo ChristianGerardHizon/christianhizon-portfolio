@@ -37,7 +37,7 @@ class BranchRepositoryImpl extends PBCollectionRepository<Branch> {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
       return mapToData(result.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -48,14 +48,14 @@ class BranchRepositoryImpl extends PBCollectionRepository<Branch> {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload, files: files);
       return mapToData(response.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
   TaskResult<void> delete(String id) {
     return TaskResult.tryCatch(() async {
       await collection.delete(id);
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -81,7 +81,7 @@ class BranchRepositoryImpl extends PBCollectionRepository<Branch> {
           return mapToData(e.toJson());
         }).toList(),
       );
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -99,7 +99,7 @@ class BranchRepositoryImpl extends PBCollectionRepository<Branch> {
         files: files,
       );
       return mapToData(result.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -112,7 +112,7 @@ class BranchRepositoryImpl extends PBCollectionRepository<Branch> {
       }
 
       await batch.send();
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -127,7 +127,7 @@ class BranchRepositoryImpl extends PBCollectionRepository<Branch> {
         );
         return result.map<Branch>((e) => mapToData(e.toJson())).toList();
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 }

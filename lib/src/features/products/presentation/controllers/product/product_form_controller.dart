@@ -71,7 +71,7 @@ class ProductFormController extends _$ProductFormController {
       final filter = '${BranchField.isDeleted} = false';
       final result = await repo.listAll(filter: filter).run();
       return result.fold(Future.error, Future.value);
-    }, Failure.presentation);
+    }, Failure.handle);
   }
 
   TaskResult<List<ProductCategory>> _getProductCategories() {
@@ -80,7 +80,7 @@ class ProductFormController extends _$ProductFormController {
       final filter = '${CategoryField.isDeleted} = false';
       final result = await repo.listAll(filter: filter).run();
       return result.fold(Future.error, Future.value);
-    }, Failure.presentation);
+    }, Failure.handle);
   }
 }
 
@@ -110,5 +110,5 @@ TaskResult<List<PBImage>?> _buildInitialImages(
         id: product.id,
       )
     ];
-  }, Failure.presentation);
+  }, Failure.handle);
 }

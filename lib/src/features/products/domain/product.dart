@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
+import 'package:gym_system/src/features/products/domain/product_category.dart';
 
 part 'product.mapper.dart';
 
@@ -55,9 +56,11 @@ class Product extends PbRecord with ProductMappable {
 @MappableClass()
 class ProductExpand with ProductExpandMappable {
   final Branch? branch;
+  final ProductCategory? category;
 
   ProductExpand({
     this.branch,
+    this.category,
   });
 
   static fromMap(Map<String, dynamic> raw) {

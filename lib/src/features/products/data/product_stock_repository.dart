@@ -40,7 +40,7 @@ class ProductStockRepositoryImpl extends PBCollectionRepository<ProductStock> {
         final result = await collection.getOne(id);
         return mapToData(result.toJson());
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 
@@ -54,7 +54,7 @@ class ProductStockRepositoryImpl extends PBCollectionRepository<ProductStock> {
         final response = await collection.create(body: payload, files: files);
         return mapToData(response.toJson());
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 
@@ -64,7 +64,7 @@ class ProductStockRepositoryImpl extends PBCollectionRepository<ProductStock> {
       () async {
         await collection.delete(id);
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 
@@ -91,7 +91,7 @@ class ProductStockRepositoryImpl extends PBCollectionRepository<ProductStock> {
           return mapToData(e.toJson());
         }).toList(),
       );
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -111,7 +111,7 @@ class ProductStockRepositoryImpl extends PBCollectionRepository<ProductStock> {
         );
         return mapToData(result.toJson());
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 
@@ -128,7 +128,7 @@ class ProductStockRepositoryImpl extends PBCollectionRepository<ProductStock> {
 
         await batch.send();
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 
@@ -144,7 +144,7 @@ class ProductStockRepositoryImpl extends PBCollectionRepository<ProductStock> {
         );
         return result.map<ProductStock>((e) => mapToData(e.toJson())).toList();
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 }

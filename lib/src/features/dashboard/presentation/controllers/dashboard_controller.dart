@@ -32,7 +32,7 @@ class DashboardController extends _$DashboardController {
       () async {
         return await ref.watch(authControllerProvider.future);
       },
-      Failure.tryCatchPresentation,
+      Failure.handle,
     );
   }
 }

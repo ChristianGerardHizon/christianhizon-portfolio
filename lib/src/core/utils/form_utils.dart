@@ -8,7 +8,7 @@ class FormUtils {
   /// get the form state
   ///
   static TaskResult<FormBuilderState> getFormState(FormBuilderState? key) {
-    final failure = Failure.presentation('form value is null');
+    final failure = PresentationFailure('form value is null');
     return Option.fromNullable(key).fold(
       () => TaskResult.left(failure),
       TaskResult.right,
@@ -33,11 +33,11 @@ class FormUtils {
           focusOnInvalid: focusOnInvalid,
         );
 
-        if (!isValid) throw Failure.presentation('form is not valid');
+        if (!isValid) throw PresentationFailure('form is not valid');
 
         return form.value;
       },
-      Failure.tryCatchPresentation,
+      Failure.handle,
     );
   }
 

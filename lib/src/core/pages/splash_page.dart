@@ -19,7 +19,7 @@ class SplashPage extends HookConsumerWidget {
           final user = await ref.read(authControllerProvider.future);
           return use;
         },
-        Failure.presentation,
+        Failure.handle,
       ).run();
 
       result.fold(

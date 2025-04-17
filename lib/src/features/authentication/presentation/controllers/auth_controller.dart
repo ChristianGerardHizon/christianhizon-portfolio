@@ -11,7 +11,7 @@ class AuthController extends _$AuthController {
   ///
   /// default no user failure
   ///
-  final _noUserFailure = Failure.presentation('User not found');
+  final _noUserFailure = PresentationFailure('User not found');
 
   @override
   Future<AuthData> build() async {
@@ -35,7 +35,7 @@ class AuthController extends _$AuthController {
   TaskResult<AuthData> setUser(AuthData? user) {
     if (user == null) {
       state = AsyncValue.error(_noUserFailure, StackTrace.current);
-      return TaskResult.left(Failure.presentation('No User Failure'));
+      return TaskResult.left(PresentationFailure('No User Failure'));
     }
     state = AsyncData(user);
     return TaskResult<AuthData>.right(user);

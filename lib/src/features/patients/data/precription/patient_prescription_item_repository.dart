@@ -39,7 +39,7 @@ class PrescriptionItemRepositoryImpl
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
       return mapToData(result.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -50,14 +50,14 @@ class PrescriptionItemRepositoryImpl
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload);
       return mapToData(response.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
   TaskResult<void> delete(String id) {
     return TaskResult.tryCatch(() async {
       await collection.delete(id);
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -82,7 +82,7 @@ class PrescriptionItemRepositoryImpl
           return mapToData(e.toJson());
         }).toList(),
       );
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -100,7 +100,7 @@ class PrescriptionItemRepositoryImpl
         files: files,
       );
       return mapToData(result.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -114,7 +114,7 @@ class PrescriptionItemRepositoryImpl
       }
 
       await batch.send();
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -131,7 +131,7 @@ class PrescriptionItemRepositoryImpl
             .map<PrescriptionItem>((e) => mapToData(e.toJson()))
             .toList();
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 }

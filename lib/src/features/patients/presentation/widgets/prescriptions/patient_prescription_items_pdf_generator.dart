@@ -27,7 +27,7 @@ class PatientPdfGenerator {
 
   Future<bool> share() async {
     if (kIsWeb)
-      throw Failure.presentation('this feature is not available in web');
+      throw PresentationFailure('this feature is not available in web');
 
     final pdfData = await _generatePdf();
     await Printing.sharePdf(bytes: pdfData, filename: buildFileName());
@@ -47,7 +47,7 @@ class PatientPdfGenerator {
   /// Saves the generated PDF to local storage
   Future<bool> save() async {
     if (kIsWeb)
-      throw Failure.presentation('this feature is not available in web');
+      throw PresentationFailure('this feature is not available in web');
 
     final pdfData = await _generatePdf();
     final filePath = await _savePdfToFile(pdfData);

@@ -53,6 +53,6 @@ class ProductStockFormController extends _$ProductStockFormController {
       // final filter = '${ProductField.isDeleted} = false';
       final result = await repo.get(id).run();
       return result.fold(Future.error, Future.value);
-    }, Failure.presentation);
+    }, Failure.handle);
   }
 }

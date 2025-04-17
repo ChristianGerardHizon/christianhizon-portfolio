@@ -37,7 +37,7 @@ class PatientBreedRepositoryImpl extends PBCollectionRepository<PatientBreed> {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
       return mapToData(result.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -48,14 +48,14 @@ class PatientBreedRepositoryImpl extends PBCollectionRepository<PatientBreed> {
     return TaskResult.tryCatch(() async {
       final response = await collection.create(body: payload, files: files);
       return mapToData(response.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
   TaskResult<void> delete(String id) {
     return TaskResult.tryCatch(() async {
       await collection.delete(id);
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -80,7 +80,7 @@ class PatientBreedRepositoryImpl extends PBCollectionRepository<PatientBreed> {
           return mapToData(e.toJson());
         }).toList(),
       );
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -98,7 +98,7 @@ class PatientBreedRepositoryImpl extends PBCollectionRepository<PatientBreed> {
         files: files,
       );
       return mapToData(result.toJson());
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -112,7 +112,7 @@ class PatientBreedRepositoryImpl extends PBCollectionRepository<PatientBreed> {
       }
 
       await batch.send();
-    }, Failure.tryCatchData);
+    }, Failure.handle);
   }
 
   @override
@@ -127,7 +127,7 @@ class PatientBreedRepositoryImpl extends PBCollectionRepository<PatientBreed> {
         );
         return result.map<PatientBreed>((e) => mapToData(e.toJson())).toList();
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 }

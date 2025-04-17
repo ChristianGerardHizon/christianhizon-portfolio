@@ -87,7 +87,7 @@ class AuthRepositoryImpl implements AuthRepository {
         authStore.save(token, record);
         return data as T;
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 
@@ -102,7 +102,7 @@ class AuthRepositoryImpl implements AuthRepository {
             .authWithPassword(email, password);
       },
       (error, stack) {
-        return Failure.tryCatchData(error, stack);
+        return Failure.handle(error, stack);
       },
     ).flatMap((x) => _saveToStorage<AuthAdmin>(x));
   }
@@ -118,7 +118,7 @@ class AuthRepositoryImpl implements AuthRepository {
             .authWithPassword(email, password);
       },
       (error, stack) {
-        return Failure.tryCatchData(error, stack);
+        return Failure.handle(error, stack);
       },
     ).flatMap((x) => _saveToStorage<AuthUser>(x));
   }
@@ -129,7 +129,7 @@ class AuthRepositoryImpl implements AuthRepository {
         authStore.clear();
         await storage.delete(key: authKey);
       },
-      Failure.tryCatchData,
+      Failure.handle,
     );
   }
 
@@ -139,14 +139,14 @@ class AuthRepositoryImpl implements AuthRepository {
         final id = authStore.record?.collectionId;
 
         if (id == null) {
-          throw Failure('collectionId is null', StackTrace.current);
+          throw DataFailure('collectionId is null', StackTrace.current);
         }
 
         final auth = await pb.collection(id).authRefresh();
 
         return auth;
       },
-      Failure.tryCatchData,
+      Failure.handle,
     ).flatMap(_saveToStorage);
   }
 
@@ -160,7 +160,7 @@ class AuthRepositoryImpl implements AuthRepository {
         final authUserString = await storage.read(key: authKey);
 
         if (authUserString == null) {
-          throw Failure('authUserString is null', StackTrace.current);
+          throw DataFailure('authUserString is null', StackTrace.current);
         }
 
         final map = jsonDecode(authUserString);
@@ -197,7 +197,7 @@ class AuthRepositoryImpl implements AuthRepository {
         throw 'unknown user type';
       },
       (error, stack) {
-        return Failure.tryCatchData(error, stack);
+        return Failure.handle(error, stack);
       },
     );
   }

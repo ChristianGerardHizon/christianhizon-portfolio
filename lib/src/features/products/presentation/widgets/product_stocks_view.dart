@@ -204,7 +204,7 @@ class ProductStocksView extends HookConsumerWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 overflow: TextOverflow.ellipsis,
-                '${data.expiration?.yyyyMMdd().optional()}',
+                '${(data.expiration?.yyyyMMdd()).optional()}',
               ),
             );
           },

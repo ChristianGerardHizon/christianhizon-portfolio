@@ -84,7 +84,7 @@ class CustomSearchFormField<T> extends HookConsumerWidget {
 
       final result = await TaskResult.tryCatch(
         () => onSearch(query),
-        Failure.presentation,
+        Failure.handle,
       ).run();
 
       result.fold((l) {}, (r) {
