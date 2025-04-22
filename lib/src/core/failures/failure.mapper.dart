@@ -17,6 +17,7 @@ class FailureMapper extends ClassMapperBase<Failure> {
       PresentationFailureMapper.ensureInitialized();
       DataFailureMapper.ensureInitialized();
       UserCancelledFailureMapper.ensureInitialized();
+      NoAuthFailureMapper.ensureInitialized();
       GenericFailureMapper.ensureInitialized();
     }
     return _instance!;
@@ -604,6 +605,138 @@ class _UserCancelledFailureCopyWithImpl<$R, $Out>
   UserCancelledFailureCopyWith<$R2, UserCancelledFailure, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
           _UserCancelledFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
+}
+
+class NoAuthFailureMapper extends SubClassMapperBase<NoAuthFailure> {
+  NoAuthFailureMapper._();
+
+  static NoAuthFailureMapper? _instance;
+  static NoAuthFailureMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = NoAuthFailureMapper._());
+      FailureMapper.ensureInitialized().addSubMapper(_instance!);
+    }
+    return _instance!;
+  }
+
+  @override
+  final String id = 'NoAuthFailure';
+
+  static dynamic _$message(NoAuthFailure v) => v.message;
+  static const Field<NoAuthFailure, dynamic> _f$message =
+      Field('message', _$message, opt: true);
+  static StackTrace? _$stackTrace(NoAuthFailure v) => v.stackTrace;
+  static const Field<NoAuthFailure, StackTrace> _f$stackTrace =
+      Field('stackTrace', _$stackTrace, opt: true);
+  static String? _$identifier(NoAuthFailure v) => v.identifier;
+  static const Field<NoAuthFailure, String> _f$identifier =
+      Field('identifier', _$identifier, opt: true);
+
+  @override
+  final MappableFields<NoAuthFailure> fields = const {
+    #message: _f$message,
+    #stackTrace: _f$stackTrace,
+    #identifier: _f$identifier,
+  };
+
+  @override
+  final String discriminatorKey = 'type';
+  @override
+  final dynamic discriminatorValue = 'NoAuthFailure';
+  @override
+  late final ClassMapperBase superMapper = FailureMapper.ensureInitialized();
+
+  static NoAuthFailure _instantiate(DecodingData data) {
+    return NoAuthFailure(
+        data.dec(_f$message), data.dec(_f$stackTrace), data.dec(_f$identifier));
+  }
+
+  @override
+  final Function instantiate = _instantiate;
+
+  static NoAuthFailure fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<NoAuthFailure>(map);
+  }
+
+  static NoAuthFailure fromJson(String json) {
+    return ensureInitialized().decodeJson<NoAuthFailure>(json);
+  }
+}
+
+mixin NoAuthFailureMappable {
+  String toJson() {
+    return NoAuthFailureMapper.ensureInitialized()
+        .encodeJson<NoAuthFailure>(this as NoAuthFailure);
+  }
+
+  Map<String, dynamic> toMap() {
+    return NoAuthFailureMapper.ensureInitialized()
+        .encodeMap<NoAuthFailure>(this as NoAuthFailure);
+  }
+
+  NoAuthFailureCopyWith<NoAuthFailure, NoAuthFailure, NoAuthFailure>
+      get copyWith => _NoAuthFailureCopyWithImpl<NoAuthFailure, NoAuthFailure>(
+          this as NoAuthFailure, $identity, $identity);
+  @override
+  String toString() {
+    return NoAuthFailureMapper.ensureInitialized()
+        .stringifyValue(this as NoAuthFailure);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return NoAuthFailureMapper.ensureInitialized()
+        .equalsValue(this as NoAuthFailure, other);
+  }
+
+  @override
+  int get hashCode {
+    return NoAuthFailureMapper.ensureInitialized()
+        .hashValue(this as NoAuthFailure);
+  }
+}
+
+extension NoAuthFailureValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, NoAuthFailure, $Out> {
+  NoAuthFailureCopyWith<$R, NoAuthFailure, $Out> get $asNoAuthFailure =>
+      $base.as((v, t, t2) => _NoAuthFailureCopyWithImpl<$R, $Out>(v, t, t2));
+}
+
+abstract class NoAuthFailureCopyWith<$R, $In extends NoAuthFailure, $Out>
+    implements FailureCopyWith<$R, $In, $Out> {
+  @override
+  $R call({dynamic message, StackTrace? stackTrace, String? identifier});
+  NoAuthFailureCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+}
+
+class _NoAuthFailureCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, NoAuthFailure, $Out>
+    implements NoAuthFailureCopyWith<$R, NoAuthFailure, $Out> {
+  _NoAuthFailureCopyWithImpl(super.value, super.then, super.then2);
+
+  @override
+  late final ClassMapperBase<NoAuthFailure> $mapper =
+      NoAuthFailureMapper.ensureInitialized();
+  @override
+  $R call(
+          {Object? message = $none,
+          Object? stackTrace = $none,
+          Object? identifier = $none}) =>
+      $apply(FieldCopyWithData({
+        if (message != $none) #message: message,
+        if (stackTrace != $none) #stackTrace: stackTrace,
+        if (identifier != $none) #identifier: identifier
+      }));
+  @override
+  NoAuthFailure $make(CopyWithData data) => NoAuthFailure(
+      data.get(#message, or: $value.message),
+      data.get(#stackTrace, or: $value.stackTrace),
+      data.get(#identifier, or: $value.identifier));
+
+  @override
+  NoAuthFailureCopyWith<$R2, NoAuthFailure, $Out2> $chain<$R2, $Out2>(
+          Then<$Out2, $R2> t) =>
+      _NoAuthFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class GenericFailureMapper extends SubClassMapperBase<GenericFailure> {

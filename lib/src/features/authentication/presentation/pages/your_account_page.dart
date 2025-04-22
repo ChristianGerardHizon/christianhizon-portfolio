@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/collapsing_card.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/refresh_button.dart';
+import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
+import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -12,6 +13,10 @@ class YourAccountPage extends HookConsumerWidget {
   const YourAccountPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(authControllerProvider);
+    final notifer = ref.read(authControllerProvider.notifier);
+    final theme = Theme.of(context);
+
     ///
     ///
     ///
@@ -27,91 +32,57 @@ class YourAccountPage extends HookConsumerWidget {
       );
     }
 
+    onRefresh() {
+      notifer.refresh().run();
+    }
+
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            actions: [
-              RefreshButton(onPressed: () {
-                ref.read(authControllerProvider.notifier).refresh().run();
-              })
-            ],
-          ),
-          SliverToBoxAdapter(child: SizedBox(height: 20)),
-          SliverToBoxAdapter(
-            child: CollapsingCard(
-              canCollapse: false,
-              header: Text('Your Account'),
-              child: Column(children: [
-                ListTile(
-                  title: Text('Domain'),
-                  subtitle: Text(ref.read(pocketbaseProvider).baseURL),
-                ),
-                // state.maybeWhen(
-                //   orElse: () => SizedBox(),
-                //   data: (data) {
-                //     final user = data;
-                //     if (user is AuthUser) {
-                //       return ListTile(
-                //         title: Text(user.record.name),
-                //         subtitle: Column(
-                //           children: [
-                //             Text('User'),
-                //             Text(user.record.toJson()),
-                //           ],
-                //         ),
-                //       );
-                //     }
-                //     if (user is AuthAdmin) {
-                //       return ListTile(
-                //         title: Text(user.record.name),
-                //         subtitle: Column(
-                //           children: [
-                //             Text('Admin'),
-                //             Text(user.record.toJson()),
-                //           ],
-                //         ),
-                //       );
-                //     }
-                //     return Text('Unkown User Type');
-                //   },
+      body: state.when(
+        error: (error, stack) => SizedBox(),
+        loading: () => Center(child: CircularProgressIndicator()),
+        data: (auth) {
+          return SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                // SliverAppBar(
+                //   actions: [RefreshButton(onPressed: onRefresh)],
                 // ),
-                ref.watch(authControllerProvider).maybeWhen(
-                      skipError: true,
-                      skipLoadingOnRefresh: true,
-                      skipLoadingOnReload: true,
-                      data: (auth) {
-                        return auth.map<Widget>(
-                          (user) => ListTile(
-                            onTap: () => UserPageRoute(auth.id).push(context),
-                            title: Text('Your Profile'),
-                            subtitle: Text(user.record.email),
-                          ),
-                          (admin) => ListTile(
-                            onTap: () => AdminPageRoute(auth.id).push(context),
-                            title: Text('Your Profile'),
-                            subtitle: Text(admin.record.email),
-                          ),
-                        );
-                      },
-                      orElse: () => SizedBox(),
+                SliverToBoxAdapter(child: SizedBox(height: 20)),
+                DynamicGroup.sliver(
+                  padding: const EdgeInsets.only(left: 8, right: 8, bottom: 12),
+                  header: 'Your Account',
+                  items: [
+                    auth.map<DynamicGroupItem>(
+                      (user) => DynamicGroupItem.action(
+                        onTap: () => UserPageRoute(auth.id).push(context),
+                        title: 'Your Profile',
+                        trailing: Icon(MIcons.chevronRight),
+                      ),
+                      (admin) => DynamicGroupItem.action(
+                        onTap: () => AdminPageRoute(auth.id).push(context),
+                        title: 'Your Profile',
+                        trailing: Icon(MIcons.chevronRight),
+                      ),
                     ),
-                ListTile(
-                  leading: Icon(
-                    Icons.logout,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                  title: Text(
-                    'Logout',
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.error),
-                  ),
-                  onTap: onLogout,
+                    DynamicGroupItem.text(
+                      title: 'Domain',
+                      value: ref.read(pocketbaseProvider).baseURL,
+                    ),
+                    DynamicGroupItem.action(
+                      title: 'Logout',
+                      titleColor: theme.colorScheme.error,
+                      leading: Icon(
+                        Icons.logout_outlined,
+                        color: theme.colorScheme.error,
+                      ),
+                      onTap: () => onLogout(),
+                    ),
+                  ],
                 ),
-              ]),
+              ],
             ),
-          )
-        ],
+          );
+        },
       ),
     );
   }

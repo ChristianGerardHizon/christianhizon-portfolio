@@ -131,9 +131,15 @@ class _PBImagePreviewTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               child: imageWidget,
             ),
-            Text(
-              name,
-              overflow: TextOverflow.ellipsis,
+            Container(
+              margin: EdgeInsets.only(top: 8),
+              constraints: BoxConstraints(
+                maxWidth: size - 20,
+              ),
+              child: SelectableText(
+                name,
+                maxLines: 1,
+              ),
             ),
           ],
         ),

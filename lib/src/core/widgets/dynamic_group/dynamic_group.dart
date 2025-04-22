@@ -17,6 +17,23 @@ class DynamicGroup extends StatelessWidget {
   final List<DynamicGroupItem> items;
   final EdgeInsetsGeometry padding;
 
+  static sliver({
+    required String header,
+    TextStyle? titleStyle,
+    required List<DynamicGroupItem> items,
+    String? helper,
+    EdgeInsetsGeometry padding = EdgeInsets.zero,
+  }) =>
+      SliverToBoxAdapter(
+        child: DynamicGroup(
+          header: header,
+          titleStyle: titleStyle,
+          items: items,
+          helper: helper,
+          padding: padding,
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return Padding(

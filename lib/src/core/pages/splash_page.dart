@@ -17,14 +17,14 @@ class SplashPage extends HookConsumerWidget {
         () async {
           await Future.delayed(Duration(seconds: 3));
           final user = await ref.read(authControllerProvider.future);
-          return use;
+          return user;
         },
         Failure.handle,
       ).run();
 
-      result.fold(
+      result.match(
         (l) {
-          AppSnackBar.rootError(message: 'Failed to validate saved user...');
+          if (l is! NoAuthFailure) AppSnackBar.rootFailure(l);
           const LoginPageRoute().go(context);
         },
         (r) => const RootRoute().go(context),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gym_system/src/core/assets/i18n/strings.g.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/core/routing/router.dart';
@@ -42,7 +43,7 @@ class UserLoginPage extends HookConsumerWidget {
         },
         (r) {
           if (context.mounted) const RootRoute().go(context);
-          AppSnackBar.root(message: 'Logged In!');
+          AppSnackBar.root(message: context.t.authentication.loginSuccess);
         },
       );
     }
@@ -53,17 +54,21 @@ class UserLoginPage extends HookConsumerWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   actions: [
-      //     IconButton(
-      //       icon: Icon(MIcons.earth),
-      //       onPressed: () {
-      //         const DomainPageRoute().push(context);
-      //       },
-      //     ),
-      //   ],
-      // ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        actions: [
+          IconButton(
+            icon: Icon(MIcons.earth),
+            onPressed: () {
+              if (LocaleSettings.currentLocale == AppLocale.en) {
+                LocaleSettings.setLocale(AppLocale.tl);
+              } else {
+                LocaleSettings.setLocale(AppLocale.en);
+              }
+            },
+          ),
+        ],
+      ),
       body: ResponsiveBuilder(builder: (context, si) {
         final form = Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -110,7 +115,7 @@ class UserLoginPage extends HookConsumerWidget {
                 onPressed: onLogin,
                 showText: false,
                 isLoading: isLoading.value,
-                child: const Text('Login'),
+                child: Text(context.t.authentication.login),
               ),
 
               SizedBox(height: 20),
@@ -119,11 +124,11 @@ class UserLoginPage extends HookConsumerWidget {
                 onPressed: () => const AdminLoginPageRoute().push(context),
                 child: RichText(
                   text: TextSpan(
-                    text: 'Not a user? ',
+                    text: context.t.authentication.loginAsAdminList[0],
                     style: Theme.of(context).textTheme.bodyMedium,
                     children: <TextSpan>[
                       TextSpan(
-                        text: 'Login as admin here',
+                        text: context.t.authentication.loginAsAdminList[1],
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color: Theme.of(context).colorScheme.primary),
                       ),

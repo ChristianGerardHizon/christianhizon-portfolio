@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/card_ink_well.dart';
 
 class DynamicGroupItem extends StatelessWidget {
@@ -7,26 +8,17 @@ class DynamicGroupItem extends StatelessWidget {
     this.title,
     this.value,
     this.trailing,
-    this.titleStyle,
-    this.valueStyle,
     this.onTap,
     this.leading,
     this.onLongPress,
-    this.highlightTitle = true,
-    this.titleColor,
   });
 
-  final String? title;
-  final String? value;
-  final TextStyle? titleStyle;
-  final TextStyle? valueStyle;
+  final Widget? title;
+  final Widget? value;
   final Widget? trailing;
   final Widget? leading;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
-
-  final bool highlightTitle;
-  final Color? titleColor;
 
   static DynamicGroupItem action({
     Widget? leading,
@@ -36,47 +28,64 @@ class DynamicGroupItem extends StatelessWidget {
     VoidCallback? onTap,
     VoidCallback? onLongPress,
   }) {
+    final context = rootKey.currentContext!;
+    final theme = Theme.of(context);
+
     return DynamicGroupItem(
       onTap: onTap,
       onLongPress: onLongPress,
       leading: leading,
-      title: title,
-      highlightTitle: false,
+      title: Text(
+        title,
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: titleColor,
+        ),
+      ),
       trailing: trailing,
-      titleColor: titleColor,
+    );
+  }
+
+  static DynamicGroupItem text({
+    Widget? leading,
+    Widget? trailing,
+    required String title,
+    required String value,
+    Color? titleColor,
+    VoidCallback? onTap,
+    VoidCallback? onLongPress,
+  }) {
+    final context = rootKey.currentContext!;
+    final theme = Theme.of(context);
+
+    return DynamicGroupItem(
+      onTap: onTap,
+      onLongPress: onLongPress,
+      leading: leading,
+      title: Text(
+        title,
+        style: theme.textTheme.bodySmall?.copyWith(
+          fontWeight: FontWeight.w500,
+          color: titleColor ?? theme.colorScheme.primary,
+        ),
+      ),
+      trailing: trailing,
+      value: Padding(
+        padding: const EdgeInsets.only(top: 5.0, bottom: 2.0),
+        child: Text(value, style: theme.textTheme.bodyMedium),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
     return CardInkWell(
       onTap: onTap,
       onLongPress: onLongPress,
       child: ListTile(
-        dense: true,
         leading: leading,
-        title: title == null
-            ? null
-            : Text(
-                title!,
-                style: titleStyle ??
-                    (highlightTitle
-                            ? theme.textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: theme.colorScheme.primary,
-                              )
-                            : theme.textTheme.bodyMedium)
-                        ?.copyWith(
-                      color: titleColor,
-                    ),
-              ),
-        subtitle: value == null
-            ? null
-            : Text(
-                value!,
-                style: titleStyle ?? theme.textTheme.bodySmall,
-              ),
+        title: title,
+        subtitle: value,
         trailing: trailing,
       ),
     );

@@ -160,7 +160,7 @@ class AuthRepositoryImpl implements AuthRepository {
         final authUserString = await storage.read(key: authKey);
 
         if (authUserString == null) {
-          throw DataFailure('authUserString is null', StackTrace.current);
+          throw NoAuthFailure('authUserString is null', StackTrace.current);
         }
 
         final map = jsonDecode(authUserString);

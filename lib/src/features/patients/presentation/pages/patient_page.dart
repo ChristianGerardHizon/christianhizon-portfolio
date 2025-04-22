@@ -3,7 +3,6 @@ import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_record_page_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_records_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_records_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_record/patient_records_view.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/treatment_record/patient_treatment_record_page_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/treatment_records/patient_treatment_record_view.dart';

@@ -6,6 +6,7 @@ import 'package:gym_system/src/core/pages/more_page.dart';
 import 'package:gym_system/src/core/pages/not_found_page.dart';
 import 'package:gym_system/src/core/pages/splash_page.dart';
 import 'package:gym_system/src/core/pages/app_root.dart';
+import 'package:gym_system/src/core/pages/work_in_progress_page.dart';
 import 'package:gym_system/src/features/admins/presentation/pages/admin_page.dart';
 import 'package:gym_system/src/features/admins/presentation/pages/admin_update_page.dart';
 import 'package:gym_system/src/features/admins/presentation/pages/admins_page.dart';
@@ -31,7 +32,6 @@ import 'package:gym_system/src/features/products/presentation/pages/product/prod
 import 'package:gym_system/src/features/products/presentation/pages/inventory/product_inventories_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/stock/product_stock_form_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/stock/product_stock_page.dart';
-import 'package:gym_system/src/features/sales/presentation/pages/sales_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/settings_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_create_page.dart';

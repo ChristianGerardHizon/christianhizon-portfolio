@@ -1,6 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:gym_system/src/core/assets/i18n/strings.g.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/strings.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
@@ -25,6 +27,12 @@ class Application extends HookConsumerWidget {
 
     return ResponsiveApp(builder: (context) {
       return MaterialApp.router(
+        locale: TranslationProvider.of(context).flutterLocale, // use provider
+        supportedLocales: AppLocaleUtils.supportedLocales,
+        localizationsDelegates: [
+          // AppFlowyEditorLocalizations.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
         debugShowCheckedModeBanner: false,
         title: AppStrings.appName,
         theme: theme.copyWith(
@@ -36,9 +44,6 @@ class Application extends HookConsumerWidget {
           ),
         ),
         routerConfig: ref.watch(routerProvider),
-        localizationsDelegates: [
-          AppFlowyEditorLocalizations.delegate,
-        ],
       );
     });
   }

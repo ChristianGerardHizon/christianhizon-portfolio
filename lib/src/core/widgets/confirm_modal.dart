@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';

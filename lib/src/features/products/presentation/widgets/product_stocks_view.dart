@@ -10,7 +10,6 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list/responsive_pagination_list_with_delete_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list/table_column.dart';
-import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/data/product_stock_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_stock.dart';

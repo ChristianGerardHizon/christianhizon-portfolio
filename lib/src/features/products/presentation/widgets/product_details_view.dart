@@ -97,27 +97,27 @@ class ProductDetailsView extends HookConsumerWidget {
                 padding: const EdgeInsets.only(left: 8, right: 8, bottom: 12),
                 header: 'Product Information',
                 items: [
-                  DynamicGroupItem(
+                  DynamicGroupItem.text(
                     title: 'Name',
                     value: product.name,
                   ),
-                  DynamicGroupItem(
+                  DynamicGroupItem.text(
                     title: 'Category',
                     value: (product.expand.category?.name).optional(),
                   ),
-                  DynamicGroupItem(
+                  DynamicGroupItem.text(
                     title: 'Branch',
                     value: (product.expand.branch?.name).optional(),
                   ),
-                  DynamicGroupItem(
+                  DynamicGroupItem.text(
                     title: 'Description',
                     value: product.description.optional(),
                   ),
-                  DynamicGroupItem(
+                  DynamicGroupItem.text(
                     title: 'Last Updated',
                     value: (product.updated?.toLocal().fullReadable).optional(),
                   ),
-                  DynamicGroupItem(
+                  DynamicGroupItem.text(
                     title: 'Created',
                     value: (product.created?.toLocal().fullReadable).optional(),
                   ),
@@ -180,6 +180,11 @@ TaskResult<void> _handleSuccessfulDeleteTaskSidEffects({
   }).toTaskEither<Failure>();
 }
 
+///
+/// Handles Failure
+/// Shows a snackbar when a failure occurs
+///
 void _handleFailure(BuildContext context, Failure failure) {
-  if (failure is Failure) AppSnackBar.rootFailure(failure);
+  if (failure is UserCancelledFailure) return;
+  AppSnackBar.rootFailure(failure);
 }

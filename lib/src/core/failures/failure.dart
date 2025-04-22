@@ -36,6 +36,10 @@ sealed class Failure with FailureMappable {
   static const fromJson = FailureMapper.fromJson;
 
   static Failure handle(Object error, StackTrace stackTrace) {
+    if (error is Failure) {
+      return error;
+    }
+
     // Handle known auth-related errors
     if (error is ClientException) {
       final code = error.statusCode;
@@ -89,6 +93,15 @@ class DataFailure extends Failure with PresentationFailureMappable {
 @MappableClass()
 class UserCancelledFailure extends Failure with UserCancelledFailureMappable {
   const UserCancelledFailure([
+    dynamic message,
+    StackTrace? stackTrace,
+    String? identifier,
+  ]) : super(message, stackTrace, identifier);
+}
+
+@MappableClass()
+class NoAuthFailure extends Failure with UserCancelledFailureMappable {
+  const NoAuthFailure([
     dynamic message,
     StackTrace? stackTrace,
     String? identifier,

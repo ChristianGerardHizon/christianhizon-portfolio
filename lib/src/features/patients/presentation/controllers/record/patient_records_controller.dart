@@ -6,7 +6,6 @@ import 'package:gym_system/src/features/patients/data/record/patient_record_repo
 import 'package:gym_system/src/features/patients/domain/patient_record.dart';
 import 'package:gym_system/src/features/patients/domain/patient_record_search.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_record_page_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_record_page_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'patient_records_controller.g.dart';

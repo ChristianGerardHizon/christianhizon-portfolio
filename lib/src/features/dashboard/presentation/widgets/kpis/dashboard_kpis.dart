@@ -15,7 +15,7 @@ class DashboardKpis extends StatelessWidget {
         icon: MIcons.clockOutline,
       ),
       KpiCard(
-        title: 'Patients',
+        title: 'New Patients',
         value: '-',
         icon: MIcons.accountOutline,
       ),
@@ -25,7 +25,7 @@ class DashboardKpis extends StatelessWidget {
         icon: MIcons.alertOutline,
       ),
       KpiCard(
-        title: "Today's Sales Total",
+        title: "Today's Sales",
         value: '-',
         icon: MIcons.walletOutline,
       ),

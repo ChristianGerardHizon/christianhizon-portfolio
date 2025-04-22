@@ -5,7 +5,6 @@ import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:gym_system/src/features/dashboard/presentation/widgets/kpis/dashboard_kpis.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 
 class DashboardPage extends HookConsumerWidget {
   const DashboardPage({super.key});

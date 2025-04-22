@@ -1,0 +1,8 @@
+{
+    "login": "Login",
+    "loginAsAdminList": [
+        "Not a user?",
+        "Login as Administrator"
+    ],
+    "loginSuccess": "Logged in successfully"
+}

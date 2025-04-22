@@ -11,6 +11,6 @@ class SalesPageRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const SalesPage();
+    return const WorkInProgressPage();
   }
 }
