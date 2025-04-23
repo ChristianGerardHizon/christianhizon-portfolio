@@ -23,5 +23,22 @@ final usersPageControllerProvider =
 );
 
 typedef _$UsersPageController = AutoDisposeNotifier<UsersPageState>;
+String _$userSearchControllerHash() =>
+    r'ba5652789d576b35e5fbda5a327b325535c8931d';
+
+/// See also [UserSearchController].
+@ProviderFor(UserSearchController)
+final userSearchControllerProvider =
+    AutoDisposeNotifierProvider<UserSearchController, UserSearch?>.internal(
+  UserSearchController.new,
+  name: r'userSearchControllerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$userSearchControllerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$UserSearchController = AutoDisposeNotifier<UserSearch?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

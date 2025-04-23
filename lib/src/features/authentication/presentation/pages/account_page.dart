@@ -29,7 +29,7 @@ class AccountPage extends HookConsumerWidget {
     /// Navigate to account update page
     ///
     void onAccountUpdate(User user) async {
-      final result = await UserUpdatePageRoute(user.id).push(context);
+      final result = await UserFormPageRoute(id: user.id).push(context);
       if (result is User) {
         ref.invalidate(authControllerProvider);
         AppSnackBar.root(message: 'updated success');

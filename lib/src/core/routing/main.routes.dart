@@ -8,7 +8,7 @@ import 'package:gym_system/src/core/pages/splash_page.dart';
 import 'package:gym_system/src/core/pages/app_root.dart';
 import 'package:gym_system/src/core/pages/work_in_progress_page.dart';
 import 'package:gym_system/src/features/admins/presentation/pages/admin_page.dart';
-import 'package:gym_system/src/features/admins/presentation/pages/admin_update_page.dart';
+import 'package:gym_system/src/features/admins/presentation/pages/admin_form_page.dart';
 import 'package:gym_system/src/features/admins/presentation/pages/admins_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_page.dart';
@@ -21,10 +21,9 @@ import 'package:gym_system/src/features/branches/presentation/pages/branch_page.
 import 'package:gym_system/src/features/branches/presentation/pages/branches_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_record_page.dart';
+import 'package:gym_system/src/features/patients/presentation/pages/patients_form_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/treatment_record_page.dart';
-import 'package:gym_system/src/features/patients/presentation/pages/patient_create_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
-import 'package:gym_system/src/features/patients/presentation/pages/patient_update_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product/product_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product/products_page.dart';
@@ -35,6 +34,7 @@ import 'package:gym_system/src/features/products/presentation/pages/stock/produc
 import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/settings_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_create_page.dart';
+import 'package:gym_system/src/features/users/presentation/pages/user_form_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_update_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/users_page.dart';
@@ -116,8 +116,7 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<PatientsBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<PatientsPageRoute>(path: PatientsPageRoute.path),
-        TypedGoRoute<PatientUpdatePageRoute>(path: PatientUpdatePageRoute.path),
-        TypedGoRoute<PatientCreatePageRoute>(path: PatientCreatePageRoute.path),
+        TypedGoRoute<PatientFormPageRoute>(path: PatientFormPageRoute.path),
         TypedGoRoute<PatientPageRoute>(path: PatientPageRoute.path),
         TypedGoRoute<PatientPatientRecordPageRoute>(
           path: PatientPatientRecordPageRoute.path,
@@ -168,8 +167,7 @@ class SplashPageRoute extends GoRouteData {
       routes: <TypeRouteData>[
         TypedGoRoute<UsersPageRoute>(path: UsersPageRoute.path),
         TypedGoRoute<UserPageRoute>(path: UserPageRoute.path),
-        TypedGoRoute<UserUpdatePageRoute>(path: UserUpdatePageRoute.path),
-        TypedGoRoute<UserCreatePageRoute>(path: UserCreatePageRoute.path),
+        TypedGoRoute<UserFormPageRoute>(path: UserFormPageRoute.path),
       ],
     ),
 
@@ -180,7 +178,7 @@ class SplashPageRoute extends GoRouteData {
       routes: <TypeRouteData>[
         TypedGoRoute<AdminsPageRoute>(path: AdminsPageRoute.path),
         TypedGoRoute<AdminPageRoute>(path: AdminPageRoute.path),
-        TypedGoRoute<AdminUpdatePageRoute>(path: AdminUpdatePageRoute.path),
+        TypedGoRoute<AdminFormPageRoute>(path: AdminFormPageRoute.path),
       ],
     ),
 

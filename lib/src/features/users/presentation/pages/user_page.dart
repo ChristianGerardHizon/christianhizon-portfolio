@@ -146,7 +146,7 @@ class UserPage extends HookConsumerWidget {
                           Icons.chevron_right_outlined,
                           size: 24,
                         ),
-                        onTap: () => UserUpdatePageRoute(id).push(context),
+                        onTap: () => UserFormPageRoute(id: id).push(context),
                       ),
                       ListTile(
                         leading: const Icon(Icons.delete_outlined),

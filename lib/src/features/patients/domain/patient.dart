@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
+import 'package:gym_system/src/features/branches/domain/branch.dart';
 import 'package:gym_system/src/features/patients/domain/patient_breed.dart';
 import 'package:gym_system/src/features/patients/domain/patient_species.dart';
 
@@ -21,7 +22,7 @@ class Patient extends PbRecord with PatientMappable {
   final String? sex;
   final DateTime? dateOfBirth;
 
-  final PatientRecordExpand? expand;
+  final PatientRecordExpand expand;
 
   Patient({
     required super.id,
@@ -39,7 +40,7 @@ class Patient extends PbRecord with PatientMappable {
     this.color,
     this.sex,
     this.dateOfBirth,
-    this.expand,
+    required this.expand,
     super.isDeleted = false,
     super.created,
     super.updated,
@@ -73,10 +74,12 @@ class Patient extends PbRecord with PatientMappable {
 class PatientRecordExpand with PatientRecordExpandMappable {
   final PatientSpecies? species;
   final PatientBreed? breed;
+  final Branch? branch;
 
   PatientRecordExpand({
     this.species,
     this.breed,
+    this.branch,
   });
 
   static fromMap(Map<String, dynamic> raw) {

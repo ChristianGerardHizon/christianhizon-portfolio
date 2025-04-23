@@ -1,196 +1,227 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/page_actions.dart';
-import 'package:gym_system/src/core/widgets/page_selector.dart';
-import 'package:gym_system/src/core/widgets/text_search_bar.dart';
+import 'package:gym_system/src/core/widgets/dynamic_list/responsive_pagination_list_with_delete_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
+import 'package:gym_system/src/core/widgets/dynamic_list/table_column.dart';
+import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/breeds/patient_breeds_controller.dart';
+import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:gym_system/src/features/patients/domain/patient_search.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_page_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/species/patient_species_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patients/patients_table.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patients/patient_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientsPage extends HookConsumerWidget {
   const PatientsPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(patientBreedsControllerProvider);
-    ref.watch(patientSpeciesControllerProvider);
-
-    final pageState = ref.watch(patientsPageControllerProvider);
-    final searchNotif = ref.read(patientSearchControllerProvider.notifier);
-    final state = ref.watch(patientsControllerProvider);
-    final selected = useState<List<int>>([]);
+    final controller = useMemoized(() => DynamicTableController());
     final searchCtrl = useTextEditingController();
-    final hasNext = useState(false);
+    final notifier = ref.read(patientsPageControllerProvider.notifier);
+    final provider = ref.watch(patientsControllerProvider);
+    final searchNotifier = ref.read(patientSearchControllerProvider.notifier);
+    final isLoading = useState(false);
 
     ///
-    /// on start
+    /// onTap
     ///
-    useEffect(() {
-      ref.listen(patientsControllerProvider, (prev, next) {
-        final value = next.value;
-        if (value != null) {
-          hasNext.value = value.items.length == value.perPage;
-        }
-      });
+    onTap(int index, Patient patient, bool selected) {
+      if (!selected && controller.selected.isNotEmpty) {
+        controller.toggle(index);
+        return;
+      }
+      if (selected) {
+        controller.toggle(index);
+        return;
+      }
+      PatientPageRoute(patient.id).push(context);
+    }
 
-      return null;
-    }, [pageState]);
+    ///
+    /// onRefresh
+    ///
+    onRefresh() {
+      ref.invalidate(patientsControllerProvider);
+      controller.clear();
+    }
 
     ///
-    /// on Delete
+    /// onDelete
     ///
-    onDelete() async {
+    onDelete(List<Patient> items) async {
       final confirm = await ConfirmModal.show(context);
       if (confirm != true) return;
       final repo = ref.read(patientRepositoryProvider);
-      final ids = selected.value.map((e) => state.value!.items[e].id).toList();
-      repo.softDeleteMulti(ids).run().then((result) {
-        result.fold(
-          (l) => AppSnackBar.rootFailure(l),
-          (r) {
-            selected.value = [];
-            ref.invalidate(patientsControllerProvider);
-            AppSnackBar.root(message: 'Successfully Deleted');
-            if (context.canPop()) context.pop();
-          },
-        );
-      });
+      final ids = items.map((e) => e.id).toList();
+      isLoading.value = true;
+      final result = await repo.softDeleteMulti(ids).run();
+      if (context.mounted) isLoading.value = false;
+      result.fold(
+        (l) => AppSnackBar.rootFailure(l),
+        (r) {
+          controller.clear();
+          ref.invalidate(patientsControllerProvider);
+          AppSnackBar.root(message: 'Successfully Deleted');
+          if (context.canPop()) context.pop();
+        },
+      );
+    }
+
+    bool buildIsLoading() {
+      if (isLoading.value) return true;
+      return provider.maybeWhen(
+        skipError: true,
+        skipLoadingOnRefresh: false,
+        skipLoadingOnReload: false,
+        loading: () => true,
+        orElse: () => false,
+      );
+    }
+
+    ///
+    /// OnCreate
+    ///
+    onCreate() {
+      PatientFormPageRoute().push(context);
+    }
+
+    ///
+    /// onSearch
+    ///
+    onSearch() {
+      final query = searchCtrl.text.trim();
+      searchNotifier.updateParams(PatientSearch(name: query));
+    }
+
+    ///
+    /// Handle Clear
+    ///
+    onClear() {
+      searchCtrl.clear();
+      searchNotifier.updateParams(PatientSearch(name: ''));
     }
 
     return Scaffold(
-      body: Stack(
-        children: [
-          CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                title: Text('Patients'),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.refresh),
-                    onPressed: () => ref.invalidate(patientsControllerProvider),
-                  ),
-                ],
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Container(),
-                ),
-              ),
-
-              ///
-              /// Serch Bar
-              ///
-              SliverToBoxAdapter(
-                child: TextSearchBar(
-                  controller: searchCtrl,
-                  onClear: () {
-                    searchCtrl.clear();
-                    searchNotif.change(searchCtrl.text);
-                  },
-                  onSearch: () {
-                    searchNotif.change(searchCtrl.text);
-                  },
-                  onCreate: () => PatientCreatePageRoute().push(context),
-                ),
-              ),
-
-              ///
-              /// list
-              ///
-              state.when(
-                skipError: false,
-                skipLoadingOnRefresh: false,
-                skipLoadingOnReload: false,
-                loading: () => SliverPadding(
-                  padding: const EdgeInsets.all(20.0),
-                  sliver: SliverToBoxAdapter(
-                      child: Center(
-                    child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: CircularProgressIndicator()),
-                  )),
-                ),
-                error: (error, stackTrace) => SliverToBoxAdapter(
-                  child: Center(
-                    child: Text(error.toString()),
-                  ),
-                ),
-                data: (data) {
-                  final list = data.items;
-
-                  if (list.isEmpty) {
-                    return SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: 100,
-                        child: Center(
-                          child: Text('No patients found'),
-                        ),
-                      ),
-                    );
-                  }
-                  return PatientsTable(
-                    list: list,
-                    selected: selected.value,
-                    onSelected: (p0) => selected.value = p0,
-                    onRowTap: (row) =>
-                        PatientPageRoute(list[row].id).push(context),
-                  );
-                },
-              ),
-
-              ///
-              /// page
-              ///
-              SliverPadding(
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 20,
-                  bottom: 8,
-                ),
-                sliver: SliverToBoxAdapter(
-                  child: PageSelector(
-                    hasNext: hasNext.value,
-                    page: pageState.page,
-                    onPageChange: (value) {
-                      /// clear selected after
-                      ///
-                      selected.value = [];
-                      ref
-                          .read(patientsPageControllerProvider.notifier)
-                          .changePage(value);
-                    },
-                  ),
-                ),
-              ),
-            ],
+      appBar: AppBar(
+        title: Text('Patients'),
+        actions: [
+          RefreshButton(
+            onPressed: onRefresh,
           ),
-          Positioned(
-            bottom: 30,
-            left: 20,
-            right: 20,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: selected.value.isNotEmpty
-                  ? PageActions(
-                      size: selected.value.length,
-                      onDelete: () {
-                        onDelete();
-                      },
-                      onReset: () {
-                        selected.value = [];
-                      },
-                    )
-                  : SizedBox(),
-            ),
-          )
         ],
+      ),
+      body:
+
+          ///
+          /// Table
+          ///
+          ResponsivePaginationListWithDeleteView<Patient>(
+        controller: controller,
+        onPageChange: notifier.changePage,
+        error: provider.maybeWhen(
+          skipError: false,
+          skipLoadingOnRefresh: true,
+          skipLoadingOnReload: true,
+          error: (error, stackTrace) => Center(
+            child: Text(error.toString()),
+          ),
+          orElse: () => null,
+        ),
+        isLoading: buildIsLoading(),
+        results: provider.when(
+          skipError: true,
+          skipLoadingOnRefresh: false,
+          skipLoadingOnReload: false,
+          data: (x) => x,
+          error: (error, stackTrace) => null,
+          loading: () => null,
+        ),
+        onDelete: onDelete,
+
+        ///
+        /// Search Features
+        ///
+        searchCtrl: searchCtrl,
+        onClear: onClear,
+        onCreate: onCreate,
+        onSearch: onSearch,
+
+        ///
+        /// Table Data
+        ///
+        onHeaderTap: (headerKey) {},
+        onTap: (x) => onTap(0, x, false),
+        data: [
+          TableColumn(
+            header: 'Name',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, extra) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  '${data.name}',
+                ),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Branch',
+            alignment: Alignment.centerLeft,
+            builder: (context, patient, extra) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text((patient.expand.branch?.name).optional(),
+                    overflow: TextOverflow.ellipsis),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Date Created',
+            alignment: Alignment.centerLeft,
+            width: 150,
+            builder: (context, patient, extra) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text((patient.created?.yyyyMMddHHmmA()).optional(),
+                    overflow: TextOverflow.ellipsis),
+              );
+            },
+          ),
+          // TableColumn(
+          //   header: 'Actions',
+          //   alignment: Alignment.centerLeft,
+          //   width: 150,
+          //   builder: (context, patient, extra) {
+          //     return Align(
+          //       alignment: Alignment.centerLeft,
+          //       child: TextButton(onPressed: () {}, child: Text('Add Stock')),
+          //     );
+          //   },
+          // ),
+        ],
+
+        ///
+        /// Builder for mobile
+        ///
+        mobileBuilder: (context, index, patient, selected) {
+          return PatientCard(
+            patient: patient,
+            onTap: () => onTap(index, patient, selected),
+            selected: selected,
+            onLongPress: () {
+              controller.toggle(index);
+            },
+          );
+        },
       ),
     );
   }

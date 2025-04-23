@@ -1,3 +1,4 @@
+import 'package:gym_system/src/features/patients/domain/patient_search.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'patients_page_controller.g.dart';
@@ -23,18 +24,6 @@ class PatientsPageState {
 }
 
 @riverpod
-class PatientSearchController extends _$PatientSearchController {
-  @override
-  String? build() {
-    return null;
-  }
-
-  void change(String value) {
-    state = value;
-  }
-}
-
-@riverpod
 class PatientsPageController extends _$PatientsPageController {
   @override
   PatientsPageState build() {
@@ -43,5 +32,17 @@ class PatientsPageController extends _$PatientsPageController {
 
   changePage(int page) {
     state = state.copyWith(page: page);
+  }
+}
+
+@riverpod
+class PatientSearchController extends _$PatientSearchController {
+  @override
+  PatientSearch? build() {
+    return null;
+  }
+
+  void updateParams(PatientSearch params) {
+    state = params;
   }
 }

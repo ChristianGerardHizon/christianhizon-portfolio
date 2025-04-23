@@ -28,26 +28,15 @@ class UserPageRoute extends GoRouteData {
   }
 }
 
-@TypedGoRoute<UserCreatePageRoute>(path: UserCreatePageRoute.path)
-class UserCreatePageRoute extends GoRouteData {
-  const UserCreatePageRoute();
-  static const path = '/new/user';
+@TypedGoRoute<UserFormPageRoute>(path: UserFormPageRoute.path)
+class UserFormPageRoute extends GoRouteData {
+  const UserFormPageRoute({this.id});
+  static const path = '/form/user';
+
+  final String? id;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return UserCreatePage();
-  }
-}
-
-@TypedGoRoute<UserUpdatePageRoute>(path: UserUpdatePageRoute.path)
-class UserUpdatePageRoute extends GoRouteData {
-  const UserUpdatePageRoute(this.id);
-  static const path = '/update/user/:id';
-
-  final String id;
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return UserUpdatePage(id);
+    return UserFormPage(id: id);
   }
 }

@@ -29,27 +29,16 @@ class PatientPageRoute extends GoRouteData {
   }
 }
 
-@TypedGoRoute<PatientCreatePageRoute>(path: PatientCreatePageRoute.path)
-class PatientCreatePageRoute extends GoRouteData {
-  const PatientCreatePageRoute();
-  static const path = '/newPatient';
+@TypedGoRoute<PatientFormPageRoute>(path: PatientFormPageRoute.path)
+class PatientFormPageRoute extends GoRouteData {
+  const PatientFormPageRoute({this.id});
+  static const path = '/form/patient';
+
+  final String? id;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return PatientCreatePage();
-  }
-}
-
-@TypedGoRoute<PatientUpdatePageRoute>(path: PatientUpdatePageRoute.path)
-class PatientUpdatePageRoute extends GoRouteData {
-  const PatientUpdatePageRoute(this.id);
-  static const path = '/updatePatient/:id';
-
-  final String id;
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return PatientUpdatePage(id);
+    return PatientFormPage(id: id);
   }
 }
 

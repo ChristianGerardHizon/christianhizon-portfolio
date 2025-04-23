@@ -144,7 +144,7 @@ class AdminPage extends HookConsumerWidget {
                           Icons.chevron_right_outlined,
                           size: 24,
                         ),
-                        onTap: () => AdminUpdatePageRoute(id).push(context),
+                        onTap: () => AdminFormPageRoute(id: id).push(context),
                       ),
                       ListTile(
                         leading: const Icon(Icons.delete_outlined),

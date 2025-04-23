@@ -12,7 +12,7 @@ List<RouteBase> get $appRoutes => [
       $rootRouteData,
       $adminsPageRoute,
       $adminPageRoute,
-      $adminUpdatePageRoute,
+      $adminFormPageRoute,
       $branchesPageRoute,
       $branchFormPageRoute,
       $branchPageRoute,
@@ -23,14 +23,12 @@ List<RouteBase> get $appRoutes => [
       $yourAccountPageRoute,
       $usersPageRoute,
       $userPageRoute,
-      $userCreatePageRoute,
-      $userUpdatePageRoute,
+      $userFormPageRoute,
       $settingsPageRoute,
       $domainPageRoute,
       $patientsPageRoute,
       $patientPageRoute,
-      $patientCreatePageRoute,
-      $patientUpdatePageRoute,
+      $patientFormPageRoute,
       $patientPatientRecordPageRoute,
       $dashboardPageRoute,
       $morePageRoute,
@@ -112,12 +110,8 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               factory: $PatientsPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/updatePatient/:id',
-              factory: $PatientUpdatePageRouteExtension._fromState,
-            ),
-            GoRouteData.$route(
-              path: '/newPatient',
-              factory: $PatientCreatePageRouteExtension._fromState,
+              path: '/form/patient',
+              factory: $PatientFormPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
               path: '/patient/:id',
@@ -192,12 +186,8 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               factory: $UserPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/update/user/:id',
-              factory: $UserUpdatePageRouteExtension._fromState,
-            ),
-            GoRouteData.$route(
-              path: '/new/user',
-              factory: $UserCreatePageRouteExtension._fromState,
+              path: '/form/user',
+              factory: $UserFormPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -212,8 +202,8 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               factory: $AdminPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/update/admin/:id',
-              factory: $AdminUpdatePageRouteExtension._fromState,
+              path: '/form/admin',
+              factory: $AdminFormPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -288,32 +278,17 @@ extension $PatientsPageRouteExtension on PatientsPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $PatientUpdatePageRouteExtension on PatientUpdatePageRoute {
-  static PatientUpdatePageRoute _fromState(GoRouterState state) =>
-      PatientUpdatePageRoute(
-        state.pathParameters['id']!,
+extension $PatientFormPageRouteExtension on PatientFormPageRoute {
+  static PatientFormPageRoute _fromState(GoRouterState state) =>
+      PatientFormPageRoute(
+        id: state.uri.queryParameters['id'],
       );
 
   String get location => GoRouteData.$location(
-        '/updatePatient/${Uri.encodeComponent(id)}',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
-
-extension $PatientCreatePageRouteExtension on PatientCreatePageRoute {
-  static PatientCreatePageRoute _fromState(GoRouterState state) =>
-      const PatientCreatePageRoute();
-
-  String get location => GoRouteData.$location(
-        '/newPatient',
+        '/form/patient',
+        queryParams: {
+          if (id != null) 'id': id,
+        },
       );
 
   void go(BuildContext context) => context.go(location);
@@ -609,32 +584,16 @@ extension $UserPageRouteExtension on UserPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $UserUpdatePageRouteExtension on UserUpdatePageRoute {
-  static UserUpdatePageRoute _fromState(GoRouterState state) =>
-      UserUpdatePageRoute(
-        state.pathParameters['id']!,
+extension $UserFormPageRouteExtension on UserFormPageRoute {
+  static UserFormPageRoute _fromState(GoRouterState state) => UserFormPageRoute(
+        id: state.uri.queryParameters['id'],
       );
 
   String get location => GoRouteData.$location(
-        '/update/user/${Uri.encodeComponent(id)}',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
-
-extension $UserCreatePageRouteExtension on UserCreatePageRoute {
-  static UserCreatePageRoute _fromState(GoRouterState state) =>
-      const UserCreatePageRoute();
-
-  String get location => GoRouteData.$location(
-        '/new/user',
+        '/form/user',
+        queryParams: {
+          if (id != null) 'id': id,
+        },
       );
 
   void go(BuildContext context) => context.go(location);
@@ -684,14 +643,17 @@ extension $AdminPageRouteExtension on AdminPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $AdminUpdatePageRouteExtension on AdminUpdatePageRoute {
-  static AdminUpdatePageRoute _fromState(GoRouterState state) =>
-      AdminUpdatePageRoute(
-        state.pathParameters['id']!,
+extension $AdminFormPageRouteExtension on AdminFormPageRoute {
+  static AdminFormPageRoute _fromState(GoRouterState state) =>
+      AdminFormPageRoute(
+        id: state.uri.queryParameters['id'],
       );
 
   String get location => GoRouteData.$location(
-        '/update/admin/${Uri.encodeComponent(id)}',
+        '/form/admin',
+        queryParams: {
+          if (id != null) 'id': id,
+        },
       );
 
   void go(BuildContext context) => context.go(location);
@@ -799,9 +761,9 @@ RouteBase get $adminPageRoute => GoRouteData.$route(
       factory: $AdminPageRouteExtension._fromState,
     );
 
-RouteBase get $adminUpdatePageRoute => GoRouteData.$route(
-      path: '/update/admin/:id',
-      factory: $AdminUpdatePageRouteExtension._fromState,
+RouteBase get $adminFormPageRoute => GoRouteData.$route(
+      path: '/form/admin',
+      factory: $AdminFormPageRouteExtension._fromState,
     );
 
 RouteBase get $branchesPageRoute => GoRouteData.$route(
@@ -926,14 +888,9 @@ RouteBase get $userPageRoute => GoRouteData.$route(
       factory: $UserPageRouteExtension._fromState,
     );
 
-RouteBase get $userCreatePageRoute => GoRouteData.$route(
-      path: '/new/user',
-      factory: $UserCreatePageRouteExtension._fromState,
-    );
-
-RouteBase get $userUpdatePageRoute => GoRouteData.$route(
-      path: '/update/user/:id',
-      factory: $UserUpdatePageRouteExtension._fromState,
+RouteBase get $userFormPageRoute => GoRouteData.$route(
+      path: '/form/user',
+      factory: $UserFormPageRouteExtension._fromState,
     );
 
 RouteBase get $settingsPageRoute => GoRouteData.$route(
@@ -974,14 +931,9 @@ RouteBase get $patientPageRoute => GoRouteData.$route(
       factory: $PatientPageRouteExtension._fromState,
     );
 
-RouteBase get $patientCreatePageRoute => GoRouteData.$route(
-      path: '/newPatient',
-      factory: $PatientCreatePageRouteExtension._fromState,
-    );
-
-RouteBase get $patientUpdatePageRoute => GoRouteData.$route(
-      path: '/updatePatient/:id',
-      factory: $PatientUpdatePageRouteExtension._fromState,
+RouteBase get $patientFormPageRoute => GoRouteData.$route(
+      path: '/form/patient',
+      factory: $PatientFormPageRouteExtension._fromState,
     );
 
 RouteBase get $patientPatientRecordPageRoute => GoRouteData.$route(

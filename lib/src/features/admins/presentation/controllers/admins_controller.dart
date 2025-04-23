@@ -2,30 +2,30 @@ import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
-import 'package:gym_system/src/features/users/data/user_repository.dart';
-import 'package:gym_system/src/features/users/domain/user.dart';
-import 'package:gym_system/src/features/users/domain/user_search.dart';
-import 'package:gym_system/src/features/users/presentation/controllers/users_page_controller.dart';
+import 'package:gym_system/src/features/admins/data/admin_repository.dart';
+import 'package:gym_system/src/features/admins/domain/admin.dart';
+import 'package:gym_system/src/features/admins/domain/admin_search.dart';
+import 'package:gym_system/src/features/admins/presentation/controllers/admins_page_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'users_controller.g.dart';
+part 'admins_controller.g.dart';
 
 @riverpod
-class UsersController extends _$UsersController {
+class AdminsController extends _$AdminsController {
   String _buildFilter({
-    UserSearch? params,
+    AdminSearch? params,
   }) {
-    final baseFilter = '${UserField.isDeleted} = false';
+    final baseFilter = '${AdminField.isDeleted} = false';
 
     final nameFilter = Option.of(params?.name)
         .map((q) => (q ?? '').trim())
         .filter((q) => q.isNotEmpty)
-        .map((q) => '${UserField.name} ~ "$q"');
+        .map((q) => '${AdminField.name} ~ "$q"');
 
     final idFilter = Option.of(params?.id)
         .map((q) => (q ?? '').trim())
         .filter((q) => q.isNotEmpty)
-        .map((q) => '${UserField.id} ~ "$q"');
+        .map((q) => '${AdminField.id} ~ "$q"');
 
     final result = [
       nameFilter,
@@ -37,17 +37,17 @@ class UsersController extends _$UsersController {
   }
 
   @override
-  Future<PageResults<User>> build() async {
-    final pageState = ref.watch(usersPageControllerProvider);
-    final repo = ref.read(userRepositoryProvider);
-    final searchParams = ref.watch(userSearchControllerProvider);
+  Future<PageResults<Admin>> build() async {
+    final pageState = ref.watch(adminsPageControllerProvider);
+    final repo = ref.read(adminRepositoryProvider);
+    final searchParams = ref.watch(adminSearchControllerProvider);
     final result = await repo
         .list(
             filter: _buildFilter(params: searchParams),
             pageNo: pageState.page,
             pageSize: pageState.pageSize,
             sort: PocketbaseSortValue(
-              sortKey: UserField.created,
+              sortKey: AdminField.created,
               isAsc: true,
             ))
         .run();

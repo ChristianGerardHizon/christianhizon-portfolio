@@ -54,6 +54,7 @@ abstract class PBAuthRepository<T> {
     String? filter,
     required int pageNo,
     required int pageSize,
+    PocketbaseSortValue? sort,
   });
   TaskResult<T> get(String id);
   TaskResult<void> delete(String id);

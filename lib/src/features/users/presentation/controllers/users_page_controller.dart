@@ -1,3 +1,4 @@
+import 'package:gym_system/src/features/users/domain/user_search.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'users_page_controller.g.dart';
@@ -31,5 +32,17 @@ class UsersPageController extends _$UsersPageController {
 
   changePage(int page) {
     state = state.copyWith(page: page);
+  }
+}
+
+@riverpod
+class UserSearchController extends _$UserSearchController {
+  @override
+  UserSearch? build() {
+    return null;
+  }
+
+  void updateParams(UserSearch params) {
+    state = params;
   }
 }

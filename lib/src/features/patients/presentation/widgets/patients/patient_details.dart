@@ -183,7 +183,7 @@ class PatientDetails extends HookConsumerWidget {
                   Icons.chevron_right_outlined,
                   size: 24,
                 ),
-                onTap: () => PatientUpdatePageRoute(patient.id).push(context),
+                onTap: () => PatientFormPageRoute(id: patient.id).push(context),
               ),
               ListTile(
                 leading: Icon(
