@@ -76,6 +76,7 @@ class DynamicTextField extends DynamicField {
 
 class DynamicCheckboxField extends DynamicField {
   final bool? initialValue;
+  final String title;
   final String? Function(bool?)? validator;
   final dynamic Function(bool?)? fieldTransformer;
   final GlobalKey<FormBuilderFieldState>? formFieldKey;
@@ -83,6 +84,7 @@ class DynamicCheckboxField extends DynamicField {
   const DynamicCheckboxField({
     this.formFieldKey,
     required super.name,
+    required this.title,
     this.initialValue,
     this.validator,
     super.valueTransformer,

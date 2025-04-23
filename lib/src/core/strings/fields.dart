@@ -141,6 +141,7 @@ class ProductField {
   static const String category = 'category';
   static const String branch = 'branch';
   static const String stockThreshold = 'stockThreshold';
+  static const String forSale = 'forSale';
 }
 
 class BranchField {

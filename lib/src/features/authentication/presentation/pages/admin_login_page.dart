@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gym_system/src/core/assets/i18n/strings.g.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/core/routing/router.dart';
@@ -116,6 +117,23 @@ class AdminLoginPage extends HookConsumerWidget {
                 isLoading: isLoading.value,
                 child: const Text('Login'),
               ),
+              const SizedBox(height: 4),
+              TextButton(
+                onPressed: () => const LoginPageRoute().go(context),
+                child: RichText(
+                  text: TextSpan(
+                    text: context.t.authentication.returnToLoginAsUser[0],
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: context.t.authentication.returnToLoginAsUser[1],
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Theme.of(context).colorScheme.primary),
+                      ),
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
         );
@@ -128,7 +146,7 @@ class AdminLoginPage extends HookConsumerWidget {
           child: ConstrainedBox(
             constraints: BoxConstraints(
               maxWidth: 500,
-              maxHeight: 500,
+              maxHeight: 520,
             ),
             child: form,
           ),

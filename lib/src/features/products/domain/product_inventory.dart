@@ -1,5 +1,8 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
+import 'package:gym_system/src/features/branches/domain/branch.dart';
+import 'package:gym_system/src/features/products/domain/product.dart';
+import 'package:gym_system/src/features/products/domain/product_category.dart';
 
 part 'product_inventory.mapper.dart';
 
@@ -10,17 +13,12 @@ enum ProductStatus { inStock, outOfStock, lowStock, noThreshold }
 class ProductInventory extends PbRecord with ProductInventoryMappable {
   final String product;
   final ProductStatus status;
-  final String name;
-  final String? description;
-  final String? category;
-  final String? image;
-  final String? branch;
-  final String? branchName;
+
+  final ProductInventoryExpand expand;
 
   final num totalQuantity;
   final num totalQuantityAvailable;
   final num totalExpired;
-  final num price;
 
   ProductInventory({
     required super.id,
@@ -28,17 +26,11 @@ class ProductInventory extends PbRecord with ProductInventoryMappable {
     required super.collectionName,
     required this.product,
     required this.status,
-    required this.name,
-    required this.price,
-    this.description,
-    this.category,
+    required this.expand,
     this.totalExpired = 0,
-    this.image,
-    this.branch,
-    this.branchName,
-    super.isDeleted = false,
     this.totalQuantity = 0,
     this.totalQuantityAvailable = 0,
+    super.isDeleted = false,
     super.created,
     super.updated,
   });
@@ -58,4 +50,25 @@ class ProductInventory extends PbRecord with ProductInventoryMappable {
       'updated': updated,
     };
   }
+}
+
+@MappableClass()
+class ProductInventoryExpand with ProductInventoryExpandMappable {
+  final Product product;
+  final Branch? branch;
+  final ProductCategory? category;
+
+  ProductInventoryExpand({
+    required this.product,
+    this.branch,
+    this.category,
+  });
+
+  static fromMap(Map<String, dynamic> raw) {
+    return ProductInventoryExpand.fromMap({
+      ...raw,
+    });
+  }
+
+  static const fromJson = ProductInventoryExpandMapper.fromJson;
 }

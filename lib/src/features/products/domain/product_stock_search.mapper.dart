@@ -26,15 +26,22 @@ class ProductStockSearchMapper extends ClassMapperBase<ProductStockSearch> {
   static String? _$name(ProductStockSearch v) => v.name;
   static const Field<ProductStockSearch, String> _f$name =
       Field('name', _$name, opt: true);
+  static DateTime? _$expiration(ProductStockSearch v) => v.expiration;
+  static const Field<ProductStockSearch, DateTime> _f$expiration =
+      Field('expiration', _$expiration, opt: true);
 
   @override
   final MappableFields<ProductStockSearch> fields = const {
     #id: _f$id,
     #name: _f$name,
+    #expiration: _f$expiration,
   };
 
   static ProductStockSearch _instantiate(DecodingData data) {
-    return ProductStockSearch(id: data.dec(_f$id), name: data.dec(_f$name));
+    return ProductStockSearch(
+        id: data.dec(_f$id),
+        name: data.dec(_f$name),
+        expiration: data.dec(_f$expiration));
   }
 
   @override
@@ -92,7 +99,7 @@ extension ProductStockSearchValueCopy<$R, $Out>
 
 abstract class ProductStockSearchCopyWith<$R, $In extends ProductStockSearch,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
-  $R call({String? id, String? name});
+  $R call({String? id, String? name, DateTime? expiration});
   ProductStockSearchCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -106,12 +113,20 @@ class _ProductStockSearchCopyWithImpl<$R, $Out>
   late final ClassMapperBase<ProductStockSearch> $mapper =
       ProductStockSearchMapper.ensureInitialized();
   @override
-  $R call({Object? id = $none, Object? name = $none}) =>
-      $apply(FieldCopyWithData(
-          {if (id != $none) #id: id, if (name != $none) #name: name}));
+  $R call(
+          {Object? id = $none,
+          Object? name = $none,
+          Object? expiration = $none}) =>
+      $apply(FieldCopyWithData({
+        if (id != $none) #id: id,
+        if (name != $none) #name: name,
+        if (expiration != $none) #expiration: expiration
+      }));
   @override
   ProductStockSearch $make(CopyWithData data) => ProductStockSearch(
-      id: data.get(#id, or: $value.id), name: data.get(#name, or: $value.name));
+      id: data.get(#id, or: $value.id),
+      name: data.get(#name, or: $value.name),
+      expiration: data.get(#expiration, or: $value.expiration));
 
   @override
   ProductStockSearchCopyWith<$R2, ProductStockSearch, $Out2> $chain<$R2, $Out2>(

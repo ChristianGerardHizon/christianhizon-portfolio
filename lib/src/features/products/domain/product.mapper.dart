@@ -37,6 +37,8 @@ class ProductMapper extends ClassMapperBase<Product> {
   static String? _$image(Product v) => v.image;
   static const Field<Product, String> _f$image =
       Field('image', _$image, opt: true);
+  static bool _$forSale(Product v) => v.forSale;
+  static const Field<Product, bool> _f$forSale = Field('forSale', _$forSale);
   static String? _$description(Product v) => v.description;
   static const Field<Product, String> _f$description =
       Field('description', _$description, opt: true);
@@ -70,6 +72,7 @@ class ProductMapper extends ClassMapperBase<Product> {
     #name: _f$name,
     #price: _f$price,
     #image: _f$image,
+    #forSale: _f$forSale,
     #description: _f$description,
     #category: _f$category,
     #branch: _f$branch,
@@ -88,6 +91,7 @@ class ProductMapper extends ClassMapperBase<Product> {
         name: data.dec(_f$name),
         price: data.dec(_f$price),
         image: data.dec(_f$image),
+        forSale: data.dec(_f$forSale),
         description: data.dec(_f$description),
         category: data.dec(_f$category),
         branch: data.dec(_f$branch),
@@ -157,6 +161,7 @@ abstract class ProductCopyWith<$R, $In extends Product, $Out>
       String? name,
       num? price,
       String? image,
+      bool? forSale,
       String? description,
       String? category,
       String? branch,
@@ -187,6 +192,7 @@ class _ProductCopyWithImpl<$R, $Out>
           String? name,
           num? price,
           Object? image = $none,
+          bool? forSale,
           Object? description = $none,
           Object? category = $none,
           Object? branch = $none,
@@ -202,6 +208,7 @@ class _ProductCopyWithImpl<$R, $Out>
         if (name != null) #name: name,
         if (price != null) #price: price,
         if (image != $none) #image: image,
+        if (forSale != null) #forSale: forSale,
         if (description != $none) #description: description,
         if (category != $none) #category: category,
         if (branch != $none) #branch: branch,
@@ -219,6 +226,7 @@ class _ProductCopyWithImpl<$R, $Out>
       name: data.get(#name, or: $value.name),
       price: data.get(#price, or: $value.price),
       image: data.get(#image, or: $value.image),
+      forSale: data.get(#forSale, or: $value.forSale),
       description: data.get(#description, or: $value.description),
       category: data.get(#category, or: $value.category),
       branch: data.get(#branch, or: $value.branch),

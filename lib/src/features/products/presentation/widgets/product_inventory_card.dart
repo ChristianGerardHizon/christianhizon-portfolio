@@ -31,13 +31,13 @@ class ProductInventoryCard extends StatelessWidget {
         children: [
           ListTile(
             leading: Icon(MIcons.abacus),
-            title: Text(productInventory.name),
+            title: Text(productInventory.expand.product.name),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(productInventory.name),
-                Text(productInventory.category.optional()),
+                Text(productInventory.expand.product.name),
+                Text((productInventory.expand.category?.name).optional()),
               ],
             ),
           ),

@@ -54,8 +54,12 @@ class TranslationsAuthenticationEn {
 	// Translations
 	String get login => 'Login';
 	List<String> get loginAsAdminList => [
-		'Not a user?',
+		'Not a user? ',
 		'Login as Administrator',
+	];
+	List<String> get returnToLoginAsUser => [
+		'Not an administrator? ',
+		'Login as User',
 	];
 	String get loginSuccess => 'Logged in successfully';
 }
@@ -97,8 +101,10 @@ extension on Translations {
 	dynamic _flatMapFunction(String path) {
 		switch (path) {
 			case 'authentication.login': return 'Login';
-			case 'authentication.loginAsAdminList.0': return 'Not a user?';
+			case 'authentication.loginAsAdminList.0': return 'Not a user? ';
 			case 'authentication.loginAsAdminList.1': return 'Login as Administrator';
+			case 'authentication.returnToLoginAsUser.0': return 'Not an administrator? ';
+			case 'authentication.returnToLoginAsUser.1': return 'Login as User';
 			case 'authentication.loginSuccess': return 'Logged in successfully';
 			case 'fields.email': return 'Email';
 			case 'fields.password': return 'Password';

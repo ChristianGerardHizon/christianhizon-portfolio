@@ -4,5 +4,9 @@
         "Hindi ka user?",
         "Mag-log in bilang Tagapamahala"
     ],
+    "returnToLoginAsUser": [
+        "Hindi ka tagapamahala? ",
+        "Mag-log in bilang User"
+    ],
     "loginSuccess": "Nagtagumpay sa pag-log in"
 }

@@ -17,6 +17,7 @@ import 'package:gym_system/src/features/products/domain/product_inventory_search
 import 'package:gym_system/src/features/products/presentation/controllers/product/products_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/inventory/product_inventories_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/inventory/product_inventories_page_controller.dart';
+import 'package:gym_system/src/features/products/presentation/widgets/product_for_sale_text.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_inventory_card.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_status_text.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -171,12 +172,12 @@ class ProductInventoriesPage extends HookConsumerWidget {
             header: 'Name',
             width: 200,
             alignment: Alignment.centerLeft,
-            builder: (context, data, extra) {
+            builder: (context, inventory, extra) {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   overflow: TextOverflow.ellipsis,
-                  '${data.name}',
+                  '${inventory.expand.product.name}',
                 ),
               );
             },
@@ -184,10 +185,10 @@ class ProductInventoriesPage extends HookConsumerWidget {
           TableColumn(
             header: 'Branch',
             alignment: Alignment.centerLeft,
-            builder: (context, product, extra) {
+            builder: (context, inventory, extra) {
               return Align(
                 alignment: Alignment.centerLeft,
-                child: Text(product.branchName.optional(),
+                child: Text((inventory.expand.branch?.name).optional(),
                     overflow: TextOverflow.ellipsis),
               );
             },
@@ -195,11 +196,23 @@ class ProductInventoriesPage extends HookConsumerWidget {
           TableColumn(
             header: 'Price',
             alignment: Alignment.centerLeft,
-            builder: (context, product, extra) {
+            builder: (context, inventory, extra) {
               return Align(
                 alignment: Alignment.centerLeft,
-                child: Text(product.price.toPHPeso(),
+                child: Text(inventory.expand.product.price.toPHPeso(),
                     overflow: TextOverflow.ellipsis),
+              );
+            },
+          ),
+          TableColumn(
+            width: 120,
+            header: 'For Sale',
+            alignment: Alignment.centerLeft,
+            builder: (context, inventory, extra) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: ProductForSaleText(
+                    forSale: inventory.expand.product.forSale),
               );
             },
           ),

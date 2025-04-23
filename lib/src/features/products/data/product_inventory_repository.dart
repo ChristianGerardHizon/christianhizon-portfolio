@@ -28,17 +28,13 @@ class ProductInventoryRepositoryImpl
   RecordService get collection =>
       pb.collection(PocketBaseCollections.productInventoryStatus);
 
-  final expand = 'product,product.expand';
-
-  ProductInventory mapToData(Map<String, dynamic> map) {
-    return ProductInventory.fromMap({...map, 'domain': pb.baseURL});
-  }
+  final expand = 'product,branch,category,product.branch,product.category';
 
   @override
   TaskResult<ProductInventory> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id, expand: expand);
-      return mapToData(result.toJson());
+      return ProductInventory.fromMap(result.toJson());
     }, Failure.handle);
   }
 
@@ -58,7 +54,8 @@ class ProductInventoryRepositoryImpl
         expand: expand,
       );
       final items = result.items.map<ProductInventory>((e) {
-        return mapToData(e.toJson());
+        print(e.toJson());
+        return ProductInventory.fromMap(e.toJson());
       }).toList();
       return PageResults(
         page: result.page,
@@ -82,7 +79,7 @@ class ProductInventoryRepositoryImpl
           expand: expand,
         );
         return result
-            .map<ProductInventory>((e) => mapToData(e.toJson()))
+            .map<ProductInventory>((e) => ProductInventory.fromMap(e.toJson()))
             .toList();
       },
       Failure.handle,

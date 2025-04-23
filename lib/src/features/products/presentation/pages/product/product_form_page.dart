@@ -83,6 +83,9 @@ class ProductFormPage extends HookConsumerWidget {
               formKey: formKey,
               isLoading: isLoading.value,
               fields: [
+                ///
+                /// Image
+                ///
                 DynamicPBImagesField(
                   name: ProductField.image,
                   maxFiles: 1,
@@ -100,6 +103,10 @@ class ProductFormPage extends HookConsumerWidget {
                   initialValue: images,
                   validator: FormBuilderValidators.compose([]),
                 ),
+
+                ///
+                /// Product Name
+                ///
                 DynamicTextField(
                   name: ProductField.name,
                   initialValue: product?.name,
@@ -113,6 +120,20 @@ class ProductFormPage extends HookConsumerWidget {
                     ],
                   ),
                 ),
+
+                /// For Sale
+                DynamicCheckboxField(
+                  name: ProductField.forSale,
+                  initialValue: product?.forSale,
+                  title: 'Available For Sale',
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+
+                ///
+                /// Stock Threshold
+                ///
                 DynamicNumberField(
                   name: ProductField.stockThreshold,
                   initialValue: product?.stockThreshold,
@@ -129,6 +150,10 @@ class ProductFormPage extends HookConsumerWidget {
                     ],
                   ),
                 ),
+
+                ///
+                /// Category
+                ///
                 DynamicSelectField(
                   name: ProductField.category,
                   options: categories
@@ -144,6 +169,10 @@ class ProductFormPage extends HookConsumerWidget {
                     border: OutlineInputBorder(),
                   ),
                 ),
+
+                ///
+                /// Branch
+                ///
                 DynamicSelectField(
                   name: ProductField.branch,
                   initialValue: product?.branch,
@@ -165,6 +194,10 @@ class ProductFormPage extends HookConsumerWidget {
                     ],
                   ),
                 ),
+
+                ///
+                /// Description
+                ///
                 DynamicTextField(
                   name: ProductField.description,
                   initialValue: product?.name,

@@ -54,6 +54,10 @@ class _TranslationsAuthenticationTl implements TranslationsAuthenticationEn {
 		'Hindi ka user?',
 		'Mag-log in bilang Tagapamahala',
 	];
+	@override List<String> get returnToLoginAsUser => [
+		'Hindi ka tagapamahala? ',
+		'Mag-log in bilang User',
+	];
 	@override String get loginSuccess => 'Nagtagumpay sa pag-log in';
 }
 
@@ -96,6 +100,8 @@ extension on TranslationsTl {
 			case 'authentication.login': return 'Mag-log in';
 			case 'authentication.loginAsAdminList.0': return 'Hindi ka user?';
 			case 'authentication.loginAsAdminList.1': return 'Mag-log in bilang Tagapamahala';
+			case 'authentication.returnToLoginAsUser.0': return 'Hindi ka tagapamahala? ';
+			case 'authentication.returnToLoginAsUser.1': return 'Mag-log in bilang User';
 			case 'authentication.loginSuccess': return 'Nagtagumpay sa pag-log in';
 			case 'fields.email': return 'Email';
 			case 'fields.password': return 'Password';
