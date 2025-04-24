@@ -4,6 +4,7 @@ class CustomNavigationBarItem extends BottomNavigationBarItem {
   final Function()? onTap;
   final String route;
   final Icon? selectedIcon;
+  final bool isRoot;
 
   CustomNavigationBarItem({
     required super.icon,
@@ -14,6 +15,7 @@ class CustomNavigationBarItem extends BottomNavigationBarItem {
     super.tooltip,
     this.onTap,
     this.selectedIcon,
+    this.isRoot = false,
   });
 
   NavigationRailDestination get navRail {

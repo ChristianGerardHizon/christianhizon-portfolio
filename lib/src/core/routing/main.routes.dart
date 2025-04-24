@@ -33,10 +33,8 @@ import 'package:gym_system/src/features/products/presentation/pages/stock/produc
 import 'package:gym_system/src/features/products/presentation/pages/stock/product_stock_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/settings_page.dart';
-import 'package:gym_system/src/features/users/presentation/pages/user_create_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_form_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_page.dart';
-import 'package:gym_system/src/features/users/presentation/pages/user_update_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/users_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/your_account_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -146,6 +144,15 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<SalesBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<SalesPageRoute>(path: SalesPageRoute.path),
+      ],
+    ),
+
+    ///
+    /// Sales Cashier
+    ///
+    TypedStatefulShellBranch<SalesCashierBranchData>(
+      routes: <TypeRouteData>[
+        TypedGoRoute<SalesCashierPageRoute>(path: SalesCashierPageRoute.path),
       ],
     ),
 

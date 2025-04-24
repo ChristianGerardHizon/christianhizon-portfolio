@@ -33,6 +33,7 @@ List<RouteBase> get $appRoutes => [
       $dashboardPageRoute,
       $morePageRoute,
       $salesPageRoute,
+      $salesCashierPageRoute,
       $productsPageRoute,
       $productInventoriesPageRoute,
       $productFormPageRoute,
@@ -156,6 +157,14 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/sales',
               factory: $SalesPageRouteExtension._fromState,
+            ),
+          ],
+        ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/cashier',
+              factory: $SalesCashierPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -475,6 +484,24 @@ extension $SalesPageRouteExtension on SalesPageRoute {
 
   String get location => GoRouteData.$location(
         '/sales',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $SalesCashierPageRouteExtension on SalesCashierPageRoute {
+  static SalesCashierPageRoute _fromState(GoRouterState state) =>
+      const SalesCashierPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/cashier',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -971,6 +998,11 @@ extension $MorePageRouteExtension on MorePageRoute {
 RouteBase get $salesPageRoute => GoRouteData.$route(
       path: '/sales',
       factory: $SalesPageRouteExtension._fromState,
+    );
+
+RouteBase get $salesCashierPageRoute => GoRouteData.$route(
+      path: '/cashier',
+      factory: $SalesCashierPageRouteExtension._fromState,
     );
 
 RouteBase get $productsPageRoute => GoRouteData.$route(

@@ -61,6 +61,7 @@ class AppRoot extends HookConsumerWidget {
 
       return [
         CustomNavigationBarItem(
+          isRoot: true,
           route: RootRoute.path,
           icon: Icon(MIcons.viewDashboardOutline),
           selectedIcon: Icon(MIcons.viewDashboard),
@@ -85,6 +86,15 @@ class AppRoot extends HookConsumerWidget {
           label: 'Products',
           onTap: () {
             ProductInventoriesPageRoute().go(context);
+          },
+        ),
+        CustomNavigationBarItem(
+          route: SalesCashierPageRoute.path,
+          icon: Icon(MIcons.cashRegister),
+          selectedIcon: Icon(MIcons.cashRegister),
+          label: 'Cashier',
+          onTap: () {
+            SalesCashierPageRoute().go(context);
           },
         ),
         CustomNavigationBarItem(
@@ -155,9 +165,15 @@ class AppRoot extends HookConsumerWidget {
                             height: 200,
                           ),
                           items: items.mapWithIndex((e, index) {
+                            final goRouter = GoRouter.of(context);
+                            final currentLocation = goRouter
+                                .routerDelegate.currentConfiguration.uri
+                                .toString();
                             return SideMenuItemDataTile(
                                 hasSelectedLine: false,
-                                isSelected: shell.currentIndex == index,
+                                isSelected: e.isRoot
+                                    ? currentLocation == RootRoute.path
+                                    : currentLocation.contains(e.route),
                                 onTap: () => e.onTap?.call(),
                                 title: e.label,
                                 icon: e.icon,
