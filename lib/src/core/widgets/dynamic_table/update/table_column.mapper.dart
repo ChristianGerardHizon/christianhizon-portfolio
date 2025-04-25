@@ -22,6 +22,9 @@ class TableColumnMapper extends ClassMapperBase<TableColumn> {
   @override
   Function get typeFactory => <T>(f) => f<TableColumn<T>>();
 
+  static String? _$sortKey(TableColumn v) => v.sortKey;
+  static const Field<TableColumn, String> _f$sortKey =
+      Field('sortKey', _$sortKey, opt: true);
   static String _$header(TableColumn v) => v.header;
   static const Field<TableColumn, String> _f$header = Field('header', _$header);
   static double _$width(TableColumn v) => v.width;
@@ -30,7 +33,7 @@ class TableColumnMapper extends ClassMapperBase<TableColumn> {
   static Function _$builder(TableColumn v) =>
       (v as dynamic).builder as Function;
   static dynamic _arg$builder<T>(f) =>
-      f<Widget Function(BuildContext, T, DynamicTableBuilderValue)>();
+      f<Widget Function(BuildContext, T, int, int)>();
   static const Field<TableColumn, Function> _f$builder =
       Field('builder', _$builder, opt: true, arg: _arg$builder);
   static TextStyle? _$style(TableColumn v) => v.style;
@@ -45,6 +48,7 @@ class TableColumnMapper extends ClassMapperBase<TableColumn> {
 
   @override
   final MappableFields<TableColumn> fields = const {
+    #sortKey: _f$sortKey,
     #header: _f$header,
     #width: _f$width,
     #builder: _f$builder,
@@ -55,6 +59,7 @@ class TableColumnMapper extends ClassMapperBase<TableColumn> {
 
   static TableColumn<T> _instantiate<T>(DecodingData data) {
     return TableColumn(
+        sortKey: data.dec(_f$sortKey),
         header: data.dec(_f$header),
         width: data.dec(_f$width),
         builder: data.dec(_f$builder),
@@ -118,9 +123,10 @@ extension TableColumnValueCopy<$R, $Out, T>
 abstract class TableColumnCopyWith<$R, $In extends TableColumn<T>, $Out, T>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {String? header,
+      {String? sortKey,
+      String? header,
       double? width,
-      Widget Function(BuildContext, T, DynamicTableBuilderValue)? builder,
+      Widget Function(BuildContext, T, int, int)? builder,
       TextStyle? style,
       Alignment? alignment,
       EdgeInsets? padding});
@@ -138,13 +144,15 @@ class _TableColumnCopyWithImpl<$R, $Out, T>
       TableColumnMapper.ensureInitialized();
   @override
   $R call(
-          {String? header,
+          {Object? sortKey = $none,
+          String? header,
           double? width,
           Object? builder = $none,
           Object? style = $none,
           Object? alignment = $none,
           Object? padding = $none}) =>
       $apply(FieldCopyWithData({
+        if (sortKey != $none) #sortKey: sortKey,
         if (header != null) #header: header,
         if (width != null) #width: width,
         if (builder != $none) #builder: builder,
@@ -154,6 +162,7 @@ class _TableColumnCopyWithImpl<$R, $Out, T>
       }));
   @override
   TableColumn<T> $make(CopyWithData data) => TableColumn(
+      sortKey: data.get(#sortKey, or: $value.sortKey),
       header: data.get(#header, or: $value.header),
       width: data.get(#width, or: $value.width),
       builder: data.get(#builder, or: $value.builder),

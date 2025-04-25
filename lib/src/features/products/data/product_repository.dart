@@ -47,7 +47,11 @@ class ProductRepositoryImpl extends PBCollectionRepository<Product> {
     List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(body: payload, files: files);
+      final response = await collection.create(
+        body: payload,
+        files: files,
+        expand: expand,
+      );
       return mapToData(response.toJson());
     }, Failure.handle);
   }

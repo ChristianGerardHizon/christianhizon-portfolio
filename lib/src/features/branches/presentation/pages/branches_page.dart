@@ -6,9 +6,9 @@ import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/responsive_pagination_list_with_delete_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/table_column.dart'
+import 'package:gym_system/src/core/widgets/dynamic_table/responsive_pagination_list_with_delete_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_base_list.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/update/table_column.dart'
     show TableColumn;
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/selectable_card.dart';
@@ -156,7 +156,7 @@ class BranchesPage extends HookConsumerWidget {
             header: 'Name',
             width: 200,
             alignment: Alignment.centerLeft,
-            builder: (context, data, extra) {
+            builder: (context, data, row, column) {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -170,7 +170,7 @@ class BranchesPage extends HookConsumerWidget {
             header: 'Date Created',
             alignment: Alignment.centerLeft,
             width: 200,
-            builder: (context, branch, extra) {
+            builder: (context, branch, row, column) {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: Text((branch.created?.yyyyMMddHHmmA()).optional(),

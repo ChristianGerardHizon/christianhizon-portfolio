@@ -23,7 +23,7 @@ class ProductInventoriesPageRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const ProductInventoriesPage();
+    return const ProductsPage();
   }
 }
 

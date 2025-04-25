@@ -7,9 +7,9 @@ import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/responsive_pagination_list_with_delete_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/responsive_pagination_list_with_delete_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_base_list.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/update/table_column.dart';
 import 'package:gym_system/src/features/products/data/product_stock_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_stock.dart';
@@ -157,7 +157,7 @@ class ProductStocksView extends HookConsumerWidget {
           header: 'Lot No.',
           width: 200,
           alignment: Alignment.centerLeft,
-          builder: (context, data, extra) {
+          builder: (context, data, row, column) {
             return Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -171,7 +171,7 @@ class ProductStocksView extends HookConsumerWidget {
           header: 'Used Quantity',
           width: 150,
           alignment: Alignment.centerLeft,
-          builder: (context, data, extra) {
+          builder: (context, data, row, column) {
             return Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -184,7 +184,7 @@ class ProductStocksView extends HookConsumerWidget {
         TableColumn(
           header: 'Quantity',
           alignment: Alignment.centerLeft,
-          builder: (context, data, extra) {
+          builder: (context, data, row, column) {
             return Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -198,7 +198,7 @@ class ProductStocksView extends HookConsumerWidget {
           header: 'Expiration',
           width: 200,
           alignment: Alignment.centerLeft,
-          builder: (context, data, extra) {
+          builder: (context, data, row, column) {
             return Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -212,7 +212,7 @@ class ProductStocksView extends HookConsumerWidget {
           header: 'Date Created',
           alignment: Alignment.centerLeft,
           width: 150,
-          builder: (context, product, extra) {
+          builder: (context, product, row, column) {
             return Align(
               alignment: Alignment.centerLeft,
               child: Text(

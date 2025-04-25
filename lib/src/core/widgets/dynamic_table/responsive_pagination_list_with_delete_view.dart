@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/header_key.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/header_key.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_base_list.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/update/table_column.dart';
 import 'package:gym_system/src/core/widgets/page_actions.dart';
 import 'package:gym_system/src/core/widgets/page_selector.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
@@ -288,11 +288,9 @@ class ResponsivePaginationListWithDeleteView<T> extends HookConsumerWidget {
       tableRowBuilder: (context, value) {
         final offset = value.column - 1;
 
-        final result = columns[offset].builder?.call(
-              context,
-              items[value.row],
-              value,
-            );
+        final result = columns[offset]
+            .builder
+            ?.call(context, items[value.row], value.row, value.column);
 
         if (result is Widget) return result;
 

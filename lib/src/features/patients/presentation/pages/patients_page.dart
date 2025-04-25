@@ -6,9 +6,9 @@ import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/responsive_pagination_list_with_delete_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/responsive_pagination_list_with_delete_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_base_list.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/update/table_column.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
@@ -163,7 +163,7 @@ class PatientsPage extends HookConsumerWidget {
             header: 'Name',
             width: 200,
             alignment: Alignment.centerLeft,
-            builder: (context, data, extra) {
+            builder: (context, data, row, column) {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -176,7 +176,7 @@ class PatientsPage extends HookConsumerWidget {
           TableColumn(
             header: 'Branch',
             alignment: Alignment.centerLeft,
-            builder: (context, patient, extra) {
+            builder: (context, patient, row, column) {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: Text((patient.expand.branch?.name).optional(),
@@ -188,7 +188,7 @@ class PatientsPage extends HookConsumerWidget {
             header: 'Date Created',
             alignment: Alignment.centerLeft,
             width: 150,
-            builder: (context, patient, extra) {
+            builder: (context, patient, row, column) {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: Text((patient.created?.yyyyMMddHHmmA()).optional(),
@@ -200,7 +200,7 @@ class PatientsPage extends HookConsumerWidget {
           //   header: 'Actions',
           //   alignment: Alignment.centerLeft,
           //   width: 150,
-          //   builder: (context, patient, extra) {
+          //   builder: (context, patient, row, column) {
           //     return Align(
           //       alignment: Alignment.centerLeft,
           //       child: TextButton(onPressed: () {}, child: Text('Add Stock')),

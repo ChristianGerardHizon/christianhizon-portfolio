@@ -6,17 +6,17 @@ import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/responsive_pagination_list_with_delete_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/responsive_pagination_list_with_delete_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_base_list.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/update/table_column.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_inventory.dart';
 import 'package:gym_system/src/features/products/domain/product_inventory_search.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/product/products_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/inventory/product_inventories_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/inventory/product_inventories_page_controller.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product/product_table_controller.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_for_sale_text.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_inventory_card.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_status_text.dart';
@@ -75,7 +75,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           controller.clear();
-          ref.invalidate(productsControllerProvider);
+          ref.invalidate(productTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
           if (context.canPop()) context.pop();
         },
@@ -172,7 +172,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
             header: 'Name',
             width: 200,
             alignment: Alignment.centerLeft,
-            builder: (context, inventory, extra) {
+            builder: (context, inventory, row, column) {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -185,7 +185,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
           TableColumn(
             header: 'Branch',
             alignment: Alignment.centerLeft,
-            builder: (context, inventory, extra) {
+            builder: (context, inventory, row, column) {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: Text((inventory.expand.branch?.name).optional(),
@@ -196,7 +196,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
           TableColumn(
             header: 'Price',
             alignment: Alignment.centerLeft,
-            builder: (context, inventory, extra) {
+            builder: (context, inventory, row, column) {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: Text(inventory.expand.product.price.toPHPeso(),
@@ -208,7 +208,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
             width: 120,
             header: 'For Sale',
             alignment: Alignment.centerLeft,
-            builder: (context, inventory, extra) {
+            builder: (context, inventory, row, column) {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: ProductForSaleText(
@@ -220,7 +220,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
             width: 200,
             header: 'Status',
             alignment: Alignment.centerLeft,
-            builder: (context, product, extra) {
+            builder: (context, product, row, column) {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: ProductStatusText(product: product),

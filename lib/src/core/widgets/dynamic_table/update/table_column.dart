@@ -1,6 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/widgets.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/sliver_dynamic_base_list.dart';
 
 part 'table_column.mapper.dart';
 
@@ -8,6 +7,7 @@ part 'table_column.mapper.dart';
 class TableColumn<T> with TableColumnMappable {
   final String header;
   final double width;
+  final String? sortKey;
 
   final Alignment? alignment;
 
@@ -18,10 +18,12 @@ class TableColumn<T> with TableColumnMappable {
   final Widget Function(
     BuildContext context,
     T data,
-    DynamicTableBuilderValue extra,
+    int row,
+    int column,
   )? builder;
 
   const TableColumn({
+    this.sortKey,
     required this.header,
     this.width = 100,
     this.builder,

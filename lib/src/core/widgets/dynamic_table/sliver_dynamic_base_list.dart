@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list/header_key.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/header_key.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_table_view/material_table_view.dart';
 import 'package:material_table_view/sliver_table_view.dart';
