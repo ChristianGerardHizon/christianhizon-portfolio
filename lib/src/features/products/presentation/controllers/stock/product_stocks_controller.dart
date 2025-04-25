@@ -1,5 +1,4 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/features/products/data/product_stock_repository.dart';
@@ -43,13 +42,11 @@ class ProductStocksController extends _$ProductStocksController {
     final searchParams = ref.watch(productStockSearchControllerProvider);
     final result = await repo
         .list(
-            filter: _buildFilter(params: searchParams),
-            pageNo: pageState.page,
-            pageSize: pageState.pageSize,
-            sort: PocketbaseSortValue(
-              sortKey: ProductStockField.created,
-              isAsc: true,
-            ))
+          filter: _buildFilter(params: searchParams),
+          pageNo: pageState.page,
+          pageSize: pageState.pageSize,
+          sort: 'created+',
+        )
         .run();
     return result.fold(Future.error, (x) => Future.value(x));
   }

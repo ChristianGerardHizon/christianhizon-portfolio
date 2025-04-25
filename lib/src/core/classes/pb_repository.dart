@@ -1,5 +1,4 @@
 import 'package:gym_system/src/core/classes/page_results.dart';
-import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:http/http.dart';
 
@@ -12,7 +11,7 @@ abstract class PBCollectionRepository<T> {
     String? filter,
     required int pageNo,
     required int pageSize,
-    PocketbaseSortValue? sort,
+    String? sort,
   });
   TaskResult<List<T>> listAll({
     int batch = 500,
@@ -41,7 +40,7 @@ abstract class PBViewRepository<T> {
     String? filter,
     required int pageNo,
     required int pageSize,
-    PocketbaseSortValue? sort,
+    String? sort,
   });
   TaskResult<List<T>> listAll({
     int batch = 500,
@@ -54,7 +53,7 @@ abstract class PBAuthRepository<T> {
     String? filter,
     required int pageNo,
     required int pageSize,
-    PocketbaseSortValue? sort,
+    String? sort,
   });
   TaskResult<T> get(String id);
   TaskResult<void> delete(String id);

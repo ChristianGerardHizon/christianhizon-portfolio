@@ -3,7 +3,6 @@ import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
-import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -62,7 +61,7 @@ class UserRepositoryImpl extends PBAuthRepository<User> {
     String? filter,
     required int pageNo,
     required int pageSize,
-    PocketbaseSortValue? sort,
+    String? sort,
   }) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getList(

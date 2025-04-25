@@ -3,7 +3,6 @@ import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
-import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
@@ -115,7 +114,7 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
     String? filter,
     required int pageNo,
     required int pageSize,
-    PocketbaseSortValue? sort,
+    String? sort,
   }) {
     return TaskResult.tryCatch(
       () async {

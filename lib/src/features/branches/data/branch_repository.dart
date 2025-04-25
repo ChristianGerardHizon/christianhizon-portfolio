@@ -2,7 +2,6 @@ import 'package:gym_system/src/core/classes/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
-import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
@@ -63,14 +62,14 @@ class BranchRepositoryImpl extends PBCollectionRepository<Branch> {
     String? filter,
     required int pageNo,
     required int pageSize,
-    PocketbaseSortValue? sort,
+    String? sort,
   }) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getList(
         filter: filter,
         page: pageNo,
         perPage: pageSize,
-        sort: sort?.value,
+        sort: sort,
       );
       return PageResults(
         page: result.page,

@@ -14,6 +14,8 @@ class TableSort with TableSortMappable {
 
   TableSort reverse() => TableSort(key: key, isAscending: !isAscending);
 
+  String get value => '$key${isAscending ? '+' : '-'}';
+
   static fromMap(Map<String, dynamic> raw) {
     return TableSortMapper.fromMap(
       {

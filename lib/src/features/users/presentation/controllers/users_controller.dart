@@ -1,5 +1,4 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
@@ -43,13 +42,11 @@ class UsersController extends _$UsersController {
     final searchParams = ref.watch(userSearchControllerProvider);
     final result = await repo
         .list(
-            filter: _buildFilter(params: searchParams),
-            pageNo: pageState.page,
-            pageSize: pageState.pageSize,
-            sort: PocketbaseSortValue(
-              sortKey: UserField.created,
-              isAsc: true,
-            ))
+          filter: _buildFilter(params: searchParams),
+          pageNo: pageState.page,
+          pageSize: pageState.pageSize,
+          sort: 'created+',
+        )
         .run();
     return result.fold(Future.error, (x) => Future.value(x));
   }

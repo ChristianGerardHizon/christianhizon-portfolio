@@ -1,6 +1,5 @@
 import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/core/packages/pocketbase_filter.dart';
-import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/update/table_controller.dart';
@@ -36,10 +35,7 @@ class ProductTableController extends _$ProductTableController {
           filter: filterFunc.searchName(tableFilter),
           pageNo: page,
           pageSize: pageSize,
-          sort: PocketbaseSortValue(
-            sortKey: ProductField.created,
-            isAsc: true,
-          ),
+          sort: 'created+',
         )
 
         // 2. success sideffect

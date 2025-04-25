@@ -1,5 +1,4 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:gym_system/src/core/packages/pocketbase_sort_value.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/features/patients/data/treatment_record/patient_treatment_record_repository.dart';
@@ -56,17 +55,15 @@ class PatientTreatmentRecordsController
         ref.watch(patientTreatmentRecordSearchControllerProvider);
     final result = await repo
         .list(
-            filter: _buildFilter(
-              patientId: id,
-              params: searchParams,
-              treatment: treatment,
-            ),
-            pageNo: pageState.page,
-            pageSize: pageState.pageSize,
-            sort: PocketbaseSortValue(
-              sortKey: PatientTreatmentRecordField.created,
-              isAsc: false,
-            ))
+          filter: _buildFilter(
+            patientId: id,
+            params: searchParams,
+            treatment: treatment,
+          ),
+          pageNo: pageState.page,
+          pageSize: pageState.pageSize,
+          sort: 'created+',
+        )
         .run();
     return result.fold(Future.error, (x) => Future.value(x));
   }
