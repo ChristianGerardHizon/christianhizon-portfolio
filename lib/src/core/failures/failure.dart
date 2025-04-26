@@ -95,7 +95,7 @@ class PresentationFailure extends Failure with PresentationFailureMappable {
 }
 
 @MappableClass()
-class DataFailure extends Failure with PresentationFailureMappable {
+class DataFailure extends Failure with DataFailureMappable {
   const DataFailure([
     dynamic message,
     StackTrace? stackTrace,
@@ -113,7 +113,7 @@ class UserCancelledFailure extends Failure with UserCancelledFailureMappable {
 }
 
 @MappableClass()
-class NoAuthFailure extends Failure with UserCancelledFailureMappable {
+class NoAuthFailure extends Failure with NoAuthFailureMappable {
   const NoAuthFailure([
     dynamic message,
     StackTrace? stackTrace,

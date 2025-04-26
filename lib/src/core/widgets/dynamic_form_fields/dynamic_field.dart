@@ -12,7 +12,6 @@ abstract class DynamicField {
   final InputDecoration decoration;
   final dynamic Function(dynamic)? valueTransformer;
   final EdgeInsets? margin;
-  final dynamic Function(dynamic)? onChange;
   final bool enabled;
 
   const DynamicField({
@@ -21,7 +20,6 @@ abstract class DynamicField {
     this.decoration = const InputDecoration(),
     this.valueTransformer,
     this.margin,
-    this.onChange,
     this.enabled = true,
   });
 }
@@ -69,7 +67,6 @@ class DynamicTextField extends DynamicField {
     super.decoration,
     this.fieldTransformer,
     super.margin,
-    super.onChange,
     super.enabled,
   });
 }
@@ -80,6 +77,7 @@ class DynamicCheckboxField extends DynamicField {
   final String? Function(bool?)? validator;
   final dynamic Function(bool?)? fieldTransformer;
   final GlobalKey<FormBuilderFieldState>? formFieldKey;
+  final Function(bool?)? onChange;
 
   const DynamicCheckboxField({
     this.formFieldKey,
@@ -90,7 +88,7 @@ class DynamicCheckboxField extends DynamicField {
     super.valueTransformer,
     super.decoration,
     this.fieldTransformer,
-    super.onChange,
+    this.onChange,
     super.margin,
     super.enabled,
   });
@@ -138,6 +136,7 @@ class DynamicSelectField<T> extends DynamicField {
   final String? Function(T?)? validator;
   final dynamic Function(T?)? fieldTransformer;
   final GlobalKey<FormBuilderFieldState>? formFieldKey;
+  final Function(dynamic)? onChange;
 
   const DynamicSelectField({
     this.formFieldKey,
@@ -148,8 +147,8 @@ class DynamicSelectField<T> extends DynamicField {
     required this.options,
     super.decoration,
     this.fieldTransformer,
+    this.onChange,
     super.margin,
-    super.onChange,
     super.enabled,
   });
 }
@@ -173,7 +172,6 @@ class DynamicDateField extends DynamicField {
     this.lastDate,
     this.fieldTransformer,
     super.margin,
-    super.onChange,
     super.enabled,
   });
 }
@@ -186,6 +184,7 @@ class DynamicTypeAheadField extends DynamicField {
   final dynamic Function(dynamic)? fieldTransformer;
   final Widget Function(BuildContext, dynamic) itemBuilder;
   final GlobalKey<FormBuilderFieldState>? formFieldKey;
+  final Function(dynamic)? onChange;
 
   const DynamicTypeAheadField({
     this.formFieldKey,
@@ -198,8 +197,8 @@ class DynamicTypeAheadField extends DynamicField {
     super.valueTransformer,
     this.fieldTransformer,
     required this.selectionToString,
+    this.onChange,
     super.margin,
-    super.onChange,
     super.enabled,
   });
 }
@@ -219,7 +218,6 @@ class DynamicFilesField extends DynamicField {
     this.fileTypeLabel,
     this.fieldTransformer,
     super.margin,
-    super.onChange,
     super.enabled,
   });
 }
@@ -250,7 +248,6 @@ class DynamicImagesField extends DynamicField {
     this.compressionQuality = 85,
     this.fieldTransformer,
     super.margin,
-    super.onChange,
     super.enabled,
   });
 }
@@ -281,7 +278,6 @@ class DynamicPBImagesField extends DynamicField {
     this.fieldTransformer,
     this.fileTransformer,
     super.margin,
-    super.onChange,
     super.enabled,
   });
 }
@@ -307,7 +303,6 @@ class DynamicNumberField extends DynamicField {
     this.step,
     super.decoration,
     super.margin,
-    super.onChange,
     super.enabled,
   });
 }
@@ -329,7 +324,6 @@ class DynamicPasswordField extends DynamicField {
     this.fieldTransformer,
     super.decoration,
     super.margin,
-    super.onChange,
     this.obscureText = true,
     super.enabled,
   });

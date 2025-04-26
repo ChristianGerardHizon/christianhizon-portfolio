@@ -9,7 +9,7 @@ import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_fie
 import 'package:gym_system/src/features/branches/data/branch_repository.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
 import 'package:gym_system/src/features/branches/presentation/controllers/branch_form_controller.dart';
-import 'package:gym_system/src/features/branches/presentation/controllers/branches_controller.dart';
+import 'package:gym_system/src/features/branches/presentation/controllers/branch_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class BranchFormPage extends HookConsumerWidget {
@@ -48,7 +48,7 @@ class BranchFormPage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          ref.invalidate(branchesControllerProvider);
+          ref.invalidate(branchTableControllerProvider);
           context.pop();
         },
       );

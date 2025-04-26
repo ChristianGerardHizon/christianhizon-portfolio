@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
+import 'package:gym_system/src/core/utils/validators.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
@@ -12,7 +13,7 @@ import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:gym_system/src/features/users/presentation/controllers/user_controller.dart';
 import 'package:gym_system/src/features/users/presentation/controllers/user_form_controller.dart';
-import 'package:gym_system/src/features/users/presentation/controllers/users_controller.dart';
+import 'package:gym_system/src/features/users/presentation/controllers/user_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class UserFormPage extends HookConsumerWidget {
@@ -25,6 +26,7 @@ class UserFormPage extends HookConsumerWidget {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
     final provider = ref.watch(userFormControllerProvider(id));
+    final showPasswords = useState(false);
 
     ///
     /// Submit
@@ -51,7 +53,7 @@ class UserFormPage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          ref.invalidate(usersControllerProvider);
+          ref.invalidate(userTableControllerProvider);
           ref.invalidate(userControllerProvider(r.id));
 
           context.pop();
@@ -80,6 +82,9 @@ class UserFormPage extends HookConsumerWidget {
               ),
               formKey: formKey,
               isLoading: isLoading.value,
+              onChange: (data) {
+                showPasswords.value = data[UserField.changePassword] ?? false;
+              },
               fields: [
                 ///
                 /// Avatar
@@ -95,8 +100,7 @@ class UserFormPage extends HookConsumerWidget {
                       PBUtils.defaultFieldTransformer(list, isSingleFile: true),
                   fileTransformer: PBUtils.defaultFileTransformer,
                   decoration: InputDecoration(
-                    label: Text('Image'),
-                    border: OutlineInputBorder(),
+                    border: InputBorder.none,
                   ),
                   initialValue: images,
                   validator: FormBuilderValidators.compose([]),
@@ -109,7 +113,7 @@ class UserFormPage extends HookConsumerWidget {
                   name: UserField.name,
                   initialValue: user?.name,
                   decoration: InputDecoration(
-                    label: Text('User Name'),
+                    label: Text('Name'),
                     border: OutlineInputBorder(),
                   ),
                   validator: FormBuilderValidators.compose(
@@ -118,6 +122,130 @@ class UserFormPage extends HookConsumerWidget {
                     ],
                   ),
                 ),
+
+                DynamicTextField(
+                  name: UserField.email,
+                  initialValue: user?.email,
+                  decoration: InputDecoration(
+                    label: Text('Email'),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(),
+                      FormBuilderValidators.email(),
+                    ],
+                  ),
+                ),
+
+                DynamicHiddenField(
+                  name: UserField.emailVisibility,
+                  initialValue: true,
+                ),
+
+                ///
+                /// Change Password
+                ///
+                if (user is User)
+                  DynamicCheckboxField(
+                    name: UserField.changePassword,
+                    title: 'Change Password',
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                    ),
+                  ),
+
+                ///
+                /// Password for create
+                ///
+                if (user == null) ...[
+                  DynamicTextField(
+                    name: UserField.password,
+                    decoration: InputDecoration(
+                      label: Text('Password'),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                        CustomValidators.matchFieldValidator(
+                          UserField.passwordConfirm,
+                          formKey: formKey,
+                        ),
+                      ],
+                    ),
+                  ),
+                  DynamicTextField(
+                    name: UserField.passwordConfirm,
+                    decoration: InputDecoration(
+                      label: Text('Confirm Password'),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                        CustomValidators.matchFieldValidator(
+                          UserField.password,
+                          formKey: formKey,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
+                ///
+                /// passwords update
+                ///
+                if (showPasswords.value) ...[
+                  DynamicTextField(
+                    name: UserField.oldPassword,
+                    decoration: InputDecoration(
+                      label: Text('Old Password'),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                        CustomValidators.matchFieldValidator(
+                          UserField.passwordConfirm,
+                          formKey: formKey,
+                        ),
+                      ],
+                    ),
+                  ),
+                  DynamicTextField(
+                    name: UserField.password,
+                    decoration: InputDecoration(
+                      label: Text('Password'),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                        CustomValidators.matchFieldValidator(
+                          UserField.passwordConfirm,
+                          formKey: formKey,
+                        ),
+                      ],
+                    ),
+                  ),
+                  DynamicTextField(
+                    name: UserField.passwordConfirm,
+                    decoration: InputDecoration(
+                      label: Text('Confirm Password'),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                        CustomValidators.matchFieldValidator(
+                          UserField.password,
+                          formKey: formKey,
+                        ),
+                      ],
+                    ),
+                  ),
+                ]
               ],
               onSubmit: (result) => onSave(user, result),
             );

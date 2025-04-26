@@ -20,6 +20,8 @@ class UserField {
   static const String passwordConfirm = 'passwordConfirm';
   static const String emailVisibility = 'emailVisibility';
   static const String verified = 'verified';
+
+  static const String changePassword = 'changePassword';
 }
 
 class AdminField {
@@ -37,6 +39,8 @@ class AdminField {
   static const String passwordConfirm = 'passwordConfirm';
   static const String emailVisibility = 'emailVisibility';
   static const String verified = 'verified';
+
+  static const String changePassword = 'changePassword';
 }
 
 class PatientField {

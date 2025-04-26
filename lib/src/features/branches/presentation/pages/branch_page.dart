@@ -9,11 +9,11 @@ import 'package:gym_system/src/core/widgets/card_group.dart';
 import 'package:gym_system/src/core/widgets/collapsing_card.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_controller.dart';
 import 'package:gym_system/src/features/branches/data/branch_repository.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
 import 'package:gym_system/src/features/branches/presentation/controllers/branch_controller.dart';
-import 'package:gym_system/src/features/branches/presentation/controllers/branches_controller.dart';
+import 'package:gym_system/src/features/branches/presentation/controllers/branch_table_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class BranchPage extends HookConsumerWidget {
@@ -39,7 +39,7 @@ class BranchPage extends HookConsumerWidget {
             result.fold(
               (l) => AppSnackBar.rootFailure(l),
               (r) {
-                ref.invalidate(patientsControllerProvider);
+                ref.invalidate(patientTableControllerProvider);
                 AppSnackBar.root(message: 'Successfully Deleted');
                 if (context.canPop()) context.pop();
               },
@@ -52,7 +52,7 @@ class BranchPage extends HookConsumerWidget {
     ///
     refresh() async {
       ref.invalidate(provider);
-      ref.invalidate(branchesControllerProvider);
+      ref.invalidate(branchTableControllerProvider);
     }
 
     return Scaffold(
@@ -106,7 +106,6 @@ class BranchPage extends HookConsumerWidget {
                                 title: Text('Name: '),
                                 content: Text(branch.name),
                               ),
-
                             ],
                           ),
                         ),

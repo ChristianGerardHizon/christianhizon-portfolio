@@ -27,16 +27,15 @@ class DynamicFormBuilder extends HookConsumerWidget {
   final EdgeInsets? itemPadding;
   final AutovalidateMode? validateMode;
 
-  const DynamicFormBuilder({
-    super.key,
-    required this.formKey,
-    required this.fields,
-    required this.onSubmit,
-    this.onChange,
-    this.isLoading = false,
-    this.itemPadding,
-    this.validateMode
-  });
+  const DynamicFormBuilder(
+      {super.key,
+      required this.formKey,
+      required this.fields,
+      required this.onSubmit,
+      this.onChange,
+      this.isLoading = false,
+      this.itemPadding,
+      this.validateMode});
 
   onFormSubmit(List<DynamicField> fields) async {
     if (formKey.currentState?.saveAndValidate() ?? false) {

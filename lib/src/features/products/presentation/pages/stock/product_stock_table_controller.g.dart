@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'product_table_controller.dart';
+part of 'product_stock_table_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$productTableControllerHash() =>
-    r'54c0949f62a35567346b359d4d5fb9f1d93a41e2';
+String _$productStockTableControllerHash() =>
+    r'44be70cb9e0601ae835587afe525c7b590e0b93d';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,36 +30,37 @@ class _SystemHash {
   }
 }
 
-abstract class _$ProductTableController
-    extends BuildlessAutoDisposeAsyncNotifier<List<Product>> {
+abstract class _$ProductStockTableController
+    extends BuildlessAutoDisposeAsyncNotifier<List<ProductStock>> {
   late final String tableKey;
 
-  FutureOr<List<Product>> build(
+  FutureOr<List<ProductStock>> build(
     String tableKey,
   );
 }
 
-/// See also [ProductTableController].
-@ProviderFor(ProductTableController)
-const productTableControllerProvider = ProductTableControllerFamily();
+/// See also [ProductStockTableController].
+@ProviderFor(ProductStockTableController)
+const productStockTableControllerProvider = ProductStockTableControllerFamily();
 
-/// See also [ProductTableController].
-class ProductTableControllerFamily extends Family<AsyncValue<List<Product>>> {
-  /// See also [ProductTableController].
-  const ProductTableControllerFamily();
+/// See also [ProductStockTableController].
+class ProductStockTableControllerFamily
+    extends Family<AsyncValue<List<ProductStock>>> {
+  /// See also [ProductStockTableController].
+  const ProductStockTableControllerFamily();
 
-  /// See also [ProductTableController].
-  ProductTableControllerProvider call(
+  /// See also [ProductStockTableController].
+  ProductStockTableControllerProvider call(
     String tableKey,
   ) {
-    return ProductTableControllerProvider(
+    return ProductStockTableControllerProvider(
       tableKey,
     );
   }
 
   @override
-  ProductTableControllerProvider getProviderOverride(
-    covariant ProductTableControllerProvider provider,
+  ProductStockTableControllerProvider getProviderOverride(
+    covariant ProductStockTableControllerProvider provider,
   ) {
     return call(
       provider.tableKey,
@@ -78,31 +79,31 @@ class ProductTableControllerFamily extends Family<AsyncValue<List<Product>>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'productTableControllerProvider';
+  String? get name => r'productStockTableControllerProvider';
 }
 
-/// See also [ProductTableController].
-class ProductTableControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<ProductTableController,
-        List<Product>> {
-  /// See also [ProductTableController].
-  ProductTableControllerProvider(
+/// See also [ProductStockTableController].
+class ProductStockTableControllerProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<ProductStockTableController,
+        List<ProductStock>> {
+  /// See also [ProductStockTableController].
+  ProductStockTableControllerProvider(
     String tableKey,
   ) : this._internal(
-          () => ProductTableController()..tableKey = tableKey,
-          from: productTableControllerProvider,
-          name: r'productTableControllerProvider',
+          () => ProductStockTableController()..tableKey = tableKey,
+          from: productStockTableControllerProvider,
+          name: r'productStockTableControllerProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$productTableControllerHash,
-          dependencies: ProductTableControllerFamily._dependencies,
+                  : _$productStockTableControllerHash,
+          dependencies: ProductStockTableControllerFamily._dependencies,
           allTransitiveDependencies:
-              ProductTableControllerFamily._allTransitiveDependencies,
+              ProductStockTableControllerFamily._allTransitiveDependencies,
           tableKey: tableKey,
         );
 
-  ProductTableControllerProvider._internal(
+  ProductStockTableControllerProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -115,8 +116,8 @@ class ProductTableControllerProvider
   final String tableKey;
 
   @override
-  FutureOr<List<Product>> runNotifierBuild(
-    covariant ProductTableController notifier,
+  FutureOr<List<ProductStock>> runNotifierBuild(
+    covariant ProductStockTableController notifier,
   ) {
     return notifier.build(
       tableKey,
@@ -124,10 +125,10 @@ class ProductTableControllerProvider
   }
 
   @override
-  Override overrideWith(ProductTableController Function() create) {
+  Override overrideWith(ProductStockTableController Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ProductTableControllerProvider._internal(
+      override: ProductStockTableControllerProvider._internal(
         () => create()..tableKey = tableKey,
         from: from,
         name: null,
@@ -140,14 +141,14 @@ class ProductTableControllerProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<ProductTableController, List<Product>>
-      createElement() {
-    return _ProductTableControllerProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<ProductStockTableController,
+      List<ProductStock>> createElement() {
+    return _ProductStockTableControllerProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ProductTableControllerProvider &&
+    return other is ProductStockTableControllerProvider &&
         other.tableKey == tableKey;
   }
 
@@ -162,19 +163,20 @@ class ProductTableControllerProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ProductTableControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<List<Product>> {
+mixin ProductStockTableControllerRef
+    on AutoDisposeAsyncNotifierProviderRef<List<ProductStock>> {
   /// The parameter `tableKey` of this provider.
   String get tableKey;
 }
 
-class _ProductTableControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<ProductTableController,
-        List<Product>> with ProductTableControllerRef {
-  _ProductTableControllerProviderElement(super.provider);
+class _ProductStockTableControllerProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<ProductStockTableController,
+        List<ProductStock>> with ProductStockTableControllerRef {
+  _ProductStockTableControllerProviderElement(super.provider);
 
   @override
-  String get tableKey => (origin as ProductTableControllerProvider).tableKey;
+  String get tableKey =>
+      (origin as ProductStockTableControllerProvider).tableKey;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

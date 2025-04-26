@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'product_table_controller.dart';
+part of 'admin_table_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$productTableControllerHash() =>
-    r'54c0949f62a35567346b359d4d5fb9f1d93a41e2';
+String _$adminTableControllerHash() =>
+    r'5d6493fd4ae26f9d5325db9cfe222d39597dbea8';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,36 +30,36 @@ class _SystemHash {
   }
 }
 
-abstract class _$ProductTableController
-    extends BuildlessAutoDisposeAsyncNotifier<List<Product>> {
+abstract class _$AdminTableController
+    extends BuildlessAutoDisposeAsyncNotifier<List<Admin>> {
   late final String tableKey;
 
-  FutureOr<List<Product>> build(
+  FutureOr<List<Admin>> build(
     String tableKey,
   );
 }
 
-/// See also [ProductTableController].
-@ProviderFor(ProductTableController)
-const productTableControllerProvider = ProductTableControllerFamily();
+/// See also [AdminTableController].
+@ProviderFor(AdminTableController)
+const adminTableControllerProvider = AdminTableControllerFamily();
 
-/// See also [ProductTableController].
-class ProductTableControllerFamily extends Family<AsyncValue<List<Product>>> {
-  /// See also [ProductTableController].
-  const ProductTableControllerFamily();
+/// See also [AdminTableController].
+class AdminTableControllerFamily extends Family<AsyncValue<List<Admin>>> {
+  /// See also [AdminTableController].
+  const AdminTableControllerFamily();
 
-  /// See also [ProductTableController].
-  ProductTableControllerProvider call(
+  /// See also [AdminTableController].
+  AdminTableControllerProvider call(
     String tableKey,
   ) {
-    return ProductTableControllerProvider(
+    return AdminTableControllerProvider(
       tableKey,
     );
   }
 
   @override
-  ProductTableControllerProvider getProviderOverride(
-    covariant ProductTableControllerProvider provider,
+  AdminTableControllerProvider getProviderOverride(
+    covariant AdminTableControllerProvider provider,
   ) {
     return call(
       provider.tableKey,
@@ -78,31 +78,30 @@ class ProductTableControllerFamily extends Family<AsyncValue<List<Product>>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'productTableControllerProvider';
+  String? get name => r'adminTableControllerProvider';
 }
 
-/// See also [ProductTableController].
-class ProductTableControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<ProductTableController,
-        List<Product>> {
-  /// See also [ProductTableController].
-  ProductTableControllerProvider(
+/// See also [AdminTableController].
+class AdminTableControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
+    AdminTableController, List<Admin>> {
+  /// See also [AdminTableController].
+  AdminTableControllerProvider(
     String tableKey,
   ) : this._internal(
-          () => ProductTableController()..tableKey = tableKey,
-          from: productTableControllerProvider,
-          name: r'productTableControllerProvider',
+          () => AdminTableController()..tableKey = tableKey,
+          from: adminTableControllerProvider,
+          name: r'adminTableControllerProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$productTableControllerHash,
-          dependencies: ProductTableControllerFamily._dependencies,
+                  : _$adminTableControllerHash,
+          dependencies: AdminTableControllerFamily._dependencies,
           allTransitiveDependencies:
-              ProductTableControllerFamily._allTransitiveDependencies,
+              AdminTableControllerFamily._allTransitiveDependencies,
           tableKey: tableKey,
         );
 
-  ProductTableControllerProvider._internal(
+  AdminTableControllerProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -115,8 +114,8 @@ class ProductTableControllerProvider
   final String tableKey;
 
   @override
-  FutureOr<List<Product>> runNotifierBuild(
-    covariant ProductTableController notifier,
+  FutureOr<List<Admin>> runNotifierBuild(
+    covariant AdminTableController notifier,
   ) {
     return notifier.build(
       tableKey,
@@ -124,10 +123,10 @@ class ProductTableControllerProvider
   }
 
   @override
-  Override overrideWith(ProductTableController Function() create) {
+  Override overrideWith(AdminTableController Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ProductTableControllerProvider._internal(
+      override: AdminTableControllerProvider._internal(
         () => create()..tableKey = tableKey,
         from: from,
         name: null,
@@ -140,15 +139,14 @@ class ProductTableControllerProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<ProductTableController, List<Product>>
+  AutoDisposeAsyncNotifierProviderElement<AdminTableController, List<Admin>>
       createElement() {
-    return _ProductTableControllerProviderElement(this);
+    return _AdminTableControllerProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ProductTableControllerProvider &&
-        other.tableKey == tableKey;
+    return other is AdminTableControllerProvider && other.tableKey == tableKey;
   }
 
   @override
@@ -162,19 +160,19 @@ class ProductTableControllerProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ProductTableControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<List<Product>> {
+mixin AdminTableControllerRef
+    on AutoDisposeAsyncNotifierProviderRef<List<Admin>> {
   /// The parameter `tableKey` of this provider.
   String get tableKey;
 }
 
-class _ProductTableControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<ProductTableController,
-        List<Product>> with ProductTableControllerRef {
-  _ProductTableControllerProviderElement(super.provider);
+class _AdminTableControllerProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<AdminTableController,
+        List<Admin>> with AdminTableControllerRef {
+  _AdminTableControllerProviderElement(super.provider);
 
   @override
-  String get tableKey => (origin as ProductTableControllerProvider).tableKey;
+  String get tableKey => (origin as AdminTableControllerProvider).tableKey;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

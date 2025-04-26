@@ -15,7 +15,7 @@ class DynamicFormFieldSelect extends StatelessWidget {
       name: field.name,
       enabled: field.enabled,
       validator: field.validator,
-      onChanged: field.onChange,
+      onChanged: (x) => field.onChange?.call(x),
       builder: (FormFieldState<dynamic> state) {
         return InputDecorator(
           decoration: field.decoration.copyWith(

@@ -12,7 +12,7 @@ import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
 import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
 import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientDetails extends HookConsumerWidget {
@@ -31,7 +31,7 @@ class PatientDetails extends HookConsumerWidget {
             result.fold(
               (l) => AppSnackBar.rootFailure(l),
               (r) {
-                ref.invalidate(patientsControllerProvider);
+                ref.invalidate(patientTableControllerProvider);
                 AppSnackBar.root(message: 'Successfully Deleted');
                 if (context.canPop()) context.pop();
               },

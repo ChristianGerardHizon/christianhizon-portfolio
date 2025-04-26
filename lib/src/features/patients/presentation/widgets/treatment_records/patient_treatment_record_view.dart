@@ -204,6 +204,7 @@ class PatientTreatmentRecordView extends HookConsumerWidget {
               ),
               sliver: SliverToBoxAdapter(
                 child: PageSelector(
+                  totalPages: 0,
                   hasNext: hasNext.value,
                   page: pageState.page,
                   onPageChange: (value) {

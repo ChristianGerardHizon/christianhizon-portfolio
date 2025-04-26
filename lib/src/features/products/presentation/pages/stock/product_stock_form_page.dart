@@ -13,7 +13,7 @@ import 'package:gym_system/src/features/products/domain/product_stock.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/inventory/product_inventory_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/stock/product_stock_controller.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/stock/product_stock_form_controller.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/stock/product_stocks_controller.dart';
+import 'package:gym_system/src/features/products/presentation/pages/stock/product_stock_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductStockFormPage extends HookConsumerWidget {
@@ -57,7 +57,7 @@ class ProductStockFormPage extends HookConsumerWidget {
         (r) {
           AppSnackBar.root(message: 'Success');
           ref.invalidate(productInventoryControllerProvider);
-          ref.invalidate(productStocksControllerProvider);
+          ref.invalidate(productStockTableControllerProvider);
           ref.invalidate(productStockControllerProvider(r.id));
           context.pop();
         },

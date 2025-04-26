@@ -1,95 +1,82 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/extensions/num.dart';
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
+import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/responsive_pagination_list_with_delete_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_base_list.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/update/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
-import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_inventory.dart';
-import 'package:gym_system/src/features/products/domain/product_inventory_search.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/inventory/product_inventories_controller.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/inventory/product_inventories_page_controller.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/product/product_table_controller.dart';
-import 'package:gym_system/src/features/products/presentation/widgets/product_for_sale_text.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/inventory/product_inventory_table_controller.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_inventory_card.dart';
-import 'package:gym_system/src/features/products/presentation/widgets/product_status_text.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductInventoriesPage extends HookConsumerWidget {
   const ProductInventoriesPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = useMemoized(() => DynamicTableController());
     final searchCtrl = useTextEditingController();
-    final notifier =
-        ref.read(productInventoriesPageControllerProvider.notifier);
-    final provider = ref.watch(productInventoriesControllerProvider);
-    final searchNotifier =
-        ref.read(productInventorySearchControllerProvider.notifier);
-    final isLoading = useState(false);
+    final tableKey = TableControllerKeys.productInventory;
+    final provider = tableControllerProvider(tableKey);
+    final notifier = ref.read(provider.notifier);
+    final listProvider = productInventoryTableControllerProvider(tableKey);
+    final listState = ref.watch(listProvider);
+
+    ref.listen(listProvider, (curr, next) {
+      // if (next.isLoading || next.isRefreshing || next.isReloading) {
+      //   notifier.startLoading();
+      // }
+
+      // if (next is AsyncError) {
+      //   // notifier.fetchFailed();
+      // }
+
+      // if (next.hasValue) {
+      //   notifier.stopLoading();
+      // }
+    });
 
     ///
     /// onTap
     ///
-    onTap(int index, ProductInventory product, bool selected) {
-      if (!selected && controller.selected.isNotEmpty) {
-        controller.toggle(index);
-        return;
-      }
-
-      if (selected) {
-        controller.toggle(index);
-        return;
-      }
-
-      ProductPageRoute(product.id).push(context);
+    onTap(ProductInventory productInventory) {
+      ProductPageRoute(productInventory.id).push(context);
     }
 
     ///
     /// onRefresh
     ///
     onRefresh() {
-      ref.invalidate(productInventoriesControllerProvider);
-      controller.clear();
+      ref.invalidate(productInventoryTableControllerProvider);
+      ref.invalidate(provider);
+      // controller.clear();
     }
 
     ///
     /// onDelete
     ///
-    onDelete(List<Product> items) async {
+    onDelete(List<ProductInventory> items) async {
       final confirm = await ConfirmModal.show(context);
       if (confirm != true) return;
       final repo = ref.read(productRepositoryProvider);
       final ids = items.map((e) => e.id).toList();
-      isLoading.value = true;
+      // isLoading.value = true;
       final result = await repo.softDeleteMulti(ids).run();
-      if (context.mounted) isLoading.value = false;
+      // if (context.mounted) isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
-          controller.clear();
-          ref.invalidate(productTableControllerProvider);
+          // controller.clear();
+          ref.invalidate(productInventoryTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
           if (context.canPop()) context.pop();
         },
-      );
-    }
-
-    bool buildIsLoading() {
-      if (isLoading.value) return true;
-      return provider.maybeWhen(
-        skipError: true,
-        skipLoadingOnRefresh: false,
-        skipLoadingOnReload: false,
-        loading: () => true,
-        orElse: () => false,
       );
     }
 
@@ -100,148 +87,112 @@ class ProductInventoriesPage extends HookConsumerWidget {
       ProductFormPageRoute().push(context);
     }
 
-    ///
-    /// onSearch
-    ///
-    onSearch() {
-      final query = searchCtrl.text.trim();
-      searchNotifier.updateParams(ProductInventorySearch(name: query));
-    }
-
-    ///
-    /// Handle Clear
-    ///
-    onClear() {
-      searchCtrl.clear();
-      searchNotifier.updateParams(ProductInventorySearch(name: ''));
-    }
-
     return Scaffold(
       appBar: AppBar(
-        leading: const BackButton(),
-        title: Text('Products Inventories'),
+        title: Text('ProductInventorys'),
         actions: [
           RefreshButton(
             onPressed: onRefresh,
           ),
         ],
       ),
-      body:
+      body: listState.when(
+        skipError: false,
+        skipLoadingOnRefresh: false,
+        skipLoadingOnReload: false,
+        error: (error, stack) => Center(
+          child: Text(error.toString()),
+        ),
+        loading: () => Center(
+          child: CircularProgressIndicator(),
+        ),
+        data: (items) => DynamicTableView<ProductInventory>(
+          tableKey: TableControllerKeys.productInventory,
+          error: null,
+          items: items,
+          onDelete: onDelete,
+          onRowTap: onTap,
 
           ///
-          /// Table
+          /// Search Features
           ///
-          ResponsivePaginationListWithDeleteView<ProductInventory>(
-        controller: controller,
-        onPageChange: notifier.changePage,
-        error: provider.maybeWhen(
-          skipError: false,
-          skipLoadingOnRefresh: true,
-          skipLoadingOnReload: true,
-          error: (error, stackTrace) => Center(
-            child: Text(error.toString()),
-          ),
-          orElse: () => null,
+          searchCtrl: searchCtrl,
+          onCreate: onCreate,
+
+          ///
+          /// Table Data
+          ///
+          columns: [
+            TableColumn(
+              header: 'Name',
+              width: 200,
+              alignment: Alignment.centerLeft,
+              builder: (context, data, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    overflow: TextOverflow.ellipsis,
+                    '${data.expand.product.name}',
+                  ),
+                );
+              },
+            ),
+            TableColumn(
+              header: 'Branch',
+              alignment: Alignment.centerLeft,
+              builder: (context, productInventory, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text((productInventory.expand.branch?.name).optional(),
+                      overflow: TextOverflow.ellipsis),
+                );
+              },
+            ),
+            TableColumn(
+              header: 'Date Created',
+              alignment: Alignment.centerLeft,
+              width: 150,
+              builder: (context, productInventory, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      (productInventory.created?.yyyyMMddHHmmA()).optional(),
+                      overflow: TextOverflow.ellipsis),
+                );
+              },
+            ),
+            TableColumn(
+              header: 'Actions',
+              alignment: Alignment.centerLeft,
+              width: 150,
+              builder: (context, productInventory, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(onPressed: () {}, child: Text('Add Stock')),
+                );
+              },
+            ),
+          ],
+
+          ///
+          /// Builder for mobile
+          ///
+          mobileBuilder: (context, index, productInventory, selected) {
+            return ProductInventoryCard(
+              productInventory: productInventory,
+              onTap: () {
+                if (selected)
+                  notifier.toggleRow(index);
+                else
+                  onTap(productInventory);
+              },
+              selected: selected,
+              onLongPress: () {
+                notifier.toggleRow(index);
+              },
+            );
+          },
         ),
-        isLoading: buildIsLoading(),
-        results: provider.when(
-          skipError: true,
-          skipLoadingOnRefresh: false,
-          skipLoadingOnReload: false,
-          data: (x) => x,
-          error: (error, stackTrace) => null,
-          loading: () => null,
-        ),
-        onDelete: (list) => onDelete([]),
-
-        ///
-        /// Search Features
-        ///
-        searchCtrl: searchCtrl,
-        onClear: onClear,
-        onCreate: onCreate,
-        onSearch: onSearch,
-
-        ///
-        /// Table Data
-        ///
-        onHeaderTap: (headerKey) {},
-        onTap: (data) => onTap(0, data, false),
-        data: [
-          TableColumn(
-            header: 'Name',
-            width: 200,
-            alignment: Alignment.centerLeft,
-            builder: (context, inventory, row, column) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  overflow: TextOverflow.ellipsis,
-                  '${inventory.expand.product.name}',
-                ),
-              );
-            },
-          ),
-          TableColumn(
-            header: 'Branch',
-            alignment: Alignment.centerLeft,
-            builder: (context, inventory, row, column) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: Text((inventory.expand.branch?.name).optional(),
-                    overflow: TextOverflow.ellipsis),
-              );
-            },
-          ),
-          TableColumn(
-            header: 'Price',
-            alignment: Alignment.centerLeft,
-            builder: (context, inventory, row, column) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: Text(inventory.expand.product.price.toPHPeso(),
-                    overflow: TextOverflow.ellipsis),
-              );
-            },
-          ),
-          TableColumn(
-            width: 120,
-            header: 'For Sale',
-            alignment: Alignment.centerLeft,
-            builder: (context, inventory, row, column) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: ProductForSaleText(
-                    forSale: inventory.expand.product.forSale),
-              );
-            },
-          ),
-          TableColumn(
-            width: 200,
-            header: 'Status',
-            alignment: Alignment.centerLeft,
-            builder: (context, product, row, column) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: ProductStatusText(product: product),
-              );
-            },
-          ),
-        ],
-
-        ///
-        /// Builder for mobile
-        ///
-        mobileBuilder: (context, index, productInventory, selected) {
-          return ProductInventoryCard(
-            productInventory: productInventory,
-            onTap: () => onTap(index, productInventory, selected),
-            selected: selected,
-            onLongPress: () {
-              controller.toggle(index);
-            },
-          );
-        },
       ),
     );
   }

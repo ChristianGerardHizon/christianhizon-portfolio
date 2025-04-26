@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
+import 'package:gym_system/src/core/utils/validators.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
@@ -12,7 +13,7 @@ import 'package:gym_system/src/features/admins/data/admin_repository.dart';
 import 'package:gym_system/src/features/admins/domain/admin.dart';
 import 'package:gym_system/src/features/admins/presentation/controllers/admin_controller.dart';
 import 'package:gym_system/src/features/admins/presentation/controllers/admin_form_controller.dart';
-import 'package:gym_system/src/features/admins/presentation/controllers/admins_controller.dart';
+import 'package:gym_system/src/features/admins/presentation/controllers/admin_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AdminFormPage extends HookConsumerWidget {
@@ -25,6 +26,7 @@ class AdminFormPage extends HookConsumerWidget {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
     final provider = ref.watch(adminFormControllerProvider(id));
+    final showPasswords = useState(false);
 
     ///
     /// Submit
@@ -51,7 +53,7 @@ class AdminFormPage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          ref.invalidate(adminsControllerProvider);
+          ref.invalidate(adminTableControllerProvider);
           ref.invalidate(adminControllerProvider(r.id));
 
           context.pop();
@@ -80,6 +82,9 @@ class AdminFormPage extends HookConsumerWidget {
               ),
               formKey: formKey,
               isLoading: isLoading.value,
+              onChange: (data) {
+                showPasswords.value = data[AdminField.changePassword] ?? false;
+              },
               fields: [
                 ///
                 /// Image
@@ -94,10 +99,7 @@ class AdminFormPage extends HookConsumerWidget {
                   fieldTransformer: (list) =>
                       PBUtils.defaultFieldTransformer(list, isSingleFile: true),
                   fileTransformer: PBUtils.defaultFileTransformer,
-                  decoration: InputDecoration(
-                    label: Text('Image'),
-                    border: OutlineInputBorder(),
-                  ),
+                  decoration: InputDecoration(border: InputBorder.none),
                   initialValue: images,
                   validator: FormBuilderValidators.compose([]),
                 ),
@@ -109,7 +111,7 @@ class AdminFormPage extends HookConsumerWidget {
                   name: AdminField.name,
                   initialValue: admin?.name,
                   decoration: InputDecoration(
-                    label: Text('Admin Name'),
+                    label: Text('Name'),
                     border: OutlineInputBorder(),
                   ),
                   validator: FormBuilderValidators.compose(
@@ -118,6 +120,132 @@ class AdminFormPage extends HookConsumerWidget {
                     ],
                   ),
                 ),
+
+                ///
+                /// Email
+                ///
+                DynamicTextField(
+                  name: AdminField.email,
+                  initialValue: admin?.email,
+                  decoration: InputDecoration(
+                    label: Text('Email'),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(),
+                    ],
+                  ),
+                ),
+
+                DynamicHiddenField(
+                  name: AdminField.emailVisibility,
+                  initialValue: true,
+                ),
+
+                ///
+                /// Change Password
+                ///
+                if (admin is Admin)
+                  DynamicCheckboxField(
+                    name: AdminField.changePassword,
+                    title: 'Change Password',
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                    ),
+                  ),
+
+                ///
+                /// Password for create
+                ///
+                if (admin == null) ...[
+                  DynamicTextField(
+                    name: AdminField.password,
+                    decoration: InputDecoration(
+                      label: Text('Password'),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                        CustomValidators.matchFieldValidator(
+                          AdminField.passwordConfirm,
+                          formKey: formKey,
+                        ),
+                      ],
+                    ),
+                  ),
+                  DynamicTextField(
+                    name: AdminField.passwordConfirm,
+                    decoration: InputDecoration(
+                      label: Text('Confirm Password'),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                        CustomValidators.matchFieldValidator(
+                          AdminField.password,
+                          formKey: formKey,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
+                ///
+                /// passwords update
+                ///
+                if (showPasswords.value) ...[
+                  DynamicTextField(
+                    name: AdminField.oldPassword,
+                    decoration: InputDecoration(
+                      label: Text('Old Password'),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                        CustomValidators.matchFieldValidator(
+                          AdminField.passwordConfirm,
+                          formKey: formKey,
+                        ),
+                      ],
+                    ),
+                  ),
+                  DynamicTextField(
+                    name: AdminField.password,
+                    decoration: InputDecoration(
+                      label: Text('Password'),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                        CustomValidators.matchFieldValidator(
+                          AdminField.passwordConfirm,
+                          formKey: formKey,
+                        ),
+                      ],
+                    ),
+                  ),
+                  DynamicTextField(
+                    name: AdminField.passwordConfirm,
+                    decoration: InputDecoration(
+                      label: Text('Confirm Password'),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                        CustomValidators.matchFieldValidator(
+                          AdminField.password,
+                          formKey: formKey,
+                        ),
+                      ],
+                    ),
+                  ),
+                ]
               ],
               onSubmit: (result) => onSave(admin, result),
             );

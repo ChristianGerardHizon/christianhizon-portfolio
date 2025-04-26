@@ -13,7 +13,7 @@ import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dar
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_table_controller.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -39,7 +39,7 @@ class ProductDetailsView extends HookConsumerWidget {
     /// refresh
     ///
     refresh(String id) {
-      ref.invalidate(patientsControllerProvider);
+      ref.invalidate(patientTableControllerProvider);
       ref.invalidate(patientControllerProvider(id));
     }
 

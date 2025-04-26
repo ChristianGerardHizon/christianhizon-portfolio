@@ -7,9 +7,9 @@ import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/update/dynamic_table_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/update/table_column.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/update/table_controller.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
@@ -27,20 +27,6 @@ class ProductsPage extends HookConsumerWidget {
     final notifier = ref.read(provider.notifier);
     final listProvider = productTableControllerProvider(tableKey);
     final listState = ref.watch(listProvider);
-
-    ref.listen(listProvider, (curr, next) {
-      if (next.isLoading || next.isRefreshing || next.isReloading) {
-        notifier.startLoading();
-      }
-
-      if (next is AsyncError) {
-        // notifier.fetchFailed();
-      }
-
-      if (next.hasValue) {
-        notifier.stopLoading();
-      }
-    });
 
     ///
     /// onTap
@@ -132,7 +118,7 @@ class ProductsPage extends HookConsumerWidget {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     overflow: TextOverflow.ellipsis,
-                    '${data.name}',
+                    data.name,
                   ),
                 );
               },

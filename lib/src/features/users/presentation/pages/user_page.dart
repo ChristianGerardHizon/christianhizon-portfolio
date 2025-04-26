@@ -11,7 +11,7 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:gym_system/src/features/users/presentation/controllers/user_controller.dart';
-import 'package:gym_system/src/features/users/presentation/controllers/users_controller.dart';
+import 'package:gym_system/src/features/users/presentation/controllers/user_table_controller.dart';
 import 'package:gym_system/src/features/users/presentation/widgets/user_circle_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -36,7 +36,7 @@ class UserPage extends HookConsumerWidget {
         result.fold(
           (l) => AppSnackBar.rootFailure(l),
           (r) {
-            ref.invalidate(usersControllerProvider);
+            ref.invalidate(userTableControllerProvider);
             AppSnackBar.root(message: 'Successfully Deleted');
             if (context.canPop()) context.pop();
           },
@@ -142,6 +142,15 @@ class UserPage extends HookConsumerWidget {
                       ListTile(
                         leading: const Icon(Icons.edit_outlined),
                         title: const Text('Edit User Information'),
+                        trailing: const Icon(
+                          Icons.chevron_right_outlined,
+                          size: 24,
+                        ),
+                        onTap: () => UserFormPageRoute(id: id).push(context),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.edit_outlined),
+                        title: const Text('Change Password'),
                         trailing: const Icon(
                           Icons.chevron_right_outlined,
                           size: 24,

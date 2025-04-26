@@ -4,17 +4,16 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
+import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/responsive_pagination_list_with_delete_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_base_list.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/update/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/patients/domain/patient_search.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_page_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_table_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patients/patient_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -22,25 +21,17 @@ class PatientsPage extends HookConsumerWidget {
   const PatientsPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = useMemoized(() => DynamicTableController());
     final searchCtrl = useTextEditingController();
-    final notifier = ref.read(patientsPageControllerProvider.notifier);
-    final provider = ref.watch(patientsControllerProvider);
-    final searchNotifier = ref.read(patientSearchControllerProvider.notifier);
-    final isLoading = useState(false);
+    final tableKey = TableControllerKeys.patient;
+    final provider = tableControllerProvider(tableKey);
+    final notifier = ref.read(provider.notifier);
+    final listProvider = patientTableControllerProvider(tableKey);
+    final listState = ref.watch(listProvider);
 
     ///
     /// onTap
     ///
-    onTap(int index, Patient patient, bool selected) {
-      if (!selected && controller.selected.isNotEmpty) {
-        controller.toggle(index);
-        return;
-      }
-      if (selected) {
-        controller.toggle(index);
-        return;
-      }
+    onTap(Patient patient) {
       PatientPageRoute(patient.id).push(context);
     }
 
@@ -48,8 +39,9 @@ class PatientsPage extends HookConsumerWidget {
     /// onRefresh
     ///
     onRefresh() {
-      ref.invalidate(patientsControllerProvider);
-      controller.clear();
+      ref.invalidate(patientTableControllerProvider);
+      ref.invalidate(provider);
+      // controller.clear();
     }
 
     ///
@@ -60,28 +52,17 @@ class PatientsPage extends HookConsumerWidget {
       if (confirm != true) return;
       final repo = ref.read(patientRepositoryProvider);
       final ids = items.map((e) => e.id).toList();
-      isLoading.value = true;
+      // isLoading.value = true;
       final result = await repo.softDeleteMulti(ids).run();
-      if (context.mounted) isLoading.value = false;
+      // if (context.mounted) isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
-          controller.clear();
-          ref.invalidate(patientsControllerProvider);
+          // controller.clear();
+          ref.invalidate(patientTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
           if (context.canPop()) context.pop();
         },
-      );
-    }
-
-    bool buildIsLoading() {
-      if (isLoading.value) return true;
-      return provider.maybeWhen(
-        skipError: true,
-        skipLoadingOnRefresh: false,
-        skipLoadingOnReload: false,
-        loading: () => true,
-        orElse: () => false,
       );
     }
 
@@ -90,22 +71,6 @@ class PatientsPage extends HookConsumerWidget {
     ///
     onCreate() {
       PatientFormPageRoute().push(context);
-    }
-
-    ///
-    /// onSearch
-    ///
-    onSearch() {
-      final query = searchCtrl.text.trim();
-      searchNotifier.updateParams(PatientSearch(name: query));
-    }
-
-    ///
-    /// Handle Clear
-    ///
-    onClear() {
-      searchCtrl.clear();
-      searchNotifier.updateParams(PatientSearch(name: ''));
     }
 
     return Scaffold(
@@ -117,111 +82,102 @@ class PatientsPage extends HookConsumerWidget {
           ),
         ],
       ),
-      body:
+      body: listState.when(
+        skipError: false,
+        skipLoadingOnRefresh: false,
+        skipLoadingOnReload: false,
+        error: (error, stack) => Center(
+          child: Text(error.toString()),
+        ),
+        loading: () => Center(
+          child: CircularProgressIndicator(),
+        ),
+        data: (items) => DynamicTableView<Patient>(
+          tableKey: TableControllerKeys.patient,
+          error: null,
+          items: items,
+          onDelete: onDelete,
+          onRowTap: onTap,
 
           ///
-          /// Table
+          /// Search Features
           ///
-          ResponsivePaginationListWithDeleteView<Patient>(
-        controller: controller,
-        onPageChange: notifier.changePage,
-        error: provider.maybeWhen(
-          skipError: false,
-          skipLoadingOnRefresh: true,
-          skipLoadingOnReload: true,
-          error: (error, stackTrace) => Center(
-            child: Text(error.toString()),
-          ),
-          orElse: () => null,
+          searchCtrl: searchCtrl,
+          onCreate: onCreate,
+
+          ///
+          /// Table Data
+          ///
+          columns: [
+            TableColumn(
+              header: 'Name',
+              width: 200,
+              alignment: Alignment.centerLeft,
+              builder: (context, data, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    overflow: TextOverflow.ellipsis,
+                    data.name,
+                  ),
+                );
+              },
+            ),
+            TableColumn(
+              header: 'Branch',
+              alignment: Alignment.centerLeft,
+              builder: (context, patient, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text((patient.expand.branch?.name).optional(),
+                      overflow: TextOverflow.ellipsis),
+                );
+              },
+            ),
+            TableColumn(
+              header: 'Date Created',
+              alignment: Alignment.centerLeft,
+              width: 150,
+              builder: (context, patient, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text((patient.created?.yyyyMMddHHmmA()).optional(),
+                      overflow: TextOverflow.ellipsis),
+                );
+              },
+            ),
+            TableColumn(
+              header: 'Actions',
+              alignment: Alignment.centerLeft,
+              width: 150,
+              builder: (context, patient, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(onPressed: () {}, child: Text('Add Stock')),
+                );
+              },
+            ),
+          ],
+
+          ///
+          /// Builder for mobile
+          ///
+          mobileBuilder: (context, index, patient, selected) {
+            return PatientCard(
+              patient: patient,
+              onTap: () {
+                if (selected)
+                  notifier.toggleRow(index);
+                else
+                  onTap(patient);
+              },
+              selected: selected,
+              onLongPress: () {
+                notifier.toggleRow(index);
+              },
+            );
+          },
         ),
-        isLoading: buildIsLoading(),
-        results: provider.when(
-          skipError: true,
-          skipLoadingOnRefresh: false,
-          skipLoadingOnReload: false,
-          data: (x) => x,
-          error: (error, stackTrace) => null,
-          loading: () => null,
-        ),
-        onDelete: onDelete,
-
-        ///
-        /// Search Features
-        ///
-        searchCtrl: searchCtrl,
-        onClear: onClear,
-        onCreate: onCreate,
-        onSearch: onSearch,
-
-        ///
-        /// Table Data
-        ///
-        onHeaderTap: (headerKey) {},
-        onTap: (x) => onTap(0, x, false),
-        data: [
-          TableColumn(
-            header: 'Name',
-            width: 200,
-            alignment: Alignment.centerLeft,
-            builder: (context, data, row, column) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  overflow: TextOverflow.ellipsis,
-                  '${data.name}',
-                ),
-              );
-            },
-          ),
-          TableColumn(
-            header: 'Branch',
-            alignment: Alignment.centerLeft,
-            builder: (context, patient, row, column) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: Text((patient.expand.branch?.name).optional(),
-                    overflow: TextOverflow.ellipsis),
-              );
-            },
-          ),
-          TableColumn(
-            header: 'Date Created',
-            alignment: Alignment.centerLeft,
-            width: 150,
-            builder: (context, patient, row, column) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: Text((patient.created?.yyyyMMddHHmmA()).optional(),
-                    overflow: TextOverflow.ellipsis),
-              );
-            },
-          ),
-          // TableColumn(
-          //   header: 'Actions',
-          //   alignment: Alignment.centerLeft,
-          //   width: 150,
-          //   builder: (context, patient, row, column) {
-          //     return Align(
-          //       alignment: Alignment.centerLeft,
-          //       child: TextButton(onPressed: () {}, child: Text('Add Stock')),
-          //     );
-          //   },
-          // ),
-        ],
-
-        ///
-        /// Builder for mobile
-        ///
-        mobileBuilder: (context, index, patient, selected) {
-          return PatientCard(
-            patient: patient,
-            onTap: () => onTap(index, patient, selected),
-            selected: selected,
-            onLongPress: () {
-              controller.toggle(index);
-            },
-          );
-        },
       ),
     );
   }

@@ -4,9 +4,11 @@ import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
+import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/custom_navbar_item.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/logo.dart';
 import 'package:gym_system/src/core/widgets/mobile_bottom_nav.dart';
 import 'package:gym_system/src/core/widgets/mobile_drawer.dart';
@@ -41,6 +43,8 @@ class AppRoot extends HookConsumerWidget {
 
     ref.watch(settingsControllerProvider);
     ref.watch(treatmentsControllerProvider);
+
+    ref.watch(tableControllerProvider(TableControllerKeys.product));
 
     final sideMenuCtrl = useMemoized(() => SideMenuController());
     final canPop = useState(false);

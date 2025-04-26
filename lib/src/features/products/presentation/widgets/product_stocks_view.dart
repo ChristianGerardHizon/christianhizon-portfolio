@@ -2,56 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
-import 'package:gym_system/src/core/extensions/int.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
+import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/responsive_pagination_list_with_delete_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_base_list.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/update/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
+import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/products/data/product_stock_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/domain/product_stock.dart';
-import 'package:gym_system/src/features/products/domain/product_stock_search.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/stock/product_stocks_controller.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/stock/product_stocks_page_controller.dart';
+import 'package:gym_system/src/features/products/presentation/pages/stock/product_stock_table_controller.dart';
+import 'package:gym_system/src/features/products/presentation/widgets/product_stock_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductStocksView extends HookConsumerWidget {
   final Product product;
   const ProductStocksView(this.product, {super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = useMemoized(() => DynamicTableController());
     final searchCtrl = useTextEditingController();
-    final notifier = ref.read(productStocksPageControllerProvider.notifier);
-    final provider = ref.watch(productStocksControllerProvider);
-    final searchNotifier =
-        ref.read(productStockSearchControllerProvider.notifier);
-    final isLoading = useState(false);
+    final tableKey = TableControllerKeys.productStock;
+    final provider = tableControllerProvider(tableKey);
+    final notifier = ref.read(provider.notifier);
+    final listProvider = productStockTableControllerProvider(tableKey);
+    final listState = ref.watch(listProvider);
 
     ///
     /// onTap
     ///
-    onTap(int index, ProductStock stock, bool selected) {
-      if (!selected && controller.selected.isNotEmpty) {
-        controller.toggle(index);
-        return;
-      }
-      if (selected) {
-        controller.toggle(index);
-        return;
-      }
-      ProductStockPageRoute(stock.id).push(context);
+    onTap(ProductStock productStock) {
+      ProductStockPageRoute(productStock.id).push(context);
     }
 
     ///
     /// onRefresh
     ///
     onRefresh() {
-      ref.invalidate(productStocksControllerProvider);
-      controller.clear();
+      ref.invalidate(provider);
+      // controller.clear();
     }
 
     ///
@@ -62,28 +54,17 @@ class ProductStocksView extends HookConsumerWidget {
       if (confirm != true) return;
       final repo = ref.read(productStockRepositoryProvider);
       final ids = items.map((e) => e.id).toList();
-      isLoading.value = true;
+      // isLoading.value = true;
       final result = await repo.softDeleteMulti(ids).run();
-      if (context.mounted) isLoading.value = false;
+      // if (context.mounted) isLoading.value = false;
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
-          controller.clear();
-          ref.invalidate(productStocksControllerProvider);
+          // controller.clear();
+          ref.invalidate(productStockTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
           if (context.canPop()) context.pop();
         },
-      );
-    }
-
-    bool buildIsLoading() {
-      if (isLoading.value) return true;
-      return provider.maybeWhen(
-        skipError: true,
-        skipLoadingOnRefresh: false,
-        skipLoadingOnReload: false,
-        loading: () => true,
-        orElse: () => false,
       );
     }
 
@@ -94,142 +75,102 @@ class ProductStocksView extends HookConsumerWidget {
       ProductStockFormPageRoute(productId: product.id).push(context);
     }
 
-    ///
-    /// onSearch
-    ///
-    onSearch() {
-      final query = searchCtrl.text.trim();
-      searchNotifier.updateParams(ProductStockSearch(name: query));
-    }
-
-    ///
-    /// Handle Clear
-    ///
-    onClear() {
-      searchCtrl.clear();
-      searchNotifier.updateParams(ProductStockSearch(name: ''));
-    }
-
-    return ResponsivePaginationListWithDeleteView<ProductStock>(
-      controller: controller,
-      onPageChange: notifier.changePage,
-
-      error: provider.maybeWhen(
-        skipError: false,
-        skipLoadingOnRefresh: true,
-        skipLoadingOnReload: true,
-        error: (error, stackTrace) {
-          print(error);
-          return Center(
-            child: Text(error.toString()),
-          );
-        },
-        orElse: () => null,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('ProductStocks'),
+        actions: [
+          RefreshButton(
+            onPressed: onRefresh,
+          ),
+        ],
       ),
-      isLoading: buildIsLoading(),
-      results: provider.when(
-        skipError: true,
+      body: listState.when(
+        skipError: false,
         skipLoadingOnRefresh: false,
         skipLoadingOnReload: false,
-        data: (x) => x,
-        error: (error, stackTrace) => null,
-        loading: () => null,
+        error: (error, stack) => Center(
+          child: Text(error.toString()),
+        ),
+        loading: () => Center(
+          child: CircularProgressIndicator(),
+        ),
+        data: (items) => DynamicTableView<ProductStock>(
+          tableKey: TableControllerKeys.productStock,
+          error: null,
+          items: items,
+          onDelete: onDelete,
+          onRowTap: onTap,
+
+          ///
+          /// Search Features
+          ///
+          searchCtrl: searchCtrl,
+          onCreate: onCreate,
+
+          ///
+          /// Table Data
+          ///
+          columns: [
+            TableColumn(
+              header: 'Name',
+              width: 200,
+              alignment: Alignment.centerLeft,
+              builder: (context, data, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    overflow: TextOverflow.ellipsis,
+                    data.lotNo.optional(),
+                  ),
+                );
+              },
+            ),
+            TableColumn(
+              header: 'Date Created',
+              alignment: Alignment.centerLeft,
+              width: 150,
+              builder: (context, productStock, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      (productStock.created?.yyyyMMddHHmmA()).optional(),
+                      overflow: TextOverflow.ellipsis),
+                );
+              },
+            ),
+            TableColumn(
+              header: 'Actions',
+              alignment: Alignment.centerLeft,
+              width: 150,
+              builder: (context, productStock, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(onPressed: () {}, child: Text('Add Stock')),
+                );
+              },
+            ),
+          ],
+
+          ///
+          /// Builder for mobile
+          ///
+          mobileBuilder: (context, index, productStock, selected) {
+            return ProductStockCard(
+              productStock: productStock,
+              onTap: () {
+                if (selected)
+                  notifier.toggleRow(index);
+                else
+                  onTap(productStock);
+              },
+              selected: selected,
+              onLongPress: () {
+                notifier.toggleRow(index);
+              },
+            );
+          },
+        ),
       ),
-      onDelete: onDelete,
-
-      ///
-      /// Search Features
-      ///
-      searchCtrl: searchCtrl,
-      onClear: onClear,
-      onCreate: onCreate,
-      onSearch: onSearch,
-
-      ///
-      /// Table Data
-      ///
-      onHeaderTap: (headerKey) {
-        print(headerKey?.toJson());
-      },
-      onTap: (x) => onTap(0, x, false),
-      data: [
-        TableColumn(
-          header: 'Lot No.',
-          width: 200,
-          alignment: Alignment.centerLeft,
-          builder: (context, data, row, column) {
-            return Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                overflow: TextOverflow.ellipsis,
-                '${data.lotNo.optional()}',
-              ),
-            );
-          },
-        ),
-        TableColumn(
-          header: 'Used Quantity',
-          width: 150,
-          alignment: Alignment.centerLeft,
-          builder: (context, data, row, column) {
-            return Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                overflow: TextOverflow.ellipsis,
-                data.usedQuantity.optional(),
-              ),
-            );
-          },
-        ),
-        TableColumn(
-          header: 'Quantity',
-          alignment: Alignment.centerLeft,
-          builder: (context, data, row, column) {
-            return Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                overflow: TextOverflow.ellipsis,
-                data.quantity.optional(),
-              ),
-            );
-          },
-        ),
-        TableColumn(
-          header: 'Expiration',
-          width: 200,
-          alignment: Alignment.centerLeft,
-          builder: (context, data, row, column) {
-            return Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                overflow: TextOverflow.ellipsis,
-                '${(data.expiration?.yyyyMMdd()).optional()}',
-              ),
-            );
-          },
-        ),
-        TableColumn(
-          header: 'Date Created',
-          alignment: Alignment.centerLeft,
-          width: 150,
-          builder: (context, product, row, column) {
-            return Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                (product.created?.yyyyMMddHHmmA()).optional(),
-                overflow: TextOverflow.ellipsis,
-              ),
-            );
-          },
-        ),
-      ],
-
-      ///
-      /// Builder for mobile
-      ///
-      mobileBuilder: (context, index, product, selected) {
-        return Text(product.toJson());
-      },
     );
   }
 }

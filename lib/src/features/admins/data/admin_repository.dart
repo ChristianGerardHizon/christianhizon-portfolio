@@ -127,8 +127,8 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
           items: result.items.map<Admin>((e) {
             return mapToData(e.toJson());
           }).toList(),
-          page: result.page,
           perPage: result.perPage,
+          page: result.page,
           totalItems: result.totalItems,
           totalPages: result.totalPages,
         );

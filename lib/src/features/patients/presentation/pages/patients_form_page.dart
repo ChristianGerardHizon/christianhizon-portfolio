@@ -12,7 +12,7 @@ import 'package:gym_system/src/features/patients/data/patient/patient_repository
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_form_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients/patients_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientFormPage extends HookConsumerWidget {
@@ -51,7 +51,7 @@ class PatientFormPage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          ref.invalidate(patientsControllerProvider);
+          ref.invalidate(patientTableControllerProvider);
           ref.invalidate(patientControllerProvider(r.id));
 
           context.pop();

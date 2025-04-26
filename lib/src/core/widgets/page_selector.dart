@@ -3,10 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class PageSelector extends HookWidget {
-  const PageSelector(
-      {super.key, required this.page, this.onPageChange, this.hasNext = false});
+  const PageSelector({
+    super.key,
+    required this.page,
+    this.onPageChange,
+    this.hasNext = false,
+    required this.totalPages,
+  });
 
   final int page;
+  final int totalPages;
   final bool hasNext;
   final Function(int)? onPageChange;
 
@@ -33,22 +39,37 @@ class PageSelector extends HookWidget {
           const SizedBox(width: 16),
           SizedBox(
             width: 80,
-            child: TextField(
-              enabled: hasNext,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              controller: TextEditingController(text: page.toString()),
-              decoration: const InputDecoration(
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                border: OutlineInputBorder(),
-                isDense: true,
-              ),
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              onSubmitted: (value) {
-                final tryParse = int.tryParse(value);
-                if (tryParse != null) onPageChange?.call(tryParse);
-              },
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    enabled: hasNext,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    controller: TextEditingController(text: page.toString()),
+                    decoration: const InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      border: InputBorder.none,
+                      isDense: true,
+                    ),
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.number,
+                    onSubmitted: (value) {
+                      final tryParse = int.tryParse(value);
+                      if (tryParse != null) onPageChange?.call(tryParse);
+                    },
+                  ),
+                ),
+                Text(
+                  '/',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  totalPages.toString(),
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ],
             ),
           ),
           const SizedBox(width: 16),

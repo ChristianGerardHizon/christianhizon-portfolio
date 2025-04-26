@@ -3,17 +3,17 @@ import 'package:gym_system/src/core/packages/pocketbase_filter.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
-import 'package:gym_system/src/features/products/data/product_repository.dart';
-import 'package:gym_system/src/features/products/domain/product.dart';
+import 'package:gym_system/src/features/branches/data/branch_repository.dart';
+import 'package:gym_system/src/features/branches/domain/branch.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'product_table_controller.g.dart';
+part 'branch_table_controller.g.dart';
 
 @riverpod
-class ProductTableController extends _$ProductTableController {
+class BranchTableController extends _$BranchTableController {
   @override
-  Future<List<Product>> build(String tableKey) async {
-    final repo = ref.read(productRepositoryProvider);
+  Future<List<Branch>> build(String tableKey) async {
+    final repo = ref.read(branchRepositoryProvider);
     final tableProvider = tableControllerProvider(tableKey);
     final page = ref.watch(tableProvider.select((state) => state.page));
     final pageSize = ref.watch(tableProvider.select((state) => state.pageSize));
@@ -21,7 +21,7 @@ class ProductTableController extends _$ProductTableController {
         ref.watch(tableProvider.select((state) => state.filter));
 
     final notifier = ref.read(tableProvider.notifier);
-    final baseFilter = '${ProductField.isDeleted} = false';
+    final baseFilter = '${BranchField.isDeleted} = false';
     final filterFunc = PocketbaseFilter(baseFilter: baseFilter);
 
     ref.onDispose(() {
@@ -49,13 +49,19 @@ class ProductTableController extends _$ProductTableController {
 }
 
 TaskResult _handleSuccess(
-  PageResults<Product> result,
+  PageResults<Branch> result,
   TableController notifier,
 ) {
-  // notifier.fetchSuccess(
-  //   hasNext: result.hasNext,
-  //   totalItems: result.totalItems,
-  //   totalPages: result.totalPages,
-  // );
+  notifier.fetchSuccess(
+    hasNext: result.hasNext,
+    totalItems: result.totalItems,
+    totalPages: result.totalPages,
+  );
   return TaskResult.right(result);
+}
+
+String? _combineFilter(String? filter, {String? baseFilter}) {
+  if (filter == null || filter.isEmpty) return baseFilter;
+  if (baseFilter == null || baseFilter.isEmpty) return filter;
+  return '$filter && $baseFilter';
 }

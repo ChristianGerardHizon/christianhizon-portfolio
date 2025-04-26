@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/widgets/selectable_card.dart';
-import 'package:gym_system/src/features/admins/domain/admin.dart';
+import 'package:gym_system/src/features/branches/domain/branch.dart';
 
-class AdminCard extends StatelessWidget {
-  const AdminCard({
+class BranchCard extends StatelessWidget {
+  const BranchCard({
     super.key,
-    required this.admin,
+    required this.branch,
     required this.onLongPress,
     required this.onTap,
     this.selected = false,
@@ -14,7 +14,7 @@ class AdminCard extends StatelessWidget {
   final Function() onLongPress;
   final Function() onTap;
   final bool selected;
-  final Admin admin;
+  final Branch branch;
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +25,11 @@ class AdminCard extends StatelessWidget {
       selected: selected,
       child: ListTile(
           leading: Icon(Icons.abc),
-          title: Text(admin.name),
+          title: Text(branch.name),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(admin.name),
+              Text(branch.name),
             ],
           )),
     );

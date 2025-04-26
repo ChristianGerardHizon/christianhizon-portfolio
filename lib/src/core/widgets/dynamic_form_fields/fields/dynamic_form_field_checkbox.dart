@@ -18,6 +18,7 @@ class DynamicFormFieldCheckbox extends StatelessWidget {
       title: Text(field.title),
       validator: field.validator,
       valueTransformer: field.valueTransformer,
+      onChanged: (x) => field.onChange?.call(x),
     );
   }
 }

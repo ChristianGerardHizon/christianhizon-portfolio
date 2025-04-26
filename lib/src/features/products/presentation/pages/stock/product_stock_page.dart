@@ -11,7 +11,7 @@ import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
 import 'package:gym_system/src/features/products/data/product_stock_repository.dart';
 import 'package:gym_system/src/features/products/domain/product_stock.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/stock/product_stock_controller.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/stock/product_stocks_controller.dart';
+import 'package:gym_system/src/features/products/presentation/pages/stock/product_stock_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductStockPage extends HookConsumerWidget {
@@ -35,7 +35,7 @@ class ProductStockPage extends HookConsumerWidget {
             result.fold(
               (l) => AppSnackBar.rootFailure(l),
               (r) {
-                ref.invalidate(productStocksControllerProvider);
+                ref.invalidate(productStockTableControllerProvider);
                 AppSnackBar.root(message: 'Successfully Deleted');
                 if (context.canPop()) context.pop();
               },
@@ -47,7 +47,7 @@ class ProductStockPage extends HookConsumerWidget {
     /// Refresh
     ///
     refresh() async {
-      ref.invalidate(productStocksControllerProvider);
+      ref.invalidate(productStockTableControllerProvider);
     }
 
     return state.when(

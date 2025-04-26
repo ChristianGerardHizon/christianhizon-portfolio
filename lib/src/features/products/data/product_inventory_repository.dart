@@ -53,7 +53,6 @@ class ProductInventoryRepositoryImpl
         expand: expand,
       );
       final items = result.items.map<ProductInventory>((e) {
-        print(e.toJson());
         return ProductInventory.fromMap(e.toJson());
       }).toList();
       return PageResults(

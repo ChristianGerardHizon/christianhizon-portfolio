@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/widgets/selectable_card.dart';
-import 'package:gym_system/src/features/admins/domain/admin.dart';
+import 'package:gym_system/src/features/products/domain/product_stock.dart';
 
-class AdminCard extends StatelessWidget {
-  const AdminCard({
+class ProductStockCard extends StatelessWidget {
+  const ProductStockCard({
     super.key,
-    required this.admin,
+    required this.productStock,
     required this.onLongPress,
     required this.onTap,
     this.selected = false,
@@ -14,7 +14,7 @@ class AdminCard extends StatelessWidget {
   final Function() onLongPress;
   final Function() onTap;
   final bool selected;
-  final Admin admin;
+  final ProductStock productStock;
 
   @override
   Widget build(BuildContext context) {
@@ -23,15 +23,10 @@ class AdminCard extends StatelessWidget {
       onLongPress: onLongPress,
       onTap: onTap,
       selected: selected,
-      child: ListTile(
-          leading: Icon(Icons.abc),
-          title: Text(admin.name),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(admin.name),
-            ],
-          )),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [Text(productStock.toJson())],
+      ),
     );
   }
 }

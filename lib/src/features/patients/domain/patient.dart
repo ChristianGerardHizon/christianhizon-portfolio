@@ -62,8 +62,8 @@ class Patient extends PbRecord with PatientMappable {
     return {
       ...toMap(),
       PatientField.dateOfBirth: dateOfBirth,
-      PatientField.species: expand?.species,
-      PatientField.breed: expand?.breed,
+      PatientField.species: expand.species,
+      PatientField.breed: expand.breed,
       PatientField.created: created,
       PatientField.updated: updated,
     };
