@@ -62,7 +62,7 @@ class SliverDynamicBase extends HookConsumerWidget {
                         : false,
             onChanged: (x) {
               if (x == true) {
-                notifier.toggleRow(itemCount);
+                notifier.selectAll();
               } else {
                 notifier.clearSelection();
               }

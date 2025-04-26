@@ -6,7 +6,7 @@ part of 'table_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tableControllerHash() => r'04d35f9de56a384dfed51eeeed6f527a4b6f2bc3';
+String _$tableControllerHash() => r'7bc76583a380dc631dc813784e439ab95bf410bb';
 
 /// Copied from Dart SDK
 class _SystemHash {

@@ -24,10 +24,6 @@ class PatientTableController extends _$PatientTableController {
     final baseFilter = '${PatientField.isDeleted} = false';
     final filterFunc = PocketbaseFilter(baseFilter: baseFilter);
 
-    ref.onDispose(() {
-      ref.invalidate(tableProvider);
-    });
-
     final result = await repo
 
         // 1. Fetch data

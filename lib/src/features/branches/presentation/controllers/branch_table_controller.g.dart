@@ -7,7 +7,7 @@ part of 'branch_table_controller.dart';
 // **************************************************************************
 
 String _$branchTableControllerHash() =>
-    r'd70d6e462ccbdf58c327468ed045756ed9fc4cbb';
+    r'b76f7910816ff10e8fe5097894d28b87229aa9a6';
 
 /// Copied from Dart SDK
 class _SystemHash {

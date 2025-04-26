@@ -24,18 +24,14 @@ class AdminTableController extends _$AdminTableController {
     final baseFilter = '${AdminField.isDeleted} = false';
     final filterFunc = PocketbaseFilter(baseFilter: baseFilter);
 
-    ref.onDispose(() {
-      ref.invalidate(tableProvider);
-    });
-
     final result = await repo
 
         // 1. Fetch data
         .list(
-          // filter: filterFunc.searchName(tableFilter),
+          filter: filterFunc.searchName(tableFilter),
           pageNo: page,
           pageSize: pageSize,
-          // sort: '+created',
+          sort: '+created',
         )
 
         // 2. success sideffect

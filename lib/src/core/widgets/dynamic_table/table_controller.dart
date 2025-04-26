@@ -14,7 +14,7 @@ class TableController extends _$TableController {
       hasNext: true,
       isLoading: true,
       page: 1,
-      pageSize: 1,
+      pageSize: 10,
       totalItems: 0,
       totalPages: 0,
       sort: null,
@@ -23,67 +23,36 @@ class TableController extends _$TableController {
   }
 
   void changePage(int page) {
-    state = TableState(
-      key: tableKey,
-      isMobile: false,
-      selected: [],
-      hasNext: true,
-      isLoading: true,
-      page: page,
-      pageSize: state.pageSize,
-      totalItems: state.totalItems,
-      totalPages: state.totalPages,
-      sort: null,
-      filter: '',
-    );
+    state = state.copyWith(page: page, selected: []);
   }
 
   void changePageSize(int size) {
-    // state = state.copyWith(pageSize: size);
+    state = state.copyWith(pageSize: size, selected: []);
   }
 
   void clearSelection() {
-    // state = state.copyWith(selected: []);
+    state = state.copyWith(selected: []);
   }
 
   void toggleRow(int index) {
-    // if (state.selected.contains(index)) {
-    //   state = state.copyWith(selected: [...state.selected]..remove(index));
-    // } else {
-    //   state = state.copyWith(selected: [...state.selected]..add(index));
-    // }
+    if (state.selected.contains(index)) {
+      state = state.copyWith(selected: [...state.selected]..remove(index));
+    } else {
+      state = state.copyWith(selected: [...state.selected]..add(index));
+    }
+  }
+
+  void selectAll() {
+    state = state.copyWith(
+        selected: List.generate(state.totalItems, (index) => index));
   }
 
   void startLoading() {
-    state = TableState(
-      key: tableKey,
-      isMobile: false,
-      selected: [],
-      hasNext: true,
-      isLoading: true,
-      page: state.page,
-      pageSize: state.pageSize,
-      totalItems: state.totalItems,
-      totalPages: state.totalPages,
-      sort: null,
-      filter: '',
-    );
+    state = state.copyWith(isLoading: true);
   }
 
   void stopLoading() {
-    state = TableState(
-      key: tableKey,
-      isMobile: false,
-      selected: [],
-      hasNext: true,
-      isLoading: false,
-      page: state.page,
-      pageSize: state.pageSize,
-      totalItems: state.totalItems,
-      totalPages: state.totalPages,
-      sort: null,
-      filter: '',
-    );
+    state = state.copyWith(isLoading: false);
   }
 
   void fetchSuccess({

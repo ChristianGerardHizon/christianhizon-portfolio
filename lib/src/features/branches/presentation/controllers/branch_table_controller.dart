@@ -24,10 +24,6 @@ class BranchTableController extends _$BranchTableController {
     final baseFilter = '${BranchField.isDeleted} = false';
     final filterFunc = PocketbaseFilter(baseFilter: baseFilter);
 
-    ref.onDispose(() {
-      ref.invalidate(tableProvider);
-    });
-
     final result = await repo
 
         // 1. Fetch data

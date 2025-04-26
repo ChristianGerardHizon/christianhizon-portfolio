@@ -24,10 +24,6 @@ class ProductStockTableController extends _$ProductStockTableController {
     final baseFilter = '${ProductStockField.isDeleted} = false';
     final filterFunc = PocketbaseFilter(baseFilter: baseFilter);
 
-    ref.onDispose(() {
-      ref.invalidate(tableProvider);
-    });
-
     final result = await repo
 
         // 1. Fetch data
