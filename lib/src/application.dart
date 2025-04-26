@@ -8,6 +8,11 @@ import 'package:gym_system/src/core/strings/strings.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:theme_provider/theme_provider.dart';
+
+final themeProvider = Provider<ThemeMode>((ref) {
+  return ThemeMode.system;
+});
 
 class Application extends HookConsumerWidget {
   const Application({super.key});
@@ -16,35 +21,52 @@ class Application extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(authControllerProvider);
 
-    useEffect(() {
-      return null;
-    }, []);
+    final color = Color.fromARGB(0, 40, 122, 111);
 
-    final theme = ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Color(0x2F887C)),
-      useMaterial3: true,
-    );
-
-    return ResponsiveApp(builder: (context) {
-      return MaterialApp.router(
-        locale: TranslationProvider.of(context).flutterLocale, // use provider
-        supportedLocales: AppLocaleUtils.supportedLocales,
-        localizationsDelegates: [
-          // AppFlowyEditorLocalizations.delegate,
-          ...GlobalMaterialLocalizations.delegates,
-        ],
-        debugShowCheckedModeBanner: false,
-        title: AppStrings.appName,
-        theme: theme.copyWith(
-          appBarTheme:
-              theme.appBarTheme.copyWith(backgroundColor: Colors.white),
-          cardTheme: theme.cardTheme.copyWith(
-            color: Colors.white,
-            surfaceTintColor: Colors.white,
+    return ThemeProvider(
+      defaultThemeId: 'light',
+      saveThemesOnChange: true,
+      loadThemeOnInit: true,
+      themes: [
+        AppTheme(
+          id: 'light',
+          description: 'Light Theme',
+          data: ThemeData(
+            brightness: Brightness.light,
+            colorSchemeSeed: color,
           ),
         ),
-        routerConfig: ref.watch(routerProvider),
-      );
-    });
+        AppTheme(
+          id: 'dark',
+          description: 'Dark Theme',
+          data: ThemeData(
+            brightness: Brightness.dark,
+            colorSchemeSeed: color,
+          ),
+        ),
+      ],
+      child: ThemeConsumer(
+        child: Builder(builder: (context) {
+          final theme = ThemeProvider.themeOf(context).data;
+
+          return ResponsiveApp(builder: (context) {
+            return MaterialApp.router(
+              locale:
+                  TranslationProvider.of(context).flutterLocale, // use provider
+              supportedLocales: AppLocaleUtils.supportedLocales,
+              localizationsDelegates: [
+                // AppFlowyEditorLocalizations.delegate,
+                ...GlobalMaterialLocalizations.delegates,
+              ],
+              debugShowCheckedModeBanner: false,
+              title: AppStrings.appName,
+              theme: theme,
+              themeMode: ref.watch(themeProvider),
+              routerConfig: ref.watch(routerProvider),
+            );
+          });
+        }),
+      ),
+    );
   }
 }

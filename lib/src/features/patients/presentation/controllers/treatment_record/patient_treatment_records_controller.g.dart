@@ -7,7 +7,7 @@ part of 'patient_treatment_records_controller.dart';
 // **************************************************************************
 
 String _$patientTreatmentRecordsControllerHash() =>
-    r'a48ab46e8456af41a7ec346b37b546fbaa1653da';
+    r'748063db9ab27dc0d5bc6d6b42dae0867c5f57e1';
 
 /// Copied from Dart SDK
 class _SystemHash {

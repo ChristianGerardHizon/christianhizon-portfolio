@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product/product_controller.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_details_view.dart';
@@ -24,7 +25,7 @@ class ProductPage extends HookConsumerWidget {
           appBar: AppBar(
             title: Text('Something Went Wrong'),
           ),
-          body: Center(child: Text(error.toString())),
+          body: FailureMessage(error, stack),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
         data: (productState) {

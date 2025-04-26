@@ -45,7 +45,7 @@ class ProductStocksController extends _$ProductStocksController {
           filter: _buildFilter(params: searchParams),
           pageNo: pageState.page,
           pageSize: pageState.pageSize,
-          sort: 'created+',
+          sort: '+created',
         )
         .run();
     return result.fold(Future.error, (x) => Future.value(x));

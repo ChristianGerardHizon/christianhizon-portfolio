@@ -19,11 +19,11 @@ class TableController extends _$TableController {
     state = state.copyWith(selected: []);
   }
 
-  void selectRow(int index) {
+  void toggleRow(int index) {
     if (state.selected.contains(index)) {
-      state = state.copyWith(selected: state.selected..remove(index));
+      state = state.copyWith(selected: [...state.selected]..remove(index));
     } else {
-      state = state.copyWith(selected: state.selected..add(index));
+      state = state.copyWith(selected: [...state.selected]..add(index));
     }
   }
 

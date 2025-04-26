@@ -22,6 +22,7 @@ class KpiCard extends HookConsumerWidget {
     final theme = Theme.of(context);
 
     return Card(
+      color: theme.cardColor,
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -30,6 +31,9 @@ class KpiCard extends HookConsumerWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
+            ///
+            /// Icon
+            ///
             Container(
               decoration: BoxDecoration(
                 color: iconColor?.withOpacity(0.1) ??
@@ -40,9 +44,13 @@ class KpiCard extends HookConsumerWidget {
               child: Icon(
                 icon,
                 color: iconColor ?? theme.colorScheme.primary,
-                size: 28,
+                size: 30,
               ),
             ),
+
+            ///
+            /// Texts
+            ///
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -58,17 +66,15 @@ class KpiCard extends HookConsumerWidget {
                   Text(
                     title,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
-                    ),
+                    style: theme.textTheme.labelLarge
+                        ?.copyWith(color: theme.colorScheme.primary),
                   ),
                   if (subtitle != null) ...[
                     const SizedBox(height: 4),
                     Text(
                       subtitle!,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.5),
-                      ),
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: theme.textTheme.labelMedium?.color),
                     ),
                   ],
                 ],

@@ -8,6 +8,7 @@ import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class YourAccountPage extends HookConsumerWidget {
   const YourAccountPage({super.key});
@@ -35,6 +36,8 @@ class YourAccountPage extends HookConsumerWidget {
     onRefresh() {
       notifer.refresh().run();
     }
+
+    final themeController = ThemeProvider.controllerOf(context);
 
     return Scaffold(
       body: state.when(
@@ -67,6 +70,13 @@ class YourAccountPage extends HookConsumerWidget {
                     DynamicGroupItem.text(
                       title: 'Domain',
                       value: ref.read(pocketbaseProvider).baseURL,
+                    ),
+                    DynamicGroupItem.action(
+                      title: 'Theme',
+                      leading: Icon(
+                        Icons.sunny,
+                      ),
+                      onTap: () => themeController.nextTheme(),
                     ),
                     DynamicGroupItem.action(
                       title: 'Logout',

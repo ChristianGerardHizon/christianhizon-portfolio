@@ -159,7 +159,7 @@ class AppRoot extends HookConsumerWidget {
                         maxWidth: 200,
                         controller: sideMenuCtrl,
                         mode: SideMenuMode.open,
-                        backgroundColor: theme.appBarTheme.backgroundColor,
+                        backgroundColor: theme.scaffoldBackgroundColor,
                         builder: (data) => SideMenuData(
                           header: Logo(
                             height: 200,
@@ -170,14 +170,17 @@ class AppRoot extends HookConsumerWidget {
                                 .routerDelegate.currentConfiguration.uri
                                 .toString();
                             return SideMenuItemDataTile(
-                                hasSelectedLine: false,
-                                isSelected: e.isRoot
-                                    ? currentLocation == RootRoute.path
-                                    : currentLocation.contains(e.route),
-                                onTap: () => e.onTap?.call(),
-                                title: e.label,
-                                icon: e.icon,
-                                selectedIcon: e.selectedIcon);
+                              hasSelectedLine: false,
+                              isSelected: e.isRoot
+                                  ? currentLocation == RootRoute.path
+                                  : currentLocation.contains(e.route),
+                              onTap: () => e.onTap?.call(),
+                              title: e.label,
+                              icon: e.icon,
+                              highlightSelectedColor:
+                                  theme.primaryColor.withValues(alpha: .3),
+                              selectedIcon: e.selectedIcon,
+                            );
                           }).toList(),
                           footer: Padding(
                             padding: const EdgeInsets.only(bottom: 20),

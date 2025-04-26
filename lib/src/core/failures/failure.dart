@@ -40,6 +40,10 @@ sealed class Failure with FailureMappable {
       return error;
     }
 
+    // if(error is PcketbaseException) {
+    //   return PocketbaseFailure(error, stackTrace, 'pocketbase_error');
+    // }
+
     // Handle known auth-related errors
     if (error is ClientException) {
       final code = error.statusCode;
@@ -61,6 +65,15 @@ sealed class Failure with FailureMappable {
     // Catch-all fallback
     return GenericFailure(error, stackTrace, 'generic_error');
   }
+}
+
+@MappableClass()
+class PocketbaseFailure extends Failure with PocketbaseFailureMappable {
+  const PocketbaseFailure([
+    dynamic message,
+    StackTrace? stackTrace,
+    String? identifier,
+  ]) : super(message, stackTrace, identifier);
 }
 
 @MappableClass()

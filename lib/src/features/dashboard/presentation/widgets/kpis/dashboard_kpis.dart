@@ -33,9 +33,7 @@ class DashboardKpis extends StatelessWidget {
 
     return getValueForScreenType(
       context: context,
-      mobile: Column(
-        children: widgets,
-      ),
+      mobile: Column(children: widgets),
       tablet: Column(
         children: [
           Row(

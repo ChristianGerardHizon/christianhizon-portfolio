@@ -16,10 +16,10 @@ class DynamicTableView<T> extends HookConsumerWidget {
   final String tableKey;
   final Widget? emptyWidget;
 
-  final List<T> results;
+  final List<T> items;
   final Widget? error;
   final Function(int, TableSort?)? onChange;
-  final Function(int)? onRowTap;
+  final Function(T)? onRowTap;
   final Function(List<T>)? onRowDelete;
 
   final TextEditingController searchCtrl;
@@ -41,7 +41,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
     super.key,
     this.onRowTap,
     required this.tableKey,
-    required this.results,
+    required this.items,
     this.error,
     this.onChange,
     this.onRowDelete,
@@ -106,7 +106,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
               ///
               /// Empty
               ///
-              if (results.isEmpty && isLoading == false)
+              if (items.isEmpty && isLoading == false)
                 SliverToBoxAdapter(
                   child: emptyWidget ??
                       SizedBox(
@@ -133,11 +133,24 @@ class DynamicTableView<T> extends HookConsumerWidget {
               ///
               ///  Content
               ///
-              if (results.isNotEmpty && isLoading == false)
+              if (items.isNotEmpty && isLoading == false)
                 SliverDynamicBase(
                   tableKey: tableKey,
-                  itemCount: results.length,
-                  onTableRowTap: (index) => onRowTap?.call(index),
+                  itemCount: items.length,
+
+                  onTableRowTap: (index) {
+                    final isSelected = selected.contains(index);
+                    if (!isSelected && selected.isNotEmpty) {
+                      notifier.toggleRow(index);
+                      return;
+                    }
+                    if (isSelected) {
+                      notifier.toggleRow(index);
+                      return;
+                    }
+
+                    onRowTap?.call(items[index]);
+                  },
 
                   ///
                   /// Table Columns
@@ -207,7 +220,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
 
                     final result = columns[offset].builder?.call(
                           context,
-                          results[value.row],
+                          items[value.row],
                           value.row,
                           value.column,
                         );
@@ -223,7 +236,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
                   mobileBuilder: (context, value) => mobileBuilder(
                     context,
                     value.row,
-                    results[value.row],
+                    items[value.row],
                     value.isSelected,
                   ),
                 ),
@@ -262,7 +275,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
                   ? PageActions(
                       size: selected.length,
                       onDelete: () =>
-                          onDelete?.call(pickByIndex(selected, results)),
+                          onDelete?.call(pickByIndex(selected, items)),
                       onReset: notifier.clearSelection,
                     )
                   : SizedBox(),

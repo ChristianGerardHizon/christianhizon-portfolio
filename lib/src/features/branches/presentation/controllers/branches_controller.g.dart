@@ -7,7 +7,7 @@ part of 'branches_controller.dart';
 // **************************************************************************
 
 String _$branchesControllerHash() =>
-    r'638835ea2b7bb9b521fab58a90e95e6fb448c6f6';
+    r'0475541e36ea5dc51f296bd6c429bae1e7eacbea';
 
 /// See also [BranchesController].
 @ProviderFor(BranchesController)

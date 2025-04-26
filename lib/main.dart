@@ -15,7 +15,7 @@ Future<void> main() async {
   ///
   await WindowUtils.register();
 
-  LocaleSettings.useDeviceLocale(); // and this
+  LocaleSettings.useDeviceLocale(); // for translations
 
   ///
   /// Run the application

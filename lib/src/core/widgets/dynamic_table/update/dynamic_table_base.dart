@@ -62,7 +62,7 @@ class SliverDynamicBase extends HookConsumerWidget {
                         : false,
             onChanged: (x) {
               if (x == true) {
-                notifier.selectRow(itemCount);
+                notifier.toggleRow(itemCount);
               } else {
                 notifier.clearSelection();
               }
@@ -107,7 +107,7 @@ class SliverDynamicBase extends HookConsumerWidget {
               if (columnIndex == 0)
                 return Checkbox(
                   value: selectedRows.contains(rowIndex),
-                  onChanged: (x) => notifier.selectRow(rowIndex),
+                  onChanged: (x) => notifier.toggleRow(rowIndex),
                 );
               final widget = tableRowBuilder(
                 context,

@@ -21,6 +21,9 @@ PODS:
     - FlutterMacOS
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
@@ -41,6 +44,7 @@ DEPENDENCIES:
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
   - printing (from `Flutter/ephemeral/.symlinks/plugins/printing/macos`)
   - screen_retriever_macos (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos`)
+  - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `Flutter/ephemeral/.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
   - window_manager (from `Flutter/ephemeral/.symlinks/plugins/window_manager/macos`)
@@ -68,6 +72,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/printing/macos
   screen_retriever_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos
+  shared_preferences_foundation:
+    :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
   sqflite_darwin:
     :path: Flutter/ephemeral/.symlinks/plugins/sqflite_darwin/darwin
   url_launcher_macos:
@@ -87,6 +93,7 @@ SPEC CHECKSUMS:
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   printing: 1dd6a1fce2209ec240698e2439a4adbb9b427637
   screen_retriever_macos: 776e0fa5d42c6163d2bf772d22478df4b302b161
+  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
   url_launcher_macos: c82c93949963e55b228a30115bd219499a6fe404
   window_manager: 3a1844359a6295ab1e47659b1a777e36773cd6e8

@@ -32,10 +32,10 @@ class ProductTableController extends _$ProductTableController {
 
         // 1. Fetch data
         .list(
-          filter: filterFunc.searchName(tableFilter),
+          // filter: filterFunc.searchName(tableFilter),
           pageNo: page,
           pageSize: pageSize,
-          sort: 'created+',
+          // sort: '+created',
         )
 
         // 2. success sideffect

@@ -23,6 +23,10 @@ class ProductController extends _$ProductController {
       final product = await $(_getProduct(id));
       final inventory = await $(_getProductInventory(id));
 
+      ref.onDispose(() {
+        ref.invalidate(productInventoryControllerProvider(id));
+      });
+
       return ProductState(product, inventory);
     }).run();
     return result.fold(Future.error, (x) => Future.value(x));

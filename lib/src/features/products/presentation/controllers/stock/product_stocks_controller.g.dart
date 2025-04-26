@@ -7,7 +7,7 @@ part of 'product_stocks_controller.dart';
 // **************************************************************************
 
 String _$productStocksControllerHash() =>
-    r'220c50a31315457c0dd4ad4a1a65d3bbd133da2c';
+    r'565354309d52816ef535bcbcacf0e616552cbf1d';
 
 /// See also [ProductStocksController].
 @ProviderFor(ProductStocksController)
