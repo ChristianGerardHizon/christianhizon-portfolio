@@ -8,8 +8,12 @@ class WindowUtils {
   ///
   /// Register the WindowManager for Windows
   ///
+  /// This function is used to register the window manager for windows
+  /// It is used to set the window title and size
+  ///
   static Future<void> register() async {
-    /// * If the app is running on the web or not on Windows
+    ///
+    /// If the app is running on the web or not on Windows
     /// just incase so when the the platform is set to other than windows
     /// the WindowManager will not be initialized
     /// not applicable since app is just a mobile app
@@ -23,18 +27,25 @@ class WindowUtils {
 
     // * Initialize the WindowManager
     await windowManager.ensureInitialized();
+
+    // * Set the window options
     WindowOptions windowOptions = const WindowOptions(
-      title: AppStrings.appName,
-      minimumSize: Size(380, 700),
-      size: Size(1000, 800),
-      backgroundColor: Colors.transparent,
-      skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.normal,
+      title: AppStrings.appName, // Set the window title
+      minimumSize: Size(380, 700), // Set the minimum size of the window
+      size: Size(1000, 800), // Set the initial size of the window
+      backgroundColor: Colors.transparent, // Set the background color of the window
+      skipTaskbar: false, // Set if the window should be shown in the taskbar
+      titleBarStyle: TitleBarStyle.normal, // Set the title bar style
     );
+
     // * Wait until the window is ready be shown
     windowManager.waitUntilReadyToShow(windowOptions, () async {
+      // * Show the window
       await windowManager.show();
+
+      // * Focus the window
       await windowManager.focus();
     });
   }
 }
+
