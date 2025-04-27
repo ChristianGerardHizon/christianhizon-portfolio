@@ -44,9 +44,8 @@ class PatientFormPage extends HookConsumerWidget {
           : repository.update(patient, value, files: files));
 
       final result = await task.run();
-
+      if (!context.mounted) return;
       isLoading.value = false;
-
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
@@ -117,6 +116,56 @@ class PatientFormPage extends HookConsumerWidget {
                     ],
                   ),
                 ),
+
+                DynamicFieldGroup(
+                  title: Text('Owner Details'),
+                  fields: [
+                    DynamicTextField(
+                      name: PatientField.owner,
+                      initialValue: patient?.owner,
+                      decoration: InputDecoration(
+                        label: Text('Owner Name'),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: FormBuilderValidators.compose(
+                        [
+                          FormBuilderValidators.required(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                DynamicFieldTwoColumn(
+                  axis: Axis.vertical,
+                  first: DynamicTextField(
+                    name: PatientField.contactNumber,
+                    initialValue: patient?.contactNumber,
+                    decoration: InputDecoration(
+                      label: Text('Contact Number'),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                      ],
+                    ),
+                  ),
+                  second: DynamicTextField(
+                    name: PatientField.email,
+                    initialValue: patient?.email,
+                    decoration: InputDecoration(
+                      label: Text('Owner Email'),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                        FormBuilderValidators.email()
+                      ],
+                    ),
+                  ),
+                )
               ],
               onSubmit: (result) => onSave(patient, result),
             );

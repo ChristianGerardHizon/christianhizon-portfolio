@@ -15,6 +15,7 @@ class DynamicFormFieldCheckbox extends StatelessWidget {
       enabled: field.enabled,
       name: field.name,
       decoration: field.decoration,
+      contentPadding: field.contentPadding,
       title: Text(field.title),
       validator: field.validator,
       valueTransformer: field.valueTransformer,

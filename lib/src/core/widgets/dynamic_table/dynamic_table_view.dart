@@ -19,7 +19,6 @@ class DynamicTableView<T> extends HookConsumerWidget {
   final Widget? error;
   final Function(int, TableSort?)? onChange;
   final Function(T)? onRowTap;
-  final Function(List<T>)? onRowDelete;
 
   final TextEditingController searchCtrl;
   final Function()? onSearch;
@@ -43,7 +42,6 @@ class DynamicTableView<T> extends HookConsumerWidget {
     required this.items,
     this.error,
     this.onChange,
-    this.onRowDelete,
     required this.searchCtrl,
     this.onSearch,
     this.onClear,
@@ -81,7 +79,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
     ///
     return StackLoader(
       opacity: .1,
-      isLoading: isLoading,
+      isLoading: error != null ? false : isLoading,
       child: Stack(
         children: [
           CustomScrollView(
@@ -283,8 +281,9 @@ class DynamicTableView<T> extends HookConsumerWidget {
               child: selected.isNotEmpty
                   ? PageActions(
                       size: selected.length,
-                      onDelete: () =>
-                          onDelete?.call(pickByIndex(selected, items)),
+                      onDelete: () {
+                        onDelete?.call(pickByIndex(selected, items));
+                      },
                       onReset: notifier.clearSelection,
                     )
                   : SizedBox(),

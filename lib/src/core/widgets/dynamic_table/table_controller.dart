@@ -23,6 +23,7 @@ class TableController extends _$TableController {
   }
 
   void changePage(int page) {
+    if (page == state.page) return;
     state = state.copyWith(
       isLoading: true,
       page: page,

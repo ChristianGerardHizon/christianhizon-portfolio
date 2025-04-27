@@ -41,7 +41,7 @@ class BranchesPage extends HookConsumerWidget {
     onRefresh() {
       ref.invalidate(branchTableControllerProvider);
       ref.invalidate(provider);
-      // controller.clear();
+      notifier.clearSelection();
     }
 
     ///
@@ -58,7 +58,7 @@ class BranchesPage extends HookConsumerWidget {
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
-          // controller.clear();
+          notifier.clearSelection();
           ref.invalidate(branchTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
           if (context.canPop()) context.pop();

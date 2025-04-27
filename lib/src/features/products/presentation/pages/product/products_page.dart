@@ -10,6 +10,7 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
+import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
@@ -41,7 +42,7 @@ class ProductsPage extends HookConsumerWidget {
     onRefresh() {
       ref.invalidate(productTableControllerProvider);
       ref.invalidate(provider);
-      // controller.clear();
+      notifier.clearSelection();
     }
 
     ///
@@ -58,7 +59,7 @@ class ProductsPage extends HookConsumerWidget {
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
-          // controller.clear();
+          notifier.clearSelection();
           ref.invalidate(productTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
           if (context.canPop()) context.pop();
@@ -84,7 +85,13 @@ class ProductsPage extends HookConsumerWidget {
       ),
       body: DynamicTableView<Product>(
         tableKey: TableControllerKeys.product,
-        error: null,
+        error: listState.maybeWhen(
+          skipError: false,
+          skipLoadingOnRefresh: true,
+          skipLoadingOnReload: true,
+          orElse: () => null,
+          error: (error, stackTrace) => FailureMessage(error, stackTrace),
+        ),
         items: listState.maybeWhen(
           skipError: true,
           skipLoadingOnRefresh: false,
@@ -126,18 +133,6 @@ class ProductsPage extends HookConsumerWidget {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: Text((product.expand.branch?.name).optional(),
-                    overflow: TextOverflow.ellipsis),
-              );
-            },
-          ),
-          TableColumn(
-            header: 'Date Created',
-            alignment: Alignment.centerLeft,
-            width: 150,
-            builder: (context, product, row, column) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: Text((product.created?.yyyyMMddHHmmA()).optional(),
                     overflow: TextOverflow.ellipsis),
               );
             },

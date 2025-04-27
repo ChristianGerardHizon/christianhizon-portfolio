@@ -14,6 +14,7 @@ import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dar
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
+import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
@@ -27,6 +28,11 @@ class UserPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ///
+    ///
+    ///
+    final state = ref.watch(userControllerProvider(id));
+
     ///
     /// loading variable
     ///
@@ -80,111 +86,121 @@ class UserPage extends HookConsumerWidget {
       );
     }
 
-    return ref.watch(userControllerProvider(id)).when(
-          error: (error, stack) => FailureMessage(error, stack),
-          loading: () => Center(child: CircularProgressIndicator()),
-          data: (user) {
-            return StackLoader(
-              isLoading: isLoading.value,
-              child: CustomScrollView(
-                slivers: [
-                  ///
-                  /// Image
-                  ///
-                  SliverPadding(
-                    padding: EdgeInsets.only(top: 20, bottom: 20),
-                    sliver: SliverToBoxAdapter(
-                      child: CircleWidget(
-                        size: 300,
-                        child: PbImageCircle(
-                          radius: 120,
-                          collection: user.collectionId,
-                          recordId: user.id,
-                          file: user.avatar,
-                          fit: BoxFit.contain,
-                        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('User Details'),
+        actions: [
+          RefreshButton(
+            onPressed: () => refresh(id),
+          )
+        ],
+      ),
+      body: state.when(
+        error: (error, stack) => FailureMessage(error, stack),
+        loading: () => Center(child: CircularProgressIndicator()),
+        data: (user) {
+          return StackLoader(
+            isLoading: isLoading.value,
+            child: CustomScrollView(
+              slivers: [
+                ///
+                /// Image
+                ///
+                SliverPadding(
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  sliver: SliverToBoxAdapter(
+                    child: CircleWidget(
+                      size: 300,
+                      child: PbImageCircle(
+                        radius: 120,
+                        collection: user.collectionId,
+                        recordId: user.id,
+                        file: user.avatar,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
+                ),
 
-                  ///
-                  /// Content
-                  ///
-                  SliverList.list(
-                    children: [
-                      SizedBox(height: 20),
+                ///
+                /// Content
+                ///
+                SliverList.list(
+                  children: [
+                    SizedBox(height: 20),
 
-                      ///
-                      /// Information
-                      ///
-                      DynamicGroup(
-                        padding: const EdgeInsets.only(
-                            left: 8, right: 8, bottom: 12),
-                        header: 'User Information',
-                        items: [
-                          DynamicGroupItem.text(
-                            title: 'Name',
-                            value: user.name,
-                          ),
-                          DynamicGroupItem.text(
-                            title: 'Email',
-                            value: user.email,
-                          ),
-                          DynamicGroupItem.text(
-                            title: 'Verified',
-                            value: user.verified ? 'Yes' : 'No',
-                          ),
-                          DynamicGroupItem.text(
-                            title: 'Last Updated',
-                            value: (user.updated?.toLocal().fullReadable)
-                                .optional(),
-                          ),
-                          DynamicGroupItem.text(
-                            title: 'Created',
-                            value: (user.created?.toLocal().fullReadable)
-                                .optional(),
-                          ),
-                        ],
-                      ),
+                    ///
+                    /// Information
+                    ///
+                    DynamicGroup(
+                      padding:
+                          const EdgeInsets.only(left: 8, right: 8, bottom: 12),
+                      header: 'User Information',
+                      items: [
+                        DynamicGroupItem.text(
+                          title: 'Name',
+                          value: user.name,
+                        ),
+                        DynamicGroupItem.text(
+                          title: 'Email',
+                          value: user.email,
+                        ),
+                        DynamicGroupItem.text(
+                          title: 'Verified',
+                          value: user.verified ? 'Yes' : 'No',
+                        ),
+                        DynamicGroupItem.text(
+                          title: 'Last Updated',
+                          value:
+                              (user.updated?.toLocal().fullReadable).optional(),
+                        ),
+                        DynamicGroupItem.text(
+                          title: 'Created',
+                          value:
+                              (user.created?.toLocal().fullReadable).optional(),
+                        ),
+                      ],
+                    ),
 
-                      ///
-                      /// Actions
-                      ///
-                      DynamicGroup(
-                        padding: const EdgeInsets.only(
-                            left: 8, right: 8, bottom: 12),
-                        header: 'Actions',
-                        items: [
-                          DynamicGroupItem.action(
-                            onTap: () => tap(user),
-                            leading: Icon(MIcons.fileEditOutline),
-                            title: 'Edit Details',
-                            trailing: Icon(MIcons.chevronRight),
+                    ///
+                    /// Actions
+                    ///
+                    DynamicGroup(
+                      padding:
+                          const EdgeInsets.only(left: 8, right: 8, bottom: 12),
+                      header: 'Actions',
+                      items: [
+                        DynamicGroupItem.action(
+                          onTap: () => tap(user),
+                          leading: Icon(MIcons.fileEditOutline),
+                          title: 'Edit Details',
+                          trailing: Icon(MIcons.chevronRight),
+                        ),
+                        DynamicGroupItem.action(
+                          titleColor: Theme.of(context).colorScheme.error,
+                          onTap: () => onDelete(user),
+                          leading: Icon(
+                            MIcons.trashCan,
+                            color: Theme.of(context).colorScheme.error,
                           ),
-                          DynamicGroupItem.action(
-                            titleColor: Theme.of(context).colorScheme.error,
-                            onTap: () => onDelete(user),
-                            leading: Icon(
-                              MIcons.trashCan,
-                              color: Theme.of(context).colorScheme.error,
-                            ),
-                            title: 'Delete',
-                            trailing: Icon(MIcons.chevronRight),
-                          ),
-                        ],
-                      ),
+                          title: 'Delete',
+                          trailing: Icon(MIcons.chevronRight),
+                        ),
+                      ],
+                    ),
 
-                      ///
-                      /// Spacer
-                      ///
-                      SizedBox(height: 50),
-                    ],
-                  )
-                ],
-              ),
-            );
-          },
-        );
+                    ///
+                    /// Spacer
+                    ///
+                    SizedBox(height: 50),
+                  ],
+                )
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 

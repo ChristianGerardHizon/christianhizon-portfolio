@@ -41,7 +41,7 @@ class UsersPage extends HookConsumerWidget {
     onRefresh() {
       ref.invalidate(userTableControllerProvider);
       ref.invalidate(provider);
-      // controller.clear();
+      notifier.clearSelection();
     }
 
     ///
@@ -58,7 +58,7 @@ class UsersPage extends HookConsumerWidget {
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
-          // controller.clear();
+          notifier.clearSelection();
           ref.invalidate(userTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
           if (context.canPop()) context.pop();

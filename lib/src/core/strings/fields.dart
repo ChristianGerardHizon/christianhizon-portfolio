@@ -147,6 +147,11 @@ class ProductField {
   static const String branch = 'branch';
   static const String stockThreshold = 'stockThreshold';
   static const String forSale = 'forSale';
+
+  static const String expiration = 'expiration';
+  static const String usedQuantity = 'usedQuantity';
+  static const String quantity = 'quantity';
+  static const String trackByLot = 'trackByLot';
 }
 
 class BranchField {

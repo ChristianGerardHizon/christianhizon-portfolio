@@ -46,7 +46,7 @@ class ProductStockMapper extends ClassMapperBase<ProductStock> {
       Field('lotNo', _$lotNo, opt: true);
   static DateTime? _$expiration(ProductStock v) => v.expiration;
   static const Field<ProductStock, DateTime> _f$expiration =
-      Field('expiration', _$expiration, opt: true);
+      Field('expiration', _$expiration, opt: true, hook: DateTimeHook());
   static String? _$notes(ProductStock v) => v.notes;
   static const Field<ProductStock, String> _f$notes =
       Field('notes', _$notes, opt: true);

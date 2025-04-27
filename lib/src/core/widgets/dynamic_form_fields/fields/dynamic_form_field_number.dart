@@ -25,7 +25,7 @@ class DynamicFormFieldNumber extends HookWidget {
       builder: (fbField) {
         return InputDecorator(
           decoration: field.decoration.copyWith(
-            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             errorText: fbField.errorText,
           ),
           child: Row(
@@ -61,7 +61,6 @@ class DynamicFormFieldNumber extends HookWidget {
                   },
                   decoration: const InputDecoration(
                     border: InputBorder.none,
-                    isDense: true,
                   ),
                 ),
               ),

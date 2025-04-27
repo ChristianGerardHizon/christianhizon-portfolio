@@ -63,6 +63,18 @@ class ProductMapper extends ClassMapperBase<Product> {
   static DateTime? _$updated(Product v) => v.updated;
   static const Field<Product, DateTime> _f$updated =
       Field('updated', _$updated, opt: true);
+  static num? _$usedQuantity(Product v) => v.usedQuantity;
+  static const Field<Product, num> _f$usedQuantity =
+      Field('usedQuantity', _$usedQuantity, opt: true);
+  static num? _$quantity(Product v) => v.quantity;
+  static const Field<Product, num> _f$quantity =
+      Field('quantity', _$quantity, opt: true);
+  static bool _$trackByLot(Product v) => v.trackByLot;
+  static const Field<Product, bool> _f$trackByLot =
+      Field('trackByLot', _$trackByLot);
+  static DateTime? _$expiration(Product v) => v.expiration;
+  static const Field<Product, DateTime> _f$expiration =
+      Field('expiration', _$expiration, opt: true, hook: DateTimeHook());
 
   @override
   final MappableFields<Product> fields = const {
@@ -81,6 +93,10 @@ class ProductMapper extends ClassMapperBase<Product> {
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
+    #usedQuantity: _f$usedQuantity,
+    #quantity: _f$quantity,
+    #trackByLot: _f$trackByLot,
+    #expiration: _f$expiration,
   };
 
   static Product _instantiate(DecodingData data) {
@@ -99,7 +115,11 @@ class ProductMapper extends ClassMapperBase<Product> {
         expand: data.dec(_f$expand),
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
-        updated: data.dec(_f$updated));
+        updated: data.dec(_f$updated),
+        usedQuantity: data.dec(_f$usedQuantity),
+        quantity: data.dec(_f$quantity),
+        trackByLot: data.dec(_f$trackByLot),
+        expiration: data.dec(_f$expiration));
   }
 
   @override
@@ -169,7 +189,11 @@ abstract class ProductCopyWith<$R, $In extends Product, $Out>
       ProductExpand? expand,
       bool? isDeleted,
       DateTime? created,
-      DateTime? updated});
+      DateTime? updated,
+      num? usedQuantity,
+      num? quantity,
+      bool? trackByLot,
+      DateTime? expiration});
   ProductCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -200,7 +224,11 @@ class _ProductCopyWithImpl<$R, $Out>
           ProductExpand? expand,
           bool? isDeleted,
           Object? created = $none,
-          Object? updated = $none}) =>
+          Object? updated = $none,
+          Object? usedQuantity = $none,
+          Object? quantity = $none,
+          bool? trackByLot,
+          Object? expiration = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
@@ -216,7 +244,11 @@ class _ProductCopyWithImpl<$R, $Out>
         if (expand != null) #expand: expand,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
-        if (updated != $none) #updated: updated
+        if (updated != $none) #updated: updated,
+        if (usedQuantity != $none) #usedQuantity: usedQuantity,
+        if (quantity != $none) #quantity: quantity,
+        if (trackByLot != null) #trackByLot: trackByLot,
+        if (expiration != $none) #expiration: expiration
       }));
   @override
   Product $make(CopyWithData data) => Product(
@@ -234,7 +266,11 @@ class _ProductCopyWithImpl<$R, $Out>
       expand: data.get(#expand, or: $value.expand),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),
-      updated: data.get(#updated, or: $value.updated));
+      updated: data.get(#updated, or: $value.updated),
+      usedQuantity: data.get(#usedQuantity, or: $value.usedQuantity),
+      quantity: data.get(#quantity, or: $value.quantity),
+      trackByLot: data.get(#trackByLot, or: $value.trackByLot),
+      expiration: data.get(#expiration, or: $value.expiration));
 
   @override
   ProductCopyWith<$R2, Product, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

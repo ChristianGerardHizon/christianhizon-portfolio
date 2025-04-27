@@ -102,16 +102,16 @@ class ProductDetailsView extends HookConsumerWidget {
                     value: product.name,
                   ),
                   DynamicGroupItem.text(
+                    title: 'Description',
+                    value: product.description.optional(),
+                  ),
+                  DynamicGroupItem.text(
                     title: 'Category',
                     value: (product.expand.category?.name).optional(),
                   ),
                   DynamicGroupItem.text(
                     title: 'Branch',
                     value: (product.expand.branch?.name).optional(),
-                  ),
-                  DynamicGroupItem.text(
-                    title: 'Description',
-                    value: product.description.optional(),
                   ),
                   DynamicGroupItem.text(
                     title: 'Last Updated',
@@ -121,6 +121,37 @@ class ProductDetailsView extends HookConsumerWidget {
                     title: 'Created',
                     value: (product.created?.toLocal().fullReadable).optional(),
                   ),
+                ],
+              ),
+
+              ///
+              /// Tracking
+              ///
+              DynamicGroup(
+                padding: const EdgeInsets.only(left: 8, right: 8, bottom: 12),
+                header: 'Product Tracking',
+                items: [
+                  DynamicGroupItem.text(
+                    title: 'Is Tracked By Lot',
+                    value: product.trackByLot ? 'Yes' : 'No',
+                  ),
+                  DynamicGroupItem.text(
+                    title: 'Stock Warning',
+                    value: product.stockThreshold.toString(),
+                  ),
+                  if (!product.trackByLot) ...[
+                    DynamicGroupItem.text(
+                      title: 'Quantity / Used Quantity',
+                      value: (product.quantity.toString()).optional() +
+                          ' / ' +
+                          (product.usedQuantity.toString()).optional(),
+                    ),
+                    DynamicGroupItem.text(
+                      title: 'Expiration',
+                      value: (product.expiration?.toLocal().fullReadable)
+                          .optional(),
+                    )
+                  ],
                 ],
               ),
 

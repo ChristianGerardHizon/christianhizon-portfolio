@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/circle_widget.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
+import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
@@ -41,7 +42,7 @@ class PatientsPage extends HookConsumerWidget {
     onRefresh() {
       ref.invalidate(patientTableControllerProvider);
       ref.invalidate(provider);
-      // controller.clear();
+      notifier.clearSelection();
     }
 
     ///
@@ -58,7 +59,7 @@ class PatientsPage extends HookConsumerWidget {
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
-          // controller.clear();
+          notifier.clearSelection();
           ref.invalidate(patientTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
           if (context.canPop()) context.pop();
@@ -74,28 +75,24 @@ class PatientsPage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Patients'),
-        actions: [
-          RefreshButton(
-            onPressed: onRefresh,
-          ),
-        ],
-      ),
-      body: listState.when(
-        skipError: false,
-        skipLoadingOnRefresh: false,
-        skipLoadingOnReload: false,
-        error: (error, stack) => Center(
-          child: Text(error.toString()),
+        appBar: AppBar(
+          title: Text('Patients'),
+          actions: [
+            RefreshButton(
+              onPressed: onRefresh,
+            ),
+          ],
         ),
-        loading: () => Center(
-          child: CircularProgressIndicator(),
-        ),
-        data: (items) => DynamicTableView<Patient>(
+        body: DynamicTableView<Patient>(
           tableKey: TableControllerKeys.patient,
           error: null,
-          items: items,
+          items: listState.maybeWhen(
+            skipError: true,
+            skipLoadingOnRefresh: true,
+            skipLoadingOnReload: true,
+            data: (items) => items,
+            orElse: () => [],
+          ),
           onDelete: onDelete,
           onRowTap: onTap,
 
@@ -111,14 +108,28 @@ class PatientsPage extends HookConsumerWidget {
           columns: [
             TableColumn(
               header: 'Name',
-              width: 200,
+              width: 250,
               alignment: Alignment.centerLeft,
               builder: (context, data, row, column) {
                 return Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(
-                    overflow: TextOverflow.ellipsis,
-                    data.name,
+                  child: Row(
+                    children: [
+                      CircleWidget(
+                        size: 40,
+                        child: PbImageCircle(
+                          collection: data.collectionId,
+                          recordId: data.id,
+                          file: data.avatar,
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        overflow: TextOverflow.ellipsis,
+                        data.name,
+                      ),
+                    ],
                   ),
                 );
               },
@@ -135,13 +146,12 @@ class PatientsPage extends HookConsumerWidget {
               },
             ),
             TableColumn(
-              header: 'Date Created',
+              header: 'Owner',
               alignment: Alignment.centerLeft,
-              width: 150,
               builder: (context, patient, row, column) {
                 return Align(
                   alignment: Alignment.centerLeft,
-                  child: Text((patient.created?.yyyyMMddHHmmA()).optional(),
+                  child: Text((patient.owner).optional(),
                       overflow: TextOverflow.ellipsis),
                 );
               },
@@ -166,8 +176,107 @@ class PatientsPage extends HookConsumerWidget {
               },
             );
           },
-        ),
-      ),
-    );
+        )
+
+        // listState.when(
+        //   skipError: false,
+        //   skipLoadingOnRefresh: false,
+        //   skipLoadingOnReload: false,
+        //   error: (error, stack) => Center(
+        //     child: Text(error.toString()),
+        //   ),
+        //   loading: () => Center(
+        //     child: CircularProgressIndicator(),
+        //   ),
+        //   data: (items) => DynamicTableView<Patient>(
+        //     tableKey: TableControllerKeys.patient,
+        //     error: null,
+        //     items: items,
+        //     onDelete: onDelete,
+        //     onRowTap: onTap,
+
+        //     ///
+        //     /// Search Features
+        //     ///
+        //     searchCtrl: searchCtrl,
+        //     onCreate: onCreate,
+
+        //     ///
+        //     /// Table Data
+        //     ///
+        //     columns: [
+        //       TableColumn(
+        //         header: 'Name',
+        //         width: 250,
+        //         alignment: Alignment.centerLeft,
+        //         builder: (context, data, row, column) {
+        //           return Align(
+        //             alignment: Alignment.centerLeft,
+        //             child: Row(
+        //               children: [
+        //                 CircleWidget(
+        //                   size: 40,
+        //                   child: PbImageCircle(
+        //                     collection: data.collectionId,
+        //                     recordId: data.id,
+        //                     file: data.avatar,
+        //                     fit: BoxFit.fitWidth,
+        //                   ),
+        //                 ),
+        //                 SizedBox(width: 10),
+        //                 Text(
+        //                   overflow: TextOverflow.ellipsis,
+        //                   data.name,
+        //                 ),
+        //               ],
+        //             ),
+        //           );
+        //         },
+        //       ),
+        //       TableColumn(
+        //         header: 'Branch',
+        //         alignment: Alignment.centerLeft,
+        //         builder: (context, patient, row, column) {
+        //           return Align(
+        //             alignment: Alignment.centerLeft,
+        //             child: Text((patient.expand.branch?.name).optional(),
+        //                 overflow: TextOverflow.ellipsis),
+        //           );
+        //         },
+        //       ),
+        //       TableColumn(
+        //         header: 'Owner',
+        //         alignment: Alignment.centerLeft,
+        //         builder: (context, patient, row, column) {
+        //           return Align(
+        //             alignment: Alignment.centerLeft,
+        //             child: Text((patient.owner).optional(),
+        //                 overflow: TextOverflow.ellipsis),
+        //           );
+        //         },
+        //       ),
+        //     ],
+
+        //     ///
+        //     /// Builder for mobile
+        //     ///
+        //     mobileBuilder: (context, index, patient, selected) {
+        //       return PatientCard(
+        //         patient: patient,
+        //         onTap: () {
+        //           if (selected)
+        //             notifier.toggleRow(index);
+        //           else
+        //             onTap(patient);
+        //         },
+        //         selected: selected,
+        //         onLongPress: () {
+        //           notifier.toggleRow(index);
+        //         },
+        //       );
+        //     },
+        //   ),
+        // ),
+        );
   }
 }

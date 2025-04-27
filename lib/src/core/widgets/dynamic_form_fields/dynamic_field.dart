@@ -5,8 +5,44 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gym_system/src/core/classes/pb_image.dart';
 import 'package:http/http.dart';
 
+abstract class DynamicFieldItem {
+  const DynamicFieldItem();
+}
+
+class DynamicFieldGroup extends DynamicFieldItem {
+  final Widget? title;
+  final EdgeInsets? padding;
+  final CrossAxisAlignment alignment;
+  final List<DynamicFieldItem> fields;
+
+  const DynamicFieldGroup({
+    this.padding,
+    this.alignment = CrossAxisAlignment.start,
+    this.title,
+    required this.fields,
+  });
+}
+
+class DynamicFieldTwoColumn extends DynamicFieldItem {
+  final DynamicField first;
+  final DynamicField second;
+  final Axis axis;
+  final EdgeInsets? firstPadding;
+  final EdgeInsets? secondPadding;
+  final EdgeInsets contentPadding;
+
+  const DynamicFieldTwoColumn({
+    required this.first,
+    required this.second,
+    this.firstPadding,
+    this.secondPadding,
+    this.axis = Axis.horizontal,
+    this.contentPadding = EdgeInsets.zero,
+  });
+}
+
 /// Base abstract class for all dynamic form fields.
-abstract class DynamicField {
+abstract class DynamicField extends DynamicFieldItem {
   final String name;
   final dynamic initialValue;
   final InputDecoration decoration;
@@ -78,9 +114,11 @@ class DynamicCheckboxField extends DynamicField {
   final dynamic Function(bool?)? fieldTransformer;
   final GlobalKey<FormBuilderFieldState>? formFieldKey;
   final Function(bool?)? onChange;
+  final EdgeInsets contentPadding;
 
   const DynamicCheckboxField({
     this.formFieldKey,
+    this.contentPadding = EdgeInsets.zero,
     required super.name,
     required this.title,
     this.initialValue,

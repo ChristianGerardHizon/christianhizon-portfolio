@@ -1,5 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
+import 'package:gym_system/src/core/hooks/date_time_hook.dart';
+import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
 import 'package:gym_system/src/features/products/domain/product_category.dart';
 
@@ -15,6 +17,14 @@ class Product extends PbRecord with ProductMappable {
   final num? stockThreshold;
   final num price;
   final bool forSale;
+
+  final num? usedQuantity;
+  final num? quantity;
+
+  @MappableField(hook: DateTimeHook())
+  final DateTime? expiration;
+
+  final bool trackByLot;
 
   final ProductExpand expand;
 
@@ -34,6 +44,10 @@ class Product extends PbRecord with ProductMappable {
     super.isDeleted = false,
     super.created,
     super.updated,
+    this.usedQuantity,
+    this.quantity,
+    required this.trackByLot,
+    this.expiration,
   });
 
   static fromMap(Map<String, dynamic> raw) {

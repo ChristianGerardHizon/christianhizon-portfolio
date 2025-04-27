@@ -15,6 +15,7 @@ import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product_inventory.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/inventory/product_inventory_table_controller.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_inventory_card.dart';
+import 'package:gym_system/src/features/products/presentation/widgets/product_status_text.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductInventoriesPage extends HookConsumerWidget {
@@ -41,7 +42,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
     onRefresh() {
       ref.invalidate(productInventoryTableControllerProvider);
       ref.invalidate(provider);
-      // controller.clear();
+      notifier.clearSelection();
     }
 
     ///
@@ -75,7 +76,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('ProductInventorys'),
+          title: Text('Inventory'),
           actions: [
             RefreshButton(
               onPressed: onRefresh,
@@ -125,21 +126,21 @@ class ProductInventoriesPage extends HookConsumerWidget {
               builder: (context, productInventory, row, column) {
                 return Align(
                   alignment: Alignment.centerLeft,
-                  child: Text((productInventory.expand.branch?.name).optional(),
+                  child: Text(
+                      (productInventory.expand.product.expand.branch?.name)
+                          .optional(),
                       overflow: TextOverflow.ellipsis),
                 );
               },
             ),
             TableColumn(
-              header: 'Date Created',
+              header: 'Status',
+              width: 130,
               alignment: Alignment.centerLeft,
-              width: 150,
               builder: (context, productInventory, row, column) {
                 return Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(
-                      (productInventory.created?.yyyyMMddHHmmA()).optional(),
-                      overflow: TextOverflow.ellipsis),
+                  child: ProductStatusText(product: productInventory),
                 );
               },
             ),

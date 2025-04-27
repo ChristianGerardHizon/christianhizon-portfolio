@@ -14,23 +14,29 @@ class ProductPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(productControllerProvider(id));
+    final provider = productControllerProvider(id);
+    final state = ref.watch(provider);
 
-    refresh() async {}
-    return DefaultTabController(
-      length: 2,
-      initialIndex: 0,
-      child: state.when(
-        error: (error, stack) => Scaffold(
-          appBar: AppBar(
-            title: Text('Something Went Wrong'),
-          ),
-          body: FailureMessage(error, stack),
+    refresh() async {
+      ref.invalidate(provider);
+    }
+
+    return state.when(
+      skipError: false,
+      skipLoadingOnRefresh: false,
+      skipLoadingOnReload: false,
+      error: (error, stack) => Scaffold(
+        appBar: AppBar(
+          title: Text('Something Went Wrong'),
         ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        data: (productState) {
-          final product = productState.product;
-          return SafeArea(
+        body: FailureMessage(error, stack),
+      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      data: (productState) {
+        final product = productState.product;
+        return DefaultTabController(
+          length: product.trackByLot ? 2 : 1,
+          child: SafeArea(
             child: NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
@@ -47,45 +53,51 @@ class ProductPage extends HookConsumerWidget {
                     ],
                   ),
 
-                  SliverOverlapAbsorber(
-                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                        context),
-                    sliver: PinnedHeaderSliver(
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).appBarTheme.backgroundColor,
-                        ),
-                        child: TabBar(
-                          isScrollable: false,
-                          tabs: [
-                            Tab(
-                              icon: Icon(MIcons.accountOutline),
-                              child: Text('Details'),
-                            ),
-                            Tab(
-                              icon: Icon(MIcons.informationOutline),
-                              child: Text('Stocks'),
-                            ),
-                          ],
+                  if (product.trackByLot)
+                    SliverOverlapAbsorber(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                        context,
+                      ),
+                      sliver: PinnedHeaderSliver(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).appBarTheme.backgroundColor,
+                          ),
+                          child: TabBar(
+                            isScrollable: false,
+                            tabs: [
+                              Tab(
+                                icon: Icon(MIcons.accountOutline),
+                                child: Text('Details'),
+                              ),
+                              if (product.trackByLot)
+                                Tab(
+                                  icon: Icon(MIcons.informationOutline),
+                                  child: Text('Stocks'),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  )
+                    )
                 ];
               },
               body: Padding(
-                padding: const EdgeInsets.only(top: 75),
+                padding: product.trackByLot
+                    ? const EdgeInsets.only(top: 75)
+                    : EdgeInsets.zero,
                 child: TabBarView(
                   children: [
                     ProductDetailsView(product),
-                    ProductStocksView(product),
+                    if (product.trackByLot) ProductStocksView(product),
                   ],
                 ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
+import 'package:gym_system/src/core/hooks/date_time_hook.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 
 part 'product_stock.mapper.dart';
@@ -7,6 +8,8 @@ part 'product_stock.mapper.dart';
 @MappableClass()
 class ProductStock extends PbRecord with ProductStockMappable {
   final String? lotNo;
+
+  @MappableField(hook: DateTimeHook())
   final DateTime? expiration;
   final String? notes;
   final String product;
