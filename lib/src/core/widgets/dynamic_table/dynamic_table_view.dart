@@ -73,7 +73,6 @@ class DynamicTableView<T> extends HookConsumerWidget {
     final currentPage = state.page;
 
     onSearch() {
-      notifier.changePage(1);
       notifier.changeFilter(searchCtrl.text);
     }
 
@@ -244,6 +243,12 @@ class DynamicTableView<T> extends HookConsumerWidget {
                     items[value.row],
                     value.isSelected,
                   ),
+                )
+              else
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                  ),
                 ),
 
               ///
@@ -255,6 +260,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
                   child: PageSelector(
                     totalPages: state.totalPages,
                     page: state.page,
+                    enabled: !state.isLoading,
                     onPageChange: (newPage) {
                       notifier..changePage(newPage);
                     },

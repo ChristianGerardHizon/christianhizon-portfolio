@@ -44,6 +44,7 @@ List<RouteBase> get $appRoutes => [
       $patientRecordPageRoute,
       $patientTreatmentRecordsPageRoute,
       $patientTreatmentRecordPageRoute,
+      $appointmentsPageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -229,6 +230,14 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/your-account',
               factory: $YourAccountPageRouteExtension._fromState,
+            ),
+          ],
+        ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/appointments',
+              factory: $AppointmentsPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -729,6 +738,24 @@ extension $YourAccountPageRouteExtension on YourAccountPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
+extension $AppointmentsPageRouteExtension on AppointmentsPageRoute {
+  static AppointmentsPageRoute _fromState(GoRouterState state) =>
+      const AppointmentsPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/appointments',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
 extension $PatientTreatmentRecordsPageRouteExtension
     on PatientTreatmentRecordsPageRoute {
   static PatientTreatmentRecordsPageRoute _fromState(GoRouterState state) =>
@@ -1099,4 +1126,9 @@ RouteBase get $patientTreatmentRecordsPageRoute => GoRouteData.$route(
 RouteBase get $patientTreatmentRecordPageRoute => GoRouteData.$route(
       path: '/treatment-record/:id',
       factory: $PatientTreatmentRecordPageRouteExtension._fromState,
+    );
+
+RouteBase get $appointmentsPageRoute => GoRouteData.$route(
+      path: '/appointments',
+      factory: $AppointmentsPageRouteExtension._fromState,
     );

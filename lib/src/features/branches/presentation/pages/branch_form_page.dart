@@ -55,7 +55,6 @@ class BranchFormPage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Branch Form Page'),
       ),

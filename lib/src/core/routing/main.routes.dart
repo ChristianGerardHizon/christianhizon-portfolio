@@ -52,6 +52,7 @@ part 'routes/sales.routes.dart';
 part 'routes/products.routes.dart';
 part 'routes/patient_records.routes.dart';
 part 'routes/patient_treatment_records.routes.dart';
+part 'routes/appointments.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
@@ -204,6 +205,15 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<AuthenticationBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<YourAccountPageRoute>(path: YourAccountPageRoute.path),
+      ],
+    ),
+
+    ///
+    /// Appointments
+    ///
+    TypedStatefulShellBranch<AppointmentBranchData>(
+      routes: <TypeRouteData>[
+        TypedGoRoute<AppointmentsPageRoute>(path: AppointmentsPageRoute.path),
       ],
     ),
 

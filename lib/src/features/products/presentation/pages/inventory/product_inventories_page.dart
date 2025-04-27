@@ -28,20 +28,6 @@ class ProductInventoriesPage extends HookConsumerWidget {
     final listProvider = productInventoryTableControllerProvider(tableKey);
     final listState = ref.watch(listProvider);
 
-    ref.listen(listProvider, (curr, next) {
-      // if (next.isLoading || next.isRefreshing || next.isReloading) {
-      //   notifier.startLoading();
-      // }
-
-      // if (next is AsyncError) {
-      //   // notifier.fetchFailed();
-      // }
-
-      // if (next.hasValue) {
-      //   notifier.stopLoading();
-      // }
-    });
-
     ///
     /// onTap
     ///
@@ -72,7 +58,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
         (r) {
-          // controller.clear();
+          notifier.clearSelection();
           ref.invalidate(productInventoryTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
           if (context.canPop()) context.pop();
@@ -88,28 +74,24 @@ class ProductInventoriesPage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('ProductInventorys'),
-        actions: [
-          RefreshButton(
-            onPressed: onRefresh,
-          ),
-        ],
-      ),
-      body: listState.when(
-        skipError: false,
-        skipLoadingOnRefresh: false,
-        skipLoadingOnReload: false,
-        error: (error, stack) => Center(
-          child: Text(error.toString()),
+        appBar: AppBar(
+          title: Text('ProductInventorys'),
+          actions: [
+            RefreshButton(
+              onPressed: onRefresh,
+            ),
+          ],
         ),
-        loading: () => Center(
-          child: CircularProgressIndicator(),
-        ),
-        data: (items) => DynamicTableView<ProductInventory>(
+        body: DynamicTableView<ProductInventory>(
           tableKey: TableControllerKeys.productInventory,
           error: null,
-          items: items,
+          items: listState.maybeWhen(
+            skipError: true,
+            skipLoadingOnRefresh: false,
+            skipLoadingOnReload: true,
+            data: (items) => items,
+            orElse: () => [],
+          ),
           onDelete: onDelete,
           onRowTap: onTap,
 
@@ -192,8 +174,6 @@ class ProductInventoriesPage extends HookConsumerWidget {
               },
             );
           },
-        ),
-      ),
-    );
+        ));
   }
 }

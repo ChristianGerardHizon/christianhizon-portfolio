@@ -138,7 +138,7 @@ class UsersPage extends HookConsumerWidget {
               },
             ),
             TableColumn(
-              header: 'Verfied',
+              header: 'Branch',
               width: 100,
               alignment: Alignment.centerLeft,
               builder: (context, data, row, column) {
@@ -146,20 +146,8 @@ class UsersPage extends HookConsumerWidget {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     overflow: TextOverflow.ellipsis,
-                    data.verified ? 'Yes' : 'No',
+                    (data.expand.branch?.name).optional(),
                   ),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Date Created',
-              alignment: Alignment.centerLeft,
-              width: 150,
-              builder: (context, user, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text((user.created?.yyyyMMddHHmmA()).optional(),
-                      overflow: TextOverflow.ellipsis),
                 );
               },
             ),

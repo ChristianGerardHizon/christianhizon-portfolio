@@ -15,6 +15,7 @@ class UserFormStateMapper extends ClassMapperBase<UserFormState> {
       MapperContainer.globals.use(_instance = UserFormStateMapper._());
       UserMapper.ensureInitialized();
       PBImageMapper.ensureInitialized();
+      BranchMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -27,15 +28,22 @@ class UserFormStateMapper extends ClassMapperBase<UserFormState> {
   static List<PBImage>? _$images(UserFormState v) => v.images;
   static const Field<UserFormState, List<PBImage>> _f$images =
       Field('images', _$images, opt: true);
+  static List<Branch> _$branches(UserFormState v) => v.branches;
+  static const Field<UserFormState, List<Branch>> _f$branches =
+      Field('branches', _$branches, opt: true, def: const []);
 
   @override
   final MappableFields<UserFormState> fields = const {
     #user: _f$user,
     #images: _f$images,
+    #branches: _f$branches,
   };
 
   static UserFormState _instantiate(DecodingData data) {
-    return UserFormState(user: data.dec(_f$user), images: data.dec(_f$images));
+    return UserFormState(
+        user: data.dec(_f$user),
+        images: data.dec(_f$images),
+        branches: data.dec(_f$branches));
   }
 
   @override
@@ -93,7 +101,8 @@ abstract class UserFormStateCopyWith<$R, $In extends UserFormState, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   UserCopyWith<$R, User, User>? get user;
   ListCopyWith<$R, PBImage, ObjectCopyWith<$R, PBImage, PBImage>>? get images;
-  $R call({User? user, List<PBImage>? images});
+  ListCopyWith<$R, Branch, BranchCopyWith<$R, Branch, Branch>> get branches;
+  $R call({User? user, List<PBImage>? images, List<Branch>? branches});
   UserFormStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -115,15 +124,24 @@ class _UserFormStateCopyWithImpl<$R, $Out>
               (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(images: v))
           : null;
   @override
-  $R call({Object? user = $none, Object? images = $none}) =>
+  ListCopyWith<$R, Branch, BranchCopyWith<$R, Branch, Branch>> get branches =>
+      ListCopyWith($value.branches, (v, t) => v.copyWith.$chain(t),
+          (v) => call(branches: v));
+  @override
+  $R call(
+          {Object? user = $none,
+          Object? images = $none,
+          List<Branch>? branches}) =>
       $apply(FieldCopyWithData({
         if (user != $none) #user: user,
-        if (images != $none) #images: images
+        if (images != $none) #images: images,
+        if (branches != null) #branches: branches
       }));
   @override
   UserFormState $make(CopyWithData data) => UserFormState(
       user: data.get(#user, or: $value.user),
-      images: data.get(#images, or: $value.images));
+      images: data.get(#images, or: $value.images),
+      branches: data.get(#branches, or: $value.branches));
 
   @override
   UserFormStateCopyWith<$R2, UserFormState, $Out2> $chain<$R2, $Out2>(

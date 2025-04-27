@@ -72,7 +72,7 @@ class ConfirmModal extends HookConsumerWidget {
       Failure.handle,
     ).flatMap((result) {
       if (result == true) return TaskResult.right(true);
-      return TaskResult.left(UserCancelledFailure());
+      return TaskResult.left(CancelledFailure());
     });
   }
 

@@ -3,6 +3,7 @@ import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
+import 'package:gym_system/src/core/strings/pb_expand.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -30,10 +31,12 @@ class UserRepositoryImpl extends PBAuthRepository<User> {
     return User.fromMap({...map, 'domain': pb.baseURL});
   }
 
+  final expand = PbExpand.user;
+
   @override
   TaskResult<User> get(String id) {
     return TaskResult.tryCatch(() async {
-      final result = await collection.getOne(id);
+      final result = await collection.getOne(id, expand: expand);
       return mapToData(result.toJson());
     }, Failure.handle);
   }
@@ -44,7 +47,8 @@ class UserRepositoryImpl extends PBAuthRepository<User> {
     List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(body: payload, files: files);
+      final response =
+          await collection.create(body: payload, files: files, expand: expand);
       return mapToData(response.toJson());
     }, Failure.handle);
   }
@@ -67,6 +71,7 @@ class UserRepositoryImpl extends PBAuthRepository<User> {
       final result = await collection.getList(
         page: pageNo,
         perPage: pageSize,
+        expand: expand,
       );
       return PageResults(
         page: result.page,
@@ -93,6 +98,7 @@ class UserRepositoryImpl extends PBAuthRepository<User> {
         user.id,
         body: combinedMap,
         files: files,
+        expand: expand,
       );
       return mapToData(result.toJson());
     }, Failure.handle);

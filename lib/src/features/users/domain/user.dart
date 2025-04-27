@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
+import 'package:gym_system/src/features/branches/domain/branch.dart';
 
 part 'user.mapper.dart';
 
@@ -10,11 +11,15 @@ class User extends PbRecord with UserMappable {
   final String email;
   final String? avatar;
   final bool verified;
+  final String? branch;
+
+  final UserExpand expand;
 
   User({
     required super.id,
     required super.collectionId,
     required super.collectionName,
+    this.branch,
     this.name = '',
     this.email = '',
     this.avatar,
@@ -22,6 +27,7 @@ class User extends PbRecord with UserMappable {
     super.isDeleted = false,
     super.created,
     super.updated,
+    required this.expand,
   });
 
   static fromMap(Map<String, dynamic> raw) {
@@ -51,4 +57,21 @@ class User extends PbRecord with UserMappable {
       fileName: avatar!,
     );
   }
+}
+
+@MappableClass()
+class UserExpand with UserExpandMappable {
+  final Branch? branch;
+
+  UserExpand({
+    this.branch,
+  });
+
+  static fromMap(Map<String, dynamic> raw) {
+    return UserExpandMapper.fromMap({
+      ...raw,
+    });
+  }
+
+  static const fromJson = UserExpandMapper.fromJson;
 }

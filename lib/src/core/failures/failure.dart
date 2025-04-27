@@ -54,7 +54,7 @@ sealed class Failure with FailureMappable {
 
     // Handle user-cancelled errors (e.g., platform cancel actions)
     if (error.toString().contains('User cancelled')) {
-      return UserCancelledFailure(error, stackTrace, 'user_cancelled');
+      return CancelledFailure(error, stackTrace, 'user_cancelled');
     }
 
     // Handle presentation-related errors (UI layer)
@@ -104,8 +104,8 @@ class DataFailure extends Failure with DataFailureMappable {
 }
 
 @MappableClass()
-class UserCancelledFailure extends Failure with UserCancelledFailureMappable {
-  const UserCancelledFailure([
+class CancelledFailure extends Failure with CancelledFailureMappable {
+  const CancelledFailure([
     dynamic message,
     StackTrace? stackTrace,
     String? identifier,

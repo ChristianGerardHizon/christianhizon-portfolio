@@ -6,6 +6,7 @@ import 'package:gym_system/src/core/packages/flutter_secure_storage.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
+import 'package:gym_system/src/core/strings/pb_expand.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/admins/domain/admin.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
@@ -115,7 +116,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
         return await pb
             .collection(PocketBaseCollections.users)
-            .authWithPassword(email, password);
+            .authWithPassword(
+              email,
+              password,
+              expand: PbExpand.user,
+            );
       },
       (error, stack) {
         return Failure.handle(error, stack);
@@ -136,15 +141,24 @@ class AuthRepositoryImpl implements AuthRepository {
   TaskResult<AuthData> refresh() {
     return TaskResult.tryCatch(
       () async {
-        final id = authStore.record?.collectionId;
+        final collection = authStore.record?.collectionName;
 
-        if (id == null) {
-          throw DataFailure('collectionId is null', StackTrace.current);
+        if (collection == null) {
+          throw DataFailure('collection is null', StackTrace.current);
         }
 
-        final auth = await pb.collection(id).authRefresh();
+        if (collection == PocketBaseCollections.admins) {
+          return await pb.collection(collection).authRefresh();
+        }
 
-        return auth;
+        if (collection == PocketBaseCollections.users) {
+          return await pb
+              .collection(collection)
+              .authRefresh(expand: PbExpand.user);
+        }
+
+        throw DataFailure(
+            'collection is unknown ($collection)', StackTrace.current);
       },
       Failure.handle,
     ).flatMap(_saveToStorage);
@@ -165,10 +179,14 @@ class AuthRepositoryImpl implements AuthRepository {
 
         final map = jsonDecode(authUserString);
         final oldtoken = map['token'];
-        final oldCollectionId = map['collectionId'];
+        final oldCollection = map['collectionName'];
         authStore.save(oldtoken, null);
 
-        final authModel = await pb.collection(oldCollectionId).authRefresh();
+        final authModel = oldCollection == PocketBaseCollections.admins
+            ? await pb.collection(oldCollection).authRefresh()
+            : await pb
+                .collection(oldCollection)
+                .authRefresh(expand: PbExpand.user);
 
         authStore.save(authModel.token, authModel.record);
 

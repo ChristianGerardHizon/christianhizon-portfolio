@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 
 class PageSelector extends HookWidget {
   const PageSelector({
@@ -8,12 +9,14 @@ class PageSelector extends HookWidget {
     required this.page,
     this.onPageChange,
     this.hasNext = false,
+    this.enabled = true,
     required this.totalPages,
   });
 
   final int page;
   final int totalPages;
   final bool hasNext;
+  final bool enabled;
   final Function(int)? onPageChange;
 
   @override
@@ -27,7 +30,8 @@ class PageSelector extends HookWidget {
           /// previous
           ///
           TextButton.icon(
-            onPressed: page > 1 ? () => onPageChange?.call(page - 1) : null,
+            onPressed:
+                enabled && page > 1 ? () => onPageChange?.call(page - 1) : null,
             iconAlignment: IconAlignment.end,
             label: const Text('Prev'),
             icon: const Icon(Icons.chevron_left),
@@ -43,7 +47,7 @@ class PageSelector extends HookWidget {
               children: [
                 Expanded(
                   child: TextField(
-                    enabled: hasNext,
+                    enabled: enabled,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     controller: TextEditingController(text: page.toString()),
                     decoration: const InputDecoration(
@@ -56,7 +60,12 @@ class PageSelector extends HookWidget {
                     keyboardType: TextInputType.number,
                     onSubmitted: (value) {
                       final tryParse = int.tryParse(value);
-                      if (tryParse != null) onPageChange?.call(tryParse);
+                      if (tryParse == null) return;
+                      if (tryParse > totalPages) {
+                        AppSnackBar.root(message: 'Invalid page number');
+                        return;
+                      }
+                      onPageChange?.call(tryParse);
                     },
                   ),
                 ),
@@ -64,7 +73,7 @@ class PageSelector extends HookWidget {
                   '/',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: 20),
                 Text(
                   totalPages.toString(),
                   style: Theme.of(context).textTheme.bodyLarge,
@@ -78,7 +87,8 @@ class PageSelector extends HookWidget {
           /// Next
           ///
           TextButton.icon(
-            onPressed: hasNext ? () => onPageChange?.call(page + 1) : null,
+            onPressed:
+                enabled && hasNext ? () => onPageChange?.call(page + 1) : null,
             iconAlignment: IconAlignment.start,
             label: const Text('Next'),
             icon: const Icon(Icons.chevron_right),

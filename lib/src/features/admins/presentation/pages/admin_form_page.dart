@@ -14,6 +14,7 @@ import 'package:gym_system/src/features/admins/domain/admin.dart';
 import 'package:gym_system/src/features/admins/presentation/controllers/admin_controller.dart';
 import 'package:gym_system/src/features/admins/presentation/controllers/admin_form_controller.dart';
 import 'package:gym_system/src/features/admins/presentation/controllers/admin_table_controller.dart';
+import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AdminFormPage extends HookConsumerWidget {
@@ -55,6 +56,7 @@ class AdminFormPage extends HookConsumerWidget {
           AppSnackBar.root(message: 'Success');
           ref.invalidate(adminTableControllerProvider);
           ref.invalidate(adminControllerProvider(r.id));
+          ref.invalidate(authControllerProvider);
 
           context.pop();
         },
@@ -62,7 +64,6 @@ class AdminFormPage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Admin Form Page'),
       ),

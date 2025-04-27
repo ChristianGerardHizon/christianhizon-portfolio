@@ -60,7 +60,6 @@ class ProductFormPage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Product Form Page'),
       ),

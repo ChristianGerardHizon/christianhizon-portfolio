@@ -82,102 +82,97 @@ class ProductsPage extends HookConsumerWidget {
           ),
         ],
       ),
-      body: listState.when(
-        skipError: false,
-        skipLoadingOnRefresh: false,
-        skipLoadingOnReload: false,
-        error: (error, stack) => Center(
-          child: Text(error.toString()),
+      body: DynamicTableView<Product>(
+        tableKey: TableControllerKeys.product,
+        error: null,
+        items: listState.maybeWhen(
+          skipError: true,
+          skipLoadingOnRefresh: false,
+          skipLoadingOnReload: true,
+          data: (items) => items,
+          orElse: () => [],
         ),
-        loading: () => Center(
-          child: CircularProgressIndicator(),
-        ),
-        data: (items) => DynamicTableView<Product>(
-          tableKey: TableControllerKeys.product,
-          error: null,
-          items: items,
-          onDelete: onDelete,
-          onRowTap: onTap,
+        onDelete: onDelete,
+        onRowTap: onTap,
 
-          ///
-          /// Search Features
-          ///
-          searchCtrl: searchCtrl,
-          onCreate: onCreate,
+        ///
+        /// Search Features
+        ///
+        searchCtrl: searchCtrl,
+        onCreate: onCreate,
 
-          ///
-          /// Table Data
-          ///
-          columns: [
-            TableColumn(
-              header: 'Name',
-              width: 200,
-              alignment: Alignment.centerLeft,
-              builder: (context, data, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    overflow: TextOverflow.ellipsis,
-                    data.name,
-                  ),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Branch',
-              alignment: Alignment.centerLeft,
-              builder: (context, product, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text((product.expand.branch?.name).optional(),
-                      overflow: TextOverflow.ellipsis),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Date Created',
-              alignment: Alignment.centerLeft,
-              width: 150,
-              builder: (context, product, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text((product.created?.yyyyMMddHHmmA()).optional(),
-                      overflow: TextOverflow.ellipsis),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Actions',
-              alignment: Alignment.centerLeft,
-              width: 150,
-              builder: (context, product, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: TextButton(onPressed: () {}, child: Text('Add Stock')),
-                );
-              },
-            ),
-          ],
+        ///
+        /// Table Data
+        ///
+        columns: [
+          TableColumn(
+            header: 'Name',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  data.name,
+                ),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Branch',
+            alignment: Alignment.centerLeft,
+            builder: (context, product, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text((product.expand.branch?.name).optional(),
+                    overflow: TextOverflow.ellipsis),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Date Created',
+            alignment: Alignment.centerLeft,
+            width: 150,
+            builder: (context, product, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text((product.created?.yyyyMMddHHmmA()).optional(),
+                    overflow: TextOverflow.ellipsis),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Actions',
+            alignment: Alignment.centerLeft,
+            width: 150,
+            builder: (context, product, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton(onPressed: () {}, child: Text('Add Stock')),
+              );
+            },
+          ),
+        ],
 
-          ///
-          /// Builder for mobile
-          ///
-          mobileBuilder: (context, index, product, selected) {
-            return ProductCard(
-              product: product,
-              onTap: () {
-                if (selected)
-                  notifier.toggleRow(index);
-                else
-                  onTap(product);
-              },
-              selected: selected,
-              onLongPress: () {
+        ///
+        /// Builder for mobile
+        ///
+        mobileBuilder: (context, index, product, selected) {
+          return ProductCard(
+            product: product,
+            onTap: () {
+              if (selected)
                 notifier.toggleRow(index);
-              },
-            );
-          },
-        ),
+              else
+                onTap(product);
+            },
+            selected: selected,
+            onLongPress: () {
+              notifier.toggleRow(index);
+            },
+          );
+        },
       ),
     );
   }

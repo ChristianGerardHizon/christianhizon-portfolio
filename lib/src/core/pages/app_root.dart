@@ -93,6 +93,15 @@ class AppRoot extends HookConsumerWidget {
           },
         ),
         CustomNavigationBarItem(
+          route: AppointmentsPageRoute.path,
+          icon: Icon(MIcons.calendarOutline),
+          selectedIcon: Icon(MIcons.calendar),
+          label: 'Appointments',
+          onTap: () {
+            AppointmentsPageRoute().go(context);
+          },
+        ),
+        CustomNavigationBarItem(
           route: SalesCashierPageRoute.path,
           icon: Icon(MIcons.cashRegister),
           selectedIcon: Icon(MIcons.cashRegister),

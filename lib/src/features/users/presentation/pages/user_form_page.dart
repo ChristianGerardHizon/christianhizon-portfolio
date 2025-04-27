@@ -62,7 +62,6 @@ class UserFormPage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('User Form Page'),
       ),
@@ -72,6 +71,7 @@ class UserFormPage extends HookConsumerWidget {
           data: (formState) {
             final user = formState.user;
             final images = formState.images;
+            final branches = formState.branches;
 
             return DynamicFormBuilder(
               itemPadding: const EdgeInsets.only(
@@ -134,6 +134,32 @@ class UserFormPage extends HookConsumerWidget {
                     [
                       FormBuilderValidators.required(),
                       FormBuilderValidators.email(),
+                    ],
+                  ),
+                ),
+
+                ///
+                /// Branch
+                ///
+                DynamicSelectField(
+                  name: UserField.branch,
+                  initialValue:
+                      user?.expand.branch?.id ?? branches.firstOrNull?.id,
+                  options: branches
+                      .map(
+                        (e) => SelectOption(
+                          value: e.id,
+                          display: e.name,
+                        ),
+                      )
+                      .toList(),
+                  decoration: InputDecoration(
+                    label: Text('Branch'),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(),
                     ],
                   ),
                 ),

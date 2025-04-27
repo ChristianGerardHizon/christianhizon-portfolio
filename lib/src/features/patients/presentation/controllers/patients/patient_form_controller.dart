@@ -75,6 +75,10 @@ TaskResult<List<PBImage>?> _buildInitialImages(
       return null;
     }
 
+    if (patient.avatar == null || patient.avatar!.isEmpty) {
+      return null;
+    }
+
     final imageUri = PBUtils.imageBuilder(
       collection: patient.collectionId,
       domain: domain,

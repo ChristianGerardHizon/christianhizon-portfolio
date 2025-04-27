@@ -16,7 +16,9 @@ class ProductInventoryTableController
   Future<List<ProductInventory>> build(String tableKey) async {
     final repo = ref.read(productInventoryRepositoryProvider);
     final tableProvider = tableControllerProvider(tableKey);
-    final page = ref.watch(tableProvider.select((state) => state.page));
+    final page = ref.watch(tableProvider.select(
+      (state) => state.page,
+    ));
     final pageSize = ref.watch(tableProvider.select((state) => state.pageSize));
     final tableFilter =
         ref.watch(tableProvider.select((state) => state.filter));
@@ -51,6 +53,7 @@ TaskResult _handleSuccess(
 ) {
   notifier.fetchSuccess(
     hasNext: result.hasNext,
+    page: result.page,
     totalItems: result.totalItems,
     totalPages: result.totalPages,
   );

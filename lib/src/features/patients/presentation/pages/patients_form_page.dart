@@ -60,7 +60,6 @@ class PatientFormPage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Patient Form Page'),
       ),
@@ -96,8 +95,7 @@ class PatientFormPage extends HookConsumerWidget {
                       PBUtils.defaultFieldTransformer(list, isSingleFile: true),
                   fileTransformer: PBUtils.defaultFileTransformer,
                   decoration: InputDecoration(
-                    label: Text('Image'),
-                    border: OutlineInputBorder(),
+                    border: InputBorder.none,
                   ),
                   initialValue: images,
                   validator: FormBuilderValidators.compose([]),

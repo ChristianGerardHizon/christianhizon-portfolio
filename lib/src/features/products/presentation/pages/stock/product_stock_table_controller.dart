@@ -50,6 +50,7 @@ TaskResult _handleSuccess(
 ) {
   notifier.fetchSuccess(
     hasNext: result.hasNext,
+    page: result.page,
     totalItems: result.totalItems,
     totalPages: result.totalPages,
   );

@@ -20,6 +20,7 @@ class UserField {
   static const String passwordConfirm = 'passwordConfirm';
   static const String emailVisibility = 'emailVisibility';
   static const String verified = 'verified';
+  static const String branch = 'branch';
 
   static const String changePassword = 'changePassword';
 }

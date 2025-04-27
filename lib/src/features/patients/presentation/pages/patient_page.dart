@@ -8,7 +8,7 @@ import 'package:gym_system/src/features/patients/presentation/controllers/treatm
 import 'package:gym_system/src/features/patients/presentation/widgets/treatment_records/patient_treatment_record_view.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/treatment/patient_treatments_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patients/patient_details.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patients/patient_details_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientPage extends HookConsumerWidget {
@@ -107,7 +107,7 @@ class PatientPage extends HookConsumerWidget {
                   padding: const EdgeInsets.only(top: 75),
                   child: TabBarView(
                     children: [
-                      PatientDetails(patient: patient),
+                      PatientDetailsView(patient),
                       PatientRecordsView(patient: patient),
                       PatientTreatmentRecordView(patient: patient),
                       Center(

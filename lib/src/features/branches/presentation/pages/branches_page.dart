@@ -134,29 +134,6 @@ class BranchesPage extends HookConsumerWidget {
                 );
               },
             ),
-            TableColumn(
-              header: 'Date Created',
-              alignment: Alignment.centerLeft,
-              width: 150,
-              builder: (context, branch, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text((branch.created?.yyyyMMddHHmmA()).optional(),
-                      overflow: TextOverflow.ellipsis),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Actions',
-              alignment: Alignment.centerLeft,
-              width: 150,
-              builder: (context, branch, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: TextButton(onPressed: () {}, child: Text('Add Stock')),
-                );
-              },
-            ),
           ],
 
           ///

@@ -1,173 +1,227 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/routing/main.routes.dart';
+import 'package:gym_system/src/core/failures/failure.dart';
+import 'package:gym_system/src/core/routing/router.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/card_group.dart';
-import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
-import 'package:gym_system/src/core/widgets/collapsing_card.dart';
+import 'package:gym_system/src/core/widgets/circle_widget.dart';
+import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
+import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
+import 'package:gym_system/src/core/widgets/failure_message.dart';
+import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
+import 'package:gym_system/src/core/widgets/refresh_button.dart';
+import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/features/admins/data/admin_repository.dart';
+import 'package:gym_system/src/features/admins/domain/admin.dart';
 import 'package:gym_system/src/features/admins/presentation/controllers/admin_controller.dart';
-import 'package:gym_system/src/features/admins/presentation/widgets/admin_circle_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AdminPage extends HookConsumerWidget {
+  const AdminPage(this.id, {super.key});
+
   final String id;
 
-  const AdminPage(this.id, {super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = adminControllerProvider(id);
-    final state = ref.watch(provider);
+    ///
+    /// loading variable
+    ///
+    final isLoading = useState(false);
+
+    ///
+    /// repo
+    ///
+    final repo = ref.read(adminRepositoryProvider);
+
+    ///
+    /// refresh
+    ///
+    refresh(String id) {
+      ref.invalidate(adminControllerProvider(id));
+    }
+
+    ///
+    /// on tap
+    ///
+    tap(Admin admin) {
+      AdminFormPageRoute(id: admin.id).push(context);
+    }
 
     ///
     /// onDelete
     ///
-    onDelete() async {
-      final confirm = await ConfirmModal.show(context);
-      if (confirm != true) return;
-      final repo = ref.read(adminRepositoryProvider);
-      final result = repo.softDeleteMulti([id]).run();
-      result.then((result) {
-        result.fold(
-          (l) => AppSnackBar.rootFailure(l),
-          (r) {
-            AppSnackBar.root(message: 'Successfully Deleted');
-            if (context.canPop()) context.pop();
-          },
-        );
-      });
+    onDelete(Admin admin) async {
+      final fullTask = await
+          // 1. Call Confirm Modal
+          ConfirmModal.taskResult(context)
+              // 2. Delete Network Call
+              .flatMap((_) => repo.softDeleteMulti([admin.id]))
+              // 3. Side effects
+              .flatMap(
+                (_) => _handleSuccessfulDeleteTaskSidEffects(
+                  context: context,
+                  adminId: admin.id,
+                  refresh: refresh,
+                ),
+              );
+
+      isLoading.value = true;
+      final result = await fullTask.run();
+      isLoading.value = false;
+
+      // 4. Handle Error
+      result.match(
+        (failure) => _handleFailure(context, failure),
+        (_) {},
+      );
     }
 
     return Scaffold(
-      body: state.when(
-        skipError: false,
-        skipLoadingOnRefresh: false,
-        skipLoadingOnReload: false,
-        loading: () => CenteredProgressIndicator(),
-        error: (error, stackTrace) => Center(child: Text(error.toString())),
-        data: (admin) {
-          return CustomScrollView(
-            slivers: [
-              ///
-              /// AppBar
-              ///
-              SliverAppBar(
-                title: Text(admin.name),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.refresh),
-                    onPressed: () => ref.invalidate(provider),
-                  )
-                ],
-              ),
-
-              ///
-              /// Picture
-              ///
-              SliverPadding(
-                padding: const EdgeInsets.only(top: 20, bottom: 30),
-                sliver: SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 250,
-                    child: AdminCircleImage(
-                      radius: 100,
-                      admin: admin,
-                    ),
-                  ),
-                ),
-              ),
-
-              ///
-              /// Admin Info
-              ///
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                sliver: SliverToBoxAdapter(
-                  child: CollapsingCard(
-                    canCollapse: false,
-                    header: Text(
-                      'Details',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    child: Column(children: [
-                      ///
-                      /// email
-                      ///
-                      DynamicListTile.divider(
-                        leading: Text('Email: '),
-                        content: Text(admin.email),
-                      ),
-
-                      ///
-                      /// name
-                      ///
-                      DynamicListTile.divider(
-                        leading: Text('Name: '),
-                        content: Text(admin.name),
-                      ),
-
-                      ///
-                      /// updated
-                      ///
-                      DynamicListTile.divider(
-                        leading: Text('Updated: '),
-                        content:
-                            Text((admin.updated?.yyyyMMddHHmm()).optional()),
-                      ),
-
-                      ///
-                      /// created
-                      ///
-                      DynamicListTile(
-                        leading: Text('Created: '),
-                        content:
-                            Text((admin.created?.yyyyMMddHHmm()).optional()),
-                      ),
-                    ]),
-                  ),
-                ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                sliver: SliverToBoxAdapter(
-                  child: CardGroup(
-                    header: 'Actions',
-                    children: [
-                      ListTile(
-                        leading: const Icon(Icons.edit_outlined),
-                        title: const Text('Edit Admin Information'),
-                        trailing: const Icon(
-                          Icons.chevron_right_outlined,
-                          size: 24,
-                        ),
-                        onTap: () => AdminFormPageRoute(id: id).push(context),
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.delete_outlined),
-                        title: const Text('Delete Admin Permanently'),
-                        trailing: const Icon(
-                          Icons.chevron_right_outlined,
-                          size: 24,
-                        ),
-                        onTap: onDelete,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              ///
-              /// Spacer
-              ///
-              SliverToBoxAdapter(child: SizedBox(height: 50)),
-            ],
-          );
-        },
+      appBar: AppBar(
+        title: const Text('Admin Details'),
+        actions: [
+          RefreshButton(
+            onPressed: () => refresh(id),
+          )
+        ],
       ),
+      body: ref.watch(adminControllerProvider(id)).when(
+            error: (error, stack) => FailureMessage(error, stack),
+            loading: () => Center(child: CircularProgressIndicator()),
+            data: (admin) {
+              return StackLoader(
+                isLoading: isLoading.value,
+                child: CustomScrollView(
+                  slivers: [
+                    ///
+                    /// Image
+                    ///
+                    SliverPadding(
+                      padding: EdgeInsets.only(top: 20, bottom: 20),
+                      sliver: SliverToBoxAdapter(
+                        child: CircleWidget(
+                          size: 300,
+                          child: PbImageCircle(
+                            radius: 120,
+                            collection: admin.collectionId,
+                            recordId: admin.id,
+                            file: admin.avatar,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    ///
+                    /// Content
+                    ///
+                    SliverList.list(
+                      children: [
+                        SizedBox(height: 20),
+
+                        ///
+                        /// Information
+                        ///
+                        DynamicGroup(
+                          padding: const EdgeInsets.only(
+                              left: 8, right: 8, bottom: 12),
+                          header: 'Admin Information',
+                          items: [
+                            DynamicGroupItem.text(
+                              title: 'Name',
+                              value: admin.name,
+                            ),
+                            DynamicGroupItem.text(
+                              title: 'Email',
+                              value: admin.email,
+                            ),
+                            DynamicGroupItem.text(
+                              title: 'Verified',
+                              value: admin.verified ? 'Yes' : 'No',
+                            ),
+                            DynamicGroupItem.text(
+                              title: 'Last Updated',
+                              value: (admin.updated?.toLocal().fullReadable)
+                                  .optional(),
+                            ),
+                            DynamicGroupItem.text(
+                              title: 'Created',
+                              value: (admin.created?.toLocal().fullReadable)
+                                  .optional(),
+                            ),
+                          ],
+                        ),
+
+                        ///
+                        /// Actions
+                        ///
+                        DynamicGroup(
+                          padding: const EdgeInsets.only(
+                              left: 8, right: 8, bottom: 12),
+                          header: 'Actions',
+                          items: [
+                            DynamicGroupItem.action(
+                              onTap: () => tap(admin),
+                              leading: Icon(MIcons.fileEditOutline),
+                              title: 'Edit Details',
+                              trailing: Icon(MIcons.chevronRight),
+                            ),
+                            DynamicGroupItem.action(
+                              titleColor: Theme.of(context).colorScheme.error,
+                              onTap: () => onDelete(admin),
+                              leading: Icon(
+                                MIcons.trashCan,
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                              title: 'Delete',
+                              trailing: Icon(MIcons.chevronRight),
+                            ),
+                          ],
+                        ),
+
+                        ///
+                        /// Spacer
+                        ///
+                        SizedBox(height: 50),
+                      ],
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
     );
   }
+}
+
+///
+/// Handles post-delete side effects like showing snackbar,
+/// popping navigation, and refreshing local state.
+///
+TaskResult<void> _handleSuccessfulDeleteTaskSidEffects({
+  required BuildContext context,
+  required String adminId,
+  required void Function(String id) refresh,
+}) {
+  return Task<void>(() async {
+    if (!context.mounted) return;
+    AppSnackBar.root(message: 'Successfully Deleted');
+    if (context.canPop()) context.pop();
+    refresh(adminId);
+    return null;
+  }).toTaskEither<Failure>();
+}
+
+///
+/// Handles Failure
+/// Shows a snackbar when a failure occurs
+///
+void _handleFailure(BuildContext context, Failure failure) {
+  if (failure is CancelledFailure) return;
+  AppSnackBar.rootFailure(failure);
 }

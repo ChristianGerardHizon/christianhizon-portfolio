@@ -16,18 +16,22 @@ class TableController extends _$TableController {
       page: 1,
       pageSize: 10,
       totalItems: 0,
-      totalPages: 0,
+      totalPages: 1,
       sort: null,
       filter: '',
     );
   }
 
   void changePage(int page) {
-    state = state.copyWith(page: page, selected: []);
+    state = state.copyWith(
+      isLoading: true,
+      page: page,
+      selected: [],
+    );
   }
 
   void changePageSize(int size) {
-    state = state.copyWith(pageSize: size, selected: []);
+    state = state.copyWith(isLoading: true, pageSize: size, selected: []);
   }
 
   void clearSelection() {
@@ -59,6 +63,7 @@ class TableController extends _$TableController {
     required int totalPages,
     required int totalItems,
     required bool hasNext,
+    required int page,
   }) {
     state = state.copyWith(
       isLoading: false,
@@ -76,7 +81,12 @@ class TableController extends _$TableController {
   void changeFilter(
     String filter,
   ) {
-    // state = state.copyWith(filter: filter);
+    if (filter == state.filter) return;
+    state = state.copyWith(
+      filter: filter,
+      isLoading: true,
+      page: 1,
+    );
   }
 
   toogleTableSort(String key) {

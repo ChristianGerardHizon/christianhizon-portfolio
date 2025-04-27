@@ -5,6 +5,8 @@ import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
+import 'package:gym_system/src/features/branches/data/branch_repository.dart';
+import 'package:gym_system/src/features/branches/domain/branch.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -16,10 +18,12 @@ part 'user_form_controller.mapper.dart';
 class UserFormState with UserFormStateMappable {
   final User? user;
   final List<PBImage>? images;
+  final List<Branch> branches;
 
   UserFormState({
     required this.user,
     this.images,
+    this.branches = const [],
   });
 }
 
@@ -30,10 +34,13 @@ class UserFormController extends _$UserFormController {
     final userRepo = ref.read(userRepositoryProvider);
 
     final result = await TaskResult.Do(($) async {
+      final branches = await $(_getBranches());
+
       if (id == null) {
         return UserFormState(
           user: null,
           images: null,
+          branches: branches,
         );
       }
 
@@ -44,16 +51,26 @@ class UserFormController extends _$UserFormController {
       return UserFormState(
         user: user,
         images: images,
+        branches: branches,
       );
     }).run();
 
     return result.fold(Future.error, Future.value);
   }
+
+  TaskResult<List<Branch>> _getBranches() {
+    return TaskResult.tryCatch(() async {
+      final repo = ref.read(branchRepositoryProvider);
+      final filter = '${BranchField.isDeleted} = false';
+      final result = await repo.listAll(filter: filter).run();
+      return result.fold(Future.error, Future.value);
+    }, Failure.handle);
+  }
 }
 
 TaskResult<List<PBImage>?> _buildInitialImages(User? user, String domain) {
   return TaskResult.tryCatch(() async {
-    if (user == null || user.avatar == null) {
+    if (user == null || user.avatar == null || user.avatar!.isEmpty) {
       return null;
     }
 

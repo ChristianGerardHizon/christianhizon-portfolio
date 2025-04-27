@@ -18,7 +18,10 @@ class CircleWidget extends StatelessWidget {
           ),
           shape: BoxShape.circle,
         ),
-        child: child,
+        child: Padding(
+          padding: const EdgeInsets.all(2),
+          child: child,
+        ),
       ),
     );
   }

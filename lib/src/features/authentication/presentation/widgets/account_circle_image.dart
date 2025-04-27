@@ -7,8 +7,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class AccountCircleImage extends HookConsumerWidget {
   final int radius;
   final bool showName;
-  const AccountCircleImage(
-      {super.key, this.radius = 60, this.showName = false});
+  const AccountCircleImage({
+    super.key,
+    this.radius = 60,
+    this.showName = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -67,7 +70,15 @@ class AccountCircleImage extends HookConsumerWidget {
                                   type,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.bodySmall,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
                                 )
                             ],
                           ),
@@ -122,6 +133,7 @@ class AccountCircleImage extends HookConsumerWidget {
               recordId: id,
               collection: collection,
               radius: 40,
+              viewable: false,
             ),
           ),
           name: name.optional(),

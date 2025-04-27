@@ -17,7 +17,7 @@ class FailureMapper extends ClassMapperBase<Failure> {
       AuthFailureMapper.ensureInitialized();
       PresentationFailureMapper.ensureInitialized();
       DataFailureMapper.ensureInitialized();
-      UserCancelledFailureMapper.ensureInitialized();
+      CancelledFailureMapper.ensureInitialized();
       NoAuthFailureMapper.ensureInitialized();
       GenericFailureMapper.ensureInitialized();
     }
@@ -606,34 +606,33 @@ class _DataFailureCopyWithImpl<$R, $Out>
       _DataFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
-class UserCancelledFailureMapper
-    extends SubClassMapperBase<UserCancelledFailure> {
-  UserCancelledFailureMapper._();
+class CancelledFailureMapper extends SubClassMapperBase<CancelledFailure> {
+  CancelledFailureMapper._();
 
-  static UserCancelledFailureMapper? _instance;
-  static UserCancelledFailureMapper ensureInitialized() {
+  static CancelledFailureMapper? _instance;
+  static CancelledFailureMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = UserCancelledFailureMapper._());
+      MapperContainer.globals.use(_instance = CancelledFailureMapper._());
       FailureMapper.ensureInitialized().addSubMapper(_instance!);
     }
     return _instance!;
   }
 
   @override
-  final String id = 'UserCancelledFailure';
+  final String id = 'CancelledFailure';
 
-  static dynamic _$message(UserCancelledFailure v) => v.message;
-  static const Field<UserCancelledFailure, dynamic> _f$message =
+  static dynamic _$message(CancelledFailure v) => v.message;
+  static const Field<CancelledFailure, dynamic> _f$message =
       Field('message', _$message, opt: true);
-  static StackTrace? _$stackTrace(UserCancelledFailure v) => v.stackTrace;
-  static const Field<UserCancelledFailure, StackTrace> _f$stackTrace =
+  static StackTrace? _$stackTrace(CancelledFailure v) => v.stackTrace;
+  static const Field<CancelledFailure, StackTrace> _f$stackTrace =
       Field('stackTrace', _$stackTrace, opt: true);
-  static String? _$identifier(UserCancelledFailure v) => v.identifier;
-  static const Field<UserCancelledFailure, String> _f$identifier =
+  static String? _$identifier(CancelledFailure v) => v.identifier;
+  static const Field<CancelledFailure, String> _f$identifier =
       Field('identifier', _$identifier, opt: true);
 
   @override
-  final MappableFields<UserCancelledFailure> fields = const {
+  final MappableFields<CancelledFailure> fields = const {
     #message: _f$message,
     #stackTrace: _f$stackTrace,
     #identifier: _f$identifier,
@@ -642,86 +641,84 @@ class UserCancelledFailureMapper
   @override
   final String discriminatorKey = 'type';
   @override
-  final dynamic discriminatorValue = 'UserCancelledFailure';
+  final dynamic discriminatorValue = 'CancelledFailure';
   @override
   late final ClassMapperBase superMapper = FailureMapper.ensureInitialized();
 
-  static UserCancelledFailure _instantiate(DecodingData data) {
-    return UserCancelledFailure(
+  static CancelledFailure _instantiate(DecodingData data) {
+    return CancelledFailure(
         data.dec(_f$message), data.dec(_f$stackTrace), data.dec(_f$identifier));
   }
 
   @override
   final Function instantiate = _instantiate;
 
-  static UserCancelledFailure fromMap(Map<String, dynamic> map) {
-    return ensureInitialized().decodeMap<UserCancelledFailure>(map);
+  static CancelledFailure fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<CancelledFailure>(map);
   }
 
-  static UserCancelledFailure fromJson(String json) {
-    return ensureInitialized().decodeJson<UserCancelledFailure>(json);
+  static CancelledFailure fromJson(String json) {
+    return ensureInitialized().decodeJson<CancelledFailure>(json);
   }
 }
 
-mixin UserCancelledFailureMappable {
+mixin CancelledFailureMappable {
   String toJson() {
-    return UserCancelledFailureMapper.ensureInitialized()
-        .encodeJson<UserCancelledFailure>(this as UserCancelledFailure);
+    return CancelledFailureMapper.ensureInitialized()
+        .encodeJson<CancelledFailure>(this as CancelledFailure);
   }
 
   Map<String, dynamic> toMap() {
-    return UserCancelledFailureMapper.ensureInitialized()
-        .encodeMap<UserCancelledFailure>(this as UserCancelledFailure);
+    return CancelledFailureMapper.ensureInitialized()
+        .encodeMap<CancelledFailure>(this as CancelledFailure);
   }
 
-  UserCancelledFailureCopyWith<UserCancelledFailure, UserCancelledFailure,
-      UserCancelledFailure> get copyWith => _UserCancelledFailureCopyWithImpl<
-          UserCancelledFailure, UserCancelledFailure>(
-      this as UserCancelledFailure, $identity, $identity);
+  CancelledFailureCopyWith<CancelledFailure, CancelledFailure, CancelledFailure>
+      get copyWith =>
+          _CancelledFailureCopyWithImpl<CancelledFailure, CancelledFailure>(
+              this as CancelledFailure, $identity, $identity);
   @override
   String toString() {
-    return UserCancelledFailureMapper.ensureInitialized()
-        .stringifyValue(this as UserCancelledFailure);
+    return CancelledFailureMapper.ensureInitialized()
+        .stringifyValue(this as CancelledFailure);
   }
 
   @override
   bool operator ==(Object other) {
-    return UserCancelledFailureMapper.ensureInitialized()
-        .equalsValue(this as UserCancelledFailure, other);
+    return CancelledFailureMapper.ensureInitialized()
+        .equalsValue(this as CancelledFailure, other);
   }
 
   @override
   int get hashCode {
-    return UserCancelledFailureMapper.ensureInitialized()
-        .hashValue(this as UserCancelledFailure);
+    return CancelledFailureMapper.ensureInitialized()
+        .hashValue(this as CancelledFailure);
   }
 }
 
-extension UserCancelledFailureValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, UserCancelledFailure, $Out> {
-  UserCancelledFailureCopyWith<$R, UserCancelledFailure, $Out>
-      get $asUserCancelledFailure => $base.as(
-          (v, t, t2) => _UserCancelledFailureCopyWithImpl<$R, $Out>(v, t, t2));
+extension CancelledFailureValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, CancelledFailure, $Out> {
+  CancelledFailureCopyWith<$R, CancelledFailure, $Out>
+      get $asCancelledFailure => $base
+          .as((v, t, t2) => _CancelledFailureCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
-abstract class UserCancelledFailureCopyWith<
-    $R,
-    $In extends UserCancelledFailure,
-    $Out> implements FailureCopyWith<$R, $In, $Out> {
+abstract class CancelledFailureCopyWith<$R, $In extends CancelledFailure, $Out>
+    implements FailureCopyWith<$R, $In, $Out> {
   @override
   $R call({dynamic message, StackTrace? stackTrace, String? identifier});
-  UserCancelledFailureCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+  CancelledFailureCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
 
-class _UserCancelledFailureCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, UserCancelledFailure, $Out>
-    implements UserCancelledFailureCopyWith<$R, UserCancelledFailure, $Out> {
-  _UserCancelledFailureCopyWithImpl(super.value, super.then, super.then2);
+class _CancelledFailureCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, CancelledFailure, $Out>
+    implements CancelledFailureCopyWith<$R, CancelledFailure, $Out> {
+  _CancelledFailureCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<UserCancelledFailure> $mapper =
-      UserCancelledFailureMapper.ensureInitialized();
+  late final ClassMapperBase<CancelledFailure> $mapper =
+      CancelledFailureMapper.ensureInitialized();
   @override
   $R call(
           {Object? message = $none,
@@ -733,15 +730,15 @@ class _UserCancelledFailureCopyWithImpl<$R, $Out>
         if (identifier != $none) #identifier: identifier
       }));
   @override
-  UserCancelledFailure $make(CopyWithData data) => UserCancelledFailure(
+  CancelledFailure $make(CopyWithData data) => CancelledFailure(
       data.get(#message, or: $value.message),
       data.get(#stackTrace, or: $value.stackTrace),
       data.get(#identifier, or: $value.identifier));
 
   @override
-  UserCancelledFailureCopyWith<$R2, UserCancelledFailure, $Out2>
-      $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _UserCancelledFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
+  CancelledFailureCopyWith<$R2, CancelledFailure, $Out2> $chain<$R2, $Out2>(
+          Then<$Out2, $R2> t) =>
+      _CancelledFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class NoAuthFailureMapper extends SubClassMapperBase<NoAuthFailure> {

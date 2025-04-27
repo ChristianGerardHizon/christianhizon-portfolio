@@ -48,10 +48,11 @@ TaskResult _handleSuccess(
   PageResults<Product> result,
   TableController notifier,
 ) {
-  // notifier.fetchSuccess(
-  //   hasNext: result.hasNext,
-  //   totalItems: result.totalItems,
-  //   totalPages: result.totalPages,
-  // );
+  notifier.fetchSuccess(
+    hasNext: result.hasNext,
+    page: result.page,
+    totalItems: result.totalItems,
+    totalPages: result.totalPages,
+  );
   return TaskResult.right(result);
 }
