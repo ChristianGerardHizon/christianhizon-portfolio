@@ -1,2 +1,0 @@
-E:/Personal/gym_system/android/app/.cxx/Debug/h7138e2p/x86/CMakeFiles/edit_cache.dir
-E:/Personal/gym_system/android/app/.cxx/Debug/h7138e2p/x86/CMakeFiles/rebuild_cache.dir
