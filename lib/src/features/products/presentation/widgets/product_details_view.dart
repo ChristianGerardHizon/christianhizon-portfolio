@@ -46,7 +46,15 @@ class ProductDetailsView extends HookConsumerWidget {
     ///
     /// on tap
     ///
-    tap(Product product) {
+    editProduct(Product product) {
+      ProductFormPageRoute(id: product.id).push(context);
+    }
+
+    addProductStock(Product product) {
+      ProductAddStockFormPageRoute(product.id).push(context);
+    }
+
+    addProductUsage(Product product) {
       ProductFormPageRoute(id: product.id).push(context);
     }
 
@@ -163,9 +171,21 @@ class ProductDetailsView extends HookConsumerWidget {
                 header: 'Actions',
                 items: [
                   DynamicGroupItem.action(
-                    onTap: () => tap(product),
+                    onTap: () => editProduct(product),
                     leading: Icon(MIcons.fileEditOutline),
                     title: 'Edit Details',
+                    trailing: Icon(MIcons.chevronRight),
+                  ),
+                  DynamicGroupItem.action(
+                    onTap: () => editProduct(product),
+                    leading: Icon(MIcons.fileEditOutline),
+                    title: 'Add Usage',
+                    trailing: Icon(MIcons.chevronRight),
+                  ),
+                  DynamicGroupItem.action(
+                    onTap: () => addProductStock(product),
+                    leading: Icon(MIcons.fileEditOutline),
+                    title: 'Add Stocks',
                     trailing: Icon(MIcons.chevronRight),
                   ),
                   DynamicGroupItem.action(

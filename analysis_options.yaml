@@ -1,5 +1,7 @@
 linter:
   rules:
+    # turn the rule off completely:
+    - avoid_manual_providers_as_generated_provider_dependency: false
 
 analyzer:
   plugins:
@@ -16,3 +18,4 @@ analyzer:
     - '**/generated_plugin_registrant.dart'
 custom_lint:
   enable_all_lint_rules: true
+

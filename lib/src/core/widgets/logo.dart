@@ -27,7 +27,7 @@ class Logo extends StatelessWidget {
             width: width,
             height: height,
             child: Builder(builder: (context) {
-              if (false)
+              if (kDebugMode)
                 return Placeholder(
                   fallbackHeight: height ?? 400,
                   fallbackWidth: width ?? 400,

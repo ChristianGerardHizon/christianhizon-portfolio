@@ -90,7 +90,7 @@ class TableController extends _$TableController {
     );
   }
 
-  toogleTableSort(String key) {
+  toggleTableSort(String key) {
     // /// if sortKey is null create set one with asc as true
     // if (state.sort?.key == null) {
     //   state.copyWith(sort: TableSort(key: key, isAscending: true));

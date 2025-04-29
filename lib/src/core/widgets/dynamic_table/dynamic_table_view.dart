@@ -133,7 +133,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
                         builder: (ctxt, _) => InkWell(
                           onTap: () {
                             if (column.sortKey == null) return;
-                            notifier.toogleTableSort(column.sortKey!);
+                            notifier.toggleTableSort(column.sortKey!);
                             onChange?.call(currentPage, sort);
                           },
                           child: Padding(

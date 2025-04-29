@@ -54,9 +54,9 @@ class AdminLoginPage extends HookConsumerWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      // ),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      ),
       body: ResponsiveBuilder(builder: (context, si) {
         final form = Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18),

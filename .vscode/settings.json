@@ -9,7 +9,6 @@
         "*.dart": "${capture}.freezed.dart, ${capture}.g.dart, ${capture}.realm.dart, ${capture}.mapper.dart"
     },
     "dartBarrelFileGenerator.defaultBarrelName": "_index",
-    "editor.minimap.enabled": false,
     "workbench.sideBar.location": "left",
     "emmet.excludeLanguages": [
         "markdown",
@@ -102,6 +101,14 @@
         "timesheets",
         "typeahead"
     ],
+    "editor.semanticHighlighting.enabled": true,
+
+    // Add slight contrast to the active line
+    "editor.renderLineHighlight": "all",
+    "editor.multiCursorModifier": "alt",
+    "editor.minimap.enabled": true,
+    "editor.guides.bracketPairs": "active",
+    "editor.guides.highlightActiveBracketPair": true
     // Set to nu shell
     // "terminal.integrated.defaultProfile.windows": "NuShell",
     // "terminal.integrated.defaultProfile.linux": "NuShell",

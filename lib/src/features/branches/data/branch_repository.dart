@@ -13,7 +13,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'branch_repository.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 PBCollectionRepository<Branch> branchRepository(Ref ref) {
   return BranchRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),

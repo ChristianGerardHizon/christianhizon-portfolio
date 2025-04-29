@@ -69,19 +69,13 @@ class MobileBottomNav extends StatelessWidget {
     ///
     ///
     ///
-    int bottomNavIndeCalulator(int index) {
-      switch (index) {
-        case 0:
-          return 0;
-        case 1:
-          return 1;
-        case 2:
-          return 2;
-        case 3:
-          return 3;
-        default:
-          return 3;
-      }
+    int bottomNavIndeCalulator(int index, String? path) {
+      if (path == null) return 0;
+      if (path == (DashboardPageRoute.path)) return 0;
+      if (path.contains(PatientPageRoute.path)) return 1;
+      if (path.contains(ProductInventoriesPageRoute.path)) return 2;
+      if (path.contains(YourAccountPageRoute.path)) return 3;
+      return 0;
     }
 
     ///
@@ -96,19 +90,16 @@ class MobileBottomNav extends StatelessWidget {
       children: [
         const Divider(height: 0),
         BottomNavigationBar(
+          items: finalList,
+          landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
           elevation: 0,
-          currentIndex: bottomNavIndeCalulator(index),
+          currentIndex: bottomNavIndeCalulator(index, state.fullPath),
           selectedFontSize: 13,
           unselectedFontSize: 11,
-          selectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-          selectedIconTheme: IconThemeData(
-            color: theme.colorScheme.primary,
-          ),
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+          selectedIconTheme: IconThemeData(color: theme.colorScheme.primary),
           selectedItemColor: theme.colorScheme.primary,
           type: BottomNavigationBarType.fixed,
-          items: finalList,
           onTap: (index) => onRouteChanged(index, finalList),
         )
       ],

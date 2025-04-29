@@ -3,31 +3,25 @@ import 'package:gym_system/src/core/packages/pocketbase_filter.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
-import 'package:gym_system/src/features/users/data/user_repository.dart';
-import 'package:gym_system/src/features/users/domain/user.dart';
+import 'package:gym_system/src/features/products/data/product_category_repository.dart';
+import 'package:gym_system/src/features/products/domain/product_category.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'user_table_controller.g.dart';
+part 'product_category_table_controller.g.dart';
 
 @riverpod
-class UserTableController extends _$UserTableController {
+class ProductCategoryTableController extends _$ProductCategoryTableController {
   @override
-  Future<List<User>> build(String tableKey) async {
-    final repo = ref.watch(userRepositoryProvider);
+  Future<List<ProductCategory>> build(String tableKey) async {
+    final repo = ref.read(productCategoryRepositoryProvider);
     final tableProvider = tableControllerProvider(tableKey);
-    // fix warning here
     final page = ref.watch(tableProvider.select((state) => state.page));
-
-    // fix warning here
     final pageSize = ref.watch(tableProvider.select((state) => state.pageSize));
-
-    // fix warning here
     final tableFilter =
         ref.watch(tableProvider.select((state) => state.filter));
 
-    // fix warning here
     final notifier = ref.read(tableProvider.notifier);
-    final baseFilter = '${UserField.isDeleted} = false';
+    final baseFilter = '${ProductCategoryField.isDeleted} = false';
     final filterFunc = PocketbaseFilter(baseFilter: baseFilter);
 
     final result = await repo
@@ -51,7 +45,7 @@ class UserTableController extends _$UserTableController {
 }
 
 TaskResult _handleSuccess(
-  PageResults<User> result,
+  PageResults<ProductCategory> result,
   TableController notifier,
 ) {
   notifier.fetchSuccess(

@@ -28,6 +28,9 @@ import 'package:gym_system/src/features/patients/presentation/pages/patients_for
 import 'package:gym_system/src/features/patients/presentation/pages/treatment_record_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/category/product_categories_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/category/product_category_form_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/category/product_category_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product/product_add_stock_form_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product/product_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product/products_page.dart';
@@ -58,6 +61,7 @@ part 'routes/patient_records.routes.dart';
 part 'routes/patient_treatment_records.routes.dart';
 part 'routes/appointments.routes.dart';
 part 'routes/change_logs.routes.dart';
+part 'routes/product_category.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
@@ -141,6 +145,20 @@ class SplashPageRoute extends GoRouteData {
         TypedGoRoute<ProductStockFormPageRoute>(
             path: ProductStockFormPageRoute.path),
         TypedGoRoute<ProductStockPageRoute>(path: ProductStockPageRoute.path),
+      ],
+    ),
+
+    ///
+    /// Product Category
+    ///
+    TypedStatefulShellBranch<ProductCategoryBranchData>(
+      routes: <TypeRouteData>[
+        TypedGoRoute<ProductCategoriesPageRoute>(
+            path: ProductCategoriesPageRoute.path),
+        TypedGoRoute<ProductCategoryPageRoute>(
+            path: ProductCategoryPageRoute.path),
+        TypedGoRoute<ProductCategoryFormPageRoute>(
+            path: ProductCategoryFormPageRoute.path),
       ],
     ),
 

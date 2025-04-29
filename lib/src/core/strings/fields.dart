@@ -199,3 +199,13 @@ class ChangeLogField {
   static const String admin = 'admin';
   static const String status = 'status';
 }
+
+class ProductCategoryField {
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
+
+  static const String name = 'name';
+  static const String parent = 'parent';
+}
