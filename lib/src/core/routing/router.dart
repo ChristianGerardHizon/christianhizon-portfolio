@@ -30,13 +30,6 @@ GoRouter router(Ref ref) {
     debugLogDiagnostics: true,
     navigatorKey: rootKey,
     redirect: (context, state) {
-      final ignoredRoutes = <String>[
-        LoginPageRoute.path,
-        AdminLoginPageRoute.path,
-        DomainPageRoute.path,
-        SplashPageRoute.path,
-      ];
-
       // If the current path is in ignored routes, do not redirect
       final isIgnored = ignoredRoutes
           .any((route) => state.fullPath?.contains(route) ?? false);

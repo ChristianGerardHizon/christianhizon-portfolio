@@ -127,13 +127,7 @@ class CustomSearchFormField<T> extends HookConsumerWidget {
         final list = results.value;
         final value = field.value;
         final widget = field.widget;
-        final errorText = field.errorText;
-        final theme = Theme.of(context);
 
-        final errorColor = theme.colorScheme.error;
-        final border = field.hasError == true
-            ? Border.all(color: theme.colorScheme.error)
-            : Border.all(color: theme.dividerColor);
         return Column(
           children: [
             if (value is T) selectedBuilder.call(value, textCtrl, widget),

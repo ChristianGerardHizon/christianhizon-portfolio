@@ -56,9 +56,3 @@ TaskResult _handleSuccess(
   );
   return TaskResult.right(result);
 }
-
-String? _combineFilter(String? filter, {String? baseFilter}) {
-  if (filter == null || filter.isEmpty) return baseFilter;
-  if (baseFilter == null || baseFilter.isEmpty) return filter;
-  return '$filter && $baseFilter';
-}

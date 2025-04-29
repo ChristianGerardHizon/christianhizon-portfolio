@@ -10,8 +10,6 @@ class FailureMessage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isExpanded = useState(false);
-
     final errorData = error;
 
     if (errorData is Failure) {

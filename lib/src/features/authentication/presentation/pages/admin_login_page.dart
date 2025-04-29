@@ -18,8 +18,6 @@ class AdminLoginPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref.read(authControllerProvider.notifier);
-
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
     final isPasswordVisible = useState(false);

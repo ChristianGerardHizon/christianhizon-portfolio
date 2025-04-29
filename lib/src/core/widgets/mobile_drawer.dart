@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/pages/app_root.dart';
+import 'package:gym_system/src/core/controllers/scaffold_controller.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -14,7 +14,7 @@ class MobileDrawer extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scaffoldKey = ref.watch(scaffoldKeyProvider);
+    final scaffoldKey = ref.watch(scaffoldControllerProvider);
     return Drawer(
       child: SafeArea(
         child: ListView(

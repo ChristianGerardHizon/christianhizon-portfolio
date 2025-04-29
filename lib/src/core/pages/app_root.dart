@@ -3,6 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gym_system/src/core/controllers/scaffold_controller.dart';
+import 'package:gym_system/src/core/controllers/side_menu_controller.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/custom_navbar_item.dart';
@@ -14,21 +16,12 @@ import 'package:gym_system/src/core/widgets/mobile_bottom_nav.dart';
 import 'package:gym_system/src/core/widgets/mobile_drawer.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/authentication/presentation/widgets/account_circle_image.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/treatment/patient_treatments_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
-final scaffoldKeyProvider = Provider<GlobalKey<ScaffoldState>>((ref) {
-  return GlobalKey<ScaffoldState>();
-});
-
-final sideMenuProvider = Provider<SideMenuController>((ref) {
-  return SideMenuController();
-});
 
 class AppRoot extends HookConsumerWidget {
   final StatefulNavigationShell shell;
@@ -43,14 +36,14 @@ class AppRoot extends HookConsumerWidget {
     ///
     final theme = Theme.of(context);
 
-    final scaffoldKey = ref.watch(scaffoldKeyProvider);
+    final scaffoldKey = ref.watch(scaffoldControllerProvider);
 
     ref.watch(settingsControllerProvider);
     ref.watch(treatmentsControllerProvider);
 
     ref.watch(tableControllerProvider(TableControllerKeys.product));
 
-    final sideMenuCtrl = ref.read(sideMenuProvider);
+    final sideMenuCtrl = ref.read(sideMenuControllerProvider);
     final canPop = useState(false);
 
     ///
@@ -65,7 +58,7 @@ class AppRoot extends HookConsumerWidget {
     ///
     List<CustomNavigationBarItem> buildItems(AuthData auth) {
       final isAdmin = auth is AuthAdmin;
-      final isUser = auth is AuthUser;
+      // final isUser = auth is AuthUser;
 
       return [
         CustomNavigationBarItem(

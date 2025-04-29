@@ -8,10 +8,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-final themeProvider = Provider<ThemeMode>((ref) {
-  return ThemeMode.system;
-});
-
 class Application extends HookConsumerWidget {
   const Application({super.key});
 
@@ -46,7 +42,6 @@ class Application extends HookConsumerWidget {
       child: ThemeConsumer(
         child: Builder(builder: (context) {
           final theme = ThemeProvider.themeOf(context).data;
-
           return ResponsiveApp(builder: (context) {
             return MaterialApp.router(
               locale:
@@ -59,7 +54,7 @@ class Application extends HookConsumerWidget {
               debugShowCheckedModeBanner: false,
               title: AppStrings.appName,
               theme: theme,
-              themeMode: ref.watch(themeProvider),
+
               routerConfig: ref.watch(routerProvider),
             );
           });

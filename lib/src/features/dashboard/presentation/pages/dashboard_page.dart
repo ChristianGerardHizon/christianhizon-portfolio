@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/pages/app_root.dart';
+import 'package:gym_system/src/core/controllers/scaffold_controller.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
 import 'package:gym_system/src/features/dashboard/presentation/controllers/dashboard_controller.dart';
@@ -11,7 +11,7 @@ class DashboardPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(dashboardControllerProvider);
-    final scaffoldKey = ref.watch(scaffoldKeyProvider);
+    final scaffoldKey = ref.watch(scaffoldControllerProvider);
 
     return Scaffold(
       body: state.when(
