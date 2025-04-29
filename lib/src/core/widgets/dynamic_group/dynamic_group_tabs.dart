@@ -142,7 +142,7 @@ class CustomSplashTabBar extends StatelessWidget
                 controller.animateTo(index);
               },
               radius: splashRadii[index],
-              splashColor: splashColor.withOpacity(0.3),
+              splashColor: splashColor.withValues(alpha: 0.3),
               highlightColor: Colors.transparent,
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 16),

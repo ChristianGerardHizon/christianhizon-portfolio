@@ -14,19 +14,18 @@ class UserTableController extends _$UserTableController {
   @override
   Future<List<User>> build(String tableKey) async {
     final repo = ref.watch(userRepositoryProvider);
-    final tableProvider = tableControllerProvider(tableKey);
-    // fix warning here
-    final page = ref.watch(tableProvider.select((state) => state.page));
+
+    final page = ref
+        .watch(tableControllerProvider(tableKey).select((state) => state.page));
+
+    final pageSize = ref.watch(
+        tableControllerProvider(tableKey).select((state) => state.pageSize));
+
+    final tableFilter = ref.watch(
+        tableControllerProvider(tableKey).select((state) => state.filter));
 
     // fix warning here
-    final pageSize = ref.watch(tableProvider.select((state) => state.pageSize));
-
-    // fix warning here
-    final tableFilter =
-        ref.watch(tableProvider.select((state) => state.filter));
-
-    // fix warning here
-    final notifier = ref.read(tableProvider.notifier);
+    final notifier = ref.read(tableControllerProvider(tableKey).notifier);
     final baseFilter = '${UserField.isDeleted} = false';
     final filterFunc = PocketbaseFilter(baseFilter: baseFilter);
 

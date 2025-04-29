@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
@@ -27,7 +26,7 @@ class PatientTreatmentRecordPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = patientTreatmentRecordControllerProvider(id);
     final state = ref.watch(provider);
-    final patientTreatmentRecord = useState<PatientTreatmentRecord?>(null);
+    // final patientTreatmentRecord = useState<PatientTreatmentRecord?>(null);
 
     /// for medical records tab. preloading the data
     ref.watch(patientRecordsPageControllerProvider);

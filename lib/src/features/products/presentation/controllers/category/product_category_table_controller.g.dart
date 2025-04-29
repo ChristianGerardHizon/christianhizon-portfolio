@@ -7,7 +7,7 @@ part of 'product_category_table_controller.dart';
 // **************************************************************************
 
 String _$productCategoryTableControllerHash() =>
-    r'3563f7e0b91373240cc6685ebf63ff18c25e76cc';
+    r'2ea5d9545afd344f48531620ffd391bb824d1082';
 
 /// Copied from Dart SDK
 class _SystemHash {

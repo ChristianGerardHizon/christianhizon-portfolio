@@ -35,8 +35,6 @@ class PatientTreatmentRecordCreateSheet extends HookConsumerWidget {
     required Patient patient,
     Map<String, dynamic>? formData,
   }) async {
-    final screenSize = MediaQuery.of(context).size;
-
     return showDialog(
       context: context,
       useRootNavigator: true,

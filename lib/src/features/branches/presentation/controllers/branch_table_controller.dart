@@ -14,13 +14,15 @@ class BranchTableController extends _$BranchTableController {
   @override
   Future<List<Branch>> build(String tableKey) async {
     final repo = ref.read(branchRepositoryProvider);
-    final tableProvider = tableControllerProvider(tableKey);
-    final page = ref.watch(tableProvider.select((state) => state.page));
-    final pageSize = ref.watch(tableProvider.select((state) => state.pageSize));
-    final tableFilter =
-        ref.watch(tableProvider.select((state) => state.filter));
 
-    final notifier = ref.read(tableProvider.notifier);
+    final page = ref
+        .watch(tableControllerProvider(tableKey).select((state) => state.page));
+    final pageSize = ref.watch(
+        tableControllerProvider(tableKey).select((state) => state.pageSize));
+    final tableFilter = ref.watch(
+        tableControllerProvider(tableKey).select((state) => state.filter));
+
+    final notifier = ref.read(tableControllerProvider(tableKey).notifier);
     final baseFilter = '${BranchField.isDeleted} = false';
     final filterFunc = PocketbaseFilter(baseFilter: baseFilter);
 

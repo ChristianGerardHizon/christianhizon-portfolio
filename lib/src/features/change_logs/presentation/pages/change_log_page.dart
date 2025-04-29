@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
+import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/change_logs/presentation/controllers/change_log_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -24,6 +25,7 @@ class ChangeLogPage extends HookConsumerWidget {
       error: (error, stack) => Scaffold(
         appBar: AppBar(
           title: Text('Something Went Wrong'),
+          actions: [RefreshButton(onPressed: refresh)],
         ),
         body: FailureMessage(error, stack),
       ),

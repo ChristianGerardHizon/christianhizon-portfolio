@@ -15,7 +15,6 @@ class YourAccountPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(authControllerProvider);
-    final notifer = ref.read(authControllerProvider.notifier);
     final theme = Theme.of(context);
 
     ///
@@ -31,10 +30,6 @@ class YourAccountPage extends HookConsumerWidget {
         (l) => AppSnackBar.rootError(message: l.toString()),
         (r) => const LoginPageRoute().go(context),
       );
-    }
-
-    onRefresh() {
-      notifer.refresh().run();
     }
 
     final themeController = ThemeProvider.controllerOf(context);

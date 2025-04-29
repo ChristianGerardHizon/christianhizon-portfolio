@@ -7,7 +7,7 @@ part of 'product_inventory_table_controller.dart';
 // **************************************************************************
 
 String _$productInventoryTableControllerHash() =>
-    r'e29c8de639831d956b1670aba4f5c0e3a6981231';
+    r'79a31f79a6defca895a3749c7b194d25a6687df8';
 
 /// Copied from Dart SDK
 class _SystemHash {

@@ -46,13 +46,4 @@ class ProductStockFormController extends _$ProductStockFormController {
 
     return result.fold(Future.error, Future.value);
   }
-
-  TaskResult<Product> _getProduct(String id) {
-    return TaskResult.tryCatch(() async {
-      final repo = ref.read(productRepositoryProvider);
-      // final filter = '${ProductField.isDeleted} = false';
-      final result = await repo.get(id).run();
-      return result.fold(Future.error, Future.value);
-    }, Failure.handle);
-  }
 }

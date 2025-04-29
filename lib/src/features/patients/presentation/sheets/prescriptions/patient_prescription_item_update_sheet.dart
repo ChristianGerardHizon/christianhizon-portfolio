@@ -29,8 +29,6 @@ class PatientPrescriptionItemUpdateSheet extends HookConsumerWidget {
     required PrescriptionItem item,
     Map<String, dynamic>? formData,
   }) async {
-    final screenSize = MediaQuery.of(context).size;
-
     return showDialog(
       context: context,
       useRootNavigator: true,

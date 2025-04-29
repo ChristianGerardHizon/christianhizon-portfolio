@@ -192,8 +192,7 @@ class PrescriptionListView extends HookConsumerWidget {
         }
 
         onTap(PrescriptionItem item) async {
-          final result = await PatientPrescriptionItemUpdateSheet.show(context,
-              item: item);
+          await PatientPrescriptionItemUpdateSheet.show(context, item: item);
         }
 
         return Column(

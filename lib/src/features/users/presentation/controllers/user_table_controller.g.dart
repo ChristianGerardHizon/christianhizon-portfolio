@@ -7,7 +7,7 @@ part of 'user_table_controller.dart';
 // **************************************************************************
 
 String _$userTableControllerHash() =>
-    r'2ebdd5f5e9df53cd415fdb4799f9d93103e9e3dd';
+    r'952788e34968096c3fa6f3b395719966d9779999';
 
 /// Copied from Dart SDK
 class _SystemHash {

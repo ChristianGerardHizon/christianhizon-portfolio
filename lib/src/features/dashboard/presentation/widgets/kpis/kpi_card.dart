@@ -36,8 +36,8 @@ class KpiCard extends HookConsumerWidget {
             ///
             Container(
               decoration: BoxDecoration(
-                color: iconColor?.withOpacity(0.1) ??
-                    theme.colorScheme.primary.withOpacity(0.1),
+                color: iconColor?.withValues(alpha: 0.1) ??
+                    theme.colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.all(12),
