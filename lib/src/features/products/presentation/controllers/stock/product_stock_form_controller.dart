@@ -1,5 +1,4 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/data/product_stock_repository.dart';
