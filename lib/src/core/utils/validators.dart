@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:gym_system/src/core/routing/router.dart';
 
 class CustomValidators {
   /// Returns a validator that checks whether this field’s value

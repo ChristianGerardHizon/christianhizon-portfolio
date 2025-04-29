@@ -25,6 +25,7 @@ import 'package:gym_system/src/features/patients/presentation/pages/patients_for
 import 'package:gym_system/src/features/patients/presentation/pages/treatment_record_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/product/product_add_stock_form_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product/product_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product/products_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product/product_form_page.dart';

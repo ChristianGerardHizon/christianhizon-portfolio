@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
@@ -16,6 +15,7 @@ import 'package:gym_system/src/features/products/domain/product_inventory.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/inventory/product_inventory_table_controller.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_inventory_card.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_status_text.dart';
+import 'package:gym_system/src/features/products/presentation/widgets/product_total_quantity_text.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductInventoriesPage extends HookConsumerWidget {
@@ -72,6 +72,16 @@ class ProductInventoriesPage extends HookConsumerWidget {
     ///
     onCreate() {
       ProductFormPageRoute().push(context);
+    }
+
+    addStock(ProductInventory productInventory) {
+      final product = productInventory.expand.product;
+      final trackByLot = product.trackByLot;
+      if (trackByLot) {
+        ProductStockFormPageRoute(productId: productInventory.id).push(context);
+      } else {
+        AppSnackBar.show(context, message: 'Simple Add Stock');
+      }
     }
 
     return Scaffold(
@@ -134,6 +144,30 @@ class ProductInventoriesPage extends HookConsumerWidget {
               },
             ),
             TableColumn(
+              header: 'Stocks',
+              alignment: Alignment.center,
+              builder: (context, productInventory, row, column) {
+                return Align(
+                  alignment: Alignment.center,
+                  child: ProductTotalQuantity(
+                    quantity: productInventory.totalQuantity,
+                    total: productInventory.totalQuantityAvailable,
+                  ),
+                );
+              },
+            ),
+            TableColumn(
+              width: 135,
+              header: 'Threshold Level',
+              alignment: Alignment.center,
+              builder: (context, productInventory, row, column) {
+                return Align(
+                    alignment: Alignment.center,
+                    child: Text(productInventory.expand.product.stockThreshold
+                        .toString()));
+              },
+            ),
+            TableColumn(
               header: 'Status',
               width: 130,
               alignment: Alignment.centerLeft,
@@ -151,7 +185,9 @@ class ProductInventoriesPage extends HookConsumerWidget {
               builder: (context, productInventory, row, column) {
                 return Align(
                   alignment: Alignment.centerLeft,
-                  child: TextButton(onPressed: () {}, child: Text('Add Stock')),
+                  child: TextButton(
+                      onPressed: () => addStock(productInventory),
+                      child: Text('Add Stock')),
                 );
               },
             ),

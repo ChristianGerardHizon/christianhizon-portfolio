@@ -39,6 +39,7 @@ List<RouteBase> get $appRoutes => [
       $productFormPageRoute,
       $productStockFormPageRoute,
       $productPageRoute,
+      $productAddStockFormPageRoute,
       $productStockPageRoute,
       $patientRecordsPageRoute,
       $patientRecordPageRoute,
@@ -1056,6 +1057,35 @@ RouteBase get $productPageRoute => GoRouteData.$route(
       path: '/product/:id',
       factory: $ProductPageRouteExtension._fromState,
     );
+
+RouteBase get $productAddStockFormPageRoute => GoRouteData.$route(
+      path: '/product/simple/add',
+      factory: $ProductAddStockFormPageRouteExtension._fromState,
+    );
+
+extension $ProductAddStockFormPageRouteExtension
+    on ProductAddStockFormPageRoute {
+  static ProductAddStockFormPageRoute _fromState(GoRouterState state) =>
+      ProductAddStockFormPageRoute(
+        state.uri.queryParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/product/simple/add',
+        queryParams: {
+          'id': id,
+        },
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
 
 RouteBase get $productStockPageRoute => GoRouteData.$route(
       path: '/product/form/:id',

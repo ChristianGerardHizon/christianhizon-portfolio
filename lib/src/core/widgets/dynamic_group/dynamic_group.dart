@@ -4,14 +4,14 @@ import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dar
 class DynamicGroup extends StatelessWidget {
   const DynamicGroup({
     super.key,
-    required this.header,
+    this.header,
     this.titleStyle,
     required this.items,
     this.helper,
     this.padding = EdgeInsets.zero,
   });
 
-  final String header;
+  final String? header;
   final String? helper;
   final TextStyle? titleStyle;
   final List<DynamicGroupItem> items;
@@ -43,13 +43,15 @@ class DynamicGroup extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(left: padding.horizontal, bottom: 12),
             width: double.infinity,
-            child: Text(
-              header.toUpperCase(),
-              style: titleStyle ??
-                  Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-            ),
+            child: header == null
+                ? null
+                : Text(
+                    header!.toUpperCase(),
+                    style: titleStyle ??
+                        Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
+                  ),
           ),
           Card(
             child: ListView.separated(

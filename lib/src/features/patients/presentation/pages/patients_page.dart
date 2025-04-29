@@ -10,6 +10,7 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
+import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
@@ -85,7 +86,13 @@ class PatientsPage extends HookConsumerWidget {
         ),
         body: DynamicTableView<Patient>(
           tableKey: TableControllerKeys.patient,
-          error: null,
+          error: listState.maybeWhen(
+            skipError: false,
+            skipLoadingOnRefresh: true,
+            skipLoadingOnReload: true,
+            orElse: () => null,
+            error: (error, stackTrace) => FailureMessage(error, stackTrace),
+          ),
           items: listState.maybeWhen(
             skipError: true,
             skipLoadingOnRefresh: true,

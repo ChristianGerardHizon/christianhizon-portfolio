@@ -26,6 +26,10 @@ final scaffoldKeyProvider = Provider<GlobalKey<ScaffoldState>>((ref) {
   return GlobalKey<ScaffoldState>();
 });
 
+final sideMenuProvider = Provider<SideMenuController>((ref) {
+  return SideMenuController();
+});
+
 class AppRoot extends HookConsumerWidget {
   final StatefulNavigationShell shell;
   final GoRouterState state;
@@ -46,7 +50,7 @@ class AppRoot extends HookConsumerWidget {
 
     ref.watch(tableControllerProvider(TableControllerKeys.product));
 
-    final sideMenuCtrl = useMemoized(() => SideMenuController());
+    final sideMenuCtrl = ref.read(sideMenuProvider);
     final canPop = useState(false);
 
     ///
@@ -175,7 +179,7 @@ class AppRoot extends HookConsumerWidget {
                         backgroundColor: theme.scaffoldBackgroundColor,
                         builder: (data) => SideMenuData(
                           header: Logo(
-                            height: 200,
+                            height: sideMenuCtrl.isCollapsed() ? 100 : 150,
                           ),
                           items: items.mapWithIndex((e, index) {
                             final goRouter = GoRouter.of(context);

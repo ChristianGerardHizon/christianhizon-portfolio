@@ -2,7 +2,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gym_system/src/core/classes/pb_image.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -117,48 +116,45 @@ class DynamicFormBuilder extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formFields = collectFields(fields);
 
-    return StackLoader(
-      isLoading: isLoading,
-      opacity: 0.1,
-      child: FormBuilder(
-        key: formKey,
-        initialValue: formFields.toInitialValues(),
-        autovalidateMode: validateMode,
-        onChanged: () {
-          if (onChange != null) {
-            final current = formKey.currentState?.instantValue ?? {};
-            onChange!(current);
-          }
-        },
-        child: CustomScrollView(
-          slivers: [
-            ///
-            /// Widgets
-            ///
-            SliverList.list(
-              children: [
-                DynamicFormFields(
-                  fieldItems: fields,
-                  itemPadding: itemPadding,
-                )
-              ],
-            ),
+    return FormBuilder(
+      key: formKey,
+      enabled: isLoading == false,
+      initialValue: formFields.toInitialValues(),
+      autovalidateMode: validateMode,
+      onChanged: () {
+        if (onChange != null) {
+          final current = formKey.currentState?.instantValue ?? {};
+          onChange!(current);
+        }
+      },
+      child: CustomScrollView(
+        slivers: [
+          ///
+          /// Widgets
+          ///
+          SliverList.list(
+            children: [
+              DynamicFormFields(
+                fieldItems: fields,
+                itemPadding: itemPadding,
+              )
+            ],
+          ),
 
-            ///
-            /// Save Button
-            ///
-            SliverPadding(
-              padding: const EdgeInsets.all(20),
-              sliver: SliverToBoxAdapter(
-                child: LoadingFilledButton(
-                  isLoading: isLoading,
-                  child: const Text('Save'),
-                  onPressed: () => onFormSubmit(formFields),
-                ),
+          ///
+          /// Save Button
+          ///
+          SliverPadding(
+            padding: const EdgeInsets.all(20),
+            sliver: SliverToBoxAdapter(
+              child: LoadingFilledButton(
+                isLoading: isLoading,
+                child: const Text('Save'),
+                onPressed: () => onFormSubmit(formFields),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

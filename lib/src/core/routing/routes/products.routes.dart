@@ -70,6 +70,20 @@ class ProductPageRoute extends GoRouteData {
   }
 }
 
+@TypedGoRoute<ProductAddStockFormPageRoute>(
+    path: ProductAddStockFormPageRoute.path)
+class ProductAddStockFormPageRoute extends GoRouteData {
+  const ProductAddStockFormPageRoute(this.id);
+  static const path = '/product/simple/add';
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ProductAddStockFormPage(id);
+  }
+}
+
 @TypedGoRoute<ProductStockPageRoute>(path: ProductStockPageRoute.path)
 class ProductStockPageRoute extends GoRouteData {
   const ProductStockPageRoute(this.id);

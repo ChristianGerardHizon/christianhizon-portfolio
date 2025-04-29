@@ -7,8 +7,13 @@ import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/features/branches/data/branch_repository.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
+import 'package:gym_system/src/features/branches/presentation/controllers/branches_controller.dart';
 import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:gym_system/src/features/patients/domain/patient_breed.dart';
+import 'package:gym_system/src/features/patients/domain/patient_species.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/breeds/patient_breeds_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/species/patient_species_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'patient_form_controller.g.dart';
@@ -20,10 +25,17 @@ class PatientFormState with PatientFormStateMappable {
   final List<Branch> branches;
   final List<PBImage>? images;
 
+  final List<PatientSpecies> species;
+  final List<PatientBreed> breeds;
+  final List<PatientSex> sexes;
+
   PatientFormState({
     required this.patient,
     this.branches = const [],
     this.images,
+    this.species = const [],
+    this.breeds = const [],
+    this.sexes = const [],
   });
 }
 
@@ -34,13 +46,19 @@ class PatientFormController extends _$PatientFormController {
     final patientRepo = ref.read(patientRepositoryProvider);
 
     final result = await TaskResult.Do(($) async {
-      final branches = await $(_getBranches());
+      final branches = await ref.read(branchesControllerProvider.future);
+      final species = await ref.read(patientSpeciesControllerProvider.future);
+      final breeds = await ref.read(patientBreedsControllerProvider.future);
+      final sexes = PatientSex.values;
 
       if (id == null) {
         return PatientFormState(
           patient: null,
-          branches: branches,
           images: null,
+          branches: branches,
+          species: species,
+          breeds: breeds,
+          sexes: sexes,
         );
       }
 
@@ -52,6 +70,9 @@ class PatientFormController extends _$PatientFormController {
         patient: patient,
         branches: branches,
         images: images,
+        species: species,
+        breeds: breeds,
+        sexes: sexes,
       );
     }).run();
 

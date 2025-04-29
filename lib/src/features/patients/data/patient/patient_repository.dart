@@ -25,7 +25,7 @@ class PatientRepositoryImpl extends PBCollectionRepository<Patient> {
 
   PatientRepositoryImpl({required this.pb});
 
-  final String expand = 'species,breed';
+  final String expand = 'species,breed,branch';
 
   RecordService get collection => pb.collection(PocketBaseCollections.patients);
 
@@ -47,7 +47,11 @@ class PatientRepositoryImpl extends PBCollectionRepository<Patient> {
     List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(body: payload, expand: expand);
+      final response = await collection.create(
+        body: payload,
+        expand: expand,
+        files: files,
+      );
       return mapToData(response.toJson());
     }, Failure.handle);
   }

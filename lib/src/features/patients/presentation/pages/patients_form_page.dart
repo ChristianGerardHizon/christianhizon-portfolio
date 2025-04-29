@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
@@ -25,6 +26,28 @@ class PatientFormPage extends HookConsumerWidget {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
     final provider = ref.watch(patientFormControllerProvider(id));
+    final selectedSpecies = useState<String?>(null);
+
+    ref.listen(patientFormControllerProvider(id), (previous, next) {
+      final patient = next.valueOrNull?.patient;
+      if (patient is Patient) {
+        selectedSpecies.value = patient.species;
+      }
+    });
+
+    onSpeciesChange(value) {
+      final fields = formKey.currentState?.fields;
+      if (value == null && fields != null) {
+        fields[PatientField.breed]?.reset();
+        return;
+      }
+      if (value is! String) return;
+      final formSpecies = value;
+      if (selectedSpecies.value != formSpecies && fields != null) {
+        fields[PatientField.breed]?.reset();
+        selectedSpecies.value = formSpecies;
+      }
+    }
 
     ///
     /// Submit
@@ -52,7 +75,6 @@ class PatientFormPage extends HookConsumerWidget {
           AppSnackBar.root(message: 'Success');
           ref.invalidate(patientTableControllerProvider);
           ref.invalidate(patientControllerProvider(r.id));
-
           context.pop();
         },
       );
@@ -69,8 +91,14 @@ class PatientFormPage extends HookConsumerWidget {
             final patient = formState.patient;
             final branches = formState.branches;
             final images = formState.images;
+            final species = formState.species;
+            final sexes = formState.sexes;
+            final breeds = formState.breeds
+                .where((x) => x.species == selectedSpecies.value)
+                .toList();
 
             return DynamicFormBuilder(
+              onChange: (value) {},
               itemPadding: const EdgeInsets.only(
                 left: 16,
                 right: 16,
@@ -117,7 +145,68 @@ class PatientFormPage extends HookConsumerWidget {
                   ),
                 ),
 
+                DynamicFieldTwoColumn(
+                  axis: Axis.vertical,
+                  first: DynamicSelectField(
+                    name: PatientField.species,
+                    initialValue: patient?.species,
+                    decoration: InputDecoration(
+                      label: Text('Species'),
+                      border: OutlineInputBorder(),
+                    ),
+                    options: species
+                        .map((e) => SelectOption(
+                              value: e.id,
+                              display: e.name,
+                            ))
+                        .toList(),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                      ],
+                    ),
+                    onChange: onSpeciesChange,
+                  ),
+                  second: DynamicSelectField(
+                    name: PatientField.breed,
+                    initialValue: patient?.breed,
+                    decoration: InputDecoration(
+                      label: Text('Breeds'),
+                      border: OutlineInputBorder(),
+                    ),
+                    options: breeds
+                        .map((e) => SelectOption(
+                              value: e.id,
+                              display: e.name,
+                            ))
+                        .toList(),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                      ],
+                    ),
+                  ),
+                ),
+                DynamicSelectField(
+                  name: PatientField.sex,
+                  initialValue: patient?.sex?.name,
+                  decoration: InputDecoration(
+                    label: Text('Sex'),
+                    border: OutlineInputBorder(),
+                  ),
+                  options: sexes
+                      .map((e) => SelectOption(
+                            value: e.name,
+                            display: e.name.toProperCase(),
+                          ))
+                      .toList(),
+                ),
+
+                ///
+                /// Owner Details
+                ///
                 DynamicFieldGroup(
+                  padding: EdgeInsets.only(top: 20),
                   title: Text('Owner Details'),
                   fields: [
                     DynamicTextField(
@@ -165,6 +254,30 @@ class PatientFormPage extends HookConsumerWidget {
                       ],
                     ),
                   ),
+                ),
+
+                ///
+                /// Branch
+                ///
+                DynamicFieldGroup(
+                  title: Text('Other Details'),
+                  padding: EdgeInsets.only(top: 20),
+                  fields: [
+                    DynamicSelectField(
+                      name: PatientField.branch,
+                      initialValue: patient?.branch ?? branches.first.id,
+                      decoration: InputDecoration(
+                        label: Text('Branch'),
+                        border: OutlineInputBorder(),
+                      ),
+                      options: branches
+                          .map((e) => SelectOption(
+                                value: e.id,
+                                display: e.name,
+                              ))
+                          .toList(),
+                    ),
+                  ],
                 )
               ],
               onSubmit: (result) => onSave(patient, result),

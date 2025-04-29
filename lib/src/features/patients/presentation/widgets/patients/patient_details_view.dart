@@ -123,12 +123,9 @@ class PatientDetailsView extends HookConsumerWidget {
                     value: patient.name,
                   ),
                   DynamicGroupItem.text(
-                    title: 'Last Updated',
-                    value: (patient.updated?.toLocal().fullReadable).optional(),
-                  ),
-                  DynamicGroupItem.text(
-                    title: 'Created',
-                    value: (patient.created?.toLocal().fullReadable).optional(),
+                    title: 'Species / Breed',
+                    value:
+                        '${(patient.expand.species?.name).optional()} / ${(patient.expand.breed?.name).optional()}',
                   ),
                 ],
               ),
@@ -155,6 +152,25 @@ class PatientDetailsView extends HookConsumerWidget {
                   DynamicGroupItem.text(
                     title: 'Contact Number',
                     value: patient.contactNumber.optional(),
+                  ),
+                ],
+              ),
+
+              DynamicGroup(
+                padding: const EdgeInsets.only(left: 8, right: 8, bottom: 12),
+                header: 'Other Information',
+                items: [
+                  DynamicGroupItem.text(
+                    title: 'Branch',
+                    value: (patient.expand.branch?.name).optional(),
+                  ),
+                  DynamicGroupItem.text(
+                    title: 'Last Updated',
+                    value: (patient.updated?.toLocal().fullReadable).optional(),
+                  ),
+                  DynamicGroupItem.text(
+                    title: 'Created',
+                    value: (patient.created?.toLocal().fullReadable).optional(),
                   ),
                 ],
               ),

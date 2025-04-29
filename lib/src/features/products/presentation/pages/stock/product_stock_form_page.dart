@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
@@ -66,7 +67,7 @@ class ProductStockFormPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Form Page'),
+        title: Text('New Product Stock'),
       ),
       body: provider.when(
           loading: () => Center(child: CircularProgressIndicator()),
@@ -98,15 +99,25 @@ class ProductStockFormPage extends HookConsumerWidget {
                     ),
                     builder: (value) {
                       if (value is! Product) return SizedBox();
-                      return Card(
-                        margin: EdgeInsets.zero,
-                        child: ListTile(
-                          title: Text(
-                            value.name,
-                            style: theme.textTheme.titleSmall,
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('Product'),
                           ),
-                          subtitle: Text('Creating Stock for this product'),
-                        ),
+                          Card(
+                            margin: EdgeInsets.zero,
+                            child: ListTile(
+                              leading: Icon(MIcons.shoppingOutline),
+                              title: Text(
+                                value.name,
+                                style: theme.textTheme.titleSmall,
+                              ),
+                              subtitle: Text('Creating Stock for this product'),
+                            ),
+                          ),
+                        ],
                       );
                     },
                     valueTransformer: (value) {

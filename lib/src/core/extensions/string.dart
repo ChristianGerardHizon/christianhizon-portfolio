@@ -4,4 +4,11 @@ extension StringExtension on String? {
     if (this!.isEmpty) return placeholder;
     return this!;
   }
+
+  String capitalize() => '${this![0].toUpperCase()}${this!.substring(1)}';
+
+  String toProperCase() {
+    if (this == null) return '';
+    return this!.split(' ').map((e) => e.capitalize()).join(' ');
+  }
 }

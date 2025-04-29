@@ -1,5 +1,4 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/hooks/date_time_hook.dart';
 
 part 'pb_record.mapper.dart';
 

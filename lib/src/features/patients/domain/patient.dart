@@ -1,5 +1,8 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
+import 'package:gym_system/src/core/hooks/date_time_hook.dart';
+import 'package:gym_system/src/core/hooks/patient_sex_hook.dart';
+import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
 import 'package:gym_system/src/features/patients/domain/patient_breed.dart';
@@ -19,7 +22,12 @@ class Patient extends PbRecord with PatientMappable {
   final String? address;
   final String? breed;
   final String? color;
-  final String? sex;
+
+  @MappableField(hook: PatientSexHook())
+  final PatientSex? sex;
+  final String? branch;
+
+  @MappableField(hook: DateTimeHook())
   final DateTime? dateOfBirth;
 
   final PatientRecordExpand expand;
@@ -32,6 +40,7 @@ class Patient extends PbRecord with PatientMappable {
     this.images = const [],
     this.avatar,
     this.species,
+    this.branch,
     this.owner,
     this.contactNumber,
     this.email,
@@ -74,6 +83,7 @@ class Patient extends PbRecord with PatientMappable {
 class PatientRecordExpand with PatientRecordExpandMappable {
   final PatientSpecies? species;
   final PatientBreed? breed;
+
   final Branch? branch;
 
   PatientRecordExpand({
@@ -89,4 +99,10 @@ class PatientRecordExpand with PatientRecordExpandMappable {
   }
 
   static const fromJson = PatientRecordExpandMapper.fromJson;
+}
+
+@MappableEnum()
+enum PatientSex {
+  male,
+  female,
 }

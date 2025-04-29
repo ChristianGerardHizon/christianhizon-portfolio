@@ -62,6 +62,7 @@ class PatientField {
   static const String sex = 'sex';
   static const String images = 'images';
   static const String avatar = 'avatar';
+  static const String branch = 'branch';
 }
 
 class PatientSpeciesField {

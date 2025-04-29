@@ -16,10 +16,10 @@ import 'package:gym_system/src/features/products/presentation/controllers/produc
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-class ProductFormPage extends HookConsumerWidget {
-  const ProductFormPage({super.key, this.id});
+class ProductAddStockFormPage extends HookConsumerWidget {
+  const ProductAddStockFormPage(this.id, {super.key});
 
-  final String? id;
+  final String id;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

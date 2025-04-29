@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
@@ -12,6 +11,8 @@ import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/breeds/patient_breeds_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/species/patient_species_controller.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product/product_table_controller.dart';
@@ -28,6 +29,9 @@ class ProductsPage extends HookConsumerWidget {
     final notifier = ref.read(provider.notifier);
     final listProvider = productTableControllerProvider(tableKey);
     final listState = ref.watch(listProvider);
+
+    ref.watch(patientBreedsControllerProvider);
+    ref.watch(patientSpeciesControllerProvider);
 
     ///
     /// onTap

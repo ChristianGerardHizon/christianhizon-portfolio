@@ -6,6 +6,52 @@
 
 part of 'patient.dart';
 
+class PatientSexMapper extends EnumMapper<PatientSex> {
+  PatientSexMapper._();
+
+  static PatientSexMapper? _instance;
+  static PatientSexMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = PatientSexMapper._());
+    }
+    return _instance!;
+  }
+
+  static PatientSex fromValue(dynamic value) {
+    ensureInitialized();
+    return MapperContainer.globals.fromValue(value);
+  }
+
+  @override
+  PatientSex decode(dynamic value) {
+    switch (value) {
+      case r'male':
+        return PatientSex.male;
+      case r'female':
+        return PatientSex.female;
+      default:
+        throw MapperException.unknownEnumValue(value);
+    }
+  }
+
+  @override
+  dynamic encode(PatientSex self) {
+    switch (self) {
+      case PatientSex.male:
+        return r'male';
+      case PatientSex.female:
+        return r'female';
+    }
+  }
+}
+
+extension PatientSexMapperExtension on PatientSex {
+  String toValue() {
+    PatientSexMapper.ensureInitialized();
+    return MapperContainer.globals.toValue<PatientSex>(this) as String;
+  }
+}
+
 class PatientMapper extends ClassMapperBase<Patient> {
   PatientMapper._();
 
@@ -14,6 +60,7 @@ class PatientMapper extends ClassMapperBase<Patient> {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = PatientMapper._());
       PbRecordMapper.ensureInitialized();
+      PatientSexMapper.ensureInitialized();
       PatientRecordExpandMapper.ensureInitialized();
     }
     return _instance!;
@@ -42,6 +89,9 @@ class PatientMapper extends ClassMapperBase<Patient> {
   static String? _$species(Patient v) => v.species;
   static const Field<Patient, String> _f$species =
       Field('species', _$species, opt: true);
+  static String? _$branch(Patient v) => v.branch;
+  static const Field<Patient, String> _f$branch =
+      Field('branch', _$branch, opt: true);
   static String? _$owner(Patient v) => v.owner;
   static const Field<Patient, String> _f$owner =
       Field('owner', _$owner, opt: true);
@@ -60,11 +110,12 @@ class PatientMapper extends ClassMapperBase<Patient> {
   static String? _$color(Patient v) => v.color;
   static const Field<Patient, String> _f$color =
       Field('color', _$color, opt: true);
-  static String? _$sex(Patient v) => v.sex;
-  static const Field<Patient, String> _f$sex = Field('sex', _$sex, opt: true);
+  static PatientSex? _$sex(Patient v) => v.sex;
+  static const Field<Patient, PatientSex> _f$sex =
+      Field('sex', _$sex, opt: true, hook: PatientSexHook());
   static DateTime? _$dateOfBirth(Patient v) => v.dateOfBirth;
   static const Field<Patient, DateTime> _f$dateOfBirth =
-      Field('dateOfBirth', _$dateOfBirth, opt: true);
+      Field('dateOfBirth', _$dateOfBirth, opt: true, hook: DateTimeHook());
   static PatientRecordExpand _$expand(Patient v) => v.expand;
   static const Field<Patient, PatientRecordExpand> _f$expand =
       Field('expand', _$expand);
@@ -87,6 +138,7 @@ class PatientMapper extends ClassMapperBase<Patient> {
     #images: _f$images,
     #avatar: _f$avatar,
     #species: _f$species,
+    #branch: _f$branch,
     #owner: _f$owner,
     #contactNumber: _f$contactNumber,
     #email: _f$email,
@@ -110,6 +162,7 @@ class PatientMapper extends ClassMapperBase<Patient> {
         images: data.dec(_f$images),
         avatar: data.dec(_f$avatar),
         species: data.dec(_f$species),
+        branch: data.dec(_f$branch),
         owner: data.dec(_f$owner),
         contactNumber: data.dec(_f$contactNumber),
         email: data.dec(_f$email),
@@ -186,13 +239,14 @@ abstract class PatientCopyWith<$R, $In extends Patient, $Out>
       List<String>? images,
       String? avatar,
       String? species,
+      String? branch,
       String? owner,
       String? contactNumber,
       String? email,
       String? address,
       String? breed,
       String? color,
-      String? sex,
+      PatientSex? sex,
       DateTime? dateOfBirth,
       PatientRecordExpand? expand,
       bool? isDeleted,
@@ -225,6 +279,7 @@ class _PatientCopyWithImpl<$R, $Out>
           List<String>? images,
           Object? avatar = $none,
           Object? species = $none,
+          Object? branch = $none,
           Object? owner = $none,
           Object? contactNumber = $none,
           Object? email = $none,
@@ -245,6 +300,7 @@ class _PatientCopyWithImpl<$R, $Out>
         if (images != null) #images: images,
         if (avatar != $none) #avatar: avatar,
         if (species != $none) #species: species,
+        if (branch != $none) #branch: branch,
         if (owner != $none) #owner: owner,
         if (contactNumber != $none) #contactNumber: contactNumber,
         if (email != $none) #email: email,
@@ -267,6 +323,7 @@ class _PatientCopyWithImpl<$R, $Out>
       images: data.get(#images, or: $value.images),
       avatar: data.get(#avatar, or: $value.avatar),
       species: data.get(#species, or: $value.species),
+      branch: data.get(#branch, or: $value.branch),
       owner: data.get(#owner, or: $value.owner),
       contactNumber: data.get(#contactNumber, or: $value.contactNumber),
       email: data.get(#email, or: $value.email),

@@ -68,13 +68,17 @@ Widget _buildWidget(DynamicFieldItem field, EdgeInsets? itemPadding) {
         children: [
           Expanded(
             child: Padding(
-              padding: field.firstPadding ?? itemPadding ?? EdgeInsets.zero,
+              padding: field.firstPadding ??
+                  itemPadding?.copyWith(right: 0) ??
+                  EdgeInsets.zero,
               child: DynamicFormField(field: field.first),
             ),
           ),
           Expanded(
             child: Padding(
-              padding: field.secondPadding ?? itemPadding ?? EdgeInsets.zero,
+              padding: field.secondPadding ??
+                  itemPadding?.copyWith(left: 4) ??
+                  EdgeInsets.zero,
               child: DynamicFormField(field: field.second),
             ),
           ),
