@@ -5,7 +5,6 @@ import 'package:gym_system/src/core/classes/pb_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 
 import 'dynamic_field.dart';
