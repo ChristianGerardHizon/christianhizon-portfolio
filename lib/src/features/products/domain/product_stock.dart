@@ -16,6 +16,8 @@ class ProductStock extends PbRecord with ProductStockMappable {
   final int? quantity;
   final int? usedQuantity;
 
+  final bool isDisposed;
+
   ProductStock({
     required super.id,
     required super.collectionId,
@@ -33,6 +35,7 @@ class ProductStock extends PbRecord with ProductStockMappable {
     this.notes,
     this.quantity,
     this.usedQuantity,
+    this.isDisposed = false,
   });
 
   static fromMap(Map<String, dynamic> raw) {

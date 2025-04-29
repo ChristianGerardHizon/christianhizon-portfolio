@@ -187,3 +187,15 @@ class ProductStockField {
   static const String quantity = 'quantity';
   static const String usedQuantity = 'usedQuantity';
 }
+
+class ChangeLogField {
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
+
+  static const String message = 'message';
+  static const String user = 'user';
+  static const String admin = 'admin';
+  static const String status = 'status';
+}

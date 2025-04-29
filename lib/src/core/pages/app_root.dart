@@ -4,7 +4,6 @@ import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/controllers/scaffold_controller.dart';
-import 'package:gym_system/src/core/controllers/side_menu_controller.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/custom_navbar_item.dart';
@@ -43,7 +42,7 @@ class AppRoot extends HookConsumerWidget {
 
     ref.watch(tableControllerProvider(TableControllerKeys.product));
 
-    final sideMenuCtrl = ref.read(sideMenuControllerProvider);
+    final sideMenuCtrl = useMemoized(() => SideMenuController(), []);
     final canPop = useState(false);
 
     ///
@@ -118,6 +117,16 @@ class AppRoot extends HookConsumerWidget {
         ),
         if (isAdmin)
           CustomNavigationBarItem(
+            route: ChangeLogsPageRoute.path,
+            icon: Icon(MIcons.timelineOutline),
+            selectedIcon: Icon(MIcons.timeline),
+            label: 'Change Logs',
+            onTap: () {
+              ChangeLogsPageRoute().go(context);
+            },
+          ),
+        if (isAdmin)
+          CustomNavigationBarItem(
             route: BranchesPageRoute.path,
             icon: Icon(MIcons.storeOutline),
             selectedIcon: Icon(MIcons.store),
@@ -172,7 +181,7 @@ class AppRoot extends HookConsumerWidget {
                         backgroundColor: theme.scaffoldBackgroundColor,
                         builder: (data) => SideMenuData(
                           header: Logo(
-                            height: sideMenuCtrl.isCollapsed() ? 100 : 150,
+                            height: sideMenuCtrl.isCollapsed() ? 60 : 150,
                           ),
                           items: items.mapWithIndex((e, index) {
                             final goRouter = GoRouter.of(context);

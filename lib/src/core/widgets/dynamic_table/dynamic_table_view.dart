@@ -102,13 +102,125 @@ class DynamicTableView<T> extends HookConsumerWidget {
               if (error != null) SliverToBoxAdapter(child: error),
 
               ///
+              ///  Content
+              ///
+              SliverDynamicBase(
+                tableKey: tableKey,
+                itemCount: items.length,
+
+                onTableRowTap: (index) {
+                  final isSelected = selected.contains(index);
+                  if (!isSelected && selected.isNotEmpty) {
+                    notifier.toggleRow(index);
+                    return;
+                  }
+                  if (isSelected) {
+                    notifier.toggleRow(index);
+                    return;
+                  }
+
+                  onRowTap?.call(items[index]);
+                },
+
+                ///
+                /// Table Columns
+                ///
+                columns: columns
+                    .map(
+                      (column) => DynamicTableBaseColumn(
+                        key: column.sortKey,
+                        width: column.width,
+                        builder: (ctxt, _) => InkWell(
+                          onTap: () {
+                            if (column.sortKey == null) return;
+                            notifier.toogleTableSort(column.sortKey!);
+                            onChange?.call(currentPage, sort);
+                          },
+                          child: Padding(
+                            padding: column.padding ??
+                                const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                ),
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(),
+                              child: Align(
+                                alignment: column.alignment ?? Alignment.center,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      column.header,
+                                      style: column.style ?? headerTextStyle,
+                                    ),
+
+                                    ///
+                                    /// Sort Arrows
+                                    ///
+                                    if (sort?.key == column.sortKey)
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 4),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            if (sort?.isAscending == true)
+                                              Icon(MIcons.chevronUp),
+                                            if (sort?.isAscending == false)
+                                              Icon(MIcons.chevronDown),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+
+                ///
+                /// Table Rows
+                ///
+                tableRowHeight: 50,
+                tableRowBuilder: (context, value) {
+                  final offset = value.column - 1;
+
+                  final result = columns[offset].builder?.call(
+                        context,
+                        items[value.row],
+                        value.row,
+                        value.column,
+                      );
+
+                  if (result is Widget)
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: result,
+                    );
+
+                  return SizedBox();
+                },
+
+                ///
+                /// Mobile Builder
+                ///
+                mobileBuilder: (context, value) => mobileBuilder(
+                  context,
+                  value.row,
+                  items[value.row],
+                  value.isSelected,
+                ),
+              ),
+
+              ///
               /// Empty
               ///
-              if (items.isEmpty && isLoading == false)
+              if (items.isEmpty)
                 SliverToBoxAdapter(
                   child: emptyWidget ??
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.7,
+                        height: MediaQuery.of(context).size.height * 0.5,
                         child: Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -126,127 +238,6 @@ class DynamicTableView<T> extends HookConsumerWidget {
                           ),
                         ),
                       ),
-                ),
-
-              ///
-              ///  Content
-              ///
-              if (items.isNotEmpty && isLoading == false)
-                SliverDynamicBase(
-                  tableKey: tableKey,
-                  itemCount: items.length,
-
-                  onTableRowTap: (index) {
-                    final isSelected = selected.contains(index);
-                    if (!isSelected && selected.isNotEmpty) {
-                      notifier.toggleRow(index);
-                      return;
-                    }
-                    if (isSelected) {
-                      notifier.toggleRow(index);
-                      return;
-                    }
-
-                    onRowTap?.call(items[index]);
-                  },
-
-                  ///
-                  /// Table Columns
-                  ///
-                  columns: columns
-                      .map(
-                        (column) => DynamicTableBaseColumn(
-                          key: column.sortKey,
-                          width: column.width,
-                          builder: (ctxt, _) => InkWell(
-                            onTap: () {
-                              if (column.sortKey == null) return;
-                              notifier.toogleTableSort(column.sortKey!);
-                              onChange?.call(currentPage, sort);
-                            },
-                            child: Padding(
-                              padding: column.padding ??
-                                  const EdgeInsets.symmetric(
-                                    horizontal: 8.0,
-                                  ),
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(),
-                                child: Align(
-                                  alignment:
-                                      column.alignment ?? Alignment.center,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        column.header,
-                                        style: column.style ?? headerTextStyle,
-                                      ),
-
-                                      ///
-                                      /// Sort Arrows
-                                      ///
-                                      if (sort?.key == column.sortKey)
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 4),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              if (sort?.isAscending == true)
-                                                Icon(MIcons.chevronUp),
-                                              if (sort?.isAscending == false)
-                                                Icon(MIcons.chevronDown),
-                                            ],
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
-
-                  ///
-                  /// Table Rows
-                  ///
-                  tableRowHeight: 50,
-                  tableRowBuilder: (context, value) {
-                    final offset = value.column - 1;
-
-                    final result = columns[offset].builder?.call(
-                          context,
-                          items[value.row],
-                          value.row,
-                          value.column,
-                        );
-
-                    if (result is Widget)
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: result,
-                      );
-
-                    return SizedBox();
-                  },
-
-                  ///
-                  /// Mobile Builder
-                  ///
-                  mobileBuilder: (context, value) => mobileBuilder(
-                    context,
-                    value.row,
-                    items[value.row],
-                    value.isSelected,
-                  ),
-                )
-              else
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.7,
-                  ),
                 ),
 
               ///

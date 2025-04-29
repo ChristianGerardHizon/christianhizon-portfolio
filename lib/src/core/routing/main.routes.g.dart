@@ -46,6 +46,9 @@ List<RouteBase> get $appRoutes => [
       $patientTreatmentRecordsPageRoute,
       $patientTreatmentRecordPageRoute,
       $appointmentsPageRoute,
+      $changeLogsPageRoute,
+      $changeLogPageRoute,
+      $changeLogFormPageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -223,6 +226,22 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/settings',
               factory: $SettingsPageRouteExtension._fromState,
+            ),
+          ],
+        ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/changeLogs',
+              factory: $ChangeLogsPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/changeLog/:id',
+              factory: $ChangeLogPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/changeLog/form/:id',
+              factory: $ChangeLogFormPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -721,6 +740,64 @@ extension $SettingsPageRouteExtension on SettingsPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
+extension $ChangeLogsPageRouteExtension on ChangeLogsPageRoute {
+  static ChangeLogsPageRoute _fromState(GoRouterState state) =>
+      const ChangeLogsPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/changeLogs',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $ChangeLogPageRouteExtension on ChangeLogPageRoute {
+  static ChangeLogPageRoute _fromState(GoRouterState state) =>
+      ChangeLogPageRoute(
+        state.pathParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/changeLog/${Uri.encodeComponent(id)}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $ChangeLogFormPageRouteExtension on ChangeLogFormPageRoute {
+  static ChangeLogFormPageRoute _fromState(GoRouterState state) =>
+      ChangeLogFormPageRoute(
+        id: state.pathParameters['id'],
+      );
+
+  String get location => GoRouteData.$location(
+        '/changeLog/form/${Uri.encodeComponent(id ?? '')}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
 extension $YourAccountPageRouteExtension on YourAccountPageRoute {
   static YourAccountPageRoute _fromState(GoRouterState state) =>
       const YourAccountPageRoute();
@@ -1161,4 +1238,19 @@ RouteBase get $patientTreatmentRecordPageRoute => GoRouteData.$route(
 RouteBase get $appointmentsPageRoute => GoRouteData.$route(
       path: '/appointments',
       factory: $AppointmentsPageRouteExtension._fromState,
+    );
+
+RouteBase get $changeLogsPageRoute => GoRouteData.$route(
+      path: '/changeLogs',
+      factory: $ChangeLogsPageRouteExtension._fromState,
+    );
+
+RouteBase get $changeLogPageRoute => GoRouteData.$route(
+      path: '/changeLog/:id',
+      factory: $ChangeLogPageRouteExtension._fromState,
+    );
+
+RouteBase get $changeLogFormPageRoute => GoRouteData.$route(
+      path: '/changeLog/form/:id',
+      factory: $ChangeLogFormPageRouteExtension._fromState,
     );

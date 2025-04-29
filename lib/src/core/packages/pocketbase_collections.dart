@@ -28,4 +28,9 @@ class PocketBaseCollections {
   /// Branches
   ///
   static const branches = 'branches';
+
+  ///
+  /// Changes
+  ///
+  static const changeLogs = 'changeLogs';
 }

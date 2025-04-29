@@ -1,29 +1,29 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'side_menu_controller.dart';
+part of 'change_log_repository.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sideMenuControllerHash() =>
-    r'074781ee783e6ee90cb5f6f0e8a9ada1393591fc';
+String _$changeLogRepositoryHash() =>
+    r'1dfcb5d766882055ee2f38654b8e2f95a02f1e33';
 
-/// See also [sideMenuController].
-@ProviderFor(sideMenuController)
-final sideMenuControllerProvider =
-    AutoDisposeProvider<SideMenuController>.internal(
-  sideMenuController,
-  name: r'sideMenuControllerProvider',
+/// See also [changeLogRepository].
+@ProviderFor(changeLogRepository)
+final changeLogRepositoryProvider =
+    Provider<PBCollectionRepository<ChangeLog>>.internal(
+  changeLogRepository,
+  name: r'changeLogRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$sideMenuControllerHash,
+      : _$changeLogRepositoryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef SideMenuControllerRef = AutoDisposeProviderRef<SideMenuController>;
+typedef ChangeLogRepositoryRef = ProviderRef<PBCollectionRepository<ChangeLog>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

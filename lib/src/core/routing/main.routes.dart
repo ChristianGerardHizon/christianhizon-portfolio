@@ -19,6 +19,9 @@ import 'package:gym_system/src/features/authentication/presentation/pages/user_l
 import 'package:gym_system/src/features/branches/presentation/pages/branch_form_page.dart';
 import 'package:gym_system/src/features/branches/presentation/pages/branch_page.dart';
 import 'package:gym_system/src/features/branches/presentation/pages/branches_page.dart';
+import 'package:gym_system/src/features/change_logs/presentation/pages/change_log_form_page.dart';
+import 'package:gym_system/src/features/change_logs/presentation/pages/change_log_page.dart';
+import 'package:gym_system/src/features/change_logs/presentation/pages/change_logs_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_record_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_form_page.dart';
@@ -54,6 +57,7 @@ part 'routes/products.routes.dart';
 part 'routes/patient_records.routes.dart';
 part 'routes/patient_treatment_records.routes.dart';
 part 'routes/appointments.routes.dart';
+part 'routes/change_logs.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
@@ -197,6 +201,17 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<SettingsBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<SettingsPageRoute>(path: SettingsPageRoute.path),
+      ],
+    ),
+
+    ///
+    /// ChangeLog
+    ///
+    TypedStatefulShellBranch<ChangeLogsBranchData>(
+      routes: <TypeRouteData>[
+        TypedGoRoute<ChangeLogsPageRoute>(path: ChangeLogsPageRoute.path),
+        TypedGoRoute<ChangeLogPageRoute>(path: ChangeLogPageRoute.path),
+        TypedGoRoute<ChangeLogFormPageRoute>(path: ChangeLogFormPageRoute.path),
       ],
     ),
 
