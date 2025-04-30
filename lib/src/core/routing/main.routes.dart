@@ -223,7 +223,7 @@ class SplashPageRoute extends GoRouteData {
     ),
 
     ///
-    /// ChangeLog
+    /// ChangeLogs
     ///
     TypedStatefulShellBranch<ChangeLogsBranchData>(
       routes: <TypeRouteData>[
@@ -283,20 +283,6 @@ class RootRouteData extends StatefulShellRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootKey;
 
   @override
-  Widget builder(
-    BuildContext context,
-    GoRouterState state,
-    StatefulNavigationShell navigationShell,
-  ) =>
+  Widget builder(context, state, navigationShell) =>
       AppRoot(shell: navigationShell, state: state);
-
-  // @override
-  // FutureOr<String?> redirect(BuildContext context, GoRouterState state) async {
-  //   final provider = ProviderScope.containerOf(context);
-  //   final auth = await provider.read(authControllerProvider);
-
-  //   if (auth.isLoading) return SplashPageRoute.path;
-
-  //   return null;
-  // }
 }

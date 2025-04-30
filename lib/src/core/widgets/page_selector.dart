@@ -21,6 +21,8 @@ class PageSelector extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (totalPages == 0) return SizedBox();
+
     return Align(
       alignment: Alignment.center,
       child: Row(

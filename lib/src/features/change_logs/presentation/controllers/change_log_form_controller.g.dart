@@ -7,7 +7,7 @@ part of 'change_log_form_controller.dart';
 // **************************************************************************
 
 String _$changeLogFormControllerHash() =>
-    r'e1fdd9362a22c370605a077a5853438c536c67f2';
+    r'95fb4abede18ef0784c90b75c084abb739d4641e';
 
 /// Copied from Dart SDK
 class _SystemHash {

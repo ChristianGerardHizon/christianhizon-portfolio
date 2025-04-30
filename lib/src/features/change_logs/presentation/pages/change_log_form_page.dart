@@ -94,6 +94,26 @@ class ChangeLogFormPage extends HookConsumerWidget {
                     ],
                   ),
                 ),
+
+                ///
+                /// Type
+                ///
+                DynamicSelectField(
+                  name: ChangeLogField.type,
+                  initialValue: changeLog?.type,
+                  options: ChangeLogType.values
+                      .map((e) => SelectOption(value: e.name, display: e.name))
+                      .toList(),
+                  decoration: InputDecoration(
+                    label: Text('Type'),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(),
+                    ],
+                  ),
+                )
               ],
               onSubmit: (result) => onSave(changeLog, result),
             );

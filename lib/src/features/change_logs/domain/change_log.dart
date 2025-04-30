@@ -1,5 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
+import 'package:gym_system/src/features/admins/domain/admin.dart';
+import 'package:gym_system/src/features/users/domain/user.dart';
 
 part 'change_log.mapper.dart';
 
@@ -43,9 +45,28 @@ class ChangeLog extends PbRecord with ChangeLogMappable {
   }
 }
 
+@MappableClass()
+class ChangeLogExpand with ChangeLogExpandMappable {
+  final User? user;
+  final Admin? admin;
+
+  ChangeLogExpand({
+    this.user,
+    this.admin,
+  });
+
+  static fromMap(Map<String, dynamic> raw) {
+    return ChangeLogExpand.fromMap({
+      ...raw,
+    });
+  }
+
+  static const fromJson = ChangeLogExpandMapper.fromJson;
+}
+
 @MappableEnum()
 enum ChangeLogType {
-  created,
-  updated,
-  deleted,
+  create,
+  update,
+  delete,
 }

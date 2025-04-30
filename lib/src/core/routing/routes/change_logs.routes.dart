@@ -31,7 +31,7 @@ class ChangeLogPageRoute extends GoRouteData {
 @TypedGoRoute<ChangeLogFormPageRoute>(path: ChangeLogFormPageRoute.path)
 class ChangeLogFormPageRoute extends GoRouteData {
   const ChangeLogFormPageRoute({this.id});
-  static const path = '/changeLog/form/:id';
+  static const path = '/form/changelog';
 
   final String? id;
 

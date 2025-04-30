@@ -30,8 +30,8 @@ class ChangeLogPage extends HookConsumerWidget {
         body: FailureMessage(error, stack),
       ),
       loading: () => const Center(child: CircularProgressIndicator()),
-      data: (changeLogState) {
-        final changeLog = changeLogState.changeLog;
+      data: (clState) {
+        final changeLog = clState.changeLog;
         return Scaffold(
           appBar: AppBar(
             title: Text('Change Log'),

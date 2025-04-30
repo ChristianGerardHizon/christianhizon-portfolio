@@ -24,6 +24,7 @@ class ChangeLogsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchCtrl = useTextEditingController();
+
     final tableKey = TableControllerKeys.changeLog;
     final provider = tableControllerProvider(tableKey);
     final notifier = ref.read(provider.notifier);
@@ -38,6 +39,13 @@ class ChangeLogsPage extends HookConsumerWidget {
     ///
     onTap(ChangeLog changeLog) {
       ChangeLogPageRoute(changeLog.id).push(context);
+    }
+
+    ///
+    /// OnCreate
+    ///
+    onCreate() {
+      ChangeLogFormPageRoute().push(context);
     }
 
     ///
@@ -69,13 +77,6 @@ class ChangeLogsPage extends HookConsumerWidget {
           if (context.canPop()) context.pop();
         },
       );
-    }
-
-    ///
-    /// OnCreate
-    ///
-    onCreate() {
-      ChangeLogFormPageRoute().push(context);
     }
 
     return Scaffold(
@@ -117,7 +118,35 @@ class ChangeLogsPage extends HookConsumerWidget {
         ///
         columns: [
           TableColumn(
+            header: 'Type',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  data.type.name,
+                ),
+              );
+            },
+          ),
+          TableColumn(
             header: 'Message',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  data.message.optional(),
+                ),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'User',
             width: 200,
             alignment: Alignment.centerLeft,
             builder: (context, data, row, column) {

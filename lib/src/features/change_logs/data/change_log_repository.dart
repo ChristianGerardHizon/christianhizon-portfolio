@@ -4,6 +4,7 @@ import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
+import 'package:gym_system/src/core/strings/pb_expand.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/change_logs/domain/change_log.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -25,6 +26,8 @@ class ChangeLogRepositoryImpl extends PBCollectionRepository<ChangeLog> {
 
   ChangeLogRepositoryImpl({required this.pb});
 
+  final String expand = PBExpand.changeLogs;
+
   RecordService get collection =>
       pb.collection(PocketBaseCollections.changeLogs);
 
@@ -35,7 +38,7 @@ class ChangeLogRepositoryImpl extends PBCollectionRepository<ChangeLog> {
   @override
   TaskResult<ChangeLog> get(String id) {
     return TaskResult.tryCatch(() async {
-      final result = await collection.getOne(id);
+      final result = await collection.getOne(id, expand: expand);
       return mapToData(result.toJson());
     }, Failure.handle);
   }
@@ -46,7 +49,8 @@ class ChangeLogRepositoryImpl extends PBCollectionRepository<ChangeLog> {
     List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(body: payload, files: files);
+      final response =
+          await collection.create(body: payload, files: files, expand: expand);
       return mapToData(response.toJson());
     }, Failure.handle);
   }
@@ -71,6 +75,7 @@ class ChangeLogRepositoryImpl extends PBCollectionRepository<ChangeLog> {
         page: pageNo,
         perPage: pageSize,
         sort: sort,
+        expand: expand,
       );
       return PageResults(
         page: result.page,
@@ -97,6 +102,7 @@ class ChangeLogRepositoryImpl extends PBCollectionRepository<ChangeLog> {
         history.id,
         body: combinedMap,
         files: files,
+        expand: expand,
       );
       return mapToData(result.toJson());
     }, Failure.handle);
@@ -125,6 +131,7 @@ class ChangeLogRepositoryImpl extends PBCollectionRepository<ChangeLog> {
       () async {
         final result = await collection.getFullList(
           filter: filter,
+          expand: expand,
         );
         return result.map<ChangeLog>((e) => mapToData(e.toJson())).toList();
       },

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/strings/strings.dart';
+import 'package:gym_system/src/core/strings/app_strings.dart';
 
 import 'package:window_manager/window_manager.dart';
 
@@ -33,7 +33,8 @@ class WindowUtils {
       title: AppStrings.appName, // Set the window title
       minimumSize: Size(380, 700), // Set the minimum size of the window
       size: Size(1000, 800), // Set the initial size of the window
-      backgroundColor: Colors.transparent, // Set the background color of the window
+      backgroundColor:
+          Colors.transparent, // Set the background color of the window
       skipTaskbar: false, // Set if the window should be shown in the taskbar
       titleBarStyle: TitleBarStyle.normal, // Set the title bar style
     );
@@ -48,4 +49,3 @@ class WindowUtils {
     });
   }
 }
-

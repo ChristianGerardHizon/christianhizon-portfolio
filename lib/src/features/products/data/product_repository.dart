@@ -3,6 +3,7 @@ import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
+import 'package:gym_system/src/core/strings/pb_expand.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -30,7 +31,7 @@ class ProductRepositoryImpl extends PBCollectionRepository<Product> {
     return Product.fromMap({...map, 'domain': pb.baseURL});
   }
 
-  final expand = 'branch';
+  final expand = PBExpand.product;
 
   @override
   TaskResult<Product> get(String id) {

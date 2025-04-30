@@ -20,14 +20,14 @@ class ChangeLogState with ChangeLogStateMappable {
 class ChangeLogFormController extends _$ChangeLogFormController {
   @override
   Future<ChangeLogState> build(String? id) async {
-    final changeLogRepo = ref.read(changeLogRepositoryProvider);
+    final repo = ref.read(changeLogRepositoryProvider);
 
     final result = await TaskResult.Do(($) async {
       if (id == null) {
         return ChangeLogState(changeLog: null);
       }
 
-      final changeLog = await $(changeLogRepo.get(id));
+      final changeLog = await $(repo.get(id));
 
       return ChangeLogState(changeLog: changeLog);
     }).run();

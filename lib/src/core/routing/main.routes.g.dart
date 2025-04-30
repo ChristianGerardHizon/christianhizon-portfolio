@@ -259,7 +259,7 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               factory: $ChangeLogPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/changeLog/form/:id',
+              path: '/form/changelog',
               factory: $ChangeLogFormPageRouteExtension._fromState,
             ),
           ],
@@ -859,11 +859,14 @@ extension $ChangeLogPageRouteExtension on ChangeLogPageRoute {
 extension $ChangeLogFormPageRouteExtension on ChangeLogFormPageRoute {
   static ChangeLogFormPageRoute _fromState(GoRouterState state) =>
       ChangeLogFormPageRoute(
-        id: state.pathParameters['id'],
+        id: state.uri.queryParameters['id'],
       );
 
   String get location => GoRouteData.$location(
-        '/changeLog/form/${Uri.encodeComponent(id ?? '')}',
+        '/form/changelog',
+        queryParams: {
+          if (id != null) 'id': id,
+        },
       );
 
   void go(BuildContext context) => context.go(location);
@@ -1329,7 +1332,7 @@ RouteBase get $changeLogPageRoute => GoRouteData.$route(
     );
 
 RouteBase get $changeLogFormPageRoute => GoRouteData.$route(
-      path: '/changeLog/form/:id',
+      path: '/form/changelog',
       factory: $ChangeLogFormPageRouteExtension._fromState,
     );
 

@@ -3,6 +3,7 @@ import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
+import 'package:gym_system/src/core/strings/pb_expand.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/products/domain/product_inventory.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -27,7 +28,7 @@ class ProductInventoryRepositoryImpl
   RecordService get collection =>
       pb.collection(PocketBaseCollections.productInventoryStatus);
 
-  final expand = 'product,product.branch,product.category';
+  final expand = PBExpand.productInventory;
 
   @override
   TaskResult<ProductInventory> get(String id) {

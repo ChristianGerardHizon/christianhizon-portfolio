@@ -25,12 +25,12 @@ class ChangeLogTypeMapper extends EnumMapper<ChangeLogType> {
   @override
   ChangeLogType decode(dynamic value) {
     switch (value) {
-      case r'created':
-        return ChangeLogType.created;
-      case r'updated':
-        return ChangeLogType.updated;
-      case r'deleted':
-        return ChangeLogType.deleted;
+      case r'create':
+        return ChangeLogType.create;
+      case r'update':
+        return ChangeLogType.update;
+      case r'delete':
+        return ChangeLogType.delete;
       default:
         throw MapperException.unknownEnumValue(value);
     }
@@ -39,12 +39,12 @@ class ChangeLogTypeMapper extends EnumMapper<ChangeLogType> {
   @override
   dynamic encode(ChangeLogType self) {
     switch (self) {
-      case ChangeLogType.created:
-        return r'created';
-      case ChangeLogType.updated:
-        return r'updated';
-      case ChangeLogType.deleted:
-        return r'deleted';
+      case ChangeLogType.create:
+        return r'create';
+      case ChangeLogType.update:
+        return r'update';
+      case ChangeLogType.delete:
+        return r'delete';
     }
   }
 }
@@ -253,4 +253,127 @@ class _ChangeLogCopyWithImpl<$R, $Out>
   ChangeLogCopyWith<$R2, ChangeLog, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
       _ChangeLogCopyWithImpl<$R2, $Out2>($value, $cast, t);
+}
+
+class ChangeLogExpandMapper extends ClassMapperBase<ChangeLogExpand> {
+  ChangeLogExpandMapper._();
+
+  static ChangeLogExpandMapper? _instance;
+  static ChangeLogExpandMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = ChangeLogExpandMapper._());
+      UserMapper.ensureInitialized();
+      AdminMapper.ensureInitialized();
+    }
+    return _instance!;
+  }
+
+  @override
+  final String id = 'ChangeLogExpand';
+
+  static User? _$user(ChangeLogExpand v) => v.user;
+  static const Field<ChangeLogExpand, User> _f$user =
+      Field('user', _$user, opt: true);
+  static Admin? _$admin(ChangeLogExpand v) => v.admin;
+  static const Field<ChangeLogExpand, Admin> _f$admin =
+      Field('admin', _$admin, opt: true);
+
+  @override
+  final MappableFields<ChangeLogExpand> fields = const {
+    #user: _f$user,
+    #admin: _f$admin,
+  };
+
+  static ChangeLogExpand _instantiate(DecodingData data) {
+    return ChangeLogExpand(user: data.dec(_f$user), admin: data.dec(_f$admin));
+  }
+
+  @override
+  final Function instantiate = _instantiate;
+
+  static ChangeLogExpand fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<ChangeLogExpand>(map);
+  }
+
+  static ChangeLogExpand fromJson(String json) {
+    return ensureInitialized().decodeJson<ChangeLogExpand>(json);
+  }
+}
+
+mixin ChangeLogExpandMappable {
+  String toJson() {
+    return ChangeLogExpandMapper.ensureInitialized()
+        .encodeJson<ChangeLogExpand>(this as ChangeLogExpand);
+  }
+
+  Map<String, dynamic> toMap() {
+    return ChangeLogExpandMapper.ensureInitialized()
+        .encodeMap<ChangeLogExpand>(this as ChangeLogExpand);
+  }
+
+  ChangeLogExpandCopyWith<ChangeLogExpand, ChangeLogExpand, ChangeLogExpand>
+      get copyWith =>
+          _ChangeLogExpandCopyWithImpl<ChangeLogExpand, ChangeLogExpand>(
+              this as ChangeLogExpand, $identity, $identity);
+  @override
+  String toString() {
+    return ChangeLogExpandMapper.ensureInitialized()
+        .stringifyValue(this as ChangeLogExpand);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return ChangeLogExpandMapper.ensureInitialized()
+        .equalsValue(this as ChangeLogExpand, other);
+  }
+
+  @override
+  int get hashCode {
+    return ChangeLogExpandMapper.ensureInitialized()
+        .hashValue(this as ChangeLogExpand);
+  }
+}
+
+extension ChangeLogExpandValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, ChangeLogExpand, $Out> {
+  ChangeLogExpandCopyWith<$R, ChangeLogExpand, $Out> get $asChangeLogExpand =>
+      $base.as((v, t, t2) => _ChangeLogExpandCopyWithImpl<$R, $Out>(v, t, t2));
+}
+
+abstract class ChangeLogExpandCopyWith<$R, $In extends ChangeLogExpand, $Out>
+    implements ClassCopyWith<$R, $In, $Out> {
+  UserCopyWith<$R, User, User>? get user;
+  AdminCopyWith<$R, Admin, Admin>? get admin;
+  $R call({User? user, Admin? admin});
+  ChangeLogExpandCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+      Then<$Out2, $R2> t);
+}
+
+class _ChangeLogExpandCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, ChangeLogExpand, $Out>
+    implements ChangeLogExpandCopyWith<$R, ChangeLogExpand, $Out> {
+  _ChangeLogExpandCopyWithImpl(super.value, super.then, super.then2);
+
+  @override
+  late final ClassMapperBase<ChangeLogExpand> $mapper =
+      ChangeLogExpandMapper.ensureInitialized();
+  @override
+  UserCopyWith<$R, User, User>? get user =>
+      $value.user?.copyWith.$chain((v) => call(user: v));
+  @override
+  AdminCopyWith<$R, Admin, Admin>? get admin =>
+      $value.admin?.copyWith.$chain((v) => call(admin: v));
+  @override
+  $R call({Object? user = $none, Object? admin = $none}) =>
+      $apply(FieldCopyWithData(
+          {if (user != $none) #user: user, if (admin != $none) #admin: admin}));
+  @override
+  ChangeLogExpand $make(CopyWithData data) => ChangeLogExpand(
+      user: data.get(#user, or: $value.user),
+      admin: data.get(#admin, or: $value.admin));
+
+  @override
+  ChangeLogExpandCopyWith<$R2, ChangeLogExpand, $Out2> $chain<$R2, $Out2>(
+          Then<$Out2, $R2> t) =>
+      _ChangeLogExpandCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

@@ -119,7 +119,7 @@ class AuthRepositoryImpl implements AuthRepository {
             .authWithPassword(
               email,
               password,
-              expand: PbExpand.user,
+              expand: PBExpand.user,
             );
       },
       (error, stack) {
@@ -154,7 +154,7 @@ class AuthRepositoryImpl implements AuthRepository {
         if (collection == PocketBaseCollections.users) {
           return await pb
               .collection(collection)
-              .authRefresh(expand: PbExpand.user);
+              .authRefresh(expand: PBExpand.user);
         }
 
         throw DataFailure(
@@ -186,7 +186,7 @@ class AuthRepositoryImpl implements AuthRepository {
             ? await pb.collection(oldCollection).authRefresh()
             : await pb
                 .collection(oldCollection)
-                .authRefresh(expand: PbExpand.user);
+                .authRefresh(expand: PBExpand.user);
 
         authStore.save(authModel.token, authModel.record);
 
