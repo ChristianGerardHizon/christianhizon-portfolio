@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/features/patients/data/precription/patient_prescription_item_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_prescription_item_repository.dart';
 import 'package:gym_system/src/features/patients/domain/prescription/patient_prescription_item.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

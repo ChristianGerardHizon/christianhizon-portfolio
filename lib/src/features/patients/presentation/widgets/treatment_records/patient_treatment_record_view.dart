@@ -13,7 +13,7 @@ import 'package:gym_system/src/features/patients/presentation/controllers/treatm
 import 'package:gym_system/src/features/patients/presentation/sheets/records/treatment_record_create_sheet.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/treatment_records/treatment_records_table.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/patients/data/treatment_record/patient_treatment_record_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_treatment_record_repository.dart';
 
 import 'package:gym_system/src/features/patients/domain/patient_treatment_record.dart';
 import 'package:gym_system/src/features/patients/domain/patient_treatment_record_search.dart';

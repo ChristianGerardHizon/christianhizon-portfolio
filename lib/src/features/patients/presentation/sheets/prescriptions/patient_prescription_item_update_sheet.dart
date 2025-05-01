@@ -7,7 +7,7 @@ import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/form_builders/hidden_form_field.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
-import 'package:gym_system/src/features/patients/data/precription/patient_prescription_item_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_prescription_item_repository.dart';
 import 'package:gym_system/src/features/patients/domain/prescription/patient_prescription_item.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/prescriptions/patient_prescription_all_items_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

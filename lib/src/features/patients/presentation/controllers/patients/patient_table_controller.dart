@@ -3,7 +3,7 @@ import 'package:gym_system/src/core/packages/pocketbase_filter.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
-import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

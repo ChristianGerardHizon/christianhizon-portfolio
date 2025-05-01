@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
-import 'package:gym_system/src/features/patients/data/treatment_record/patient_treatment_record_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_treatment_record_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient_treatment.dart';
 
 import 'package:gym_system/src/features/patients/domain/patient_treatment_record.dart';

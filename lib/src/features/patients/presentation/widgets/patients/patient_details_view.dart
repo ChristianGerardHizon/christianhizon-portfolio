@@ -14,7 +14,7 @@ import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dar
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
-import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_table_controller.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';

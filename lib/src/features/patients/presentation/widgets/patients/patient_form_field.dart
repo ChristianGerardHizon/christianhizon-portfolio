@@ -5,7 +5,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/widgets/form_builders/custom_form_field.dart';
 import 'package:gym_system/src/core/widgets/form_builders/toggle_field_item.dart';
-import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

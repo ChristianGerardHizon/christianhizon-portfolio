@@ -13,7 +13,7 @@ import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart'
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_table_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patients/patient_card.dart';

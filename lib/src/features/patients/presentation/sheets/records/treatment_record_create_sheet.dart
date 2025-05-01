@@ -10,7 +10,7 @@ import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/features/patients/domain/patient_treatment.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/treatment_record/patient_treatment_record_page_controller.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/patients/data/treatment_record/patient_treatment_record_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_treatment_record_repository.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/treatment/treatment_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';

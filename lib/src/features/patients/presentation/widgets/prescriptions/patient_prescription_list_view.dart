@@ -6,7 +6,7 @@ import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/features/patients/domain/patient_record.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
-import 'package:gym_system/src/features/patients/data/precription/patient_prescription_item_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_prescription_item_repository.dart';
 import 'package:gym_system/src/features/patients/domain/prescription/patient_prescription_item.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/prescriptions/patient_prescription_all_items_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/sheets/prescriptions/patient_prescription_item_create_sheet.dart';

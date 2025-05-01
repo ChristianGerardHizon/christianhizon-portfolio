@@ -9,7 +9,7 @@ import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/features/patients/data/patient/patient_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_form_controller.dart';

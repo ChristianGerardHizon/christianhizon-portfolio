@@ -1,5 +1,5 @@
 import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/features/patients/data/species/patient_species_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_species_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient_species.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

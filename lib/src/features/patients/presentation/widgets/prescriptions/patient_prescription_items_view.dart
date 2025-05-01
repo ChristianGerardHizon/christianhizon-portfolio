@@ -8,7 +8,7 @@ import 'package:gym_system/src/core/widgets/pdf_generator.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/text_search_bar.dart';
 import 'package:gym_system/src/features/patients/domain/patient_record.dart';
-import 'package:gym_system/src/features/patients/data/precription/patient_prescription_item_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_prescription_item_repository.dart';
 import 'package:gym_system/src/features/patients/domain/prescription/patient_prescription_search.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/prescriptions/patient_prescription_item_page_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/prescriptions/patient_prescription_items_controller.dart';

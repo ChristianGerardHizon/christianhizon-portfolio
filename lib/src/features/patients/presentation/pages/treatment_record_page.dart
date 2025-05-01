@@ -11,7 +11,7 @@ import 'package:gym_system/src/features/patients/presentation/controllers/patien
 import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_record_page_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_records_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/treatment_record/patient_treatment_record_controller.dart';
-import 'package:gym_system/src/features/patients/data/treatment_record/patient_treatment_record_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_treatment_record_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient_treatment_record.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

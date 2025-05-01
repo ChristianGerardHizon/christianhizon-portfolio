@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
-import 'package:gym_system/src/features/patients/data/precription/patient_prescription_item_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_prescription_item_repository.dart';
 import 'package:gym_system/src/features/patients/domain/prescription/patient_prescription_item.dart';
 import 'package:gym_system/src/features/patients/domain/prescription/patient_prescription_search.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/prescriptions/patient_prescription_item_page_controller.dart';

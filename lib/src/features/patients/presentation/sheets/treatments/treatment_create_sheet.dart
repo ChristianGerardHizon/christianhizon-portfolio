@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
-import 'package:gym_system/src/features/patients/data/treatment/patient_treatment_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_treatment_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 

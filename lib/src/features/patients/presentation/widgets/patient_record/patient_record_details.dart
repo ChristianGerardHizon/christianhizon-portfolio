@@ -8,7 +8,7 @@ import 'package:gym_system/src/core/widgets/collapsing_card.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/features/patients/data/record/patient_record_repository.dart';
+import 'package:gym_system/src/features/patients/data/patient_record_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient_record.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_record_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_records_controller.dart';
