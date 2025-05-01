@@ -3,6 +3,36 @@ import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 
 import '../dynamic_field.dart';
 
+class DynamicImagesField extends DynamicField {
+  final String? fileTypeLabel;
+  final int maxSizeKB;
+  final int compressionQuality;
+  final bool allowCompression;
+  final double previewSize;
+  final int maxFiles;
+  final List<String>? allowedExtensions;
+  final List<dynamic>? initialValue;
+  final String? Function(List<PlatformFile>?)? validator;
+  final dynamic Function(List<PlatformFile>?)? fieldTransformer;
+
+  const DynamicImagesField({
+    required super.name,
+    super.decoration,
+    this.initialValue,
+    this.previewSize = 80,
+    this.validator,
+    this.allowCompression = false,
+    this.allowedExtensions,
+    this.maxFiles = 1,
+    this.fileTypeLabel,
+    this.maxSizeKB = 300,
+    this.compressionQuality = 85,
+    this.fieldTransformer,
+    super.margin,
+    super.enabled,
+  });
+}
+
 class DynamicFormFieldImages extends StatelessWidget {
   final DynamicImagesField field;
 

@@ -4,6 +4,28 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../dynamic_field.dart';
 
+/// Represents a dynamic password input field with optional validation and transformation.
+class DynamicPasswordField extends DynamicField {
+  final String? initialValue;
+  final String? Function(String?)? validator;
+  final dynamic Function(String?)? fieldTransformer;
+  final GlobalKey<FormBuilderFieldState>? formFieldKey;
+  final bool obscureText;
+
+  const DynamicPasswordField({
+    this.formFieldKey,
+    required super.name,
+    this.initialValue,
+    this.validator,
+    super.valueTransformer,
+    this.fieldTransformer,
+    super.decoration,
+    super.margin,
+    this.obscureText = true,
+    super.enabled,
+  });
+}
+
 class DynamicFormFieldPassword extends HookWidget {
   final DynamicPasswordField field;
 

@@ -88,6 +88,12 @@ class ChangeLogMapper extends ClassMapperBase<ChangeLog> {
   static String? _$message(ChangeLog v) => v.message;
   static const Field<ChangeLog, String> _f$message =
       Field('message', _$message, opt: true);
+  static String _$collection(ChangeLog v) => v.collection;
+  static const Field<ChangeLog, String> _f$collection =
+      Field('collection', _$collection);
+  static String _$reference(ChangeLog v) => v.reference;
+  static const Field<ChangeLog, String> _f$reference =
+      Field('reference', _$reference);
   static DateTime? _$created(ChangeLog v) => v.created;
   static const Field<ChangeLog, DateTime> _f$created =
       Field('created', _$created, opt: true);
@@ -112,6 +118,8 @@ class ChangeLogMapper extends ClassMapperBase<ChangeLog> {
     #isDeleted: _f$isDeleted,
     #type: _f$type,
     #message: _f$message,
+    #collection: _f$collection,
+    #reference: _f$reference,
     #created: _f$created,
     #updated: _f$updated,
     #user: _f$user,
@@ -127,6 +135,8 @@ class ChangeLogMapper extends ClassMapperBase<ChangeLog> {
         isDeleted: data.dec(_f$isDeleted),
         type: data.dec(_f$type),
         message: data.dec(_f$message),
+        collection: data.dec(_f$collection),
+        reference: data.dec(_f$reference),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated),
         user: data.dec(_f$user),
@@ -193,6 +203,8 @@ abstract class ChangeLogCopyWith<$R, $In extends ChangeLog, $Out>
       bool? isDeleted,
       ChangeLogType? type,
       String? message,
+      String? collection,
+      String? reference,
       DateTime? created,
       DateTime? updated,
       String? user,
@@ -217,6 +229,8 @@ class _ChangeLogCopyWithImpl<$R, $Out>
           bool? isDeleted,
           ChangeLogType? type,
           Object? message = $none,
+          String? collection,
+          String? reference,
           Object? created = $none,
           Object? updated = $none,
           Object? user = $none,
@@ -229,6 +243,8 @@ class _ChangeLogCopyWithImpl<$R, $Out>
         if (isDeleted != null) #isDeleted: isDeleted,
         if (type != null) #type: type,
         if (message != $none) #message: message,
+        if (collection != null) #collection: collection,
+        if (reference != null) #reference: reference,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated,
         if (user != $none) #user: user,
@@ -243,6 +259,8 @@ class _ChangeLogCopyWithImpl<$R, $Out>
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       type: data.get(#type, or: $value.type),
       message: data.get(#message, or: $value.message),
+      collection: data.get(#collection, or: $value.collection),
+      reference: data.get(#reference, or: $value.reference),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated),
       user: data.get(#user, or: $value.user),

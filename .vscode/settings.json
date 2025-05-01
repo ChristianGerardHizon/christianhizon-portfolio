@@ -102,7 +102,6 @@
         "typeahead"
     ],
     "editor.semanticHighlighting.enabled": true,
-
     // Add slight contrast to the active line
     "editor.renderLineHighlight": "all",
     "editor.multiCursorModifier": "alt",
@@ -128,4 +127,15 @@
     //         "path": "C:\\Program Files\\nu\\bin\\nu.exe"
     //     }
     // }
+    ,
+    "custom-auto-fold.rules": [
+        {
+            // apply to Dart files
+            "fileGlob": "**/*.dart",
+            // fold at lines starting with `import `
+            "linePattern": "^import\\s",
+            // fold every import block it sees
+            "firstMatchOnly": false
+        }
+    ]
 }

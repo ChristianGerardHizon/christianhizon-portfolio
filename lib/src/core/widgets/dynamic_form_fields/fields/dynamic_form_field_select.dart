@@ -3,6 +3,39 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import '../dynamic_field.dart';
 
+class DynamicSelectField<T> extends DynamicField {
+  final List<SelectOption<T>> options;
+  final T? initialValue;
+  final String? Function(T?)? validator;
+  final dynamic Function(T?)? fieldTransformer;
+  final GlobalKey<FormBuilderFieldState>? formFieldKey;
+  final Function(dynamic)? onChange;
+
+  const DynamicSelectField({
+    this.formFieldKey,
+    required super.name,
+    this.initialValue,
+    this.validator,
+    super.valueTransformer,
+    required this.options,
+    super.decoration,
+    this.fieldTransformer,
+    this.onChange,
+    super.margin,
+    super.enabled,
+  });
+}
+
+class SelectOption<T> {
+  final T value;
+  final String display;
+
+  const SelectOption({
+    required this.value,
+    required this.display,
+  });
+}
+
 class DynamicFormFieldSelect extends StatelessWidget {
   final DynamicSelectField field;
 

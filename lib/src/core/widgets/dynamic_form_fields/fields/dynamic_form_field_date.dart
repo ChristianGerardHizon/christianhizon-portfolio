@@ -3,6 +3,29 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import '../dynamic_field.dart';
 
+class DynamicDateField extends DynamicField {
+  final DateTime? firstDate;
+  final DateTime? lastDate;
+  final DateTime? initialValue;
+  final String? Function(DateTime?)? validator;
+  final dynamic Function(DateTime?)? fieldTransformer;
+  final GlobalKey<FormBuilderFieldState>? formFieldKey;
+
+  const DynamicDateField({
+    this.formFieldKey,
+    required super.name,
+    this.initialValue,
+    this.validator,
+    super.decoration,
+    super.valueTransformer,
+    this.firstDate,
+    this.lastDate,
+    this.fieldTransformer,
+    super.margin,
+    super.enabled,
+  });
+}
+
 class DynamicFormFieldDate extends StatelessWidget {
   final DynamicDateField field;
 

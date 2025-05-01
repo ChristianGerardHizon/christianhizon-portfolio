@@ -5,6 +5,31 @@ import 'package:flutter/services.dart';
 
 import '../dynamic_field.dart';
 
+class DynamicNumberField extends DynamicField {
+  final num? min;
+  final num? max;
+  final num? step;
+  final num? initialValue;
+  final String? Function(dynamic)? validator;
+  final dynamic Function(dynamic)? fieldTransformer;
+  final GlobalKey<FormBuilderFieldState>? formFieldKey;
+
+  const DynamicNumberField({
+    this.formFieldKey,
+    required super.name,
+    this.initialValue,
+    this.validator,
+    super.valueTransformer,
+    this.min,
+    this.max,
+    this.fieldTransformer,
+    this.step,
+    super.decoration,
+    super.margin,
+    super.enabled,
+  });
+}
+
 class DynamicFormFieldNumber extends HookWidget {
   final DynamicNumberField field;
 

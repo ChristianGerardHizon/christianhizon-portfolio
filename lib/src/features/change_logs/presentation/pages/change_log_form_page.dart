@@ -85,7 +85,24 @@ class ChangeLogFormPage extends HookConsumerWidget {
                   name: ChangeLogField.message,
                   initialValue: changeLog?.message,
                   decoration: InputDecoration(
-                    label: Text('ChangeLog Name'),
+                    label: Text('ChangeLog Message'),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(),
+                    ],
+                  ),
+                ),
+
+                ///
+                /// ChangeLog Name
+                ///
+                DynamicTextField(
+                  name: ChangeLogField.message,
+                  initialValue: changeLog?.message,
+                  decoration: InputDecoration(
+                    label: Text('ChangeLog Message'),
                     border: OutlineInputBorder(),
                   ),
                   validator: FormBuilderValidators.compose(

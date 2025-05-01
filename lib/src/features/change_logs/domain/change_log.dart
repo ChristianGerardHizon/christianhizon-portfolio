@@ -7,6 +7,9 @@ part 'change_log.mapper.dart';
 
 @MappableClass()
 class ChangeLog extends PbRecord with ChangeLogMappable {
+  final String collection;
+  final String reference;
+
   final String? message;
   final String? user;
   final String? admin;
@@ -21,6 +24,8 @@ class ChangeLog extends PbRecord with ChangeLogMappable {
     super.isDeleted = false,
     required this.type,
     this.message,
+    required this.collection,
+    required this.reference,
     super.created,
     super.updated,
     this.user,

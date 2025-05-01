@@ -7,8 +7,39 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:gym_system/src/core/classes/pb_image.dart';
 import 'package:gym_system/src/core/utils/image_compressor_utils.dart';
+import 'package:http/http.dart';
 
 import '../dynamic_field.dart';
+
+class DynamicPBImagesField extends DynamicField {
+  final int maxSizeKB;
+  final int compressionQuality;
+  final bool allowCompression;
+  final double previewSize;
+  final int maxFiles;
+  final List<String>? allowedExtensions;
+  final List<PBImage>? initialValue;
+  final String? Function(List<PBImage>?)? validator;
+  final dynamic Function(List<PBImage>?)? fieldTransformer;
+  final List<Future<MultipartFile>> Function(List<PBImage>?)? fileTransformer;
+
+  const DynamicPBImagesField({
+    required super.name,
+    super.decoration,
+    this.initialValue,
+    this.validator,
+    this.previewSize = 80,
+    this.allowCompression = false,
+    this.allowedExtensions,
+    this.maxFiles = 1,
+    this.maxSizeKB = 300,
+    this.compressionQuality = 85,
+    this.fieldTransformer,
+    this.fileTransformer,
+    super.margin,
+    super.enabled,
+  });
+}
 
 class DynamicFormFieldPBImages extends StatelessWidget {
   final DynamicPBImagesField field;

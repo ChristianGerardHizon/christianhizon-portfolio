@@ -198,6 +198,9 @@ class ChangeLogField {
   static const String user = 'user';
   static const String admin = 'admin';
   static const String type = 'type';
+  static const String change = 'changes';
+  static const String reference = 'reference';
+  static const String collection = 'collection';
 }
 
 class ProductCategoryField {
