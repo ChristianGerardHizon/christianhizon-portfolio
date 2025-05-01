@@ -177,7 +177,7 @@ class ProductDetailsView extends HookConsumerWidget {
                     trailing: Icon(MIcons.chevronRight),
                   ),
                   DynamicGroupItem.action(
-                    onTap: () => editProduct(product),
+                    onTap: () => addProductUsage(product),
                     leading: Icon(MIcons.fileEditOutline),
                     title: 'Add Usage',
                     trailing: Icon(MIcons.chevronRight),

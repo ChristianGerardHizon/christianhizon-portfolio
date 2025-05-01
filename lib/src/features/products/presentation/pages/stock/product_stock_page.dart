@@ -43,13 +43,6 @@ class ProductStockPage extends HookConsumerWidget {
           });
     }
 
-    ///
-    /// Refresh
-    ///
-    refresh() async {
-      ref.invalidate(productStockTableControllerProvider);
-    }
-
     return state.when(
       error: (error, stack) => Scaffold(
         appBar: AppBar(

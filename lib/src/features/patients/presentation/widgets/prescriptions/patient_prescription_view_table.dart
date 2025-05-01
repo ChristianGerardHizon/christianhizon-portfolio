@@ -132,7 +132,7 @@ class PrescriptionViewTable extends HookConsumerWidget {
                   ...prescriptions.value.asMap().entries.map(
                     (entry) {
                       final index = entry.key;
-                      final isLastRow = index == prescriptions.value.length - 1;
+                      // final isLastRow = index == prescriptions.value.length - 1;
                       return TableRow(
                         children: [
                           // Row number column
