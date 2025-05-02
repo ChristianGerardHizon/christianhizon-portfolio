@@ -77,9 +77,7 @@ class AdminsPage extends HookConsumerWidget {
       appBar: AppBar(
         title: Text('Admins'),
         actions: [
-          RefreshButton(
-            onPressed: onRefresh,
-          ),
+          RefreshButton(onPressed: onRefresh),
         ],
       ),
       body: listState.when(
@@ -124,6 +122,20 @@ class AdminsPage extends HookConsumerWidget {
               },
             ),
             TableColumn(
+              header: 'Branch',
+              width: 200,
+              alignment: Alignment.centerLeft,
+              builder: (context, data, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    overflow: TextOverflow.ellipsis,
+                    (data.expand.branch?.name).optional(),
+                  ),
+                );
+              },
+            ),
+            TableColumn(
               header: 'Email',
               width: 200,
               alignment: Alignment.centerLeft,
@@ -134,18 +146,6 @@ class AdminsPage extends HookConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                     data.email,
                   ),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Date Created',
-              alignment: Alignment.centerLeft,
-              width: 150,
-              builder: (context, admin, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text((admin.created?.yyyyMMddHHmmA()).optional(),
-                      overflow: TextOverflow.ellipsis),
                 );
               },
             ),

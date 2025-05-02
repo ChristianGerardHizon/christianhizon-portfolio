@@ -1,5 +1,5 @@
 class PBExpand {
-  static String admin = '';
+  static String admin = 'branch';
   static String user = 'branch';
   static String changeLogs = 'user,user.branch,admin';
   static String product = 'branch';

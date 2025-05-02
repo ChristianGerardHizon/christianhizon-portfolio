@@ -61,6 +61,8 @@ class DynamicFormBuilder extends HookConsumerWidget {
             f.fieldTransformer!(value as List<PlatformFile>?),
           DynamicPBImagesField f when f.fieldTransformer != null =>
             f.fieldTransformer!(value as List<PBImage>?),
+          DynamicDateTimeField f when f.fieldTransformer != null =>
+            f.fieldTransformer!(value as DateTime?),
           _ => value,
         };
         transformedValues[field.name] = transformed;

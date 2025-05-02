@@ -11,22 +11,22 @@ class DashboardKpis extends StatelessWidget {
     final widgets = [
       KpiCard(
         title: "Today's Appointments ",
-        value: '-',
+        value: '5',
         icon: MIcons.clockOutline,
       ),
       KpiCard(
         title: 'New Patients',
-        value: '-',
+        value: '10',
         icon: MIcons.accountOutline,
       ),
       KpiCard(
         title: 'Products Near Expiration',
-        value: '-',
+        value: '10',
         icon: MIcons.alertOutline,
       ),
       KpiCard(
         title: "Today's Sales",
-        value: '-',
+        value: 'P100.00',
         icon: MIcons.walletOutline,
       ),
     ];

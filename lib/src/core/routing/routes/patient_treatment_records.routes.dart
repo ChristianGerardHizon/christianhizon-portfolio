@@ -26,6 +26,7 @@ class PatientTreatmentRecordPageRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return PatientTreatmentRecordPage(id);
+    // return PatientTreatmentRecordPage(id);
+    return SizedBox();
   }
 }

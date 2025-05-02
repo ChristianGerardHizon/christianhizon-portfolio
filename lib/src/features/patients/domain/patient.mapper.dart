@@ -85,13 +85,13 @@ class PatientMapper extends ClassMapperBase<Patient> {
       Field('images', _$images, opt: true, def: const []);
   static String? _$avatar(Patient v) => v.avatar;
   static const Field<Patient, String> _f$avatar =
-      Field('avatar', _$avatar, opt: true);
+      Field('avatar', _$avatar, opt: true, hook: PbEmptyHook());
   static String? _$species(Patient v) => v.species;
   static const Field<Patient, String> _f$species =
-      Field('species', _$species, opt: true);
+      Field('species', _$species, opt: true, hook: PbEmptyHook());
   static String? _$branch(Patient v) => v.branch;
   static const Field<Patient, String> _f$branch =
-      Field('branch', _$branch, opt: true);
+      Field('branch', _$branch, opt: true, hook: PbEmptyHook());
   static String? _$owner(Patient v) => v.owner;
   static const Field<Patient, String> _f$owner =
       Field('owner', _$owner, opt: true);

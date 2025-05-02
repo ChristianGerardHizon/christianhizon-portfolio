@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
 import 'package:gym_system/src/core/hooks/date_time_hook.dart';
+import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
 import 'package:gym_system/src/features/products/domain/product_category.dart';
 
@@ -12,6 +13,7 @@ class Product extends PbRecord with ProductMappable {
   final String? description;
   final String? category;
   final String? image;
+  @MappableField(hook: PbEmptyHook())
   final String? branch;
   final num? stockThreshold;
   final num price;

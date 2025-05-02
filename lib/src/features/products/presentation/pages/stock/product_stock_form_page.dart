@@ -92,6 +92,9 @@ class ProductStockFormPage extends HookConsumerWidget {
                 DynamicViewField(
                     name: ProductStockField.product,
                     initialValue: product,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                    ),
                     validator: FormBuilderValidators.compose(
                       [
                         FormBuilderValidators.required(),

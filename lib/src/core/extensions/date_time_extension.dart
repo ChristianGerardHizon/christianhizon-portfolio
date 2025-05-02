@@ -4,6 +4,8 @@ extension DateTimeExtension on DateTime {
   DateTime get startOfDay => DateTime(year, month, day);
   DateTime get endOfDay => DateTime(year, month, day, 23, 59, 59);
 
+  String get fullDateTime => DateFormat('MMM d, yyyy h:mm a').format(this);
+
   String yyyyMMdd() => DateFormat('yyyy-MM-dd').format(this);
 
   String yyyyMMddHHmm() => DateFormat('yyyy-MM-dd HH:mm').format(this);

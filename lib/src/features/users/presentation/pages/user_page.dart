@@ -16,6 +16,8 @@ import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
+import 'package:gym_system/src/features/authentication/data/auth_repository.dart';
+import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:gym_system/src/features/users/presentation/controllers/user_controller.dart';
@@ -55,6 +57,32 @@ class UserPage extends HookConsumerWidget {
     ///
     tap(User user) {
       UserFormPageRoute(id: user.id).push(context);
+    }
+
+    sendVerification(User user) async {
+      final repo = ref.read(userRepositoryProvider);
+      final fullTask = await
+          // 1. Call Confirm Modal
+          ConfirmModal.taskResult(context)
+              // 2. Delete Network Call
+              .flatMap((_) => repo.requestVerification(user.email))
+              // 3. Side effects
+              .flatMap(
+                (_) => _handleSuccessfulVerifyTaskSidEffects(
+                  context: context,
+                  userId: user.id,
+                  refresh: refresh,
+                ),
+              );
+      isLoading.value = true;
+      final result = await fullTask.run();
+      isLoading.value = false;
+
+      // 4. Handle Error
+      result.match(
+        (failure) => _handleFailure(context, failure),
+        (_) {},
+      );
     }
 
     ///
@@ -148,6 +176,18 @@ class UserPage extends HookConsumerWidget {
                         DynamicGroupItem.text(
                           title: 'Verified',
                           value: user.verified ? 'Yes' : 'No',
+                          trailing: user.verified == false
+                              ? TextButton(
+                                  child: Text(
+                                    'Send Verification',
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                  onPressed: () => sendVerification(user),
+                                )
+                              : null,
                         ),
                         DynamicGroupItem.text(
                           title: 'Last Updated',
@@ -217,6 +257,19 @@ TaskResult<void> _handleSuccessfulDeleteTaskSidEffects({
     if (!context.mounted) return;
     AppSnackBar.root(message: 'Successfully Deleted');
     if (context.canPop()) context.pop();
+    refresh(userId);
+    return null;
+  }).toTaskEither<Failure>();
+}
+
+TaskResult<void> _handleSuccessfulVerifyTaskSidEffects({
+  required BuildContext context,
+  required String userId,
+  required void Function(String id) refresh,
+}) {
+  return Task<void>(() async {
+    if (!context.mounted) return;
+    AppSnackBar.root(message: 'Verification Email Sent');
     refresh(userId);
     return null;
   }).toTaskEither<Failure>();

@@ -146,9 +146,11 @@ class ProductsPage extends HookConsumerWidget {
             alignment: Alignment.centerLeft,
             width: 150,
             builder: (context, product, row, column) {
+              if (product.trackByLot) return SizedBox();
               return Align(
                 alignment: Alignment.centerLeft,
-                child: TextButton(onPressed: () {}, child: Text('Add Stock')),
+                child:
+                    TextButton(onPressed: () {}, child: Text('Adjust Stock')),
               );
             },
           ),

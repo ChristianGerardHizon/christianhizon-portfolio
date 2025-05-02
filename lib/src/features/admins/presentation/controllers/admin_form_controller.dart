@@ -7,6 +7,8 @@ import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/features/admins/data/admin_repository.dart';
 import 'package:gym_system/src/features/admins/domain/admin.dart';
+import 'package:gym_system/src/features/branches/domain/branch.dart';
+import 'package:gym_system/src/features/branches/presentation/controllers/branches_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'admin_form_controller.g.dart';
@@ -16,9 +18,11 @@ part 'admin_form_controller.mapper.dart';
 class AdminFormState with AdminFormStateMappable {
   final Admin? admin;
   final List<PBImage>? images;
+  final List<Branch> branches;
 
   AdminFormState({
     required this.admin,
+    this.branches = const [],
     this.images,
   });
 }
@@ -28,13 +32,11 @@ class AdminFormController extends _$AdminFormController {
   @override
   Future<AdminFormState> build(String? id) async {
     final adminRepo = ref.read(adminRepositoryProvider);
+    final branches = await ref.read(branchesControllerProvider.future);
 
     final result = await TaskResult.Do(($) async {
       if (id == null) {
-        return AdminFormState(
-          admin: null,
-          images: null,
-        );
+        return AdminFormState(admin: null, images: null, branches: branches);
       }
 
       final admin = await $(adminRepo.get(id));
@@ -44,6 +46,7 @@ class AdminFormController extends _$AdminFormController {
       return AdminFormState(
         admin: admin,
         images: images,
+        branches: branches,
       );
     }).run();
 

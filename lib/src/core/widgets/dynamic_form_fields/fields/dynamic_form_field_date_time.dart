@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../dynamic_field.dart';
 
-class DynamicDateField extends DynamicField {
+class DynamicDateTimeField extends DynamicField {
   final DateTime? firstDate;
   final DateTime? lastDate;
   final DateTime? initialValue;
@@ -13,7 +13,7 @@ class DynamicDateField extends DynamicField {
   final dynamic Function(DateTime?)? fieldTransformer;
   final GlobalKey<FormBuilderFieldState>? formFieldKey;
 
-  const DynamicDateField({
+  const DynamicDateTimeField({
     this.formFieldKey,
     required super.name,
     this.initialValue,
@@ -29,10 +29,10 @@ class DynamicDateField extends DynamicField {
   });
 }
 
-class DynamicFormFieldDate extends StatelessWidget {
-  final DynamicDateField field;
+class DynamicFormFieldDateTime extends StatelessWidget {
+  final DynamicDateTimeField field;
 
-  const DynamicFormFieldDate(this.field, {super.key});
+  const DynamicFormFieldDateTime(this.field, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,21 +51,53 @@ class DynamicFormFieldDate extends StatelessWidget {
               children: [
                 if (state.value != null)
                   IconButton(
-                    tooltip: 'Clear date',
+                    tooltip: 'Clear date & time',
                     icon: const Icon(Icons.clear),
                     onPressed: () => state.didChange(null),
                   ),
                 IconButton(
+                  tooltip: 'Pick date',
                   icon: const Icon(Icons.calendar_today),
                   onPressed: () async {
-                    final picked = await showDatePicker(
+                    final pickedDate = await showDatePicker(
                       context: context,
                       initialDate: state.value ?? DateTime.now(),
                       firstDate: field.firstDate ?? DateTime(1900),
                       lastDate: field.lastDate ?? DateTime(2100),
                     );
-                    if (picked != null) {
-                      state.didChange(picked);
+                    if (pickedDate != null) {
+                      final old = state.value ?? DateTime.now();
+                      final newDateTime = DateTime(
+                        pickedDate.year,
+                        pickedDate.month,
+                        pickedDate.day,
+                        old.hour,
+                        old.minute,
+                      );
+                      state.didChange(newDateTime);
+                    }
+                  },
+                ),
+                IconButton(
+                  tooltip: 'Pick time',
+                  icon: const Icon(Icons.access_time),
+                  onPressed: () async {
+                    final current = state.value ?? DateTime.now();
+                    final initialTime = TimeOfDay.fromDateTime(current);
+                    final pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: initialTime,
+                    );
+                    if (pickedTime != null) {
+                      final datePart = state.value ?? DateTime.now();
+                      final newDateTime = DateTime(
+                        datePart.year,
+                        datePart.month,
+                        datePart.day,
+                        pickedTime.hour,
+                        pickedTime.minute,
+                      );
+                      state.didChange(newDateTime);
                     }
                   },
                 ),
@@ -75,9 +107,8 @@ class DynamicFormFieldDate extends StatelessWidget {
           isEmpty: state.value == null,
           child: Text(
             state.value != null
-                ? field.format?.format(state.value!) ??
-                    MaterialLocalizations.of(context)
-                        .formatFullDate(state.value!)
+                ? (field.format?.format(state.value!) ??
+                    DateFormat.yMMMd().add_jm().format(state.value!))
                 : '',
             style: Theme.of(context).textTheme.bodyMedium,
           ),

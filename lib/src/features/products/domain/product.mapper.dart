@@ -47,7 +47,7 @@ class ProductMapper extends ClassMapperBase<Product> {
       Field('category', _$category, opt: true);
   static String? _$branch(Product v) => v.branch;
   static const Field<Product, String> _f$branch =
-      Field('branch', _$branch, opt: true);
+      Field('branch', _$branch, opt: true, hook: PbEmptyHook());
   static num? _$stockThreshold(Product v) => v.stockThreshold;
   static const Field<Product, num> _f$stockThreshold =
       Field('stockThreshold', _$stockThreshold, opt: true);

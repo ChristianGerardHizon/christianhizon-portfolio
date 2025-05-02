@@ -73,6 +73,7 @@ class AdminFormPage extends HookConsumerWidget {
           data: (formState) {
             final admin = formState.admin;
             final images = formState.images;
+            final branches = formState.branches;
 
             return DynamicFormBuilder(
               itemPadding: const EdgeInsets.only(
@@ -130,6 +131,32 @@ class AdminFormPage extends HookConsumerWidget {
                   initialValue: admin?.email,
                   decoration: InputDecoration(
                     label: Text('Email'),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(),
+                    ],
+                  ),
+                ),
+
+                ///
+                /// Branch
+                ///
+                DynamicSelectField(
+                  name: UserField.branch,
+                  initialValue:
+                      admin?.expand.branch?.id ?? branches.firstOrNull?.id,
+                  options: branches
+                      .map(
+                        (e) => SelectOption(
+                          value: e.id,
+                          display: e.name,
+                        ),
+                      )
+                      .toList(),
+                  decoration: InputDecoration(
+                    label: Text('Branch'),
                     border: OutlineInputBorder(),
                   ),
                   validator: FormBuilderValidators.compose(

@@ -56,6 +56,9 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
   static DateTime? _$updated(PatientRecord v) => v.updated;
   static const Field<PatientRecord, DateTime> _f$updated =
       Field('updated', _$updated, opt: true);
+  static String? _$branch(PatientRecord v) => v.branch;
+  static const Field<PatientRecord, String> _f$branch =
+      Field('branch', _$branch, opt: true, hook: PbEmptyHook());
 
   @override
   final MappableFields<PatientRecord> fields = const {
@@ -71,6 +74,7 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
+    #branch: _f$branch,
   };
 
   static PatientRecord _instantiate(DecodingData data) {
@@ -86,7 +90,8 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
         note: data.dec(_f$note),
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
-        updated: data.dec(_f$updated));
+        updated: data.dec(_f$updated),
+        branch: data.dec(_f$branch));
   }
 
   @override
@@ -155,7 +160,8 @@ abstract class PatientRecordCopyWith<$R, $In extends PatientRecord, $Out>
       String? note,
       bool? isDeleted,
       DateTime? created,
-      DateTime? updated});
+      DateTime? updated,
+      String? branch});
   PatientRecordCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -180,7 +186,8 @@ class _PatientRecordCopyWithImpl<$R, $Out>
           Object? note = $none,
           bool? isDeleted,
           Object? created = $none,
-          Object? updated = $none}) =>
+          Object? updated = $none,
+          Object? branch = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
@@ -193,7 +200,8 @@ class _PatientRecordCopyWithImpl<$R, $Out>
         if (note != $none) #note: note,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
-        if (updated != $none) #updated: updated
+        if (updated != $none) #updated: updated,
+        if (branch != $none) #branch: branch
       }));
   @override
   PatientRecord $make(CopyWithData data) => PatientRecord(
@@ -208,7 +216,8 @@ class _PatientRecordCopyWithImpl<$R, $Out>
       note: data.get(#note, or: $value.note),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),
-      updated: data.get(#updated, or: $value.updated));
+      updated: data.get(#updated, or: $value.updated),
+      branch: data.get(#branch, or: $value.branch));
 
   @override
   PatientRecordCopyWith<$R2, PatientRecord, $Out2> $chain<$R2, $Out2>(

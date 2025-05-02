@@ -1,224 +1,217 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
+import 'package:gym_system/src/core/strings/table_controller_keys.dart';
+import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/page_actions.dart';
-import 'package:gym_system/src/core/widgets/page_selector.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/core/widgets/text_search_bar.dart';
 import 'package:gym_system/src/features/patients/data/patient_record_repository.dart';
-import 'package:gym_system/src/features/patients/domain/patient_record_search.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_record_page_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_records_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/sheets/records/patient_record_create_sheet.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_record/patient_records_table.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:gym_system/src/features/patients/domain/patient_record.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patient_record/patient_record_table_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_record/patient_record_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientRecordsView extends HookConsumerWidget {
   final Patient patient;
   const PatientRecordsView({super.key, required this.patient});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final pageState = ref.watch(patientRecordsPageControllerProvider);
-    final searchNotif =
-        ref.read(patientRecordSearchControllerProvider.notifier);
-    final provider = patientRecordsControllerProvider(id: patient.id);
-    final state = ref.watch(provider);
-    final selected = useState<List<int>>([]);
     final searchCtrl = useTextEditingController();
-
-    final hasNext = useState(false);
-
-    ///
-    /// on start
-    ///
-    useEffect(() {
-      ref.listen(provider, (prev, next) {
-        final value = next.value;
-        if (value != null) {
-          hasNext.value = value.items.length == value.perPage;
-        }
-      });
-
-      return null;
-    }, [pageState]);
+    final tableKey = TableControllerKeys.patientRecord;
+    final provider = tableControllerProvider(tableKey);
+    final notifier = ref.read(provider.notifier);
+    final listProvider = patientRecordTableControllerProvider(tableKey);
+    final listState = ref.watch(listProvider);
 
     ///
-    /// on Delete
+    /// onTap
     ///
-    onDelete() async {
-      final confirm = await ConfirmModal.show(context);
-      if (confirm != true) return;
-      final repo = ref.read(patientRecordRepositoryProvider);
-      final ids = selected.value.map((e) => state.value!.items[e].id).toList();
-      repo.softDeleteMulti(ids).run().then((result) {
-        result.fold(
-          (l) => AppSnackBar.rootFailure(l),
-          (r) {
-            selected.value = [];
-            ref.invalidate(provider);
-            AppSnackBar.root(message: 'Successfully Deleted');
-            // if (context.canPop()) context.pop();
-          },
-        );
-      });
+    onTap(PatientRecord patientRecord) {
+      PatientRecordPageRoute(patientRecord.id).push(context);
     }
 
     ///
-    /// Stack
+    /// onEdit
     ///
-    return Stack(
-      children: [
-        CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 20,
-                  bottom: 8,
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      'Medical Records',
-                      style: theme.textTheme.headlineSmall,
-                    ),
-                    RefreshButton(
-                      onPressed: () => ref.invalidate(provider),
-                    )
-                  ],
-                ),
-              ),
-            ),
+    onEdit(PatientRecord patientRecord) {
+      PatientRecordFormPageRoute(
+        parentId: patientRecord.patient,
+        id: patientRecord.id,
+      ).push(context);
+    }
 
-            ///
-            /// Serch Bar
-            ///
-            SliverToBoxAdapter(
-              child: TextSearchBar(
-                controller: searchCtrl,
-                onClear: () {
-                  searchCtrl.clear();
-                  searchNotif.updateParams(
-                    PatientRecordSearch.buildQuery(
-                      searchCtrl.text,
-                      includeDiagnosis: true,
-                    ),
-                  );
-                },
-                onSearch: () {
-                  searchNotif.updateParams(
-                    PatientRecordSearch.buildQuery(
-                      searchCtrl.text,
-                      includeDiagnosis: true,
-                    ),
-                  );
-                },
-                onCreate: () {
-                  PatientRecordCreateSheet.show(context, patient: patient);
-                },
-              ),
-            ),
+    ///
+    /// onRefresh
+    ///
+    onRefresh() {
+      ref.invalidate(patientRecordTableControllerProvider);
+      ref.invalidate(provider);
+      notifier.clearSelection();
+    }
 
-            ///
-            /// list
-            ///
-            state.when(
-              skipError: false,
-              skipLoadingOnRefresh: false,
-              skipLoadingOnReload: false,
-              loading: () => SliverPadding(
-                padding: const EdgeInsets.all(20.0),
-                sliver: SliverToBoxAdapter(
-                    child: Center(
-                  child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: CircularProgressIndicator()),
-                )),
-              ),
-              error: (error, stackTrace) => SliverToBoxAdapter(
-                child: Center(
-                  child: Text(error.toString()),
-                ),
-              ),
-              data: (data) {
-                final list = data.items;
+    ///
+    /// onDelete
+    ///
+    onDelete(List<PatientRecord> items) async {
+      final confirm = await ConfirmModal.show(context);
+      if (confirm != true) return;
+      final repo = ref.read(patientRecordRepositoryProvider);
+      final ids = items.map((e) => e.id).toList();
+      // isLoading.value = true;
+      final result = await repo.softDeleteMulti(ids).run();
+      // if (context.mounted) isLoading.value = false;
+      result.fold(
+        (l) => AppSnackBar.rootFailure(l),
+        (r) {
+          notifier.clearSelection();
+          ref.invalidate(patientRecordTableControllerProvider);
+          AppSnackBar.root(message: 'Successfully Deleted');
+          if (context.canPop()) context.pop();
+        },
+      );
+    }
 
-                if (list.isEmpty) {
-                  return SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 100,
-                      child: Center(
-                        child: Text('No Medical Records found'),
-                      ),
-                    ),
-                  );
-                }
-                return PatientRecordsTable(
-                  list: list,
-                  selected: selected.value,
-                  onSelected: (p0) => selected.value = p0,
-                  onRowTap: (row) => PatientPatientRecordPageRoute(
-                    patientRecordId: list[row].id,
-                  ).push(context),
+    ///
+    /// OnCreate
+    ///
+    onCreate() {
+      PatientRecordFormPageRoute(parentId: patient.id).push(context);
+    }
+
+    return Scaffold(
+      // appBar: AppBar(
+      //   leading: SizedBox(),
+      //   centerTitle: false,
+      //   title: Text('PatientRecords'),
+      //   actions: [
+      //     RefreshButton(onPressed: onRefresh),
+      //   ],
+      // ),
+      body: listState.when(
+        skipError: false,
+        skipLoadingOnRefresh: false,
+        skipLoadingOnReload: false,
+        error: (error, stack) => Center(
+          child: Text(error.toString()),
+        ),
+        loading: () => Center(
+          child: CircularProgressIndicator(),
+        ),
+        data: (items) => DynamicTableView<PatientRecord>(
+          tableKey: TableControllerKeys.patientRecord,
+          error: null,
+          items: items,
+          onDelete: onDelete,
+          onRowTap: onTap,
+
+          ///
+          /// Search Features
+          ///
+          searchCtrl: searchCtrl,
+          onCreate: onCreate,
+
+          ///
+          /// Table Data
+          ///
+          columns: [
+            TableColumn(
+              header: 'Visit',
+              width: 200,
+              alignment: Alignment.centerLeft,
+              builder: (context, data, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    overflow: TextOverflow.ellipsis,
+                    data.visitDate.toLocal().fullDateTime,
+                  ),
                 );
               },
             ),
-
-            ///
-            /// page
-            ///
-            SliverPadding(
-              padding: const EdgeInsets.only(
-                left: 16,
-                right: 16,
-                top: 20,
-                bottom: 8,
-              ),
-              sliver: SliverToBoxAdapter(
-                child: PageSelector(
-                  totalPages: pageState.pageSize,
-                  hasNext: hasNext.value,
-                  page: pageState.page,
-                  onPageChange: (value) {
-                    /// clear selected after
-                    ///
-                    selected.value = [];
-                    ref
-                        .read(patientRecordsPageControllerProvider.notifier)
-                        .changePage(value);
-                  },
-                ),
-              ),
+            TableColumn(
+              header: 'Diagnosis',
+              width: 200,
+              alignment: Alignment.centerLeft,
+              builder: (context, data, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    overflow: TextOverflow.ellipsis,
+                    data.diagnosis.optional(),
+                  ),
+                );
+              },
+            ),
+            TableColumn(
+              header: 'Actions',
+              width: 200,
+              alignment: Alignment.center,
+              builder: (context, data, row, column) {
+                return Align(
+                  alignment: Alignment.centerRight,
+                  child: Row(
+                    children: [
+                      TextButton.icon(
+                        onPressed: () {
+                          onEdit(data);
+                        },
+                        icon: Icon(
+                          MIcons.pencilOutline,
+                          color: const Color.fromARGB(255, 28, 49, 66),
+                        ),
+                        label: Text(
+                          'Edit',
+                          style: TextStyle(
+                            color: const Color.fromARGB(255, 28, 49, 66),
+                          ),
+                        ),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          onDelete([data]);
+                        },
+                        icon: Icon(MIcons.deleteOutline, color: Colors.red),
+                        label: Text(
+                          'Delete',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ],
+
+          ///
+          /// Builder for mobile
+          ///
+          mobileBuilder: (context, index, patientRecord, selected) {
+            return PatientRecordCard(
+              patientRecord: patientRecord,
+              onTap: () {
+                if (selected)
+                  notifier.toggleRow(index);
+                else
+                  onTap(patientRecord);
+              },
+              selected: selected,
+              onLongPress: () {
+                notifier.toggleRow(index);
+              },
+            );
+          },
         ),
-        Positioned(
-          bottom: 30,
-          left: 20,
-          right: 20,
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: selected.value.isNotEmpty
-                ? PageActions(
-                    size: selected.value.length,
-                    onDelete: () {
-                      onDelete();
-                    },
-                    onReset: () {
-                      selected.value = [];
-                    },
-                  )
-                : SizedBox(),
-          ),
-        )
-      ],
+      ),
     );
   }
 }

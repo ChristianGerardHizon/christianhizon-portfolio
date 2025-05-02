@@ -23,6 +23,8 @@ export 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_f
     show DynamicTypeAheadField;
 export 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_view.dart'
     show DynamicViewField;
+export 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_date_time.dart'
+    show DynamicDateTimeField;
 
 abstract class DynamicFieldItem {
   const DynamicFieldItem();

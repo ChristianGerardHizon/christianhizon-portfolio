@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_record_page_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/record/patient_records_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_record/patient_records_view.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/treatment_record/patient_treatment_record_page_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/treatment_records/patient_treatment_record_view.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/treatment/patient_treatments_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patients/patient_details_view.dart';
@@ -23,9 +20,9 @@ class PatientPage extends HookConsumerWidget {
     final state = ref.watch(provider);
 
     /// for medical records tab. preloading the data
-    ref.watch(patientRecordsPageControllerProvider);
-    ref.watch(patientRecordSearchControllerProvider.notifier);
-    ref.watch(patientRecordsControllerProvider(id: id));
+    // ref.watch(patientRecordsPageControllerProvider);
+    // ref.watch(patientRecordSearchControllerProvider.notifier);
+    // ref.watch(patientRecordsControllerProvider(id: id));
     ref.watch(patientTreatmentRecordSearchControllerProvider);
 
     ///
@@ -109,7 +106,8 @@ class PatientPage extends HookConsumerWidget {
                     children: [
                       PatientDetailsView(patient),
                       PatientRecordsView(patient: patient),
-                      PatientTreatmentRecordView(patient: patient),
+                      // PatientTreatmentRecordView(patient: patient),
+                      SizedBox(),
                       Center(
                         child: Text('No Files'),
                       ),

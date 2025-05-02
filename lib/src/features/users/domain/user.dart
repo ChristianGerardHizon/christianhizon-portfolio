@@ -1,5 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
+import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
 
@@ -11,6 +12,7 @@ class User extends PbRecord with UserMappable {
   final String email;
   final String? avatar;
   final bool verified;
+  @MappableField(hook: PbEmptyHook())
   final String? branch;
 
   final UserExpand expand;

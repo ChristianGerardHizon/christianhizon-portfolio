@@ -1,5 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
+import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 
 part 'patient_record.mapper.dart';
@@ -12,6 +13,8 @@ class PatientRecord extends PbRecord with PatientRecordMappable {
   final String? treatment;
   final DateTime? followUpDate;
   final String? note;
+  @MappableField(hook: PbEmptyHook())
+  final String? branch;
 
   PatientRecord({
     required super.id,
@@ -26,6 +29,7 @@ class PatientRecord extends PbRecord with PatientRecordMappable {
     super.isDeleted = false,
     super.created,
     super.updated,
+    this.branch,
   });
 
   static fromMap(Map<String, dynamic> raw) {

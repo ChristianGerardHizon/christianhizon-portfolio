@@ -9,6 +9,7 @@ class DynamicViewField extends DynamicField {
   final dynamic Function(dynamic)? fieldTransformer;
   final GlobalKey<FormBuilderFieldState>? formFieldKey;
   final Widget Function(dynamic) builder;
+  final InputDecoration decoration;
 
   const DynamicViewField({
     this.formFieldKey,
@@ -19,6 +20,7 @@ class DynamicViewField extends DynamicField {
     this.fieldTransformer,
     super.enabled,
     required this.builder,
+    this.decoration = const InputDecoration(),
   });
 }
 
@@ -30,7 +32,10 @@ class DynamicFormFieldView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormBuilderField(
-      builder: (x) => field.builder.call(x.value),
+      builder: (x) => InputDecorator(
+        decoration: field.decoration.copyWith(errorText: x.errorText),
+        child: field.builder.call(x.value),
+      ),
       name: field.name,
       enabled: field.enabled,
       validator: field.validator,

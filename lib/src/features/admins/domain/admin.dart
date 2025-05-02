@@ -1,5 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
+import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
+import 'package:gym_system/src/features/branches/domain/branch.dart';
 
 part 'admin.mapper.dart';
 
@@ -9,18 +11,23 @@ class Admin extends PbRecord with AdminMappable {
   final String email;
   final String? avatar;
   final bool verified;
+  @MappableField(hook: PbEmptyHook())
+  final String? branch;
+  final AdminExpand expand;
 
   Admin({
     required super.id,
     required super.collectionId,
     required super.collectionName,
     required this.name,
+    this.branch,
     this.email = '',
     this.avatar,
     this.verified = false,
     super.isDeleted = false,
     super.created,
     super.updated,
+    required this.expand,
   });
 
   Map<String, dynamic> toForm() {
@@ -40,4 +47,21 @@ class Admin extends PbRecord with AdminMappable {
     if (avatar == null || avatar!.isEmpty) return null;
     return Uri.tryParse('$domain/$collectionId/$avatar');
   }
+}
+
+@MappableClass()
+class AdminExpand with AdminExpandMappable {
+  final Branch? branch;
+
+  AdminExpand({
+    this.branch,
+  });
+
+  static fromMap(Map<String, dynamic> raw) {
+    return AdminExpandMapper.fromMap({
+      ...raw,
+    });
+  }
+
+  static const fromJson = AdminExpandMapper.fromJson;
 }

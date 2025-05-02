@@ -129,17 +129,6 @@ class ProductCategoriesPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
-            header: 'Actions',
-            alignment: Alignment.centerLeft,
-            width: 150,
-            builder: (context, productCategory, row, column) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton(onPressed: () {}, child: Text('Add Stock')),
-              );
-            },
-          ),
         ],
 
         ///

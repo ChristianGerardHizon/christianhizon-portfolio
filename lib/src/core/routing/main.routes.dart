@@ -24,8 +24,8 @@ import 'package:gym_system/src/features/change_logs/presentation/pages/change_lo
 import 'package:gym_system/src/features/change_logs/presentation/pages/change_logs_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_record_page.dart';
-import 'package:gym_system/src/features/patients/presentation/pages/patients_form_page.dart';
-import 'package:gym_system/src/features/patients/presentation/pages/treatment_record_page.dart';
+import 'package:gym_system/src/features/patients/presentation/pages/patient_form_page.dart';
+import 'package:gym_system/src/features/patients/presentation/pages/patient_record_form_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/category/product_categories_page.dart';
@@ -126,9 +126,9 @@ class SplashPageRoute extends GoRouteData {
         TypedGoRoute<PatientsPageRoute>(path: PatientsPageRoute.path),
         TypedGoRoute<PatientFormPageRoute>(path: PatientFormPageRoute.path),
         TypedGoRoute<PatientPageRoute>(path: PatientPageRoute.path),
-        TypedGoRoute<PatientPatientRecordPageRoute>(
-          path: PatientPatientRecordPageRoute.path,
-        ),
+        TypedGoRoute<PatientRecordPageRoute>(path: PatientRecordPageRoute.path),
+        TypedGoRoute<PatientRecordFormPageRoute>(
+            path: PatientRecordFormPageRoute.path),
       ],
     ),
 

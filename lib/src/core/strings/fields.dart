@@ -119,8 +119,10 @@ class PatientRecordField {
   static const String treatment = 'treatment';
   static const String followUpDate = 'followUpDate';
   static const String prescription = 'prescription';
+  static const String note = 'note';
   static const String user = 'user';
   static const String admin = 'admin';
+  static const String branch = 'branch';
 }
 
 class PrescriptionItemField {

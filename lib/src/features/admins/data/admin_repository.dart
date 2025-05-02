@@ -5,6 +5,7 @@ import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/classes/page_results.dart';
+import 'package:gym_system/src/core/strings/pb_expand.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/features/admins/domain/admin.dart';
 import 'package:http/http.dart';
@@ -29,6 +30,8 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
 
   AdminRepositoryImpl({required this.pb});
 
+  final expand = PBExpand.admin;
+
   Admin mapToData(Map<String, dynamic> map) {
     return Admin.fromMap({...map, 'domain': pb.baseURL});
   }
@@ -51,6 +54,7 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
           admin.id,
           body: body,
           files: files,
+          expand: expand,
         );
         final map = Map<String, dynamic>.from(response.data);
         return mapToData(map);
@@ -72,6 +76,7 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
         final response = await collection.create(
           body: params,
           files: files,
+          expand: expand,
         );
         return mapToData(response.toJson());
       },
@@ -99,7 +104,10 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
   TaskResult<Admin> get(String id) {
     return TaskResult.tryCatch(
       () async {
-        final result = await collection.getOne(id);
+        final result = await collection.getOne(
+          id,
+          expand: expand,
+        );
         return mapToData(result.toJson());
       },
       Failure.handle,
@@ -121,6 +129,7 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
         final result = await collection.getList(
           page: pageNo,
           perPage: pageSize,
+          expand: expand,
         );
 
         return PageResults<Admin>(
@@ -143,7 +152,11 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
       final batch = pb.createBatch();
       final batchCollection = batch.collection(PocketBaseCollections.admins);
       for (final id in ids) {
-        batchCollection.update(id, body: {AdminField.isDeleted: true});
+        batchCollection.update(
+          id,
+          body: {AdminField.isDeleted: true},
+          expand: expand,
+        );
       }
 
       await batch.send();

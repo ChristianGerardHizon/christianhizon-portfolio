@@ -4,30 +4,30 @@ class PatientRecordsBranchData extends StatefulShellBranchData {
   const PatientRecordsBranchData();
 }
 
-@TypedGoRoute<PatientRecordsPageRoute>(path: PatientRecordsPageRoute.path)
-class PatientRecordsPageRoute extends GoRouteData {
-  const PatientRecordsPageRoute(this.id, this.patientId);
-  static const path = '/patientRecords';
+@TypedGoRoute<PatientRecordPageRoute>(path: PatientRecordPageRoute.path)
+class PatientRecordPageRoute extends GoRouteData {
+  const PatientRecordPageRoute(this.id);
+  static const path = '/patientRecord/:id';
 
   final String id;
-  final String patientId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return Scaffold();
+    return PatientRecordPage(id);
   }
 }
 
-@TypedGoRoute<PatientRecordPageRoute>(path: PatientRecordPageRoute.path)
-class PatientRecordPageRoute extends GoRouteData {
-  const PatientRecordPageRoute(this.id, this.patientId);
-  static const path = '/patientRecord/:id/:patientId';
+@TypedGoRoute<PatientRecordFormPageRoute>(path: PatientRecordFormPageRoute.path)
+class PatientRecordFormPageRoute extends GoRouteData {
+  const PatientRecordFormPageRoute({required this.parentId, this.id});
+  static const path = '/form/patientRecord';
 
-  final String id;
-  final String patientId;
+  // final String? id;
+  final String parentId;
+  final String? id;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return PatientRecordPage(id: id);
+    return PatientRecordFormPage(parentId: parentId, id: id);
   }
 }

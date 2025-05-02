@@ -180,14 +180,14 @@ class ProductInventoriesPage extends HookConsumerWidget {
             ),
             TableColumn(
               header: 'Actions',
-              alignment: Alignment.centerLeft,
+              alignment: Alignment.center,
               width: 150,
-              builder: (context, productInventory, row, column) {
+              builder: (context, inventory, row, column) {
+                if (inventory.expand.product.trackByLot) return SizedBox();
                 return Align(
-                  alignment: Alignment.centerLeft,
-                  child: TextButton(
-                      onPressed: () => addStock(productInventory),
-                      child: Text('Add Stock')),
+                  alignment: Alignment.center,
+                  child:
+                      TextButton(onPressed: () {}, child: Text('Adjust Stock')),
                 );
               },
             ),

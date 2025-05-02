@@ -2,6 +2,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
 import 'package:gym_system/src/core/hooks/date_time_hook.dart';
 import 'package:gym_system/src/core/hooks/patient_sex_hook.dart';
+import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
 import 'package:gym_system/src/features/patients/domain/patient_breed.dart';
@@ -13,7 +14,9 @@ part 'patient.mapper.dart';
 class Patient extends PbRecord with PatientMappable {
   final String name;
   final List<String> images;
+  @MappableField(hook: PbEmptyHook())
   final String? avatar;
+  @MappableField(hook: PbEmptyHook())
   final String? species;
   final String? owner;
   final String? contactNumber;
@@ -24,6 +27,7 @@ class Patient extends PbRecord with PatientMappable {
 
   @MappableField(hook: PatientSexHook())
   final PatientSex? sex;
+  @MappableField(hook: PbEmptyHook())
   final String? branch;
 
   @MappableField(hook: DateTimeHook())

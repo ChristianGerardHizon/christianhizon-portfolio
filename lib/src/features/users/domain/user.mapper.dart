@@ -32,7 +32,7 @@ class UserMapper extends ClassMapperBase<User> {
       Field('collectionName', _$collectionName);
   static String? _$branch(User v) => v.branch;
   static const Field<User, String> _f$branch =
-      Field('branch', _$branch, opt: true);
+      Field('branch', _$branch, opt: true, hook: PbEmptyHook());
   static String _$name(User v) => v.name;
   static const Field<User, String> _f$name =
       Field('name', _$name, opt: true, def: '');

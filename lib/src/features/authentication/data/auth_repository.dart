@@ -148,7 +148,9 @@ class AuthRepositoryImpl implements AuthRepository {
         }
 
         if (collection == PocketBaseCollections.admins) {
-          return await pb.collection(collection).authRefresh();
+          return await pb.collection(collection).authRefresh(
+                expand: PBExpand.admin,
+              );
         }
 
         if (collection == PocketBaseCollections.users) {
@@ -183,7 +185,9 @@ class AuthRepositoryImpl implements AuthRepository {
         authStore.save(oldtoken, null);
 
         final authModel = oldCollection == PocketBaseCollections.admins
-            ? await pb.collection(oldCollection).authRefresh()
+            ? await pb
+                .collection(oldCollection)
+                .authRefresh(expand: PBExpand.admin)
             : await pb
                 .collection(oldCollection)
                 .authRefresh(expand: PBExpand.user);
