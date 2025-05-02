@@ -11,7 +11,6 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
-import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/patients/data/patient_record_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patients/domain/patient_record.dart';
@@ -153,7 +152,8 @@ class PatientRecordsView extends HookConsumerWidget {
             ),
             TableColumn(
               header: 'Actions',
-              width: 200,
+              minResizeWidth: 200,
+              sticky: true,
               alignment: Alignment.center,
               builder: (context, data, row, column) {
                 return Align(

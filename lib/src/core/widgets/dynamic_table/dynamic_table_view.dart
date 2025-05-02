@@ -130,6 +130,11 @@ class DynamicTableView<T> extends HookConsumerWidget {
                       (column) => DynamicTableBaseColumn(
                         key: column.sortKey,
                         width: column.width,
+                        flex: column.flex,
+                        maxResizeWidth: column.maxResizeWidth,
+                        minResizeWidth: column.minResizeWidth,
+                        sticky: column.sticky,
+                        freezePriority: column.freezePriority,
                         builder: (ctxt, _) => InkWell(
                           onTap: () {
                             if (column.sortKey == null) return;
