@@ -99,8 +99,14 @@ class AuthRepositoryImpl implements AuthRepository {
         final password = payload[UserField.password];
 
         return await pb
-            .collection(PocketBaseCollections.admins)
-            .authWithPassword(email, password);
+            .collection(
+              PocketBaseCollections.admins,
+            )
+            .authWithPassword(
+              email,
+              password,
+              expand: PBExpand.admin,
+            );
       },
       (error, stack) {
         return Failure.handle(error, stack);
