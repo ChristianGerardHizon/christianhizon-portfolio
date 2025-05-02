@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_base.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_table_base.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_sort.dart';
@@ -135,6 +135,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
                         minResizeWidth: column.minResizeWidth,
                         sticky: column.sticky,
                         freezePriority: column.freezePriority,
+                        translation: column.translation,
                         builder: (ctxt, _) => InkWell(
                           onTap: () {
                             if (column.sortKey == null) return;

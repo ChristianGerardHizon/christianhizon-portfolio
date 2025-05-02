@@ -11,33 +11,22 @@ class TableColumn<T> with TableColumnMappable {
   final EdgeInsets? padding;
   final TextStyle? style;
 
-  /// Width of a column in a logical pixels.
+  /// Width of a column in logical pixels.
   final double width;
 
-  /// Priority of a column to be frozen on a screen instead of scrolling off.
-  /// The larger the priority the more likely this column is to remain frozen
-  /// in case of lacking space to freeze all the required columns. If zero,
-  /// the column will never be frozen.
-  final int freezePriority;
-
-  /// When set to true, frozen column will be scrolled of the edge of the screen
-  /// but will come back upon scrolling in the other direction.
-  final bool sticky;
-
-  /// When set higher than zero, column will expand to fill the remaining
-  /// width in proportion to the total flex of all columns.
+  /// Flex grow of column.
   final int flex;
 
-  /// Horizontal (x) translation of the column. Does not affect the layout
-  /// of other columns. Primarily used for animations.
+  /// X translation of the column.
   final double translation;
 
-  /// Minimum width the column is allowed to resize to.
+  /// Minimum resizable width.
   final double? minResizeWidth;
 
-  /// Maximum width the column is allowed to resize to.
+  /// Maximum resizable width.
   final double? maxResizeWidth;
 
+  /// Optional cell builder.
   final Widget Function(
     BuildContext context,
     T data,
@@ -45,19 +34,85 @@ class TableColumn<T> with TableColumnMappable {
     int column,
   )? builder;
 
+  // Private internal state
+  final bool _isSticky;
+  final int? _freezePriority;
+
+  /// Read-only access to sticky state
+  bool get sticky => _isSticky;
+
+  /// Read-only freeze priority (0 if not sticky)
+  int get freezePriority => _freezePriority ?? 0;
+
+  /// Default non-sticky constructor
   const TableColumn({
-    this.sticky = false,
+    required this.header,
+    this.sortKey,
+    this.alignment,
+    this.padding,
+    this.style,
+    this.width = 100,
     this.flex = 0,
     this.translation = 0,
     this.minResizeWidth,
     this.maxResizeWidth,
-    this.freezePriority = 0,
-    this.sortKey,
-    required this.header,
-    this.width = 100,
     this.builder,
-    this.style,
+  })  : _isSticky = false,
+        _freezePriority = null;
+
+  /// Named constructor for sticky columns
+  factory TableColumn.sticky({
+    required String header,
+    required int freezePriority,
+    double width = 100,
+    int flex = 0,
+    double translation = 0,
+    double? minResizeWidth,
+    double? maxResizeWidth,
+    String? sortKey,
+    Alignment? alignment,
+    EdgeInsets? padding,
+    TextStyle? style,
+    Widget Function(BuildContext context, T data, int row, int column)? builder,
+  }) {
+    assert(
+      freezePriority > 0,
+      'Sticky columns must have freezePriority greater than 0. '
+      'Use the default constructor if sticky behavior is not required.',
+    );
+
+    return TableColumn._internal(
+      header: header,
+      isSticky: true,
+      freezePriority: freezePriority,
+      sortKey: sortKey,
+      alignment: alignment,
+      padding: padding,
+      style: style,
+      width: width,
+      flex: flex,
+      translation: translation,
+      minResizeWidth: minResizeWidth,
+      maxResizeWidth: maxResizeWidth,
+      builder: builder,
+    );
+  }
+
+  /// Internal constructor shared by sticky
+  const TableColumn._internal({
+    required this.header,
+    required bool isSticky,
+    required int? freezePriority,
+    this.sortKey,
     this.alignment,
     this.padding,
-  });
+    this.style,
+    this.width = 100,
+    this.flex = 0,
+    this.translation = 0,
+    this.minResizeWidth,
+    this.maxResizeWidth,
+    this.builder,
+  })  : _isSticky = isSticky,
+        _freezePriority = freezePriority;
 }

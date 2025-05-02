@@ -48,6 +48,23 @@ class PatientRecordsView extends HookConsumerWidget {
       ).push(context);
     }
 
+    onShowActions(PatientRecord patientRecord) {
+      PatientRecordFormPageRoute(
+        parentId: patientRecord.patient,
+        id: patientRecord.id,
+      ).push(context);
+    }
+
+    ///
+    ///
+    ///
+    onFollowUp(PatientRecord patientRecord) {
+      PatientRecordFormPageRoute(
+        parentId: patientRecord.patient,
+        id: patientRecord.id,
+      ).push(context);
+    }
+
     ///
     /// onRefresh
     ///
@@ -152,40 +169,15 @@ class PatientRecordsView extends HookConsumerWidget {
             ),
             TableColumn(
               header: 'Actions',
-              minResizeWidth: 200,
-              sticky: true,
+              width: 70,
               alignment: Alignment.center,
               builder: (context, data, row, column) {
                 return Align(
                   alignment: Alignment.centerRight,
-                  child: Row(
-                    children: [
-                      TextButton.icon(
-                        onPressed: () {
-                          onEdit(data);
-                        },
-                        icon: Icon(
-                          MIcons.pencilOutline,
-                          color: const Color.fromARGB(255, 28, 49, 66),
-                        ),
-                        label: Text(
-                          'Edit',
-                          style: TextStyle(
-                            color: const Color.fromARGB(255, 28, 49, 66),
-                          ),
-                        ),
-                      ),
-                      TextButton.icon(
-                        onPressed: () {
-                          onDelete([data]);
-                        },
-                        icon: Icon(MIcons.deleteOutline, color: Colors.red),
-                        label: Text(
-                          'Delete',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ),
-                    ],
+                  child: IconButton(
+                    tooltip: 'Show more actions',
+                    onPressed: () => onShowActions(data),
+                    icon: Icon(MIcons.dotsHorizontalCircleOutline),
                   ),
                 );
               },
