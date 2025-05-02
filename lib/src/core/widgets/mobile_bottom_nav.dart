@@ -72,7 +72,7 @@ class MobileBottomNav extends StatelessWidget {
     int bottomNavIndeCalulator(int index, String? path) {
       if (path == null) return 0;
       if (path == (DashboardPageRoute.path)) return 0;
-      if (path.contains(PatientPageRoute.path)) return 1;
+      if (path.contains(PatientsPageRoute.path)) return 1;
       if (path.contains(ProductInventoriesPageRoute.path)) return 2;
       if (path.contains(YourAccountPageRoute.path)) return 3;
       return 0;
