@@ -16,6 +16,7 @@ sealed class Failure with FailureMappable {
     var returnMessage = 'Something went wrong';
 
     if (error is ClientException) {
+      print(error.toString());
       final defaultMessage = 'Server Request has failed';
       final data = error.response;
       returnMessage = data['message'] ?? defaultMessage;

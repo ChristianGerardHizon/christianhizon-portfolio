@@ -169,11 +169,11 @@ class PatientRecordsView extends HookConsumerWidget {
             ),
             TableColumn(
               header: 'Actions',
-              width: 70,
+              width: 75,
               alignment: Alignment.center,
               builder: (context, data, row, column) {
                 return Align(
-                  alignment: Alignment.centerRight,
+                  alignment: Alignment.center,
                   child: IconButton(
                     tooltip: 'Show more actions',
                     onPressed: () => onShowActions(data),
