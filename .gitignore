@@ -51,7 +51,7 @@ app.*.map.json
 # Dev Server
 # ignore any file or directory whose name starts with "pocketbas" anywhere in server/
 # ignore everything in /server
-/server/*
+/server/**
 
 # allow Git to traverse into subfolders
 !/server/**/
