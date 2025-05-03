@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_record/patient_records_view.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/treatment/patient_treatments_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patients/patient_details_view.dart';
+import 'package:gym_system/src/features/patient_records/presentation/pages/patient_records_page.dart';
+import 'package:gym_system/src/features/patient_treaments/presentation/controllers/patient_treatments_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_details_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientPage extends HookConsumerWidget {
@@ -100,7 +100,7 @@ class PatientPage extends HookConsumerWidget {
                   child: TabBarView(
                     children: [
                       PatientDetailsView(patient),
-                      PatientRecordsView(patient: patient),
+                      PatientRecordsPage(patient: patient, showAppBar: false),
                       // PatientTreatmentRecordView(patient: patient),
                       SizedBox(),
                       Center(

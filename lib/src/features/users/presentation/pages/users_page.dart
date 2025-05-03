@@ -9,6 +9,7 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
+import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
@@ -81,96 +82,86 @@ class UsersPage extends HookConsumerWidget {
           ),
         ],
       ),
-      body: listState.when(
-        skipError: false,
-        skipLoadingOnRefresh: false,
-        skipLoadingOnReload: false,
-        error: (error, stack) => Center(
-          child: Text(error.toString()),
-        ),
-        loading: () => Center(
-          child: CircularProgressIndicator(),
-        ),
-        data: (items) => DynamicTableView<User>(
-          tableKey: TableControllerKeys.user,
-          error: null,
-          items: items,
-          onDelete: onDelete,
-          onRowTap: onTap,
+      body: DynamicTableView<User>(
+        tableKey: TableControllerKeys.user,
+        error: FailureMessage.asyncValue(listState),
+        isLoading: listState.isLoading,
+        items: listState.value ?? [],
+        onDelete: onDelete,
+        onRowTap: onTap,
 
-          ///
-          /// Search Features
-          ///
-          searchCtrl: searchCtrl,
-          onCreate: onCreate,
+        ///
+        /// Search Features
+        ///
+        searchCtrl: searchCtrl,
+        onCreate: onCreate,
 
-          ///
-          /// Table Data
-          ///
-          columns: [
-            TableColumn(
-              header: 'Name',
-              width: 200,
-              alignment: Alignment.centerLeft,
-              builder: (context, data, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    overflow: TextOverflow.ellipsis,
-                    data.name,
-                  ),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Email',
-              width: 200,
-              alignment: Alignment.centerLeft,
-              builder: (context, data, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    overflow: TextOverflow.ellipsis,
-                    data.email,
-                  ),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Branch',
-              width: 100,
-              alignment: Alignment.centerLeft,
-              builder: (context, data, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    overflow: TextOverflow.ellipsis,
-                    (data.expand.branch?.name).optional(),
-                  ),
-                );
-              },
-            ),
-          ],
+        ///
+        /// Table Data
+        ///
+        columns: [
+          TableColumn(
+            header: 'Name',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  data.name,
+                ),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Email',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  data.email,
+                ),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Branch',
+            width: 100,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  (data.expand.branch?.name).optional(),
+                ),
+              );
+            },
+          ),
+        ],
 
-          ///
-          /// Builder for mobile
-          ///
-          mobileBuilder: (context, index, user, selected) {
-            return UserCard(
-              user: user,
-              onTap: () {
-                if (selected)
-                  notifier.toggleRow(index);
-                else
-                  onTap(user);
-              },
-              selected: selected,
-              onLongPress: () {
+        ///
+        /// Builder for mobile
+        ///
+        mobileBuilder: (context, index, user, selected) {
+          return UserCard(
+            user: user,
+            onTap: () {
+              if (selected)
                 notifier.toggleRow(index);
-              },
-            );
-          },
-        ),
+              else
+                onTap(user);
+            },
+            selected: selected,
+            onLongPress: () {
+              notifier.toggleRow(index);
+            },
+          );
+        },
       ),
     );
   }

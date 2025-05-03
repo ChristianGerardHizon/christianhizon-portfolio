@@ -2,6 +2,7 @@ class TableControllerKeys {
   static String product = 'PRODUCT';
   static String productInventory = 'PRODUCT_INVENTORY';
   static String productStock = 'PRODUCT_STOCK';
+  static String productStockProduct(String x) => '${productStock}_${x}';
   static String patient = 'PATIENT';
   static String patientRecord = 'PATIENT_RECORD';
   static String branch = 'BRANCH';

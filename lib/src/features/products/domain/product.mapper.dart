@@ -63,9 +63,6 @@ class ProductMapper extends ClassMapperBase<Product> {
   static DateTime? _$updated(Product v) => v.updated;
   static const Field<Product, DateTime> _f$updated =
       Field('updated', _$updated, opt: true);
-  static num? _$usedQuantity(Product v) => v.usedQuantity;
-  static const Field<Product, num> _f$usedQuantity =
-      Field('usedQuantity', _$usedQuantity, opt: true);
   static num? _$quantity(Product v) => v.quantity;
   static const Field<Product, num> _f$quantity =
       Field('quantity', _$quantity, opt: true);
@@ -93,7 +90,6 @@ class ProductMapper extends ClassMapperBase<Product> {
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
-    #usedQuantity: _f$usedQuantity,
     #quantity: _f$quantity,
     #trackByLot: _f$trackByLot,
     #expiration: _f$expiration,
@@ -116,7 +112,6 @@ class ProductMapper extends ClassMapperBase<Product> {
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated),
-        usedQuantity: data.dec(_f$usedQuantity),
         quantity: data.dec(_f$quantity),
         trackByLot: data.dec(_f$trackByLot),
         expiration: data.dec(_f$expiration));
@@ -190,7 +185,6 @@ abstract class ProductCopyWith<$R, $In extends Product, $Out>
       bool? isDeleted,
       DateTime? created,
       DateTime? updated,
-      num? usedQuantity,
       num? quantity,
       bool? trackByLot,
       DateTime? expiration});
@@ -225,7 +219,6 @@ class _ProductCopyWithImpl<$R, $Out>
           bool? isDeleted,
           Object? created = $none,
           Object? updated = $none,
-          Object? usedQuantity = $none,
           Object? quantity = $none,
           bool? trackByLot,
           Object? expiration = $none}) =>
@@ -245,7 +238,6 @@ class _ProductCopyWithImpl<$R, $Out>
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated,
-        if (usedQuantity != $none) #usedQuantity: usedQuantity,
         if (quantity != $none) #quantity: quantity,
         if (trackByLot != null) #trackByLot: trackByLot,
         if (expiration != $none) #expiration: expiration
@@ -267,7 +259,6 @@ class _ProductCopyWithImpl<$R, $Out>
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated),
-      usedQuantity: data.get(#usedQuantity, or: $value.usedQuantity),
       quantity: data.get(#quantity, or: $value.quantity),
       trackByLot: data.get(#trackByLot, or: $value.trackByLot),
       expiration: data.get(#expiration, or: $value.expiration));

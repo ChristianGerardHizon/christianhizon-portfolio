@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
@@ -10,6 +9,7 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
+import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/admins/domain/admin.dart';
 import 'package:gym_system/src/features/admins/data/admin_repository.dart';
@@ -80,96 +80,86 @@ class AdminsPage extends HookConsumerWidget {
           RefreshButton(onPressed: onRefresh),
         ],
       ),
-      body: listState.when(
-        skipError: false,
-        skipLoadingOnRefresh: false,
-        skipLoadingOnReload: false,
-        error: (error, stack) => Center(
-          child: Text(error.toString()),
-        ),
-        loading: () => Center(
-          child: CircularProgressIndicator(),
-        ),
-        data: (items) => DynamicTableView<Admin>(
-          tableKey: TableControllerKeys.admin,
-          error: null,
-          items: items,
-          onDelete: onDelete,
-          onRowTap: onTap,
+      body: DynamicTableView<Admin>(
+        tableKey: TableControllerKeys.admin,
+        error: FailureMessage.asyncValue(listState),
+        isLoading: listState.isLoading,
+        items: listState.value ?? [],
+        onDelete: onDelete,
+        onRowTap: onTap,
 
-          ///
-          /// Search Features
-          ///
-          searchCtrl: searchCtrl,
-          onCreate: onCreate,
+        ///
+        /// Search Features
+        ///
+        searchCtrl: searchCtrl,
+        onCreate: onCreate,
 
-          ///
-          /// Table Data
-          ///
-          columns: [
-            TableColumn(
-              header: 'Name',
-              width: 200,
-              alignment: Alignment.centerLeft,
-              builder: (context, data, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    overflow: TextOverflow.ellipsis,
-                    data.name,
-                  ),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Branch',
-              width: 200,
-              alignment: Alignment.centerLeft,
-              builder: (context, data, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    overflow: TextOverflow.ellipsis,
-                    (data.expand.branch?.name).optional(),
-                  ),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Email',
-              width: 200,
-              alignment: Alignment.centerLeft,
-              builder: (context, data, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    overflow: TextOverflow.ellipsis,
-                    data.email,
-                  ),
-                );
-              },
-            ),
-          ],
+        ///
+        /// Table Data
+        ///
+        columns: [
+          TableColumn(
+            header: 'Name',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  data.name,
+                ),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Branch',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  (data.expand.branch?.name).optional(),
+                ),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Email',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  data.email,
+                ),
+              );
+            },
+          ),
+        ],
 
-          ///
-          /// Builder for mobile
-          ///
-          mobileBuilder: (context, index, admin, selected) {
-            return AdminCard(
-              admin: admin,
-              onTap: () {
-                if (selected)
-                  notifier.toggleRow(index);
-                else
-                  onTap(admin);
-              },
-              selected: selected,
-              onLongPress: () {
+        ///
+        /// Builder for mobile
+        ///
+        mobileBuilder: (context, index, admin, selected) {
+          return AdminCard(
+            admin: admin,
+            onTap: () {
+              if (selected)
                 notifier.toggleRow(index);
-              },
-            );
-          },
-        ),
+              else
+                onTap(admin);
+            },
+            selected: selected,
+            onLongPress: () {
+              notifier.toggleRow(index);
+            },
+          );
+        },
       ),
     );
   }

@@ -119,7 +119,7 @@ class PatientRecordField {
   static const String treatment = 'treatment';
   static const String followUpDate = 'followUpDate';
   static const String prescription = 'prescription';
-  static const String note = 'note';
+  static const String notes = 'note';
   static const String user = 'user';
   static const String admin = 'admin';
   static const String branch = 'branch';
@@ -152,7 +152,6 @@ class ProductField {
   static const String forSale = 'forSale';
 
   static const String expiration = 'expiration';
-  static const String usedQuantity = 'usedQuantity';
   static const String quantity = 'quantity';
   static const String trackByLot = 'trackByLot';
 }
@@ -187,7 +186,6 @@ class ProductStockField {
   static const String lotNo = 'lotNo';
   static const String notes = 'notes';
   static const String quantity = 'quantity';
-  static const String usedQuantity = 'usedQuantity';
 }
 
 class ChangeLogField {

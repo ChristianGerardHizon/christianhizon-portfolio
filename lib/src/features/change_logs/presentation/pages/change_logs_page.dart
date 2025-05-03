@@ -15,8 +15,6 @@ import 'package:gym_system/src/features/change_logs/data/change_log_repository.d
 import 'package:gym_system/src/features/change_logs/domain/change_log.dart';
 import 'package:gym_system/src/features/change_logs/presentation/controllers/change_log_table_controller.dart';
 import 'package:gym_system/src/features/change_logs/presentation/widgets/change_log_card.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/breeds/patient_breeds_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/species/patient_species_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ChangeLogsPage extends HookConsumerWidget {
@@ -30,9 +28,6 @@ class ChangeLogsPage extends HookConsumerWidget {
     final notifier = ref.read(provider.notifier);
     final listProvider = changeLogTableControllerProvider(tableKey);
     final listState = ref.watch(listProvider);
-
-    ref.watch(patientBreedsControllerProvider);
-    ref.watch(patientSpeciesControllerProvider);
 
     ///
     /// onTap

@@ -34,6 +34,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
     T data,
     bool selected,
   ) mobileBuilder;
+  final bool isLoading;
 
   const DynamicTableView({
     super.key,
@@ -51,6 +52,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
     required this.mobileBuilder,
     this.emptyWidget,
     this.onDelete,
+    this.isLoading = false,
   });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -65,7 +67,6 @@ class DynamicTableView<T> extends HookConsumerWidget {
       // notifier.changeFilter(searchCtrl.text, baseFilter: baseFilter);
     }, []);
 
-    final isLoading = state.isLoading;
     final selected = state.selected;
     final sort = state.sort;
     final currentPage = state.page;
@@ -99,7 +100,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
               ///
               /// on error
               ///
-              if (error != null) SliverToBoxAdapter(child: error),
+              if (error is Widget) SliverToBoxAdapter(child: error),
 
               ///
               ///  Content

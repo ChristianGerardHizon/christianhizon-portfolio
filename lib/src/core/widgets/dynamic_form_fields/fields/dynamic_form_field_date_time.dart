@@ -12,9 +12,11 @@ class DynamicDateTimeField extends DynamicField {
   final String? Function(DateTime?)? validator;
   final dynamic Function(DateTime?)? fieldTransformer;
   final GlobalKey<FormBuilderFieldState>? formFieldKey;
+  final TimeOfDay? defaultTime;
 
   const DynamicDateTimeField({
     this.formFieldKey,
+    this.defaultTime,
     required super.name,
     this.initialValue,
     this.validator,
@@ -83,7 +85,8 @@ class DynamicFormFieldDateTime extends StatelessWidget {
                   icon: const Icon(Icons.access_time),
                   onPressed: () async {
                     final current = state.value ?? DateTime.now();
-                    final initialTime = TimeOfDay.fromDateTime(current);
+                    final initialTime =
+                        field.defaultTime ?? TimeOfDay.fromDateTime(current);
                     final pickedTime = await showTimePicker(
                       context: context,
                       initialTime: initialTime,

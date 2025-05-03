@@ -3,7 +3,7 @@ import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/responsive_row_column.dart';
 import 'package:gym_system/src/core/widgets/selectable_card.dart';
-import 'package:gym_system/src/features/products/domain/product_inventory.dart';
+import 'package:gym_system/src/features/product_inventories/domain/product_inventory.dart';
 
 class ProductInventoryCard extends StatelessWidget {
   const ProductInventoryCard({

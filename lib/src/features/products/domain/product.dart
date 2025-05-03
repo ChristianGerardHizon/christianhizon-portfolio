@@ -3,7 +3,7 @@ import 'package:gym_system/src/core/classes/pb_record.dart';
 import 'package:gym_system/src/core/hooks/date_time_hook.dart';
 import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
-import 'package:gym_system/src/features/products/domain/product_category.dart';
+import 'package:gym_system/src/features/product_categories/domain/product_category.dart';
 
 part 'product.mapper.dart';
 
@@ -19,7 +19,6 @@ class Product extends PbRecord with ProductMappable {
   final num price;
   final bool forSale;
 
-  final num? usedQuantity;
   final num? quantity;
 
   @MappableField(hook: DateTimeHook())
@@ -45,7 +44,6 @@ class Product extends PbRecord with ProductMappable {
     super.isDeleted = false,
     super.created,
     super.updated,
-    this.usedQuantity,
     this.quantity,
     required this.trackByLot,
     this.expiration,

@@ -9,6 +9,7 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
+import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/branches/data/branch_repository.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
@@ -81,79 +82,69 @@ class BranchesPage extends HookConsumerWidget {
           ),
         ],
       ),
-      body: listState.when(
-        skipError: false,
-        skipLoadingOnRefresh: false,
-        skipLoadingOnReload: false,
-        error: (error, stack) => Center(
-          child: Text(error.toString()),
-        ),
-        loading: () => Center(
-          child: CircularProgressIndicator(),
-        ),
-        data: (items) => DynamicTableView<Branch>(
-          tableKey: TableControllerKeys.branch,
-          error: null,
-          items: items,
-          onDelete: onDelete,
-          onRowTap: onTap,
+      body: DynamicTableView<Branch>(
+        tableKey: TableControllerKeys.branch,
+        error: FailureMessage.asyncValue(listState),
+        isLoading: listState.isLoading,
+        items: listState.value ?? [],
+        onDelete: onDelete,
+        onRowTap: onTap,
 
-          ///
-          /// Search Features
-          ///
-          searchCtrl: searchCtrl,
-          onCreate: onCreate,
+        ///
+        /// Search Features
+        ///
+        searchCtrl: searchCtrl,
+        onCreate: onCreate,
 
-          ///
-          /// Table Data
-          ///
-          columns: [
-            TableColumn(
-              header: 'Name',
-              width: 200,
-              alignment: Alignment.centerLeft,
-              builder: (context, data, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    overflow: TextOverflow.ellipsis,
-                    data.name,
-                  ),
-                );
-              },
-            ),
-            TableColumn(
-              header: 'Branch',
-              alignment: Alignment.centerLeft,
-              builder: (context, branch, row, column) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text((branch.name).optional(),
-                      overflow: TextOverflow.ellipsis),
-                );
-              },
-            ),
-          ],
+        ///
+        /// Table Data
+        ///
+        columns: [
+          TableColumn(
+            header: 'Name',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  data.name,
+                ),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Branch',
+            alignment: Alignment.centerLeft,
+            builder: (context, branch, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text((branch.name).optional(),
+                    overflow: TextOverflow.ellipsis),
+              );
+            },
+          ),
+        ],
 
-          ///
-          /// Builder for mobile
-          ///
-          mobileBuilder: (context, index, branch, selected) {
-            return BranchCard(
-              branch: branch,
-              onTap: () {
-                if (selected)
-                  notifier.toggleRow(index);
-                else
-                  onTap(branch);
-              },
-              selected: selected,
-              onLongPress: () {
+        ///
+        /// Builder for mobile
+        ///
+        mobileBuilder: (context, index, branch, selected) {
+          return BranchCard(
+            branch: branch,
+            onTap: () {
+              if (selected)
                 notifier.toggleRow(index);
-              },
-            );
-          },
-        ),
+              else
+                onTap(branch);
+            },
+            selected: selected,
+            onLongPress: () {
+              notifier.toggleRow(index);
+            },
+          );
+        },
       ),
     );
   }

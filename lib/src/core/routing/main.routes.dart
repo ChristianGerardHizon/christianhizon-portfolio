@@ -23,21 +23,20 @@ import 'package:gym_system/src/features/change_logs/presentation/pages/change_lo
 import 'package:gym_system/src/features/change_logs/presentation/pages/change_log_page.dart';
 import 'package:gym_system/src/features/change_logs/presentation/pages/change_logs_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:gym_system/src/features/patients/presentation/pages/patient_record_page.dart';
+import 'package:gym_system/src/features/patient_records/presentation/pages/patient_record_form_page.dart';
+import 'package:gym_system/src/features/patient_records/presentation/pages/patient_record_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_form_page.dart';
-import 'package:gym_system/src/features/patients/presentation/pages/patient_record_form_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
-import 'package:gym_system/src/features/products/presentation/pages/category/product_categories_page.dart';
-import 'package:gym_system/src/features/products/presentation/pages/category/product_category_form_page.dart';
-import 'package:gym_system/src/features/products/presentation/pages/category/product_category_page.dart';
-import 'package:gym_system/src/features/products/presentation/pages/product/product_add_stock_form_page.dart';
-import 'package:gym_system/src/features/products/presentation/pages/product/product_page.dart';
-import 'package:gym_system/src/features/products/presentation/pages/product/products_page.dart';
-import 'package:gym_system/src/features/products/presentation/pages/product/product_form_page.dart';
-import 'package:gym_system/src/features/products/presentation/pages/inventory/product_inventories_page.dart';
-import 'package:gym_system/src/features/products/presentation/pages/stock/product_stock_form_page.dart';
-import 'package:gym_system/src/features/products/presentation/pages/stock/product_stock_page.dart';
+import 'package:gym_system/src/features/product_categories/presentation/pages/product_categories_page.dart';
+import 'package:gym_system/src/features/product_categories/presentation/pages/product_category_form_page.dart';
+import 'package:gym_system/src/features/product_categories/presentation/pages/product_category_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/product_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/products_page.dart';
+import 'package:gym_system/src/features/products/presentation/pages/product_form_page.dart';
+import 'package:gym_system/src/features/product_inventories/presentation/pages/product_inventories_page.dart';
+import 'package:gym_system/src/features/product_stocks/presentation/pages/product_stock_form_page.dart';
+import 'package:gym_system/src/features/product_stocks/presentation/pages/product_stock_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/domain_page.dart';
 import 'package:gym_system/src/features/settings/presentation/pages/settings_page.dart';
 import 'package:gym_system/src/features/users/presentation/pages/user_form_page.dart';
@@ -90,22 +89,6 @@ class SplashPageRoute extends GoRouteData {
     return const SplashPage();
   }
 }
-
-// @TypedGoRoute<HomePageRoute>(path: HomePageRoute.path)
-// class HomePageRoute extends GoRouteData {
-//   const HomePageRoute();
-//   static const path = '/';
-
-//   @override
-//   Widget build(BuildContext context, GoRouterState state) {
-//     return const HomePage();
-//   }
-
-//   @override
-//   String? redirect(BuildContext context, GoRouterState state) {
-//     return UsersPageRoute.path;
-//   }
-// }
 
 @TypedStatefulShellRoute<RootRouteData>(
   branches: <TypedStatefulShellBranch<StatefulShellBranchData>>[

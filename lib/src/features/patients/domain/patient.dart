@@ -5,8 +5,8 @@ import 'package:gym_system/src/core/hooks/patient_sex_hook.dart';
 import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
-import 'package:gym_system/src/features/patients/domain/patient_breed.dart';
-import 'package:gym_system/src/features/patients/domain/patient_species.dart';
+import 'package:gym_system/src/features/patient_breeds/domain/patient_breed.dart';
+import 'package:gym_system/src/features/patient_species/domain/patient_species.dart';
 
 part 'patient.mapper.dart';
 

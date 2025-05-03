@@ -16,8 +16,6 @@ import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
-import 'package:gym_system/src/features/authentication/data/auth_repository.dart';
-import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/users/data/user_repository.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:gym_system/src/features/users/presentation/controllers/user_controller.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/features/products/domain/product_inventory.dart';
+import 'package:gym_system/src/features/product_inventories/domain/product_inventory.dart';
 
 class ProductStatusText extends StatelessWidget {
   final ProductInventory product;
@@ -39,9 +39,9 @@ class ProductStatusText extends StatelessWidget {
   String _getStatusText(ProductStatus status) {
     switch (status) {
       case ProductStatus.inStock:
-        return '${product.totalQuantityAvailable} remaining';
+        return '${product.totalQuantity} remaining';
       case ProductStatus.lowStock:
-        return '${product.totalQuantityAvailable} remaining | Low Stock';
+        return '${product.totalQuantity} remaining | Low Stock';
       case ProductStatus.noThreshold:
         return 'Not Tracking';
       case ProductStatus.outOfStock:

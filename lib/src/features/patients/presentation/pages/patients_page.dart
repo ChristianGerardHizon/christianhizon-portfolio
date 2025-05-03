@@ -15,8 +15,8 @@ import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_table_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patients/patient_card.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patient_table_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientsPage extends HookConsumerWidget {
@@ -86,20 +86,9 @@ class PatientsPage extends HookConsumerWidget {
         ),
         body: DynamicTableView<Patient>(
           tableKey: TableControllerKeys.patient,
-          error: listState.maybeWhen(
-            skipError: false,
-            skipLoadingOnRefresh: true,
-            skipLoadingOnReload: true,
-            orElse: () => null,
-            error: (error, stackTrace) => FailureMessage(error, stackTrace),
-          ),
-          items: listState.maybeWhen(
-            skipError: true,
-            skipLoadingOnRefresh: true,
-            skipLoadingOnReload: true,
-            data: (items) => items,
-            orElse: () => [],
-          ),
+          error: FailureMessage.asyncValue(listState),
+          isLoading: listState.isLoading,
+          items: listState.value ?? [],
           onDelete: onDelete,
           onRowTap: onTap,
 

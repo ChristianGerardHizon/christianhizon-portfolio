@@ -12,8 +12,8 @@ import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_table_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patient_table_controller.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -50,8 +50,8 @@ class ProductDetailsView extends HookConsumerWidget {
       ProductFormPageRoute(id: product.id).push(context);
     }
 
-    addProductStock(Product product) {
-      ProductAddStockFormPageRoute(product.id).push(context);
+    addStockAdjustment(Product product) {
+      // ProductAddStockFormPageRoute(product.id).push(context);
     }
 
     addProductUsage(Product product) {
@@ -149,10 +149,8 @@ class ProductDetailsView extends HookConsumerWidget {
                   ),
                   if (!product.trackByLot) ...[
                     DynamicGroupItem.text(
-                      title: 'Quantity / Used Quantity',
-                      value: (product.quantity.toString()).optional() +
-                          ' / ' +
-                          (product.usedQuantity.toString()).optional(),
+                      title: 'Quantity',
+                      value: (product.quantity.toString()).optional(),
                     ),
                     DynamicGroupItem.text(
                       title: 'Expiration',
@@ -183,7 +181,7 @@ class ProductDetailsView extends HookConsumerWidget {
                     trailing: Icon(MIcons.chevronRight),
                   ),
                   DynamicGroupItem.action(
-                    onTap: () => addProductStock(product),
+                    onTap: () => addStockAdjustment(product),
                     leading: Icon(MIcons.fileEditOutline),
                     title: 'Add Stocks',
                     trailing: Icon(MIcons.chevronRight),

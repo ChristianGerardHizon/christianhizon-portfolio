@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/widgets/collapsing_card.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class FailureMessage extends HookWidget {
   final dynamic error;
-  final StackTrace stack;
+  final StackTrace? stack;
   const FailureMessage(this.error, this.stack, {super.key});
+
+  static Widget? asyncValue(AsyncValue<dynamic> value) {
+    if (!value.hasError) return null;
+    return FailureMessage(value.error, value.stackTrace);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,17 +33,18 @@ class FailureMessage extends HookWidget {
                 child: Text(errorData.message.toString()),
               ),
             ),
-            CollapsingCard(
-              expanded: false,
-              header: Text(
-                'Stack Trace',
-                style: TextStyle(fontWeight: FontWeight.w500),
+            if (errorData.stackTrace is StackTrace)
+              CollapsingCard(
+                expanded: false,
+                header: Text(
+                  'Stack Trace',
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(errorData.stackTrace.toString()),
+                ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(errorData.stackTrace.toString()),
-              ),
-            ),
           ],
         ),
       );

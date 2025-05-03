@@ -11,9 +11,9 @@ import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.da
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_form_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patients/patient_table_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patient_form_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/controllers/patient_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientFormPage extends HookConsumerWidget {

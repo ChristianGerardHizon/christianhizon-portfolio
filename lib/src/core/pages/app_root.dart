@@ -17,8 +17,9 @@ import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/authentication/presentation/widgets/account_circle_image.dart';
+import 'package:gym_system/src/features/branches/presentation/controllers/branches_controller.dart';
+import 'package:gym_system/src/features/patient_treaments/presentation/controllers/patient_treatments_controller.dart';
 import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/treatment/patient_treatments_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -39,6 +40,7 @@ class AppRoot extends HookConsumerWidget {
 
     ref.watch(settingsControllerProvider);
     ref.watch(treatmentsControllerProvider);
+    ref.watch(branchesControllerProvider);
 
     ref.watch(tableControllerProvider(TableControllerKeys.product));
 
@@ -80,21 +82,21 @@ class AppRoot extends HookConsumerWidget {
           },
         ),
         CustomNavigationBarItem(
-          route: ProductInventoriesPageRoute.path,
-          icon: Icon(MIcons.shoppingOutline),
-          selectedIcon: Icon(MIcons.shopping),
-          label: 'Products',
-          onTap: () {
-            ProductInventoriesPageRoute().go(context);
-          },
-        ),
-        CustomNavigationBarItem(
           route: AppointmentsPageRoute.path,
           icon: Icon(MIcons.calendarOutline),
           selectedIcon: Icon(MIcons.calendar),
           label: 'Appointments',
           onTap: () {
             AppointmentsPageRoute().go(context);
+          },
+        ),
+        CustomNavigationBarItem(
+          route: ProductInventoriesPageRoute.path,
+          icon: Icon(MIcons.shoppingOutline),
+          selectedIcon: Icon(MIcons.shopping),
+          label: 'Products',
+          onTap: () {
+            ProductInventoriesPageRoute().go(context);
           },
         ),
         CustomNavigationBarItem(
