@@ -58,10 +58,10 @@ app.*.map.json
 
 # un-ignore the three platform folders and all their contents
 !/server/mac/
-!/server/mac/**
+!/server/mac/pocketbase*
 
 !/server/windows/
-!/server/windows/**
+!/server/windows/pocketbase*
 
 !/server/linux/
-!/server/linux/**
+!/server/linux/pocketbase*
