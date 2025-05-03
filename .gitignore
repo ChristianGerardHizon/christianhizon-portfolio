@@ -47,3 +47,21 @@ app.*.map.json
 /android/app/.cxx/
 /android/app/.externalNativeBuild/
 /android/app/.build/
+
+# Dev Server
+# ignore any file or directory whose name starts with "pocketbas" anywhere in server/
+# ignore everything in /server
+/server/*
+
+# allow Git to traverse into subfolders
+!/server/**/
+
+# un-ignore the three platform folders and all their contents
+!/server/mac/
+!/server/mac/**
+
+!/server/windows/
+!/server/windows/**
+
+!/server/linux/
+!/server/linux/**
