@@ -33,4 +33,9 @@ class PocketBaseCollections {
   /// Changes
   ///
   static const changeLogs = 'changeLogs';
+
+  ///
+  /// Appointments
+  ///
+  static const appointmentSchedules = 'appointmentSchedules';
 }

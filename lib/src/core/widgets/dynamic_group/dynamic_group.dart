@@ -6,12 +6,14 @@ class DynamicGroup extends StatelessWidget {
     super.key,
     this.header,
     this.titleStyle,
+    this.headerAction,
     required this.items,
     this.helper,
     this.padding = EdgeInsets.zero,
   });
 
   final String? header;
+  final Widget? headerAction;
   final String? helper;
   final TextStyle? titleStyle;
   final List<DynamicGroupItem> items;
@@ -19,6 +21,7 @@ class DynamicGroup extends StatelessWidget {
 
   static sliver({
     required String header,
+    Widget? headerAction,
     TextStyle? titleStyle,
     required List<DynamicGroupItem> items,
     String? helper,
@@ -26,6 +29,7 @@ class DynamicGroup extends StatelessWidget {
   }) =>
       SliverToBoxAdapter(
         child: DynamicGroup(
+          headerAction: headerAction,
           header: header,
           titleStyle: titleStyle,
           items: items,
@@ -41,17 +45,22 @@ class DynamicGroup extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.only(left: padding.horizontal, bottom: 12),
+            margin: EdgeInsets.only(
+                left: padding.horizontal,
+                right: padding.horizontal,
+                bottom: 12),
             width: double.infinity,
-            child: header == null
-                ? null
-                : Text(
-                    header!.toUpperCase(),
-                    style: titleStyle ??
-                        Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (header != null)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Text(header!, style: titleStyle),
                   ),
+                if (headerAction != null) headerAction!,
+              ],
+            ),
           ),
           Card(
             child: ListView.separated(

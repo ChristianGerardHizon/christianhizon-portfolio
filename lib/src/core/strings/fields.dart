@@ -119,7 +119,7 @@ class PatientRecordField {
   static const String treatment = 'treatment';
   static const String followUpDate = 'followUpDate';
   static const String prescription = 'prescription';
-  static const String notes = 'note';
+  static const String notes = 'notes';
   static const String user = 'user';
   static const String admin = 'admin';
   static const String branch = 'branch';
@@ -211,4 +211,16 @@ class ProductCategoryField {
 
   static const String name = 'name';
   static const String parent = 'parent';
+}
+
+class AppointmentScheduleField {
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
+
+  static const String name = 'date';
+  static const String notifyWhenNear = 'notifyWhenNear';
+  static const String hasNotifiedWhenNear = 'hasNotifiedWhenNear';
+  static const String branch = 'branch';
 }

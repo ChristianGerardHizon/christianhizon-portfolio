@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:intl/intl.dart';
 
 import '../dynamic_field.dart';
@@ -65,7 +66,7 @@ class DynamicFormFieldDate extends StatelessWidget {
                       lastDate: field.lastDate ?? DateTime(2100),
                     );
                     if (picked != null) {
-                      state.didChange(picked);
+                      state.didChange(picked.dateOnly);
                     }
                   },
                 ),

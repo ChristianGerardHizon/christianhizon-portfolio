@@ -61,7 +61,7 @@ part 'routes/sales.routes.dart';
 part 'routes/products.routes.dart';
 part 'routes/patient_records.routes.dart';
 part 'routes/patient_treatment_records.routes.dart';
-part 'routes/appointments.routes.dart';
+part 'routes/appointment_schedules.routes.dart';
 part 'routes/change_logs.routes.dart';
 part 'routes/product_category.routes.dart';
 
@@ -255,9 +255,9 @@ class SplashPageRoute extends GoRouteData {
     ///
     /// Appointments
     ///
-    TypedStatefulShellBranch<AppointmentBranchData>(
+    TypedStatefulShellBranch<AppointmentSchedulesBranchData>(
       routes: <TypeRouteData>[
-        TypedGoRoute<AppointmentsPageRoute>(path: AppointmentsPageRoute.path),
+        TypedGoRoute<AppointmentSchedulesPageRoute>(path: AppointmentSchedulesPageRoute.path),
       ],
     ),
   ],

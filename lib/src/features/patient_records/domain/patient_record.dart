@@ -11,7 +11,6 @@ class PatientRecord extends PbRecord with PatientRecordMappable {
   final String? diagnosis;
   final DateTime visitDate;
   final String? treatment;
-  final DateTime? followUpDate;
   final String? notes;
   @MappableField(hook: PbEmptyHook())
   final String? branch;
@@ -24,7 +23,6 @@ class PatientRecord extends PbRecord with PatientRecordMappable {
     this.diagnosis,
     required this.visitDate,
     this.treatment,
-    this.followUpDate,
     this.notes,
     super.isDeleted = false,
     super.created,

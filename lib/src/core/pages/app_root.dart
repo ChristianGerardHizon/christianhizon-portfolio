@@ -60,7 +60,7 @@ class AppRoot extends HookConsumerWidget {
     List<CustomNavigationBarItem> buildItems(AuthData auth) {
       final isAdmin = auth is AuthAdmin;
       // final isUser = auth is AuthUser;
-
+  
       return [
         CustomNavigationBarItem(
           isRoot: true,
@@ -82,12 +82,12 @@ class AppRoot extends HookConsumerWidget {
           },
         ),
         CustomNavigationBarItem(
-          route: AppointmentsPageRoute.path,
+          route: AppointmentSchedulesPageRoute.path,
           icon: Icon(MIcons.calendarOutline),
           selectedIcon: Icon(MIcons.calendar),
           label: 'Appointments',
           onTap: () {
-            AppointmentsPageRoute().go(context);
+            AppointmentSchedulesPageRoute().go(context);
           },
         ),
         CustomNavigationBarItem(

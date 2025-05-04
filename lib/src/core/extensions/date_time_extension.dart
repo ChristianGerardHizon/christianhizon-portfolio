@@ -23,4 +23,6 @@ extension DateTimeExtension on DateTime {
   String get weekdayShort => DateFormat('EEE, d MMM').format(this);
 
   String get fullReadable => DateFormat('EEEE, d MMMM y').format(this);
+
+  DateTime get dateOnly => DateTime(year, month, day);
 }

@@ -151,7 +151,7 @@ class ProductStockFormPage extends HookConsumerWidget {
                   ),
                   initialValue: productStock?.expiration,
                   valueTransformer: (date) {
-                    if (date is DateTime) return date.toIso8601String();
+                    if (date is DateTime) return date.toUtc().toIso8601String();
                     return date;
                   },
                 ),

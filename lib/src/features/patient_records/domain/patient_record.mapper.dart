@@ -41,9 +41,6 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
   static String? _$treatment(PatientRecord v) => v.treatment;
   static const Field<PatientRecord, String> _f$treatment =
       Field('treatment', _$treatment, opt: true);
-  static DateTime? _$followUpDate(PatientRecord v) => v.followUpDate;
-  static const Field<PatientRecord, DateTime> _f$followUpDate =
-      Field('followUpDate', _$followUpDate, opt: true);
   static String? _$notes(PatientRecord v) => v.notes;
   static const Field<PatientRecord, String> _f$notes =
       Field('notes', _$notes, opt: true);
@@ -69,7 +66,6 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
     #diagnosis: _f$diagnosis,
     #visitDate: _f$visitDate,
     #treatment: _f$treatment,
-    #followUpDate: _f$followUpDate,
     #notes: _f$notes,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
@@ -86,7 +82,6 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
         diagnosis: data.dec(_f$diagnosis),
         visitDate: data.dec(_f$visitDate),
         treatment: data.dec(_f$treatment),
-        followUpDate: data.dec(_f$followUpDate),
         notes: data.dec(_f$notes),
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
@@ -156,7 +151,6 @@ abstract class PatientRecordCopyWith<$R, $In extends PatientRecord, $Out>
       String? diagnosis,
       DateTime? visitDate,
       String? treatment,
-      DateTime? followUpDate,
       String? notes,
       bool? isDeleted,
       DateTime? created,
@@ -182,7 +176,6 @@ class _PatientRecordCopyWithImpl<$R, $Out>
           Object? diagnosis = $none,
           DateTime? visitDate,
           Object? treatment = $none,
-          Object? followUpDate = $none,
           Object? notes = $none,
           bool? isDeleted,
           Object? created = $none,
@@ -196,7 +189,6 @@ class _PatientRecordCopyWithImpl<$R, $Out>
         if (diagnosis != $none) #diagnosis: diagnosis,
         if (visitDate != null) #visitDate: visitDate,
         if (treatment != $none) #treatment: treatment,
-        if (followUpDate != $none) #followUpDate: followUpDate,
         if (notes != $none) #notes: notes,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
@@ -212,7 +204,6 @@ class _PatientRecordCopyWithImpl<$R, $Out>
       diagnosis: data.get(#diagnosis, or: $value.diagnosis),
       visitDate: data.get(#visitDate, or: $value.visitDate),
       treatment: data.get(#treatment, or: $value.treatment),
-      followUpDate: data.get(#followUpDate, or: $value.followUpDate),
       notes: data.get(#notes, or: $value.notes),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),

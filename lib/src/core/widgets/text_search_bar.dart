@@ -70,7 +70,7 @@ class TextSearchBar extends HookWidget {
                       borderSide: BorderSide.none,
                     ),
                     fillColor:
-                        Theme.of(context).primaryColor.withValues(alpha: .1),
+                        Theme.of(context).dividerTheme.color?.withValues(alpha:.8),
                     filled: true,
                   ),
                 ),

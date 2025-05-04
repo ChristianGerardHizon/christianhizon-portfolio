@@ -30,8 +30,10 @@ class PatientRecordFormState with PatientRecordFormStateMappable {
 @riverpod
 class PatientRecordFormController extends _$PatientRecordFormController {
   @override
-  Future<PatientRecordFormState> build(
-      {String? id, required String patientId}) async {
+  Future<PatientRecordFormState> build({
+    String? id,
+    required String patientId,
+  }) async {
     final auth = await ref.read(authControllerProvider.future);
     final patientRecordRepo = ref.read(patientRecordRepositoryProvider);
     final patient = await ref.read(patientControllerProvider(patientId).future);

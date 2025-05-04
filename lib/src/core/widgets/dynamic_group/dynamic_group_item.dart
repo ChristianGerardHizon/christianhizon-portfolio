@@ -45,6 +45,33 @@ class DynamicGroupItem extends StatelessWidget {
     );
   }
 
+  static DynamicGroupItem field({
+    Widget? leading,
+    Widget? trailing,
+    required String title,
+    Widget? value,
+    Color? titleColor,
+    VoidCallback? onTap,
+    VoidCallback? onLongPress,
+  }) {
+    final context = rootKey.currentContext!;
+    final theme = Theme.of(context);
+
+    return DynamicGroupItem(
+        onTap: onTap,
+        onLongPress: onLongPress,
+        leading: leading,
+        trailing: trailing,
+        value: value,
+        title: Text(
+          title,
+          style: theme.textTheme.bodySmall?.copyWith(
+            fontWeight: FontWeight.w500,
+            color: titleColor ?? theme.colorScheme.primary,
+          ),
+        ));
+  }
+
   static DynamicGroupItem text({
     Widget? leading,
     Widget? trailing,

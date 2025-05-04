@@ -26,10 +26,11 @@ class PatientRecordFormPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final _id = useState<String?>(id);
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
-    final provider = ref.watch(
-        patientRecordFormControllerProvider(patientId: parentId, id: id));
+    final provider = ref.watch(patientRecordFormControllerProvider(
+        patientId: parentId, id: _id.value));
 
     ///
     /// Submit
@@ -207,28 +208,6 @@ class PatientRecordFormPage extends HookConsumerWidget {
                   minLines: 1,
                   maxLines: 10,
                   validator: FormBuilderValidators.compose([]),
-                ),
-
-                ///
-                /// Follow Up Date and Time
-                ///
-                DynamicDateTimeField(
-                  name: PatientRecordField.followUpDate,
-                  initialValue: patientRecord?.followUpDate,
-                  decoration: InputDecoration(
-                    label: Text('Follow Up Date and Time'),
-                    border: OutlineInputBorder(),
-                    helperText:
-                        'Select a date or time in the future or leave empty if no follow up is needed',
-                  ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                  ]),
-                  valueTransformer: (p0) {
-                    final value = p0;
-                    if (value is DateTime)
-                      return value.toUtc().toIso8601String();
-                  },
                 ),
 
                 DynamicFieldGroup(

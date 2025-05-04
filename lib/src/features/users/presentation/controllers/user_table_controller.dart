@@ -36,7 +36,7 @@ class UserTableController extends _$UserTableController {
           filter: filterFunc.searchName(tableFilter),
           pageNo: page,
           pageSize: pageSize,
-          sort: '+created',
+          sort: '-updated',
         )
 
         // 2. success sideffect

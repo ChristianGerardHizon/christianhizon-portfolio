@@ -8,6 +8,7 @@ import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
+import 'package:gym_system/src/features/product_inventories/presentation/controllers/product_inventory_table_controller.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_controller.dart';
@@ -53,6 +54,7 @@ class ProductFormPage extends HookConsumerWidget {
         (r) {
           AppSnackBar.root(message: 'Success');
           ref.invalidate(productTableControllerProvider);
+          ref.invalidate(productInventoryTableControllerProvider);
           ref.invalidate(productControllerProvider(r.id));
 
           context.pop();
@@ -248,7 +250,7 @@ class ProductFormPage extends HookConsumerWidget {
                         ),
                         validator: FormBuilderValidators.compose(
                           [
-                            FormBuilderValidators.required(),
+                            // FormBuilderValidators.required(),
                           ],
                         ),
                       ),

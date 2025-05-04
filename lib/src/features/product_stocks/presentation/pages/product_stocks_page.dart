@@ -9,6 +9,7 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
+import 'package:gym_system/src/features/product_stocks/presentation/widgets/expiration_text.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/product_stocks/data/product_stock_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
@@ -132,13 +133,35 @@ class ProductStocksPage extends HookConsumerWidget {
             },
           ),
           TableColumn(
+            header: 'Expiration',
+            alignment: Alignment.centerLeft,
+            width: 240,
+            builder: (context, productStock, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Builder(
+                  builder: (_) {
+                    final expiration = productStock.expiration;
+                    if (expiration is DateTime) {
+                      return ExpirationStatusText(expirationDate: expiration);
+                    }
+                    return Text('-');
+                  },
+                ),
+              );
+            },
+          ),
+          TableColumn(
             header: 'Actions',
             alignment: Alignment.centerLeft,
             width: 150,
             builder: (context, productStock, row, column) {
               return Align(
                 alignment: Alignment.centerLeft,
-                child: TextButton(onPressed: () {}, child: Text('Add Stock')),
+                child: TextButton(
+                  onPressed: () {},
+                  child: Text('Adjust Stock'),
+                ),
               );
             },
           ),

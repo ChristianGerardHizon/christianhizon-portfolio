@@ -142,6 +142,28 @@ class PatientTreatmentRecordFormPage extends HookConsumerWidget {
                     }),
 
                 ///
+                /// Treatment
+                ///
+                DynamicSelectField(
+                  name: PatientTreatmentRecordField.treatment,
+                  initialValue: patientTreatmentRecord?.treatment,
+                  decoration: InputDecoration(
+                    label: Text('Treatment'),
+                    border: OutlineInputBorder(),
+                  ),
+                  options: patientTreatments
+                      .map((e) => SelectOption(
+                            value: e.id,
+                            display: e.name,
+                          ))
+                      .toList(),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                  ]),
+                  
+                ),
+
+                ///
                 /// Treatment Date
                 ///
                 DynamicDateTimeField(
@@ -162,24 +184,6 @@ class PatientTreatmentRecordFormPage extends HookConsumerWidget {
                 ),
 
                 ///
-                /// Treatment
-                ///
-                DynamicSelectField(
-                  name: PatientTreatmentRecordField.treatment,
-                  initialValue: patientTreatmentRecord?.treatment,
-                  decoration: InputDecoration(
-                    label: Text('Treatment'),
-                    border: OutlineInputBorder(),
-                  ),
-                  options: patientTreatments
-                      .map((e) => SelectOption(
-                            value: e.id,
-                            display: e.name,
-                          ))
-                      .toList(),
-                ),
-
-                ///
                 /// Note
                 ///
                 DynamicTextField(
@@ -192,6 +196,28 @@ class PatientTreatmentRecordFormPage extends HookConsumerWidget {
                   minLines: 1,
                   maxLines: 10,
                   validator: FormBuilderValidators.compose([]),
+                ),
+
+                ///
+                /// Follow Up Date and Time
+                ///
+                DynamicDateField(
+                  name: PatientRecordField.followUpDate,
+                  initialValue: patientTreatmentRecord?.followUpDate,
+                  decoration: InputDecoration(
+                    label: Text('Follow Up Date'),
+                    border: OutlineInputBorder(),
+                    helperText:
+                        'Select a date or time in the future or leave empty if no follow up is needed',
+                  ),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                  ]),
+                  valueTransformer: (p0) {
+                    final value = p0;
+                    if (value is DateTime)
+                      return value.toUtc().toIso8601String();
+                  },
                 ),
               ],
               onSubmit: (result) => onSave(patientTreatmentRecord, result),

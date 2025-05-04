@@ -7,7 +7,7 @@ part of 'admin_table_controller.dart';
 // **************************************************************************
 
 String _$adminTableControllerHash() =>
-    r'eb5020c85b173276d74efde9f16397b4ec82b739';
+    r'6977f4cb5ab9790b327e309349516298bdb763c1';
 
 /// Copied from Dart SDK
 class _SystemHash {

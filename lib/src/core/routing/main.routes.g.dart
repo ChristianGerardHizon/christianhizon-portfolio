@@ -44,7 +44,7 @@ List<RouteBase> get $appRoutes => [
       $patientTreatmentRecordPageRoute,
       $patientTreatmentsRecordPageRoute,
       $patientTreatmentRecordFormPageRoute,
-      $appointmentsPageRoute,
+      $appointmentSchedulesPageRoute,
       $changeLogsPageRoute,
       $changeLogPageRoute,
       $changeLogFormPageRoute,
@@ -286,8 +286,8 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
-              path: '/appointments',
-              factory: $AppointmentsPageRouteExtension._fromState,
+              path: '/appointments-schedules',
+              factory: $AppointmentSchedulesPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -991,12 +991,13 @@ extension $YourAccountPageRouteExtension on YourAccountPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $AppointmentsPageRouteExtension on AppointmentsPageRoute {
-  static AppointmentsPageRoute _fromState(GoRouterState state) =>
-      const AppointmentsPageRoute();
+extension $AppointmentSchedulesPageRouteExtension
+    on AppointmentSchedulesPageRoute {
+  static AppointmentSchedulesPageRoute _fromState(GoRouterState state) =>
+      const AppointmentSchedulesPageRoute();
 
   String get location => GoRouteData.$location(
-        '/appointments',
+        '/appointments-schedules',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -1295,9 +1296,9 @@ RouteBase get $patientTreatmentRecordFormPageRoute => GoRouteData.$route(
       factory: $PatientTreatmentRecordFormPageRouteExtension._fromState,
     );
 
-RouteBase get $appointmentsPageRoute => GoRouteData.$route(
-      path: '/appointments',
-      factory: $AppointmentsPageRouteExtension._fromState,
+RouteBase get $appointmentSchedulesPageRoute => GoRouteData.$route(
+      path: '/appointments-schedules',
+      factory: $AppointmentSchedulesPageRouteExtension._fromState,
     );
 
 RouteBase get $changeLogsPageRoute => GoRouteData.$route(
