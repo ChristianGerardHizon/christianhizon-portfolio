@@ -13,16 +13,19 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'patient_treatment_repository.g.dart';
 
 @Riverpod(keepAlive: true)
-PBCollectionRepository<PatientTreatment> treatmentRepository(Ref ref) {
-  return TreatmentRepositoryImpl(
+PBCollectionRepository<PatientTreatment> patientTreatmentRepository(Ref ref) {
+  return PatientTreatmentRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class TreatmentRepositoryImpl extends PBCollectionRepository<PatientTreatment> {
+class PatientTreatmentRepositoryImpl
+    extends PBCollectionRepository<PatientTreatment> {
   final PocketBase pb;
 
-  TreatmentRepositoryImpl({required this.pb});
+  PatientTreatmentRepositoryImpl({required this.pb});
+
+  // final expand = PBExpand.admin;
 
   RecordService get collection =>
       pb.collection(PocketBaseCollections.treatments);

@@ -25,6 +25,9 @@ import 'package:gym_system/src/features/change_logs/presentation/pages/change_lo
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:gym_system/src/features/patient_records/presentation/pages/patient_record_form_page.dart';
 import 'package:gym_system/src/features/patient_records/presentation/pages/patient_record_page.dart';
+import 'package:gym_system/src/features/patient_treament_records/presentation/pages/patient_treatment_record_form_page.dart';
+import 'package:gym_system/src/features/patient_treament_records/presentation/pages/patient_treatment_record_page.dart';
+import 'package:gym_system/src/features/patient_treament_records/presentation/pages/patient_treatment_records_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_form_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
@@ -106,12 +109,39 @@ class SplashPageRoute extends GoRouteData {
     ///
     TypedStatefulShellBranch<PatientsBranchData>(
       routes: <TypeRouteData>[
+        ///
+        /// Patient
+        ///
         TypedGoRoute<PatientsPageRoute>(path: PatientsPageRoute.path),
         TypedGoRoute<PatientFormPageRoute>(path: PatientFormPageRoute.path),
         TypedGoRoute<PatientPageRoute>(path: PatientPageRoute.path),
+
+        ///
+        /// Patient Record
+        ///
         TypedGoRoute<PatientRecordPageRoute>(path: PatientRecordPageRoute.path),
         TypedGoRoute<PatientRecordFormPageRoute>(
             path: PatientRecordFormPageRoute.path),
+
+        ///
+        /// Categories
+        ///
+        TypedGoRoute<ProductCategoriesPageRoute>(
+            path: ProductCategoriesPageRoute.path),
+        TypedGoRoute<ProductCategoryPageRoute>(
+            path: ProductCategoryPageRoute.path),
+        TypedGoRoute<ProductCategoryFormPageRoute>(
+            path: ProductCategoryFormPageRoute.path),
+
+        ///
+        /// Patient Treatment
+        ///
+        TypedGoRoute<PatientTreatmentsRecordPageRoute>(
+            path: PatientTreatmentsRecordPageRoute.path),
+        TypedGoRoute<PatientTreatmentRecordPageRoute>(
+            path: PatientTreatmentRecordPageRoute.path),
+        TypedGoRoute<PatientTreatmentRecordFormPageRoute>(
+            path: PatientTreatmentRecordFormPageRoute.path),
       ],
     ),
 
@@ -120,28 +150,25 @@ class SplashPageRoute extends GoRouteData {
     ///
     TypedStatefulShellBranch<ProductsBranchData>(
       routes: <TypeRouteData>[
+        ///
+        /// Products
+        ///
         TypedGoRoute<ProductsPageRoute>(path: ProductsPageRoute.path),
-        TypedGoRoute<ProductInventoriesPageRoute>(
-            path: ProductInventoriesPageRoute.path),
         TypedGoRoute<ProductPageRoute>(path: ProductPageRoute.path),
         TypedGoRoute<ProductFormPageRoute>(path: ProductFormPageRoute.path),
+
+        ///
+        /// Inventory
+        ///
+        TypedGoRoute<ProductInventoriesPageRoute>(
+            path: ProductInventoriesPageRoute.path),
+
+        ///
+        /// Stocks
+        ///
         TypedGoRoute<ProductStockFormPageRoute>(
             path: ProductStockFormPageRoute.path),
         TypedGoRoute<ProductStockPageRoute>(path: ProductStockPageRoute.path),
-      ],
-    ),
-
-    ///
-    /// Product Category
-    ///
-    TypedStatefulShellBranch<ProductCategoryBranchData>(
-      routes: <TypeRouteData>[
-        TypedGoRoute<ProductCategoriesPageRoute>(
-            path: ProductCategoriesPageRoute.path),
-        TypedGoRoute<ProductCategoryPageRoute>(
-            path: ProductCategoryPageRoute.path),
-        TypedGoRoute<ProductCategoryFormPageRoute>(
-            path: ProductCategoryFormPageRoute.path),
       ],
     ),
 
@@ -231,29 +258,6 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<AppointmentBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<AppointmentsPageRoute>(path: AppointmentsPageRoute.path),
-      ],
-    ),
-
-    ///
-    /// Medical Records
-    ///
-    // TypedStatefulShellBranch<PatientRecordsBranchData>(
-    //   routes: <TypeRouteData>[
-    //     TypedGoRoute<PatientRecordsPageRoute>(
-    //         path: PatientRecordsPageRoute.path),
-    //     TypedGoRoute<PatientRecordPageRoute>(path: PatientRecordPageRoute.path),
-    //   ],
-    // ),
-
-    ///
-    /// PatientTreatment Records
-    ///
-    TypedStatefulShellBranch<PatientTreatmentRecordsBranchData>(
-      routes: <TypeRouteData>[
-        TypedGoRoute<PatientTreatmentRecordsPageRoute>(
-            path: PatientTreatmentRecordsPageRoute.path),
-        TypedGoRoute<PatientTreatmentRecordPageRoute>(
-            path: PatientTreatmentRecordPageRoute.path),
       ],
     ),
   ],

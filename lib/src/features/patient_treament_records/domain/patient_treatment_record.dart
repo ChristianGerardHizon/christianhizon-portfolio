@@ -1,6 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:gym_system/src/core/classes/pb_record.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
+import 'package:gym_system/src/core/hooks/date_time_hook.dart';
 import 'package:gym_system/src/features/patient_treaments/domain/patient_treatment.dart';
 
 part 'patient_treatment_record.mapper.dart';
@@ -8,24 +8,28 @@ part 'patient_treatment_record.mapper.dart';
 @MappableClass()
 class PatientTreatmentRecord extends PbRecord
     with PatientTreatmentRecordMappable {
-  final String type;
+  final String treatment;
   final String patient;
+
+  @MappableField(hook: DateTimeHook())
   final DateTime? followUpDate;
+
+  @MappableField(hook: DateTimeHook())
   final DateTime? date;
   final String? notes;
 
-  final PatientTreatmentRecordExpand? expand;
+  final PatientTreatmentRecordExpand expand;
 
   PatientTreatmentRecord({
     required super.id,
     required super.collectionId,
     required super.collectionName,
-    required this.type,
+    required this.treatment,
     required this.patient,
     this.followUpDate,
     this.date,
     this.notes,
-    this.expand,
+    required this.expand,
     super.isDeleted = false,
     super.created,
     super.updated,
@@ -34,14 +38,6 @@ class PatientTreatmentRecord extends PbRecord
   static fromMap(Map<String, dynamic> raw) {
     return PatientTreatmentRecordMapper.fromMap({
       ...raw,
-      PatientTreatmentRecordField.followUpDate:
-          raw[PatientTreatmentRecordField.followUpDate] == ''
-              ? null
-              : raw[PatientTreatmentRecordField.followUpDate],
-      PatientTreatmentRecordField.date:
-          raw[PatientTreatmentRecordField.date] == ''
-              ? null
-              : raw[PatientTreatmentRecordField.date],
     });
   }
 
@@ -50,10 +46,10 @@ class PatientTreatmentRecord extends PbRecord
 
 @MappableClass()
 class PatientTreatmentRecordExpand with PatientTreatmentRecordExpandMappable {
-  final PatientTreatment? type;
+  final PatientTreatment treatment;
 
   PatientTreatmentRecordExpand({
-    this.type,
+    required this.treatment,
   });
 
   static fromMap(Map<String, dynamic> raw) {

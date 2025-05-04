@@ -14,7 +14,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'patient_treatment_record_repository.g.dart';
 
 @Riverpod(keepAlive: true)
-PBCollectionRepository<PatientTreatmentRecord> treatmentRecordRepository(
+PBCollectionRepository<PatientTreatmentRecord> patientTreatmentRecordRepository(
     Ref ref) {
   return PatientTreatmentRecordRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
@@ -30,7 +30,7 @@ class PatientTreatmentRecordRepositoryImpl
   RecordService get collection =>
       pb.collection(PocketBaseCollections.treatmentRecords);
 
-  final expand = PBExpand.patientTreatment;
+  final expand = PBExpand.patientTreatmentRecord;
 
   PatientTreatmentRecord mapToData(Map<String, dynamic> map) {
     return PatientTreatmentRecord.fromMap({...map, 'domain': pb.baseURL});
@@ -50,7 +50,11 @@ class PatientTreatmentRecordRepositoryImpl
     List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(body: payload, files: files);
+      final response = await collection.create(
+        body: payload,
+        files: files,
+        expand: expand,
+      );
       return mapToData(response.toJson());
     }, Failure.handle);
   }
@@ -77,6 +81,7 @@ class PatientTreatmentRecordRepositoryImpl
         sort: sort,
         expand: expand,
       );
+
       return PageResults(
         page: result.page,
         perPage: result.perPage,
@@ -85,9 +90,6 @@ class PatientTreatmentRecordRepositoryImpl
         items: result.items.map<PatientTreatmentRecord>((e) {
           return mapToData({
             ...e.toJson(),
-            'expand': {
-              'type': e.get('expand.type'),
-            },
           });
         }).toList(),
       );

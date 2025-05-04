@@ -5,6 +5,9 @@ class TableControllerKeys {
   static String productStockProduct(String x) => '${productStock}_${x}';
   static String patient = 'PATIENT';
   static String patientRecord = 'PATIENT_RECORD';
+  static String patientTreatmentRecord = 'PATIENT_TREATMENT_RECORD';
+  static String patientTreatmentRecordPatient(String x) =>
+      '${patientTreatmentRecord}_${x}';
   static String branch = 'BRANCH';
   static String admin = 'ADMIN';
   static String user = 'USER';

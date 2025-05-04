@@ -39,7 +39,7 @@ class AppRoot extends HookConsumerWidget {
     final scaffoldKey = ref.watch(scaffoldControllerProvider);
 
     ref.watch(settingsControllerProvider);
-    ref.watch(treatmentsControllerProvider);
+    ref.watch(patientTreatmentsControllerProvider);
     ref.watch(branchesControllerProvider);
 
     ref.watch(tableControllerProvider(TableControllerKeys.product));

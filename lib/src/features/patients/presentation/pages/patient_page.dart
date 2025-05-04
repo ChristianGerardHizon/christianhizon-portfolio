@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/patient_records/presentation/pages/patient_records_page.dart';
+import 'package:gym_system/src/features/patient_treament_records/presentation/pages/patient_treatment_records_page.dart';
 import 'package:gym_system/src/features/patient_treaments/presentation/controllers/patient_treatments_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:gym_system/src/features/patients/presentation/widgets/patient_details_view.dart';
@@ -25,94 +27,101 @@ class PatientPage extends HookConsumerWidget {
     ///
     refresh() {
       ref.invalidate(provider);
-      ref.invalidate(treatmentsControllerProvider);
+      ref.invalidate(patientTreatmentsControllerProvider);
     }
 
     return DefaultTabController(
       length: 4,
       initialIndex: page ?? 0,
       child: Scaffold(
-        body: state.when(
-          skipError: false,
-          skipLoadingOnRefresh: false,
-          skipLoadingOnReload: false,
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stackTrace) => Scaffold(
-            appBar: AppBar(
-              title: Text('Something Went Wrong'),
-            ),
-            body: Center(child: Text(error.toString())),
-          ),
-          data: (patient) {
-            return SafeArea(
-              child: NestedScrollView(
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    ///
-                    /// AppBar
-                    ///
-                    SliverAppBar(
-                      title: Text(patient.name),
-                      actions: [
-                        RefreshButton(onPressed: () {
-                          refresh();
-                        })
-                      ],
-                    ),
+        body: Builder(builder: (context) {
+          ///
+          /// Loading
+          ///
+          if (state.isLoading)
+            return const Center(child: CircularProgressIndicator());
 
-                    SliverOverlapAbsorber(
-                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                          context),
-                      sliver: PinnedHeaderSliver(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).appBarTheme.backgroundColor,
-                          ),
-                          child: TabBar(
-                            isScrollable: true,
-                            tabs: [
-                              Tab(
-                                icon: Icon(MIcons.accountOutline),
-                                child: Text('Details'),
-                              ),
-                              Tab(
-                                icon: Icon(MIcons.informationOutline),
-                                child: Text('Records'),
-                              ),
-                              Tab(
-                                icon: Icon(MIcons.hospitalBoxOutline),
-                                child: Text('Treatments'),
-                              ),
-                              Tab(
-                                icon: Icon(MIcons.fileOutline),
-                                child: Text('Files'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  ];
-                },
-                body: Padding(
-                  padding: const EdgeInsets.only(top: 75),
-                  child: TabBarView(
-                    children: [
-                      PatientDetailsView(patient),
-                      PatientRecordsPage(patient: patient, showAppBar: false),
-                      // PatientTreatmentRecordView(patient: patient),
-                      SizedBox(),
-                      Center(
-                        child: Text('No Files'),
-                      ),
+          ///
+          /// Error
+          ///
+          if (state.hasError) return FailureMessage.asyncValueWidget(state);
+
+          ///
+          /// Content
+          ///
+          final patient = state.value!;
+          return SafeArea(
+            child: NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  ///
+                  /// AppBar
+                  ///
+                  SliverAppBar(
+                    title: Text(patient.name),
+                    actions: [
+                      RefreshButton(onPressed: () {
+                        refresh();
+                      })
                     ],
                   ),
+
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                        context),
+                    sliver: PinnedHeaderSliver(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).appBarTheme.backgroundColor,
+                        ),
+                        child: TabBar(
+                          isScrollable: true,
+                          tabs: [
+                            Tab(
+                              icon: Icon(MIcons.accountOutline),
+                              child: Text('Details'),
+                            ),
+                            Tab(
+                              icon: Icon(MIcons.informationOutline),
+                              child: Text('Records'),
+                            ),
+                            Tab(
+                              icon: Icon(MIcons.hospitalBoxOutline),
+                              child: Text('Treatments'),
+                            ),
+                            Tab(
+                              icon: Icon(MIcons.fileOutline),
+                              child: Text('Files'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ];
+              },
+              body: Padding(
+                padding: const EdgeInsets.only(top: 75),
+                child: TabBarView(
+                  children: [
+                    PatientDetailsView(patient),
+                    PatientRecordsPage(
+                      patient: patient,
+                      showAppBar: false,
+                    ),
+                    PatientTreatmentRecordsPage(
+                      id: patient.id,
+                      showAppBar: false,
+                    ),
+                    Center(
+                      child: Text('No Files'),
+                    ),
+                  ],
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        }),
       ),
     );
   }

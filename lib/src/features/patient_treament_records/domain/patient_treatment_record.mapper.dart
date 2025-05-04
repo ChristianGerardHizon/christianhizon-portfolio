@@ -31,25 +31,25 @@ class PatientTreatmentRecordMapper
   static String _$collectionName(PatientTreatmentRecord v) => v.collectionName;
   static const Field<PatientTreatmentRecord, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$type(PatientTreatmentRecord v) => v.type;
-  static const Field<PatientTreatmentRecord, String> _f$type =
-      Field('type', _$type);
+  static String _$treatment(PatientTreatmentRecord v) => v.treatment;
+  static const Field<PatientTreatmentRecord, String> _f$treatment =
+      Field('treatment', _$treatment);
   static String _$patient(PatientTreatmentRecord v) => v.patient;
   static const Field<PatientTreatmentRecord, String> _f$patient =
       Field('patient', _$patient);
   static DateTime? _$followUpDate(PatientTreatmentRecord v) => v.followUpDate;
   static const Field<PatientTreatmentRecord, DateTime> _f$followUpDate =
-      Field('followUpDate', _$followUpDate, opt: true);
+      Field('followUpDate', _$followUpDate, opt: true, hook: DateTimeHook());
   static DateTime? _$date(PatientTreatmentRecord v) => v.date;
   static const Field<PatientTreatmentRecord, DateTime> _f$date =
-      Field('date', _$date, opt: true);
+      Field('date', _$date, opt: true, hook: DateTimeHook());
   static String? _$notes(PatientTreatmentRecord v) => v.notes;
   static const Field<PatientTreatmentRecord, String> _f$notes =
       Field('notes', _$notes, opt: true);
-  static PatientTreatmentRecordExpand? _$expand(PatientTreatmentRecord v) =>
+  static PatientTreatmentRecordExpand _$expand(PatientTreatmentRecord v) =>
       v.expand;
   static const Field<PatientTreatmentRecord, PatientTreatmentRecordExpand>
-      _f$expand = Field('expand', _$expand, opt: true);
+      _f$expand = Field('expand', _$expand);
   static bool _$isDeleted(PatientTreatmentRecord v) => v.isDeleted;
   static const Field<PatientTreatmentRecord, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
@@ -65,7 +65,7 @@ class PatientTreatmentRecordMapper
     #id: _f$id,
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
-    #type: _f$type,
+    #treatment: _f$treatment,
     #patient: _f$patient,
     #followUpDate: _f$followUpDate,
     #date: _f$date,
@@ -81,7 +81,7 @@ class PatientTreatmentRecordMapper
         id: data.dec(_f$id),
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
-        type: data.dec(_f$type),
+        treatment: data.dec(_f$treatment),
         patient: data.dec(_f$patient),
         followUpDate: data.dec(_f$followUpDate),
         date: data.dec(_f$date),
@@ -151,13 +151,13 @@ abstract class PatientTreatmentRecordCopyWith<
     $In extends PatientTreatmentRecord,
     $Out> implements PbRecordCopyWith<$R, $In, $Out> {
   PatientTreatmentRecordExpandCopyWith<$R, PatientTreatmentRecordExpand,
-      PatientTreatmentRecordExpand>? get expand;
+      PatientTreatmentRecordExpand> get expand;
   @override
   $R call(
       {String? id,
       String? collectionId,
       String? collectionName,
-      String? type,
+      String? treatment,
       String? patient,
       DateTime? followUpDate,
       DateTime? date,
@@ -181,19 +181,19 @@ class _PatientTreatmentRecordCopyWithImpl<$R, $Out>
       PatientTreatmentRecordMapper.ensureInitialized();
   @override
   PatientTreatmentRecordExpandCopyWith<$R, PatientTreatmentRecordExpand,
-          PatientTreatmentRecordExpand>?
-      get expand => $value.expand?.copyWith.$chain((v) => call(expand: v));
+          PatientTreatmentRecordExpand>
+      get expand => $value.expand.copyWith.$chain((v) => call(expand: v));
   @override
   $R call(
           {String? id,
           String? collectionId,
           String? collectionName,
-          String? type,
+          String? treatment,
           String? patient,
           Object? followUpDate = $none,
           Object? date = $none,
           Object? notes = $none,
-          Object? expand = $none,
+          PatientTreatmentRecordExpand? expand,
           bool? isDeleted,
           Object? created = $none,
           Object? updated = $none}) =>
@@ -201,12 +201,12 @@ class _PatientTreatmentRecordCopyWithImpl<$R, $Out>
         if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
-        if (type != null) #type: type,
+        if (treatment != null) #treatment: treatment,
         if (patient != null) #patient: patient,
         if (followUpDate != $none) #followUpDate: followUpDate,
         if (date != $none) #date: date,
         if (notes != $none) #notes: notes,
-        if (expand != $none) #expand: expand,
+        if (expand != null) #expand: expand,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated
@@ -216,7 +216,7 @@ class _PatientTreatmentRecordCopyWithImpl<$R, $Out>
       id: data.get(#id, or: $value.id),
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
-      type: data.get(#type, or: $value.type),
+      treatment: data.get(#treatment, or: $value.treatment),
       patient: data.get(#patient, or: $value.patient),
       followUpDate: data.get(#followUpDate, or: $value.followUpDate),
       date: data.get(#date, or: $value.date),
@@ -249,17 +249,18 @@ class PatientTreatmentRecordExpandMapper
   @override
   final String id = 'PatientTreatmentRecordExpand';
 
-  static PatientTreatment? _$type(PatientTreatmentRecordExpand v) => v.type;
-  static const Field<PatientTreatmentRecordExpand, PatientTreatment> _f$type =
-      Field('type', _$type, opt: true);
+  static PatientTreatment _$treatment(PatientTreatmentRecordExpand v) =>
+      v.treatment;
+  static const Field<PatientTreatmentRecordExpand, PatientTreatment>
+      _f$treatment = Field('treatment', _$treatment);
 
   @override
   final MappableFields<PatientTreatmentRecordExpand> fields = const {
-    #type: _f$type,
+    #treatment: _f$treatment,
   };
 
   static PatientTreatmentRecordExpand _instantiate(DecodingData data) {
-    return PatientTreatmentRecordExpand(type: data.dec(_f$type));
+    return PatientTreatmentRecordExpand(treatment: data.dec(_f$treatment));
   }
 
   @override
@@ -322,8 +323,9 @@ abstract class PatientTreatmentRecordExpandCopyWith<
     $R,
     $In extends PatientTreatmentRecordExpand,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
-  PatientTreatmentCopyWith<$R, PatientTreatment, PatientTreatment>? get type;
-  $R call({PatientTreatment? type});
+  PatientTreatmentCopyWith<$R, PatientTreatment, PatientTreatment>
+      get treatment;
+  $R call({PatientTreatment? treatment});
   PatientTreatmentRecordExpandCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -340,14 +342,16 @@ class _PatientTreatmentRecordExpandCopyWithImpl<$R, $Out>
   late final ClassMapperBase<PatientTreatmentRecordExpand> $mapper =
       PatientTreatmentRecordExpandMapper.ensureInitialized();
   @override
-  PatientTreatmentCopyWith<$R, PatientTreatment, PatientTreatment>? get type =>
-      $value.type?.copyWith.$chain((v) => call(type: v));
+  PatientTreatmentCopyWith<$R, PatientTreatment, PatientTreatment>
+      get treatment =>
+          $value.treatment.copyWith.$chain((v) => call(treatment: v));
   @override
-  $R call({Object? type = $none}) =>
-      $apply(FieldCopyWithData({if (type != $none) #type: type}));
+  $R call({PatientTreatment? treatment}) =>
+      $apply(FieldCopyWithData({if (treatment != null) #treatment: treatment}));
   @override
   PatientTreatmentRecordExpand $make(CopyWithData data) =>
-      PatientTreatmentRecordExpand(type: data.get(#type, or: $value.type));
+      PatientTreatmentRecordExpand(
+          treatment: data.get(#treatment, or: $value.treatment));
 
   @override
   PatientTreatmentRecordExpandCopyWith<$R2, PatientTreatmentRecordExpand, $Out2>

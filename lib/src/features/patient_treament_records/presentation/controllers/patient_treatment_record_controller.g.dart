@@ -7,7 +7,7 @@ part of 'patient_treatment_record_controller.dart';
 // **************************************************************************
 
 String _$patientTreatmentRecordControllerHash() =>
-    r'193536256f25d2650555671c199a7e1a6b3f5c8f';
+    r'cc1e571cd57f153a5e92d1453d5673be445fe0ea';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,10 +31,10 @@ class _SystemHash {
 }
 
 abstract class _$PatientTreatmentRecordController
-    extends BuildlessAutoDisposeAsyncNotifier<PatientTreatmentRecord> {
+    extends BuildlessAutoDisposeAsyncNotifier<PatientTreatmentRecordState> {
   late final String id;
 
-  FutureOr<PatientTreatmentRecord> build(
+  FutureOr<PatientTreatmentRecordState> build(
     String id,
   );
 }
@@ -46,7 +46,7 @@ const patientTreatmentRecordControllerProvider =
 
 /// See also [PatientTreatmentRecordController].
 class PatientTreatmentRecordControllerFamily
-    extends Family<AsyncValue<PatientTreatmentRecord>> {
+    extends Family<AsyncValue<PatientTreatmentRecordState>> {
   /// See also [PatientTreatmentRecordController].
   const PatientTreatmentRecordControllerFamily();
 
@@ -86,7 +86,7 @@ class PatientTreatmentRecordControllerFamily
 /// See also [PatientTreatmentRecordController].
 class PatientTreatmentRecordControllerProvider
     extends AutoDisposeAsyncNotifierProviderImpl<
-        PatientTreatmentRecordController, PatientTreatmentRecord> {
+        PatientTreatmentRecordController, PatientTreatmentRecordState> {
   /// See also [PatientTreatmentRecordController].
   PatientTreatmentRecordControllerProvider(
     String id,
@@ -117,7 +117,7 @@ class PatientTreatmentRecordControllerProvider
   final String id;
 
   @override
-  FutureOr<PatientTreatmentRecord> runNotifierBuild(
+  FutureOr<PatientTreatmentRecordState> runNotifierBuild(
     covariant PatientTreatmentRecordController notifier,
   ) {
     return notifier.build(
@@ -143,7 +143,7 @@ class PatientTreatmentRecordControllerProvider
 
   @override
   AutoDisposeAsyncNotifierProviderElement<PatientTreatmentRecordController,
-      PatientTreatmentRecord> createElement() {
+      PatientTreatmentRecordState> createElement() {
     return _PatientTreatmentRecordControllerProviderElement(this);
   }
 
@@ -164,7 +164,7 @@ class PatientTreatmentRecordControllerProvider
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin PatientTreatmentRecordControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<PatientTreatmentRecord> {
+    on AutoDisposeAsyncNotifierProviderRef<PatientTreatmentRecordState> {
   /// The parameter `id` of this provider.
   String get id;
 }
@@ -172,7 +172,7 @@ mixin PatientTreatmentRecordControllerRef
 class _PatientTreatmentRecordControllerProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<
         PatientTreatmentRecordController,
-        PatientTreatmentRecord> with PatientTreatmentRecordControllerRef {
+        PatientTreatmentRecordState> with PatientTreatmentRecordControllerRef {
   _PatientTreatmentRecordControllerProviderElement(super.provider);
 
   @override

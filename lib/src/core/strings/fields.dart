@@ -100,7 +100,7 @@ class PatientTreatmentRecordField {
   static const String updated = PbField.updated;
   static const String isDeleted = PbField.isDeleted;
 
-  static const String type = 'type';
+  static const String treatment = 'treatment';
   static const String patient = 'patient';
   static const String date = 'date';
   static const String note = 'notes';

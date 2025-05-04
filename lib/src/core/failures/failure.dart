@@ -22,6 +22,13 @@ sealed class Failure with FailureMappable {
       returnMessage = data['message'] ?? defaultMessage;
     }
 
+    if (error is GenericFailure) {
+      print(error.toString());
+      final defaultMessage = 'Generic Failure';
+      final data = error.message;
+      returnMessage = data ?? defaultMessage;
+    }
+
     if (error is String) {
       returnMessage = error;
     }

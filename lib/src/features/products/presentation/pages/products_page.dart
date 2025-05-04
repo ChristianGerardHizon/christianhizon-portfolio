@@ -86,7 +86,7 @@ class ProductsPage extends HookConsumerWidget {
         tableKey: TableControllerKeys.product,
         error: FailureMessage.asyncValue(listState),
         isLoading: listState.isLoading,
-        items: listState.value ?? [],
+        items: listState.valueOrNull ?? [],
         onDelete: onDelete,
         onRowTap: onTap,
 

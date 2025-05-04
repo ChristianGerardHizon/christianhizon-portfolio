@@ -86,7 +86,7 @@ class UsersPage extends HookConsumerWidget {
         tableKey: TableControllerKeys.user,
         error: FailureMessage.asyncValue(listState),
         isLoading: listState.isLoading,
-        items: listState.value ?? [],
+        items: listState.valueOrNull ?? [],
         onDelete: onDelete,
         onRowTap: onTap,
 

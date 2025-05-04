@@ -86,7 +86,7 @@ class BranchesPage extends HookConsumerWidget {
         tableKey: TableControllerKeys.branch,
         error: FailureMessage.asyncValue(listState),
         isLoading: listState.isLoading,
-        items: listState.value ?? [],
+        items: listState.valueOrNull ?? [],
         onDelete: onDelete,
         onRowTap: onTap,
 

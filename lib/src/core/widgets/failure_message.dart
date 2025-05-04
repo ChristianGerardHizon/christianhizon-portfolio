@@ -14,6 +14,10 @@ class FailureMessage extends HookWidget {
     return FailureMessage(value.error, value.stackTrace);
   }
 
+  static Widget asyncValueWidget(AsyncValue<dynamic> value) {
+    return FailureMessage(value.error, value.stackTrace);
+  }
+
   @override
   Widget build(BuildContext context) {
     final errorData = error;

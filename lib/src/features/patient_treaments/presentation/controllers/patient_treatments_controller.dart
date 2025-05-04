@@ -6,10 +6,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'patient_treatments_controller.g.dart';
 
 @riverpod
-class TreatmentsController extends _$TreatmentsController {
+class PatientTreatmentsController extends _$PatientTreatmentsController {
   @override
   FutureOr<List<PatientTreatment>> build() async {
-    final result = await ref.read(treatmentRepositoryProvider).listAll().run();
+    final result =
+        await ref.read(patientTreatmentRepositoryProvider).listAll().run();
     return result.fold(Future.error, Future.value);
   }
 }

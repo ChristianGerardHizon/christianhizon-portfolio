@@ -88,14 +88,15 @@ class DynamicTableView<T> extends HookConsumerWidget {
               ///
               /// Serch Bar
               ///
-              SliverToBoxAdapter(
-                child: TextSearchBar(
-                  controller: searchCtrl,
-                  onClear: onClear,
-                  onSearch: onSearch,
-                  onCreate: onCreate,
+              if (error == null)
+                SliverToBoxAdapter(
+                  child: TextSearchBar(
+                    controller: searchCtrl,
+                    onClear: onClear,
+                    onSearch: onSearch,
+                    onCreate: onCreate,
+                  ),
                 ),
-              ),
 
               ///
               /// on error
@@ -105,125 +106,128 @@ class DynamicTableView<T> extends HookConsumerWidget {
               ///
               ///  Content
               ///
-              SliverDynamicBase(
-                tableKey: tableKey,
-                itemCount: items.length,
+              if (error == null)
+                SliverDynamicBase(
+                  tableKey: tableKey,
+                  itemCount: items.length,
 
-                onTableRowTap: (index) {
-                  final isSelected = selected.contains(index);
-                  if (!isSelected && selected.isNotEmpty) {
-                    notifier.toggleRow(index);
-                    return;
-                  }
-                  if (isSelected) {
-                    notifier.toggleRow(index);
-                    return;
-                  }
+                  onTableRowTap: (index) {
+                    final isSelected = selected.contains(index);
+                    if (!isSelected && selected.isNotEmpty) {
+                      notifier.toggleRow(index);
+                      return;
+                    }
+                    if (isSelected) {
+                      notifier.toggleRow(index);
+                      return;
+                    }
 
-                  onRowTap?.call(items[index]);
-                },
+                    onRowTap?.call(items[index]);
+                  },
 
-                ///
-                /// Table Columns
-                ///
-                columns: columns
-                    .map(
-                      (column) => DynamicTableBaseColumn(
-                        key: column.sortKey,
-                        width: column.width,
-                        flex: column.flex,
-                        maxResizeWidth: column.maxResizeWidth,
-                        minResizeWidth: column.minResizeWidth,
-                        sticky: column.sticky,
-                        freezePriority: column.freezePriority,
-                        translation: column.translation,
-                        builder: (ctxt, _) => InkWell(
-                          onTap: () {
-                            if (column.sortKey == null) return;
-                            notifier.toggleTableSort(column.sortKey!);
-                            onChange?.call(currentPage, sort);
-                          },
-                          child: Padding(
-                            padding: column.padding ??
-                                const EdgeInsets.symmetric(
-                                  horizontal: 8.0,
-                                ),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(),
-                              child: Align(
-                                alignment: column.alignment ?? Alignment.center,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      column.header,
-                                      style: column.style ?? headerTextStyle,
-                                    ),
-
-                                    ///
-                                    /// Sort Arrows
-                                    ///
-                                    if (sort?.key == column.sortKey)
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 4),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            if (sort?.isAscending == true)
-                                              Icon(MIcons.chevronUp),
-                                            if (sort?.isAscending == false)
-                                              Icon(MIcons.chevronDown),
-                                          ],
-                                        ),
+                  ///
+                  /// Table Columns
+                  ///
+                  columns: columns
+                      .map(
+                        (column) => DynamicTableBaseColumn(
+                          key: column.sortKey,
+                          width: column.width,
+                          flex: column.flex,
+                          maxResizeWidth: column.maxResizeWidth,
+                          minResizeWidth: column.minResizeWidth,
+                          sticky: column.sticky,
+                          freezePriority: column.freezePriority,
+                          translation: column.translation,
+                          builder: (ctxt, _) => InkWell(
+                            onTap: () {
+                              if (column.sortKey == null) return;
+                              notifier.toggleTableSort(column.sortKey!);
+                              onChange?.call(currentPage, sort);
+                            },
+                            child: Padding(
+                              padding: column.padding ??
+                                  const EdgeInsets.symmetric(
+                                    horizontal: 8.0,
+                                  ),
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(),
+                                child: Align(
+                                  alignment:
+                                      column.alignment ?? Alignment.center,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        column.header,
+                                        style: column.style ?? headerTextStyle,
                                       ),
-                                  ],
+
+                                      ///
+                                      /// Sort Arrows
+                                      ///
+                                      if (sort?.key == column.sortKey)
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 4),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              if (sort?.isAscending == true)
+                                                Icon(MIcons.chevronUp),
+                                              if (sort?.isAscending == false)
+                                                Icon(MIcons.chevronDown),
+                                            ],
+                                          ),
+                                        ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    )
-                    .toList(),
+                      )
+                      .toList(),
 
-                ///
-                /// Table Rows
-                ///
-                tableRowHeight: 50,
-                tableRowBuilder: (context, value) {
-                  final offset = value.column - 1;
+                  ///
+                  /// Table Rows
+                  ///
+                  tableRowHeight: 50,
+                  tableRowBuilder: (context, value) {
+                    final offset = value.column - 1;
 
-                  final result = columns[offset].builder?.call(
-                        context,
-                        items[value.row],
-                        value.row,
-                        value.column,
+                    final result = columns[offset].builder?.call(
+                          context,
+                          items[value.row],
+                          value.row,
+                          value.column,
+                        );
+
+                    if (result is Widget)
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: result,
                       );
 
-                  if (result is Widget)
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: result,
-                    );
+                    return SizedBox();
+                  },
 
-                  return SizedBox();
-                },
-
-                ///
-                /// Mobile Builder
-                ///
-                mobileBuilder: (context, value) => mobileBuilder(
-                  context,
-                  value.row,
-                  items[value.row],
-                  value.isSelected,
+                  ///
+                  /// Mobile Builder
+                  ///
+                  mobileBuilder: (context, value) => mobileBuilder(
+                    context,
+                    value.row,
+                    items[value.row],
+                    value.isSelected,
+                  ),
                 ),
-              ),
 
               ///
               /// Empty
               ///
-              if (items.isEmpty)
+              if (items.isEmpty && error == null)
                 SliverToBoxAdapter(
                   child: emptyWidget ??
                       SizedBox(
@@ -250,20 +254,21 @@ class DynamicTableView<T> extends HookConsumerWidget {
               ///
               /// Page Selector
               ///
-              SliverPadding(
-                padding: EdgeInsets.only(top: 10, bottom: 30),
-                sliver: SliverToBoxAdapter(
-                  child: PageSelector(
-                    totalPages: state.totalPages,
-                    page: state.page,
-                    enabled: !state.isLoading,
-                    onPageChange: (newPage) {
-                      notifier..changePage(newPage);
-                    },
-                    hasNext: state.hasNext,
+              if (error == null)
+                SliverPadding(
+                  padding: EdgeInsets.only(top: 10, bottom: 30),
+                  sliver: SliverToBoxAdapter(
+                    child: PageSelector(
+                      totalPages: state.totalPages,
+                      page: state.page,
+                      enabled: !state.isLoading,
+                      onPageChange: (newPage) {
+                        notifier..changePage(newPage);
+                      },
+                      hasNext: state.hasNext,
+                    ),
                   ),
-                ),
-              )
+                )
             ],
           ),
 
