@@ -74,15 +74,15 @@ class ProductInventoriesPage extends HookConsumerWidget {
       ProductFormPageRoute().push(context);
     }
 
-    addStock(ProductInventory productInventory) {
-      final product = productInventory.expand.product;
-      final trackByLot = product.trackByLot;
-      if (trackByLot) {
-        ProductStockFormPageRoute(productId: productInventory.id).push(context);
-      } else {
-        AppSnackBar.show(context, message: 'Simple Add Stock');
-      }
-    }
+    // addStock(ProductInventory productInventory) {
+    //   final product = productInventory.expand.product;
+    //   final trackByLot = product.trackByLot;
+    //   if (trackByLot) {
+    //     ProductStockFormPageRoute(productId: productInventory.id).push(context);
+    //   } else {
+    //     AppSnackBar.show(context, message: 'Simple Add Stock');
+    //   }
+    // }
 
     return Scaffold(
         appBar: AppBar(

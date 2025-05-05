@@ -14,7 +14,6 @@ import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dar
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/features/patient_prescription_items/data/patient_prescription_item_repository.dart';
 import 'package:gym_system/src/features/patient_prescription_items/domain/patient_prescription_item.dart';
-import 'package:gym_system/src/features/patient_prescription_items/presentation/controllers/patient_prescription_item_all_controller.dart';
 import 'package:gym_system/src/features/patient_prescription_items/presentation/controllers/patient_prescription_item_group_controller.dart';
 import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -52,6 +51,15 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
     ///
     addItem(PatientRecord record) {
       PatientPrescriptionItemFormPageRoute(parentId: record.id).push(context);
+    }
+
+    ///
+    ///
+    ///
+    onUpdate(PatientPrescriptionItem record) {
+      PatientPrescriptionItemFormPageRoute(
+              parentId: record.patientRecord, id: record.id)
+          .push(context);
     }
 
     ///
@@ -108,9 +116,20 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
           ),
         ),
         subtitle: Text(e.instructions.optional()),
-        trailing: IconButton(
-          icon: Icon(MIcons.trashCanOutline),
-          onPressed: () => onDelete(record),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextButton.icon(
+              label: Text('Edit'),
+              icon: Icon(MIcons.pencilOutline),
+              onPressed: () => onUpdate(e),
+            ),
+            TextButton.icon(
+              label: Text('Delete'),
+              icon: Icon(MIcons.trashCanOutline),
+              onPressed: () => onDelete(record),
+            )
+          ],
         ),
       );
     }
@@ -137,6 +156,7 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
           children: [
             if (widgets.isNotEmpty)
               DynamicGroup(
+                padding: EdgeInsets.only(top: 20),
                 header: 'Prescriptions',
                 headerAction: TextButton.icon(
                   onPressed: () => addItem(record),

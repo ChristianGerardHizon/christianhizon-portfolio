@@ -22,7 +22,6 @@ class ProductStockPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(productStockControllerProvider(id));
-    final theme = Theme.of(context);
 
     ///
     /// onDelete

@@ -73,7 +73,7 @@ class PatientTreatmentRecordFormPage extends HookConsumerWidget {
           data: (formState) {
             final patientTreatmentRecord = formState.patientTreatmentRecord;
             final patient = formState.patient;
-            final branches = formState.branches;
+            // final branches = formState.branches;
             final patientTreatments = formState.patientTreatments;
             return DynamicFormBuilder(
               onChange: (value) {},

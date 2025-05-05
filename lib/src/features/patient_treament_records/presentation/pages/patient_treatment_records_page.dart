@@ -48,12 +48,12 @@ class PatientTreatmentRecordsPage extends HookConsumerWidget {
     ///
     /// onEdit
     ///
-    onEdit(PatientTreatmentRecord patientTreatmentRecord) {
-      PatientTreatmentRecordFormPageRoute(
-        parentId: patientTreatmentRecord.patient,
-        id: patientTreatmentRecord.id,
-      ).push(context);
-    }
+    // onEdit(PatientTreatmentRecord patientTreatmentRecord) {
+    //   PatientTreatmentRecordFormPageRoute(
+    //     parentId: patientTreatmentRecord.patient,
+    //     id: patientTreatmentRecord.id,
+    //   ).push(context);
+    // }
 
     onShowActions(PatientTreatmentRecord patientTreatmentRecord) {
       PatientTreatmentRecordFormPageRoute(

@@ -24,7 +24,6 @@ import 'package:gym_system/src/features/change_logs/presentation/pages/change_lo
 import 'package:gym_system/src/features/change_logs/presentation/pages/change_logs_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:gym_system/src/features/patient_prescription_items/presentation/pages/patient_prescription_item_form_page.dart';
-import 'package:gym_system/src/features/patient_prescription_items/presentation/widgets/patient_prescription_items_group.dart';
 import 'package:gym_system/src/features/patient_records/presentation/pages/patient_record_form_page.dart';
 import 'package:gym_system/src/features/patient_records/presentation/pages/patient_record_page.dart';
 import 'package:gym_system/src/features/patient_treament_records/presentation/pages/patient_treatment_record_form_page.dart';

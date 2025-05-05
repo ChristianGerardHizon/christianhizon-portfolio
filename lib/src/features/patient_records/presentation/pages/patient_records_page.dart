@@ -48,12 +48,12 @@ class PatientRecordsPage extends HookConsumerWidget {
     ///
     /// onEdit
     ///
-    onEdit(PatientRecord patientRecord) {
-      PatientRecordFormPageRoute(
-        parentId: patientRecord.patient,
-        id: patientRecord.id,
-      ).push(context);
-    }
+    // onEdit(PatientRecord patientRecord) {
+    //   PatientRecordFormPageRoute(
+    //     parentId: patientRecord.patient,
+    //     id: patientRecord.id,
+    //   ).push(context);
+    // }
 
     onShowActions(PatientRecord patientRecord) {
       PatientRecordFormPageRoute(
@@ -65,12 +65,12 @@ class PatientRecordsPage extends HookConsumerWidget {
     ///
     ///
     ///
-    onFollowUp(PatientRecord patientRecord) {
-      PatientRecordFormPageRoute(
-        parentId: patientRecord.patient,
-        id: patientRecord.id,
-      ).push(context);
-    }
+    // onFollowUp(PatientRecord patientRecord) {
+    //   PatientRecordFormPageRoute(
+    //     parentId: patientRecord.patient,
+    //     id: patientRecord.id,
+    //   ).push(context);
+    // }
 
     ///
     /// onRefresh
@@ -107,7 +107,6 @@ class PatientRecordsPage extends HookConsumerWidget {
     /// OnCreate
     ///
     onCreate() {
-      
       /// redirect
       PatientRecordFormPageRoute(parentId: patient.id).push(context);
     }

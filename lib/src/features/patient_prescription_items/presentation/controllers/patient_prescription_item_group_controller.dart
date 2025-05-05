@@ -54,8 +54,7 @@ class PatientPrescriptionItemGroupController
     // 1. Group by the date (ignoring time)
     final Map<DateTime, List<PatientPrescriptionItem>> grouped = {};
     for (final item in items) {
-      if (item.date == null) continue; // skip items without a date
-      final d = item.date!;
+      final d = item.date;
       // Normalize to year-month-day
       final dateOnly = DateTime(d.year, d.month, d.day);
       grouped.putIfAbsent(dateOnly, () => []).add(item);

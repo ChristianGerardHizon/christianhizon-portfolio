@@ -17,8 +17,11 @@ class PatientPdfGenerator {
   final Patient patient;
   final PatientRecord record;
 
-  PatientPdfGenerator(
-      {required this.items, required this.patient, required this.record});
+  PatientPdfGenerator({
+    required this.items,
+    required this.patient,
+    required this.record,
+  });
 
   String buildFileName() {
     final fileName = 'prescription-${DateTime.now().yyyyMMdd()}.pdf';
