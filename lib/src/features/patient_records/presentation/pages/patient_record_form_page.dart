@@ -28,9 +28,10 @@ class PatientRecordFormPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final _id = useState<String?>(id);
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
-    final isLoading = useState(false);
-    final provider = ref.watch(patientRecordFormControllerProvider(
-        patientId: parentId, id: _id.value));
+    final isLoading = useState(true);
+    final _provider =
+        patientRecordFormControllerProvider(patientId: parentId, id: _id.value);
+    final provider = ref.watch(_provider);
 
     ///
     /// Submit
