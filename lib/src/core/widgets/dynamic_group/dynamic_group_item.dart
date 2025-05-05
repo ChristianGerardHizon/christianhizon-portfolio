@@ -72,6 +72,18 @@ class DynamicGroupItem extends StatelessWidget {
         ));
   }
 
+  static DynamicGroupItem widget({
+    required Widget? value,
+    VoidCallback? onTap,
+    VoidCallback? onLongPress,
+  }) {
+    return DynamicGroupItem(
+      onTap: onTap,
+      onLongPress: onLongPress,
+      value: value,
+    );
+  }
+
   static DynamicGroupItem text({
     Widget? leading,
     Widget? trailing,
