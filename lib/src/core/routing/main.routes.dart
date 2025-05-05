@@ -23,6 +23,8 @@ import 'package:gym_system/src/features/change_logs/presentation/pages/change_lo
 import 'package:gym_system/src/features/change_logs/presentation/pages/change_log_page.dart';
 import 'package:gym_system/src/features/change_logs/presentation/pages/change_logs_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:gym_system/src/features/patient_prescription_items/presentation/pages/patient_prescription_item_form_page.dart';
+import 'package:gym_system/src/features/patient_prescription_items/presentation/widgets/patient_prescription_items_group.dart';
 import 'package:gym_system/src/features/patient_records/presentation/pages/patient_record_form_page.dart';
 import 'package:gym_system/src/features/patient_records/presentation/pages/patient_record_page.dart';
 import 'package:gym_system/src/features/patient_treament_records/presentation/pages/patient_treatment_record_form_page.dart';
@@ -64,6 +66,7 @@ part 'routes/patient_treatment_records.routes.dart';
 part 'routes/appointment_schedules.routes.dart';
 part 'routes/change_logs.routes.dart';
 part 'routes/product_category.routes.dart';
+part 'routes/patient_prescription_item.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
@@ -142,6 +145,12 @@ class SplashPageRoute extends GoRouteData {
             path: PatientTreatmentRecordPageRoute.path),
         TypedGoRoute<PatientTreatmentRecordFormPageRoute>(
             path: PatientTreatmentRecordFormPageRoute.path),
+
+        ///
+        /// Patient Prescription Item
+        ///
+        TypedGoRoute<PatientPrescriptionItemFormPageRoute>(
+            path: PatientPrescriptionItemFormPageRoute.path),
       ],
     ),
 
@@ -257,7 +266,8 @@ class SplashPageRoute extends GoRouteData {
     ///
     TypedStatefulShellBranch<AppointmentSchedulesBranchData>(
       routes: <TypeRouteData>[
-        TypedGoRoute<AppointmentSchedulesPageRoute>(path: AppointmentSchedulesPageRoute.path),
+        TypedGoRoute<AppointmentSchedulesPageRoute>(
+            path: AppointmentSchedulesPageRoute.path),
       ],
     ),
   ],

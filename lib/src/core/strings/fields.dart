@@ -125,12 +125,13 @@ class PatientRecordField {
   static const String branch = 'branch';
 }
 
-class PrescriptionItemField {
+class PatientPrescriptionItemField {
   static const String id = PbField.id;
   static const String created = PbField.created;
   static const String updated = PbField.updated;
   static const String isDeleted = PbField.isDeleted;
 
+  static const String date = 'date';
   static const String medication = 'medication';
   static const String patientRecord = 'patientRecord';
   static const String dosage = 'dosage';

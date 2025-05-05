@@ -6,20 +6,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'patient_record_controller.g.dart';
 
-class PatientRecordState {
-  final PatientRecord patientRecord;
-
-  PatientRecordState(this.patientRecord);
-}
-
 @riverpod
 class PatientRecordController extends _$PatientRecordController {
   @override
-  Future<PatientRecordState> build(String id) async {
+  Future<PatientRecord> build(String id) async {
     final result = await TaskResult.Do(($) async {
       final patientRecord = await $(_getPatientRecord(id));
 
-      return PatientRecordState(patientRecord);
+      return patientRecord;
     }).run();
     return result.fold(Future.error, (x) => Future.value(x));
   }

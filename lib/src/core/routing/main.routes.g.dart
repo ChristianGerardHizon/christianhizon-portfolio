@@ -51,6 +51,7 @@ List<RouteBase> get $appRoutes => [
       $productCategoriesPageRoute,
       $productCategoryPageRoute,
       $productCategoryFormPageRoute,
+      $patientPrescriptionItemFormPageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -156,6 +157,11 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/form/patientTreatmentRecord',
               factory: $PatientTreatmentRecordFormPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/form/patientPrescriptionItem',
+              factory:
+                  $PatientPrescriptionItemFormPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -540,6 +546,32 @@ extension $PatientTreatmentRecordFormPageRouteExtension
 
   String get location => GoRouteData.$location(
         '/form/patientTreatmentRecord',
+        queryParams: {
+          'parent-id': parentId,
+          if (id != null) 'id': id,
+        },
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $PatientPrescriptionItemFormPageRouteExtension
+    on PatientPrescriptionItemFormPageRoute {
+  static PatientPrescriptionItemFormPageRoute _fromState(GoRouterState state) =>
+      PatientPrescriptionItemFormPageRoute(
+        parentId: state.uri.queryParameters['parent-id']!,
+        id: state.uri.queryParameters['id'],
+      );
+
+  String get location => GoRouteData.$location(
+        '/form/patientPrescriptionItem',
         queryParams: {
           'parent-id': parentId,
           if (id != null) 'id': id,
@@ -1329,4 +1361,9 @@ RouteBase get $productCategoryPageRoute => GoRouteData.$route(
 RouteBase get $productCategoryFormPageRoute => GoRouteData.$route(
       path: '/product-category/form/:id',
       factory: $ProductCategoryFormPageRouteExtension._fromState,
+    );
+
+RouteBase get $patientPrescriptionItemFormPageRoute => GoRouteData.$route(
+      path: '/form/patientPrescriptionItem',
+      factory: $PatientPrescriptionItemFormPageRouteExtension._fromState,
     );

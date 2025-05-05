@@ -160,7 +160,6 @@ class PatientTreatmentRecordFormPage extends HookConsumerWidget {
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(),
                   ]),
-                  
                 ),
 
                 ///

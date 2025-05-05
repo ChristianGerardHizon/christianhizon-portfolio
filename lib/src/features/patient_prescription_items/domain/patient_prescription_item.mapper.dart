@@ -6,56 +6,62 @@
 
 part of 'patient_prescription_item.dart';
 
-class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
-  PrescriptionItemMapper._();
+class PatientPrescriptionItemMapper
+    extends ClassMapperBase<PatientPrescriptionItem> {
+  PatientPrescriptionItemMapper._();
 
-  static PrescriptionItemMapper? _instance;
-  static PrescriptionItemMapper ensureInitialized() {
+  static PatientPrescriptionItemMapper? _instance;
+  static PatientPrescriptionItemMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = PrescriptionItemMapper._());
+      MapperContainer.globals
+          .use(_instance = PatientPrescriptionItemMapper._());
     }
     return _instance!;
   }
 
   @override
-  final String id = 'PrescriptionItem';
+  final String id = 'PatientPrescriptionItem';
 
-  static String _$collectionId(PrescriptionItem v) => v.collectionId;
-  static const Field<PrescriptionItem, String> _f$collectionId =
+  static String _$collectionId(PatientPrescriptionItem v) => v.collectionId;
+  static const Field<PatientPrescriptionItem, String> _f$collectionId =
       Field('collectionId', _$collectionId);
-  static String _$collectionName(PrescriptionItem v) => v.collectionName;
-  static const Field<PrescriptionItem, String> _f$collectionName =
+  static String _$collectionName(PatientPrescriptionItem v) => v.collectionName;
+  static const Field<PatientPrescriptionItem, String> _f$collectionName =
       Field('collectionName', _$collectionName);
-  static String _$id(PrescriptionItem v) => v.id;
-  static const Field<PrescriptionItem, String> _f$id = Field('id', _$id);
-  static String _$patientRecord(PrescriptionItem v) => v.patientRecord;
-  static const Field<PrescriptionItem, String> _f$patientRecord =
+  static String _$id(PatientPrescriptionItem v) => v.id;
+  static const Field<PatientPrescriptionItem, String> _f$id = Field('id', _$id);
+  static String _$patientRecord(PatientPrescriptionItem v) => v.patientRecord;
+  static const Field<PatientPrescriptionItem, String> _f$patientRecord =
       Field('patientRecord', _$patientRecord);
-  static String? _$medication(PrescriptionItem v) => v.medication;
-  static const Field<PrescriptionItem, String> _f$medication =
+  static DateTime _$date(PatientPrescriptionItem v) => v.date;
+  static const Field<PatientPrescriptionItem, DateTime> _f$date =
+      Field('date', _$date, hook: DateTimeHook());
+  static String? _$medication(PatientPrescriptionItem v) => v.medication;
+  static const Field<PatientPrescriptionItem, String> _f$medication =
       Field('medication', _$medication, opt: true, def: '');
-  static String? _$instructions(PrescriptionItem v) => v.instructions;
-  static const Field<PrescriptionItem, String> _f$instructions =
+  static String? _$instructions(PatientPrescriptionItem v) => v.instructions;
+  static const Field<PatientPrescriptionItem, String> _f$instructions =
       Field('instructions', _$instructions, opt: true);
-  static String? _$dosage(PrescriptionItem v) => v.dosage;
-  static const Field<PrescriptionItem, String> _f$dosage =
+  static String? _$dosage(PatientPrescriptionItem v) => v.dosage;
+  static const Field<PatientPrescriptionItem, String> _f$dosage =
       Field('dosage', _$dosage, opt: true);
-  static DateTime? _$created(PrescriptionItem v) => v.created;
-  static const Field<PrescriptionItem, DateTime> _f$created =
+  static DateTime? _$created(PatientPrescriptionItem v) => v.created;
+  static const Field<PatientPrescriptionItem, DateTime> _f$created =
       Field('created', _$created, opt: true);
-  static DateTime? _$updated(PrescriptionItem v) => v.updated;
-  static const Field<PrescriptionItem, DateTime> _f$updated =
+  static DateTime? _$updated(PatientPrescriptionItem v) => v.updated;
+  static const Field<PatientPrescriptionItem, DateTime> _f$updated =
       Field('updated', _$updated, opt: true);
-  static bool _$isDeleted(PrescriptionItem v) => v.isDeleted;
-  static const Field<PrescriptionItem, bool> _f$isDeleted =
+  static bool _$isDeleted(PatientPrescriptionItem v) => v.isDeleted;
+  static const Field<PatientPrescriptionItem, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
 
   @override
-  final MappableFields<PrescriptionItem> fields = const {
+  final MappableFields<PatientPrescriptionItem> fields = const {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
     #id: _f$id,
     #patientRecord: _f$patientRecord,
+    #date: _f$date,
     #medication: _f$medication,
     #instructions: _f$instructions,
     #dosage: _f$dosage,
@@ -64,12 +70,13 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
     #isDeleted: _f$isDeleted,
   };
 
-  static PrescriptionItem _instantiate(DecodingData data) {
-    return PrescriptionItem(
+  static PatientPrescriptionItem _instantiate(DecodingData data) {
+    return PatientPrescriptionItem(
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
         id: data.dec(_f$id),
         patientRecord: data.dec(_f$patientRecord),
+        date: data.dec(_f$date),
         medication: data.dec(_f$medication),
         instructions: data.dec(_f$instructions),
         dosage: data.dec(_f$dosage),
@@ -81,87 +88,93 @@ class PrescriptionItemMapper extends ClassMapperBase<PrescriptionItem> {
   @override
   final Function instantiate = _instantiate;
 
-  static PrescriptionItem fromMap(Map<String, dynamic> map) {
-    return ensureInitialized().decodeMap<PrescriptionItem>(map);
+  static PatientPrescriptionItem fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<PatientPrescriptionItem>(map);
   }
 
-  static PrescriptionItem fromJson(String json) {
-    return ensureInitialized().decodeJson<PrescriptionItem>(json);
+  static PatientPrescriptionItem fromJson(String json) {
+    return ensureInitialized().decodeJson<PatientPrescriptionItem>(json);
   }
 }
 
-mixin PrescriptionItemMappable {
+mixin PatientPrescriptionItemMappable {
   String toJson() {
-    return PrescriptionItemMapper.ensureInitialized()
-        .encodeJson<PrescriptionItem>(this as PrescriptionItem);
+    return PatientPrescriptionItemMapper.ensureInitialized()
+        .encodeJson<PatientPrescriptionItem>(this as PatientPrescriptionItem);
   }
 
   Map<String, dynamic> toMap() {
-    return PrescriptionItemMapper.ensureInitialized()
-        .encodeMap<PrescriptionItem>(this as PrescriptionItem);
+    return PatientPrescriptionItemMapper.ensureInitialized()
+        .encodeMap<PatientPrescriptionItem>(this as PatientPrescriptionItem);
   }
 
-  PrescriptionItemCopyWith<PrescriptionItem, PrescriptionItem, PrescriptionItem>
-      get copyWith =>
-          _PrescriptionItemCopyWithImpl<PrescriptionItem, PrescriptionItem>(
-              this as PrescriptionItem, $identity, $identity);
+  PatientPrescriptionItemCopyWith<PatientPrescriptionItem,
+          PatientPrescriptionItem, PatientPrescriptionItem>
+      get copyWith => _PatientPrescriptionItemCopyWithImpl<
+              PatientPrescriptionItem, PatientPrescriptionItem>(
+          this as PatientPrescriptionItem, $identity, $identity);
   @override
   String toString() {
-    return PrescriptionItemMapper.ensureInitialized()
-        .stringifyValue(this as PrescriptionItem);
+    return PatientPrescriptionItemMapper.ensureInitialized()
+        .stringifyValue(this as PatientPrescriptionItem);
   }
 
   @override
   bool operator ==(Object other) {
-    return PrescriptionItemMapper.ensureInitialized()
-        .equalsValue(this as PrescriptionItem, other);
+    return PatientPrescriptionItemMapper.ensureInitialized()
+        .equalsValue(this as PatientPrescriptionItem, other);
   }
 
   @override
   int get hashCode {
-    return PrescriptionItemMapper.ensureInitialized()
-        .hashValue(this as PrescriptionItem);
+    return PatientPrescriptionItemMapper.ensureInitialized()
+        .hashValue(this as PatientPrescriptionItem);
   }
 }
 
-extension PrescriptionItemValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, PrescriptionItem, $Out> {
-  PrescriptionItemCopyWith<$R, PrescriptionItem, $Out>
-      get $asPrescriptionItem => $base
-          .as((v, t, t2) => _PrescriptionItemCopyWithImpl<$R, $Out>(v, t, t2));
+extension PatientPrescriptionItemValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, PatientPrescriptionItem, $Out> {
+  PatientPrescriptionItemCopyWith<$R, PatientPrescriptionItem, $Out>
+      get $asPatientPrescriptionItem => $base.as((v, t, t2) =>
+          _PatientPrescriptionItemCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
-abstract class PrescriptionItemCopyWith<$R, $In extends PrescriptionItem, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+abstract class PatientPrescriptionItemCopyWith<
+    $R,
+    $In extends PatientPrescriptionItem,
+    $Out> implements ClassCopyWith<$R, $In, $Out> {
   $R call(
       {String? collectionId,
       String? collectionName,
       String? id,
       String? patientRecord,
+      DateTime? date,
       String? medication,
       String? instructions,
       String? dosage,
       DateTime? created,
       DateTime? updated,
       bool? isDeleted});
-  PrescriptionItemCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+  PatientPrescriptionItemCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
 
-class _PrescriptionItemCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, PrescriptionItem, $Out>
-    implements PrescriptionItemCopyWith<$R, PrescriptionItem, $Out> {
-  _PrescriptionItemCopyWithImpl(super.value, super.then, super.then2);
+class _PatientPrescriptionItemCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, PatientPrescriptionItem, $Out>
+    implements
+        PatientPrescriptionItemCopyWith<$R, PatientPrescriptionItem, $Out> {
+  _PatientPrescriptionItemCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<PrescriptionItem> $mapper =
-      PrescriptionItemMapper.ensureInitialized();
+  late final ClassMapperBase<PatientPrescriptionItem> $mapper =
+      PatientPrescriptionItemMapper.ensureInitialized();
   @override
   $R call(
           {String? collectionId,
           String? collectionName,
           String? id,
           String? patientRecord,
+          DateTime? date,
           Object? medication = $none,
           Object? instructions = $none,
           Object? dosage = $none,
@@ -173,6 +186,7 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
         if (collectionName != null) #collectionName: collectionName,
         if (id != null) #id: id,
         if (patientRecord != null) #patientRecord: patientRecord,
+        if (date != null) #date: date,
         if (medication != $none) #medication: medication,
         if (instructions != $none) #instructions: instructions,
         if (dosage != $none) #dosage: dosage,
@@ -181,11 +195,12 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
         if (isDeleted != null) #isDeleted: isDeleted
       }));
   @override
-  PrescriptionItem $make(CopyWithData data) => PrescriptionItem(
+  PatientPrescriptionItem $make(CopyWithData data) => PatientPrescriptionItem(
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
       id: data.get(#id, or: $value.id),
       patientRecord: data.get(#patientRecord, or: $value.patientRecord),
+      date: data.get(#date, or: $value.date),
       medication: data.get(#medication, or: $value.medication),
       instructions: data.get(#instructions, or: $value.instructions),
       dosage: data.get(#dosage, or: $value.dosage),
@@ -194,7 +209,7 @@ class _PrescriptionItemCopyWithImpl<$R, $Out>
       isDeleted: data.get(#isDeleted, or: $value.isDeleted));
 
   @override
-  PrescriptionItemCopyWith<$R2, PrescriptionItem, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _PrescriptionItemCopyWithImpl<$R2, $Out2>($value, $cast, t);
+  PatientPrescriptionItemCopyWith<$R2, PatientPrescriptionItem, $Out2>
+      $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+          _PatientPrescriptionItemCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

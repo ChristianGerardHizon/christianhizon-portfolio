@@ -13,7 +13,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 class PatientPdfGenerator {
-  final List<PrescriptionItem> items;
+  final List<PatientPrescriptionItem> items;
   final Patient patient;
   final PatientRecord record;
 

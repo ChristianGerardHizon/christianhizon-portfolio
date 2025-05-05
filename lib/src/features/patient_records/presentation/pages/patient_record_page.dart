@@ -121,7 +121,7 @@ class PatientRecordPage extends HookConsumerWidget {
             error: (error, stack) => FailureMessage(error, stack),
             loading: () => Center(child: CircularProgressIndicator()),
             data: (patientRecordState) {
-              final patientRecord = patientRecordState.patientRecord;
+              final patientRecord = patientRecordState;
               return FormBuilder(
                 key: formKey,
                 enabled: !isSaving.value,
@@ -129,7 +129,8 @@ class PatientRecordPage extends HookConsumerWidget {
                   PatientRecordField.diagnosis: patientRecord.diagnosis,
                   PatientRecordField.treatment: patientRecord.treatment,
                   PatientRecordField.notes: patientRecord.notes,
-                  PatientRecordField.vistDate: patientRecord.visitDate.toLocal(),
+                  PatientRecordField.vistDate:
+                      patientRecord.visitDate.toLocal(),
                 },
                 child: StackLoader(
                   isLoading: isLoading.value,
@@ -212,7 +213,10 @@ class PatientRecordPage extends HookConsumerWidget {
                             ],
                           ),
 
-                          PatientPrescriptionItemsGroup(),
+                          ///
+                          /// Prescriptions
+                          ///
+                          PatientPrescriptionItemsGroup(record: patientRecord),
 
                           DynamicGroup(
                             padding: const EdgeInsets.only(

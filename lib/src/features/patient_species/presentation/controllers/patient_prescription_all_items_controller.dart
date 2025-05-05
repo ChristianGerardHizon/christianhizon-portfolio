@@ -12,12 +12,12 @@ class PatientPrescriptionAllItemsController
   String _buildFilter({
     String? patientRecordId,
   }) {
-    final baseFilter = '${PrescriptionItemField.isDeleted} = false';
+    final baseFilter = '${PatientPrescriptionItemField.isDeleted} = false';
 
     final medicationFilter = Option.of(patientRecordId)
         .map((q) => (q ?? '').trim())
         .filter((q) => q.isNotEmpty)
-        .map((q) => '${PrescriptionItemField.patientRecord} ~ "$q"');
+        .map((q) => '${PatientPrescriptionItemField.patientRecord} ~ "$q"');
 
     final result = [
       medicationFilter,
@@ -28,7 +28,7 @@ class PatientPrescriptionAllItemsController
   }
 
   @override
-  Future<List<PrescriptionItem>> build({required String id}) async {
+  Future<List<PatientPrescriptionItem>> build({required String id}) async {
     final repo = ref.read(patientPrescriptionItemRepositoryProvider);
     final result = await repo
         .listAll(

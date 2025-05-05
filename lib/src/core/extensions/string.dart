@@ -11,6 +11,25 @@ extension OptionalStringExtension on String? {
     if (this == null) return '';
     return this!.split(' ').map((e) => e.capitalize()).join(' ');
   }
+
+  ///
+  /// Enclose [this] with [open] and [close]
+  ///
+  String enclose(
+    String open, {
+    String? close,
+    bool skipIfEmpty = false,
+  }) {
+    if (this == null) return '';
+    final value = this!;
+
+    if (skipIfEmpty && value.isEmpty) {
+      return '';
+    }
+
+    final end = close ?? open;
+    return '$open$value$end';
+  }
 }
 
 extension StringExtension on String {

@@ -13,15 +13,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'patient_prescription_item_repository.g.dart';
 
 @Riverpod(keepAlive: true)
-PBCollectionRepository<PrescriptionItem> patientPrescriptionItemRepository(
-    Ref ref) {
+PBCollectionRepository<PatientPrescriptionItem>
+    patientPrescriptionItemRepository(Ref ref) {
   return PrescriptionItemRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
 class PrescriptionItemRepositoryImpl
-    extends PBCollectionRepository<PrescriptionItem> {
+    extends PBCollectionRepository<PatientPrescriptionItem> {
   final PocketBase pb;
 
   PrescriptionItemRepositoryImpl({required this.pb});
@@ -29,12 +29,12 @@ class PrescriptionItemRepositoryImpl
   RecordService get collection =>
       pb.collection(PocketBaseCollections.prescriptionItems);
 
-  PrescriptionItem mapToData(Map<String, dynamic> map) {
-    return PrescriptionItem.fromMap({...map, 'domain': pb.baseURL});
+  PatientPrescriptionItem mapToData(Map<String, dynamic> map) {
+    return PatientPrescriptionItem.fromMap({...map, 'domain': pb.baseURL});
   }
 
   @override
-  TaskResult<PrescriptionItem> get(String id) {
+  TaskResult<PatientPrescriptionItem> get(String id) {
     return TaskResult.tryCatch(() async {
       final result = await collection.getOne(id);
       return mapToData(result.toJson());
@@ -42,7 +42,7 @@ class PrescriptionItemRepositoryImpl
   }
 
   @override
-  TaskResult<PrescriptionItem> create(
+  TaskResult<PatientPrescriptionItem> create(
     Map<String, dynamic> payload, {
     List<MultipartFile> files = const [],
   }) {
@@ -60,7 +60,7 @@ class PrescriptionItemRepositoryImpl
   }
 
   @override
-  TaskResult<PageResults<PrescriptionItem>> list({
+  TaskResult<PageResults<PatientPrescriptionItem>> list({
     String? filter,
     required int pageNo,
     required int pageSize,
@@ -77,7 +77,7 @@ class PrescriptionItemRepositoryImpl
         perPage: result.perPage,
         totalItems: result.totalItems,
         totalPages: result.totalPages,
-        items: result.items.map<PrescriptionItem>((e) {
+        items: result.items.map<PatientPrescriptionItem>((e) {
           return mapToData(e.toJson());
         }).toList(),
       );
@@ -85,8 +85,8 @@ class PrescriptionItemRepositoryImpl
   }
 
   @override
-  TaskResult<PrescriptionItem> update(
-    PrescriptionItem prescription,
+  TaskResult<PatientPrescriptionItem> update(
+    PatientPrescriptionItem prescription,
     Map<String, dynamic> update, {
     List<MultipartFile> files = const [],
   }) {
@@ -117,7 +117,7 @@ class PrescriptionItemRepositoryImpl
   }
 
   @override
-  TaskResult<List<PrescriptionItem>> listAll({
+  TaskResult<List<PatientPrescriptionItem>> listAll({
     int batch = 500,
     String? filter,
   }) {
@@ -127,7 +127,7 @@ class PrescriptionItemRepositoryImpl
           filter: filter,
         );
         return result
-            .map<PrescriptionItem>((e) => mapToData(e.toJson()))
+            .map<PatientPrescriptionItem>((e) => mapToData(e.toJson()))
             .toList();
       },
       Failure.handle,

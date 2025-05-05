@@ -7,7 +7,7 @@ part of 'patient_prescription_all_items_controller.dart';
 // **************************************************************************
 
 String _$patientPrescriptionAllItemsControllerHash() =>
-    r'd1dacc6b29fab67652d4c9c0619e0077e3bc7c47';
+    r'52087d74c7c4573444d24c63f775a54e0eb91fe2';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,10 +31,10 @@ class _SystemHash {
 }
 
 abstract class _$PatientPrescriptionAllItemsController
-    extends BuildlessAutoDisposeAsyncNotifier<List<PrescriptionItem>> {
+    extends BuildlessAutoDisposeAsyncNotifier<List<PatientPrescriptionItem>> {
   late final String id;
 
-  FutureOr<List<PrescriptionItem>> build({
+  FutureOr<List<PatientPrescriptionItem>> build({
     required String id,
   });
 }
@@ -46,7 +46,7 @@ const patientPrescriptionAllItemsControllerProvider =
 
 /// See also [PatientPrescriptionAllItemsController].
 class PatientPrescriptionAllItemsControllerFamily
-    extends Family<AsyncValue<List<PrescriptionItem>>> {
+    extends Family<AsyncValue<List<PatientPrescriptionItem>>> {
   /// See also [PatientPrescriptionAllItemsController].
   const PatientPrescriptionAllItemsControllerFamily();
 
@@ -86,7 +86,7 @@ class PatientPrescriptionAllItemsControllerFamily
 /// See also [PatientPrescriptionAllItemsController].
 class PatientPrescriptionAllItemsControllerProvider
     extends AutoDisposeAsyncNotifierProviderImpl<
-        PatientPrescriptionAllItemsController, List<PrescriptionItem>> {
+        PatientPrescriptionAllItemsController, List<PatientPrescriptionItem>> {
   /// See also [PatientPrescriptionAllItemsController].
   PatientPrescriptionAllItemsControllerProvider({
     required String id,
@@ -118,7 +118,7 @@ class PatientPrescriptionAllItemsControllerProvider
   final String id;
 
   @override
-  FutureOr<List<PrescriptionItem>> runNotifierBuild(
+  FutureOr<List<PatientPrescriptionItem>> runNotifierBuild(
     covariant PatientPrescriptionAllItemsController notifier,
   ) {
     return notifier.build(
@@ -145,7 +145,7 @@ class PatientPrescriptionAllItemsControllerProvider
 
   @override
   AutoDisposeAsyncNotifierProviderElement<PatientPrescriptionAllItemsController,
-      List<PrescriptionItem>> createElement() {
+      List<PatientPrescriptionItem>> createElement() {
     return _PatientPrescriptionAllItemsControllerProviderElement(this);
   }
 
@@ -167,15 +167,15 @@ class PatientPrescriptionAllItemsControllerProvider
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin PatientPrescriptionAllItemsControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<List<PrescriptionItem>> {
+    on AutoDisposeAsyncNotifierProviderRef<List<PatientPrescriptionItem>> {
   /// The parameter `id` of this provider.
   String get id;
 }
 
 class _PatientPrescriptionAllItemsControllerProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<
-        PatientPrescriptionAllItemsController,
-        List<PrescriptionItem>> with PatientPrescriptionAllItemsControllerRef {
+        PatientPrescriptionAllItemsController, List<PatientPrescriptionItem>>
+    with PatientPrescriptionAllItemsControllerRef {
   _PatientPrescriptionAllItemsControllerProviderElement(super.provider);
 
   @override
