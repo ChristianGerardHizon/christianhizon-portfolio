@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/appointment_schedule/presentation/pages/appointment_schedules_page.dart';

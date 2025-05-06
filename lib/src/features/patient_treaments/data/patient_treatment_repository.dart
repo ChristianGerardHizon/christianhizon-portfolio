@@ -1,9 +1,9 @@
-import 'package:gym_system/src/core/classes/pb_repository.dart';
+import 'package:gym_system/src/core/models/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
-import 'package:gym_system/src/core/classes/page_results.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/page_results.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/features/patient_treaments/domain/patient_treatment.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/controllers/scaffold_controller.dart';
 import 'package:gym_system/src/core/routing/router.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class MobileDrawer extends HookConsumerWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 
 class WorkInProgressPage extends StatelessWidget {
   const WorkInProgressPage({super.key});

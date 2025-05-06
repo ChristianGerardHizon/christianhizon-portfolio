@@ -6,7 +6,7 @@ import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/routing/router.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';

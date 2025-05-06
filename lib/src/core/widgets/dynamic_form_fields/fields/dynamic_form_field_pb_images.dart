@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import 'package:gym_system/src/core/classes/pb_image.dart';
+import 'package:gym_system/src/core/models/pb_image.dart';
 import 'package:gym_system/src/core/utils/image_compressor_utils.dart';
 import 'package:http/http.dart';
 

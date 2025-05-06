@@ -7,7 +7,7 @@ import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/strings/pb_expand.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/features/admins/domain/admin.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_data.dart';

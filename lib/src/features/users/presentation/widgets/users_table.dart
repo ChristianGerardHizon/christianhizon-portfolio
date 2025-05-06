@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/features/users/domain/user.dart';
 import 'package:gym_system/src/features/users/presentation/widgets/user_circle_image.dart';
 import 'package:material_table_view/material_table_view.dart';

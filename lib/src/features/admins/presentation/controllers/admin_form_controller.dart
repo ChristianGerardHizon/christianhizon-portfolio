@@ -1,9 +1,9 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/classes/pb_image.dart';
+import 'package:gym_system/src/core/models/pb_image.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/features/admins/data/admin_repository.dart';
 import 'package:gym_system/src/features/admins/domain/admin.dart';

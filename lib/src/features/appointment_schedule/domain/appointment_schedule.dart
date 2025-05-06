@@ -1,5 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/classes/pb_record.dart';
+import 'package:gym_system/src/core/models/pb_record.dart';
 import 'package:gym_system/src/core/hooks/date_time_hook.dart';
 
 part 'appointment_schedule.mapper.dart';

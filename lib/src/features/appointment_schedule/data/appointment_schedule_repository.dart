@@ -1,9 +1,9 @@
-import 'package:gym_system/src/core/classes/pb_repository.dart';
+import 'package:gym_system/src/core/models/pb_repository.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
-import 'package:gym_system/src/core/classes/page_results.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/page_results.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/features/appointment_schedule/domain/appointment_schedule.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
@@ -13,13 +13,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'appointment_schedule_repository.g.dart';
 
 @Riverpod(keepAlive: true)
-PBCollectionRepository<AppointmentSchedule> appointmentScheduleRepository(Ref ref) {
+PBCollectionRepository<AppointmentSchedule> appointmentScheduleRepository(
+    Ref ref) {
   return AppointmentScheduleRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class AppointmentScheduleRepositoryImpl extends PBCollectionRepository<AppointmentSchedule> {
+class AppointmentScheduleRepositoryImpl
+    extends PBCollectionRepository<AppointmentSchedule> {
   final PocketBase pb;
 
   AppointmentScheduleRepositoryImpl({required this.pb});
@@ -124,7 +126,9 @@ class AppointmentScheduleRepositoryImpl extends PBCollectionRepository<Appointme
         final result = await collection.getFullList(
           filter: filter,
         );
-        return result.map<AppointmentSchedule>((e) => mapToData(e.toJson())).toList();
+        return result
+            .map<AppointmentSchedule>((e) => mapToData(e.toJson()))
+            .toList();
       },
       Failure.handle,
     );

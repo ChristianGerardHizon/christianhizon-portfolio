@@ -1,6 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:http/http.dart';
 
 class FilePickerUtil {

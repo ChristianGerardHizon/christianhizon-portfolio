@@ -1,4 +1,4 @@
-import 'package:gym_system/src/core/classes/pb_image.dart';
+import 'package:gym_system/src/core/models/pb_image.dart';
 import 'package:http/http.dart';
 
 class PBUtils {

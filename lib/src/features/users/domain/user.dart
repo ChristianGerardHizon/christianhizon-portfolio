@@ -1,5 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/classes/pb_record.dart';
+import 'package:gym_system/src/core/models/pb_record.dart';
 import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';

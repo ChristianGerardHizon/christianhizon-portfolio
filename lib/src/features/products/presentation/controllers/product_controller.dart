@@ -1,5 +1,5 @@
 import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/features/product_inventories/presentation/controllers/product_inventory_controller.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';

@@ -3,7 +3,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/widgets/custom_navbar_item.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 
 class MobileBottomNav extends StatelessWidget {
   final List<CustomNavigationBarItem> list;

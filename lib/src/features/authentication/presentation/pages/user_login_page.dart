@@ -5,7 +5,7 @@ import 'package:gym_system/src/core/assets/i18n/strings.g.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
 import 'package:gym_system/src/core/routing/router.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/utils/form_utils.dart';
 import 'package:gym_system/src/core/widgets/logo.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_data.dart';

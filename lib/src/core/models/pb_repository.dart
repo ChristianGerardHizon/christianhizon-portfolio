@@ -1,5 +1,5 @@
-import 'package:gym_system/src/core/classes/page_results.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/page_results.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:http/http.dart';
 
 ///

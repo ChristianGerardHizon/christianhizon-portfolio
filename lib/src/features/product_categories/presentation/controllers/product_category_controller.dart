@@ -1,5 +1,5 @@
 import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/features/product_categories/data/product_category_repository.dart';
 import 'package:gym_system/src/features/product_categories/domain/product_category.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

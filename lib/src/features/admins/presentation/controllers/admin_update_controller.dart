@@ -1,4 +1,4 @@
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/features/admins/data/admin_repository.dart';
 import 'package:gym_system/src/features/admins/domain/admin.dart';
 import 'package:gym_system/src/features/settings/domain/settings.dart';

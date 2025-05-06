@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/features/dashboard/presentation/widgets/kpis/kpi_card.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 

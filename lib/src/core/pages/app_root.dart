@@ -7,7 +7,7 @@ import 'package:gym_system/src/core/controllers/scaffold_controller.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/custom_navbar_item.dart';
-import 'package:gym_system/src/core/type_defs/type_defs.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/logo.dart';
