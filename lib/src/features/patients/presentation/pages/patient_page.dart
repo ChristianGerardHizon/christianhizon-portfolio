@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
+import 'package:gym_system/src/features/appointment_schedule/presentation/pages/appointment_schedules_page.dart';
 import 'package:gym_system/src/features/patient_records/presentation/pages/patient_records_page.dart';
 import 'package:gym_system/src/features/patient_treament_records/presentation/pages/patient_treatment_records_page.dart';
 import 'package:gym_system/src/features/patient_treaments/presentation/controllers/patient_treatments_controller.dart';
@@ -31,7 +32,7 @@ class PatientPage extends HookConsumerWidget {
     }
 
     return DefaultTabController(
-      length: 4,
+      length: 5,
       initialIndex: page ?? 0,
       child: Scaffold(
         body: Builder(builder: (context) {
@@ -90,6 +91,10 @@ class PatientPage extends HookConsumerWidget {
                               child: Text('Treatments'),
                             ),
                             Tab(
+                              icon: Icon(MIcons.calendarCheckOutline),
+                              child: Text('Appointments'),
+                            ),
+                            Tab(
                               icon: Icon(MIcons.fileOutline),
                               child: Text('Files'),
                             ),
@@ -112,6 +117,9 @@ class PatientPage extends HookConsumerWidget {
                     PatientTreatmentRecordsPage(
                       id: patient.id,
                       showAppBar: false,
+                    ),
+                    AppointmentSchedulesPage(
+                      patientId: patient.id,
                     ),
                     Center(
                       child: Text('No Files'),

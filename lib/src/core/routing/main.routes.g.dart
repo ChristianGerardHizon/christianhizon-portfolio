@@ -44,7 +44,11 @@ List<RouteBase> get $appRoutes => [
       $patientTreatmentRecordPageRoute,
       $patientTreatmentsRecordPageRoute,
       $patientTreatmentRecordFormPageRoute,
+      $patientAppointmentSchedulesPageRoute,
       $appointmentSchedulesPageRoute,
+      $appointmentScheduleFormPageRoute,
+      $appointmentSchedulePageRoute,
+      $calendarAppointmentSchedulesPageRoute,
       $changeLogsPageRoute,
       $changeLogPageRoute,
       $changeLogFormPageRoute,
@@ -163,6 +167,11 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               factory:
                   $PatientPrescriptionItemFormPageRouteExtension._fromState,
             ),
+            GoRouteData.$route(
+              path: '/patient/appointmentSchedules',
+              factory:
+                  $PatientAppointmentSchedulesPageRouteExtension._fromState,
+            ),
           ],
         ),
         StatefulShellBranchData.$branch(
@@ -198,6 +207,15 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/sales',
               factory: $SalesPageRouteExtension._fromState,
+            ),
+          ],
+        ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/calendar',
+              factory:
+                  $CalendarAppointmentSchedulesPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -292,8 +310,16 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
-              path: '/appointments-schedules',
+              path: '/appointmentSchedules',
               factory: $AppointmentSchedulesPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/appointmentSchedule/:id',
+              factory: $AppointmentSchedulePageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/form/appointmentSchedule',
+              factory: $AppointmentScheduleFormPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -588,6 +614,25 @@ extension $PatientPrescriptionItemFormPageRouteExtension
   void replace(BuildContext context) => context.replace(location);
 }
 
+extension $PatientAppointmentSchedulesPageRouteExtension
+    on PatientAppointmentSchedulesPageRoute {
+  static PatientAppointmentSchedulesPageRoute _fromState(GoRouterState state) =>
+      const PatientAppointmentSchedulesPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/patient/appointmentSchedules',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
 extension $ProductsPageRouteExtension on ProductsPageRoute {
   static ProductsPageRoute _fromState(GoRouterState state) =>
       const ProductsPageRoute();
@@ -717,6 +762,26 @@ extension $SalesPageRouteExtension on SalesPageRoute {
 
   String get location => GoRouteData.$location(
         '/sales',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $CalendarAppointmentSchedulesPageRouteExtension
+    on CalendarAppointmentSchedulesPageRoute {
+  static CalendarAppointmentSchedulesPageRoute _fromState(
+          GoRouterState state) =>
+      const CalendarAppointmentSchedulesPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/calendar',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -1029,7 +1094,52 @@ extension $AppointmentSchedulesPageRouteExtension
       const AppointmentSchedulesPageRoute();
 
   String get location => GoRouteData.$location(
-        '/appointments-schedules',
+        '/appointmentSchedules',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $AppointmentSchedulePageRouteExtension
+    on AppointmentSchedulePageRoute {
+  static AppointmentSchedulePageRoute _fromState(GoRouterState state) =>
+      AppointmentSchedulePageRoute(
+        state.pathParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/appointmentSchedule/${Uri.encodeComponent(id)}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $AppointmentScheduleFormPageRouteExtension
+    on AppointmentScheduleFormPageRoute {
+  static AppointmentScheduleFormPageRoute _fromState(GoRouterState state) =>
+      AppointmentScheduleFormPageRoute(
+        id: state.uri.queryParameters['id'],
+      );
+
+  String get location => GoRouteData.$location(
+        '/form/appointmentSchedule',
+        queryParams: {
+          if (id != null) 'id': id,
+        },
       );
 
   void go(BuildContext context) => context.go(location);
@@ -1328,9 +1438,29 @@ RouteBase get $patientTreatmentRecordFormPageRoute => GoRouteData.$route(
       factory: $PatientTreatmentRecordFormPageRouteExtension._fromState,
     );
 
+RouteBase get $patientAppointmentSchedulesPageRoute => GoRouteData.$route(
+      path: '/patient/appointmentSchedules',
+      factory: $PatientAppointmentSchedulesPageRouteExtension._fromState,
+    );
+
 RouteBase get $appointmentSchedulesPageRoute => GoRouteData.$route(
-      path: '/appointments-schedules',
+      path: '/appointmentSchedules',
       factory: $AppointmentSchedulesPageRouteExtension._fromState,
+    );
+
+RouteBase get $appointmentScheduleFormPageRoute => GoRouteData.$route(
+      path: '/form/appointmentSchedule',
+      factory: $AppointmentScheduleFormPageRouteExtension._fromState,
+    );
+
+RouteBase get $appointmentSchedulePageRoute => GoRouteData.$route(
+      path: '/appointmentSchedule/:id',
+      factory: $AppointmentSchedulePageRouteExtension._fromState,
+    );
+
+RouteBase get $calendarAppointmentSchedulesPageRoute => GoRouteData.$route(
+      path: '/calendar',
+      factory: $CalendarAppointmentSchedulesPageRouteExtension._fromState,
     );
 
 RouteBase get $changeLogsPageRoute => GoRouteData.$route(

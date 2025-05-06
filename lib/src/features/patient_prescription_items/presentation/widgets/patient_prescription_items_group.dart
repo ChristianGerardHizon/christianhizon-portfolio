@@ -16,7 +16,10 @@ import 'package:gym_system/src/features/patient_prescription_items/data/patient_
 import 'package:gym_system/src/features/patient_prescription_items/domain/patient_prescription_item.dart';
 import 'package:gym_system/src/features/patient_prescription_items/presentation/controllers/patient_prescription_item_group_controller.dart';
 import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
+import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_record_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+enum _MenuOption { edit, delete }
 
 class PatientPrescriptionItemsGroup extends HookConsumerWidget {
   const PatientPrescriptionItemsGroup({super.key, required this.record});
@@ -44,7 +47,12 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
     ///
     ///
     ///
-    final list = state.valueOrNull ?? [];
+    final list = state.maybeWhen(
+      skipLoadingOnRefresh: false,
+      skipLoadingOnReload: false,
+      data: (data) => data,
+      orElse: () => <PatientPrescriptionItemGroupState>[],
+    );
 
     ///
     ///
@@ -66,28 +74,34 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
     /// refresh
     ///
     refresh(String id) {
+      ref.invalidate(patientRecordControllerProvider(id));
       ref.invalidate(patientPrescriptionItemGroupControllerProvider(id));
     }
 
     ///
     /// onDelete
     ///
-    onDelete(PatientRecord patientRecord) async {
+    onDelete(PatientPrescriptionItem patientPrescriptionItem) async {
       final fullTask = await
           // 1. Call Confirm Modal
           ConfirmModal.taskResult(context)
+              .flatMap((_) {
+                isLoading.value = true;
+                return TaskResult.right(_);
+              })
+
               // 2. Delete Network Call
-              .flatMap((_) => repo.softDeleteMulti([patientRecord.id]))
+              .flatMap(
+                  (_) => repo.softDeleteMulti([patientPrescriptionItem.id]))
               // 3. Side effects
               .flatMap(
                 (_) => _handleSuccessfulDeleteTaskSidEffects(
                   context: context,
-                  patientRecordId: patientRecord.id,
+                  patientPrescriptionItemId: patientPrescriptionItem.id,
                   refresh: refresh,
                 ),
               );
 
-      isLoading.value = true;
       final result = await fullTask.run();
       isLoading.value = false;
 
@@ -107,28 +121,31 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
               TextSpan(text: e.medication.optional()),
               TextSpan(text: ' '),
               TextSpan(
-                text: e.dosage
-                    .enclose('(', close: ')', skipIfEmpty: true)
-                    .optional(),
+                text: e.dosage.enclose('(', close: ')', skipIfEmpty: true),
                 style: TextStyle(fontSize: 12),
               )
             ],
           ),
         ),
-        subtitle: Text(e.instructions.optional()),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextButton.icon(
-              label: Text('Edit'),
-              icon: Icon(MIcons.pencilOutline),
-              onPressed: () => onUpdate(e),
+            Text(e.instructions.optional()),
+          ],
+        ),
+        trailing: PopupMenuButton<_MenuOption>(
+          icon: Icon(MIcons.dotsHorizontalCircleOutline),
+          itemBuilder: (context) => <PopupMenuEntry<_MenuOption>>[
+            PopupMenuItem<_MenuOption>(
+              value: _MenuOption.edit,
+              onTap: () => onUpdate(e),
+              child: Text('Edit'),
             ),
-            TextButton.icon(
-              label: Text('Delete'),
-              icon: Icon(MIcons.trashCanOutline),
-              onPressed: () => onDelete(record),
-            )
+            PopupMenuItem<_MenuOption>(
+              value: _MenuOption.delete,
+              child: Text('Delete'),
+              onTap: () => onDelete(e),
+            ),
           ],
         ),
       );
@@ -136,7 +153,7 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
 
     final widgets = list
         .map((item) => DynamicGroupItem.field(
-              title: item.date.toLocal().fullDateTime,
+              title: item.date.toLocal().fullDate,
               value: ListView.separated(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
@@ -218,14 +235,13 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
 ///
 TaskResult<void> _handleSuccessfulDeleteTaskSidEffects({
   required BuildContext context,
-  required String patientRecordId,
+  required String patientPrescriptionItemId,
   required void Function(String id) refresh,
 }) {
   return Task<void>(() async {
     if (!context.mounted) return;
     AppSnackBar.root(message: 'Successfully Deleted');
-    if (context.canPop()) context.pop();
-    refresh(patientRecordId);
+    refresh(patientPrescriptionItemId);
     return null;
   }).toTaskEither<Failure>();
 }

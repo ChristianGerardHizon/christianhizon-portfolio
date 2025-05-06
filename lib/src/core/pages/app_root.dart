@@ -60,7 +60,7 @@ class AppRoot extends HookConsumerWidget {
     List<CustomNavigationBarItem> buildItems(AuthData auth) {
       final isAdmin = auth is AuthAdmin;
       // final isUser = auth is AuthUser;
-  
+
       return [
         CustomNavigationBarItem(
           isRoot: true,
@@ -74,8 +74,8 @@ class AppRoot extends HookConsumerWidget {
         ),
         CustomNavigationBarItem(
           route: PatientsPageRoute.path,
-          icon: Icon(MIcons.clipboardAccountOutline),
-          selectedIcon: Icon(MIcons.clipboardAccount),
+          icon: Icon(MIcons.account),
+          selectedIcon: Icon(MIcons.accountOutline),
           label: 'Patients',
           onTap: () {
             PatientsPageRoute().go(context);
@@ -83,11 +83,20 @@ class AppRoot extends HookConsumerWidget {
         ),
         CustomNavigationBarItem(
           route: AppointmentSchedulesPageRoute.path,
-          icon: Icon(MIcons.calendarOutline),
-          selectedIcon: Icon(MIcons.calendar),
+          icon: Icon(MIcons.calendarAccount),
+          selectedIcon: Icon(MIcons.calendarAccountOutline),
           label: 'Appointments',
           onTap: () {
             AppointmentSchedulesPageRoute().go(context);
+          },
+        ),
+        CustomNavigationBarItem(
+          route: CalendarAppointmentSchedulesPageRoute.path,
+          icon: Icon(MIcons.calendarOutline),
+          selectedIcon: Icon(MIcons.calendar),
+          label: 'Calendar',
+          onTap: () {
+            CalendarAppointmentSchedulesPageRoute().go(context);
           },
         ),
         CustomNavigationBarItem(

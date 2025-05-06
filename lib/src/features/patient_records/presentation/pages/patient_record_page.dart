@@ -17,6 +17,7 @@ import 'package:gym_system/src/features/patient_prescription_items/presentation/
 import 'package:gym_system/src/features/patient_records/data/patient_record_repository.dart';
 import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
 import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_record_controller.dart';
+import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_record_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -52,6 +53,8 @@ class PatientRecordPage extends HookConsumerWidget {
     ///
     refresh(String id) {
       ref.invalidate(patientRecordControllerProvider(id));
+      ref.invalidate(patientRecordTableControllerProvider);
+      ref.invalidate(patientRecordControllerProvider(id));
       formKey.currentState?.reset();
     }
 
@@ -62,6 +65,12 @@ class PatientRecordPage extends HookConsumerWidget {
       final fullTask = await
           // 1. Call Confirm Modal
           ConfirmModal.taskResult(context)
+
+              /// start loading
+              .flatMap((_) {
+                isLoading.value = true;
+                return TaskResult.right(_);
+              })
               // 2. Delete Network Call
               .flatMap((_) => repo.softDeleteMulti([patientRecord.id]))
               // 3. Side effects
@@ -73,7 +82,6 @@ class PatientRecordPage extends HookConsumerWidget {
                 ),
               );
 
-      isLoading.value = true;
       final result = await fullTask.run();
       isLoading.value = false;
 
@@ -88,6 +96,12 @@ class PatientRecordPage extends HookConsumerWidget {
       final fullTask = await
           // 1. Get Form Data
           ConfirmModal.taskResult(context)
+
+              // start loading
+              .flatMap((_) {
+                isLoading.value = true;
+                return TaskResult.right(_);
+              })
               .flatMap((data) => getFormData(formKey))
               // 2. Update record
               .flatMap((data) => repo.update(patientRecord, data))
@@ -100,7 +114,6 @@ class PatientRecordPage extends HookConsumerWidget {
                 ),
               );
 
-      isSaving.value = true;
       final result = await fullTask.run();
       isSaving.value = false;
       // 4. Handle Error
@@ -118,6 +131,7 @@ class PatientRecordPage extends HookConsumerWidget {
       body: ref.watch(patientRecordControllerProvider(id)).when(
             skipError: false,
             skipLoadingOnRefresh: false,
+            skipLoadingOnReload: false,
             error: (error, stack) => FailureMessage(error, stack),
             loading: () => Center(child: CircularProgressIndicator()),
             data: (patientRecordState) {

@@ -7,7 +7,7 @@ part of 'change_log_table_controller.dart';
 // **************************************************************************
 
 String _$changeLogTableControllerHash() =>
-    r'2bff4cfcaa549626890f1c986ad5d3933dac14a9';
+    r'40465b130447d397ba52e93c9a714234600fd8a1';
 
 /// Copied from Dart SDK
 class _SystemHash {

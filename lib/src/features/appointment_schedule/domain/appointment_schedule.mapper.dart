@@ -31,7 +31,13 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
       Field('collectionName', _$collectionName);
   static DateTime _$date(AppointmentSchedule v) => v.date;
   static const Field<AppointmentSchedule, DateTime> _f$date =
-      Field('date', _$date);
+      Field('date', _$date, hook: DateTimeHook());
+  static String? _$purpose(AppointmentSchedule v) => v.purpose;
+  static const Field<AppointmentSchedule, String> _f$purpose =
+      Field('purpose', _$purpose, opt: true);
+  static bool _$isCompleted(AppointmentSchedule v) => v.isCompleted;
+  static const Field<AppointmentSchedule, bool> _f$isCompleted =
+      Field('isCompleted', _$isCompleted, opt: true, def: false);
   static bool _$hasTime(AppointmentSchedule v) => v.hasTime;
   static const Field<AppointmentSchedule, bool> _f$hasTime =
       Field('hasTime', _$hasTime, opt: true, def: false);
@@ -51,6 +57,8 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
     #date: _f$date,
+    #purpose: _f$purpose,
+    #isCompleted: _f$isCompleted,
     #hasTime: _f$hasTime,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
@@ -63,6 +71,8 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
         collectionId: data.dec(_f$collectionId),
         collectionName: data.dec(_f$collectionName),
         date: data.dec(_f$date),
+        purpose: data.dec(_f$purpose),
+        isCompleted: data.dec(_f$isCompleted),
         hasTime: data.dec(_f$hasTime),
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
@@ -130,6 +140,8 @@ abstract class AppointmentScheduleCopyWith<$R, $In extends AppointmentSchedule,
       String? collectionId,
       String? collectionName,
       DateTime? date,
+      String? purpose,
+      bool? isCompleted,
       bool? hasTime,
       bool? isDeleted,
       DateTime? created,
@@ -152,6 +164,8 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
           String? collectionId,
           String? collectionName,
           DateTime? date,
+          Object? purpose = $none,
+          bool? isCompleted,
           bool? hasTime,
           bool? isDeleted,
           Object? created = $none,
@@ -161,6 +175,8 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
         if (collectionId != null) #collectionId: collectionId,
         if (collectionName != null) #collectionName: collectionName,
         if (date != null) #date: date,
+        if (purpose != $none) #purpose: purpose,
+        if (isCompleted != null) #isCompleted: isCompleted,
         if (hasTime != null) #hasTime: hasTime,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
@@ -172,6 +188,8 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
       collectionId: data.get(#collectionId, or: $value.collectionId),
       collectionName: data.get(#collectionName, or: $value.collectionName),
       date: data.get(#date, or: $value.date),
+      purpose: data.get(#purpose, or: $value.purpose),
+      isCompleted: data.get(#isCompleted, or: $value.isCompleted),
       hasTime: data.get(#hasTime, or: $value.hasTime),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),

@@ -31,7 +31,7 @@ class ProductStockTableController extends _$ProductStockTableController {
 
         // 1. Fetch data
         .list(
-          filter: filterFunc.searchName(tableFilter),
+          filter: filterFunc.searchName(tableFilter).build(),
           pageNo: page,
           pageSize: pageSize,
           sort: '-updated',

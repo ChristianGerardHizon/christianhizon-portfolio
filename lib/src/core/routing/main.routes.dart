@@ -10,6 +10,9 @@ import 'package:gym_system/src/core/pages/work_in_progress_page.dart';
 import 'package:gym_system/src/features/admins/presentation/pages/admin_page.dart';
 import 'package:gym_system/src/features/admins/presentation/pages/admin_form_page.dart';
 import 'package:gym_system/src/features/admins/presentation/pages/admins_page.dart';
+import 'package:gym_system/src/features/appointment_schedule/presentation/pages/appointment_schedule_form_page.dart';
+import 'package:gym_system/src/features/appointment_schedule/presentation/pages/appointment_schedule_page.dart';
+import 'package:gym_system/src/features/appointment_schedule/presentation/pages/appointment_schedules_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_recovery_page.dart';
@@ -150,6 +153,12 @@ class SplashPageRoute extends GoRouteData {
         ///
         TypedGoRoute<PatientPrescriptionItemFormPageRoute>(
             path: PatientPrescriptionItemFormPageRoute.path),
+
+        ///
+        /// Appointments
+        ///
+        TypedGoRoute<PatientAppointmentSchedulesPageRoute>(
+            path: PatientAppointmentSchedulesPageRoute.path),
       ],
     ),
 
@@ -186,6 +195,16 @@ class SplashPageRoute extends GoRouteData {
     TypedStatefulShellBranch<SalesBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<SalesPageRoute>(path: SalesPageRoute.path),
+      ],
+    ),
+
+    ///
+    /// Calendar
+    ///
+    TypedStatefulShellBranch<CalendarAppointmentSchedulesData>(
+      routes: <TypeRouteData>[
+        TypedGoRoute<CalendarAppointmentSchedulesPageRoute>(
+            path: CalendarAppointmentSchedulesPageRoute.path),
       ],
     ),
 
@@ -263,10 +282,14 @@ class SplashPageRoute extends GoRouteData {
     ///
     /// Appointments
     ///
-    TypedStatefulShellBranch<AppointmentSchedulesBranchData>(
+    TypedStatefulShellBranch<AppointmentSchedulesData>(
       routes: <TypeRouteData>[
         TypedGoRoute<AppointmentSchedulesPageRoute>(
             path: AppointmentSchedulesPageRoute.path),
+        TypedGoRoute<AppointmentSchedulePageRoute>(
+            path: AppointmentSchedulePageRoute.path),
+        TypedGoRoute<AppointmentScheduleFormPageRoute>(
+            path: AppointmentScheduleFormPageRoute.path),
       ],
     ),
   ],

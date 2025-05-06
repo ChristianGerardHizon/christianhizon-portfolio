@@ -120,8 +120,6 @@ class PatientRecordsPage extends HookConsumerWidget {
     /// OnCreateWithPatient
     ///
     void onCreateWithPatient() async {
-      isLoading.value = true;
-
       final repository = ref.read(patientRecordRepositoryProvider);
       final value = {
         PatientRecordField.patient: patient.id,
@@ -129,7 +127,7 @@ class PatientRecordsPage extends HookConsumerWidget {
       };
 
       final task = repository.create(value);
-
+      isLoading.value = true;
       final result = await task.run();
       if (!context.mounted) return;
       isLoading.value = false;
@@ -139,7 +137,7 @@ class PatientRecordsPage extends HookConsumerWidget {
           AppSnackBar.root(message: 'Success');
           ref.invalidate(patientRecordTableControllerProvider);
           ref.invalidate(patientRecordControllerProvider(r.id));
-          PatientRecordFormPageRoute(parentId: r.id).push(context);
+          PatientRecordPageRoute(r.id).push(context);
         },
       );
     }
@@ -156,6 +154,7 @@ class PatientRecordsPage extends HookConsumerWidget {
             )
           : null,
       body: StackLoader(
+        opacity: .8,
         isLoading: isLoading.value,
         child: DynamicTableView<PatientRecord>(
           tableKey: TableControllerKeys.patientRecord,

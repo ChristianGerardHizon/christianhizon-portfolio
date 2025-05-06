@@ -7,17 +7,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'appointment_schedule_controller.g.dart';
 
 @riverpod
-class AppointmentSchedulesController extends _$AppointmentSchedulesController {
-  String? _buildFilter() {
-    return "${AppointmentScheduleField.isDeleted} = false";
-  }
-
+class AppointmentScheduleController extends _$AppointmentScheduleController {
   @override
-  Future<List<AppointmentSchedule>> build() async {
+  Future<AppointmentSchedule> build(String id) async {
     final repo = ref.read(appointmentScheduleRepositoryProvider);
     final result = await repo
-        .listAll(
-          filter: _buildFilter(),
+        .get(
+          id,
         )
         .run();
     return result.fold(Future.error, (x) => Future.value(x));

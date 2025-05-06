@@ -53,6 +53,7 @@ class DynamicGroupItem extends StatelessWidget {
     Color? titleColor,
     VoidCallback? onTap,
     VoidCallback? onLongPress,
+    EdgeInsets? padding,
   }) {
     final context = rootKey.currentContext!;
     final theme = Theme.of(context);

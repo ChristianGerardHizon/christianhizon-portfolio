@@ -90,6 +90,7 @@ class DynamicFormFieldDateTime extends StatelessWidget {
                     final pickedTime = await showTimePicker(
                       context: context,
                       initialTime: initialTime,
+                      initialEntryMode: TimePickerEntryMode.inputOnly,
                     );
                     if (pickedTime != null) {
                       final datePart = state.value ?? DateTime.now();

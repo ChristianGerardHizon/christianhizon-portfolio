@@ -3,17 +3,19 @@ import 'package:gym_system/src/core/packages/pocketbase_filter.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/type_defs/type_defs.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
-import 'package:gym_system/src/features/change_logs/data/change_log_repository.dart';
-import 'package:gym_system/src/features/change_logs/domain/change_log.dart';
+import 'package:gym_system/src/features/appointment_schedule/data/appointment_schedule_repository.dart';
+import 'package:gym_system/src/features/appointment_schedule/domain/appointment_schedule.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'change_log_table_controller.g.dart';
+part 'appointment_schedule_table_controller.g.dart';
 
 @riverpod
-class ChangeLogTableController extends _$ChangeLogTableController {
+class AppointmentScheduleTableController
+    extends _$AppointmentScheduleTableController {
   @override
-  Future<List<ChangeLog>> build(String tableKey) async {
-    final repo = ref.read(changeLogRepositoryProvider);
+  Future<List<AppointmentSchedule>> build(String tableKey,
+      {String? patientId}) async {
+    final repo = ref.read(appointmentScheduleRepositoryProvider);
 
     final page = ref
         .watch(tableControllerProvider(tableKey).select((state) => state.page));
@@ -23,14 +25,18 @@ class ChangeLogTableController extends _$ChangeLogTableController {
         tableControllerProvider(tableKey).select((state) => state.filter));
 
     final notifier = ref.read(tableControllerProvider(tableKey).notifier);
-    final baseFilter = '${ChangeLogField.isDeleted} = false';
+    final optional = patientId != null
+        ? "&& ${AppointmentScheduleField.patient} = '$patientId'"
+        : '';
+    final baseFilter =
+        '${AppointmentScheduleField.isDeleted} = false ${optional}';
     final filterFunc = PocketbaseFilter(baseFilter: baseFilter);
-
+    final filter = filterFunc.searchName(tableFilter).build();
     final result = await repo
 
         // 1. Fetch data
         .list(
-          filter: filterFunc.searchName(tableFilter).build(),
+          filter: filter,
           pageNo: page,
           pageSize: pageSize,
           sort: '-updated',
@@ -47,7 +53,7 @@ class ChangeLogTableController extends _$ChangeLogTableController {
 }
 
 TaskResult _handleSuccess(
-  PageResults<ChangeLog> result,
+  PageResults<AppointmentSchedule> result,
   TableController notifier,
 ) {
   notifier.fetchSuccess(
