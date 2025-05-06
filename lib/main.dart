@@ -34,8 +34,9 @@ class RiverpodLogger extends ProviderObserver {
     ProviderContainer container,
   ) {
     print('''
-{
-  "provider": "${provider.runtimeType}",
+{ 
+  "action": "added",
+  "provider": "${provider.runtimeType} ${provider.argument}",
   "value": "$value"
 }''');
   }
@@ -49,6 +50,7 @@ class RiverpodLogger extends ProviderObserver {
   ) {
     print('''
 {
+  "action": "updated",
   "provider": "${provider.runtimeType}",
   "newValue": "$newValue"
 }''');
@@ -61,6 +63,7 @@ class RiverpodLogger extends ProviderObserver {
   ) {
     print('''
 {
+  "action: "disposed",
   "provider": "${provider.runtimeType}"
 }''');
   }
