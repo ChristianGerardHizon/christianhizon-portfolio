@@ -21,5 +21,34 @@ Future<void> main() async {
   /// Run the application
   /// with the riverpod package root provider
   ///
-  runApp(ProviderScope(child: TranslationProvider(child: Application())));
+  runApp(ProviderScope(
+      observers: [RiverpodLogger()],
+      child: TranslationProvider(child: Application())));
+}
+
+class RiverpodLogger extends ProviderObserver {
+  @override
+  void didUpdateProvider(
+    ProviderBase<Object?> provider,
+    Object? previousValue,
+    Object? newValue,
+    ProviderContainer container,
+  ) {
+    print('''
+{
+  "provider": "${provider.runtimeType}",
+  "newValue": "$newValue"
+}''');
+  }
+
+  /// A provider was disposed
+  void didDisposeProvider(
+    ProviderBase<Object?> provider,
+    ProviderContainer container,
+  ) {
+    print('''
+{
+  "provider": "${provider.runtimeType}"
+}''');
+  }
 }
