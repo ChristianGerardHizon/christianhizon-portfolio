@@ -28,6 +28,19 @@ Future<void> main() async {
 
 class RiverpodLogger extends ProviderObserver {
   @override
+  void didAddProvider(
+    ProviderBase<Object?> provider,
+    Object? value,
+    ProviderContainer container,
+  ) {
+    print('''
+{
+  "provider": "${provider.runtimeType}",
+  "value": "$value"
+}''');
+  }
+
+  @override
   void didUpdateProvider(
     ProviderBase<Object?> provider,
     Object? previousValue,

@@ -12,16 +12,18 @@ import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/features/appointment_schedule/data/appointment_schedule_repository.dart';
-import 'package:gym_system/src/features/appointment_schedule/domain/appointment_schedule.dart';
-import 'package:gym_system/src/features/appointment_schedule/presentation/controllers/appointment_schedule_table_controller.dart';
-import 'package:gym_system/src/features/appointment_schedule/presentation/widgets/appointment_schedule_card.dart';
+import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
+import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
+import 'package:gym_system/src/features/appointment_schedules/presentation/controllers/appointment_schedule_table_controller.dart';
+import 'package:gym_system/src/features/appointment_schedules/presentation/widgets/appointment_schedule_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AppointmentSchedulesPage extends HookConsumerWidget {
-  const AppointmentSchedulesPage({super.key, this.patientId});
+  const AppointmentSchedulesPage(
+      {super.key, this.patientId, this.showAppBar = true});
 
   final String? patientId;
+  final bool showAppBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -81,14 +83,16 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('AppointmentSchedules'),
-        actions: [
-          RefreshButton(
-            onPressed: onRefresh,
-          ),
-        ],
-      ),
+      appBar: showAppBar
+          ? AppBar(
+              title: Text('AppointmentSchedules'),
+              actions: [
+                RefreshButton(
+                  onPressed: onRefresh,
+                ),
+              ],
+            )
+          : null,
       body: DynamicTableView<AppointmentSchedule>(
         tableKey: TableControllerKeys.appointmentSchedule,
         error: FailureMessage.asyncValue(listState),

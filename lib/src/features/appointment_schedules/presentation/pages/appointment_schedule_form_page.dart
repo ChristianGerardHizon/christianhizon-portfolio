@@ -8,10 +8,10 @@ import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/features/appointment_schedule/data/appointment_schedule_repository.dart';
-import 'package:gym_system/src/features/appointment_schedule/domain/appointment_schedule.dart';
-import 'package:gym_system/src/features/appointment_schedule/presentation/controllers/appointment_schedule_form_controller.dart';
-import 'package:gym_system/src/features/appointment_schedule/presentation/controllers/appointment_schedule_table_controller.dart';
+import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
+import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
+import 'package:gym_system/src/features/appointment_schedules/presentation/controllers/appointment_schedule_form_controller.dart';
+import 'package:gym_system/src/features/appointment_schedules/presentation/controllers/appointment_schedule_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AppointmentScheduleFormPage extends HookConsumerWidget {
@@ -24,6 +24,7 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
     final provider = ref.watch(appointmentScheduleFormControllerProvider(id));
+    final hasTime = useState(false);
 
     ///
     /// Submit
@@ -73,22 +74,57 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                 isLoading: isLoading.value,
                 itemPadding: const EdgeInsets.only(top: 14),
                 fields: [
-                  DynamicDateTimeField(
-                    name: PatientRecordField.vistDate,
-                    initialValue: appointmentSchedule?.date,
-                    decoration: InputDecoration(
-                      label: Text('Visit Date and Time'),
+                  DynamicCheckboxField(
+                    name: PatientRecordField.hasTime,
+                    title: 'Has Time',
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
+                      helperText:
+                          'When checked, the date field will be a date and time field',
                     ),
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                    ]),
-                    valueTransformer: (p0) {
-                      final value = p0;
-                      if (value is DateTime)
-                        return value.toUtc().toIso8601String();
+                    valueTransformer: (p0) => hasTime.value = p0 as bool,
+                    onChange: (p0) {
+                      hasTime.value = p0 as bool;
+                      final value = formKey
+                          .currentState?.fields[PatientRecordField.vistDate];
+                      if (value != null) {
+                        value.didChange(null);
+                      }
                     },
                   ),
+                  hasTime.value
+                      ? DynamicDateTimeField(
+                          name: PatientRecordField.vistDate,
+                          initialValue: appointmentSchedule?.date,
+                          decoration: InputDecoration(
+                            label: Text('Appointment Date and Time'),
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: FormBuilderValidators.compose([
+                            FormBuilderValidators.required(),
+                          ]),
+                          valueTransformer: (p0) {
+                            final value = p0;
+                            if (value is DateTime)
+                              return value.toUtc().toIso8601String();
+                          },
+                        )
+                      : DynamicDateField(
+                          name: PatientRecordField.vistDate,
+                          initialValue: appointmentSchedule?.date,
+                          decoration: InputDecoration(
+                            label: Text('Appointment Date'),
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: FormBuilderValidators.compose([
+                            FormBuilderValidators.required(),
+                          ]),
+                          valueTransformer: (p0) {
+                            final value = p0;
+                            if (value is DateTime)
+                              return value.toUtc().toIso8601String();
+                          },
+                        ),
                   DynamicTextField(
                     name: AppointmentScheduleField.purpose,
                     initialValue: appointmentSchedule?.purpose,
@@ -96,6 +132,8 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                       label: Text('Purpose'),
                       border: OutlineInputBorder(),
                     ),
+                    minLines: 3,
+                    maxLines: 10,
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
                     ]),

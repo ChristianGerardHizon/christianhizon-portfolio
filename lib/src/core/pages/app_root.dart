@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/controllers/scaffold_controller.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
-import 'package:gym_system/src/core/widgets/custom_navbar_item.dart';
+import 'package:gym_system/src/core/models/custom_navbar_item.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
@@ -200,15 +200,31 @@ class AppRoot extends HookConsumerWidget {
                                 .routerDelegate.currentConfiguration.uri
                                 .toString();
                             return SideMenuItemDataTile(
-                              hasSelectedLine: false,
+                              decoration: BoxDecoration(
+                                color: currentLocation == e.route
+                                    ? theme.primaryColor.withValues(alpha: .3)
+                                    : null,
+                              ),
+                              clipBehavior: Clip.none,
+                              titleStyle: TextStyle(
+                                color: currentLocation == e.route
+                                    ? theme.primaryColor
+                                    : null,
+                                fontSize: 14,
+                              ),
+                              selectedTitleStyle: TextStyle(
+                                color: currentLocation == e.route
+                                    ? theme.primaryColor
+                                    : null,
+                                fontSize: 14,
+                              ),
+                              hasSelectedLine: true,
                               isSelected: e.isRoot
                                   ? currentLocation == RootRoute.path
                                   : currentLocation.contains(e.route),
                               onTap: () => e.onTap?.call(),
                               title: e.label,
                               icon: e.icon,
-                              highlightSelectedColor:
-                                  theme.primaryColor.withValues(alpha: .3),
                               selectedIcon: e.selectedIcon,
                             );
                           }).toList(),

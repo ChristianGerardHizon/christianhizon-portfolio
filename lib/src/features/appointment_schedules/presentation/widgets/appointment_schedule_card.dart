@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/widgets/selectable_card.dart';
-import 'package:gym_system/src/features/appointment_schedule/domain/appointment_schedule.dart';
+import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
 
 class AppointmentScheduleCard extends StatelessWidget {
   const AppointmentScheduleCard({

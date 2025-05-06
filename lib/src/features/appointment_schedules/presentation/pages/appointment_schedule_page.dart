@@ -14,9 +14,9 @@ import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
-import 'package:gym_system/src/features/appointment_schedule/data/appointment_schedule_repository.dart';
-import 'package:gym_system/src/features/appointment_schedule/domain/appointment_schedule.dart';
-import 'package:gym_system/src/features/appointment_schedule/presentation/controllers/appointment_schedule_controller.dart';
+import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
+import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
+import 'package:gym_system/src/features/appointment_schedules/presentation/controllers/appointment_schedule_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AppointmentSchedulePage extends HookConsumerWidget {

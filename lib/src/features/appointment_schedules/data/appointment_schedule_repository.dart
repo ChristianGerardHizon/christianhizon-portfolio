@@ -4,7 +4,7 @@ import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/models/page_results.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/appointment_schedule/domain/appointment_schedule.dart';
+import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pocketbase/pocketbase.dart';

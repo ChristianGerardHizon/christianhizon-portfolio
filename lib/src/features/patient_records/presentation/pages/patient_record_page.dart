@@ -34,11 +34,6 @@ class PatientRecordPage extends HookConsumerWidget {
     final isLoading = useState(false);
 
     ///
-    ///
-    ///
-    final isSaving = useState(false);
-
-    ///
     /// repo
     ///
     final repo = ref.read(patientRecordRepositoryProvider);
@@ -52,10 +47,10 @@ class PatientRecordPage extends HookConsumerWidget {
     /// refresh
     ///
     refresh(String id) {
-      ref.invalidate(patientRecordControllerProvider(id));
-      ref.invalidate(patientRecordTableControllerProvider);
-      ref.invalidate(patientRecordControllerProvider(id));
-      formKey.currentState?.reset();
+      // ref.invalidate(patientRecordControllerProvider(id));
+      // ref.invalidate(patientRecordTableControllerProvider);
+      // ref.invalidate(patientRecordControllerProvider(id));
+      // formKey.currentState?.reset();
     }
 
     ///
@@ -115,7 +110,7 @@ class PatientRecordPage extends HookConsumerWidget {
               );
 
       final result = await fullTask.run();
-      isSaving.value = false;
+      isLoading.value = false;
       // 4. Handle Error
       result.match(
         (failure) => _handleFailure(context, failure),
@@ -125,7 +120,7 @@ class PatientRecordPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PatientRecord Details'),
+        title: const Text('Patient Record Details'),
         actions: [],
       ),
       body: ref.watch(patientRecordControllerProvider(id)).when(
@@ -138,7 +133,7 @@ class PatientRecordPage extends HookConsumerWidget {
               final patientRecord = patientRecordState;
               return FormBuilder(
                 key: formKey,
-                enabled: !isSaving.value,
+                enabled: !isLoading.value,
                 initialValue: {
                   PatientRecordField.diagnosis: patientRecord.diagnosis,
                   PatientRecordField.treatment: patientRecord.treatment,

@@ -123,6 +123,7 @@ class PatientRecordField {
   static const String user = 'user';
   static const String admin = 'admin';
   static const String branch = 'branch';
+  static const String hasTime = 'hasTime';
 }
 
 class PatientPrescriptionItemField {

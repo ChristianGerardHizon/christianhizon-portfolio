@@ -3,8 +3,8 @@ import 'package:gym_system/src/core/packages/pocketbase_filter.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
-import 'package:gym_system/src/features/appointment_schedule/data/appointment_schedule_repository.dart';
-import 'package:gym_system/src/features/appointment_schedule/domain/appointment_schedule.dart';
+import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
+import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'appointment_schedule_table_controller.g.dart';
