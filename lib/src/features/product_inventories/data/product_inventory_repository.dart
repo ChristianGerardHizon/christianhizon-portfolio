@@ -28,7 +28,7 @@ class ProductInventoryRepositoryImpl
   RecordService get collection =>
       pb.collection(PocketBaseCollections.productInventoryStatus);
 
-  final expand = PBExpand.productInventory;
+  final expand = PBExpand.productInventory.toString();
 
   @override
   TaskResult<ProductInventory> get(String id) {

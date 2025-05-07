@@ -3,6 +3,7 @@ import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/appointment_schedules/presentation/pages/appointment_schedules_page.dart';
+import 'package:gym_system/src/features/patient_files/presentation/presentation/pages/patient_files_page.dart';
 import 'package:gym_system/src/features/patient_records/presentation/pages/patient_records_page.dart';
 import 'package:gym_system/src/features/patient_treament_records/presentation/pages/patient_treatment_records_page.dart';
 import 'package:gym_system/src/features/patient_treaments/presentation/controllers/patient_treatments_controller.dart';
@@ -122,8 +123,9 @@ class PatientPage extends HookConsumerWidget {
                       patientId: patient.id,
                       showAppBar: false,
                     ),
-                    Center(
-                      child: Text('No Files'),
+                    PatientFilesPage(
+                      patientId: patient.id,
+                      showAppBar: false,
                     ),
                   ],
                 ),

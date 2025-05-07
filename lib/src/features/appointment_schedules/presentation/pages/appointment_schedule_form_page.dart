@@ -3,7 +3,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
@@ -23,7 +22,8 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
-    final provider = ref.watch(appointmentScheduleFormControllerProvider(id));
+    final provider = appointmentScheduleFormControllerProvider(id);
+    final state = ref.watch(provider);
     final hasTime = useState(false);
 
     ///
@@ -57,11 +57,18 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
       );
     }
 
+    ref.listen(provider, (prev, next) {
+      final hasNext = next.valueOrNull?.appointmentSchedule?.hasTime;
+      if (hasNext is bool) {
+        hasTime.value = hasNext;
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: Text('AppointmentSchedule Form Page'),
       ),
-      body: provider.when(
+      body: state.when(
           loading: () => Center(child: CircularProgressIndicator()),
           error: (error, stack) => Center(child: Text('Form Error')),
           data: (formState) {
@@ -75,7 +82,8 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                 itemPadding: const EdgeInsets.only(top: 14),
                 fields: [
                   DynamicCheckboxField(
-                    name: PatientRecordField.hasTime,
+                    name: AppointmentScheduleField.hasTime,
+                    initialValue: hasTime.value,
                     title: 'Has Time',
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -86,7 +94,7 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                     onChange: (p0) {
                       hasTime.value = p0 as bool;
                       final value = formKey
-                          .currentState?.fields[PatientRecordField.vistDate];
+                          .currentState?.fields[AppointmentScheduleField.date];
                       if (value != null) {
                         value.didChange(null);
                       }
@@ -94,7 +102,7 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                   ),
                   hasTime.value
                       ? DynamicDateTimeField(
-                          name: PatientRecordField.vistDate,
+                          name: AppointmentScheduleField.date,
                           initialValue: appointmentSchedule?.date,
                           decoration: InputDecoration(
                             label: Text('Appointment Date and Time'),
@@ -110,7 +118,7 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                           },
                         )
                       : DynamicDateField(
-                          name: PatientRecordField.vistDate,
+                          name: AppointmentScheduleField.date,
                           initialValue: appointmentSchedule?.date,
                           decoration: InputDecoration(
                             label: Text('Appointment Date'),
@@ -125,6 +133,28 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                               return value.toUtc().toIso8601String();
                           },
                         ),
+                  DynamicSelectField(
+                    name: AppointmentScheduleField.status,
+                    initialValue: appointmentSchedule?.status.name ??
+                        AppointmentScheduleStatus.scheduled.name,
+                    options: AppointmentScheduleStatus.values
+                        .map(
+                          (e) => SelectOption(
+                            value: e.name,
+                            display: e.name,
+                          ),
+                        )
+                        .toList(),
+                    decoration: InputDecoration(
+                      label: Text('Branch'),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                      ],
+                    ),
+                  ),
                   DynamicTextField(
                     name: AppointmentScheduleField.purpose,
                     initialValue: appointmentSchedule?.purpose,

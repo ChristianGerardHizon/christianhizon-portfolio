@@ -3,55 +3,49 @@ import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/models/page_results.dart';
-import 'package:gym_system/src/core/strings/pb_expand.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/products/domain/product.dart';
+import 'package:gym_system/src/features/patient_files/domain/patient_file.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'product_repository.g.dart';
+part 'patient_file_repository.g.dart';
 
 @Riverpod(keepAlive: true)
-PBCollectionRepository<Product> productRepository(Ref ref) {
-  return ProductRepositoryImpl(
+PBCollectionRepository<PatientFile> patientFileRepository(Ref ref) {
+  return PatientFileRepositoryImpl(
     pb: ref.watch(pocketbaseProvider),
   );
 }
 
-class ProductRepositoryImpl extends PBCollectionRepository<Product> {
+class PatientFileRepositoryImpl extends PBCollectionRepository<PatientFile> {
   final PocketBase pb;
 
-  ProductRepositoryImpl({required this.pb});
+  PatientFileRepositoryImpl({required this.pb});
 
-  RecordService get collection => pb.collection(PocketBaseCollections.products);
+  RecordService get collection =>
+      pb.collection(PocketBaseCollections.patientFiles);
 
-  Product mapToData(Map<String, dynamic> map) {
-    return Product.fromMap({...map, 'domain': pb.baseURL});
+  PatientFile mapToData(Map<String, dynamic> map) {
+    return PatientFile.fromMap({...map, 'domain': pb.baseURL});
   }
 
-  final expand = PBExpand.product.toString();
-
   @override
-  TaskResult<Product> get(String id) {
+  TaskResult<PatientFile> get(String id) {
     return TaskResult.tryCatch(() async {
-      final result = await collection.getOne(id, expand: expand);
+      final result = await collection.getOne(id);
       return mapToData(result.toJson());
     }, Failure.handle);
   }
 
   @override
-  TaskResult<Product> create(
+  TaskResult<PatientFile> create(
     Map<String, dynamic> payload, {
     List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(
-        body: payload,
-        files: files,
-        expand: expand,
-      );
+      final response = await collection.create(body: payload, files: files);
       return mapToData(response.toJson());
     }, Failure.handle);
   }
@@ -64,7 +58,7 @@ class ProductRepositoryImpl extends PBCollectionRepository<Product> {
   }
 
   @override
-  TaskResult<PageResults<Product>> list({
+  TaskResult<PageResults<PatientFile>> list({
     String? filter,
     required int pageNo,
     required int pageSize,
@@ -76,14 +70,13 @@ class ProductRepositoryImpl extends PBCollectionRepository<Product> {
         page: pageNo,
         perPage: pageSize,
         sort: sort,
-        expand: expand,
       );
       return PageResults(
         page: result.page,
         perPage: result.perPage,
         totalItems: result.totalItems,
         totalPages: result.totalPages,
-        items: result.items.map<Product>((e) {
+        items: result.items.map<PatientFile>((e) {
           return mapToData(e.toJson());
         }).toList(),
       );
@@ -91,19 +84,18 @@ class ProductRepositoryImpl extends PBCollectionRepository<Product> {
   }
 
   @override
-  TaskResult<Product> update(
-    Product product,
+  TaskResult<PatientFile> update(
+    PatientFile patientFile,
     Map<String, dynamic> update, {
     List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
-      final productMap = product.toMap();
-      final combinedMap = {...productMap, ...update};
+      final patientFileMap = patientFile.toMap();
+      final combinedMap = {...patientFileMap, ...update};
       final result = await collection.update(
-        product.id,
+        patientFile.id,
         body: combinedMap,
         files: files,
-        expand: expand,
       );
       return mapToData(result.toJson());
     }, Failure.handle);
@@ -113,7 +105,8 @@ class ProductRepositoryImpl extends PBCollectionRepository<Product> {
   TaskResult<void> softDeleteMulti(List<String> ids) {
     return TaskResult.tryCatch(() async {
       final batch = pb.createBatch();
-      final batchCollection = batch.collection(PocketBaseCollections.products);
+      final batchCollection =
+          batch.collection(PocketBaseCollections.patientRecords);
       for (final id in ids) {
         batchCollection.update(id, body: {'isDeleted': true});
       }
@@ -123,7 +116,7 @@ class ProductRepositoryImpl extends PBCollectionRepository<Product> {
   }
 
   @override
-  TaskResult<List<Product>> listAll({
+  TaskResult<List<PatientFile>> listAll({
     int batch = 500,
     String? filter,
   }) {
@@ -131,9 +124,8 @@ class ProductRepositoryImpl extends PBCollectionRepository<Product> {
       () async {
         final result = await collection.getFullList(
           filter: filter,
-          expand: expand,
         );
-        return result.map<Product>((e) => mapToData(e.toJson())).toList();
+        return result.map<PatientFile>((e) => mapToData(e.toJson())).toList();
       },
       Failure.handle,
     );

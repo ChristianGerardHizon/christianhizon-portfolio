@@ -30,7 +30,7 @@ class AdminRepositoryImpl implements PBAuthRepository<Admin> {
 
   AdminRepositoryImpl({required this.pb});
 
-  final expand = PBExpand.admin;
+  final expand = PBExpand.admin.toString();
 
   Admin mapToData(Map<String, dynamic> map) {
     return Admin.fromMap({...map, 'domain': pb.baseURL});

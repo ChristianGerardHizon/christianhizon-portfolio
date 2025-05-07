@@ -221,10 +221,23 @@ class AppointmentScheduleField {
   static const String updated = PbField.updated;
   static const String isDeleted = PbField.isDeleted;
 
-  static const String name = 'date';
+  static const String date = 'date';
   static const String patient = 'patient';
   static const String notifyWhenNear = 'notifyWhenNear';
   static const String hasNotifiedWhenNear = 'hasNotifiedWhenNear';
   static const String branch = 'branch';
+  static const String hasTime = 'hasTime';
   static const String purpose = 'purpose';
+  static const String status = 'status';
+}
+
+class PatientFileField {
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
+
+  static const String file = 'file';
+  static const String patient = 'patient';
+  static const String notes = 'notes';
 }

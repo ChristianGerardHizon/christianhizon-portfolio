@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/widgets/selectable_card.dart';
-import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
+import 'package:gym_system/src/features/patient_files/domain/patient_file.dart';
 
-class AppointmentScheduleCard extends StatelessWidget {
-  const AppointmentScheduleCard({
+class PatientFileCard extends StatelessWidget {
+  const PatientFileCard({
     super.key,
-    required this.appointmentSchedule,
+    required this.patientFile,
     required this.onLongPress,
     required this.onTap,
     this.selected = false,
@@ -15,7 +14,7 @@ class AppointmentScheduleCard extends StatelessWidget {
   final Function() onLongPress;
   final Function() onTap;
   final bool selected;
-  final AppointmentSchedule appointmentSchedule;
+  final PatientFile patientFile;
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +25,11 @@ class AppointmentScheduleCard extends StatelessWidget {
       selected: selected,
       child: ListTile(
           leading: Icon(Icons.abc),
-          title: Text(appointmentSchedule.date.fullReadable),
+          title: Text(patientFile.id),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(appointmentSchedule.toString()),
+              Text(patientFile.id),
             ],
           )),
     );

@@ -30,7 +30,7 @@ class PatientTreatmentRecordRepositoryImpl
   RecordService get collection =>
       pb.collection(PocketBaseCollections.treatmentRecords);
 
-  final expand = PBExpand.patientTreatmentRecord;
+  final expand = PBExpand.patientTreatmentRecord.toString();
 
   PatientTreatmentRecord mapToData(Map<String, dynamic> map) {
     return PatientTreatmentRecord.fromMap({...map, 'domain': pb.baseURL});

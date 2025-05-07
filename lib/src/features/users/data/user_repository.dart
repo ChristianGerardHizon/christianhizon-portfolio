@@ -31,7 +31,7 @@ class UserRepositoryImpl extends PBAuthRepository<User> {
     return User.fromMap({...map, 'domain': pb.baseURL});
   }
 
-  final expand = PBExpand.user;
+  final expand = PBExpand.user.toString();
 
   @override
   TaskResult<User> get(String id) {

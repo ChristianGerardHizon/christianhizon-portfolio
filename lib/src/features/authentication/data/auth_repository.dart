@@ -105,7 +105,7 @@ class AuthRepositoryImpl implements AuthRepository {
             .authWithPassword(
               email,
               password,
-              expand: PBExpand.admin,
+              expand: PBExpand.admin.toString(),
             );
       },
       (error, stack) {
@@ -125,7 +125,7 @@ class AuthRepositoryImpl implements AuthRepository {
             .authWithPassword(
               email,
               password,
-              expand: PBExpand.user,
+              expand: PBExpand.user.toString(),
             );
       },
       (error, stack) {
@@ -155,14 +155,14 @@ class AuthRepositoryImpl implements AuthRepository {
 
         if (collection == PocketBaseCollections.admins) {
           return await pb.collection(collection).authRefresh(
-                expand: PBExpand.admin,
+                expand: PBExpand.admin.toString(),
               );
         }
 
         if (collection == PocketBaseCollections.users) {
           return await pb
               .collection(collection)
-              .authRefresh(expand: PBExpand.user);
+              .authRefresh(expand: PBExpand.user.toString());
         }
 
         throw DataFailure(
@@ -193,10 +193,10 @@ class AuthRepositoryImpl implements AuthRepository {
         final authModel = oldCollection == PocketBaseCollections.admins
             ? await pb
                 .collection(oldCollection)
-                .authRefresh(expand: PBExpand.admin)
+                .authRefresh(expand: PBExpand.admin.toString())
             : await pb
                 .collection(oldCollection)
-                .authRefresh(expand: PBExpand.user);
+                .authRefresh(expand: PBExpand.user.toString());
 
         authStore.save(authModel.token, authModel.record);
 

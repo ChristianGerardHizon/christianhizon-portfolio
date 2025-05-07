@@ -140,6 +140,34 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
             },
           ),
           TableColumn(
+            header: 'Patient',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  (data.expand.patient?.name).optional(),
+                ),
+              );
+            },
+          ),
+          TableColumn(
+            header: 'Status',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  data.status.name.optional(),
+                ),
+              );
+            },
+          ),
+          TableColumn(
             header: 'Actions',
             alignment: Alignment.centerLeft,
             width: 150,

@@ -4,6 +4,7 @@ import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/models/page_results.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
+import 'package:gym_system/src/core/strings/pb_expand.dart';
 import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
@@ -33,10 +34,12 @@ class AppointmentScheduleRepositoryImpl
     return AppointmentSchedule.fromMap({...map, 'domain': pb.baseURL});
   }
 
+  final expand = PBExpand.appointmentSchedule.toString();
+
   @override
   TaskResult<AppointmentSchedule> get(String id) {
     return TaskResult.tryCatch(() async {
-      final result = await collection.getOne(id);
+      final result = await collection.getOne(id, expand: expand);
       return mapToData(result.toJson());
     }, Failure.handle);
   }
@@ -47,7 +50,8 @@ class AppointmentScheduleRepositoryImpl
     List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
-      final response = await collection.create(body: payload, files: files);
+      final response =
+          await collection.create(body: payload, files: files, expand: expand);
       return mapToData(response.toJson());
     }, Failure.handle);
   }
@@ -71,6 +75,7 @@ class AppointmentScheduleRepositoryImpl
         filter: filter,
         page: pageNo,
         perPage: pageSize,
+        expand: expand,
       );
       return PageResults(
         page: result.page,
@@ -97,6 +102,7 @@ class AppointmentScheduleRepositoryImpl
         appointmentSchedule.id,
         body: combinedMap,
         files: files,
+        expand: expand,
       );
       return mapToData(result.toJson());
     }, Failure.handle);
@@ -125,6 +131,7 @@ class AppointmentScheduleRepositoryImpl
       () async {
         final result = await collection.getFullList(
           filter: filter,
+          expand: expand,
         );
         return result
             .map<AppointmentSchedule>((e) => mapToData(e.toJson()))

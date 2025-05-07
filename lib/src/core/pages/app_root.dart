@@ -202,7 +202,8 @@ class AppRoot extends HookConsumerWidget {
                             return SideMenuItemDataTile(
                               decoration: BoxDecoration(
                                 color: currentLocation == e.route
-                                    ? theme.primaryColor.withValues(alpha: .3)
+                                    ? theme.colorScheme.primaryContainer
+                                        .withValues(alpha: .3)
                                     : null,
                               ),
                               clipBehavior: Clip.none,
@@ -214,7 +215,7 @@ class AppRoot extends HookConsumerWidget {
                               ),
                               selectedTitleStyle: TextStyle(
                                 color: currentLocation == e.route
-                                    ? theme.primaryColor
+                                    ? theme.colorScheme.primary
                                     : null,
                                 fontSize: 14,
                               ),

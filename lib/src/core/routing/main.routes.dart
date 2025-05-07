@@ -26,6 +26,7 @@ import 'package:gym_system/src/features/change_logs/presentation/pages/change_lo
 import 'package:gym_system/src/features/change_logs/presentation/pages/change_log_page.dart';
 import 'package:gym_system/src/features/change_logs/presentation/pages/change_logs_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:gym_system/src/features/patient_files/presentation/presentation/pages/patient_file_form_page.dart';
 import 'package:gym_system/src/features/patient_prescription_items/presentation/pages/patient_prescription_item_form_page.dart';
 import 'package:gym_system/src/features/patient_records/presentation/pages/patient_record_form_page.dart';
 import 'package:gym_system/src/features/patient_records/presentation/pages/patient_record_page.dart';
@@ -69,6 +70,7 @@ part 'routes/appointment_schedules.routes.dart';
 part 'routes/change_logs.routes.dart';
 part 'routes/product_category.routes.dart';
 part 'routes/patient_prescription_item.routes.dart';
+part 'routes/patient_files.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
@@ -159,6 +161,12 @@ class SplashPageRoute extends GoRouteData {
         ///
         TypedGoRoute<PatientAppointmentSchedulesPageRoute>(
             path: PatientAppointmentSchedulesPageRoute.path),
+
+        ///
+        /// Files
+        ///
+        TypedGoRoute<PatientFileFormPageRoute>(
+            path: PatientFileFormPageRoute.path),
       ],
     ),
 

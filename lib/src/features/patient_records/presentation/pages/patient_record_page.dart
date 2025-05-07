@@ -17,7 +17,6 @@ import 'package:gym_system/src/features/patient_prescription_items/presentation/
 import 'package:gym_system/src/features/patient_records/data/patient_record_repository.dart';
 import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
 import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_record_controller.dart';
-import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_record_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 

@@ -56,6 +56,7 @@ List<RouteBase> get $appRoutes => [
       $productCategoryPageRoute,
       $productCategoryFormPageRoute,
       $patientPrescriptionItemFormPageRoute,
+      $patientFileFormPageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -171,6 +172,10 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               path: '/patient/appointmentSchedules',
               factory:
                   $PatientAppointmentSchedulesPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/form/patientFiles',
+              factory: $PatientFileFormPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -621,6 +626,31 @@ extension $PatientAppointmentSchedulesPageRouteExtension
 
   String get location => GoRouteData.$location(
         '/patient/appointmentSchedules',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $PatientFileFormPageRouteExtension on PatientFileFormPageRoute {
+  static PatientFileFormPageRoute _fromState(GoRouterState state) =>
+      PatientFileFormPageRoute(
+        parentId: state.uri.queryParameters['parent-id']!,
+        id: state.uri.queryParameters['id'],
+      );
+
+  String get location => GoRouteData.$location(
+        '/form/patientFiles',
+        queryParams: {
+          'parent-id': parentId,
+          if (id != null) 'id': id,
+        },
       );
 
   void go(BuildContext context) => context.go(location);
@@ -1496,4 +1526,9 @@ RouteBase get $productCategoryFormPageRoute => GoRouteData.$route(
 RouteBase get $patientPrescriptionItemFormPageRoute => GoRouteData.$route(
       path: '/form/patientPrescriptionItem',
       factory: $PatientPrescriptionItemFormPageRouteExtension._fromState,
+    );
+
+RouteBase get $patientFileFormPageRoute => GoRouteData.$route(
+      path: '/form/patientFiles',
+      factory: $PatientFileFormPageRouteExtension._fromState,
     );

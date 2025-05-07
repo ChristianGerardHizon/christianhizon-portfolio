@@ -26,7 +26,7 @@ class ChangeLogRepositoryImpl extends PBCollectionRepository<ChangeLog> {
 
   ChangeLogRepositoryImpl({required this.pb});
 
-  final String expand = PBExpand.changeLogs;
+  final String expand = PBExpand.changeLogs.toString();
 
   RecordService get collection =>
       pb.collection(PocketBaseCollections.changeLogs);
