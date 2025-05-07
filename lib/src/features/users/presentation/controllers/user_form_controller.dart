@@ -1,5 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/models/pb_image.dart';
+import 'package:gym_system/src/core/models/pb_file.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
@@ -17,7 +17,7 @@ part 'user_form_controller.mapper.dart';
 @MappableClass()
 class UserFormState with UserFormStateMappable {
   final User? user;
-  final List<PBImage>? images;
+  final List<PBFile>? images;
   final List<Branch> branches;
 
   UserFormState({
@@ -68,7 +68,7 @@ class UserFormController extends _$UserFormController {
   }
 }
 
-TaskResult<List<PBImage>?> _buildInitialImages(User? user, String domain) {
+TaskResult<List<PBFile>?> _buildInitialImages(User? user, String domain) {
   return TaskResult.tryCatch(() async {
     if (user == null || user.avatar == null || user.avatar!.isEmpty) {
       return null;
@@ -86,7 +86,7 @@ TaskResult<List<PBImage>?> _buildInitialImages(User? user, String domain) {
     }
 
     return [
-      PBNetworkImage(
+      PBNetworkFile(
         fileName: user.avatar!,
         uri: imageUri,
         field: UserField.avatar,

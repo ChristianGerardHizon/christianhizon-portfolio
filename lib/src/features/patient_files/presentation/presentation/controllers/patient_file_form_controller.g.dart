@@ -7,7 +7,7 @@ part of 'patient_file_form_controller.dart';
 // **************************************************************************
 
 String _$patientFileFormControllerHash() =>
-    r'1ac68e3b9d8da565c5404591dbc7be65359c9e67';
+    r'689f65839eaf5a040240be93959633cbd80ffe1d';
 
 /// Copied from Dart SDK
 class _SystemHash {

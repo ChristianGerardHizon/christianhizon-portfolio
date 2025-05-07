@@ -2,15 +2,15 @@ import 'dart:typed_data';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:http/http.dart';
 
-part 'pb_image.mapper.dart';
+part 'pb_file.mapper.dart';
 
 @MappableClass(discriminatorKey: 'type')
-sealed class PBImage with PBImageMappable {
+sealed class PBFile with PBFileMappable {
   final String? field;
   final String? id;
   final bool isDeleted;
 
-  const PBImage({
+  const PBFile({
     required this.field,
     this.id,
     this.isDeleted = false,
@@ -18,28 +18,28 @@ sealed class PBImage with PBImageMappable {
 
   Future<MultipartFile> toMultipart() async {
     final value = this;
-    if (value is PBLocalImage) {
+    if (value is PBLocalFile) {
       return MultipartFile.fromPath(
         value.field!,
         value.path,
         filename: value.name,
       );
-    } else if (value is PBMemoryImage) {
+    } else if (value is PBMemoryFile) {
       return MultipartFile.fromBytes(
         value.field!,
         value.bytes,
         filename: value.fullFilename,
       );
-    } else if (value is PBNetworkImage) {
+    } else if (value is PBNetworkFile) {
       return Future.error(Exception('Image is not local or network'));
     } else {
       return Future.error(Exception('Image is not local or network'));
     }
   }
 
-  bool get isLocal => this is PBLocalImage;
-  bool get isNetwork => this is PBNetworkImage;
-  bool get isMemory => this is PBMemoryImage;
+  bool get isLocal => this is PBLocalFile;
+  bool get isNetwork => this is PBNetworkFile;
+  bool get isMemory => this is PBMemoryFile;
   bool get isPlaceholder => this is PBPlaceholderImage;
 
   bool get isCreate => id == null;
@@ -47,13 +47,13 @@ sealed class PBImage with PBImageMappable {
 }
 
 @MappableClass(discriminatorValue: 'local')
-class PBLocalImage extends PBImage with PBLocalImageMappable {
+class PBLocalFile extends PBFile with PBLocalFileMappable {
   final String name;
   final String path;
   final Uint8List bytes;
   final int size;
 
-  const PBLocalImage({
+  const PBLocalFile({
     super.field,
     super.id,
     required this.name,
@@ -65,11 +65,11 @@ class PBLocalImage extends PBImage with PBLocalImageMappable {
 }
 
 @MappableClass(discriminatorValue: 'network')
-class PBNetworkImage extends PBImage with PBNetworkImageMappable {
+class PBNetworkFile extends PBFile with PBNetworkFileMappable {
   final Uri uri;
   final String fileName;
 
-  const PBNetworkImage({
+  const PBNetworkFile({
     super.field,
     super.id,
     required this.uri,
@@ -79,11 +79,11 @@ class PBNetworkImage extends PBImage with PBNetworkImageMappable {
 }
 
 @MappableClass(discriminatorValue: 'memory')
-class PBMemoryImage extends PBImage with PBMemoryImageMappable {
+class PBMemoryFile extends PBFile with PBMemoryFileMappable {
   final Uint8List bytes;
   final String fullFilename;
 
-  const PBMemoryImage({
+  const PBMemoryFile({
     super.field,
     super.id,
     required this.bytes,
@@ -93,7 +93,7 @@ class PBMemoryImage extends PBImage with PBMemoryImageMappable {
 }
 
 @MappableClass(discriminatorValue: 'placeholder')
-class PBPlaceholderImage extends PBImage with PBPlaceholderImageMappable {
+class PBPlaceholderImage extends PBFile with PBPlaceholderImageMappable {
   const PBPlaceholderImage({
     super.field,
     super.id = '',
@@ -101,20 +101,20 @@ class PBPlaceholderImage extends PBImage with PBPlaceholderImageMappable {
   });
 }
 
-extension PBImageMaybeMapX on PBImage {
+extension PBFileMaybeMapX on PBFile {
   T maybeMap<T>({
-    T Function(PBLocalImage)? local,
-    T Function(PBNetworkImage)? network,
-    T Function(PBMemoryImage)? memory,
+    T Function(PBLocalFile)? local,
+    T Function(PBNetworkFile)? network,
+    T Function(PBMemoryFile)? memory,
     T Function(PBPlaceholderImage)? placeholder,
     required T Function() orElse,
   }) {
-    if (this is PBLocalImage && local != null) {
-      return local(this as PBLocalImage);
-    } else if (this is PBNetworkImage && network != null) {
-      return network(this as PBNetworkImage);
-    } else if (this is PBMemoryImage && memory != null) {
-      return memory(this as PBMemoryImage);
+    if (this is PBLocalFile && local != null) {
+      return local(this as PBLocalFile);
+    } else if (this is PBNetworkFile && network != null) {
+      return network(this as PBNetworkFile);
+    } else if (this is PBMemoryFile && memory != null) {
+      return memory(this as PBMemoryFile);
     } else if (this is PBPlaceholderImage && placeholder != null) {
       return placeholder(this as PBPlaceholderImage);
     } else {

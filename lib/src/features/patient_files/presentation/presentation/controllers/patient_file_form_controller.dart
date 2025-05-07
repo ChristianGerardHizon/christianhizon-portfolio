@@ -1,5 +1,5 @@
 import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/models/pb_image.dart';
+import 'package:gym_system/src/core/models/pb_file.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
@@ -12,7 +12,7 @@ part 'patient_file_form_controller.g.dart';
 
 class PatientFileFormState {
   final PatientFile? patientFile;
-  final List<PBImage>? images;
+  final List<PBFile>? images;
 
   PatientFileFormState({
     this.patientFile,
@@ -26,14 +26,14 @@ class PatientFileFormController extends _$PatientFileFormController {
   Future<PatientFileFormState> build(
       {required String parentId, String? id}) async {
     final result = await TaskResult.Do(($) async {
-      final patientFile =
-          await ref.read(patientFileControllerProvider(parentId).future);
-
       if (id == null) {
         return PatientFileFormState(
           patientFile: null,
         );
       }
+
+      final patientFile =
+          await ref.read(patientFileControllerProvider(id).future);
 
       final domain = ref.read(pocketbaseProvider).baseURL;
       final images = await $(_buildInitialImages(patientFile, domain));
@@ -47,7 +47,7 @@ class PatientFileFormController extends _$PatientFileFormController {
     return result.fold(Future.error, Future.value);
   }
 
-  TaskResult<List<PBImage>?> _buildInitialImages(
+  TaskResult<List<PBFile>?> _buildInitialImages(
       PatientFile? patientFile, String domain) {
     return TaskResult.tryCatch(() async {
       if (patientFile == null) {
@@ -70,7 +70,7 @@ class PatientFileFormController extends _$PatientFileFormController {
       }
 
       return [
-        PBNetworkImage(
+        PBNetworkFile(
           fileName: patientFile.file,
           uri: imageUri,
           field: PatientFileField.file,

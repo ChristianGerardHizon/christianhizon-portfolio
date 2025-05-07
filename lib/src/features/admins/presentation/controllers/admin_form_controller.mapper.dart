@@ -15,7 +15,7 @@ class AdminFormStateMapper extends ClassMapperBase<AdminFormState> {
       MapperContainer.globals.use(_instance = AdminFormStateMapper._());
       AdminMapper.ensureInitialized();
       BranchMapper.ensureInitialized();
-      PBImageMapper.ensureInitialized();
+      PBFileMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -28,8 +28,8 @@ class AdminFormStateMapper extends ClassMapperBase<AdminFormState> {
   static List<Branch> _$branches(AdminFormState v) => v.branches;
   static const Field<AdminFormState, List<Branch>> _f$branches =
       Field('branches', _$branches, opt: true, def: const []);
-  static List<PBImage>? _$images(AdminFormState v) => v.images;
-  static const Field<AdminFormState, List<PBImage>> _f$images =
+  static List<PBFile>? _$images(AdminFormState v) => v.images;
+  static const Field<AdminFormState, List<PBFile>> _f$images =
       Field('images', _$images, opt: true);
 
   @override
@@ -102,8 +102,8 @@ abstract class AdminFormStateCopyWith<$R, $In extends AdminFormState, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   AdminCopyWith<$R, Admin, Admin>? get admin;
   ListCopyWith<$R, Branch, BranchCopyWith<$R, Branch, Branch>> get branches;
-  ListCopyWith<$R, PBImage, ObjectCopyWith<$R, PBImage, PBImage>>? get images;
-  $R call({Admin? admin, List<Branch>? branches, List<PBImage>? images});
+  ListCopyWith<$R, PBFile, ObjectCopyWith<$R, PBFile, PBFile>>? get images;
+  $R call({Admin? admin, List<Branch>? branches, List<PBFile>? images});
   AdminFormStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -124,7 +124,7 @@ class _AdminFormStateCopyWithImpl<$R, $Out>
       ListCopyWith($value.branches, (v, t) => v.copyWith.$chain(t),
           (v) => call(branches: v));
   @override
-  ListCopyWith<$R, PBImage, ObjectCopyWith<$R, PBImage, PBImage>>? get images =>
+  ListCopyWith<$R, PBFile, ObjectCopyWith<$R, PBFile, PBFile>>? get images =>
       $value.images != null
           ? ListCopyWith($value.images!,
               (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(images: v))

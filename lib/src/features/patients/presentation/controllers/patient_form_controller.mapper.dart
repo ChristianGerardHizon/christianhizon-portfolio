@@ -15,7 +15,7 @@ class PatientFormStateMapper extends ClassMapperBase<PatientFormState> {
       MapperContainer.globals.use(_instance = PatientFormStateMapper._());
       PatientMapper.ensureInitialized();
       BranchMapper.ensureInitialized();
-      PBImageMapper.ensureInitialized();
+      PBFileMapper.ensureInitialized();
       PatientSpeciesMapper.ensureInitialized();
       PatientBreedMapper.ensureInitialized();
       PatientSexMapper.ensureInitialized();
@@ -32,8 +32,8 @@ class PatientFormStateMapper extends ClassMapperBase<PatientFormState> {
   static List<Branch> _$branches(PatientFormState v) => v.branches;
   static const Field<PatientFormState, List<Branch>> _f$branches =
       Field('branches', _$branches, opt: true, def: const []);
-  static List<PBImage>? _$images(PatientFormState v) => v.images;
-  static const Field<PatientFormState, List<PBImage>> _f$images =
+  static List<PBFile>? _$images(PatientFormState v) => v.images;
+  static const Field<PatientFormState, List<PBFile>> _f$images =
       Field('images', _$images, opt: true);
   static List<PatientSpecies> _$species(PatientFormState v) => v.species;
   static const Field<PatientFormState, List<PatientSpecies>> _f$species =
@@ -122,7 +122,7 @@ abstract class PatientFormStateCopyWith<$R, $In extends PatientFormState, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   PatientCopyWith<$R, Patient, Patient>? get patient;
   ListCopyWith<$R, Branch, BranchCopyWith<$R, Branch, Branch>> get branches;
-  ListCopyWith<$R, PBImage, ObjectCopyWith<$R, PBImage, PBImage>>? get images;
+  ListCopyWith<$R, PBFile, ObjectCopyWith<$R, PBFile, PBFile>>? get images;
   ListCopyWith<$R, PatientSpecies,
       PatientSpeciesCopyWith<$R, PatientSpecies, PatientSpecies>> get species;
   ListCopyWith<$R, PatientBreed,
@@ -132,7 +132,7 @@ abstract class PatientFormStateCopyWith<$R, $In extends PatientFormState, $Out>
   $R call(
       {Patient? patient,
       List<Branch>? branches,
-      List<PBImage>? images,
+      List<PBFile>? images,
       List<PatientSpecies>? species,
       List<PatientBreed>? breeds,
       List<PatientSex>? sexes});
@@ -156,7 +156,7 @@ class _PatientFormStateCopyWithImpl<$R, $Out>
       ListCopyWith($value.branches, (v, t) => v.copyWith.$chain(t),
           (v) => call(branches: v));
   @override
-  ListCopyWith<$R, PBImage, ObjectCopyWith<$R, PBImage, PBImage>>? get images =>
+  ListCopyWith<$R, PBFile, ObjectCopyWith<$R, PBFile, PBFile>>? get images =>
       $value.images != null
           ? ListCopyWith($value.images!,
               (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(images: v))

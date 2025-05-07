@@ -1,5 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/models/pb_image.dart';
+import 'package:gym_system/src/core/models/pb_file.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
@@ -17,7 +17,7 @@ part 'admin_form_controller.mapper.dart';
 @MappableClass()
 class AdminFormState with AdminFormStateMappable {
   final Admin? admin;
-  final List<PBImage>? images;
+  final List<PBFile>? images;
   final List<Branch> branches;
 
   AdminFormState({
@@ -54,7 +54,7 @@ class AdminFormController extends _$AdminFormController {
   }
 }
 
-TaskResult<List<PBImage>?> _buildInitialImages(Admin? admin, String domain) {
+TaskResult<List<PBFile>?> _buildInitialImages(Admin? admin, String domain) {
   return TaskResult.tryCatch(() async {
     if (admin == null || admin.avatar == null) {
       return null;
@@ -72,7 +72,7 @@ TaskResult<List<PBImage>?> _buildInitialImages(Admin? admin, String domain) {
     }
 
     return [
-      PBNetworkImage(
+      PBNetworkFile(
         fileName: admin.avatar!,
         uri: imageUri,
         field: AdminField.avatar,

@@ -4,7 +4,7 @@ import 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_f
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_hidden.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_number.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_password.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_pb_images.dart';
+import 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_pb_files.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_typeahead.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_view.dart';
 
@@ -52,8 +52,8 @@ class DynamicFormField extends HookWidget {
             return DynamicFormFieldImages(field as DynamicImagesField);
           }
 
-          if (field is DynamicPBImagesField) {
-            return DynamicFormFieldPBImages(field as DynamicPBImagesField);
+          if (field is DynamicPBFilesField) {
+            return DynamicFormFieldPBFiles(field as DynamicPBFilesField);
           }
 
           if (field is DynamicTypeAheadField) {

@@ -1,4 +1,4 @@
-import 'package:gym_system/src/core/models/pb_image.dart';
+import 'package:gym_system/src/core/models/pb_file.dart';
 import 'package:http/http.dart';
 
 class PBUtils {
@@ -15,12 +15,12 @@ class PBUtils {
   /// PBImage Handlers
   ///
   static dynamic defaultFieldTransformer(
-    List<PBImage>? list, {
+    List<PBFile>? list, {
     bool isSingleFile = true,
   }) {
     final value = [...list ?? []];
     final result = value.where((x) => x.isUpdate).map((x) {
-      if (x is PBNetworkImage) return x.fileName;
+      if (x is PBNetworkFile) return x.fileName;
       return x.id;
     });
     if (isSingleFile) return result.firstOrNull;
@@ -50,7 +50,7 @@ class PBUtils {
       ///
       /// PBIMAGE
       ///
-      if (value is List<PBImage>) {
+      if (value is List<PBFile>) {
         final pbImageFields = value.where((x) => x.isUpdate).map((x) => x.id);
         fields[key] = pbImageFields.toList();
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
@@ -87,14 +88,13 @@ class PatientFileFormPage extends HookConsumerWidget {
                 ),
 
                 ///
-                /// Image
+                /// File
                 ///
-                DynamicPBImagesField(
-                  name: PatientField.avatar,
+                DynamicPBFilesField(
+                  name: PatientFileField.file,
+                  type: FileType.any,
                   maxFiles: 1,
                   allowCompression: false,
-                  maxSizeKB: 300,
-                  compressionQuality: 85,
                   previewSize: 200,
                   fieldTransformer: (list) =>
                       PBUtils.defaultFieldTransformer(list, isSingleFile: true),

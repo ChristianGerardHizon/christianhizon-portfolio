@@ -88,7 +88,7 @@ class ProductFormPage extends HookConsumerWidget {
                 ///
                 /// Image
                 ///
-                DynamicPBImagesField(
+                DynamicPBFilesField(
                   name: ProductField.image,
                   maxFiles: 1,
                   allowCompression: false,

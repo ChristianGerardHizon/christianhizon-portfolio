@@ -1,7 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:gym_system/src/core/models/pb_image.dart';
+import 'package:gym_system/src/core/models/pb_file.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -59,8 +59,8 @@ class DynamicFormBuilder extends HookConsumerWidget {
             f.fieldTransformer!(value as DateTime?),
           DynamicFilesField f when f.fieldTransformer != null =>
             f.fieldTransformer!(value as List<PlatformFile>?),
-          DynamicPBImagesField f when f.fieldTransformer != null =>
-            f.fieldTransformer!(value as List<PBImage>?),
+          DynamicPBFilesField f when f.fieldTransformer != null =>
+            f.fieldTransformer!(value as List<PBFile>?),
           DynamicDateTimeField f when f.fieldTransformer != null =>
             f.fieldTransformer!(value as DateTime?),
           _ => value,
@@ -74,8 +74,8 @@ class DynamicFormBuilder extends HookConsumerWidget {
 
         // Apply the fieldTransformer if it exists
         final transformed = switch (field) {
-          DynamicPBImagesField f when f.fileTransformer != null =>
-            f.fileTransformer!(value as List<PBImage>?),
+          DynamicPBFilesField f when f.fileTransformer != null =>
+            f.fileTransformer!(value as List<PBFile>?),
           _ => value,
         };
         if (transformed is List<Future<http.MultipartFile>>)

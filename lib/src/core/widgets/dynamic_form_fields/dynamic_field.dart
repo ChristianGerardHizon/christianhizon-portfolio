@@ -13,8 +13,8 @@ export 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_f
     show DynamicNumberField;
 export 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_password.dart'
     show DynamicPasswordField;
-export 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_pb_images.dart'
-    show DynamicPBImagesField;
+export 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_pb_files.dart'
+    show DynamicPBFilesField;
 export 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_select.dart'
     show DynamicSelectField, SelectOption;
 export 'package:gym_system/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_text.dart'

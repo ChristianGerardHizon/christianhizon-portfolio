@@ -89,7 +89,7 @@ class UserFormPage extends HookConsumerWidget {
                 ///
                 /// Avatar
                 ///
-                DynamicPBImagesField(
+                DynamicPBFilesField(
                   name: UserField.avatar,
                   maxFiles: 1,
                   allowCompression: false,

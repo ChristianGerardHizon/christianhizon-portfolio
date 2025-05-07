@@ -1,5 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/models/pb_image.dart';
+import 'package:gym_system/src/core/models/pb_file.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
@@ -22,7 +22,7 @@ part 'patient_form_controller.mapper.dart';
 class PatientFormState with PatientFormStateMappable {
   final Patient? patient;
   final List<Branch> branches;
-  final List<PBImage>? images;
+  final List<PBFile>? images;
 
   final List<PatientSpecies> species;
   final List<PatientBreed> breeds;
@@ -79,8 +79,7 @@ class PatientFormController extends _$PatientFormController {
   }
 }
 
-TaskResult<List<PBImage>?> _buildInitialImages(
-    Patient? patient, String domain) {
+TaskResult<List<PBFile>?> _buildInitialImages(Patient? patient, String domain) {
   return TaskResult.tryCatch(() async {
     if (patient == null) {
       return null;
@@ -102,7 +101,7 @@ TaskResult<List<PBImage>?> _buildInitialImages(
     }
 
     return [
-      PBNetworkImage(
+      PBNetworkFile(
         fileName: patient.avatar!,
         uri: imageUri,
         field: PatientField.avatar,

@@ -47,4 +47,8 @@ class PBExpand {
   /// appointmentSchedule only needs “patient” plus all of patient’s subs:
   static final Expand appointmentSchedule =
       Expand.nested('patient', patient.paths);
+
+  static Expand productStock = Expand.flat([]);
+
+  static Expand productStockAdjustment = Expand.flat(['productStock']);
 }

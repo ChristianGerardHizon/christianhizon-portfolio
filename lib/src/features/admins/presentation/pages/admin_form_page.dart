@@ -91,7 +91,7 @@ class AdminFormPage extends HookConsumerWidget {
                 ///
                 /// Image
                 ///
-                DynamicPBImagesField(
+                DynamicPBFilesField(
                   name: AdminField.avatar,
                   maxFiles: 1,
                   allowCompression: false,

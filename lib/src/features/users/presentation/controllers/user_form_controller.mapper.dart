@@ -14,7 +14,7 @@ class UserFormStateMapper extends ClassMapperBase<UserFormState> {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = UserFormStateMapper._());
       UserMapper.ensureInitialized();
-      PBImageMapper.ensureInitialized();
+      PBFileMapper.ensureInitialized();
       BranchMapper.ensureInitialized();
     }
     return _instance!;
@@ -25,8 +25,8 @@ class UserFormStateMapper extends ClassMapperBase<UserFormState> {
 
   static User? _$user(UserFormState v) => v.user;
   static const Field<UserFormState, User> _f$user = Field('user', _$user);
-  static List<PBImage>? _$images(UserFormState v) => v.images;
-  static const Field<UserFormState, List<PBImage>> _f$images =
+  static List<PBFile>? _$images(UserFormState v) => v.images;
+  static const Field<UserFormState, List<PBFile>> _f$images =
       Field('images', _$images, opt: true);
   static List<Branch> _$branches(UserFormState v) => v.branches;
   static const Field<UserFormState, List<Branch>> _f$branches =
@@ -100,9 +100,9 @@ extension UserFormStateValueCopy<$R, $Out>
 abstract class UserFormStateCopyWith<$R, $In extends UserFormState, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   UserCopyWith<$R, User, User>? get user;
-  ListCopyWith<$R, PBImage, ObjectCopyWith<$R, PBImage, PBImage>>? get images;
+  ListCopyWith<$R, PBFile, ObjectCopyWith<$R, PBFile, PBFile>>? get images;
   ListCopyWith<$R, Branch, BranchCopyWith<$R, Branch, Branch>> get branches;
-  $R call({User? user, List<PBImage>? images, List<Branch>? branches});
+  $R call({User? user, List<PBFile>? images, List<Branch>? branches});
   UserFormStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -118,7 +118,7 @@ class _UserFormStateCopyWithImpl<$R, $Out>
   UserCopyWith<$R, User, User>? get user =>
       $value.user?.copyWith.$chain((v) => call(user: v));
   @override
-  ListCopyWith<$R, PBImage, ObjectCopyWith<$R, PBImage, PBImage>>? get images =>
+  ListCopyWith<$R, PBFile, ObjectCopyWith<$R, PBFile, PBFile>>? get images =>
       $value.images != null
           ? ListCopyWith($value.images!,
               (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(images: v))

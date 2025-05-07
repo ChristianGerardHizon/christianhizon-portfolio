@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
@@ -78,7 +79,9 @@ class PatientFilesPage extends HookConsumerWidget {
     ///
     /// OnCreate
     ///
-    onCreate() {}
+    onCreate() {
+      PatientFileFormPageRoute(parentId: patientId).push(context);
+    }
 
     return Scaffold(
       appBar: showAppBar

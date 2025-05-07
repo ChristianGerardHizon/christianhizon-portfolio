@@ -111,7 +111,7 @@ class PatientFormPage extends HookConsumerWidget {
                 ///
                 /// Image
                 ///
-                DynamicPBImagesField(
+                DynamicPBFilesField(
                   name: PatientField.avatar,
                   maxFiles: 1,
                   allowCompression: false,

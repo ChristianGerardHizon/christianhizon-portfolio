@@ -190,6 +190,19 @@ class ProductStockField {
   static const String quantity = 'quantity';
 }
 
+class ProductStockAdjustmentField {
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
+
+  static const String reason = 'reason';
+  static const String oldValue = 'oldValue';
+  static const String newValue = 'newValue';
+  static const String product = 'product';
+  static const String productStock = 'productStock';
+}
+
 class ChangeLogField {
   static const String id = PbField.id;
   static const String created = PbField.created;

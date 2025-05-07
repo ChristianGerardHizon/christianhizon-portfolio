@@ -4,26 +4,30 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gym_system/src/core/extensions/x_file_extension.dart';
+import 'package:gym_system/src/core/failures/failure.dart';
 
-import 'package:gym_system/src/core/models/pb_image.dart';
+import 'package:gym_system/src/core/models/pb_file.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/utils/image_compressor_utils.dart';
 import 'package:http/http.dart';
 
 import '../dynamic_field.dart';
 
-class DynamicPBImagesField extends DynamicField {
+class DynamicPBFilesField extends DynamicField {
   final int maxSizeKB;
   final int compressionQuality;
   final bool allowCompression;
   final double previewSize;
   final int maxFiles;
+  final FileType type;
   final List<String>? allowedExtensions;
-  final List<PBImage>? initialValue;
-  final String? Function(List<PBImage>?)? validator;
-  final dynamic Function(List<PBImage>?)? fieldTransformer;
-  final List<Future<MultipartFile>> Function(List<PBImage>?)? fileTransformer;
+  final List<PBFile>? initialValue;
+  final String? Function(List<PBFile>?)? validator;
+  final dynamic Function(List<PBFile>?)? fieldTransformer;
+  final List<Future<MultipartFile>> Function(List<PBFile>?)? fileTransformer;
 
-  const DynamicPBImagesField({
+  const DynamicPBFilesField({
     required super.name,
     super.decoration,
     this.initialValue,
@@ -38,20 +42,21 @@ class DynamicPBImagesField extends DynamicField {
     this.fileTransformer,
     super.margin,
     super.enabled,
+    this.type = FileType.image,
   });
 }
 
-class DynamicFormFieldPBImages extends StatelessWidget {
-  final DynamicPBImagesField field;
+class DynamicFormFieldPBFiles extends StatelessWidget {
+  final DynamicPBFilesField field;
 
-  const DynamicFormFieldPBImages(
+  const DynamicFormFieldPBFiles(
     this.field, {
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return FormBuilderField<List<PBImage>>(
+    return FormBuilderField<List<PBFile>>(
       name: field.name,
       enabled: field.enabled,
       validator: field.validator,
@@ -91,7 +96,7 @@ class DynamicFormFieldPBImages extends StatelessWidget {
                     ),
                   ),
                   if (!isMaxReached)
-                    _PBImageAddButtonWithLoading(
+                    _PBFileAddButtonWithLoading(
                       field: field,
                       existingImages: displayImages,
                       onImagesPicked: (updated) {
@@ -111,7 +116,7 @@ class DynamicFormFieldPBImages extends StatelessWidget {
 }
 
 class _PBImagePreviewTile extends StatelessWidget {
-  final PBImage image;
+  final PBFile image;
   final VoidCallback? onDelete;
   final double size; // 👈 image preview size
 
@@ -135,6 +140,9 @@ class _PBImagePreviewTile extends StatelessWidget {
         width: size,
         height: size,
         fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Icon(MIcons.fileOutline, size: size / 2);
+        },
       ),
       memory: (image) => Image.memory(
         image.bytes,
@@ -192,13 +200,13 @@ class _PBImagePreviewTile extends StatelessWidget {
   }
 }
 
-class _PBImageAddButtonWithLoading extends HookWidget {
-  final DynamicPBImagesField field;
-  final List<PBImage> existingImages;
-  final void Function(List<PBImage>) onImagesPicked;
+class _PBFileAddButtonWithLoading extends HookWidget {
+  final DynamicPBFilesField field;
+  final List<PBFile> existingImages;
+  final void Function(List<PBFile>) onImagesPicked;
   final double size;
 
-  const _PBImageAddButtonWithLoading({
+  const _PBFileAddButtonWithLoading({
     required this.field,
     required this.existingImages,
     required this.onImagesPicked,
@@ -246,20 +254,20 @@ class _PBImageAddButtonWithLoading extends HookWidget {
   }
 }
 
-Future<List<PBImage>> pickAndCompressImages({
-  required DynamicPBImagesField field,
-  required List<PBImage> existingImages,
+Future<List<PBFile>> pickAndCompressImages({
+  required DynamicPBFilesField field,
+  required List<PBFile> existingImages,
 }) async {
   final result = await FilePicker.platform.pickFiles(
     allowMultiple: field.maxFiles > 1,
-    type: FileType.image,
+    type: field.type,
     allowedExtensions: field.allowedExtensions,
     withData: true,
   );
 
   if (result == null) return existingImages;
 
-  final List<PBImage> newImages = [];
+  final List<PBFile> newImages = [];
 
   for (final file in result.files) {
     final originalXFile = XFile.fromData(
@@ -269,7 +277,7 @@ Future<List<PBImage>> pickAndCompressImages({
       length: file.size,
     );
 
-    final compressed = field.allowCompression
+    final compressed = field.allowCompression && originalXFile.isImageFile
         ? await ImageCompressorUtils.compress(
             file: originalXFile,
             maxSizeKB: field.maxSizeKB,
@@ -281,7 +289,7 @@ Future<List<PBImage>> pickAndCompressImages({
       final compressedBytes = await compressed.readAsBytes();
       if (compressedBytes.isNotEmpty && compressed.path.isNotEmpty) {
         newImages.add(
-          PBLocalImage(
+          PBLocalFile(
             field: field.name,
             name: compressed.name,
             size: compressedBytes.length,
@@ -291,7 +299,7 @@ Future<List<PBImage>> pickAndCompressImages({
         );
       } else if (compressedBytes.isNotEmpty) {
         newImages.add(
-          PBMemoryImage(
+          PBMemoryFile(
             fullFilename: compressed.name,
             field: field.name,
             bytes: compressedBytes,

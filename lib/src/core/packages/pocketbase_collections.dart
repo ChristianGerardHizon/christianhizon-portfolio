@@ -24,6 +24,7 @@ class PocketBaseCollections {
   static const productCategories = 'productCategories';
   static const productStocks = 'productStocks';
   static const productInventoryStatus = 'productInventoryStatus';
+  static const productStockAdjustments = 'productStockAdjustments';
 
   ///
   /// Branches
