@@ -143,7 +143,6 @@ class PatientFilesPage extends HookConsumerWidget {
           isLoading: listState.isLoading,
           items: listState.valueOrNull ?? [],
           onDelete: onDelete,
-          onRowTap: onTap,
 
           ///
           /// Search Features
