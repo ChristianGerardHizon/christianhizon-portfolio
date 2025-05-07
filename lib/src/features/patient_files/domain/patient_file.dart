@@ -21,6 +21,14 @@ class PatientFile extends PbRecord with PatientFileMappable {
     this.notes,
   });
 
+  bool get isImage =>
+      file.endsWith('.png') ||
+      file.endsWith('.jpg') ||
+      file.endsWith('.jpeg') ||
+      file.endsWith('.gif') ||
+      file.endsWith('.webp') ||
+      file.endsWith('.svg');
+
   static fromMap(Map<String, dynamic> raw) {
     return PatientFileMapper.fromMap({
       ...raw,

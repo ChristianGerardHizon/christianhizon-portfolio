@@ -33,7 +33,7 @@ class ProductCategoryPageRoute extends GoRouteData {
     path: ProductCategoryFormPageRoute.path)
 class ProductCategoryFormPageRoute extends GoRouteData {
   const ProductCategoryFormPageRoute({this.id});
-  static const path = '/product-category/form/:id';
+  static const path = '/form/product-category';
 
   final String? id;
 

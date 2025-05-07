@@ -39,6 +39,7 @@ import 'package:gym_system/src/features/patients/presentation/pages/patients_pag
 import 'package:gym_system/src/features/product_categories/presentation/pages/product_categories_page.dart';
 import 'package:gym_system/src/features/product_categories/presentation/pages/product_category_form_page.dart';
 import 'package:gym_system/src/features/product_categories/presentation/pages/product_category_page.dart';
+import 'package:gym_system/src/features/product_stock_adjustment/presentation/pages/product_stock_adjustment_form_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/products_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product_form_page.dart';
@@ -71,6 +72,7 @@ part 'routes/change_logs.routes.dart';
 part 'routes/product_category.routes.dart';
 part 'routes/patient_prescription_item.routes.dart';
 part 'routes/patient_files.routes.dart';
+part 'routes/product_stock_adjustments.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
