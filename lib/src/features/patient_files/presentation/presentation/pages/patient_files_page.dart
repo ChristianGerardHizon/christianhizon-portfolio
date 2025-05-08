@@ -1,3 +1,5 @@
+import 'package:background_downloader/background_downloader.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -6,10 +8,10 @@ import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
+import 'package:gym_system/src/core/packages/file_downloader.dart';
 import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
-import 'package:gym_system/src/core/utils/filer_downloader/file_downloader.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
@@ -26,6 +28,8 @@ import 'package:gym_system/src/features/patient_files/presentation/presentation/
 import 'package:gym_system/src/features/patient_files/presentation/presentation/widgets/patient_file_card.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:web/web.dart' as web;
 
 class PatientFilesPage extends HookConsumerWidget {
   const PatientFilesPage({
@@ -98,16 +102,28 @@ class PatientFilesPage extends HookConsumerWidget {
       final result = await TaskResult.tryCatch(() async {
         final url = generateUrl(patientFile);
         final uri = Uri.parse(url);
-        await FileDownloader.downloadFile(
-          uri.toString(),
-          patientFile.file,
-        );
+
+        if (kIsWeb) {
+
+           downloadFileFromUrl(url, filename: patientFile.file);
+        } else {
+          final task = DownloadTask(
+            url: uri.toString(),
+            filename: patientFile.file,
+            headers: {'myHeader': 'value'},
+            directory: (await getDownloadsDirectory())!.path,
+            retries: 5,
+            allowPause: true,
+          );
+          return ref.watch(fileDownloaderProvider).download(task);
+        }
+        ;
       }, Failure.handle)
           .run();
 
       result.fold(
         (l) => AppSnackBar.rootFailure(l),
-        (r) => AppSnackBar.root(message: 'Success'),
+        (r) => AppSnackBar.root(message: 'Download has started...'),
       );
     }
 
@@ -247,4 +263,19 @@ class PatientFilesPage extends HookConsumerWidget {
       ),
     );
   }
+}
+
+
+void downloadFileFromUrl(String url, {String? filename}) {
+  final anchor = web.HTMLAnchorElement()
+    ..href = url
+    ..target = '_blank';
+
+  if (filename != null) {
+    anchor.download = filename; // Hint browser to download instead of opening
+  }
+
+  web.document.body?.append(anchor);
+  anchor.click();
+  anchor.remove(); // Clean up
 }

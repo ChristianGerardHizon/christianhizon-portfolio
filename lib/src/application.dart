@@ -1,6 +1,10 @@
+import 'package:background_downloader/background_downloader.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gym_system/src/core/assets/i18n/strings.g.dart';
+import 'package:gym_system/src/core/packages/file_downloader.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/app_strings.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
@@ -16,7 +20,16 @@ class Application extends HookConsumerWidget {
     ref.watch(authControllerProvider);
 
     final color = Color.fromARGB(0, 40, 122, 111);
-    
+
+    useEffect(() {
+      
+      if(kIsWeb) return;
+      ref.watch(fileDownloaderProvider).configureNotification(
+        running: TaskNotification('Downloading', 'file: {filename}'),
+        progressBar: true,
+      );
+      return null;
+    }, []);
 
     return ThemeProvider(
       defaultThemeId: 'light',
