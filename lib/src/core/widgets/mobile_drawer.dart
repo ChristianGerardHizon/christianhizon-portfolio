@@ -21,11 +21,13 @@ class MobileDrawer extends HookConsumerWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-             DrawerHeader(
+            DrawerHeader(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
+                  // color: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+              child: Center(
+                child: Logo(),
               ),
-              child: Logo(),
             ),
             ListTile(
               leading: Icon(MIcons.homeOutline),

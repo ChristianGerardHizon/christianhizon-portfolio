@@ -26,7 +26,7 @@ class DashboardKpis extends StatelessWidget {
       ),
       KpiCard(
         title: "Today's Sales",
-        value: 'P100.00',
+        value: '-',
         icon: MIcons.walletOutline,
       ),
     ];

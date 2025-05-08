@@ -76,7 +76,7 @@ class ChangeLogsPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('ChangeLogs'),
+        title: Text('Changes'),
         actions: [
           RefreshButton(
             onPressed: onRefresh,

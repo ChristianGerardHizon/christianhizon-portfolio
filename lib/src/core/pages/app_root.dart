@@ -129,9 +129,9 @@ class AppRoot extends HookConsumerWidget {
         if (isAdmin)
           CustomNavigationBarItem(
             route: ChangeLogsPageRoute.path,
-            icon: Icon(MIcons.timelineOutline),
-            selectedIcon: Icon(MIcons.timeline),
-            label: 'Change Logs',
+            icon: Icon(MIcons.pencilOutline),
+            selectedIcon: Icon(MIcons.pencil),
+            label: 'Changes',
             onTap: () {
               ChangeLogsPageRoute().go(context);
             },

@@ -26,10 +26,8 @@ import 'package:gym_system/src/features/patient_files/data/patient_file_reposito
 import 'package:gym_system/src/features/patient_files/domain/patient_file.dart';
 import 'package:gym_system/src/features/patient_files/presentation/presentation/controllers/patient_file_table_controller.dart';
 import 'package:gym_system/src/features/patient_files/presentation/presentation/widgets/patient_file_card.dart';
-import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:web/web.dart' as web;
 
 class PatientFilesPage extends HookConsumerWidget {
   const PatientFilesPage({
@@ -104,8 +102,7 @@ class PatientFilesPage extends HookConsumerWidget {
         final uri = Uri.parse(url);
 
         if (kIsWeb) {
-
-           downloadFileFromUrl(url, filename: patientFile.file);
+          downloadFileFromUrl(url, filename: patientFile.file);
         } else {
           final task = DownloadTask(
             url: uri.toString(),
@@ -265,17 +262,6 @@ class PatientFilesPage extends HookConsumerWidget {
   }
 }
 
-
 void downloadFileFromUrl(String url, {String? filename}) {
-  final anchor = web.HTMLAnchorElement()
-    ..href = url
-    ..target = '_blank';
-
-  if (filename != null) {
-    anchor.download = filename; // Hint browser to download instead of opening
-  }
-
-  web.document.body?.append(anchor);
-  anchor.click();
-  anchor.remove(); // Clean up
+  throw UnimplementedError();
 }
