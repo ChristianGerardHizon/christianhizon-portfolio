@@ -31,14 +31,15 @@ class AppointmentSchedulesPageRoute extends GoRouteData {
 @TypedGoRoute<AppointmentScheduleFormPageRoute>(
     path: AppointmentScheduleFormPageRoute.path)
 class AppointmentScheduleFormPageRoute extends GoRouteData {
-  const AppointmentScheduleFormPageRoute({this.id});
+  const AppointmentScheduleFormPageRoute({this.id, this.patientId});
   static const path = '/form/appointmentSchedule';
 
   final String? id;
+  final String? patientId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return AppointmentScheduleFormPage(id: id);
+    return AppointmentScheduleFormPage(id: id, patientId: patientId);
   }
 }
 

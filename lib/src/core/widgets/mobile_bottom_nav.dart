@@ -21,6 +21,14 @@ class MobileBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final routes = <String>[
+      DashboardPageRoute.path,
+      PatientsPageRoute.path,
+      AppointmentSchedulesPageRoute.path,
+      ProductInventoriesPageRoute.path,
+      YourAccountPageRoute.path,
+    ];
+
     final moreWidget = CustomNavigationBarItem(
       route: YourAccountPageRoute.path,
       icon: Icon(MIcons.homeCircleOutline),
@@ -32,8 +40,8 @@ class MobileBottomNav extends StatelessWidget {
 
     final finalList = list
         .mapWithIndex((item, index) {
-          if (index >= 3) return null;
-          return item;
+          if (routes.contains(item.route)) return item;
+          return null;
         })
         .whereType<CustomNavigationBarItem>()
         .toList()
@@ -44,13 +52,6 @@ class MobileBottomNav extends StatelessWidget {
     ///
     bool shouldShowBottomNav(String? path) {
       if (path == null) return false;
-      final routes = <String>[
-        DashboardPageRoute.path,
-        PatientsPageRoute.path,
-        ProductsPageRoute.path,
-        ProductInventoriesPageRoute.path,
-        YourAccountPageRoute.path,
-      ];
       return routes.contains(path);
     }
 
@@ -59,7 +60,7 @@ class MobileBottomNav extends StatelessWidget {
     ///
     onRouteChanged(int index, List<CustomNavigationBarItem> list) {
       final item = list[index];
-      if (index == 3) {
+      if (index == 4) {
         moreWidget.onTap?.call();
         return;
       }
@@ -73,8 +74,9 @@ class MobileBottomNav extends StatelessWidget {
       if (path == null) return 0;
       if (path == (DashboardPageRoute.path)) return 0;
       if (path.contains(PatientsPageRoute.path)) return 1;
-      if (path.contains(ProductInventoriesPageRoute.path)) return 2;
-      if (path.contains(YourAccountPageRoute.path)) return 3;
+      if (path.contains(AppointmentSchedulesPageRoute.path)) return 2;
+      if (path.contains(ProductInventoriesPageRoute.path)) return 3;
+      if (path.contains(YourAccountPageRoute.path)) return 4;
       return 0;
     }
 

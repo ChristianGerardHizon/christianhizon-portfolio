@@ -1,6 +1,8 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
 import 'package:gym_system/src/core/models/pb_record.dart';
 import 'package:gym_system/src/core/hooks/date_time_hook.dart';
+import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 
 part 'appointment_schedule.mapper.dart';
@@ -15,7 +17,10 @@ class AppointmentSchedule extends PbRecord with AppointmentScheduleMappable {
   final bool hasTime;
   final String? purpose;
   final AppointmentScheduleStatus status;
+  @MappableField(hook: PbEmptyHook())
   final String? patientRecord;
+  @MappableField(hook: PbEmptyHook())
+  final String? patient;
 
   final AppointmentScheduleExpand expand;
 
@@ -32,6 +37,7 @@ class AppointmentSchedule extends PbRecord with AppointmentScheduleMappable {
     ///
     required this.date,
     this.patientRecord,
+    this.patient,
     this.purpose,
     required this.status,
     this.hasTime = false,
@@ -45,9 +51,11 @@ class AppointmentSchedule extends PbRecord with AppointmentScheduleMappable {
 @MappableClass()
 class AppointmentScheduleExpand with AppointmentScheduleExpandMappable {
   final Patient? patient;
+  final PatientRecord? patientRecord;
 
   AppointmentScheduleExpand({
     this.patient,
+    this.patientRecord,
   });
 
   static fromMap(Map<String, dynamic> raw) {

@@ -105,7 +105,7 @@ class AdminPage extends HookConsumerWidget {
                       padding: EdgeInsets.only(top: 20, bottom: 20),
                       sliver: SliverToBoxAdapter(
                         child: CircleWidget(
-                          size: 300,
+                          size: Size.square(300),
                           child: PbImageCircle(
                             radius: 120,
                             collection: admin.collectionId,

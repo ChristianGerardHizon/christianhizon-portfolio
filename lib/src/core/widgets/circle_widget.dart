@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class CircleWidget extends StatelessWidget {
   final Widget child;
-  final double size;
-  const CircleWidget({super.key, required this.child, this.size = 80});
+  final Size size;
+  const CircleWidget({super.key, required this.child, required this.size});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: size,
-      width: size,
+      height: size.height,
+      width: size.width,
       child: DecoratedBox(
         decoration: BoxDecoration(
           border: Border.all(

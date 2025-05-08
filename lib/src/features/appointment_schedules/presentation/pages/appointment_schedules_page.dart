@@ -35,8 +35,10 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
         : TableControllerKeys.appointmentSchedule;
     final provider = tableControllerProvider(tableKey);
     final notifier = ref.read(provider.notifier);
-    final listProvider = appointmentScheduleTableControllerProvider(tableKey,
-        patientId: patientId);
+    final listProvider = appointmentScheduleTableControllerProvider(
+      tableKey,
+      patientId: patientId,
+    );
     final listState = ref.watch(listProvider);
 
     ///
@@ -49,7 +51,8 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
     onChangeStatus(AppointmentSchedule appointmentSchedule) {}
 
     onEdit(AppointmentSchedule appointmentSchedule) {
-      AppointmentScheduleFormPageRoute(id: appointmentSchedule.id)
+      AppointmentScheduleFormPageRoute(
+              id: appointmentSchedule.id, patientId: patientId)
           .push(context);
     }
 
@@ -88,7 +91,9 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
     /// OnCreate
     ///
     onCreate() {
-      AppointmentScheduleFormPageRoute().push(context);
+      AppointmentScheduleFormPageRoute(
+        patientId: patientId,
+      ).push(context);
     }
 
     return Scaffold(
@@ -184,7 +189,7 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
               return Align(
                 alignment: Alignment.center,
                 child: PopoverWidget.icon(
-                    icon: Icon(MIcons.dotsHorizontalCircleOutline),
+                  icon: Icon(MIcons.dotsHorizontalCircleOutline),
                   bottomSheetHeader: const Text('Action'),
                   items: [
                     PopoverMenuItemData(

@@ -55,8 +55,15 @@ class DynamicGroup extends StatelessWidget {
               children: [
                 if (header != null)
                   Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Text(header!, style: titleStyle),
+                    padding: const EdgeInsets.only(left: 0),
+                    child: Text(
+                      header!,
+                      style: titleStyle ??
+                          Theme.of(context)
+                              .textTheme
+                              .labelSmall
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                    ),
                   ),
                 if (headerAction != null) headerAction!,
               ],

@@ -7,22 +7,33 @@ import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
+import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
 import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
 import 'package:gym_system/src/features/appointment_schedules/presentation/controllers/appointment_schedule_form_controller.dart';
 import 'package:gym_system/src/features/appointment_schedules/presentation/controllers/appointment_schedule_table_controller.dart';
+import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
+import 'package:gym_system/src/features/patient_records/presentation/widgets/patient_record_tile.dart';
+import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_tile.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AppointmentScheduleFormPage extends HookConsumerWidget {
-  const AppointmentScheduleFormPage({super.key, this.id});
+  const AppointmentScheduleFormPage({
+    super.key,
+    this.id,
+    this.patientId,
+  });
 
   final String? id;
+  final String? patientId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
-    final provider = appointmentScheduleFormControllerProvider(id);
+    final provider =
+        appointmentScheduleFormControllerProvider(id, patientId: patientId);
     final state = ref.watch(provider);
     final hasTime = useState(false);
 
@@ -70,9 +81,11 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
       ),
       body: state.when(
           loading: () => Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(child: Text('Form Error')),
+          error:(error, stack) =>  FailureMessage.asyncValue(state),
           data: (formState) {
             final appointmentSchedule = formState.appointmentSchedule;
+            final patient = formState.patient;
+            final patientRecord = formState.patientRecord;
 
             return Padding(
               padding: EdgeInsets.only(top: 14, left: 20, right: 20),
@@ -81,6 +94,49 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                 isLoading: isLoading.value,
                 itemPadding: const EdgeInsets.only(top: 14),
                 fields: [
+                  ///
+                  /// Patient
+                  ///
+                  if (patient is Patient)
+                    DynamicViewField(
+                      name: AppointmentScheduleField.patient,
+                      initialValue: patient,
+                      decoration: InputDecoration(
+                        label: Text('Patient'),
+                        border: OutlineInputBorder(),
+                      ),
+                      builder: (obj) {
+                        if (obj is Patient) {
+                          return PatientTile(patient: obj);
+                        }
+                        return const SizedBox();
+                      },
+                      valueTransformer: (patient) {
+                        return patient?.id;
+                      },
+                    ),
+
+                  ///
+                  /// Patient Record
+                  ///
+                  if (patientRecord is Patient)
+                    DynamicViewField(
+                      name: AppointmentScheduleField.patientRecord,
+                      initialValue: patient,
+                      decoration: InputDecoration(
+                        label: Text('Patient Record'),
+                        border: OutlineInputBorder(),
+                      ),
+                      builder: (obj) {
+                        if (obj is PatientRecord) {
+                          return PatientRecordTile(patientRecord: obj);
+                        }
+                        return const SizedBox();
+                      },
+                      valueTransformer: (patient) {
+                        return patient?.id;
+                      },
+                    ),
                   DynamicCheckboxField(
                     name: AppointmentScheduleField.hasTime,
                     initialValue: hasTime.value,
@@ -103,7 +159,7 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                   hasTime.value
                       ? DynamicDateTimeField(
                           name: AppointmentScheduleField.date,
-                          initialValue: appointmentSchedule?.date,
+                          initialValue: appointmentSchedule?.date.toLocal(),
                           decoration: InputDecoration(
                             label: Text('Appointment Date and Time'),
                             border: OutlineInputBorder(),

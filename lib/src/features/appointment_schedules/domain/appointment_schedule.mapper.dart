@@ -103,7 +103,10 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
       Field('date', _$date, hook: DateTimeHook());
   static String? _$patientRecord(AppointmentSchedule v) => v.patientRecord;
   static const Field<AppointmentSchedule, String> _f$patientRecord =
-      Field('patientRecord', _$patientRecord, opt: true);
+      Field('patientRecord', _$patientRecord, opt: true, hook: PbEmptyHook());
+  static String? _$patient(AppointmentSchedule v) => v.patient;
+  static const Field<AppointmentSchedule, String> _f$patient =
+      Field('patient', _$patient, opt: true, hook: PbEmptyHook());
   static String? _$purpose(AppointmentSchedule v) => v.purpose;
   static const Field<AppointmentSchedule, String> _f$purpose =
       Field('purpose', _$purpose, opt: true);
@@ -127,6 +130,7 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
     #updated: _f$updated,
     #date: _f$date,
     #patientRecord: _f$patientRecord,
+    #patient: _f$patient,
     #purpose: _f$purpose,
     #status: _f$status,
     #hasTime: _f$hasTime,
@@ -143,6 +147,7 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
         updated: data.dec(_f$updated),
         date: data.dec(_f$date),
         patientRecord: data.dec(_f$patientRecord),
+        patient: data.dec(_f$patient),
         purpose: data.dec(_f$purpose),
         status: data.dec(_f$status),
         hasTime: data.dec(_f$hasTime),
@@ -216,6 +221,7 @@ abstract class AppointmentScheduleCopyWith<$R, $In extends AppointmentSchedule,
       DateTime? updated,
       DateTime? date,
       String? patientRecord,
+      String? patient,
       String? purpose,
       AppointmentScheduleStatus? status,
       bool? hasTime,
@@ -246,6 +252,7 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
           Object? updated = $none,
           DateTime? date,
           Object? patientRecord = $none,
+          Object? patient = $none,
           Object? purpose = $none,
           AppointmentScheduleStatus? status,
           bool? hasTime,
@@ -259,6 +266,7 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
         if (updated != $none) #updated: updated,
         if (date != null) #date: date,
         if (patientRecord != $none) #patientRecord: patientRecord,
+        if (patient != $none) #patient: patient,
         if (purpose != $none) #purpose: purpose,
         if (status != null) #status: status,
         if (hasTime != null) #hasTime: hasTime,
@@ -274,6 +282,7 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
       updated: data.get(#updated, or: $value.updated),
       date: data.get(#date, or: $value.date),
       patientRecord: data.get(#patientRecord, or: $value.patientRecord),
+      patient: data.get(#patient, or: $value.patient),
       purpose: data.get(#purpose, or: $value.purpose),
       status: data.get(#status, or: $value.status),
       hasTime: data.get(#hasTime, or: $value.hasTime),
@@ -295,6 +304,7 @@ class AppointmentScheduleExpandMapper
       MapperContainer.globals
           .use(_instance = AppointmentScheduleExpandMapper._());
       PatientMapper.ensureInitialized();
+      PatientRecordMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -305,14 +315,21 @@ class AppointmentScheduleExpandMapper
   static Patient? _$patient(AppointmentScheduleExpand v) => v.patient;
   static const Field<AppointmentScheduleExpand, Patient> _f$patient =
       Field('patient', _$patient, opt: true);
+  static PatientRecord? _$patientRecord(AppointmentScheduleExpand v) =>
+      v.patientRecord;
+  static const Field<AppointmentScheduleExpand, PatientRecord>
+      _f$patientRecord = Field('patientRecord', _$patientRecord, opt: true);
 
   @override
   final MappableFields<AppointmentScheduleExpand> fields = const {
     #patient: _f$patient,
+    #patientRecord: _f$patientRecord,
   };
 
   static AppointmentScheduleExpand _instantiate(DecodingData data) {
-    return AppointmentScheduleExpand(patient: data.dec(_f$patient));
+    return AppointmentScheduleExpand(
+        patient: data.dec(_f$patient),
+        patientRecord: data.dec(_f$patientRecord));
   }
 
   @override
@@ -376,7 +393,8 @@ abstract class AppointmentScheduleExpandCopyWith<
     $In extends AppointmentScheduleExpand,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
   PatientCopyWith<$R, Patient, Patient>? get patient;
-  $R call({Patient? patient});
+  PatientRecordCopyWith<$R, PatientRecord, PatientRecord>? get patientRecord;
+  $R call({Patient? patient, PatientRecord? patientRecord});
   AppointmentScheduleExpandCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -394,12 +412,19 @@ class _AppointmentScheduleExpandCopyWithImpl<$R, $Out>
   PatientCopyWith<$R, Patient, Patient>? get patient =>
       $value.patient?.copyWith.$chain((v) => call(patient: v));
   @override
-  $R call({Object? patient = $none}) =>
-      $apply(FieldCopyWithData({if (patient != $none) #patient: patient}));
+  PatientRecordCopyWith<$R, PatientRecord, PatientRecord>? get patientRecord =>
+      $value.patientRecord?.copyWith.$chain((v) => call(patientRecord: v));
+  @override
+  $R call({Object? patient = $none, Object? patientRecord = $none}) =>
+      $apply(FieldCopyWithData({
+        if (patient != $none) #patient: patient,
+        if (patientRecord != $none) #patientRecord: patientRecord
+      }));
   @override
   AppointmentScheduleExpand $make(CopyWithData data) =>
       AppointmentScheduleExpand(
-          patient: data.get(#patient, or: $value.patient));
+          patient: data.get(#patient, or: $value.patient),
+          patientRecord: data.get(#patientRecord, or: $value.patientRecord));
 
   @override
   AppointmentScheduleExpandCopyWith<$R2, AppointmentScheduleExpand, $Out2>

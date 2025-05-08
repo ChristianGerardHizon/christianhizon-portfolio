@@ -92,7 +92,7 @@ class PatientDetailsView extends HookConsumerWidget {
             padding: EdgeInsets.only(top: 20, bottom: 20),
             sliver: SliverToBoxAdapter(
               child: CircleWidget(
-                size: 250,
+                size: Size.square(250),
                 child: PbImageCircle(
                   radius: 120,
                   collection: patient.collectionId,
@@ -126,6 +126,10 @@ class PatientDetailsView extends HookConsumerWidget {
                     title: 'Species / Breed',
                     value:
                         '${(patient.expand.species?.name).optional()} / ${(patient.expand.breed?.name).optional()}',
+                  ),
+                  DynamicGroupItem.text(
+                    title: 'Birthday',
+                    value: (patient.dateOfBirth?.fullDate).optional(),
                   ),
                 ],
               ),

@@ -12,9 +12,6 @@ class PatientTreatmentRecord extends PbRecord
   final String patient;
 
   @MappableField(hook: DateTimeHook())
-  final DateTime? followUpDate;
-
-  @MappableField(hook: DateTimeHook())
   final DateTime? date;
   final String? notes;
 
@@ -26,7 +23,6 @@ class PatientTreatmentRecord extends PbRecord
     required super.collectionName,
     required this.treatment,
     required this.patient,
-    this.followUpDate,
     this.date,
     this.notes,
     required this.expand,

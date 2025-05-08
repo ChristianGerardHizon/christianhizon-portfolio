@@ -105,7 +105,7 @@ class PatientRecordFormPage extends HookConsumerWidget {
                       if (obj is Patient) {
                         return ListTile(
                           leading: CircleWidget(
-                            size: 40,
+                            size: Size.square(40),
                             child: PbImageCircle(
                               collection: obj.collectionId,
                               recordId: obj.id,

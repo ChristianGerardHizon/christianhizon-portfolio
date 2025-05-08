@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/widgets/selectable_card.dart';
 import 'package:gym_system/src/features/patient_treament_records/domain/patient_treatment_record.dart';
 
@@ -24,12 +26,14 @@ class PatientTreatmentRecordCard extends StatelessWidget {
       onTap: onTap,
       selected: selected,
       child: ListTile(
-          leading: Icon(Icons.abc),
-          title: Text(patientTreatmentRecord.id),
+          title: Text(
+            (patientTreatmentRecord.date?.fullDateTime).optional(),
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(patientTreatmentRecord.id),
+              Text(patientTreatmentRecord.expand.treatment.name),
             ],
           )),
     );

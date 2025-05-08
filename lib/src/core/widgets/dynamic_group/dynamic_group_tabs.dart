@@ -128,7 +128,7 @@ class CustomSplashTabBar extends StatelessWidget
         super(key: key);
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.square(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {

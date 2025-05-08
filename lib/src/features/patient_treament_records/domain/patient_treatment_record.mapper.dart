@@ -37,9 +37,6 @@ class PatientTreatmentRecordMapper
   static String _$patient(PatientTreatmentRecord v) => v.patient;
   static const Field<PatientTreatmentRecord, String> _f$patient =
       Field('patient', _$patient);
-  static DateTime? _$followUpDate(PatientTreatmentRecord v) => v.followUpDate;
-  static const Field<PatientTreatmentRecord, DateTime> _f$followUpDate =
-      Field('followUpDate', _$followUpDate, opt: true, hook: DateTimeHook());
   static DateTime? _$date(PatientTreatmentRecord v) => v.date;
   static const Field<PatientTreatmentRecord, DateTime> _f$date =
       Field('date', _$date, opt: true, hook: DateTimeHook());
@@ -67,7 +64,6 @@ class PatientTreatmentRecordMapper
     #collectionName: _f$collectionName,
     #treatment: _f$treatment,
     #patient: _f$patient,
-    #followUpDate: _f$followUpDate,
     #date: _f$date,
     #notes: _f$notes,
     #expand: _f$expand,
@@ -83,7 +79,6 @@ class PatientTreatmentRecordMapper
         collectionName: data.dec(_f$collectionName),
         treatment: data.dec(_f$treatment),
         patient: data.dec(_f$patient),
-        followUpDate: data.dec(_f$followUpDate),
         date: data.dec(_f$date),
         notes: data.dec(_f$notes),
         expand: data.dec(_f$expand),
@@ -159,7 +154,6 @@ abstract class PatientTreatmentRecordCopyWith<
       String? collectionName,
       String? treatment,
       String? patient,
-      DateTime? followUpDate,
       DateTime? date,
       String? notes,
       PatientTreatmentRecordExpand? expand,
@@ -190,7 +184,6 @@ class _PatientTreatmentRecordCopyWithImpl<$R, $Out>
           String? collectionName,
           String? treatment,
           String? patient,
-          Object? followUpDate = $none,
           Object? date = $none,
           Object? notes = $none,
           PatientTreatmentRecordExpand? expand,
@@ -203,7 +196,6 @@ class _PatientTreatmentRecordCopyWithImpl<$R, $Out>
         if (collectionName != null) #collectionName: collectionName,
         if (treatment != null) #treatment: treatment,
         if (patient != null) #patient: patient,
-        if (followUpDate != $none) #followUpDate: followUpDate,
         if (date != $none) #date: date,
         if (notes != $none) #notes: notes,
         if (expand != null) #expand: expand,
@@ -218,7 +210,6 @@ class _PatientTreatmentRecordCopyWithImpl<$R, $Out>
       collectionName: data.get(#collectionName, or: $value.collectionName),
       treatment: data.get(#treatment, or: $value.treatment),
       patient: data.get(#patient, or: $value.patient),
-      followUpDate: data.get(#followUpDate, or: $value.followUpDate),
       date: data.get(#date, or: $value.date),
       notes: data.get(#notes, or: $value.notes),
       expand: data.get(#expand, or: $value.expand),

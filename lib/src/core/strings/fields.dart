@@ -236,6 +236,7 @@ class AppointmentScheduleField {
 
   static const String date = 'date';
   static const String patient = 'patient';
+  static const String patientRecord = 'patientRecord';
   static const String notifyWhenNear = 'notifyWhenNear';
   static const String hasNotifiedWhenNear = 'hasNotifiedWhenNear';
   static const String branch = 'branch';

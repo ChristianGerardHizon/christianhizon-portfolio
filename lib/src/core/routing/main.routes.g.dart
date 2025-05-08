@@ -1167,12 +1167,14 @@ extension $AppointmentScheduleFormPageRouteExtension
   static AppointmentScheduleFormPageRoute _fromState(GoRouterState state) =>
       AppointmentScheduleFormPageRoute(
         id: state.uri.queryParameters['id'],
+        patientId: state.uri.queryParameters['patient-id'],
       );
 
   String get location => GoRouteData.$location(
         '/form/appointmentSchedule',
         queryParams: {
           if (id != null) 'id': id,
+          if (patientId != null) 'patient-id': patientId,
         },
       );
 

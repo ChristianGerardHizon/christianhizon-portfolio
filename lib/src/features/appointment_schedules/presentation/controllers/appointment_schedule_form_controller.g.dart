@@ -7,7 +7,7 @@ part of 'appointment_schedule_form_controller.dart';
 // **************************************************************************
 
 String _$appointmentScheduleFormControllerHash() =>
-    r'a54d11ce52860622325da3a02000f276294df4f3';
+    r'c9594dd9fdb76916c78f87cb6e163dd96950293c';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -33,10 +33,14 @@ class _SystemHash {
 abstract class _$AppointmentScheduleFormController
     extends BuildlessAutoDisposeAsyncNotifier<AppointmentScheduleState> {
   late final String? id;
+  late final String? patientId;
+  late final String? patientRecordId;
 
   FutureOr<AppointmentScheduleState> build(
-    String? id,
-  );
+    String? id, {
+    String? patientId,
+    String? patientRecordId,
+  });
 }
 
 /// See also [AppointmentScheduleFormController].
@@ -52,10 +56,14 @@ class AppointmentScheduleFormControllerFamily
 
   /// See also [AppointmentScheduleFormController].
   AppointmentScheduleFormControllerProvider call(
-    String? id,
-  ) {
+    String? id, {
+    String? patientId,
+    String? patientRecordId,
+  }) {
     return AppointmentScheduleFormControllerProvider(
       id,
+      patientId: patientId,
+      patientRecordId: patientRecordId,
     );
   }
 
@@ -65,6 +73,8 @@ class AppointmentScheduleFormControllerFamily
   ) {
     return call(
       provider.id,
+      patientId: provider.patientId,
+      patientRecordId: provider.patientRecordId,
     );
   }
 
@@ -89,9 +99,14 @@ class AppointmentScheduleFormControllerProvider
         AppointmentScheduleFormController, AppointmentScheduleState> {
   /// See also [AppointmentScheduleFormController].
   AppointmentScheduleFormControllerProvider(
-    String? id,
-  ) : this._internal(
-          () => AppointmentScheduleFormController()..id = id,
+    String? id, {
+    String? patientId,
+    String? patientRecordId,
+  }) : this._internal(
+          () => AppointmentScheduleFormController()
+            ..id = id
+            ..patientId = patientId
+            ..patientRecordId = patientRecordId,
           from: appointmentScheduleFormControllerProvider,
           name: r'appointmentScheduleFormControllerProvider',
           debugGetCreateSourceHash:
@@ -102,6 +117,8 @@ class AppointmentScheduleFormControllerProvider
           allTransitiveDependencies: AppointmentScheduleFormControllerFamily
               ._allTransitiveDependencies,
           id: id,
+          patientId: patientId,
+          patientRecordId: patientRecordId,
         );
 
   AppointmentScheduleFormControllerProvider._internal(
@@ -112,9 +129,13 @@ class AppointmentScheduleFormControllerProvider
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.id,
+    required this.patientId,
+    required this.patientRecordId,
   }) : super.internal();
 
   final String? id;
+  final String? patientId;
+  final String? patientRecordId;
 
   @override
   FutureOr<AppointmentScheduleState> runNotifierBuild(
@@ -122,6 +143,8 @@ class AppointmentScheduleFormControllerProvider
   ) {
     return notifier.build(
       id,
+      patientId: patientId,
+      patientRecordId: patientRecordId,
     );
   }
 
@@ -130,13 +153,18 @@ class AppointmentScheduleFormControllerProvider
     return ProviderOverride(
       origin: this,
       override: AppointmentScheduleFormControllerProvider._internal(
-        () => create()..id = id,
+        () => create()
+          ..id = id
+          ..patientId = patientId
+          ..patientRecordId = patientRecordId,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         id: id,
+        patientId: patientId,
+        patientRecordId: patientRecordId,
       ),
     );
   }
@@ -149,13 +177,18 @@ class AppointmentScheduleFormControllerProvider
 
   @override
   bool operator ==(Object other) {
-    return other is AppointmentScheduleFormControllerProvider && other.id == id;
+    return other is AppointmentScheduleFormControllerProvider &&
+        other.id == id &&
+        other.patientId == patientId &&
+        other.patientRecordId == patientRecordId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, id.hashCode);
+    hash = _SystemHash.combine(hash, patientId.hashCode);
+    hash = _SystemHash.combine(hash, patientRecordId.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -167,6 +200,12 @@ mixin AppointmentScheduleFormControllerRef
     on AutoDisposeAsyncNotifierProviderRef<AppointmentScheduleState> {
   /// The parameter `id` of this provider.
   String? get id;
+
+  /// The parameter `patientId` of this provider.
+  String? get patientId;
+
+  /// The parameter `patientRecordId` of this provider.
+  String? get patientRecordId;
 }
 
 class _AppointmentScheduleFormControllerProviderElement
@@ -177,6 +216,12 @@ class _AppointmentScheduleFormControllerProviderElement
 
   @override
   String? get id => (origin as AppointmentScheduleFormControllerProvider).id;
+  @override
+  String? get patientId =>
+      (origin as AppointmentScheduleFormControllerProvider).patientId;
+  @override
+  String? get patientRecordId =>
+      (origin as AppointmentScheduleFormControllerProvider).patientRecordId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

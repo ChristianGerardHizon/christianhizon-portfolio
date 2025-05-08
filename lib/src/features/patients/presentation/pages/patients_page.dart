@@ -112,7 +112,7 @@ class PatientsPage extends HookConsumerWidget {
                   child: Row(
                     children: [
                       CircleWidget(
-                        size: 40,
+                        size: Size.square(40),
                         child: PbImageCircle(
                           collection: data.collectionId,
                           recordId: data.id,

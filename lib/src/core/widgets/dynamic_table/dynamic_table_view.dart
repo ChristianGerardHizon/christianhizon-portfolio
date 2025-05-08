@@ -75,6 +75,11 @@ class DynamicTableView<T> extends HookConsumerWidget {
       notifier.changeFilter(searchCtrl.text);
     }
 
+    _onClear() {
+      searchCtrl.text = '';
+      notifier.changeFilter('');
+    }
+
     ///
     /// Table Controller
     ///
@@ -92,7 +97,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
                 SliverToBoxAdapter(
                   child: TextSearchBar(
                     controller: searchCtrl,
-                    onClear: onClear,
+                    onClear: onClear ?? _onClear,
                     onSearch: onSearch,
                     onCreate: onCreate,
                   ),

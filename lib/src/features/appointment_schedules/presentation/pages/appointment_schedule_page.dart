@@ -47,7 +47,7 @@ class AppointmentSchedulePage extends HookConsumerWidget {
     /// on tap
     ///
     tap(AppointmentSchedule appointmentSchedule) {
-      AppointmentScheduleFormPageRoute(id: appointmentSchedule.id)
+      AppointmentScheduleFormPageRoute(id: appointmentSchedule.id,)
           .push(context);
     }
 
@@ -110,7 +110,7 @@ class AppointmentSchedulePage extends HookConsumerWidget {
                         DynamicGroup(
                           padding: const EdgeInsets.only(
                               left: 8, right: 8, bottom: 12),
-                          header: 'AppointmentSchedule Information',
+                          header: 'Appointment Schedule Details',
                           items: [
                             DynamicGroupItem.text(
                               title: 'Last Updated',

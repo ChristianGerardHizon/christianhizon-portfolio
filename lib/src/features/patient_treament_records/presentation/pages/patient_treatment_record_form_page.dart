@@ -16,6 +16,7 @@ import 'package:gym_system/src/features/patient_treament_records/presentation/co
 import 'package:gym_system/src/features/patient_treament_records/presentation/controllers/patient_treatment_record_form_controller.dart';
 import 'package:gym_system/src/features/patient_treament_records/presentation/controllers/patient_treatment_record_table_controller.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_tile.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientTreatmentRecordFormPage extends HookConsumerWidget {
@@ -90,56 +91,22 @@ class PatientTreatmentRecordFormPage extends HookConsumerWidget {
                 /// Patient
                 ///
                 DynamicViewField(
-                    name: PatientTreatmentRecordField.patient,
-                    initialValue: patient,
-                    decoration: InputDecoration(
-                      label: Text('Patient'),
-                      border: OutlineInputBorder(),
-                    ),
-                    builder: (obj) {
-                      if (obj is Patient) {
-                        return ListTile(
-                          leading: CircleWidget(
-                            size: 40,
-                            child: PbImageCircle(
-                              collection: obj.collectionId,
-                              recordId: obj.id,
-                              file: obj.avatar,
-                              fit: BoxFit.fitWidth,
-                            ),
-                          ),
-                          title: Text(obj.name),
-                          subtitle: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              RichText(
-                                text: TextSpan(
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                  children: [
-                                    TextSpan(
-                                      text: obj.expand.breed?.name.optional(),
-                                    ),
-                                    TextSpan(text: ' - '),
-                                    TextSpan(
-                                      text: obj.expand.species?.name.optional(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                'Owner: ${obj.owner?.optional()}',
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                      return const SizedBox();
-                    },
-                    valueTransformer: (patient) {
-                      return patient?.id;
-                    }),
+                  name: PatientTreatmentRecordField.patient,
+                  initialValue: patient,
+                  decoration: InputDecoration(
+                    label: Text('Patient'),
+                    border: OutlineInputBorder(),
+                  ),
+                  builder: (obj) {
+                    if (obj is Patient) {
+                      return PatientTile(patient: obj);
+                    }
+                    return const SizedBox();
+                  },
+                  valueTransformer: (patient) {
+                    return patient?.id;
+                  },
+                ),
 
                 ///
                 /// Treatment
@@ -195,28 +162,6 @@ class PatientTreatmentRecordFormPage extends HookConsumerWidget {
                   minLines: 1,
                   maxLines: 10,
                   validator: FormBuilderValidators.compose([]),
-                ),
-
-                ///
-                /// Follow Up Date and Time
-                ///
-                DynamicDateField(
-                  name: PatientRecordField.followUpDate,
-                  initialValue: patientTreatmentRecord?.followUpDate,
-                  decoration: InputDecoration(
-                    label: Text('Follow Up Date'),
-                    border: OutlineInputBorder(),
-                    helperText:
-                        'Select a date or time in the future or leave empty if no follow up is needed',
-                  ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                  ]),
-                  valueTransformer: (p0) {
-                    final value = p0;
-                    if (value is DateTime)
-                      return value.toUtc().toIso8601String();
-                  },
                 ),
               ],
               onSubmit: (result) => onSave(patientTreatmentRecord, result),

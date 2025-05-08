@@ -145,6 +145,28 @@ class PatientFormPage extends HookConsumerWidget {
                   ),
                 ),
 
+                ///
+                /// Patient Date of Birth
+                ///
+                DynamicDateField(
+                  name: PatientField.dateOfBirth,
+                  initialValue: patient?.dateOfBirth,
+                  decoration: InputDecoration(
+                    label: Text('Birthday'),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(),
+                    ],
+                  ),
+                  valueTransformer: (p0) {
+                    final value = p0;
+                    if (value is DateTime)
+                      return value.toUtc().toIso8601String();
+                  },
+                ),
+
                 DynamicFieldTwoColumn(
                   axis: Axis.vertical,
                   first: DynamicSelectField(
