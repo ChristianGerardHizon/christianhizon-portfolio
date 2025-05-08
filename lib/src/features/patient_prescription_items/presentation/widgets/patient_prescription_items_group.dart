@@ -255,13 +255,12 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
     return StackLoader(
       isLoading: isLoading.value,
       child: Padding(
-        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 20),
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 20, top: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (widgets.isNotEmpty)
               DynamicGroup(
-                padding: EdgeInsets.only(top: 20),
                 header: 'Prescriptions',
                 headerAction: TextButton.icon(
                   onPressed: () => addItem(record),

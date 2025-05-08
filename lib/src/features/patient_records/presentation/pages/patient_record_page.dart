@@ -228,7 +228,8 @@ class PatientRecordPage extends HookConsumerWidget {
                           ///
                           PatientPrescriptionItemsGroup(
                             patient: patientRecordState.patient,
-                            record: patientRecord),
+                            record: patientRecord,
+                          ),
 
                           ///
                           /// Actions

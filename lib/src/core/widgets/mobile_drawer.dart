@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/controllers/scaffold_controller.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
+import 'package:gym_system/src/core/widgets/logo.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class MobileDrawer extends HookConsumerWidget {
@@ -20,17 +21,11 @@ class MobileDrawer extends HookConsumerWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
+             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Theme.of(context).colorScheme.primaryContainer,
               ),
-              child: Text(
-                'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
+              child: Logo(),
             ),
             ListTile(
               leading: Icon(MIcons.homeOutline),
