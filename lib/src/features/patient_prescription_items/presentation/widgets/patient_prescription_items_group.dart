@@ -7,23 +7,30 @@ import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
+import 'package:gym_system/src/core/widgets/modals/dropdown_confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/features/patient_prescription_items/data/patient_prescription_item_repository.dart';
 import 'package:gym_system/src/features/patient_prescription_items/domain/patient_prescription_item.dart';
 import 'package:gym_system/src/features/patient_prescription_items/presentation/controllers/patient_prescription_item_group_controller.dart';
+import 'package:gym_system/src/features/patient_prescription_items/presentation/widgets/patient_prescription_items_pdf_generator.dart';
 import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
 import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_record_controller.dart';
+import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 enum _MenuOption { edit, delete }
 
+enum _Action { print, share, save }
+
 class PatientPrescriptionItemsGroup extends HookConsumerWidget {
-  const PatientPrescriptionItemsGroup({super.key, required this.record});
+  const PatientPrescriptionItemsGroup(
+      {super.key, required this.record, required this.patient});
 
   final PatientRecord record;
+  final Patient patient;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,6 +59,88 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
       data: (data) => data,
       orElse: () => <PatientPrescriptionItemGroupState>[],
     );
+
+    ///
+    /// print
+    ///
+    void print({
+      required List<PatientPrescriptionItemGroupState> items,
+      required PatientRecord record,
+      required _Action action,
+    }) async {
+      final result = await TaskResult<DateTime?>.tryCatch(
+        () async {
+          return DropdownConfirmModal.show<DateTime>(context,
+              title: 'Select Date',
+              options: items.map((e) {
+                return DropdownConfirmOption(
+                  label: e.date.fullDate,
+                  value: e.date,
+                );
+              }).toList());
+        },
+        Failure.handle,
+      )
+
+          /// check if null
+          .flatMap((dateTime) {
+            if (dateTime == null)
+              return TaskResult.left(CancelledFailure('Cancelled'));
+            return TaskResult.right(dateTime);
+          })
+
+          /// filter all items
+          .map((dateTime) => items
+              .where((x) => x.date == dateTime)
+              .toList()
+              .firstOrNull
+              ?.items)
+
+          /// check if no date
+          .flatMap((items) {
+            if (items == null || items.isEmpty) {
+              return TaskResult.left(PresentationFailure('no Date selected'));
+            }
+            return TaskResult.right(items);
+          })
+
+          /// setup generator
+          .flatMap((items) {
+            return TaskResult<PatientPdfGenerator>.tryCatch(() async {
+              return PatientPdfGenerator(
+                patient: patient,
+                record: record,
+                items: items ?? [],
+              );
+            }, Failure.handle);
+          })
+
+          /// start process
+          .flatMap((gen) => TaskResult.tryCatch(
+                () async {
+                  if (action == _Action.print) {
+                    gen.print();
+                  }
+
+                  if (action == _Action.share) {
+                    gen.share();
+                  }
+
+                  if (action == _Action.save) {
+                    gen.save();
+                  }
+                },
+                Failure.handle,
+              ))
+          .run();
+
+      result.match(
+        AppSnackBar.rootFailure,
+        (_) {
+          AppSnackBar.root(message: 'Success');
+        },
+      );
+    }
 
     ///
     ///
@@ -166,7 +255,7 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
     return StackLoader(
       isLoading: isLoading.value,
       child: Padding(
-        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 30),
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -212,12 +301,20 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
                   TextButton.icon(
                     icon: Icon(MIcons.printerOutline),
                     label: Text('Print'),
-                    onPressed: () {},
+                    onPressed: () => print(
+                        items: list, record: record, action: _Action.print),
                   ),
                   TextButton.icon(
-                    icon: Icon(MIcons.filePdfBox),
-                    label: Text('Generate Pdf'),
-                    onPressed: () {},
+                    icon: Icon(MIcons.floppy),
+                    label: Text('Save'),
+                    onPressed: () => print(
+                        items: list, record: record, action: _Action.save),
+                  ),
+                  TextButton.icon(
+                    icon: Icon(MIcons.shareOutline),
+                    label: Text('Share'),
+                    onPressed: () => print(
+                        items: list, record: record, action: _Action.share),
                   ),
                 ],
               )

@@ -8,7 +8,7 @@ import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/models/custom_navbar_item.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/logo.dart';
 import 'package:gym_system/src/core/widgets/mobile_bottom_nav.dart';
@@ -172,17 +172,17 @@ class AppRoot extends HookConsumerWidget {
     final errorWidget = SizedBox();
     final loadingWidget = SizedBox();
 
-    return ref.watch(authControllerProvider).when(
-          error: (error, stack) => errorWidget,
-          loading: () => loadingWidget,
-          data: (auth) {
-            final items = buildItems(auth);
-            return ResponsiveBuilder(builder: (context, sizeInfo) {
-              if (sizeInfo.isTablet || sizeInfo.isDesktop) {
-                return Scaffold(
-                  key: scaffoldKey,
-                  drawer: MobileDrawer(rootContext: context),
-                  body: Row(
+    return Scaffold(
+      key: scaffoldKey,
+      drawer: MobileDrawer(rootContext: context),
+      body: ref.watch(authControllerProvider).when(
+            error: (error, stack) => errorWidget,
+            loading: () => loadingWidget,
+            data: (auth) {
+              final items = buildItems(auth);
+              return ResponsiveBuilder(builder: (context, sizeInfo) {
+                if (sizeInfo.isTablet || sizeInfo.isDesktop) {
+                  return Row(
                     children: [
                       SideMenu(
                         minWidth: 80,
@@ -243,35 +243,33 @@ class AppRoot extends HookConsumerWidget {
                       ),
                       Expanded(child: shell),
                     ],
+                  );
+                }
+
+                return PopScope(
+                  canPop: canPop.value,
+                  onPopInvokedWithResult: (didPop, result) async {
+                    if (didPop) return;
+                    final confirm = await ConfirmModal.show(context,
+                            title: 'Exit',
+                            message: 'Are you sure you want to exit?') ??
+                        false;
+                    if (context.mounted && confirm) {
+                      context.canPop();
+                    }
+                  },
+                  child: Scaffold(
+                    body: shell,
+                    bottomNavigationBar: MobileBottomNav(
+                      index: shell.currentIndex,
+                      list: items,
+                      state: state,
+                    ),
                   ),
                 );
-              }
-
-              return PopScope(
-                canPop: canPop.value,
-                onPopInvokedWithResult: (didPop, result) async {
-                  if (didPop) return;
-                  final confirm = await ConfirmModal.show(context,
-                          title: 'Exit',
-                          message: 'Are you sure you want to exit?') ??
-                      false;
-                  if (context.mounted && confirm) {
-                    context.canPop();
-                  }
-                },
-                child: Scaffold(
-                  key: scaffoldKey,
-                  body: shell,
-                  drawer: MobileDrawer(rootContext: context),
-                  bottomNavigationBar: MobileBottomNav(
-                    index: shell.currentIndex,
-                    list: items,
-                    state: state,
-                  ),
-                ),
-              );
-            });
-          },
-        );
+              });
+            },
+          ),
+    );
   }
 }

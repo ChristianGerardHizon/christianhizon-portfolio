@@ -6,7 +6,7 @@ import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/card_group.dart';
 import 'package:gym_system/src/core/widgets/collapsing_card.dart';
-import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
 import 'package:gym_system/src/features/product_stocks/data/product_stock_repository.dart';
 import 'package:gym_system/src/features/product_stocks/domain/product_stock.dart';

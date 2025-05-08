@@ -1,5 +1,10 @@
 extension OptionalStringExtension on String? {
-  String optional({String placeholder = '-'}) {
+  String optional({String placeholder = '-', bool checkNullString = false}) {
+    if(checkNullString) {
+      if(this == '') return placeholder;
+      if(this == 'null') return placeholder;
+      if(this == null) return placeholder;
+    }
     if (this == null) return placeholder;
     if (this!.isEmpty) return placeholder;
     return this!;

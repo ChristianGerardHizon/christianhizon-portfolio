@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/assets/assets.gen.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/utils/file_utils/file_utils.dart';
 import 'package:gym_system/src/features/patient_prescription_items/domain/patient_prescription_item.dart';
@@ -87,14 +88,14 @@ class PatientPdfGenerator {
                         ),
                         pw.SizedBox(height: 10),
                         pw.Text(
-                          "Visit Date: ${record.visitDate.yyyyMMddHHmmA()}",
+                          "Visit Date: ${record.visitDate.fullDateTime}",
                           style: pw.TextStyle(
                             fontSize: 10,
                           ),
                         ),
                         pw.SizedBox(height: 10),
                         pw.Text(
-                          "Printed: ${DateTime.now().yyyyMMddHHmmA()}",
+                          "Printed: ${DateTime.now().fullDateTime}",
                           style: pw.TextStyle(
                             fontSize: 10,
                           ),
@@ -142,7 +143,7 @@ class PatientPdfGenerator {
                   ),
                 ),
                 _underlineText(pw.Text(
-                  "${patient.species}",
+                  (patient.expand.species?.name).optional(placeholder: ''),
                   style: pw.TextStyle(
                     fontSize: 10,
                     fontWeight: pw.FontWeight.bold,
@@ -162,7 +163,7 @@ class PatientPdfGenerator {
                   ),
                 ),
                 _underlineText(pw.Text(
-                  "${patient.breed}",
+                  (patient.expand.breed?.name).optional(placeholder: ''),
                   style: pw.TextStyle(
                     fontSize: 10,
                     fontWeight: pw.FontWeight.bold,
@@ -178,7 +179,7 @@ class PatientPdfGenerator {
                   ),
                 ),
                 _underlineText(pw.Text(
-                  "${patient.dateOfBirth?.yyyyMMdd()}",
+                  (patient.dateOfBirth?.fullDate).optional(placeholder: ' ', checkNullString: true),
                   style: pw.TextStyle(
                     fontSize: 10,
                     fontWeight: pw.FontWeight.bold,
@@ -203,7 +204,7 @@ class PatientPdfGenerator {
     try {
       final ByteData data = await rootBundle.load(path);
       final Uint8List bytes = data.buffer.asUint8List();
-      return [pw.Image(pw.MemoryImage(bytes), height: 60)];
+      return [pw.Image(pw.MemoryImage(bytes), height: 120)];
     } catch (e) {
       return []; // If the logo is missing, return an empty list
     }

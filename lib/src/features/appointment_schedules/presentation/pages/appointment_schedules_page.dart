@@ -3,10 +3,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/popover_widget.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
@@ -176,14 +177,14 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
             },
           ),
           TableColumn(
-            header: '',
+            header: 'Actions',
             alignment: Alignment.center,
             width: 150,
             builder: (context, product, row, column) {
               return Align(
                 alignment: Alignment.center,
-                child: PopoverWidget.button(
-                  label: 'Action',
+                child: PopoverWidget.icon(
+                    icon: Icon(MIcons.dotsHorizontalCircleOutline),
                   bottomSheetHeader: const Text('Action'),
                   items: [
                     PopoverMenuItemData(

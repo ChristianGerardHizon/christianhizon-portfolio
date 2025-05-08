@@ -10,13 +10,14 @@ import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
-import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/features/patient_prescription_items/presentation/widgets/patient_prescription_items_group.dart';
 import 'package:gym_system/src/features/patient_records/data/patient_record_repository.dart';
 import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
 import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_record_controller.dart';
+import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_record_page_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -122,14 +123,15 @@ class PatientRecordPage extends HookConsumerWidget {
         title: const Text('Patient Record Details'),
         actions: [],
       ),
-      body: ref.watch(patientRecordControllerProvider(id)).when(
+      body: ref.watch(patientRecordPageControllerProvider(id)).when(
             skipError: false,
             skipLoadingOnRefresh: false,
             skipLoadingOnReload: false,
             error: (error, stack) => FailureMessage(error, stack),
             loading: () => Center(child: CircularProgressIndicator()),
             data: (patientRecordState) {
-              final patientRecord = patientRecordState;
+              final patientRecord = patientRecordState.patientRecord;
+              final patient = patientRecordState.patient;
               return FormBuilder(
                 key: formKey,
                 enabled: !isLoading.value,
@@ -224,14 +226,9 @@ class PatientRecordPage extends HookConsumerWidget {
                           ///
                           /// Prescriptions
                           ///
-                          PatientPrescriptionItemsGroup(record: patientRecord),
-
-                          DynamicGroup(
-                            padding: const EdgeInsets.only(
-                                left: 8, right: 8, bottom: 12),
-                            header: 'Follow Up Appointments',
-                            items: [],
-                          ),
+                          PatientPrescriptionItemsGroup(
+                            patient: patientRecordState.patient,
+                            record: patientRecord),
 
                           ///
                           /// Actions

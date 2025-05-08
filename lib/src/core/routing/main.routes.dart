@@ -10,6 +10,7 @@ import 'package:gym_system/src/core/pages/work_in_progress_page.dart';
 import 'package:gym_system/src/features/admins/presentation/pages/admin_page.dart';
 import 'package:gym_system/src/features/admins/presentation/pages/admin_form_page.dart';
 import 'package:gym_system/src/features/admins/presentation/pages/admins_page.dart';
+import 'package:gym_system/src/features/appointment_schedules/presentation/pages/appointment_schedule_calendar_page.dart';
 import 'package:gym_system/src/features/appointment_schedules/presentation/pages/appointment_schedule_form_page.dart';
 import 'package:gym_system/src/features/appointment_schedules/presentation/pages/appointment_schedule_page.dart';
 import 'package:gym_system/src/features/appointment_schedules/presentation/pages/appointment_schedules_page.dart';

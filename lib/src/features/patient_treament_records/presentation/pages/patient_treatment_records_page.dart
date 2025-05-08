@@ -7,11 +7,12 @@ import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
+import 'package:gym_system/src/core/widgets/popover_widget.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/patient_treament_records/data/patient_treatment_record_repository.dart';
 import 'package:gym_system/src/features/patient_treament_records/domain/patient_treatment_record.dart';
@@ -156,21 +157,29 @@ class PatientTreatmentRecordsPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+            TableColumn(
             header: 'Actions',
-            width: 75,
-            alignment: Alignment.center,
-            builder: (context, data, row, column) {
-              return Align(
-                alignment: Alignment.center,
-                child: IconButton(
-                  tooltip: 'Show more actions',
-                  onPressed: () => onShowActions(data),
-                  icon: Icon(MIcons.dotsHorizontalCircleOutline),
-                ),
-              );
-            },
-          ),
+              width: 159,
+              alignment: Alignment.center,
+              builder: (context, data, row, column) {
+                return Align(
+                  alignment: Alignment.center,
+                  child: PopoverWidget.icon(
+                    icon: Icon(MIcons.dotsHorizontalCircleOutline),
+                    bottomSheetHeader: const Text('Action'),
+                    items: [
+                      
+                      PopoverMenuItemData(
+                        name: 'Delete',
+                        onTap: () {
+                          onDelete([data]);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
         ],
 
         ///

@@ -11,7 +11,7 @@ import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/utils/filer_downloader/file_downloader.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
@@ -183,14 +183,14 @@ class PatientFilesPage extends HookConsumerWidget {
               },
             ),
             TableColumn(
-              header: '',
+              header: 'Actions',
               width: 159,
               alignment: Alignment.center,
               builder: (context, data, row, column) {
                 return Align(
                   alignment: Alignment.center,
-                  child: PopoverWidget.button(
-                    label: 'Action',
+                  child: PopoverWidget.icon(
+                    icon: Icon(MIcons.dotsHorizontalCircleOutline),
                     bottomSheetHeader: const Text('Action'),
                     items: [
                       PopoverMenuItemData(

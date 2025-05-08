@@ -16,6 +16,7 @@ class Application extends HookConsumerWidget {
     ref.watch(authControllerProvider);
 
     final color = Color.fromARGB(0, 40, 122, 111);
+    
 
     return ThemeProvider(
       defaultThemeId: 'light',
