@@ -1,0 +1,4 @@
+// universal_downloader.dart
+
+export 'file_downloader_io.dart'
+    if (dart.library.html) 'file_downloader_web.dart';

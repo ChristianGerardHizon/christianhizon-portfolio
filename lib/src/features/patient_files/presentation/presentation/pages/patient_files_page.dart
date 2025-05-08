@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:gym_system/src/core/failures/failure.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
+import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
+import 'package:gym_system/src/core/utils/filer_downloader/file_downloader.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
+import 'package:gym_system/src/core/widgets/photo_viewer.dart';
+import 'package:gym_system/src/core/widgets/popover_widget.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/features/patient_files/data/patient_file_repository.dart';
 import 'package:gym_system/src/features/patient_files/domain/patient_file.dart';
 import 'package:gym_system/src/features/patient_files/presentation/presentation/controllers/patient_file_table_controller.dart';
 import 'package:gym_system/src/features/patient_files/presentation/presentation/widgets/patient_file_card.dart';
+import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientFilesPage extends HookConsumerWidget {
@@ -74,7 +81,40 @@ class PatientFilesPage extends HookConsumerWidget {
       );
     }
 
-    onTap(PatientFile file) {}
+    String generateUrl(PatientFile patientFile) {
+      final baseURL = ref.read(pocketbaseProvider).baseURL;
+      final collection = patientFile.collectionId;
+      final file = patientFile.file;
+      final id = patientFile.id;
+
+      return '${baseURL}/api/files/$collection/$id/$file';
+    }
+
+    onTap(PatientFile patientFile) {
+      PhotoViewer.show(context, generateUrl(patientFile));
+    }
+
+    onDownload(PatientFile patientFile) async {
+      final result = await TaskResult.tryCatch(() async {
+        final url = generateUrl(patientFile);
+        final uri = Uri.parse(url);
+        await FileDownloader.downloadFile(
+          uri.toString(),
+          patientFile.file,
+        );
+      }, Failure.handle)
+          .run();
+
+      result.fold(
+        (l) => AppSnackBar.rootFailure(l),
+        (r) => AppSnackBar.root(message: 'Success'),
+      );
+    }
+
+    onCopy(PatientFile patientFile) {
+      Clipboard.setData(ClipboardData(text: generateUrl(patientFile)));
+      AppSnackBar.root(message: 'Copied to clipboard');
+    }
 
     ///
     /// OnCreate
@@ -103,7 +143,6 @@ class PatientFilesPage extends HookConsumerWidget {
           isLoading: listState.isLoading,
           items: listState.valueOrNull ?? [],
           onDelete: onDelete,
-          onRowTap: onTap,
 
           ///
           /// Search Features
@@ -117,7 +156,7 @@ class PatientFilesPage extends HookConsumerWidget {
           columns: [
             TableColumn(
               header: 'File',
-              width: 200,
+              width: 400,
               alignment: Alignment.centerLeft,
               builder: (context, data, row, column) {
                 return Align(
@@ -144,16 +183,42 @@ class PatientFilesPage extends HookConsumerWidget {
               },
             ),
             TableColumn(
-              header: 'Actions',
-              width: 75,
+              header: '',
+              width: 159,
               alignment: Alignment.center,
               builder: (context, data, row, column) {
                 return Align(
                   alignment: Alignment.center,
-                  child: IconButton(
-                    tooltip: 'Show more actions',
-                    onPressed: () => onShowActions(data),
-                    icon: Icon(MIcons.dotsHorizontalCircleOutline),
+                  child: PopoverWidget.button(
+                    label: 'Action',
+                    bottomSheetHeader: const Text('Action'),
+                    items: [
+                      PopoverMenuItemData(
+                        name: 'Download',
+                        onTap: () {
+                          onDownload(data);
+                        },
+                      ),
+                      PopoverMenuItemData(
+                        name: 'Copy Url',
+                        onTap: () {
+                          onCopy(data);
+                        },
+                      ),
+                      if (data.isImage)
+                        PopoverMenuItemData(
+                          name: 'View',
+                          onTap: () {
+                            onTap(data);
+                          },
+                        ),
+                      PopoverMenuItemData(
+                        name: 'Delete',
+                        onTap: () {
+                          onDelete([data]);
+                        },
+                      ),
+                    ],
                   ),
                 );
               },

@@ -7,6 +7,7 @@ import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/popover_widget.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
@@ -42,6 +43,13 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
     ///
     onTap(AppointmentSchedule appointmentSchedule) {
       AppointmentSchedulePageRoute(appointmentSchedule.id).push(context);
+    }
+
+    onChangeStatus(AppointmentSchedule appointmentSchedule) {}
+
+    onEdit(AppointmentSchedule appointmentSchedule) {
+      AppointmentScheduleFormPageRoute(id: appointmentSchedule.id)
+          .push(context);
     }
 
     ///
@@ -120,7 +128,7 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   overflow: TextOverflow.ellipsis,
-                  data.date.fullDateTime,
+                  data.hasTime ? data.date.fullDateTime : data.date.fullDate,
                 ),
               );
             },
@@ -155,7 +163,7 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
           ),
           TableColumn(
             header: 'Status',
-            width: 200,
+            width: 150,
             alignment: Alignment.centerLeft,
             builder: (context, data, row, column) {
               return Align(
@@ -168,14 +176,42 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
             },
           ),
           TableColumn(
-            header: 'Actions',
-            alignment: Alignment.centerLeft,
+            header: '',
+            alignment: Alignment.center,
             width: 150,
             builder: (context, product, row, column) {
               return Align(
-                alignment: Alignment.centerLeft,
-                child:
-                    TextButton(onPressed: () {}, child: Text('Adjust Status')),
+                alignment: Alignment.center,
+                child: PopoverWidget.button(
+                  label: 'Action',
+                  bottomSheetHeader: const Text('Action'),
+                  items: [
+                    PopoverMenuItemData(
+                      name: 'Change Status',
+                      onTap: () {
+                        onChangeStatus(product);
+                      },
+                    ),
+                    PopoverMenuItemData(
+                      name: 'View',
+                      onTap: () {
+                        onTap(product);
+                      },
+                    ),
+                    PopoverMenuItemData(
+                      name: 'Edit',
+                      onTap: () {
+                        onEdit(product);
+                      },
+                    ),
+                    PopoverMenuItemData(
+                      name: 'Delete',
+                      onTap: () {
+                        onDelete([product]);
+                      },
+                    ),
+                  ],
+                ),
               );
             },
           ),

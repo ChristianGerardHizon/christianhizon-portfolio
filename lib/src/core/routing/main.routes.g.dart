@@ -57,6 +57,7 @@ List<RouteBase> get $appRoutes => [
       $productCategoryFormPageRoute,
       $patientPrescriptionItemFormPageRoute,
       $patientFileFormPageRoute,
+      $productStockAdjustmentsFormPageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -148,7 +149,7 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               factory: $ProductCategoryPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/product-category/form/:id',
+              path: '/form/product-category',
               factory: $ProductCategoryFormPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
@@ -505,11 +506,14 @@ extension $ProductCategoryFormPageRouteExtension
     on ProductCategoryFormPageRoute {
   static ProductCategoryFormPageRoute _fromState(GoRouterState state) =>
       ProductCategoryFormPageRoute(
-        id: state.pathParameters['id'],
+        id: state.uri.queryParameters['id'],
       );
 
   String get location => GoRouteData.$location(
-        '/product-category/form/${Uri.encodeComponent(id ?? '')}',
+        '/form/product-category',
+        queryParams: {
+          if (id != null) 'id': id,
+        },
       );
 
   void go(BuildContext context) => context.go(location);
@@ -1519,7 +1523,7 @@ RouteBase get $productCategoryPageRoute => GoRouteData.$route(
     );
 
 RouteBase get $productCategoryFormPageRoute => GoRouteData.$route(
-      path: '/product-category/form/:id',
+      path: '/form/product-category',
       factory: $ProductCategoryFormPageRouteExtension._fromState,
     );
 
@@ -1532,3 +1536,36 @@ RouteBase get $patientFileFormPageRoute => GoRouteData.$route(
       path: '/form/patientFiles',
       factory: $PatientFileFormPageRouteExtension._fromState,
     );
+
+RouteBase get $productStockAdjustmentsFormPageRoute => GoRouteData.$route(
+      path: '/form/product-stock-adjustments',
+      factory: $ProductStockAdjustmentsFormPageRouteExtension._fromState,
+    );
+
+extension $ProductStockAdjustmentsFormPageRouteExtension
+    on ProductStockAdjustmentsFormPageRoute {
+  static ProductStockAdjustmentsFormPageRoute _fromState(GoRouterState state) =>
+      ProductStockAdjustmentsFormPageRoute(
+        id: state.uri.queryParameters['id'],
+        productId: state.uri.queryParameters['product-id'],
+        productStockId: state.uri.queryParameters['product-stock-id'],
+      );
+
+  String get location => GoRouteData.$location(
+        '/form/product-stock-adjustments',
+        queryParams: {
+          if (id != null) 'id': id,
+          if (productId != null) 'product-id': productId,
+          if (productStockId != null) 'product-stock-id': productStockId,
+        },
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
