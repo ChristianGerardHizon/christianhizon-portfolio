@@ -28,6 +28,7 @@ import 'package:gym_system/src/features/patient_files/presentation/presentation/
 import 'package:gym_system/src/features/patient_files/presentation/presentation/widgets/patient_file_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PatientFilesPage extends HookConsumerWidget {
   const PatientFilesPage({
@@ -102,12 +103,11 @@ class PatientFilesPage extends HookConsumerWidget {
         final uri = Uri.parse(url);
 
         if (kIsWeb) {
-          downloadFileFromUrl(url, filename: patientFile.file);
+          launchUrl(uri);
         } else {
           final task = DownloadTask(
             url: uri.toString(),
             filename: patientFile.file,
-            headers: {'myHeader': 'value'},
             directory: (await getDownloadsDirectory())!.path,
             retries: 5,
             allowPause: true,
@@ -260,8 +260,4 @@ class PatientFilesPage extends HookConsumerWidget {
       ),
     );
   }
-}
-
-void downloadFileFromUrl(String url, {String? filename}) {
-  throw UnimplementedError();
 }
