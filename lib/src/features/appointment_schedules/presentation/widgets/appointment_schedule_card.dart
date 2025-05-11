@@ -12,11 +12,17 @@ class AppointmentScheduleCard extends StatelessWidget {
     required this.appointmentSchedule,
     required this.onLongPress,
     required this.onTap,
+    required this.onDelete,
+    required this.onChangeStatus,
+    required this.onEdit,
     this.selected = false,
   });
 
   final Function() onLongPress;
   final Function() onTap;
+  final Function() onDelete;
+  final Function() onChangeStatus;
+  final Function() onEdit;
   final bool selected;
   final AppointmentSchedule appointmentSchedule;
 
@@ -43,7 +49,7 @@ class AppointmentScheduleCard extends StatelessWidget {
               items: [
                 PopoverMenuItemData(
                   name: 'Change Status',
-                  onTap: () {},
+                  onTap: onChangeStatus,
                 ),
                 PopoverMenuItemData(
                   name: 'View',
@@ -51,11 +57,11 @@ class AppointmentScheduleCard extends StatelessWidget {
                 ),
                 PopoverMenuItemData(
                   name: 'Edit',
-                  onTap: () {},
+                  onTap: onEdit,
                 ),
                 PopoverMenuItemData(
                   name: 'Delete',
-                  onTap: () {},
+                  onTap: onDelete,
                 ),
               ],
             ),

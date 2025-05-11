@@ -7,7 +7,7 @@ import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
 import 'package:gym_system/src/features/branches/presentation/controllers/branches_controller.dart';
-import 'package:gym_system/src/features/patient_species/presentation/controllers/patient_species_controller.dart';
+import 'package:gym_system/src/features/patient_species/presentation/controllers/patient_species_list_controller.dart';
 import 'package:gym_system/src/features/patients/data/patient_repository.dart';
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:gym_system/src/features/patient_breeds/domain/patient_breed.dart';
@@ -46,7 +46,8 @@ class PatientFormController extends _$PatientFormController {
 
     final result = await TaskResult.Do(($) async {
       final branches = await ref.read(branchesControllerProvider.future);
-      final species = await ref.read(patientSpeciesControllerProvider.future);
+      final species =
+          await ref.read(patientSpeciesListControllerProvider.future);
       final breeds = await ref.read(patientBreedsControllerProvider.future);
       final sexes = PatientSex.values;
 

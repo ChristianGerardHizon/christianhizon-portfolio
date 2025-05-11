@@ -13,6 +13,8 @@ class TableControllerKeys {
   static String user = 'USER';
   static String changeLog = 'CHANGE_LOG';
   static String productCategory = 'PRODUCT_CATEGORY';
+  static String patientBreed = 'PATIENT_BREED';
+  static String patientSpecies = 'PATIENT_SPECIES';
   static String appointmentSchedule = 'APPOINTMENT_SCHEDULE';
   static String appointmentSchedulePatient(String x) =>
       '${appointmentSchedule}_${x}';

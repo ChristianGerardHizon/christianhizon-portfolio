@@ -47,9 +47,12 @@ class AppointmentSchedulePage extends HookConsumerWidget {
     /// on tap
     ///
     tap(AppointmentSchedule appointmentSchedule) {
-      AppointmentScheduleFormPageRoute(id: appointmentSchedule.id,)
-          .push(context);
+      AppointmentScheduleFormPageRoute(
+        id: appointmentSchedule.id,
+      ).push(context);
     }
+
+    changeStatus(AppointmentSchedule appointmentSchedule) {}
 
     ///
     /// onDelete
@@ -112,6 +115,14 @@ class AppointmentSchedulePage extends HookConsumerWidget {
                               left: 8, right: 8, bottom: 12),
                           header: 'Appointment Schedule Details',
                           items: [
+                            DynamicGroupItem.text(
+                              title: 'Purpose',
+                              value: appointmentSchedule.purpose.optional(),
+                            ),
+                            DynamicGroupItem.text(
+                              title: 'Satatus',
+                              value: appointmentSchedule.status.name,
+                            ),
                             DynamicGroupItem.text(
                               title: 'Last Updated',
                               value: (appointmentSchedule.updated

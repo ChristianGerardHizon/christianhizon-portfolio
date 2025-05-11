@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/routing/router.dart';
+import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/modals/dropdown_confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/popover_widget.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
@@ -42,13 +46,56 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
     final listState = ref.watch(listProvider);
 
     ///
+    /// loading variable
+    ///
+    final isLoading = useState(false);
+
+    ///
+    /// refresh
+    ///
+    refresh(String id) {
+      ref.invalidate(listProvider);
+    }
+
+    ///
     /// onTap
     ///
     onTap(AppointmentSchedule appointmentSchedule) {
       AppointmentSchedulePageRoute(appointmentSchedule.id).push(context);
     }
 
-    onChangeStatus(AppointmentSchedule appointmentSchedule) {}
+    onChangeStatus(AppointmentSchedule appointmentSchedule) async {
+      final repo = ref.read(appointmentScheduleRepositoryProvider);
+      final task =
+          DropdownConfirmModal.showTaskResult<AppointmentScheduleStatus>(
+                  context,
+                  title: 'Select New Status',
+                  initialValue: appointmentSchedule.status,
+                  options: AppointmentScheduleStatus.values.map((e) {
+                    return DropdownConfirmOption(
+                      label: e.name,
+                      value: e,
+                    );
+                  }).toList())
+              .map((status) => {AppointmentScheduleField.status: status.name})
+              .flatMap((value) => repo.update(appointmentSchedule, value))
+              .flatMap((r) => _handleSuccessfulUpdateTaskSidEffects(
+                    context: context,
+                    id: appointmentSchedule.id,
+                    refresh: refresh,
+                  ));
+
+      /// start
+      isLoading.value = true;
+      final result = await task.run();
+      isLoading.value = false;
+
+      // 4. Handle Error
+      result.match(
+        (failure) => _handleFailure(context, failure),
+        (_) {},
+      );
+    }
 
     onEdit(AppointmentSchedule appointmentSchedule) {
       AppointmentScheduleFormPageRoute(
@@ -168,6 +215,21 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
             },
           ),
           TableColumn(
+            header: 'Record',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  (data.expand.patientRecord?.visitDate.fullDateTime)
+                      .optional(),
+                ),
+              );
+            },
+          ),
+          TableColumn(
             header: 'Status',
             width: 150,
             alignment: Alignment.centerLeft,
@@ -229,6 +291,9 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
         mobileBuilder: (context, index, appointmentSchedule, selected) {
           return AppointmentScheduleCard(
             appointmentSchedule: appointmentSchedule,
+            onChangeStatus: () => onChangeStatus(appointmentSchedule),
+            onEdit: () => onEdit(appointmentSchedule),
+            onDelete: () => onDelete([appointmentSchedule]),
             onTap: () {
               if (selected)
                 notifier.toggleRow(index);
@@ -244,4 +309,30 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
       ),
     );
   }
+}
+
+///
+/// Handles Failure
+/// Shows a snackbar when a failure occurs
+///
+void _handleFailure(BuildContext context, Failure failure) {
+  if (failure is CancelledFailure) return;
+  AppSnackBar.rootFailure(failure);
+}
+
+///
+/// Handles post-delete side effects like showing snackbar,
+/// popping navigation, and refreshing local state.
+///
+TaskResult<void> _handleSuccessfulUpdateTaskSidEffects({
+  required BuildContext context,
+  required String id,
+  required void Function(String id) refresh,
+}) {
+  return Task<void>(() async {
+    if (!context.mounted) return;
+    AppSnackBar.root(message: 'Success');
+    refresh(id);
+    return null;
+  }).toTaskEither<Failure>();
 }

@@ -6,6 +6,8 @@ import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
+import 'package:gym_system/src/features/admins/domain/admin.dart';
+import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -16,6 +18,7 @@ class YourAccountPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(authControllerProvider);
     final theme = Theme.of(context);
+    final auth = ref.read(authControllerProvider).valueOrNull;
 
     ///
     ///
@@ -84,6 +87,64 @@ class YourAccountPage extends HookConsumerWidget {
                     ),
                   ],
                 ),
+
+                SliverToBoxAdapter(child: SizedBox(height: 20)),
+                if (auth is AuthAdmin)
+                  DynamicGroup.sliver(
+                    padding:
+                        const EdgeInsets.only(left: 8, right: 8, bottom: 12),
+                    header: 'Admin Section',
+                    items: [
+                      /// Sales
+                      DynamicGroupItem.action(
+                        title: 'Sales',
+                        leading: Icon(MIcons.chartLineVariant),
+                        onTap: () {
+                          SalesPageRoute().push(context);
+                        },
+                      ),
+
+                      DynamicGroupItem.action(
+                        title: 'Changes',
+                        leading: Icon(MIcons.pencil),
+                        onTap: () {
+                          ChangeLogsPageRoute().push(context);
+                        },
+                      ),
+
+                      DynamicGroupItem.action(
+                        title: 'Branches',
+                        leading: Icon(MIcons.storeOutline),
+                        onTap: () {
+                          BranchesPageRoute().push(context);
+                        },
+                      ),
+
+                      DynamicGroupItem.action(
+                        title: 'Patient Species',
+                        leading: Icon(MIcons.dogService),
+                        onTap: () {
+                          PatientSpeciesListPageRoute().push(context);
+                        },
+                      ),
+
+                      DynamicGroupItem.action(
+                        title: 'Users',
+                        leading: Icon(MIcons.accountGroupOutline),
+                        onTap: () {
+                          UsersPageRoute().push(context);
+                        },
+                      ),
+
+                      DynamicGroupItem.action(
+                        title: 'Admins',
+                        leading: Icon(MIcons.accountSupervisorOutline),
+                        onTap: () {
+                          AdminsPageRoute().push(context);
+                        },
+                      ),
+                    ],
+                  ),
               ],
             ),
           );

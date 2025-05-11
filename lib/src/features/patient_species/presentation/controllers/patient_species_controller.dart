@@ -1,4 +1,3 @@
-import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/features/patient_species/data/patient_species_repository.dart';
 import 'package:gym_system/src/features/patient_species/domain/patient_species.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -7,18 +6,10 @@ part 'patient_species_controller.g.dart';
 
 @riverpod
 class PatientSpeciesController extends _$PatientSpeciesController {
-  String? _buildFilter() {
-    return '${PatientSpeciesField.isDeleted} = false';
-  }
-
   @override
-  Future<List<PatientSpecies>> build() async {
+  Future<PatientSpecies> build(String id) async {
     final repo = ref.read(patientSpeciesRepositoryProvider);
-    final result = await repo
-        .listAll(
-          filter: _buildFilter(),
-        )
-        .run();
+    final result = await repo.get(id).run();
     return result.fold(Future.error, (x) => Future.value(x));
   }
 }

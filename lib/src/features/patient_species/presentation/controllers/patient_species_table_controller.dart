@@ -3,19 +3,17 @@ import 'package:gym_system/src/core/packages/pocketbase_filter.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
-import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
-import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
+import 'package:gym_system/src/features/patient_species/data/patient_species_repository.dart';
+import 'package:gym_system/src/features/patient_species/domain/patient_species.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'appointment_schedule_table_controller.g.dart';
+part 'patient_species_table_controller.g.dart';
 
 @riverpod
-class AppointmentScheduleTableController
-    extends _$AppointmentScheduleTableController {
+class PatientSpeciesTableController extends _$PatientSpeciesTableController {
   @override
-  Future<List<AppointmentSchedule>> build(String tableKey,
-      {String? patientId}) async {
-    final repo = ref.read(appointmentScheduleRepositoryProvider);
+  Future<List<PatientSpecies>> build(String tableKey) async {
+    final repo = ref.read(patientSpeciesRepositoryProvider);
 
     final page = ref
         .watch(tableControllerProvider(tableKey).select((state) => state.page));
@@ -25,19 +23,15 @@ class AppointmentScheduleTableController
         tableControllerProvider(tableKey).select((state) => state.filter));
 
     final notifier = ref.read(tableControllerProvider(tableKey).notifier);
-    final optional = patientId != null
-        ? "&& ${AppointmentScheduleField.patient} = '$patientId'"
-        : '';
-    final baseFilter =
-        '${AppointmentScheduleField.isDeleted} = false ${optional}';
+    final baseFilter = '${PatientSpeciesField.isDeleted} = false';
     final filterFunc = PocketbaseFilter(baseFilter: baseFilter);
-    final filter = filterFunc
-        .wildCardFields(tableFilter, fields: ['patient.name']).build();
+
     final result = await repo
 
         // 1. Fetch data
         .list(
-          filter: filter,
+          filter:
+              filterFunc.wildCardFields(tableFilter, fields: ['name']).build(),
           pageNo: page,
           pageSize: pageSize,
           sort: '-updated',
@@ -54,7 +48,7 @@ class AppointmentScheduleTableController
 }
 
 TaskResult _handleSuccess(
-  PageResults<AppointmentSchedule> result,
+  PageResults<PatientSpecies> result,
   TableController notifier,
 ) {
   notifier.fetchSuccess(

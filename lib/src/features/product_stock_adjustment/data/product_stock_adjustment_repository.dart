@@ -6,7 +6,6 @@ import 'package:gym_system/src/core/models/page_results.dart';
 import 'package:gym_system/src/core/strings/pb_expand.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/features/product_stock_adjustment/domain/product_stock_adjustment.dart';
-import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pocketbase/pocketbase.dart';

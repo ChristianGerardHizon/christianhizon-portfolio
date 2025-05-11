@@ -5,7 +5,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/extensions/x_file_extension.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
 
 import 'package:gym_system/src/core/models/pb_file.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';

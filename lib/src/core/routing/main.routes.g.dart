@@ -58,6 +58,10 @@ List<RouteBase> get $appRoutes => [
       $patientPrescriptionItemFormPageRoute,
       $patientFileFormPageRoute,
       $productStockAdjustmentsFormPageRoute,
+      $patientSpeciesListPageRoute,
+      $patientSpeciesFormPageRoute,
+      $patientSpeciesPageRoute,
+      $patientBreedFormPageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -326,6 +330,30 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/form/appointmentSchedule',
               factory: $AppointmentScheduleFormPageRouteExtension._fromState,
+            ),
+          ],
+        ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/patientSpecies',
+              factory: $PatientSpeciesListPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/form/patientSpecies',
+              factory: $PatientSpeciesFormPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/patientSpecies/:id',
+              factory: $PatientSpeciesPageRouteExtension._fromState,
+            ),
+          ],
+        ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/form/patientBreeds',
+              factory: $PatientBreedFormPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -1188,6 +1216,92 @@ extension $AppointmentScheduleFormPageRouteExtension
   void replace(BuildContext context) => context.replace(location);
 }
 
+extension $PatientSpeciesListPageRouteExtension on PatientSpeciesListPageRoute {
+  static PatientSpeciesListPageRoute _fromState(GoRouterState state) =>
+      const PatientSpeciesListPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/patientSpecies',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $PatientSpeciesFormPageRouteExtension on PatientSpeciesFormPageRoute {
+  static PatientSpeciesFormPageRoute _fromState(GoRouterState state) =>
+      PatientSpeciesFormPageRoute(
+        id: state.uri.queryParameters['id'],
+      );
+
+  String get location => GoRouteData.$location(
+        '/form/patientSpecies',
+        queryParams: {
+          if (id != null) 'id': id,
+        },
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $PatientSpeciesPageRouteExtension on PatientSpeciesPageRoute {
+  static PatientSpeciesPageRoute _fromState(GoRouterState state) =>
+      PatientSpeciesPageRoute(
+        state.pathParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/patientSpecies/${Uri.encodeComponent(id)}',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $PatientBreedFormPageRouteExtension on PatientBreedFormPageRoute {
+  static PatientBreedFormPageRoute _fromState(GoRouterState state) =>
+      PatientBreedFormPageRoute(
+        id: state.uri.queryParameters['id'],
+        parentId: state.uri.queryParameters['parent-id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/form/patientBreeds',
+        queryParams: {
+          if (id != null) 'id': id,
+          'parent-id': parentId,
+        },
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
 T? _$convertMapValue<T>(
   String key,
   Map<String, String> map,
@@ -1571,3 +1685,23 @@ extension $ProductStockAdjustmentsFormPageRouteExtension
 
   void replace(BuildContext context) => context.replace(location);
 }
+
+RouteBase get $patientSpeciesListPageRoute => GoRouteData.$route(
+      path: '/patientSpecies',
+      factory: $PatientSpeciesListPageRouteExtension._fromState,
+    );
+
+RouteBase get $patientSpeciesFormPageRoute => GoRouteData.$route(
+      path: '/form/patientSpecies',
+      factory: $PatientSpeciesFormPageRouteExtension._fromState,
+    );
+
+RouteBase get $patientSpeciesPageRoute => GoRouteData.$route(
+      path: '/patientSpecies/:id',
+      factory: $PatientSpeciesPageRouteExtension._fromState,
+    );
+
+RouteBase get $patientBreedFormPageRoute => GoRouteData.$route(
+      path: '/form/patientBreeds',
+      factory: $PatientBreedFormPageRouteExtension._fromState,
+    );

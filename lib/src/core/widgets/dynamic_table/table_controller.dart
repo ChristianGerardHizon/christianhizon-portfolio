@@ -33,6 +33,11 @@ class TableController extends _$TableController {
 
   void changePageSize(int size) {
     state = state.copyWith(isLoading: true, pageSize: size, selected: []);
+    ref.notifyListeners();
+  }
+
+  void refresh() {
+    ref.notifyListeners();
   }
 
   void clearSelection() {

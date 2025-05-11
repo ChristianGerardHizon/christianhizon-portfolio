@@ -1,7 +1,10 @@
+import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gym_system/src/core/failures/failure.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 
 class DropdownConfirmOption<T> {
   final String label;
@@ -18,12 +21,14 @@ class DropdownConfirmModal<T> extends HookConsumerWidget {
     required this.cancel,
     required this.options,
     required this.showCancelFirst,
+    this.initialValue,
   });
 
   final String title;
   final String confirm;
   final String cancel;
   final bool showCancelFirst;
+  final T? initialValue;
   final List<DropdownConfirmOption<T>> options;
 
   static Future<T?> show<T>(
@@ -33,6 +38,7 @@ class DropdownConfirmModal<T> extends HookConsumerWidget {
     String confirm = 'Confirm',
     String cancel = 'Cancel',
     bool showCancelFirst = false,
+    T? initialValue,
   }) async {
     return showDialog<T>(
       useSafeArea: true,
@@ -43,6 +49,7 @@ class DropdownConfirmModal<T> extends HookConsumerWidget {
           title: title,
           confirm: confirm,
           cancel: cancel,
+          initialValue: initialValue,
           options: options,
           showCancelFirst: showCancelFirst,
         );
@@ -50,9 +57,33 @@ class DropdownConfirmModal<T> extends HookConsumerWidget {
     );
   }
 
+  static TaskResult<T> showTaskResult<T>(
+    BuildContext context, {
+    required String title,
+    required List<DropdownConfirmOption<T>> options,
+    String confirm = 'Confirm',
+    String cancel = 'Cancel',
+    bool showCancelFirst = false,
+    T? initialValue,
+  }) {
+    return TaskResult.tryCatch(() async {
+      final result = await show<T>(
+        context,
+        title: title,
+        options: options,
+        confirm: confirm,
+        cancel: cancel,
+        initialValue: initialValue,
+        showCancelFirst: showCancelFirst,
+      );
+      if (result == null) throw CancelledFailure();
+      return result;
+    }, Failure.handle);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    T? selected;
+    final selected = useState<T?>(initialValue);
 
     return Center(
       child: ConstrainedBox(
@@ -73,7 +104,7 @@ class DropdownConfirmModal<T> extends HookConsumerWidget {
                             fontSize: 22, fontWeight: FontWeight.w500)),
                     const SizedBox(height: 15),
                     DropdownButtonFormField<T>(
-                      value: selected,
+                      value: selected.value,
                       isExpanded: true,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -85,7 +116,8 @@ class DropdownConfirmModal<T> extends HookConsumerWidget {
                                 child: Text(opt.label),
                               ))
                           .toList(),
-                      onChanged: (value) => setState(() => selected = value),
+                      onChanged: (value) =>
+                          setState(() => selected.value = value),
                     ),
                     const SizedBox(height: 22),
                     Row(
@@ -111,8 +143,8 @@ class DropdownConfirmModal<T> extends HookConsumerWidget {
                               ),
                               const SizedBox(width: 10),
                               FilledButton(
-                                onPressed: selected != null
-                                    ? () => context.pop(selected)
+                                onPressed: selected.value != null
+                                    ? () => context.pop(selected.value)
                                     : null,
                                 child: Text(confirm),
                               ),

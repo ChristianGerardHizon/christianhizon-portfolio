@@ -1,13 +1,4 @@
-import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/models/pb_file.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/packages/pocketbase.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/utils/pb_utils.dart';
-import 'package:gym_system/src/features/branches/data/branch_repository.dart';
-import 'package:gym_system/src/features/branches/domain/branch.dart';
-import 'package:gym_system/src/features/product_stock_adjustment/data/product_stock_adjustment_repository.dart';
 import 'package:gym_system/src/features/product_stock_adjustment/domain/product_stock_adjustment.dart';
 import 'package:gym_system/src/features/product_stock_adjustment/presentation/controllers/product_stock_adjustment_controller.dart';
 import 'package:gym_system/src/features/product_stocks/domain/product_stock.dart';
@@ -42,7 +33,7 @@ class ProductStockAdjustmentFormController
     final result = await TaskResult.Do(($) async {
       final productStock = productStockId is String
           ? await ref
-              .watch(productStockControllerProvider(productStockId!).future)
+              .watch(productStockControllerProvider(productStockId).future)
           : null;
 
       final productState = productId is String

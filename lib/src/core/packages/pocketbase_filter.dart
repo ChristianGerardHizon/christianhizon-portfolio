@@ -23,8 +23,22 @@ class PocketbaseFilter {
   }
 
   /// f1 == "query" || f2 == "query" || …
-  PocketbaseFilter searchFields(String query, {required List<String> fields}) {
-    final clause = fields.map((f) => '$f == "$query"').join(' || ');
+  PocketbaseFilter searchFields(String? query, {required List<String> fields}) {
+    if (query == null || query.isEmpty) return this;
+    final clause = fields.map((f) => '$f = "$query"').join(' || ');
+    return PocketbaseFilter._(_baseFilter, _combine(_filter, clause));
+  }
+
+  /// f1 == "query" || f2 == "query" || …
+  PocketbaseFilter wildCardFields(String? query,
+      {required List<String> fields}) {
+    if (query == null || query.isEmpty) return this;
+    final clause = fields.map((f) => '$f  ~ "$query"').join(' || ');
+    return PocketbaseFilter._(_baseFilter, _combine(_filter, clause));
+  }
+
+  PocketbaseFilter searchField(String query, {required String field}) {
+    final clause = '$field = "$query"';
     return PocketbaseFilter._(_baseFilter, _combine(_filter, clause));
   }
 

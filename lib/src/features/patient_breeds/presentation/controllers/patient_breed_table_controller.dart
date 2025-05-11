@@ -3,19 +3,18 @@ import 'package:gym_system/src/core/packages/pocketbase_filter.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
-import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
-import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
+import 'package:gym_system/src/features/patient_breeds/data/patient_breed_repository.dart';
+import 'package:gym_system/src/features/patient_breeds/domain/patient_breed.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'appointment_schedule_table_controller.g.dart';
+part 'patient_breed_table_controller.g.dart';
 
 @riverpod
-class AppointmentScheduleTableController
-    extends _$AppointmentScheduleTableController {
+class PatientBreedTableController extends _$PatientBreedTableController {
   @override
-  Future<List<AppointmentSchedule>> build(String tableKey,
-      {String? patientId}) async {
-    final repo = ref.read(appointmentScheduleRepositoryProvider);
+  Future<List<PatientBreed>> build(String tableKey,
+      {String? patientSpeciesId}) async {
+    final repo = ref.read(patientBreedRepositoryProvider);
 
     final page = ref
         .watch(tableControllerProvider(tableKey).select((state) => state.page));
@@ -25,19 +24,17 @@ class AppointmentScheduleTableController
         tableControllerProvider(tableKey).select((state) => state.filter));
 
     final notifier = ref.read(tableControllerProvider(tableKey).notifier);
-    final optional = patientId != null
-        ? "&& ${AppointmentScheduleField.patient} = '$patientId'"
+    final speciesQuery = patientSpeciesId != null
+        ? '&& ${PatientBreedField.species} = \'$patientSpeciesId\''
         : '';
-    final baseFilter =
-        '${AppointmentScheduleField.isDeleted} = false ${optional}';
+    final baseFilter = '${PatientBreedField.isDeleted} = false $speciesQuery';
     final filterFunc = PocketbaseFilter(baseFilter: baseFilter);
-    final filter = filterFunc
-        .wildCardFields(tableFilter, fields: ['patient.name']).build();
+
     final result = await repo
 
         // 1. Fetch data
         .list(
-          filter: filter,
+          filter: filterFunc.searchName(tableFilter).build(),
           pageNo: page,
           pageSize: pageSize,
           sort: '-updated',
@@ -54,7 +51,7 @@ class AppointmentScheduleTableController
 }
 
 TaskResult _handleSuccess(
-  PageResults<AppointmentSchedule> result,
+  PageResults<PatientBreed> result,
   TableController notifier,
 ) {
   notifier.fetchSuccess(

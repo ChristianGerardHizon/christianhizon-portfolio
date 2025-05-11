@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
@@ -75,7 +76,7 @@ class BranchesPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Branchs'),
+        title: Text('Branches'),
         actions: [
           RefreshButton(
             onPressed: onRefresh,
@@ -115,12 +116,13 @@ class BranchesPage extends HookConsumerWidget {
             },
           ),
           TableColumn(
-            header: 'Branch',
+            header: 'Created',
+            width: 180,
             alignment: Alignment.centerLeft,
             builder: (context, branch, row, column) {
               return Align(
                 alignment: Alignment.centerLeft,
-                child: Text((branch.name).optional(),
+                child: Text((branch.created?.fullDateTime).optional(),
                     overflow: TextOverflow.ellipsis),
               );
             },

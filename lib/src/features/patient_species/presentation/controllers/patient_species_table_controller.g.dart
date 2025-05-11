@@ -1,12 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'table_controller.dart';
+part of 'patient_species_table_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tableControllerHash() => r'2ee1a4d59cb0ea4d2d1c3200b6a43a2baa00f5c8';
+String _$patientSpeciesTableControllerHash() =>
+    r'840777f18ab9397c29c17af2c0bc8c8ecd4525c3';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,36 +30,38 @@ class _SystemHash {
   }
 }
 
-abstract class _$TableController
-    extends BuildlessAutoDisposeNotifier<TableState> {
+abstract class _$PatientSpeciesTableController
+    extends BuildlessAutoDisposeAsyncNotifier<List<PatientSpecies>> {
   late final String tableKey;
 
-  TableState build(
+  FutureOr<List<PatientSpecies>> build(
     String tableKey,
   );
 }
 
-/// See also [TableController].
-@ProviderFor(TableController)
-const tableControllerProvider = TableControllerFamily();
+/// See also [PatientSpeciesTableController].
+@ProviderFor(PatientSpeciesTableController)
+const patientSpeciesTableControllerProvider =
+    PatientSpeciesTableControllerFamily();
 
-/// See also [TableController].
-class TableControllerFamily extends Family<TableState> {
-  /// See also [TableController].
-  const TableControllerFamily();
+/// See also [PatientSpeciesTableController].
+class PatientSpeciesTableControllerFamily
+    extends Family<AsyncValue<List<PatientSpecies>>> {
+  /// See also [PatientSpeciesTableController].
+  const PatientSpeciesTableControllerFamily();
 
-  /// See also [TableController].
-  TableControllerProvider call(
+  /// See also [PatientSpeciesTableController].
+  PatientSpeciesTableControllerProvider call(
     String tableKey,
   ) {
-    return TableControllerProvider(
+    return PatientSpeciesTableControllerProvider(
       tableKey,
     );
   }
 
   @override
-  TableControllerProvider getProviderOverride(
-    covariant TableControllerProvider provider,
+  PatientSpeciesTableControllerProvider getProviderOverride(
+    covariant PatientSpeciesTableControllerProvider provider,
   ) {
     return call(
       provider.tableKey,
@@ -77,30 +80,31 @@ class TableControllerFamily extends Family<TableState> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'tableControllerProvider';
+  String? get name => r'patientSpeciesTableControllerProvider';
 }
 
-/// See also [TableController].
-class TableControllerProvider
-    extends AutoDisposeNotifierProviderImpl<TableController, TableState> {
-  /// See also [TableController].
-  TableControllerProvider(
+/// See also [PatientSpeciesTableController].
+class PatientSpeciesTableControllerProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<PatientSpeciesTableController,
+        List<PatientSpecies>> {
+  /// See also [PatientSpeciesTableController].
+  PatientSpeciesTableControllerProvider(
     String tableKey,
   ) : this._internal(
-          () => TableController()..tableKey = tableKey,
-          from: tableControllerProvider,
-          name: r'tableControllerProvider',
+          () => PatientSpeciesTableController()..tableKey = tableKey,
+          from: patientSpeciesTableControllerProvider,
+          name: r'patientSpeciesTableControllerProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$tableControllerHash,
-          dependencies: TableControllerFamily._dependencies,
+                  : _$patientSpeciesTableControllerHash,
+          dependencies: PatientSpeciesTableControllerFamily._dependencies,
           allTransitiveDependencies:
-              TableControllerFamily._allTransitiveDependencies,
+              PatientSpeciesTableControllerFamily._allTransitiveDependencies,
           tableKey: tableKey,
         );
 
-  TableControllerProvider._internal(
+  PatientSpeciesTableControllerProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -113,8 +117,8 @@ class TableControllerProvider
   final String tableKey;
 
   @override
-  TableState runNotifierBuild(
-    covariant TableController notifier,
+  FutureOr<List<PatientSpecies>> runNotifierBuild(
+    covariant PatientSpeciesTableController notifier,
   ) {
     return notifier.build(
       tableKey,
@@ -122,10 +126,10 @@ class TableControllerProvider
   }
 
   @override
-  Override overrideWith(TableController Function() create) {
+  Override overrideWith(PatientSpeciesTableController Function() create) {
     return ProviderOverride(
       origin: this,
-      override: TableControllerProvider._internal(
+      override: PatientSpeciesTableControllerProvider._internal(
         () => create()..tableKey = tableKey,
         from: from,
         name: null,
@@ -138,14 +142,15 @@ class TableControllerProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<TableController, TableState>
-      createElement() {
-    return _TableControllerProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<PatientSpeciesTableController,
+      List<PatientSpecies>> createElement() {
+    return _PatientSpeciesTableControllerProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is TableControllerProvider && other.tableKey == tableKey;
+    return other is PatientSpeciesTableControllerProvider &&
+        other.tableKey == tableKey;
   }
 
   @override
@@ -159,18 +164,21 @@ class TableControllerProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin TableControllerRef on AutoDisposeNotifierProviderRef<TableState> {
+mixin PatientSpeciesTableControllerRef
+    on AutoDisposeAsyncNotifierProviderRef<List<PatientSpecies>> {
   /// The parameter `tableKey` of this provider.
   String get tableKey;
 }
 
-class _TableControllerProviderElement
-    extends AutoDisposeNotifierProviderElement<TableController, TableState>
-    with TableControllerRef {
-  _TableControllerProviderElement(super.provider);
+class _PatientSpeciesTableControllerProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<
+        PatientSpeciesTableController,
+        List<PatientSpecies>> with PatientSpeciesTableControllerRef {
+  _PatientSpeciesTableControllerProviderElement(super.provider);
 
   @override
-  String get tableKey => (origin as TableControllerProvider).tableKey;
+  String get tableKey =>
+      (origin as PatientSpeciesTableControllerProvider).tableKey;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
