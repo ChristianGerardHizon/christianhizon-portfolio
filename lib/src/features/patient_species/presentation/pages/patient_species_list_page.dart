@@ -12,10 +12,6 @@ import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart'
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
-import 'package:gym_system/src/features/patient_breeds/data/patient_breed_repository.dart';
-import 'package:gym_system/src/features/patient_breeds/domain/patient_breed.dart';
-import 'package:gym_system/src/features/patient_breeds/presentation/controllers/patient_breed_table_controller.dart';
-import 'package:gym_system/src/features/patient_breeds/presentation/widgets/patient_breed_card.dart';
 import 'package:gym_system/src/features/patient_species/data/patient_species_repository.dart';
 import 'package:gym_system/src/features/patient_species/domain/patient_species.dart';
 import 'package:gym_system/src/features/patient_species/presentation/controllers/patient_species_table_controller.dart';
@@ -67,7 +63,7 @@ class PatientSpeciesListPage extends HookConsumerWidget {
     ///
     /// onRefresh
     ///
-    onRefresh() {
+    refresh() {
       ref.invalidate(patientSpeciesTableControllerProvider);
       ref.invalidate(provider);
       notifier.clearSelection();
@@ -98,9 +94,10 @@ class PatientSpeciesListPage extends HookConsumerWidget {
     ///
     /// OnCreate
     ///
-    onCreate() {
+    onCreate() async {
       /// redirect
-      // PatientSpeciesFormPageRoute(parentId: patient.id).push(context);
+      final result = await PatientSpeciesFormPageRoute().push(context);
+      if (result != null) refresh();
     }
 
     return Scaffold(
@@ -108,9 +105,9 @@ class PatientSpeciesListPage extends HookConsumerWidget {
           ? AppBar(
               leading: SizedBox(),
               centerTitle: false,
-              title: Text('PatientSpeciess'),
+              title: Text('Patient Species'),
               actions: [
-                RefreshButton(onPressed: onRefresh),
+                RefreshButton(onPressed: refresh),
               ],
             )
           : null,

@@ -24,14 +24,8 @@ class PatientSpeciesCard extends StatelessWidget {
       onTap: onTap,
       selected: selected,
       child: ListTile(
-          leading: Icon(Icons.abc),
-          title: Text(patientSpecies.id),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(patientSpecies.id),
-            ],
-          )),
+        title: Text(patientSpecies.name),
+      ),
     );
   }
 }

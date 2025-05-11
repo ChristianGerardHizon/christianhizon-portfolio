@@ -73,7 +73,6 @@ class PatientSpeciesPage extends HookConsumerWidget {
                           color: Theme.of(context).appBarTheme.backgroundColor,
                         ),
                         child: TabBar(
-                          isScrollable: true,
                           tabs: [
                             Tab(
                               icon: Icon(MIcons.accountOutline),

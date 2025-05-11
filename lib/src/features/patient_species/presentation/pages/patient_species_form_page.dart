@@ -47,14 +47,14 @@ class PatientSpeciesFormPage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          context.pop();
+          context.pop(r);
         },
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patient PrescriptionItem Form Page'),
+        title: Text('Patient Species Form'),
       ),
       body: provider.when(
           loading: () => Center(child: CircularProgressIndicator()),
@@ -79,12 +79,14 @@ class PatientSpeciesFormPage extends HookConsumerWidget {
                   name: PatientSpeciesField.name,
                   initialValue: patientSpecies?.name,
                   decoration: InputDecoration(
-                    label: Text('Notes'),
+                    label: Text('Name'),
                     border: OutlineInputBorder(),
                   ),
                   minLines: 1,
                   maxLines: 10,
-                  validator: FormBuilderValidators.compose([]),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                  ]),
                 ),
               ],
               onSubmit: (result) => onSave(patientSpecies, result),

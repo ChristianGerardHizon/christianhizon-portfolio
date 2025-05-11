@@ -14,7 +14,7 @@ class TableController extends _$TableController {
       hasNext: true,
       isLoading: true,
       page: 1,
-      pageSize: 5,
+      pageSize: 20,
       totalItems: 0,
       totalPages: 1,
       sort: null,

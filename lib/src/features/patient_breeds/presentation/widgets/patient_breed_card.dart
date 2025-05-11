@@ -24,14 +24,8 @@ class PatientBreedCard extends StatelessWidget {
       onTap: onTap,
       selected: selected,
       child: ListTile(
-          leading: Icon(Icons.abc),
-          title: Text(patientBreed.id),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(patientBreed.id),
-            ],
-          )),
+        title: Text(patientBreed.name),
+      ),
     );
   }
 }

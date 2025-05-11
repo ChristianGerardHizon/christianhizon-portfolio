@@ -10,6 +10,7 @@ import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dar
 import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
+import 'package:gym_system/src/core/widgets/popover_widget.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/features/patient_breeds/data/patient_breed_repository.dart';
@@ -52,12 +53,12 @@ class PatientBreedsPage extends HookConsumerWidget {
     ///
     /// onEdit
     ///
-    // onEdit(PatientBreed patientBreed) {
-    //   PatientBreedFormPageRoute(
-    //     parentId: patientBreed.patient,
-    //     id: patientBreed.id,
-    //   ).push(context);
-    // }
+    onEdit(PatientBreed patientBreed) {
+      PatientBreedFormPageRoute(
+        parentId: species.id,
+        id: patientBreed.id,
+      ).push(context);
+    }
 
     onShowActions(PatientBreed patientBreed) {
       // PatientBreedFormPageRoute(
@@ -161,15 +162,28 @@ class PatientBreedsPage extends HookConsumerWidget {
             ),
             TableColumn(
               header: 'Actions',
-              width: 75,
+              width: 159,
               alignment: Alignment.center,
               builder: (context, data, row, column) {
                 return Align(
                   alignment: Alignment.center,
-                  child: IconButton(
-                    tooltip: 'Show more actions',
-                    onPressed: () => onShowActions(data),
+                  child: PopoverWidget.icon(
                     icon: Icon(MIcons.dotsHorizontalCircleOutline),
+                    bottomSheetHeader: const Text('Action'),
+                    items: [
+                      PopoverMenuItemData(
+                        name: 'Edit',
+                        onTap: () {
+                          onEdit(data);
+                        },
+                      ),
+                      PopoverMenuItemData(
+                        name: 'Delete',
+                        onTap: () {
+                          onDelete([data]);
+                        },
+                      ),
+                    ],
                   ),
                 );
               },
