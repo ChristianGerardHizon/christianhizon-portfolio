@@ -62,6 +62,8 @@ List<RouteBase> get $appRoutes => [
       $patientSpeciesFormPageRoute,
       $patientSpeciesPageRoute,
       $patientBreedFormPageRoute,
+      $patientTreatmentPageRoute,
+      $patientTreamentFormPageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -362,6 +364,18 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/form/product-adjustments',
               factory: $ProductAdjustmentFormPageRouteExtension._fromState,
+            ),
+          ],
+        ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/patientTreaments',
+              factory: $PatientTreatmentPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/form/patientTreaments',
+              factory: $PatientTreamentFormPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -1338,6 +1352,48 @@ extension $ProductAdjustmentFormPageRouteExtension
   void replace(BuildContext context) => context.replace(location);
 }
 
+extension $PatientTreatmentPageRouteExtension on PatientTreatmentPageRoute {
+  static PatientTreatmentPageRoute _fromState(GoRouterState state) =>
+      const PatientTreatmentPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/patientTreaments',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $PatientTreamentFormPageRouteExtension
+    on PatientTreamentFormPageRoute {
+  static PatientTreamentFormPageRoute _fromState(GoRouterState state) =>
+      PatientTreamentFormPageRoute(
+        id: state.uri.queryParameters['id'],
+      );
+
+  String get location => GoRouteData.$location(
+        '/form/patientTreaments',
+        queryParams: {
+          if (id != null) 'id': id,
+        },
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
 T? _$convertMapValue<T>(
   String key,
   Map<String, String> map,
@@ -1712,4 +1768,14 @@ RouteBase get $patientSpeciesPageRoute => GoRouteData.$route(
 RouteBase get $patientBreedFormPageRoute => GoRouteData.$route(
       path: '/form/patientBreeds',
       factory: $PatientBreedFormPageRouteExtension._fromState,
+    );
+
+RouteBase get $patientTreatmentPageRoute => GoRouteData.$route(
+      path: '/patientTreaments',
+      factory: $PatientTreatmentPageRouteExtension._fromState,
+    );
+
+RouteBase get $patientTreamentFormPageRoute => GoRouteData.$route(
+      path: '/form/patientTreaments',
+      factory: $PatientTreamentFormPageRouteExtension._fromState,
     );

@@ -127,6 +127,14 @@ class YourAccountPage extends HookConsumerWidget {
                       ),
 
                       DynamicGroupItem.action(
+                        title: 'Treatments',
+                        leading: Icon(MIcons.dogService),
+                        onTap: () {
+                          PatientTreatmentPageRoute().push(context);
+                        },
+                      ),
+
+                      DynamicGroupItem.action(
                         title: 'Users',
                         leading: Icon(MIcons.accountGroupOutline),
                         onTap: () {

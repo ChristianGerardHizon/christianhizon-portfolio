@@ -26,7 +26,15 @@ class ProductFormPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
-    final provider = ref.watch(productFormControllerProvider(id));
+    final provider = productFormControllerProvider(id);
+    final controller = ref.watch(provider);
+    final isTrackByLot = useState(false);
+
+    ref.listen(provider, (previous, next) {
+      if (next is AsyncData<ProductFormState>) {
+        isTrackByLot.value = next.value.product?.trackByLot ?? false;
+      }
+    });
 
     ///
     /// Submit
@@ -66,7 +74,7 @@ class ProductFormPage extends HookConsumerWidget {
       appBar: AppBar(
         title: Text('Product Form Page'),
       ),
-      body: provider.when(
+      body: controller.when(
           loading: () => Center(child: CircularProgressIndicator()),
           error: (error, stack) => Center(child: Text(error.toString())),
           data: (formState) {
@@ -242,19 +250,33 @@ class ProductFormPage extends HookConsumerWidget {
                       second: DynamicCheckboxField(
                         name: ProductField.trackByLot,
                         initialValue: product?.trackByLot,
-                        title: 'Track By Lot',
+                        title: 'Has Stocks',
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           helperText:
-                              'When checked, the product will be tracked by lot',
+                              'Check this if product is composed of multiple items',
                         ),
                         validator: FormBuilderValidators.compose(
                           [
                             // FormBuilderValidators.required(),
                           ],
                         ),
+                        onChange: (value) {
+                          if (value is bool) isTrackByLot.value = value;
+                        },
                       ),
                     ),
+                    if (isTrackByLot.value == false)
+                      DynamicDateField(
+                        name: ProductField.expiration,
+                        initialValue: product?.expiration?.toLocal(),
+                        decoration: const InputDecoration(
+                          label: Text('Expiry Date'),
+                          border: OutlineInputBorder(),
+                        ),
+                        valueTransformer: (value) =>
+                            value.toUtc().toIso8601String(),
+                      ),
                   ],
                 )
               ],

@@ -21,8 +21,12 @@ import 'package:gym_system/src/features/products/presentation/widgets/product_ti
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductAdjustmentFormPage extends HookConsumerWidget {
-  const ProductAdjustmentFormPage(
-      {super.key, this.id, this.productStockId, this.productId});
+  const ProductAdjustmentFormPage({
+    super.key,
+    this.id,
+    this.productStockId,
+    this.productId,
+  });
 
   final String? id;
   final String? productStockId;

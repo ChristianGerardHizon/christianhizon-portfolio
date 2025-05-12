@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
@@ -20,6 +22,11 @@ sealed class Failure with FailureMappable {
       final defaultMessage = 'Server Request has failed';
       final data = error.response;
       returnMessage = data['message'] ?? defaultMessage;
+    }
+
+    if (error is JsonUnsupportedObjectError) {
+      print(error.toString());
+      returnMessage = 'Unsupported Object';
     }
 
     if (error is GenericFailure) {

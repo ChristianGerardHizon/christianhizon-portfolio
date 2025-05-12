@@ -1,4 +1,5 @@
 class TableControllerKeys {
+  static String patientTreatment = 'PATIENT_TREATMENT';
   static String product = 'PRODUCT';
   static String productInventory = 'PRODUCT_INVENTORY';
   static String productStock = 'PRODUCT_STOCK';

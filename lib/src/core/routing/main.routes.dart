@@ -38,6 +38,8 @@ import 'package:gym_system/src/features/patient_species/presentation/pages/patie
 import 'package:gym_system/src/features/patient_treament_records/presentation/pages/patient_treatment_record_form_page.dart';
 import 'package:gym_system/src/features/patient_treament_records/presentation/pages/patient_treatment_record_page.dart';
 import 'package:gym_system/src/features/patient_treament_records/presentation/pages/patient_treatment_records_page.dart';
+import 'package:gym_system/src/features/patient_treaments/presentation/pages/patient_treatment_form_page.dart';
+import 'package:gym_system/src/features/patient_treaments/presentation/pages/patient_treatments_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_form_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
@@ -80,6 +82,7 @@ part 'routes/patient_files.routes.dart';
 part 'routes/product_adjustments.routes.dart';
 part 'routes/patient_species.routes.dart';
 part 'routes/patient_breeds.routes.dart';
+part 'routes/patient_treatment.routes.dart';
 
 typedef TypeRouteData = TypedRoute<RouteData>;
 
@@ -150,7 +153,7 @@ class SplashPageRoute extends GoRouteData {
             path: ProductCategoryFormPageRoute.path),
 
         ///
-        /// Patient Treatment
+        /// Patient Treatment Records
         ///
         TypedGoRoute<PatientTreatmentsRecordPageRoute>(
             path: PatientTreatmentsRecordPageRoute.path),
@@ -322,6 +325,13 @@ class SplashPageRoute extends GoRouteData {
     ///
     TypedStatefulShellBranch<ProductAdjustmentsBranchData>(
       routes: ProductAdjustmentsBranchData.routes,
+    ),
+
+    ///
+    /// Patient Treatments
+    ///
+    TypedStatefulShellBranch<PatientTreamentsBranchData>(
+      routes: PatientTreamentsBranchData.routes,
     ),
   ],
 )
