@@ -130,7 +130,7 @@ class PatientRecordPage extends HookConsumerWidget {
             loading: () => Center(child: CircularProgressIndicator()),
             data: (patientRecordState) {
               final patientRecord = patientRecordState.patientRecord;
-              final patient = patientRecordState.patient;
+              // final patient = patientRecordState.patient;
               return FormBuilder(
                 key: formKey,
                 enabled: !isLoading.value,

@@ -51,8 +51,6 @@ class PatientFilesPage extends HookConsumerWidget {
 
     final isLoading = useState(false);
 
-    onShowActions(PatientFile patientFile) {}
-
     ///
     /// onRefresh
     ///

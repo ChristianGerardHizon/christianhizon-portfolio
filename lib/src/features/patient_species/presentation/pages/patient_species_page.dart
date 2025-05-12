@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/features/appointment_schedules/presentation/pages/appointment_schedules_page.dart';
 import 'package:gym_system/src/features/patient_breeds/presentation/pages/patient_breeds_page.dart';
 import 'package:gym_system/src/features/patient_species/presentation/controllers/patient_species_controller.dart';
 import 'package:gym_system/src/features/patient_species/presentation/widgets/patient_species_details_view.dart';

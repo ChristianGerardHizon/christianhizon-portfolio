@@ -49,9 +49,9 @@ class PocketbaseFilter {
   String toString() => build() ?? '';
 
   /// Helper to join two clauses with '&&' if both exist.
-  static String? _combine(String? a, String? b) {
+  static String? _combine(String? a, String? b, {String separator = '&&'}) {
     if (a == null || a.isEmpty) return b;
     if (b == null || b.isEmpty) return a;
-    return '$a && $b';
+    return '$a $separator $b';
   }
 }

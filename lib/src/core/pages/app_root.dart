@@ -13,7 +13,6 @@ import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart'
 import 'package:gym_system/src/core/widgets/logo.dart';
 import 'package:gym_system/src/core/widgets/mobile_bottom_nav.dart';
 import 'package:gym_system/src/core/widgets/mobile_drawer.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
 import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/authentication/presentation/widgets/account_circle_image.dart';
@@ -58,7 +57,7 @@ class AppRoot extends HookConsumerWidget {
     /// in this case the on tap will redirect you to the the other pages
     ///
     List<CustomNavigationBarItem> buildItems(AuthData auth) {
-      final isAdmin = auth is AuthAdmin;
+      // final isAdmin = auth is AuthAdmin;
       // final isUser = auth is AuthUser;
 
       return [

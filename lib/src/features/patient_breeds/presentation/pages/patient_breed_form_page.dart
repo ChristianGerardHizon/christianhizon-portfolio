@@ -12,7 +12,6 @@ import 'package:gym_system/src/features/patient_breeds/data/patient_breed_reposi
 import 'package:gym_system/src/features/patient_breeds/domain/patient_breed.dart';
 import 'package:gym_system/src/features/patient_breeds/presentation/controllers/patient_breed_form_controller.dart';
 import 'package:gym_system/src/features/patient_breeds/presentation/controllers/patient_breed_table_controller.dart';
-import 'package:gym_system/src/features/patient_breeds/presentation/controllers/patient_breeds_controller.dart';
 import 'package:gym_system/src/features/patient_species/domain/patient_species.dart';
 import 'package:gym_system/src/features/patient_species/presentation/widgets/patient_species_tile.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

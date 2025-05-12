@@ -52,8 +52,6 @@ class AppointmentSchedulePage extends HookConsumerWidget {
       ).push(context);
     }
 
-    changeStatus(AppointmentSchedule appointmentSchedule) {}
-
     ///
     /// onDelete
     ///

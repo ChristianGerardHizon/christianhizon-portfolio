@@ -1,5 +1,5 @@
 import 'package:gym_system/src/core/models/page_results.dart';
-import 'package:gym_system/src/core/packages/pocketbase_filter.dart';
+import 'package:gym_system/src/core/models/pocketbase_filter.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
@@ -19,9 +19,6 @@ class ProductInventoryTableController
     final page = ref.watch(tableControllerProvider(tableKey).select(
       (state) => state.page,
     ));
-    final filter = ref.watch(tableControllerProvider(tableKey).select(
-      (state) => state.filter,
-    ));
     final pageSize = ref.watch(
         tableControllerProvider(tableKey).select((state) => state.pageSize));
     final tableFilter = ref.watch(
@@ -35,7 +32,7 @@ class ProductInventoryTableController
 
         // 1. Fetch data
         .list(
-          filter: filterFunc.wildCardFields(filter,
+          filter: filterFunc.wildCardFields(tableFilter,
               fields: [ProductInventoryField.productName]).build(),
           pageNo: page,
           pageSize: pageSize,

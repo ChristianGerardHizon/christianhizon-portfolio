@@ -1,6 +1,4 @@
 import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/patient_breeds/data/patient_breed_repository.dart';
-import 'package:gym_system/src/features/patient_breeds/domain/patient_breed.dart';
 import 'package:gym_system/src/features/patient_species/domain/patient_species.dart';
 import 'package:gym_system/src/features/patient_species/presentation/controllers/patient_species_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

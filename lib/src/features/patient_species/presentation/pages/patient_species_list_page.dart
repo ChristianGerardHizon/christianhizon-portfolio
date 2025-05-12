@@ -48,11 +48,11 @@ class PatientSpeciesListPage extends HookConsumerWidget {
     ///
     /// onEdit
     ///
-    onEdit(PatientSpecies patientSpecies) {
-      PatientSpeciesFormPageRoute(
-        id: patientSpecies.id,
-      ).push(context);
-    }
+    // onEdit(PatientSpecies patientSpecies) {
+    //   PatientSpeciesFormPageRoute(
+    //     id: patientSpecies.id,
+    //   ).push(context);
+    // }
 
     onShowActions(PatientSpecies patientSpecies) {
       // PatientSpeciesFormPageRoute(

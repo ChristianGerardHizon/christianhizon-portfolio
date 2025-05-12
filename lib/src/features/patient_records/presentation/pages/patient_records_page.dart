@@ -111,10 +111,10 @@ class PatientRecordsPage extends HookConsumerWidget {
     ///
     /// OnCreate
     ///
-    onCreate() {
-      /// redirect
-      PatientRecordFormPageRoute(parentId: patient.id).push(context);
-    }
+    // onCreate() {
+    //   /// redirect
+    //   PatientRecordFormPageRoute(parentId: patient.id).push(context);
+    // }
 
     ///
     /// OnCreateWithPatient
