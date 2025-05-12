@@ -48,9 +48,11 @@ sealed class Failure with FailureMappable {
       return error;
     }
 
-    // if(error is PcketbaseException) {
-    //   return PocketbaseFailure(error, stackTrace, 'pocketbase_error');
-    // }
+    if (error is MapperException) {
+      print(error.message.toString());
+
+      return MapperFailure(error, stackTrace, 'mapper_error');
+    }
 
     // Handle known auth-related errors
     if (error is ClientException) {
@@ -132,6 +134,15 @@ class NoAuthFailure extends Failure with NoAuthFailureMappable {
 @MappableClass()
 class GenericFailure extends Failure with GenericFailureMappable {
   const GenericFailure([
+    dynamic message,
+    StackTrace? stackTrace,
+    String? identifier,
+  ]) : super(message, stackTrace, identifier);
+}
+
+@MappableClass()
+class MapperFailure extends Failure with MapperFailureMappable {
+  const MapperFailure([
     dynamic message,
     StackTrace? stackTrace,
     String? identifier,

@@ -20,6 +20,7 @@ class FailureMapper extends ClassMapperBase<Failure> {
       CancelledFailureMapper.ensureInitialized();
       NoAuthFailureMapper.ensureInitialized();
       GenericFailureMapper.ensureInitialized();
+      MapperFailureMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -1005,4 +1006,136 @@ class _GenericFailureCopyWithImpl<$R, $Out>
   GenericFailureCopyWith<$R2, GenericFailure, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
       _GenericFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
+}
+
+class MapperFailureMapper extends SubClassMapperBase<MapperFailure> {
+  MapperFailureMapper._();
+
+  static MapperFailureMapper? _instance;
+  static MapperFailureMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = MapperFailureMapper._());
+      FailureMapper.ensureInitialized().addSubMapper(_instance!);
+    }
+    return _instance!;
+  }
+
+  @override
+  final String id = 'MapperFailure';
+
+  static dynamic _$message(MapperFailure v) => v.message;
+  static const Field<MapperFailure, dynamic> _f$message =
+      Field('message', _$message, opt: true);
+  static StackTrace? _$stackTrace(MapperFailure v) => v.stackTrace;
+  static const Field<MapperFailure, StackTrace> _f$stackTrace =
+      Field('stackTrace', _$stackTrace, opt: true);
+  static String? _$identifier(MapperFailure v) => v.identifier;
+  static const Field<MapperFailure, String> _f$identifier =
+      Field('identifier', _$identifier, opt: true);
+
+  @override
+  final MappableFields<MapperFailure> fields = const {
+    #message: _f$message,
+    #stackTrace: _f$stackTrace,
+    #identifier: _f$identifier,
+  };
+
+  @override
+  final String discriminatorKey = 'type';
+  @override
+  final dynamic discriminatorValue = 'MapperFailure';
+  @override
+  late final ClassMapperBase superMapper = FailureMapper.ensureInitialized();
+
+  static MapperFailure _instantiate(DecodingData data) {
+    return MapperFailure(
+        data.dec(_f$message), data.dec(_f$stackTrace), data.dec(_f$identifier));
+  }
+
+  @override
+  final Function instantiate = _instantiate;
+
+  static MapperFailure fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<MapperFailure>(map);
+  }
+
+  static MapperFailure fromJson(String json) {
+    return ensureInitialized().decodeJson<MapperFailure>(json);
+  }
+}
+
+mixin MapperFailureMappable {
+  String toJson() {
+    return MapperFailureMapper.ensureInitialized()
+        .encodeJson<MapperFailure>(this as MapperFailure);
+  }
+
+  Map<String, dynamic> toMap() {
+    return MapperFailureMapper.ensureInitialized()
+        .encodeMap<MapperFailure>(this as MapperFailure);
+  }
+
+  MapperFailureCopyWith<MapperFailure, MapperFailure, MapperFailure>
+      get copyWith => _MapperFailureCopyWithImpl<MapperFailure, MapperFailure>(
+          this as MapperFailure, $identity, $identity);
+  @override
+  String toString() {
+    return MapperFailureMapper.ensureInitialized()
+        .stringifyValue(this as MapperFailure);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return MapperFailureMapper.ensureInitialized()
+        .equalsValue(this as MapperFailure, other);
+  }
+
+  @override
+  int get hashCode {
+    return MapperFailureMapper.ensureInitialized()
+        .hashValue(this as MapperFailure);
+  }
+}
+
+extension MapperFailureValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, MapperFailure, $Out> {
+  MapperFailureCopyWith<$R, MapperFailure, $Out> get $asMapperFailure =>
+      $base.as((v, t, t2) => _MapperFailureCopyWithImpl<$R, $Out>(v, t, t2));
+}
+
+abstract class MapperFailureCopyWith<$R, $In extends MapperFailure, $Out>
+    implements FailureCopyWith<$R, $In, $Out> {
+  @override
+  $R call({dynamic message, StackTrace? stackTrace, String? identifier});
+  MapperFailureCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+}
+
+class _MapperFailureCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, MapperFailure, $Out>
+    implements MapperFailureCopyWith<$R, MapperFailure, $Out> {
+  _MapperFailureCopyWithImpl(super.value, super.then, super.then2);
+
+  @override
+  late final ClassMapperBase<MapperFailure> $mapper =
+      MapperFailureMapper.ensureInitialized();
+  @override
+  $R call(
+          {Object? message = $none,
+          Object? stackTrace = $none,
+          Object? identifier = $none}) =>
+      $apply(FieldCopyWithData({
+        if (message != $none) #message: message,
+        if (stackTrace != $none) #stackTrace: stackTrace,
+        if (identifier != $none) #identifier: identifier
+      }));
+  @override
+  MapperFailure $make(CopyWithData data) => MapperFailure(
+      data.get(#message, or: $value.message),
+      data.get(#stackTrace, or: $value.stackTrace),
+      data.get(#identifier, or: $value.identifier));
+
+  @override
+  MapperFailureCopyWith<$R2, MapperFailure, $Out2> $chain<$R2, $Out2>(
+          Then<$Out2, $R2> t) =>
+      _MapperFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
