@@ -1,31 +1,31 @@
 import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/product_stock_adjustment/domain/product_stock_adjustment.dart';
-import 'package:gym_system/src/features/product_stock_adjustment/presentation/controllers/product_stock_adjustment_controller.dart';
+import 'package:gym_system/src/features/product_adjustments/domain/product_adjustment.dart';
+import 'package:gym_system/src/features/product_adjustments/presentation/controllers/product_adjustment_controller.dart';
 import 'package:gym_system/src/features/product_stocks/domain/product_stock.dart';
 import 'package:gym_system/src/features/product_stocks/presentation/controllers/product_stock_controller.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'product_stock_adjustment_form_controller.g.dart';
+part 'product_adjustment_form_controller.g.dart';
 
-class ProductStockAdjustmentFormState {
-  final ProductStockAdjustment? productStockAdjustment;
+class ProductAdjustmentFormState {
+  final ProductAdjustment? productAdjustment;
   final ProductStock? productStock;
   final Product? product;
 
-  ProductStockAdjustmentFormState({
-    this.productStockAdjustment,
+  ProductAdjustmentFormState({
+    this.productAdjustment,
     this.productStock,
     this.product,
   });
 }
 
 @riverpod
-class ProductStockAdjustmentFormController
-    extends _$ProductStockAdjustmentFormController {
+class ProductAdjustmentFormController
+    extends _$ProductAdjustmentFormController {
   @override
-  Future<ProductStockAdjustmentFormState> build({
+  Future<ProductAdjustmentFormState> build({
     String? id,
     String? productId,
     String? productStockId,
@@ -41,17 +41,17 @@ class ProductStockAdjustmentFormController
           : null;
 
       if (id == null) {
-        return ProductStockAdjustmentFormState(
-          productStockAdjustment: null,
+        return ProductAdjustmentFormState(
+          productAdjustment: null,
           productStock: productStock,
           product: productState?.product,
         );
       }
 
-      final productStockAdjustment =
-          await ref.watch(productStockAdjustmentControllerProvider(id).future);
-      return ProductStockAdjustmentFormState(
-        productStockAdjustment: productStockAdjustment,
+      final productAdjustment =
+          await ref.watch(productAdjustmentControllerProvider(id).future);
+      return ProductAdjustmentFormState(
+        productAdjustment: productAdjustment,
         productStock: productStock,
         product: productState?.product,
       );

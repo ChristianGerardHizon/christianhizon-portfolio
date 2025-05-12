@@ -7,7 +7,7 @@ part of 'product_form_controller.dart';
 // **************************************************************************
 
 String _$productFormControllerHash() =>
-    r'da70fd2ff09e234029185930cf9e3ec93b7278ca';
+    r'ba3159b260f68f7d9b351dd7c4a1f5de3d2cd647';
 
 /// Copied from Dart SDK
 class _SystemHash {

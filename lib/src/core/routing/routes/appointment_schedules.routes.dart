@@ -2,6 +2,15 @@ part of '../main.routes.dart';
 
 class AppointmentSchedulesData extends StatefulShellBranchData {
   const AppointmentSchedulesData();
+
+  static const routes = <TypeRouteData>[
+    TypedGoRoute<AppointmentSchedulesPageRoute>(
+        path: AppointmentSchedulesPageRoute.path),
+    TypedGoRoute<AppointmentSchedulePageRoute>(
+        path: AppointmentSchedulePageRoute.path),
+    TypedGoRoute<AppointmentScheduleFormPageRoute>(
+        path: AppointmentScheduleFormPageRoute.path),
+  ];
 }
 
 @TypedGoRoute<PatientAppointmentSchedulesPageRoute>(

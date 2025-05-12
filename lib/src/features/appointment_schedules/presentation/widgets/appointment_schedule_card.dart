@@ -44,7 +44,7 @@ class AppointmentScheduleCard extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             trailing: PopoverWidget.icon(
-              icon: Icon(MIcons.dotsHorizontalCircleOutline),
+              icon: Icon(MIcons.dotsHorizontal),
               bottomSheetHeader: const Text('Action'),
               items: [
                 PopoverMenuItemData(

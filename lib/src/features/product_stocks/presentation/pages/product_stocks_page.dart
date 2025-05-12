@@ -77,6 +77,13 @@ class ProductStocksPage extends HookConsumerWidget {
       ProductStockFormPageRoute(productId: product.id).push(context);
     }
 
+    ///
+    /// Stock Adjust
+    ///
+    onStockAdjust(ProductStock stock) {
+      ProductAdjustmentFormPageRoute(productStockId: stock.id).push(context);
+    }
+
     return Scaffold(
       appBar: showAppBar
           ? AppBar(
@@ -159,7 +166,7 @@ class ProductStocksPage extends HookConsumerWidget {
               return Align(
                 alignment: Alignment.centerLeft,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () => onStockAdjust(productStock),
                   child: Text('Adjust Stock'),
                 ),
               );

@@ -121,7 +121,7 @@ class YourAccountPage extends HookConsumerWidget {
                       ),
 
                       DynamicGroupItem.action(
-                        title: 'Patient Species',
+                        title: 'Species and Breeds',
                         leading: Icon(MIcons.dogService),
                         onTap: () {
                           PatientSpeciesListPageRoute().push(context);

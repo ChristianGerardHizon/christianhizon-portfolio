@@ -28,7 +28,6 @@ import 'package:gym_system/src/features/change_logs/presentation/pages/change_lo
 import 'package:gym_system/src/features/change_logs/presentation/pages/change_logs_page.dart';
 import 'package:gym_system/src/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:gym_system/src/features/patient_breeds/presentation/pages/patient_breed_form_page.dart';
-import 'package:gym_system/src/features/patient_breeds/presentation/pages/patient_breeds_page.dart';
 import 'package:gym_system/src/features/patient_files/presentation/presentation/pages/patient_file_form_page.dart';
 import 'package:gym_system/src/features/patient_prescription_items/presentation/pages/patient_prescription_item_form_page.dart';
 import 'package:gym_system/src/features/patient_records/presentation/pages/patient_record_form_page.dart';
@@ -45,7 +44,7 @@ import 'package:gym_system/src/features/patients/presentation/pages/patients_pag
 import 'package:gym_system/src/features/product_categories/presentation/pages/product_categories_page.dart';
 import 'package:gym_system/src/features/product_categories/presentation/pages/product_category_form_page.dart';
 import 'package:gym_system/src/features/product_categories/presentation/pages/product_category_page.dart';
-import 'package:gym_system/src/features/product_stock_adjustment/presentation/pages/product_stock_adjustment_form_page.dart';
+import 'package:gym_system/src/features/product_adjustments/presentation/pages/product_adjustment_form_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/products_page.dart';
 import 'package:gym_system/src/features/products/presentation/pages/product_form_page.dart';
@@ -78,7 +77,7 @@ part 'routes/change_logs.routes.dart';
 part 'routes/product_category.routes.dart';
 part 'routes/patient_prescription_item.routes.dart';
 part 'routes/patient_files.routes.dart';
-part 'routes/product_stock_adjustments.routes.dart';
+part 'routes/product_adjustments.routes.dart';
 part 'routes/patient_species.routes.dart';
 part 'routes/patient_breeds.routes.dart';
 
@@ -301,14 +300,7 @@ class SplashPageRoute extends GoRouteData {
     /// Appointments
     ///
     TypedStatefulShellBranch<AppointmentSchedulesData>(
-      routes: <TypeRouteData>[
-        TypedGoRoute<AppointmentSchedulesPageRoute>(
-            path: AppointmentSchedulesPageRoute.path),
-        TypedGoRoute<AppointmentSchedulePageRoute>(
-            path: AppointmentSchedulePageRoute.path),
-        TypedGoRoute<AppointmentScheduleFormPageRoute>(
-            path: AppointmentScheduleFormPageRoute.path),
-      ],
+      routes: AppointmentSchedulesData.routes,
     ),
 
     ///
@@ -323,6 +315,13 @@ class SplashPageRoute extends GoRouteData {
     ///
     TypedStatefulShellBranch<PatientBreedsBranchData>(
       routes: PatientBreedsBranchData.routes,
+    ),
+
+    ///
+    /// Stock Adjustments
+    ///
+    TypedStatefulShellBranch<ProductAdjustmentsBranchData>(
+      routes: ProductAdjustmentsBranchData.routes,
     ),
   ],
 )

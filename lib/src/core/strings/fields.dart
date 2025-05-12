@@ -158,6 +158,14 @@ class ProductField {
   static const String trackByLot = 'trackByLot';
 }
 
+class ProductInventoryField {
+  static const String productName = 'productName';
+  static const String totalQuantity = 'totalQuantity';
+  static const String totalExpired = 'totalExpired';
+  static const String stockThreshold = 'stockThreshold';
+  static const String status = 'status';
+}
+
 class BranchField {
   static const String id = PbField.id;
   static const String created = PbField.created;
@@ -190,13 +198,14 @@ class ProductStockField {
   static const String quantity = 'quantity';
 }
 
-class ProductStockAdjustmentField {
+class ProductAdjustmentField {
   static const String id = PbField.id;
   static const String created = PbField.created;
   static const String updated = PbField.updated;
   static const String isDeleted = PbField.isDeleted;
 
   static const String reason = 'reason';
+  static const String type = 'type';
   static const String oldValue = 'oldValue';
   static const String newValue = 'newValue';
   static const String product = 'product';

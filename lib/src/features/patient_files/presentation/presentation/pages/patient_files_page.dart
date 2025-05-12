@@ -139,7 +139,6 @@ class PatientFilesPage extends HookConsumerWidget {
     return Scaffold(
       appBar: showAppBar
           ? AppBar(
-              leading: SizedBox(),
               centerTitle: false,
               title: Text('PatientFiles'),
               actions: [
@@ -203,7 +202,7 @@ class PatientFilesPage extends HookConsumerWidget {
                 return Align(
                   alignment: Alignment.center,
                   child: PopoverWidget.icon(
-                    icon: Icon(MIcons.dotsHorizontalCircleOutline),
+                    icon: Icon(MIcons.dotsHorizontal),
                     bottomSheetHeader: const Text('Action'),
                     items: [
                       PopoverMenuItemData(

@@ -19,6 +19,9 @@ class ProductInventoryTableController
     final page = ref.watch(tableControllerProvider(tableKey).select(
       (state) => state.page,
     ));
+    final filter = ref.watch(tableControllerProvider(tableKey).select(
+      (state) => state.filter,
+    ));
     final pageSize = ref.watch(
         tableControllerProvider(tableKey).select((state) => state.pageSize));
     final tableFilter = ref.watch(
@@ -32,7 +35,8 @@ class ProductInventoryTableController
 
         // 1. Fetch data
         .list(
-          filter: filterFunc.searchName(tableFilter).build(),
+          filter: filterFunc.wildCardFields(filter,
+              fields: [ProductInventoryField.productName]).build(),
           pageNo: page,
           pageSize: pageSize,
           sort: '-updated',

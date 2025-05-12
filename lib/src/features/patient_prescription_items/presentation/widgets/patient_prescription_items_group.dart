@@ -222,7 +222,7 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
           ],
         ),
         trailing: PopupMenuButton<_MenuOption>(
-          icon: Icon(MIcons.dotsHorizontalCircleOutline),
+          icon: Icon(MIcons.dotsHorizontal),
           itemBuilder: (context) => <PopupMenuEntry<_MenuOption>>[
             PopupMenuItem<_MenuOption>(
               value: _MenuOption.edit,

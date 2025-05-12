@@ -5,10 +5,8 @@ import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/utils/pb_utils.dart';
-import 'package:gym_system/src/features/branches/data/branch_repository.dart';
 import 'package:gym_system/src/features/branches/domain/branch.dart';
 import 'package:gym_system/src/features/branches/presentation/controllers/branches_controller.dart';
-import 'package:gym_system/src/features/product_categories/data/product_category_repository.dart';
 import 'package:gym_system/src/features/product_categories/presentation/controllers/product_categories_controller.dart';
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
@@ -66,24 +64,6 @@ class ProductFormController extends _$ProductFormController {
     }).run();
 
     return result.fold(Future.error, Future.value);
-  }
-
-  TaskResult<List<Branch>> _getBranches() {
-    return TaskResult.tryCatch(() async {
-      final repo = ref.read(branchRepositoryProvider);
-      final filter = '${BranchField.isDeleted} = false';
-      final result = await repo.listAll(filter: filter).run();
-      return result.fold(Future.error, Future.value);
-    }, Failure.handle);
-  }
-
-  TaskResult<List<ProductCategory>> _getProductCategories() {
-    return TaskResult.tryCatch(() async {
-      final repo = ref.read(productCategoryRepositoryProvider);
-      final filter = '${CategoryField.isDeleted} = false';
-      final result = await repo.listAll(filter: filter).run();
-      return result.fold(Future.error, Future.value);
-    }, Failure.handle);
   }
 }
 

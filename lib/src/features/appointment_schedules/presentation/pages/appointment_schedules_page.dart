@@ -251,7 +251,7 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
               return Align(
                 alignment: Alignment.center,
                 child: PopoverWidget.icon(
-                  icon: Icon(MIcons.dotsHorizontalCircleOutline),
+                  icon: Icon(MIcons.dotsHorizontal),
                   bottomSheetHeader: const Text('Action'),
                   items: [
                     PopoverMenuItemData(

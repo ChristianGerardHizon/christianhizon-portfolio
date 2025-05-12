@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'product_stock_adjustment_form_controller.dart';
+part of 'product_adjustment_form_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$productStockAdjustmentFormControllerHash() =>
-    r'345a1a35e2fb529ad5f842f9205ec756fa7f89e5';
+String _$productAdjustmentFormControllerHash() =>
+    r'2fda13c1a21b62a5c418b11d06dd2ebe5bef69f1';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,37 +30,37 @@ class _SystemHash {
   }
 }
 
-abstract class _$ProductStockAdjustmentFormController
-    extends BuildlessAutoDisposeAsyncNotifier<ProductStockAdjustmentFormState> {
+abstract class _$ProductAdjustmentFormController
+    extends BuildlessAutoDisposeAsyncNotifier<ProductAdjustmentFormState> {
   late final String? id;
   late final String? productId;
   late final String? productStockId;
 
-  FutureOr<ProductStockAdjustmentFormState> build({
+  FutureOr<ProductAdjustmentFormState> build({
     String? id,
     String? productId,
     String? productStockId,
   });
 }
 
-/// See also [ProductStockAdjustmentFormController].
-@ProviderFor(ProductStockAdjustmentFormController)
-const productStockAdjustmentFormControllerProvider =
-    ProductStockAdjustmentFormControllerFamily();
+/// See also [ProductAdjustmentFormController].
+@ProviderFor(ProductAdjustmentFormController)
+const productAdjustmentFormControllerProvider =
+    ProductAdjustmentFormControllerFamily();
 
-/// See also [ProductStockAdjustmentFormController].
-class ProductStockAdjustmentFormControllerFamily
-    extends Family<AsyncValue<ProductStockAdjustmentFormState>> {
-  /// See also [ProductStockAdjustmentFormController].
-  const ProductStockAdjustmentFormControllerFamily();
+/// See also [ProductAdjustmentFormController].
+class ProductAdjustmentFormControllerFamily
+    extends Family<AsyncValue<ProductAdjustmentFormState>> {
+  /// See also [ProductAdjustmentFormController].
+  const ProductAdjustmentFormControllerFamily();
 
-  /// See also [ProductStockAdjustmentFormController].
-  ProductStockAdjustmentFormControllerProvider call({
+  /// See also [ProductAdjustmentFormController].
+  ProductAdjustmentFormControllerProvider call({
     String? id,
     String? productId,
     String? productStockId,
   }) {
-    return ProductStockAdjustmentFormControllerProvider(
+    return ProductAdjustmentFormControllerProvider(
       id: id,
       productId: productId,
       productStockId: productStockId,
@@ -68,8 +68,8 @@ class ProductStockAdjustmentFormControllerFamily
   }
 
   @override
-  ProductStockAdjustmentFormControllerProvider getProviderOverride(
-    covariant ProductStockAdjustmentFormControllerProvider provider,
+  ProductAdjustmentFormControllerProvider getProviderOverride(
+    covariant ProductAdjustmentFormControllerProvider provider,
   ) {
     return call(
       id: provider.id,
@@ -90,39 +90,38 @@ class ProductStockAdjustmentFormControllerFamily
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'productStockAdjustmentFormControllerProvider';
+  String? get name => r'productAdjustmentFormControllerProvider';
 }
 
-/// See also [ProductStockAdjustmentFormController].
-class ProductStockAdjustmentFormControllerProvider
+/// See also [ProductAdjustmentFormController].
+class ProductAdjustmentFormControllerProvider
     extends AutoDisposeAsyncNotifierProviderImpl<
-        ProductStockAdjustmentFormController, ProductStockAdjustmentFormState> {
-  /// See also [ProductStockAdjustmentFormController].
-  ProductStockAdjustmentFormControllerProvider({
+        ProductAdjustmentFormController, ProductAdjustmentFormState> {
+  /// See also [ProductAdjustmentFormController].
+  ProductAdjustmentFormControllerProvider({
     String? id,
     String? productId,
     String? productStockId,
   }) : this._internal(
-          () => ProductStockAdjustmentFormController()
+          () => ProductAdjustmentFormController()
             ..id = id
             ..productId = productId
             ..productStockId = productStockId,
-          from: productStockAdjustmentFormControllerProvider,
-          name: r'productStockAdjustmentFormControllerProvider',
+          from: productAdjustmentFormControllerProvider,
+          name: r'productAdjustmentFormControllerProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$productStockAdjustmentFormControllerHash,
-          dependencies:
-              ProductStockAdjustmentFormControllerFamily._dependencies,
-          allTransitiveDependencies: ProductStockAdjustmentFormControllerFamily
-              ._allTransitiveDependencies,
+                  : _$productAdjustmentFormControllerHash,
+          dependencies: ProductAdjustmentFormControllerFamily._dependencies,
+          allTransitiveDependencies:
+              ProductAdjustmentFormControllerFamily._allTransitiveDependencies,
           id: id,
           productId: productId,
           productStockId: productStockId,
         );
 
-  ProductStockAdjustmentFormControllerProvider._internal(
+  ProductAdjustmentFormControllerProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -139,8 +138,8 @@ class ProductStockAdjustmentFormControllerProvider
   final String? productStockId;
 
   @override
-  FutureOr<ProductStockAdjustmentFormState> runNotifierBuild(
-    covariant ProductStockAdjustmentFormController notifier,
+  FutureOr<ProductAdjustmentFormState> runNotifierBuild(
+    covariant ProductAdjustmentFormController notifier,
   ) {
     return notifier.build(
       id: id,
@@ -150,11 +149,10 @@ class ProductStockAdjustmentFormControllerProvider
   }
 
   @override
-  Override overrideWith(
-      ProductStockAdjustmentFormController Function() create) {
+  Override overrideWith(ProductAdjustmentFormController Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ProductStockAdjustmentFormControllerProvider._internal(
+      override: ProductAdjustmentFormControllerProvider._internal(
         () => create()
           ..id = id
           ..productId = productId
@@ -172,14 +170,14 @@ class ProductStockAdjustmentFormControllerProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<ProductStockAdjustmentFormController,
-      ProductStockAdjustmentFormState> createElement() {
-    return _ProductStockAdjustmentFormControllerProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<ProductAdjustmentFormController,
+      ProductAdjustmentFormState> createElement() {
+    return _ProductAdjustmentFormControllerProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ProductStockAdjustmentFormControllerProvider &&
+    return other is ProductAdjustmentFormControllerProvider &&
         other.id == id &&
         other.productId == productId &&
         other.productStockId == productStockId;
@@ -198,8 +196,8 @@ class ProductStockAdjustmentFormControllerProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ProductStockAdjustmentFormControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<ProductStockAdjustmentFormState> {
+mixin ProductAdjustmentFormControllerRef
+    on AutoDisposeAsyncNotifierProviderRef<ProductAdjustmentFormState> {
   /// The parameter `id` of this provider.
   String? get id;
 
@@ -210,20 +208,20 @@ mixin ProductStockAdjustmentFormControllerRef
   String? get productStockId;
 }
 
-class _ProductStockAdjustmentFormControllerProviderElement
+class _ProductAdjustmentFormControllerProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<
-        ProductStockAdjustmentFormController, ProductStockAdjustmentFormState>
-    with ProductStockAdjustmentFormControllerRef {
-  _ProductStockAdjustmentFormControllerProviderElement(super.provider);
+        ProductAdjustmentFormController,
+        ProductAdjustmentFormState> with ProductAdjustmentFormControllerRef {
+  _ProductAdjustmentFormControllerProviderElement(super.provider);
 
   @override
-  String? get id => (origin as ProductStockAdjustmentFormControllerProvider).id;
+  String? get id => (origin as ProductAdjustmentFormControllerProvider).id;
   @override
   String? get productId =>
-      (origin as ProductStockAdjustmentFormControllerProvider).productId;
+      (origin as ProductAdjustmentFormControllerProvider).productId;
   @override
   String? get productStockId =>
-      (origin as ProductStockAdjustmentFormControllerProvider).productStockId;
+      (origin as ProductAdjustmentFormControllerProvider).productStockId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

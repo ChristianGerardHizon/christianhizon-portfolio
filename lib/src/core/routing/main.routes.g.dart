@@ -57,7 +57,7 @@ List<RouteBase> get $appRoutes => [
       $productCategoryFormPageRoute,
       $patientPrescriptionItemFormPageRoute,
       $patientFileFormPageRoute,
-      $productStockAdjustmentsFormPageRoute,
+      $productAdjustmentFormPageRoute,
       $patientSpeciesListPageRoute,
       $patientSpeciesFormPageRoute,
       $patientSpeciesPageRoute,
@@ -354,6 +354,14 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/form/patientBreeds',
               factory: $PatientBreedFormPageRouteExtension._fromState,
+            ),
+          ],
+        ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/form/product-adjustments',
+              factory: $ProductAdjustmentFormPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -1302,6 +1310,34 @@ extension $PatientBreedFormPageRouteExtension on PatientBreedFormPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
+extension $ProductAdjustmentFormPageRouteExtension
+    on ProductAdjustmentFormPageRoute {
+  static ProductAdjustmentFormPageRoute _fromState(GoRouterState state) =>
+      ProductAdjustmentFormPageRoute(
+        id: state.uri.queryParameters['id'],
+        productId: state.uri.queryParameters['product-id'],
+        productStockId: state.uri.queryParameters['product-stock-id'],
+      );
+
+  String get location => GoRouteData.$location(
+        '/form/product-adjustments',
+        queryParams: {
+          if (id != null) 'id': id,
+          if (productId != null) 'product-id': productId,
+          if (productStockId != null) 'product-stock-id': productStockId,
+        },
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
 T? _$convertMapValue<T>(
   String key,
   Map<String, String> map,
@@ -1653,38 +1689,10 @@ RouteBase get $patientFileFormPageRoute => GoRouteData.$route(
       factory: $PatientFileFormPageRouteExtension._fromState,
     );
 
-RouteBase get $productStockAdjustmentsFormPageRoute => GoRouteData.$route(
-      path: '/form/product-stock-adjustments',
-      factory: $ProductStockAdjustmentsFormPageRouteExtension._fromState,
+RouteBase get $productAdjustmentFormPageRoute => GoRouteData.$route(
+      path: '/form/product-adjustments',
+      factory: $ProductAdjustmentFormPageRouteExtension._fromState,
     );
-
-extension $ProductStockAdjustmentsFormPageRouteExtension
-    on ProductStockAdjustmentsFormPageRoute {
-  static ProductStockAdjustmentsFormPageRoute _fromState(GoRouterState state) =>
-      ProductStockAdjustmentsFormPageRoute(
-        id: state.uri.queryParameters['id'],
-        productId: state.uri.queryParameters['product-id'],
-        productStockId: state.uri.queryParameters['product-stock-id'],
-      );
-
-  String get location => GoRouteData.$location(
-        '/form/product-stock-adjustments',
-        queryParams: {
-          if (id != null) 'id': id,
-          if (productId != null) 'product-id': productId,
-          if (productStockId != null) 'product-stock-id': productStockId,
-        },
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
 
 RouteBase get $patientSpeciesListPageRoute => GoRouteData.$route(
       path: '/patientSpecies',

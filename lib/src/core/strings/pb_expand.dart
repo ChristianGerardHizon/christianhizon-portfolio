@@ -50,5 +50,8 @@ class PBExpand {
 
   static Expand productStock = Expand.flat([]);
 
-  static Expand productStockAdjustment = Expand.flat(['productStock']);
+  static Expand productAdjustment = Expand.flat([
+    ...Expand.nested('productStock', productStock.paths).paths,
+    ...Expand.nested('product', product.paths).paths
+  ]);
 }

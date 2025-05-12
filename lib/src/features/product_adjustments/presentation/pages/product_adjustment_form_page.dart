@@ -3,22 +3,25 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/features/product_stock_adjustment/data/product_stock_adjustment_repository.dart';
-import 'package:gym_system/src/features/product_stock_adjustment/domain/product_stock_adjustment.dart';
-import 'package:gym_system/src/features/product_stock_adjustment/presentation/controllers/product_stock_adjustment_controller.dart';
-import 'package:gym_system/src/features/product_stock_adjustment/presentation/controllers/product_stock_adjustment_form_controller.dart';
-import 'package:gym_system/src/features/product_stock_adjustment/presentation/controllers/product_stock_adjustment_table_controller.dart';
+import 'package:gym_system/src/features/product_adjustments/data/product_adjustment_repository.dart';
+import 'package:gym_system/src/features/product_adjustments/domain/product_adjustment.dart';
+import 'package:gym_system/src/features/product_adjustments/presentation/controllers/product_adjustment_controller.dart';
+import 'package:gym_system/src/features/product_adjustments/presentation/controllers/product_adjustment_form_controller.dart';
+import 'package:gym_system/src/features/product_inventories/presentation/controllers/product_inventory_table_controller.dart';
 import 'package:gym_system/src/features/product_stocks/domain/product_stock.dart';
+import 'package:gym_system/src/features/product_stocks/presentation/controllers/product_stock_table_controller.dart';
+import 'package:gym_system/src/features/product_stocks/presentation/widgets/product_stock_tile.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
+import 'package:gym_system/src/features/products/presentation/controllers/product_table_controller.dart';
+import 'package:gym_system/src/features/products/presentation/widgets/product_tile.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ProductStockAdjustmentFormPage extends HookConsumerWidget {
-  const ProductStockAdjustmentFormPage(
+class ProductAdjustmentFormPage extends HookConsumerWidget {
+  const ProductAdjustmentFormPage(
       {super.key, this.id, this.productStockId, this.productId});
 
   final String? id;
@@ -29,7 +32,7 @@ class ProductStockAdjustmentFormPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
-    final provider = ref.watch(productStockAdjustmentFormControllerProvider(
+    final provider = ref.watch(productAdjustmentFormControllerProvider(
       id: id,
       productId: productId,
       productStockId: productStockId,
@@ -39,18 +42,18 @@ class ProductStockAdjustmentFormPage extends HookConsumerWidget {
     /// Submit
     ///
     void onSave(
-      ProductStockAdjustment? productStockAdjustment,
+      ProductAdjustment? productAdjustment,
       DynamicFormResult formResult,
     ) async {
       isLoading.value = true;
 
-      final repository = ref.read(productStockAdjustmentRepositoryProvider);
+      final repository = ref.read(productAdjustmentRepositoryProvider);
       final value = formResult.values;
       final files = formResult.files;
 
-      final task = (productStockAdjustment == null
+      final task = (productAdjustment == null
           ? repository.create(value, files: files)
-          : repository.update(productStockAdjustment, value, files: files));
+          : repository.update(productAdjustment, value, files: files));
 
       final result = await task.run();
 
@@ -60,8 +63,12 @@ class ProductStockAdjustmentFormPage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          ref.invalidate(productStockAdjustmentTableControllerProvider);
-          ref.invalidate(productStockAdjustmentControllerProvider(r.id));
+          ref.invalidate(productAdjustmentControllerProvider(r.id));
+          ref.invalidate(productInventoryTableControllerProvider);
+          if (r.type == ProductAdjustmentType.productStock)
+            ref.invalidate(productStockTableControllerProvider);
+          if (r.type == ProductAdjustmentType.product)
+            ref.invalidate(productTableControllerProvider);
           context.pop();
         },
       );
@@ -69,13 +76,13 @@ class ProductStockAdjustmentFormPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('ProductStockAdjustment Form Page'),
+        title: Text('ProductAdjustment Form Page'),
       ),
       body: provider.when(
           loading: () => Center(child: CircularProgressIndicator()),
           error: (error, stack) => Center(child: Text(error.toString())),
           data: (formState) {
-            final productStockAdjustment = formState.productStockAdjustment;
+            final productAdjustment = formState.productAdjustment;
             final productStock = formState.productStock;
             final product = formState.product;
 
@@ -89,9 +96,29 @@ class ProductStockAdjustmentFormPage extends HookConsumerWidget {
               formKey: formKey,
               isLoading: isLoading.value,
               fields: [
+                ///
+                /// type
+                ///
+                if (product is Product)
+                  DynamicHiddenField(
+                    name: ProductAdjustmentField.type,
+                    initialValue: productAdjustment?.type.name ??
+                        ProductAdjustmentType.product.name,
+                  ),
+
+                if (productStock is ProductStock)
+                  DynamicHiddenField(
+                    name: ProductAdjustmentField.type,
+                    initialValue: productAdjustment?.type.name ??
+                        ProductAdjustmentType.productStock.name,
+                  ),
+
+                ///
+                ///
+                ///
                 if (product is Product)
                   DynamicViewField(
-                    name: ProductStockAdjustmentField.product,
+                    name: ProductAdjustmentField.product,
                     initialValue: product,
                     decoration: InputDecoration(
                       label: Text('Product'),
@@ -99,19 +126,8 @@ class ProductStockAdjustmentFormPage extends HookConsumerWidget {
                     ),
                     builder: (obj) {
                       if (obj is Product) {
-                        return ListTile(
-                          title: Text(obj.name),
-                          subtitle: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Product: ${obj.name.optional()}',
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                        );
+                        return ProductTile(
+                            product: product, showQuantity: true);
                       }
                       return const SizedBox();
                     },
@@ -120,12 +136,9 @@ class ProductStockAdjustmentFormPage extends HookConsumerWidget {
                     },
                   ),
 
-                ///
-                /// Product Stock
-                ///
                 if (productStock is ProductStock)
                   DynamicViewField(
-                    name: ProductStockAdjustmentField.productStock,
+                    name: ProductAdjustmentField.productStock,
                     initialValue: productStock,
                     decoration: InputDecoration(
                       label: Text('Product Stock'),
@@ -133,19 +146,9 @@ class ProductStockAdjustmentFormPage extends HookConsumerWidget {
                     ),
                     builder: (obj) {
                       if (obj is ProductStock) {
-                        return ListTile(
-                          title: Text(obj.lotNo.optional()),
-                          subtitle: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Product Stock: ${obj.lotNo.optional()}',
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                        );
+                        return ProductStockTile(
+                            productStock: productStock,
+                            showQuantityUpdate: true);
                       }
                       return const SizedBox();
                     },
@@ -158,8 +161,8 @@ class ProductStockAdjustmentFormPage extends HookConsumerWidget {
                 /// Reason
                 ///
                 DynamicTextField(
-                  name: ProductStockAdjustmentField.reason,
-                  initialValue: productStockAdjustment?.reason,
+                  name: ProductAdjustmentField.reason,
+                  initialValue: productAdjustment?.reason,
                   minLines: 2,
                   maxLines: 10,
                   decoration: InputDecoration(
@@ -174,18 +177,12 @@ class ProductStockAdjustmentFormPage extends HookConsumerWidget {
                 ///
                 /// oldValue
                 ///
-                DynamicNumberField(
-                  enabled: false,
-                  name: ProductStockAdjustmentField.oldValue,
-                  initialValue: productStockAdjustment?.oldValue ??
+                DynamicHiddenField(
+                  name: ProductAdjustmentField.oldValue,
+                  initialValue: productAdjustment?.oldValue ??
                       product?.quantity ??
                       productStock?.quantity ??
                       0,
-                  decoration: InputDecoration(
-                    label: Text('Current Value'),
-                    helperText: 'the current value',
-                    border: OutlineInputBorder(),
-                  ),
                   validator: FormBuilderValidators.compose(
                     [
                       FormBuilderValidators.required(),
@@ -199,8 +196,8 @@ class ProductStockAdjustmentFormPage extends HookConsumerWidget {
                 /// New Value
                 ///
                 DynamicNumberField(
-                  name: ProductStockAdjustmentField.newValue,
-                  initialValue: productStockAdjustment?.newValue ?? 0,
+                  name: ProductAdjustmentField.newValue,
+                  initialValue: productAdjustment?.newValue ?? 0,
                   decoration: InputDecoration(
                     label: Text('New Value'),
                     border: OutlineInputBorder(),
@@ -214,7 +211,7 @@ class ProductStockAdjustmentFormPage extends HookConsumerWidget {
                   ),
                 )
               ],
-              onSubmit: (result) => onSave(productStockAdjustment, result),
+              onSubmit: (result) => onSave(productAdjustment, result),
             );
           }),
     );

@@ -100,6 +100,9 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   static num _$totalQuantity(ProductInventory v) => v.totalQuantity;
   static const Field<ProductInventory, num> _f$totalQuantity =
       Field('totalQuantity', _$totalQuantity, opt: true, def: 0);
+  static bool _$forSale(ProductInventory v) => v.forSale;
+  static const Field<ProductInventory, bool> _f$forSale =
+      Field('forSale', _$forSale, opt: true, def: false);
   static bool _$isDeleted(ProductInventory v) => v.isDeleted;
   static const Field<ProductInventory, bool> _f$isDeleted =
       Field('isDeleted', _$isDeleted, opt: true, def: false);
@@ -120,6 +123,7 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
     #expand: _f$expand,
     #totalExpired: _f$totalExpired,
     #totalQuantity: _f$totalQuantity,
+    #forSale: _f$forSale,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
@@ -135,6 +139,7 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
         expand: data.dec(_f$expand),
         totalExpired: data.dec(_f$totalExpired),
         totalQuantity: data.dec(_f$totalQuantity),
+        forSale: data.dec(_f$forSale),
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated));
@@ -207,6 +212,7 @@ abstract class ProductInventoryCopyWith<$R, $In extends ProductInventory, $Out>
       ProductInventoryExpand? expand,
       num? totalExpired,
       num? totalQuantity,
+      bool? forSale,
       bool? isDeleted,
       DateTime? created,
       DateTime? updated});
@@ -236,6 +242,7 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
           ProductInventoryExpand? expand,
           num? totalExpired,
           num? totalQuantity,
+          bool? forSale,
           bool? isDeleted,
           Object? created = $none,
           Object? updated = $none}) =>
@@ -248,6 +255,7 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
         if (expand != null) #expand: expand,
         if (totalExpired != null) #totalExpired: totalExpired,
         if (totalQuantity != null) #totalQuantity: totalQuantity,
+        if (forSale != null) #forSale: forSale,
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated
@@ -262,6 +270,7 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
       expand: data.get(#expand, or: $value.expand),
       totalExpired: data.get(#totalExpired, or: $value.totalExpired),
       totalQuantity: data.get(#totalQuantity, or: $value.totalQuantity),
+      forSale: data.get(#forSale, or: $value.forSale),
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated));

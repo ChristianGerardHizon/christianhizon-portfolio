@@ -104,7 +104,6 @@ class PatientTreatmentRecordsPage extends HookConsumerWidget {
     return Scaffold(
       appBar: showAppBar
           ? AppBar(
-              leading: SizedBox(),
               centerTitle: false,
               title: Text('PatientTreatmentRecords'),
               actions: [
@@ -157,29 +156,28 @@ class PatientTreatmentRecordsPage extends HookConsumerWidget {
               );
             },
           ),
-            TableColumn(
+          TableColumn(
             header: 'Actions',
-              width: 159,
-              alignment: Alignment.center,
-              builder: (context, data, row, column) {
-                return Align(
-                  alignment: Alignment.center,
-                  child: PopoverWidget.icon(
-                    icon: Icon(MIcons.dotsHorizontalCircleOutline),
-                    bottomSheetHeader: const Text('Action'),
-                    items: [
-                      
-                      PopoverMenuItemData(
-                        name: 'Delete',
-                        onTap: () {
-                          onDelete([data]);
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+            width: 159,
+            alignment: Alignment.center,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.center,
+                child: PopoverWidget.icon(
+                  icon: Icon(MIcons.dotsHorizontal),
+                  bottomSheetHeader: const Text('Action'),
+                  items: [
+                    PopoverMenuItemData(
+                      name: 'Delete',
+                      onTap: () {
+                        onDelete([data]);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ],
 
         ///

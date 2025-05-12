@@ -145,7 +145,6 @@ class PatientRecordsPage extends HookConsumerWidget {
     return Scaffold(
       appBar: showAppBar
           ? AppBar(
-              leading: SizedBox(),
               centerTitle: false,
               title: Text('PatientRecords'),
               actions: [
@@ -212,7 +211,7 @@ class PatientRecordsPage extends HookConsumerWidget {
                   child: IconButton(
                     tooltip: 'Show more actions',
                     onPressed: () => onShowActions(data),
-                    icon: Icon(MIcons.dotsHorizontalCircleOutline),
+                    icon: Icon(MIcons.dotsHorizontal),
                   ),
                 );
               },

@@ -117,7 +117,6 @@ class PatientBreedsPage extends HookConsumerWidget {
     return Scaffold(
       appBar: showAppBar
           ? AppBar(
-              leading: SizedBox(),
               centerTitle: false,
               title: Text('PatientBreeds'),
               actions: [
@@ -168,7 +167,7 @@ class PatientBreedsPage extends HookConsumerWidget {
                 return Align(
                   alignment: Alignment.center,
                   child: PopoverWidget.icon(
-                    icon: Icon(MIcons.dotsHorizontalCircleOutline),
+                    icon: Icon(MIcons.dotsHorizontal),
                     bottomSheetHeader: const Text('Action'),
                     items: [
                       PopoverMenuItemData(

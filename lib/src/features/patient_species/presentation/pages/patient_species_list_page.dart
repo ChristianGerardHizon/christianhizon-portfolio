@@ -103,7 +103,6 @@ class PatientSpeciesListPage extends HookConsumerWidget {
     return Scaffold(
       appBar: showAppBar
           ? AppBar(
-              leading: SizedBox(),
               centerTitle: false,
               title: Text('Patient Species'),
               actions: [
@@ -156,7 +155,7 @@ class PatientSpeciesListPage extends HookConsumerWidget {
                   child: IconButton(
                     tooltip: 'Show more actions',
                     onPressed: () => onShowActions(data),
-                    icon: Icon(MIcons.dotsHorizontalCircleOutline),
+                    icon: Icon(MIcons.dotsHorizontal),
                   ),
                 );
               },

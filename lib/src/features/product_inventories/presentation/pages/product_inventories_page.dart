@@ -74,6 +74,11 @@ class ProductInventoriesPage extends HookConsumerWidget {
       ProductFormPageRoute().push(context);
     }
 
+    adjustStock(ProductInventory productInventory) {
+      ProductAdjustmentFormPageRoute(productId: productInventory.id)
+          .push(context);
+    }
+
     // addStock(ProductInventory productInventory) {
     //   final product = productInventory.expand.product;
     //   final trackByLot = product.trackByLot;
@@ -144,19 +149,8 @@ class ProductInventoriesPage extends HookConsumerWidget {
               },
             ),
             TableColumn(
-              width: 135,
-              header: 'Threshold Level',
-              alignment: Alignment.center,
-              builder: (context, productInventory, row, column) {
-                return Align(
-                    alignment: Alignment.center,
-                    child: Text(productInventory.expand.product.stockThreshold
-                        .toString()));
-              },
-            ),
-            TableColumn(
               header: 'Status',
-              width: 130,
+              width: 250,
               alignment: Alignment.centerLeft,
               builder: (context, productInventory, row, column) {
                 return Align(
@@ -173,8 +167,9 @@ class ProductInventoriesPage extends HookConsumerWidget {
                 if (inventory.expand.product.trackByLot) return SizedBox();
                 return Align(
                   alignment: Alignment.center,
-                  child:
-                      TextButton(onPressed: () {}, child: Text('Adjust Stock')),
+                  child: TextButton(
+                      onPressed: () => adjustStock(inventory),
+                      child: Text('Adjust Stock')),
                 );
               },
             ),

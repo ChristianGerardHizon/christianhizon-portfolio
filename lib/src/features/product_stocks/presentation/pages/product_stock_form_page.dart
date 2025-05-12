@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
 import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
@@ -15,6 +14,7 @@ import 'package:gym_system/src/features/product_stocks/presentation/controllers/
 import 'package:gym_system/src/features/product_stocks/presentation/controllers/product_stock_table_controller.dart';
 import 'package:gym_system/src/features/products/domain/product.dart';
 import 'package:gym_system/src/features/product_stocks/domain/product_stock.dart';
+import 'package:gym_system/src/features/products/presentation/widgets/product_tile.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductStockFormPage extends HookConsumerWidget {
@@ -29,8 +29,6 @@ class ProductStockFormPage extends HookConsumerWidget {
     final isLoading = useState(false);
     final provider =
         ref.watch(productStockFormControllerProvider(id, productId));
-
-    final theme = Theme.of(context);
 
     ///
     /// Submit
@@ -93,7 +91,8 @@ class ProductStockFormPage extends HookConsumerWidget {
                     name: ProductStockField.product,
                     initialValue: product,
                     decoration: InputDecoration(
-                      border: InputBorder.none,
+                      label: Text('Product'),
+                      border: OutlineInputBorder(),
                     ),
                     validator: FormBuilderValidators.compose(
                       [
@@ -102,26 +101,7 @@ class ProductStockFormPage extends HookConsumerWidget {
                     ),
                     builder: (value) {
                       if (value is! Product) return SizedBox();
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text('Product'),
-                          ),
-                          Card(
-                            margin: EdgeInsets.zero,
-                            child: ListTile(
-                              leading: Icon(MIcons.shoppingOutline),
-                              title: Text(
-                                value.name,
-                                style: theme.textTheme.titleSmall,
-                              ),
-                              subtitle: Text('Creating Stock for this product'),
-                            ),
-                          ),
-                        ],
-                      );
+                      return ProductTile(product: value);
                     },
                     valueTransformer: (value) {
                       if (value is Product) return value.id;
@@ -160,6 +140,7 @@ class ProductStockFormPage extends HookConsumerWidget {
                 /// Quantity
                 ///
                 DynamicNumberField(
+                  enabled: productStock == null,
                   name: ProductStockField.quantity,
                   initialValue: productStock?.quantity,
                   decoration: InputDecoration(
