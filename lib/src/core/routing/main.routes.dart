@@ -43,6 +43,7 @@ import 'package:gym_system/src/features/patient_treaments/presentation/pages/pat
 import 'package:gym_system/src/features/patients/presentation/pages/patient_form_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patient_page.dart';
 import 'package:gym_system/src/features/patients/presentation/pages/patients_page.dart';
+import 'package:gym_system/src/features/product_adjustments/presentation/pages/product_adjustments_page.dart';
 import 'package:gym_system/src/features/product_categories/presentation/pages/product_categories_page.dart';
 import 'package:gym_system/src/features/product_categories/presentation/pages/product_category_form_page.dart';
 import 'package:gym_system/src/features/product_categories/presentation/pages/product_category_page.dart';

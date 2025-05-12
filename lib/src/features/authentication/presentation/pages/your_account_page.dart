@@ -135,6 +135,14 @@ class YourAccountPage extends HookConsumerWidget {
                       ),
 
                       DynamicGroupItem.action(
+                        title: 'Product Categories',
+                        leading: Icon(MIcons.cubeOutline),
+                        onTap: () {
+                          ProductCategoriesPageRoute().push(context);
+                        },
+                      ),
+
+                      DynamicGroupItem.action(
                         title: 'Users',
                         leading: Icon(MIcons.accountGroupOutline),
                         onTap: () {

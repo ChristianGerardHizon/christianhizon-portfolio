@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
+import 'package:gym_system/src/features/product_adjustments/presentation/pages/product_adjustments_page.dart';
 import 'package:gym_system/src/features/product_stocks/presentation/pages/product_stocks_page.dart';
 import 'package:gym_system/src/features/products/presentation/controllers/product_controller.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_details_view.dart';
@@ -92,7 +93,7 @@ class ProductPage extends HookConsumerWidget {
                     ProductDetailsView(product),
                     if (product.trackByLot)
                       ProductStocksPage(product, showAppBar: false),
-                    Center(child: Text('Stock Adjustments'))
+                    ProductAdjustmentsPage(productId: product.id)
                   ],
                 ),
               ),

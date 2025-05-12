@@ -57,6 +57,7 @@ List<RouteBase> get $appRoutes => [
       $productCategoryFormPageRoute,
       $patientPrescriptionItemFormPageRoute,
       $patientFileFormPageRoute,
+      $productAdjustmentsPageRoute,
       $productAdjustmentFormPageRoute,
       $patientSpeciesListPageRoute,
       $patientSpeciesFormPageRoute,
@@ -361,6 +362,10 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
         ),
         StatefulShellBranchData.$branch(
           routes: [
+            GoRouteData.$route(
+              path: '/product-adjustments',
+              factory: $ProductAdjustmentsPageRouteExtension._fromState,
+            ),
             GoRouteData.$route(
               path: '/form/product-adjustments',
               factory: $ProductAdjustmentFormPageRouteExtension._fromState,
@@ -1324,6 +1329,31 @@ extension $PatientBreedFormPageRouteExtension on PatientBreedFormPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
+extension $ProductAdjustmentsPageRouteExtension on ProductAdjustmentsPageRoute {
+  static ProductAdjustmentsPageRoute _fromState(GoRouterState state) =>
+      ProductAdjustmentsPageRoute(
+        productId: state.uri.queryParameters['product-id'],
+        productStockId: state.uri.queryParameters['product-stock-id'],
+      );
+
+  String get location => GoRouteData.$location(
+        '/product-adjustments',
+        queryParams: {
+          if (productId != null) 'product-id': productId,
+          if (productStockId != null) 'product-stock-id': productStockId,
+        },
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
 extension $ProductAdjustmentFormPageRouteExtension
     on ProductAdjustmentFormPageRoute {
   static ProductAdjustmentFormPageRoute _fromState(GoRouterState state) =>
@@ -1743,6 +1773,11 @@ RouteBase get $patientPrescriptionItemFormPageRoute => GoRouteData.$route(
 RouteBase get $patientFileFormPageRoute => GoRouteData.$route(
       path: '/form/patientFiles',
       factory: $PatientFileFormPageRouteExtension._fromState,
+    );
+
+RouteBase get $productAdjustmentsPageRoute => GoRouteData.$route(
+      path: '/product-adjustments',
+      factory: $ProductAdjustmentsPageRouteExtension._fromState,
     );
 
 RouteBase get $productAdjustmentFormPageRoute => GoRouteData.$route(

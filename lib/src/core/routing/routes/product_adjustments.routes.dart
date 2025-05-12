@@ -4,9 +4,29 @@ class ProductAdjustmentsBranchData extends StatefulShellBranchData {
   const ProductAdjustmentsBranchData();
 
   static const routes = <TypeRouteData>[
+    TypedGoRoute<ProductAdjustmentsPageRoute>(
+        path: ProductAdjustmentsPageRoute.path),
     TypedGoRoute<ProductAdjustmentFormPageRoute>(
         path: ProductAdjustmentFormPageRoute.path),
   ];
+}
+
+@TypedGoRoute<ProductAdjustmentsPageRoute>(
+    path: ProductAdjustmentsPageRoute.path)
+class ProductAdjustmentsPageRoute extends GoRouteData {
+  const ProductAdjustmentsPageRoute({this.productId, this.productStockId});
+  static const path = '/product-adjustments';
+
+  final String? productId;
+  final String? productStockId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ProductAdjustmentsPage(
+      productId: productId,
+      productStockId: productStockId,
+    );
+  }
 }
 
 @TypedGoRoute<ProductAdjustmentFormPageRoute>(

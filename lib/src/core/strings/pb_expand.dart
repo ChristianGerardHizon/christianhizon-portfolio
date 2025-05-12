@@ -36,7 +36,7 @@ class PBExpand {
   static Expand changeLogs = Expand.flat(['user', 'user.branch', 'admin']);
 
   /// branch
-  static Expand product = Expand.flat(['branch']);
+  static Expand product = Expand.flat(['branch', 'category']);
 
   /// product inventory
   static Expand productInventory =

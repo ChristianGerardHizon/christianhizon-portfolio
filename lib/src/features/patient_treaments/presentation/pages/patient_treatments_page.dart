@@ -41,6 +41,10 @@ class PatientTreatmentsPage extends HookConsumerWidget {
       notifier.clearSelection();
     }
 
+    void onEdit(PatientTreatment treatment) {
+      PatientTreamentFormPageRoute(id: treatment.id).push(context);
+    }
+
     Future<void> onDelete(List<PatientTreatment> items) async {
       final confirm = await ConfirmModal.show(context);
       if (confirm != true) return;
@@ -109,6 +113,12 @@ class PatientTreatmentsPage extends HookConsumerWidget {
                     icon: Icon(MIcons.dotsHorizontal),
                     bottomSheetHeader: const Text('Action'),
                     items: [
+                      PopoverMenuItemData(
+                        name: 'Edit',
+                        onTap: () {
+                          onEdit(data);
+                        },
+                      ),
                       PopoverMenuItemData(
                         name: 'Delete',
                         onTap: () {

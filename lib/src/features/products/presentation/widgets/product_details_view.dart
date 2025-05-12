@@ -51,7 +51,7 @@ class ProductDetailsView extends HookConsumerWidget {
     }
 
     addStockAdjustment(Product product) {
-      // ProductAddStockFormPageRoute(product.id).push(context);
+      ProductAdjustmentFormPageRoute(productId: product.id).push(context);
     }
 
     ///
@@ -170,12 +170,13 @@ class ProductDetailsView extends HookConsumerWidget {
                     title: 'Edit Details',
                     trailing: Icon(MIcons.chevronRight),
                   ),
-                  DynamicGroupItem.action(
-                    onTap: () => addStockAdjustment(product),
-                    leading: Icon(MIcons.cubeOutline),
-                    title: 'Adjust Stock',
-                    trailing: Icon(MIcons.chevronRight),
-                  ),
+                  if (!product.trackByLot)
+                    DynamicGroupItem.action(
+                      onTap: () => addStockAdjustment(product),
+                      leading: Icon(MIcons.cubeOutline),
+                      title: 'Adjust Stock',
+                      trailing: Icon(MIcons.chevronRight),
+                    ),
                   DynamicGroupItem.action(
                     titleColor: Theme.of(context).colorScheme.error,
                     onTap: () => onDelete(product),

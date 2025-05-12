@@ -86,7 +86,7 @@ class ProductCategoryFormPage extends HookConsumerWidget {
                   name: ProductCategoryField.name,
                   initialValue: productCategory?.name,
                   decoration: InputDecoration(
-                    label: Text('ProductCategory Name'),
+                    label: Text('Name'),
                     border: OutlineInputBorder(),
                   ),
                   validator: FormBuilderValidators.compose(
@@ -99,21 +99,21 @@ class ProductCategoryFormPage extends HookConsumerWidget {
                 ///
                 /// Parent
                 ///
-                DynamicSelectField(
-                  name: ProductCategoryField.parent,
-                  options: categories
-                      .map(
-                        (e) => SelectOption(
-                          value: e.id,
-                          display: e.name,
-                        ),
-                      )
-                      .toList(),
-                  decoration: InputDecoration(
-                    label: Text('Category'),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
+                // DynamicSelectField(
+                //   name: ProductCategoryField.parent,
+                //   options: categories
+                //       .map(
+                //         (e) => SelectOption(
+                //           value: e.id,
+                //           display: e.name,
+                //         ),
+                //       )
+                //       .toList(),
+                //   decoration: InputDecoration(
+                //     label: Text('Category'),
+                //     border: OutlineInputBorder(),
+                //   ),
+                // ),
               ],
               onSubmit: (result) => onSave(productCategory, result),
             );
