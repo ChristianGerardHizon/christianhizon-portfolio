@@ -70,16 +70,19 @@ class DynamicGroup extends StatelessWidget {
             ),
           ),
           Card(
-            child: ListView.separated(
-              itemCount: items.length,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              separatorBuilder: (context, index) => Divider(
-                indent: 16,
-                endIndent: 16,
-                height: 1,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 5, bottom: 5),
+              child: ListView.separated(
+                itemCount: items.length,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                separatorBuilder: (context, index) => Divider(
+                  indent: 16,
+                  endIndent: 16,
+                  height: 1,
+                ),
+                itemBuilder: (context, index) => items[index],
               ),
-              itemBuilder: (context, index) => items[index],
             ),
           ),
           if (helper != null)

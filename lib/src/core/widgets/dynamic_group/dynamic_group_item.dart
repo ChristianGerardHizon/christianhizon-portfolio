@@ -119,15 +119,13 @@ class DynamicGroupItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final theme = Theme.of(context);
-    return CardInkWell(
+    return ListTile(
       onTap: onTap,
       onLongPress: onLongPress,
-      child: ListTile(
-        leading: leading,
-        title: title,
-        subtitle: value,
-        trailing: trailing,
-      ),
+      leading: leading,
+      title: title,
+      subtitle: value,
+      trailing: trailing,
     );
   }
 }

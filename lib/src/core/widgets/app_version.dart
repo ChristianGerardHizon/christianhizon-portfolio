@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/controllers/package_info_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -14,8 +14,14 @@ class AppVersion extends HookConsumerWidget {
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            packageInfo.version,
+            'Version ${packageInfo.version}+${packageInfo.buildNumber}',
             textAlign: TextAlign.left,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: .5),
+                ),
           ),
         );
       },

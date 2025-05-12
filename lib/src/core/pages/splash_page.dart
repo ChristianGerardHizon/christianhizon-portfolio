@@ -4,6 +4,7 @@ import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/app_version.dart';
 import 'package:gym_system/src/core/widgets/logo.dart';
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -44,8 +45,15 @@ class SplashPage extends HookConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Logo(height: 250, width: 250),
+        child: Column(
+          children: [
+            Expanded(
+              child: Center(
+                child: Logo(height: 250, width: 250),
+              ),
+            ),
+            AppVersion(),
+          ],
         ),
       ),
     );

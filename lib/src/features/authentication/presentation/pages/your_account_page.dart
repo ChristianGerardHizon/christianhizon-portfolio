@@ -3,6 +3,7 @@ import 'package:gym_system/src/core/packages/pocketbase.dart';
 import 'package:gym_system/src/core/routing/main.routes.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:gym_system/src/core/widgets/app_version.dart';
 import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
@@ -101,7 +102,6 @@ class YourAccountPage extends HookConsumerWidget {
                           SalesPageRoute().push(context);
                         },
                       ),
-
                       DynamicGroupItem.action(
                         title: 'Changes',
                         leading: Icon(MIcons.pencil),
@@ -128,7 +128,7 @@ class YourAccountPage extends HookConsumerWidget {
 
                       DynamicGroupItem.action(
                         title: 'Treatments',
-                        leading: Icon(MIcons.dogService),
+                        leading: Icon(MIcons.ambulance),
                         onTap: () {
                           PatientTreatmentPageRoute().push(context);
                         },
@@ -151,6 +151,12 @@ class YourAccountPage extends HookConsumerWidget {
                       ),
                     ],
                   ),
+
+                SliverToBoxAdapter(
+                  child:
+                      Align(alignment: Alignment.center, child: AppVersion()),
+                ),
+                SliverToBoxAdapter(child: SizedBox(height: 40)),
               ],
             ),
           );
