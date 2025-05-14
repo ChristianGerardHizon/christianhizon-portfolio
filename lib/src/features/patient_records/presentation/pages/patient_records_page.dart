@@ -9,8 +9,8 @@ import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
@@ -155,7 +155,7 @@ class PatientRecordsPage extends HookConsumerWidget {
       body: StackLoader(
         opacity: .8,
         isLoading: isLoading.value,
-        child: DynamicTableView<PatientRecord>(
+        child: SliverDynamicTableView<PatientRecord>(
           tableKey: TableControllerKeys.patientRecord,
           error: FailureMessage.asyncValue(listState),
           isLoading: listState.isLoading,
@@ -173,7 +173,7 @@ class PatientRecordsPage extends HookConsumerWidget {
           /// Table Data
           ///
           columns: [
-            TableColumn(
+            DynamicTableColumn(
               header: 'Visit',
               width: 200,
               alignment: Alignment.centerLeft,
@@ -187,7 +187,7 @@ class PatientRecordsPage extends HookConsumerWidget {
                 );
               },
             ),
-            TableColumn(
+            DynamicTableColumn(
               header: 'Diagnosis',
               width: 200,
               alignment: Alignment.centerLeft,
@@ -201,7 +201,7 @@ class PatientRecordsPage extends HookConsumerWidget {
                 );
               },
             ),
-            TableColumn(
+            DynamicTableColumn(
               header: 'Actions',
               width: 75,
               alignment: Alignment.center,

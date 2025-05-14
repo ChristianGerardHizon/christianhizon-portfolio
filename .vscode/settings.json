@@ -105,7 +105,7 @@
     // Add slight contrast to the active line
     "editor.renderLineHighlight": "all",
     "editor.multiCursorModifier": "alt",
-    "editor.minimap.enabled": true,
+    "editor.minimap.enabled": false,
     "editor.guides.bracketPairs": "active",
     "editor.guides.highlightActiveBracketPair": true
     // Set to nu shell

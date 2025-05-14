@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_table_view/material_table_view.dart';
-import 'package:material_table_view/sliver_table_view.dart';
 import 'package:responsive_builder/responsive_builder.dart'
     show getValueForScreenType;
 
-class SliverDynamicTableBase extends HookConsumerWidget {
+class DynamicTableBase extends HookConsumerWidget {
   final int itemCount;
   final List<DynamicTableBaseColumn> columns;
   final double tableRowHeight;
   final Widget? Function(
     BuildContext context,
     _DynamicTableBuilderValue value,
+    bool showCheckbox,
   ) tableRowBuilder;
   final Widget Function(
     BuildContext context,
@@ -24,8 +24,11 @@ class SliverDynamicTableBase extends HookConsumerWidget {
   final String tableKey;
   final Function(int index)? onTableRowTap;
   final bool showCheckbox;
+  final ScrollPhysics? physics;
+  final bool shrinkWrapHorizontal;
+  final bool shrinkWrapVertical;
 
-  const SliverDynamicTableBase({
+  const DynamicTableBase({
     super.key,
     this.showCheckbox = true,
     required this.itemCount,
@@ -35,6 +38,9 @@ class SliverDynamicTableBase extends HookConsumerWidget {
     required this.mobileBuilder,
     required this.tableKey,
     this.onTableRowTap,
+    this.physics,
+    this.shrinkWrapHorizontal = false,
+    this.shrinkWrapVertical = false,
   });
 
   @override
@@ -77,24 +83,24 @@ class SliverDynamicTableBase extends HookConsumerWidget {
     ];
 
     if (isMobile) {
-      return SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            return mobileBuilder(
-              context,
-              _DynamicTableBuilderValue(
-                row: index,
-                column: 0,
-                isSelected: selectedRows.contains(index),
-              ),
-            );
-          },
-          childCount: itemCount,
-        ),
+      return ListView.builder(
+        itemCount: itemCount,
+        physics: physics,
+        shrinkWrap: shrinkWrapVertical,
+        itemBuilder: (context, index) {
+          return mobileBuilder(
+            context,
+            _DynamicTableBuilderValue(
+              row: index,
+              column: 0,
+              isSelected: selectedRows.contains(index),
+            ),
+          );
+        },
       );
     }
 
-    return SliverTableView.builder(
+    return TableView.builder(
       rowCount: itemCount,
       rowHeight: tableRowHeight,
       columns: tableColumns
@@ -122,13 +128,13 @@ class SliverDynamicTableBase extends HookConsumerWidget {
             }
 
             final widget = tableRowBuilder(
-              context,
-              _DynamicTableBuilderValue(
-                row: rowIndex,
-                column: columnIndex,
-                isSelected: selectedRows.contains(rowIndex),
-              ),
-            );
+                context,
+                _DynamicTableBuilderValue(
+                  row: rowIndex,
+                  column: columnIndex,
+                  isSelected: selectedRows.contains(rowIndex),
+                ),
+                showCheckbox);
 
             return widget ?? const SizedBox();
           }),
@@ -140,6 +146,9 @@ class SliverDynamicTableBase extends HookConsumerWidget {
           (context, index) => tableColumns[index].builder(context, index),
         );
       },
+      physics: physics,
+      shrinkWrapHorizontal: shrinkWrapHorizontal,
+      shrinkWrapVertical: shrinkWrapVertical,
     );
   }
 }

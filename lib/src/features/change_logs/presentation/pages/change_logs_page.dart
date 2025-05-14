@@ -6,8 +6,8 @@ import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
@@ -83,7 +83,7 @@ class ChangeLogsPage extends HookConsumerWidget {
           ),
         ],
       ),
-      body: DynamicTableView<ChangeLog>(
+      body: SliverDynamicTableView<ChangeLog>(
         tableKey: TableControllerKeys.changeLog,
         error: listState.maybeWhen(
           skipError: false,
@@ -112,7 +112,7 @@ class ChangeLogsPage extends HookConsumerWidget {
         /// Table Data
         ///
         columns: [
-          TableColumn(
+          DynamicTableColumn(
             header: 'Type',
             width: 200,
             alignment: Alignment.centerLeft,
@@ -126,7 +126,7 @@ class ChangeLogsPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Message',
             width: 200,
             alignment: Alignment.centerLeft,
@@ -140,7 +140,7 @@ class ChangeLogsPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'User',
             width: 200,
             alignment: Alignment.centerLeft,

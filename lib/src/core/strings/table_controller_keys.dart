@@ -17,6 +17,7 @@ class TableControllerKeys {
   static String patientBreed = 'PATIENT_BREED';
   static String patientSpecies = 'PATIENT_SPECIES';
   static String appointmentSchedule = 'APPOINTMENT_SCHEDULE';
+  static String appointmentScheduleToday = 'APPOINTMENT_SCHEDULE_TODAY';
   static String appointmentSchedulePatient(String x) =>
       '${appointmentSchedule}_${x}';
   static String patientFile = 'PATIENT_FILE';

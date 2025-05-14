@@ -7,7 +7,7 @@ part of 'appointment_schedule_table_controller.dart';
 // **************************************************************************
 
 String _$appointmentScheduleTableControllerHash() =>
-    r'18575e877b3e08888079fc5a8ad74d1c8bab3b1e';
+    r'3506124efbd55e6592f42ad98f769a24758bf211';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -34,10 +34,12 @@ abstract class _$AppointmentScheduleTableController
     extends BuildlessAutoDisposeAsyncNotifier<List<AppointmentSchedule>> {
   late final String tableKey;
   late final String? patientId;
+  late final DateTime? date;
 
   FutureOr<List<AppointmentSchedule>> build(
     String tableKey, {
     String? patientId,
+    DateTime? date,
   });
 }
 
@@ -56,10 +58,12 @@ class AppointmentScheduleTableControllerFamily
   AppointmentScheduleTableControllerProvider call(
     String tableKey, {
     String? patientId,
+    DateTime? date,
   }) {
     return AppointmentScheduleTableControllerProvider(
       tableKey,
       patientId: patientId,
+      date: date,
     );
   }
 
@@ -70,6 +74,7 @@ class AppointmentScheduleTableControllerFamily
     return call(
       provider.tableKey,
       patientId: provider.patientId,
+      date: provider.date,
     );
   }
 
@@ -96,10 +101,12 @@ class AppointmentScheduleTableControllerProvider
   AppointmentScheduleTableControllerProvider(
     String tableKey, {
     String? patientId,
+    DateTime? date,
   }) : this._internal(
           () => AppointmentScheduleTableController()
             ..tableKey = tableKey
-            ..patientId = patientId,
+            ..patientId = patientId
+            ..date = date,
           from: appointmentScheduleTableControllerProvider,
           name: r'appointmentScheduleTableControllerProvider',
           debugGetCreateSourceHash:
@@ -111,6 +118,7 @@ class AppointmentScheduleTableControllerProvider
               ._allTransitiveDependencies,
           tableKey: tableKey,
           patientId: patientId,
+          date: date,
         );
 
   AppointmentScheduleTableControllerProvider._internal(
@@ -122,10 +130,12 @@ class AppointmentScheduleTableControllerProvider
     required super.from,
     required this.tableKey,
     required this.patientId,
+    required this.date,
   }) : super.internal();
 
   final String tableKey;
   final String? patientId;
+  final DateTime? date;
 
   @override
   FutureOr<List<AppointmentSchedule>> runNotifierBuild(
@@ -134,6 +144,7 @@ class AppointmentScheduleTableControllerProvider
     return notifier.build(
       tableKey,
       patientId: patientId,
+      date: date,
     );
   }
 
@@ -144,7 +155,8 @@ class AppointmentScheduleTableControllerProvider
       override: AppointmentScheduleTableControllerProvider._internal(
         () => create()
           ..tableKey = tableKey
-          ..patientId = patientId,
+          ..patientId = patientId
+          ..date = date,
         from: from,
         name: null,
         dependencies: null,
@@ -152,6 +164,7 @@ class AppointmentScheduleTableControllerProvider
         debugGetCreateSourceHash: null,
         tableKey: tableKey,
         patientId: patientId,
+        date: date,
       ),
     );
   }
@@ -166,7 +179,8 @@ class AppointmentScheduleTableControllerProvider
   bool operator ==(Object other) {
     return other is AppointmentScheduleTableControllerProvider &&
         other.tableKey == tableKey &&
-        other.patientId == patientId;
+        other.patientId == patientId &&
+        other.date == date;
   }
 
   @override
@@ -174,6 +188,7 @@ class AppointmentScheduleTableControllerProvider
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, tableKey.hashCode);
     hash = _SystemHash.combine(hash, patientId.hashCode);
+    hash = _SystemHash.combine(hash, date.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -188,6 +203,9 @@ mixin AppointmentScheduleTableControllerRef
 
   /// The parameter `patientId` of this provider.
   String? get patientId;
+
+  /// The parameter `date` of this provider.
+  DateTime? get date;
 }
 
 class _AppointmentScheduleTableControllerProviderElement
@@ -202,6 +220,9 @@ class _AppointmentScheduleTableControllerProviderElement
   @override
   String? get patientId =>
       (origin as AppointmentScheduleTableControllerProvider).patientId;
+  @override
+  DateTime? get date =>
+      (origin as AppointmentScheduleTableControllerProvider).date;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

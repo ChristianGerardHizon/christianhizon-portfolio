@@ -8,8 +8,8 @@ import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/popover_widget.dart';
@@ -111,7 +111,7 @@ class PatientTreatmentRecordsPage extends HookConsumerWidget {
               ],
             )
           : null,
-      body: DynamicTableView<PatientTreatmentRecord>(
+      body: SliverDynamicTableView<PatientTreatmentRecord>(
         tableKey: TableControllerKeys.patientTreatmentRecord,
         error: FailureMessage.asyncValue(listState),
         isLoading: listState.isLoading,
@@ -129,7 +129,7 @@ class PatientTreatmentRecordsPage extends HookConsumerWidget {
         /// Table Data
         ///
         columns: [
-          TableColumn(
+          DynamicTableColumn(
             header: 'Treatment',
             alignment: Alignment.center,
             builder: (context, data, row, column) {
@@ -142,7 +142,7 @@ class PatientTreatmentRecordsPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Date',
             width: 200,
             alignment: Alignment.centerLeft,
@@ -156,7 +156,7 @@ class PatientTreatmentRecordsPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Actions',
             width: 159,
             alignment: Alignment.center,

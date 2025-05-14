@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_table_base.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_sort.dart';
 import 'package:gym_system/src/core/widgets/page_actions.dart';
@@ -11,7 +11,7 @@ import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/core/widgets/text_search_bar.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class DynamicTableView<T> extends HookConsumerWidget {
+class SliverDynamicTableView<T> extends HookConsumerWidget {
   final String tableKey;
   final Widget? emptyWidget;
 
@@ -19,6 +19,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
   final Widget? error;
   final Function(int, TableSort?)? onChange;
   final Function(T)? onRowTap;
+  final bool showSearch;
 
   final TextEditingController searchCtrl;
   final Function()? onSearch;
@@ -26,7 +27,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
   final Function()? onCreate;
   final Function(List<T>)? onDelete;
 
-  final List<TableColumn<T>> columns;
+  final List<DynamicTableColumn<T>> columns;
   final TextStyle? headerTextStyle;
   final Widget Function(
     BuildContext context,
@@ -36,7 +37,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
   ) mobileBuilder;
   final bool isLoading;
 
-  const DynamicTableView({
+  const SliverDynamicTableView({
     super.key,
     this.onRowTap,
     required this.tableKey,
@@ -53,6 +54,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
     this.emptyWidget,
     this.onDelete,
     this.isLoading = false,
+    this.showSearch = true,
   });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -93,7 +95,7 @@ class DynamicTableView<T> extends HookConsumerWidget {
               ///
               /// Serch Bar
               ///
-              if (error == null)
+              if (error == null && showSearch)
                 SliverToBoxAdapter(
                   child: TextSearchBar(
                     controller: searchCtrl,
@@ -111,8 +113,8 @@ class DynamicTableView<T> extends HookConsumerWidget {
               ///
               ///  Content
               ///
-              if (error == null)
-                SliverDynamicBase(
+              if (error == null && showSearch)
+                SliverDynamicTableBase(
                   tableKey: tableKey,
                   itemCount: items.length,
 

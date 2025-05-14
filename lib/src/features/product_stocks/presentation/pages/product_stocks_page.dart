@@ -6,8 +6,8 @@ import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/features/product_stocks/presentation/widgets/expiration_text.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
@@ -95,7 +95,7 @@ class ProductStocksPage extends HookConsumerWidget {
               ],
             )
           : null,
-      body: DynamicTableView<ProductStock>(
+      body: SliverDynamicTableView<ProductStock>(
         tableKey: TableControllerKeys.productStock,
         error: listState.hasError ? Text('list has error') : null,
         isLoading: listState.isLoading,
@@ -113,7 +113,7 @@ class ProductStocksPage extends HookConsumerWidget {
         /// Table Data
         ///
         columns: [
-          TableColumn(
+          DynamicTableColumn(
             header: 'Name',
             width: 200,
             alignment: Alignment.centerLeft,
@@ -127,7 +127,7 @@ class ProductStocksPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Quantity',
             alignment: Alignment.centerLeft,
             width: 150,
@@ -139,7 +139,7 @@ class ProductStocksPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Expiration',
             alignment: Alignment.centerLeft,
             width: 240,
@@ -158,7 +158,7 @@ class ProductStocksPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Actions',
             alignment: Alignment.centerLeft,
             width: 150,

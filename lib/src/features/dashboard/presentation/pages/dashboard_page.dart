@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/controllers/scaffold_controller.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
+import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
+import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
+import 'package:gym_system/src/features/appointment_schedules/presentation/widgets/appointment_schedule_today_view.dart';
 import 'package:gym_system/src/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:gym_system/src/features/dashboard/presentation/widgets/kpis/dashboard_kpis.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -49,6 +52,14 @@ class DashboardPage extends HookConsumerWidget {
                   ),
                 ),
               ),
+              SliverPadding(
+                padding: const EdgeInsets.only(left: 18, top: 20, right: 18),
+                sliver: SliverList.list(
+                  children: [
+                    DashboardKpis(),
+                  ],
+                ),
+              ),
 
               ///
               ///
@@ -56,9 +67,9 @@ class DashboardPage extends HookConsumerWidget {
               SliverPadding(
                 padding: const EdgeInsets.only(left: 18, top: 20, right: 18),
                 sliver: SliverToBoxAdapter(
-                  child: DashboardKpis(),
+                  child: AppointmentScheduleTodayView(),
                 ),
-              )
+              ),
             ],
           );
         },

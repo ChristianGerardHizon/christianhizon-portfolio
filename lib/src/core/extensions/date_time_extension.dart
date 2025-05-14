@@ -25,5 +25,9 @@ extension DateTimeExtension on DateTime {
 
   String get fullReadable => DateFormat('EEEE, d MMMM y').format(this);
 
+  // Y-m-d H:i:s.uZ
+  String get pbFormat =>
+      DateFormat('yyyy-MM-dd HH:mm:ss.SSSZ').format(this.toUtc());
+
   DateTime get dateOnly => DateTime(year, month, day);
 }

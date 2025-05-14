@@ -6,8 +6,8 @@ import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
@@ -80,7 +80,7 @@ class AdminsPage extends HookConsumerWidget {
           RefreshButton(onPressed: onRefresh),
         ],
       ),
-      body: DynamicTableView<Admin>(
+      body: SliverDynamicTableView<Admin>(
         tableKey: TableControllerKeys.admin,
         error: FailureMessage.asyncValue(listState),
         isLoading: listState.isLoading,
@@ -98,7 +98,7 @@ class AdminsPage extends HookConsumerWidget {
         /// Table Data
         ///
         columns: [
-          TableColumn(
+          DynamicTableColumn(
             header: 'Name',
             width: 200,
             alignment: Alignment.centerLeft,
@@ -112,7 +112,7 @@ class AdminsPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Branch',
             width: 200,
             alignment: Alignment.centerLeft,
@@ -126,7 +126,7 @@ class AdminsPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Email',
             width: 200,
             alignment: Alignment.centerLeft,

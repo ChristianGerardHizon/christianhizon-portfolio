@@ -13,8 +13,8 @@ import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/modals/dropdown_confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/popover_widget.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
@@ -154,7 +154,7 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
               ],
             )
           : null,
-      body: DynamicTableView<AppointmentSchedule>(
+      body: SliverDynamicTableView<AppointmentSchedule>(
         tableKey: TableControllerKeys.appointmentSchedule,
         error: FailureMessage.asyncValue(listState),
         isLoading: listState.isLoading,
@@ -172,7 +172,7 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
         /// Table Data
         ///
         columns: [
-          TableColumn(
+          DynamicTableColumn(
             header: 'Date and Time',
             width: 200,
             alignment: Alignment.centerLeft,
@@ -181,12 +181,12 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   overflow: TextOverflow.ellipsis,
-                  data.hasTime ? data.date.fullDateTime : data.date.fullDate,
+                  data.displayDate,
                 ),
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Purpose',
             width: 200,
             alignment: Alignment.centerLeft,
@@ -200,7 +200,7 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Patient',
             width: 200,
             alignment: Alignment.centerLeft,
@@ -214,7 +214,7 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Record',
             width: 200,
             alignment: Alignment.centerLeft,
@@ -229,7 +229,7 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Status',
             width: 150,
             alignment: Alignment.centerLeft,
@@ -243,7 +243,7 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
               );
             },
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Actions',
             alignment: Alignment.center,
             width: 150,

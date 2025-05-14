@@ -6,20 +6,21 @@ part 'table_controller.g.dart';
 @riverpod
 class TableController extends _$TableController {
   @override
-  TableState build(String tableKey) {
-    return TableState(
-      key: tableKey,
-      isMobile: false,
-      selected: [],
-      hasNext: true,
-      isLoading: true,
-      page: 1,
-      pageSize: 20,
-      totalItems: 0,
-      totalPages: 1,
-      sort: null,
-      filter: '',
-    );
+  TableState build(String tableKey, {TableState? tableState}) {
+    return tableState ??
+        TableState(
+          key: tableKey,
+          isMobile: false,
+          selected: [],
+          hasNext: true,
+          isLoading: true,
+          page: 1,
+          pageSize: 20,
+          totalItems: 0,
+          totalPages: 1,
+          sort: null,
+          filter: '',
+        );
   }
 
   void changePage(int page) {

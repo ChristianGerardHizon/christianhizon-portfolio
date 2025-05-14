@@ -1,10 +1,10 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/widgets.dart';
 
-part 'table_column.mapper.dart';
+part 'dynamic_table_column.mapper.dart';
 
 @MappableClass()
-class TableColumn<T> with TableColumnMappable {
+class DynamicTableColumn<T> with DynamicTableColumnMappable {
   final String? sortKey;
   final String header;
   final Alignment? alignment;
@@ -45,7 +45,7 @@ class TableColumn<T> with TableColumnMappable {
   int get freezePriority => _freezePriority ?? 0;
 
   /// Default non-sticky constructor
-  const TableColumn({
+  const DynamicTableColumn({
     required this.header,
     this.sortKey,
     this.alignment,
@@ -61,7 +61,7 @@ class TableColumn<T> with TableColumnMappable {
         _freezePriority = null;
 
   /// Named constructor for sticky columns
-  factory TableColumn.sticky({
+  factory DynamicTableColumn.sticky({
     required String header,
     required int freezePriority,
     double width = 100,
@@ -81,7 +81,7 @@ class TableColumn<T> with TableColumnMappable {
       'Use the default constructor if sticky behavior is not required.',
     );
 
-    return TableColumn._internal(
+    return DynamicTableColumn._internal(
       header: header,
       isSticky: true,
       freezePriority: freezePriority,
@@ -99,7 +99,7 @@ class TableColumn<T> with TableColumnMappable {
   }
 
   /// Internal constructor shared by sticky
-  const TableColumn._internal({
+  const DynamicTableColumn._internal({
     required this.header,
     required bool isSticky,
     required int? freezePriority,

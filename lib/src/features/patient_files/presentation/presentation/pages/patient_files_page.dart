@@ -14,8 +14,8 @@ import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
@@ -147,7 +147,7 @@ class PatientFilesPage extends HookConsumerWidget {
       body: StackLoader(
         opacity: .8,
         isLoading: isLoading.value,
-        child: DynamicTableView<PatientFile>(
+        child: SliverDynamicTableView<PatientFile>(
           tableKey: TableControllerKeys.patientFile,
           error: FailureMessage.asyncValue(listState),
           isLoading: listState.isLoading,
@@ -164,7 +164,7 @@ class PatientFilesPage extends HookConsumerWidget {
           /// Table Data
           ///
           columns: [
-            TableColumn(
+            DynamicTableColumn(
               header: 'File',
               width: 400,
               alignment: Alignment.centerLeft,
@@ -178,7 +178,7 @@ class PatientFilesPage extends HookConsumerWidget {
                 );
               },
             ),
-            TableColumn(
+            DynamicTableColumn(
               header: 'Created',
               width: 200,
               alignment: Alignment.centerLeft,
@@ -192,7 +192,7 @@ class PatientFilesPage extends HookConsumerWidget {
                 );
               },
             ),
-            TableColumn(
+            DynamicTableColumn(
               header: 'Actions',
               width: 159,
               alignment: Alignment.center,

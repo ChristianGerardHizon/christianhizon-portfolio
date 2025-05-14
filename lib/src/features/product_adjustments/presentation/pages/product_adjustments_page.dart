@@ -5,8 +5,8 @@ import 'package:gym_system/src/core/extensions/num.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/features/product_adjustments/presentation/widgets/product_adjustment_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/features/product_adjustments/domain/product_adjustment.dart';
@@ -59,7 +59,7 @@ class ProductAdjustmentsPage extends HookConsumerWidget {
               ],
             )
           : null,
-      body: DynamicTableView<ProductAdjustment>(
+      body: SliverDynamicTableView<ProductAdjustment>(
         tableKey: tableKey,
         error: FailureMessage.asyncValue(listState),
         isLoading: listState.isLoading,
@@ -69,13 +69,13 @@ class ProductAdjustmentsPage extends HookConsumerWidget {
         searchCtrl: searchCtrl,
         onCreate: onCreate,
         columns: [
-          TableColumn(
+          DynamicTableColumn(
             header: 'Date',
             width: 180,
             builder: (context, data, row, column) => Center(
                 child: Text((data.created?.toLocal().fullDateTime).optional())),
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Reason',
             width: 200,
             builder: (context, data, row, column) => Align(
@@ -83,7 +83,7 @@ class ProductAdjustmentsPage extends HookConsumerWidget {
               child: Text(data.reason.optional()),
             ),
           ),
-          TableColumn(
+          DynamicTableColumn(
             header: 'Value',
             width: 120,
             builder: (context, data, row, column) {

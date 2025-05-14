@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 
-
 class AppSnackBar extends StatelessWidget {
   const AppSnackBar({super.key, required this.message, this.style});
 
@@ -27,16 +26,16 @@ class AppSnackBar extends StatelessWidget {
       ..clearSnackBars()
       ..showSnackBar(snackItem);
   }
- 
+
   static error(
     BuildContext context, {
     required String message,
     Duration? duration,
   }) {
     final color = Theme.of(context).colorScheme;
-    String fMessage = message;
-    if (fMessage.length > 100) {
-      fMessage = '${fMessage.substring(0, 97)}...';
+    String failureMsg = message;
+    if (failureMsg.length > 100) {
+      failureMsg = '${failureMsg.substring(0, 97)}...';
     }
 
     final snackItem = SnackBar(
@@ -46,7 +45,7 @@ class AppSnackBar extends StatelessWidget {
       showCloseIcon: true,
       closeIconColor: color.error,
       content: AppSnackBar(
-        message: fMessage,
+        message: failureMsg,
         style: TextStyle(color: color.error),
       ),
     );

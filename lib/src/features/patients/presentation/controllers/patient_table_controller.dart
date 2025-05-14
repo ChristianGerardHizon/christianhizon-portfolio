@@ -1,5 +1,5 @@
 import 'package:gym_system/src/core/models/page_results.dart';
-import 'package:gym_system/src/core/models/pocketbase_filter.dart';
+import 'package:gym_system/src/core/models/pb_filter.dart';
 import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';

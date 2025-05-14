@@ -1,3 +1,5 @@
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+
 class PocketbaseFilter {
   final String? _baseFilter;
   final String? _filter;
@@ -19,6 +21,20 @@ class PocketbaseFilter {
   /// field = "query"
   PocketbaseFilter equal(String query, {String field = 'name'}) {
     final clause = '$field = "$query"';
+    return PocketbaseFilter._(_baseFilter, _combine(_filter, clause));
+  }
+
+  ///
+  PocketbaseFilter withinDate(
+    DateTime startDateTime, {
+    required String field,
+    DateTime? endDateTime,
+  }) {
+    final utc = startDateTime.toUtc();
+    final endUtc = (endDateTime ?? startDateTime).toUtc();
+    final start = utc.startOfDay.pbFormat;
+    final end = endUtc.endOfDay.pbFormat;
+    final clause = '$field >= "$start" && $field <= "$end"';
     return PocketbaseFilter._(_baseFilter, _combine(_filter, clause));
   }
 

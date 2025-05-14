@@ -7,8 +7,8 @@ import 'package:gym_system/src/core/strings/table_controller_keys.dart';
 import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/circle_widget.dart';
 import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_column.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_table_view.dart';
+import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
@@ -84,7 +84,7 @@ class PatientsPage extends HookConsumerWidget {
             ),
           ],
         ),
-        body: DynamicTableView<Patient>(
+        body: SliverDynamicTableView<Patient>(
           tableKey: TableControllerKeys.patient,
           error: FailureMessage.asyncValue(listState),
           isLoading: listState.isLoading,
@@ -102,7 +102,7 @@ class PatientsPage extends HookConsumerWidget {
           /// Table Data
           ///
           columns: [
-            TableColumn(
+            DynamicTableColumn(
               header: 'Name',
               width: 250,
               alignment: Alignment.centerLeft,
@@ -130,7 +130,7 @@ class PatientsPage extends HookConsumerWidget {
                 );
               },
             ),
-            TableColumn(
+            DynamicTableColumn(
               header: 'Branch',
               alignment: Alignment.centerLeft,
               builder: (context, patient, row, column) {
@@ -141,7 +141,7 @@ class PatientsPage extends HookConsumerWidget {
                 );
               },
             ),
-            TableColumn(
+            DynamicTableColumn(
               header: 'Owner',
               alignment: Alignment.centerLeft,
               builder: (context, patient, row, column) {

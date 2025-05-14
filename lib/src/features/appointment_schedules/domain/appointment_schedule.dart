@@ -1,4 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
 import 'package:gym_system/src/core/models/pb_record.dart';
 import 'package:gym_system/src/core/hooks/date_time_hook.dart';
@@ -46,6 +47,12 @@ class AppointmentSchedule extends PbRecord with AppointmentScheduleMappable {
 
   static const fromMap = AppointmentScheduleMapper.fromMap;
   static const fromJson = AppointmentScheduleMapper.fromJson;
+
+  ///
+  ///
+  ///
+  String get displayDate =>
+      hasTime ? date.toLocal().fullDateTime : date.toLocal().fullDate;
 }
 
 @MappableClass()
