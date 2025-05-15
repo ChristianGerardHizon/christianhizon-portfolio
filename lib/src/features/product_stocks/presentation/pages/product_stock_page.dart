@@ -42,6 +42,13 @@ class ProductStockPage extends HookConsumerWidget {
           });
     }
 
+    ///
+    /// onProductAdjust
+    ///
+    onProductAdjust(ProductStock stock) {
+      ProductAdjustmentFormPageRoute(productStockId: stock.id).push(context);
+    }
+
     return state.when(
       error: (error, stack) => Scaffold(
         appBar: AppBar(
@@ -118,6 +125,15 @@ class ProductStockPage extends HookConsumerWidget {
                     child: CardGroup(
                       header: 'Actions',
                       children: [
+                        ListTile(
+                          leading: const Icon(Icons.edit),
+                          title: const Text('Adjust Stock'),
+                          trailing: const Icon(
+                            Icons.chevron_right_outlined,
+                            size: 24,
+                          ),
+                          onTap: () => onProductAdjust(stock),
+                        ),
                         ListTile(
                           leading: const Icon(Icons.edit_outlined),
                           title: const Text('Edit Product Stock Details'),

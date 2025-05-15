@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/widgets/selectable_card.dart';
 import 'package:gym_system/src/features/product_stocks/domain/product_stock.dart';
+import 'package:gym_system/src/features/product_stocks/presentation/widgets/expiration_text.dart';
 
 class ProductStockCard extends StatelessWidget {
   const ProductStockCard({
@@ -23,9 +25,37 @@ class ProductStockCard extends StatelessWidget {
       onLongPress: onLongPress,
       onTap: onTap,
       selected: selected,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [Text(productStock.toJson())],
+      child: ListTile(
+        title: Text(productStock.lotNo.optional()),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RichText(
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              text: TextSpan(
+                style: Theme.of(context).textTheme.bodyMedium,
+                children: [
+                  TextSpan(
+                      text: 'Quantity: ',
+                      style: Theme.of(context).textTheme.labelMedium),
+                  TextSpan(
+                    text: (productStock.quantity?.toString()).optional(),
+                  ),
+                ],
+              ),
+            ),
+            Builder(
+              builder: (_) {
+                final expiration = productStock.expiration;
+                if (expiration is DateTime) {
+                  return ExpirationStatusText(expirationDate: expiration);
+                }
+                return Text('-');
+              },
+            )
+          ],
+        ),
       ),
     );
   }
