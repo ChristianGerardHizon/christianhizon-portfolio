@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
@@ -61,7 +60,6 @@ class AdminsPage extends HookConsumerWidget {
           notifier.clearSelection();
           ref.invalidate(adminTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
-          if (context.canPop()) context.pop();
         },
       );
     }
@@ -81,7 +79,7 @@ class AdminsPage extends HookConsumerWidget {
         ],
       ),
       body: SliverDynamicTableView<Admin>(
-        tableKey: TableControllerKeys.admin,
+        tableKey: tableKey,
         error: FailureMessage.asyncValue(listState),
         isLoading: listState.isLoading,
         items: listState.valueOrNull ?? [],

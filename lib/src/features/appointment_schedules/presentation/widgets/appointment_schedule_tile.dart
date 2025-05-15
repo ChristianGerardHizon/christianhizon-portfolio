@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/popover_widget.dart';
-import 'package:gym_system/src/core/widgets/selectable_card.dart';
 import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 
@@ -81,7 +80,7 @@ class AppointmentScheduleTile extends StatelessWidget {
                               .bodyMedium
                               ?.copyWith(fontWeight: FontWeight.w600)),
                       TextSpan(
-                        text: appointmentSchedule.notes.optional(),
+                        text: appointmentSchedule.purpose.optional(),
                       ),
                     ],
                   ),
@@ -100,6 +99,24 @@ class AppointmentScheduleTile extends StatelessWidget {
                               ?.copyWith(fontWeight: FontWeight.w600)),
                       TextSpan(
                         text: appointmentSchedule.status.name.optional(),
+                      ),
+                    ],
+                  ),
+                ),
+                RichText(
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    children: [
+                      TextSpan(
+                          text: 'Notes: ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.w600)),
+                      TextSpan(
+                        text: appointmentSchedule.notes.optional(),
                       ),
                     ],
                   ),

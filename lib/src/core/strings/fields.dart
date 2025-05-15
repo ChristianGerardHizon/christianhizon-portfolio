@@ -117,13 +117,13 @@ class PatientRecordField {
   static const String diagnosis = 'diagnosis';
   static const String vistDate = 'visitDate';
   static const String treatment = 'treatment';
-  static const String followUpDate = 'followUpDate';
   static const String prescription = 'prescription';
   static const String notes = 'notes';
   static const String user = 'user';
   static const String admin = 'admin';
   static const String branch = 'branch';
   static const String hasTime = 'hasTime';
+  static const String weightInKg = 'weightInKg';
 }
 
 class PatientPrescriptionItemField {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
@@ -89,7 +88,6 @@ class PatientTreatmentRecordsPage extends HookConsumerWidget {
           notifier.clearSelection();
           ref.invalidate(patientTreatmentRecordTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
-          if (context.canPop()) context.pop();
         },
       );
     }
@@ -112,7 +110,7 @@ class PatientTreatmentRecordsPage extends HookConsumerWidget {
             )
           : null,
       body: SliverDynamicTableView<PatientTreatmentRecord>(
-        tableKey: TableControllerKeys.patientTreatmentRecord,
+        tableKey: tableKey,
         error: FailureMessage.asyncValue(listState),
         isLoading: listState.isLoading,
         items: listState.valueOrNull ?? [],
@@ -131,10 +129,11 @@ class PatientTreatmentRecordsPage extends HookConsumerWidget {
         columns: [
           DynamicTableColumn(
             header: 'Treatment',
-            alignment: Alignment.center,
+            width: 300,
+            alignment: Alignment.centerLeft,
             builder: (context, data, row, column) {
               return Align(
-                alignment: Alignment.center,
+                alignment: Alignment.centerLeft,
                 child: Text(
                   (data.expand.treatment.name).optional(),
                   overflow: TextOverflow.ellipsis,

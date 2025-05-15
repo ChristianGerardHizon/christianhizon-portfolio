@@ -56,7 +56,7 @@ class UserFormPage extends HookConsumerWidget {
           ref.invalidate(userTableControllerProvider);
           ref.invalidate(userControllerProvider(r.id));
 
-          context.pop();
+          context.pop(r);
         },
       );
     }

@@ -75,7 +75,7 @@ class PatientFormPage extends HookConsumerWidget {
           AppSnackBar.root(message: 'Success');
           ref.invalidate(patientTableControllerProvider);
           ref.invalidate(patientControllerProvider(r.id));
-          context.pop();
+          context.pop(r);
         },
       );
     }

@@ -55,13 +55,9 @@ class ProductInventory extends PbRecord with ProductInventoryMappable {
 @MappableClass()
 class ProductInventoryExpand with ProductInventoryExpandMappable {
   final Product product;
-  final Branch? branch;
-  final ProductCategory? category;
 
   ProductInventoryExpand({
     required this.product,
-    this.branch,
-    this.category,
   });
 
   static fromMap(Map<String, dynamic> raw) {

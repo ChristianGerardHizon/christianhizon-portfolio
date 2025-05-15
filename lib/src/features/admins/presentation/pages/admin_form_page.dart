@@ -58,7 +58,7 @@ class AdminFormPage extends HookConsumerWidget {
           ref.invalidate(adminControllerProvider(r.id));
           ref.invalidate(authControllerProvider);
 
-          context.pop();
+          context.pop(r);
         },
       );
     }

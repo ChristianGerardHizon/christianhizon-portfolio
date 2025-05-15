@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
@@ -61,7 +60,6 @@ class UsersPage extends HookConsumerWidget {
           notifier.clearSelection();
           ref.invalidate(userTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
-          if (context.canPop()) context.pop();
         },
       );
     }

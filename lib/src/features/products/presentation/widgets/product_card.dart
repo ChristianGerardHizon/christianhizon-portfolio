@@ -25,15 +25,14 @@ class ProductCard extends StatelessWidget {
       onTap: onTap,
       selected: selected,
       child: ListTile(
-          leading: Icon(Icons.abc),
-          title: Text(product.name),
-          subtitle: Column(
+        title: Text(product.name),
+        subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(product.name),
             Text(product.category.optional()),
           ],
-        )
+        ),
       ),
     );
   }

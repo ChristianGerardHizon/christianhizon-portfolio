@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/assets/assets.gen.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/widgets/pb_image_loader.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
@@ -38,13 +39,19 @@ class AdminCircleImage extends StatelessWidget {
       placeholder: SizedBox(),
       builder: (url) {
         return GestureDetector(
-          onTap: isInteractable ? () => PhotoViewer.show(context, url) : null,
+          onTap: isInteractable || url == null || url.isEmpty
+              ? null
+              : () => PhotoViewer.show(context, url),
           child: Container(
             height: radius.toDouble(),
             width: radius.toDouble(),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              image: DecorationImage(image: CachedNetworkImageProvider(url)),
+              image: DecorationImage(
+                image: url == null || url.isEmpty
+                    ? Assets.icons.appIconTransparent.provider()
+                    : CachedNetworkImageProvider(url),
+              ),
             ),
           ),
         );

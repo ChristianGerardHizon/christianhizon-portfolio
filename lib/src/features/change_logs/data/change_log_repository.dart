@@ -126,11 +126,13 @@ class ChangeLogRepositoryImpl extends PBCollectionRepository<ChangeLog> {
   TaskResult<List<ChangeLog>> listAll({
     int batch = 500,
     String? filter,
+    String? sort,
   }) {
     return TaskResult.tryCatch(
       () async {
         final result = await collection.getFullList(
           filter: filter,
+          sort: sort,
           expand: expand,
         );
         return result.map<ChangeLog>((e) => mapToData(e.toJson())).toList();

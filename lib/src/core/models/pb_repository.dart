@@ -16,6 +16,7 @@ abstract class PBCollectionRepository<T> {
   TaskResult<List<T>> listAll({
     int batch = 500,
     String? filter,
+    String? sort,
   });
   TaskResult<void> delete(String id);
   TaskResult<void> softDeleteMulti(List<String> ids);

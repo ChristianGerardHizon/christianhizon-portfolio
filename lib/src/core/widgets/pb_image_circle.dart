@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/assets/assets.gen.dart';
 import 'package:gym_system/src/core/widgets/pb_image_loader.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
 
@@ -38,10 +39,14 @@ class PbImageCircle extends StatelessWidget {
       height: radius,
       child: PbImageLoader(
         collection: collection,
-        file: file!,
+        file: file,
         id: recordId,
-        placeholder: SizedBox(),
+        placeholder: Assets.icons.appIconTransparent.image(),
         builder: (url) {
+          if (url == null || url.isEmpty) {
+            return Assets.icons.appIconTransparent.image();
+          }
+
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: viewable ? () => PhotoViewer.show(context, url) : null,

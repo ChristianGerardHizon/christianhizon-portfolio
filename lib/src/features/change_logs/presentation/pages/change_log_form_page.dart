@@ -53,7 +53,7 @@ class ChangeLogFormPage extends HookConsumerWidget {
           ref.invalidate(changeLogTableControllerProvider);
           ref.invalidate(changeLogControllerProvider(r.id));
 
-          context.pop();
+          context.pop(r);
         },
       );
     }

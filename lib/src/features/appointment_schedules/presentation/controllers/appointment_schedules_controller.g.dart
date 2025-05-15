@@ -7,7 +7,7 @@ part of 'appointment_schedules_controller.dart';
 // **************************************************************************
 
 String _$appointmentSchedulesControllerHash() =>
-    r'ed7e20745c6cf6eb615ec5e262d1fed493d08604';
+    r'd128b68533625c885a9fcb8eedcf39bce99d230d';
 
 /// Copied from Dart SDK
 class _SystemHash {

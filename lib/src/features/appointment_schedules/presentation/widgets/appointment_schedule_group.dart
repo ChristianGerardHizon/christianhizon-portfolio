@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/routing/router.dart';
+import 'package:gym_system/src/core/strings/fields.dart';
+import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
+import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/modals/dropdown_confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
+import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
+import 'package:gym_system/src/features/appointment_schedules/presentation/controllers/appointment_schedule_table_controller.dart';
 import 'package:gym_system/src/features/appointment_schedules/presentation/controllers/appointment_schedules_controller.dart';
-import 'package:gym_system/src/features/appointment_schedules/presentation/widgets/appointment_schedule_card.dart';
 import 'package:gym_system/src/features/appointment_schedules/presentation/widgets/appointment_schedule_tile.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -29,21 +36,98 @@ class AppointmentScheduleGroup extends HookConsumerWidget {
     final isLoading = useState(false);
 
     ///
-    ///
-    ///
-    final repo = ref.read(appointmentScheduleRepositoryProvider);
-
-    ///
     /// state
     ///
-    final state = ref.watch(appointmentSchedulesControllerProvider(
-        patientId: patientId, patientRecordId: patientRecordId));
+    final provider = appointmentSchedulesControllerProvider(
+      patientId: patientId,
+      patientRecordId: patientRecordId,
+    );
+    final state = ref.watch(provider);
 
-    void onAdd(String patientId, String patientRecordId) {
-      AppointmentScheduleFormPageRoute(
+    ///
+    /// refresh
+    ///
+    refresh() {
+      ref.invalidate(provider);
+    }
+
+    ///
+    /// onAdd
+    ///
+    void onAdd(String patientId, String patientRecordId) async {
+      final result = await AppointmentScheduleFormPageRoute(
         patientId: patientId,
         patientRecordId: patientRecordId,
       ).push(context);
+      if (result is AppointmentSchedule) {
+        refresh();
+      }
+    }
+
+    ///
+    /// onEdit
+    ///
+    void onEdit(AppointmentSchedule appointmentSchedule) async {
+      final result = await AppointmentScheduleFormPageRoute(
+              id: appointmentSchedule.id, patientId: patientId)
+          .push(context);
+      if (result is AppointmentSchedule) {
+        refresh();
+      }
+    }
+
+    ///
+    /// onDelete
+    ///
+    onDelete(List<AppointmentSchedule> items) async {
+      final confirm = await ConfirmModal.show(context);
+      if (confirm != true) return;
+      final repo = ref.read(appointmentScheduleRepositoryProvider);
+      final ids = items.map((e) => e.id).toList();
+      // isLoading.value = true;
+      final result = await repo.softDeleteMulti(ids).run();
+      // if (context.mounted) isLoading.value = false;
+      result.fold(
+        (l) => AppSnackBar.rootFailure(l),
+        (r) {
+          ref.invalidate(appointmentScheduleTableControllerProvider);
+          refresh();
+          AppSnackBar.root(message: 'Successfully Deleted');
+        },
+      );
+    }
+
+    onChangeStatus(AppointmentSchedule appointmentSchedule) async {
+      final repo = ref.read(appointmentScheduleRepositoryProvider);
+      final task =
+          DropdownConfirmModal.showTaskResult<AppointmentScheduleStatus>(
+                  context,
+                  title: 'Select New Status',
+                  initialValue: appointmentSchedule.status,
+                  options: AppointmentScheduleStatus.values.map((e) {
+                    return DropdownConfirmOption(
+                      label: e.name,
+                      value: e,
+                    );
+                  }).toList())
+              .map((status) => {AppointmentScheduleField.status: status.name})
+              .flatMap((value) => repo.update(appointmentSchedule, value))
+              .flatMap((r) => _handleSuccessfulUpdateTaskSidEffects(
+                    context: context,
+                    id: appointmentSchedule.id,
+                    refresh: refresh,
+                  ));
+
+      /// start
+      isLoading.value = true;
+      final result = await task.run();
+      isLoading.value = false;
+
+      // 4. Handle Error
+      result.match(
+        (failure) => _handleFailure(context, failure),
+        (_) {},
+      );
     }
 
     return StackLoader(
@@ -57,7 +141,8 @@ class AppointmentScheduleGroup extends HookConsumerWidget {
           label: const Text('Add'),
         ),
         items: state.maybeWhen(
-          skipLoadingOnRefresh: false,
+          skipError: false,
+          skipLoadingOnRefresh: true,
           skipLoadingOnReload: false,
           data: (data) {
             if (data.isEmpty)
@@ -78,9 +163,9 @@ class AppointmentScheduleGroup extends HookConsumerWidget {
                         onTap: () {
                           AppointmentSchedulePageRoute(e.id).push(context);
                         },
-                        onDelete: () {},
-                        onChangeStatus: () {},
-                        onEdit: () {},
+                        onDelete: () => onDelete([e]),
+                        onChangeStatus: () => onChangeStatus(e),
+                        onEdit: () => onEdit(e),
                       ),
                     ))
                 .toList();
@@ -90,4 +175,30 @@ class AppointmentScheduleGroup extends HookConsumerWidget {
       ),
     );
   }
+}
+
+///
+/// Handles Failure
+/// Shows a snackbar when a failure occurs
+///
+void _handleFailure(BuildContext context, Failure failure) {
+  if (failure is CancelledFailure) return;
+  AppSnackBar.rootFailure(failure);
+}
+
+///
+/// Handles post-delete side effects like showing snackbar,
+/// popping navigation, and refreshing local state.
+///
+TaskResult<void> _handleSuccessfulUpdateTaskSidEffects({
+  required BuildContext context,
+  required String id,
+  required void Function() refresh,
+}) {
+  return Task<void>(() async {
+    if (!context.mounted) return;
+    AppSnackBar.root(message: 'Success');
+    refresh();
+    return null;
+  }).toTaskEither<Failure>();
 }

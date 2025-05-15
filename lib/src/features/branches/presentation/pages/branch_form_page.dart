@@ -49,7 +49,7 @@ class BranchFormPage extends HookConsumerWidget {
         (r) {
           AppSnackBar.root(message: 'Success');
           ref.invalidate(branchTableControllerProvider);
-          context.pop();
+          context.pop(r);
         },
       );
     }

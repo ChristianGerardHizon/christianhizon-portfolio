@@ -56,7 +56,7 @@ class PatientTreatmentRecordFormPage extends HookConsumerWidget {
           AppSnackBar.root(message: 'Success');
           ref.invalidate(patientTreatmentRecordTableControllerProvider);
           ref.invalidate(patientTreatmentRecordControllerProvider(r.id));
-          context.pop();
+          context.pop(r);
         },
       );
     }

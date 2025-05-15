@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/features/product_stocks/domain/product_stock.dart';
 
 class ProductStockTile extends StatelessWidget {
@@ -15,7 +16,7 @@ class ProductStockTile extends StatelessWidget {
       leading: CircleAvatar(
         child: Text(lotNo.isNotEmpty ? lotNo[0] : '?'),
       ),
-      title: Text(lotNo.isNotEmpty ? lotNo : 'No Lot No'),
+      title: Text(lotNo.optional()),
       subtitle: Text('Quantity: $quantity'),
     );
   }

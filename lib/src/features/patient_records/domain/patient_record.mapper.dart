@@ -53,6 +53,9 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
   static DateTime? _$updated(PatientRecord v) => v.updated;
   static const Field<PatientRecord, DateTime> _f$updated =
       Field('updated', _$updated, opt: true);
+  static num? _$weightInKg(PatientRecord v) => v.weightInKg;
+  static const Field<PatientRecord, num> _f$weightInKg =
+      Field('weightInKg', _$weightInKg, opt: true, hook: PbNumHook());
   static String? _$branch(PatientRecord v) => v.branch;
   static const Field<PatientRecord, String> _f$branch =
       Field('branch', _$branch, opt: true, hook: PbEmptyHook());
@@ -70,6 +73,7 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
+    #weightInKg: _f$weightInKg,
     #branch: _f$branch,
   };
 
@@ -86,6 +90,7 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated),
+        weightInKg: data.dec(_f$weightInKg),
         branch: data.dec(_f$branch));
   }
 
@@ -155,6 +160,7 @@ abstract class PatientRecordCopyWith<$R, $In extends PatientRecord, $Out>
       bool? isDeleted,
       DateTime? created,
       DateTime? updated,
+      num? weightInKg,
       String? branch});
   PatientRecordCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
@@ -180,6 +186,7 @@ class _PatientRecordCopyWithImpl<$R, $Out>
           bool? isDeleted,
           Object? created = $none,
           Object? updated = $none,
+          Object? weightInKg = $none,
           Object? branch = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
@@ -193,6 +200,7 @@ class _PatientRecordCopyWithImpl<$R, $Out>
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated,
+        if (weightInKg != $none) #weightInKg: weightInKg,
         if (branch != $none) #branch: branch
       }));
   @override
@@ -208,6 +216,7 @@ class _PatientRecordCopyWithImpl<$R, $Out>
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated),
+      weightInKg: data.get(#weightInKg, or: $value.weightInKg),
       branch: data.get(#branch, or: $value.branch));
 
   @override

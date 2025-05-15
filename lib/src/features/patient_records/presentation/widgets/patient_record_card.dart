@@ -103,6 +103,24 @@ class PatientRecordCard extends StatelessWidget {
                       ],
                     ),
                   ),
+                  RichText(
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      children: [
+                        TextSpan(
+                            text: 'Weight: ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w600)),
+                        TextSpan(
+                          text: patientRecord.displayWeightInKg.optional(),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               )),
         ],

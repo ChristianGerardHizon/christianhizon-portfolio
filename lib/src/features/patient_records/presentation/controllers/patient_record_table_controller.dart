@@ -36,7 +36,7 @@ class PatientRecordTableController extends _$PatientRecordTableController {
           filter: filterFunc.searchName(tableFilter).build(),
           pageNo: page,
           pageSize: pageSize,
-          sort: '-updated',
+          sort: '-${PatientRecordField.vistDate}',
         )
 
         // 2. success sideffect

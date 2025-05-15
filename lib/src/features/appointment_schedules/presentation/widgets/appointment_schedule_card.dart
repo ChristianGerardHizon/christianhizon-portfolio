@@ -86,7 +86,7 @@ class AppointmentScheduleCard extends StatelessWidget {
                                 .bodyMedium
                                 ?.copyWith(fontWeight: FontWeight.w600)),
                         TextSpan(
-                          text: appointmentSchedule.notes.optional(),
+                          text: appointmentSchedule.purpose.optional(),
                         ),
                       ],
                     ),

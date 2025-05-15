@@ -118,11 +118,13 @@ class BranchRepositoryImpl extends PBCollectionRepository<Branch> {
   TaskResult<List<Branch>> listAll({
     int batch = 500,
     String? filter,
+    String? sort,
   }) {
     return TaskResult.tryCatch(
       () async {
         final result = await collection.getFullList(
           filter: filter,
+          sort: sort,
         );
         return result.map<Branch>((e) => mapToData(e.toJson())).toList();
       },

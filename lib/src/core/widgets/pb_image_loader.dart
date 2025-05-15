@@ -18,15 +18,19 @@ class PbImageLoader extends ConsumerWidget {
 
   final String collection;
   final String id;
-  final String file;
+  final String? file;
   final Widget? placeholder;
-  final Widget Function(String url) builder;
+  final Widget Function(String? url) builder;
   final Widget Function()? loader;
   final Widget Function()? error;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(settingsControllerProvider);
+
+    if (file == null || (file ?? '').isEmpty) {
+      return builder(null);
+    }
 
     return state.when(
       data: (setting) {

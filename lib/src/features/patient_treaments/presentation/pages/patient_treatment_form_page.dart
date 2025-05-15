@@ -52,7 +52,7 @@ class PatientTreatmentFormPage extends HookConsumerWidget {
         (r) {
           AppSnackBar.root(message: 'Success');
           ref.invalidate(tableProvider);
-          context.pop();
+          context.pop(r);
         },
       );
     }

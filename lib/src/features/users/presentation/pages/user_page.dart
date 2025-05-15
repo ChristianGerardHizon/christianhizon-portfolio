@@ -145,7 +145,7 @@ class UserPage extends HookConsumerWidget {
                         fit: BoxFit.contain,
                       ),
                     ),
-                 ),
+                  ),
                 ),
 
                 ///
@@ -170,6 +170,10 @@ class UserPage extends HookConsumerWidget {
                         DynamicGroupItem.text(
                           title: 'Email',
                           value: user.email,
+                        ),
+                        DynamicGroupItem.text(
+                          title: 'Branch',
+                          value: (user.expand.branch?.name).optional(),
                         ),
                         DynamicGroupItem.text(
                           title: 'Verified',

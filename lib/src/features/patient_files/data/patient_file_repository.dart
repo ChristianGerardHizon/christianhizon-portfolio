@@ -106,7 +106,7 @@ class PatientFileRepositoryImpl extends PBCollectionRepository<PatientFile> {
     return TaskResult.tryCatch(() async {
       final batch = pb.createBatch();
       final batchCollection =
-          batch.collection(PocketBaseCollections.patientRecords);
+          batch.collection(PocketBaseCollections.patientFiles);
       for (final id in ids) {
         batchCollection.update(id, body: {'isDeleted': true});
       }
@@ -119,11 +119,13 @@ class PatientFileRepositoryImpl extends PBCollectionRepository<PatientFile> {
   TaskResult<List<PatientFile>> listAll({
     int batch = 500,
     String? filter,
+    String? sort,
   }) {
     return TaskResult.tryCatch(
       () async {
         final result = await collection.getFullList(
           filter: filter,
+          sort: sort,
         );
         return result.map<PatientFile>((e) => mapToData(e.toJson())).toList();
       },

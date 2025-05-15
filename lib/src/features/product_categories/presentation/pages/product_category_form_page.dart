@@ -67,7 +67,6 @@ class ProductCategoryFormPage extends HookConsumerWidget {
           error: (error, stack) => Center(child: Text(error.toString())),
           data: (formState) {
             final productCategory = formState.category;
-            final categories = formState.categories;
 
             return DynamicFormBuilder(
               itemPadding: const EdgeInsets.only(

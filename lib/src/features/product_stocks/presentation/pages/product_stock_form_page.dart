@@ -58,7 +58,7 @@ class ProductStockFormPage extends HookConsumerWidget {
           ref.invalidate(productInventoryControllerProvider);
           ref.invalidate(productStockTableControllerProvider);
           ref.invalidate(productStockControllerProvider(r.id));
-          context.pop();
+          context.pop(r);
         },
       );
     }

@@ -22,7 +22,7 @@ class AppointmentSchedulesController extends _$AppointmentSchedulesController {
         // 3. patient record filter
         .map((f) => _addPatientRecordFilter(f, patientRecordId))
         .run();
-    final result = await repo.listAll(filter: filter.build()).run();
+    final result = await repo.listAll(filter: filter.build(), sort: '-${AppointmentScheduleField.date}').run();
 
     return result.fold(Future.error, (x) => Future.value(x));
   }

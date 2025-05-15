@@ -53,7 +53,7 @@ class PatientFileFormPage extends HookConsumerWidget {
         (l) => AppSnackBar.rootFailure(l),
         (r) {
           AppSnackBar.root(message: 'Success');
-          context.pop();
+          context.pop(r);
         },
       );
     }

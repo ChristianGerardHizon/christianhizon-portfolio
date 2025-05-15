@@ -39,14 +39,16 @@ class PBExpand {
   static Expand product = Expand.flat(['branch', 'category']);
 
   /// product inventory
-  static Expand productInventory =
-      Expand.flat(['product', 'product.branch', 'product.category']);
+  static Expand productInventory = Expand.nested('product', product.paths);
   static Expand patientTreatmentRecord = Expand.flat(['treatment']);
   static Expand patient = Expand.flat(['species', 'breed', 'branch']);
+  static Expand patientRecord = Expand.flat(['patient', 'patient.branch']);
 
   /// appointmentSchedule only needs “patient” plus all of patient’s subs:
-  static final Expand appointmentSchedule =
-      Expand.nested('patient', patient.paths);
+  static final Expand appointmentSchedule = Expand.flat([
+    ...Expand.nested('patient', patient.paths).paths,
+    'patientRecord',
+  ]);
 
   static Expand productStock = Expand.flat([]);
 

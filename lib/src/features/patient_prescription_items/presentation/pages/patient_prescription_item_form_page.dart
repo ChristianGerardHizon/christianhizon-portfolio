@@ -55,7 +55,7 @@ class PatientPrescriptionItemFormPage extends HookConsumerWidget {
           AppSnackBar.root(message: 'Success');
           ref.invalidate(
               patientPrescriptionItemGroupControllerProvider(parentId));
-          context.pop();
+          context.pop(r);
         },
       );
     }

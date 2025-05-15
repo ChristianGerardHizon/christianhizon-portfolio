@@ -1,7 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:gym_system/src/core/hooks/pb_num_hook.dart';
 import 'package:gym_system/src/core/models/pb_record.dart';
 import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
 
 part 'patient_record.mapper.dart';
 
@@ -15,6 +15,9 @@ class PatientRecord extends PbRecord with PatientRecordMappable {
   @MappableField(hook: PbEmptyHook())
   final String? branch;
 
+  @MappableField(hook: PbNumHook())
+  final num? weightInKg;
+
   PatientRecord({
     required super.id,
     required super.collectionId,
@@ -27,26 +30,21 @@ class PatientRecord extends PbRecord with PatientRecordMappable {
     super.isDeleted = false,
     super.created,
     super.updated,
+    this.weightInKg,
     this.branch,
   });
 
   static fromMap(Map<String, dynamic> raw) {
     return PatientRecordMapper.fromMap({
       ...raw,
-      PatientRecordField.followUpDate:
-          raw[PatientRecordField.followUpDate] == ''
-              ? null
-              : raw[PatientRecordField.followUpDate],
     });
   }
 
   static const fromJson = PatientRecordMapper.fromJson;
 
-  Map<String, dynamic> toForm() {
-    return {
-      ...toMap(),
-      'created': created,
-      'updated': updated,
-    };
+  String? get displayWeightInKg {
+    // append kg to weightInKg
+    if (weightInKg == null) return null;
+    return weightInKg!.toStringAsFixed(2).toString() + ' kg';
   }
 }

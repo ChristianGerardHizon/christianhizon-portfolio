@@ -238,8 +238,8 @@ TaskResult<void> _handleSuccessfulDeleteTaskSidEffects({
   return Task<void>(() async {
     if (!context.mounted) return;
     AppSnackBar.root(message: 'Successfully Deleted');
-    if (context.canPop()) context.pop();
     refresh(appointmentScheduleId);
+    if (context.canPop()) context.pop();
     return null;
   }).toTaskEither<Failure>();
 }

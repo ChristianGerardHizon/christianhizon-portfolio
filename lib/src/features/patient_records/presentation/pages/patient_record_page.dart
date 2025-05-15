@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -207,6 +208,29 @@ class PatientRecordPage extends HookConsumerWidget {
                                   ),
                                   minLines: 3,
                                   maxLines: 10,
+                                ),
+                              ),
+                              DynamicGroupItem.field(
+                                title: 'Weight in Kg',
+                                value: FormBuilderTextField(
+                                  name: PatientRecordField.weightInKg,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'^\d*\.?\d*$')),
+                                  ],
+                                  validator: FormBuilderValidators.compose([
+                                    FormBuilderValidators.required(),
+                                    FormBuilderValidators.numeric(),
+                                  ]),
+                                  valueTransformer: (value) {
+                                    if (value is String) {
+                                      return num.parse(value);
+                                    }
+                                  },
                                 ),
                               ),
                               DynamicGroupItem.field(

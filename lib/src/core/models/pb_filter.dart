@@ -32,8 +32,8 @@ class PocketbaseFilter {
   }) {
     final utc = startDateTime.toUtc();
     final endUtc = (endDateTime ?? startDateTime).toUtc();
-    final start = utc.startOfDay.pbFormat;
-    final end = endUtc.endOfDay.pbFormat;
+    final start = utc.startOfDay.toIso8601String();
+    final end = endUtc.endOfDay.toIso8601String();
     final clause = '$field >= "$start" && $field <= "$end"';
     return PocketbaseFilter._(_baseFilter, _combine(_filter, clause));
   }

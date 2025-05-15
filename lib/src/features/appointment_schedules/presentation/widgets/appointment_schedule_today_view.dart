@@ -21,7 +21,6 @@ import 'package:gym_system/src/core/widgets/refresh_button.dart';
 import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
 import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
 import 'package:gym_system/src/features/appointment_schedules/presentation/controllers/appointment_schedule_table_controller.dart';
-import 'package:gym_system/src/features/appointment_schedules/presentation/pages/appointment_schedule_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AppointmentScheduleTodayView extends HookConsumerWidget {
@@ -120,8 +119,22 @@ class AppointmentScheduleTodayView extends HookConsumerWidget {
 
                 // empty
                 if (listState.valueOrNull?.isEmpty ?? false) {
-                  return const Center(
-                    child: Text('No appointments found'),
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          MIcons.calendarTodayOutline,
+                          size: 45,
+                        ),
+                        SizedBox(height: 16),
+                        Text('No appointments found'),
+                        TextButton(
+                          onPressed: () => onShowMore(),
+                          child: Text('View Today'),
+                        )
+                      ],
+                    ),
                   );
                 }
 
@@ -133,6 +146,7 @@ class AppointmentScheduleTodayView extends HookConsumerWidget {
                   onRowTap: onRowTap,
                   showMore: true,
                   onShowMore: onShowMore,
+                  hidePageController: (listState.valueOrNull ?? []).length > 5,
                   columns: [
                     DynamicTableColumn(
                       header: 'Date and Time',

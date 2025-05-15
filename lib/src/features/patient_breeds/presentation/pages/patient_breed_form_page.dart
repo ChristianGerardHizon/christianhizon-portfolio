@@ -57,7 +57,7 @@ class PatientBreedFormPage extends HookConsumerWidget {
             TableControllerKeys.patientBreed,
             patientSpeciesId: parentId,
           ));
-          context.pop();
+          context.pop(r);
         },
       );
     }

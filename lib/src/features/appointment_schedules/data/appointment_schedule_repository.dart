@@ -127,12 +127,14 @@ class AppointmentScheduleRepositoryImpl
   TaskResult<List<AppointmentSchedule>> listAll({
     int batch = 500,
     String? filter,
+    String? sort,
   }) {
     return TaskResult.tryCatch(
       () async {
         final result = await collection.getFullList(
           filter: filter,
           expand: expand,
+          sort: sort,
         );
         return result
             .map<AppointmentSchedule>((e) => mapToData(e.toJson()))

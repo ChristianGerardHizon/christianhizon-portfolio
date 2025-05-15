@@ -22,8 +22,6 @@ import 'package:gym_system/src/features/patient_records/presentation/controllers
 import 'package:gym_system/src/features/patients/domain/patient.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-enum _MenuOption { edit, delete }
-
 enum _Action { print, share, save }
 
 class PatientPrescriptionItemsGroup extends HookConsumerWidget {

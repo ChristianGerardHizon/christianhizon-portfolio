@@ -290,8 +290,6 @@ class ProductInventoryExpandMapper
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ProductInventoryExpandMapper._());
       ProductMapper.ensureInitialized();
-      BranchMapper.ensureInitialized();
-      ProductCategoryMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -302,25 +300,14 @@ class ProductInventoryExpandMapper
   static Product _$product(ProductInventoryExpand v) => v.product;
   static const Field<ProductInventoryExpand, Product> _f$product =
       Field('product', _$product);
-  static Branch? _$branch(ProductInventoryExpand v) => v.branch;
-  static const Field<ProductInventoryExpand, Branch> _f$branch =
-      Field('branch', _$branch, opt: true);
-  static ProductCategory? _$category(ProductInventoryExpand v) => v.category;
-  static const Field<ProductInventoryExpand, ProductCategory> _f$category =
-      Field('category', _$category, opt: true);
 
   @override
   final MappableFields<ProductInventoryExpand> fields = const {
     #product: _f$product,
-    #branch: _f$branch,
-    #category: _f$category,
   };
 
   static ProductInventoryExpand _instantiate(DecodingData data) {
-    return ProductInventoryExpand(
-        product: data.dec(_f$product),
-        branch: data.dec(_f$branch),
-        category: data.dec(_f$category));
+    return ProductInventoryExpand(product: data.dec(_f$product));
   }
 
   @override
@@ -382,9 +369,7 @@ abstract class ProductInventoryExpandCopyWith<
     $In extends ProductInventoryExpand,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
   ProductCopyWith<$R, Product, Product> get product;
-  BranchCopyWith<$R, Branch, Branch>? get branch;
-  ProductCategoryCopyWith<$R, ProductCategory, ProductCategory>? get category;
-  $R call({Product? product, Branch? branch, ProductCategory? category});
+  $R call({Product? product});
   ProductInventoryExpandCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -402,26 +387,11 @@ class _ProductInventoryExpandCopyWithImpl<$R, $Out>
   ProductCopyWith<$R, Product, Product> get product =>
       $value.product.copyWith.$chain((v) => call(product: v));
   @override
-  BranchCopyWith<$R, Branch, Branch>? get branch =>
-      $value.branch?.copyWith.$chain((v) => call(branch: v));
+  $R call({Product? product}) =>
+      $apply(FieldCopyWithData({if (product != null) #product: product}));
   @override
-  ProductCategoryCopyWith<$R, ProductCategory, ProductCategory>? get category =>
-      $value.category?.copyWith.$chain((v) => call(category: v));
-  @override
-  $R call(
-          {Product? product,
-          Object? branch = $none,
-          Object? category = $none}) =>
-      $apply(FieldCopyWithData({
-        if (product != null) #product: product,
-        if (branch != $none) #branch: branch,
-        if (category != $none) #category: category
-      }));
-  @override
-  ProductInventoryExpand $make(CopyWithData data) => ProductInventoryExpand(
-      product: data.get(#product, or: $value.product),
-      branch: data.get(#branch, or: $value.branch),
-      category: data.get(#category, or: $value.category));
+  ProductInventoryExpand $make(CopyWithData data) =>
+      ProductInventoryExpand(product: data.get(#product, or: $value.product));
 
   @override
   ProductInventoryExpandCopyWith<$R2, ProductInventoryExpand, $Out2>

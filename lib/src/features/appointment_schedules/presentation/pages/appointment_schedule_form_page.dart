@@ -68,7 +68,7 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
         (r) {
           AppSnackBar.root(message: 'Success');
           ref.invalidate(appointmentScheduleTableControllerProvider);
-          context.pop();
+          context.pop(r);
         },
       );
     }
@@ -91,6 +91,7 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
             final appointmentSchedule = formState.appointmentSchedule;
             final patient = formState.patient;
             final patientRecord = formState.patientRecord;
+            final branches = formState.branches;
 
             return Padding(
               padding: EdgeInsets.only(top: 14, left: 20, right: 20),
@@ -280,6 +281,25 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                     minLines: 3,
                     maxLines: 10,
                     validator: FormBuilderValidators.compose([]),
+                  ),
+
+                  ///
+                  /// Branches
+                  ///
+                  DynamicSelectField(
+                    name: PatientRecordField.branch,
+                    initialValue: appointmentSchedule?.branch ??
+                        branches?.firstOrNull?.id,
+                    decoration: InputDecoration(
+                      label: Text('Branch'),
+                      border: OutlineInputBorder(),
+                    ),
+                    options: branches
+                        .map((e) => SelectOption(
+                              value: e.id,
+                              display: e.name,
+                            ))
+                        .toList(),
                   ),
                 ],
                 onSubmit: (result) => onSave(appointmentSchedule, result),

@@ -73,7 +73,7 @@ class ProductAdjustmentFormPage extends HookConsumerWidget {
             ref.invalidate(productStockTableControllerProvider);
           if (r.type == ProductAdjustmentType.product)
             ref.invalidate(productTableControllerProvider);
-          context.pop();
+          context.pop(r);
         },
       );
     }
@@ -131,7 +131,9 @@ class ProductAdjustmentFormPage extends HookConsumerWidget {
                     builder: (obj) {
                       if (obj is Product) {
                         return ProductTile(
-                            product: product, showQuantity: true);
+                          product: product,
+                          showQuantity: true,
+                        );
                       }
                       return const SizedBox();
                     },

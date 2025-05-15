@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/failures/failure.dart';
@@ -45,6 +44,7 @@ class AppointmentSchedulesTodayPage extends HookConsumerWidget {
     final listProvider = appointmentScheduleTableControllerProvider(
       tableKey,
       patientId: patientId,
+      date: now.startOfDay,
     );
     final listState = ref.watch(listProvider);
 
@@ -132,7 +132,6 @@ class AppointmentSchedulesTodayPage extends HookConsumerWidget {
           notifier.clearSelection();
           ref.invalidate(appointmentScheduleTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
-          if (context.canPop()) context.pop();
         },
       );
     }

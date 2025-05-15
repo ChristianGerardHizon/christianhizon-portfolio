@@ -123,11 +123,16 @@ class PatientRepositoryImpl extends PBCollectionRepository<Patient> {
   }
 
   @override
-  TaskResult<List<Patient>> listAll({int batch = 500, String? filter}) {
+  TaskResult<List<Patient>> listAll({
+    int batch = 500,
+    String? filter,
+    String? sort,
+  }) {
     return TaskResult.tryCatch(
       () async {
         final result = await collection.getFullList(
           filter: filter,
+          sort: sort,
         );
         return result.map<Patient>((e) => mapToData(e.toJson())).toList();
       },

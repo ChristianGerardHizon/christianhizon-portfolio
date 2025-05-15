@@ -34,7 +34,7 @@ class PatientRecordFormPage extends HookConsumerWidget {
     final provider = ref.watch(_provider);
 
     ///
-    /// Submit 
+    /// Submit
     ///
     void onSave(
       PatientRecord? patientRecord,
@@ -59,7 +59,7 @@ class PatientRecordFormPage extends HookConsumerWidget {
           AppSnackBar.root(message: 'Success');
           ref.invalidate(patientRecordTableControllerProvider);
           ref.invalidate(patientRecordControllerProvider(r.id));
-          context.pop();
+          context.pop(r);
         },
       );
     }
@@ -194,6 +194,25 @@ class PatientRecordFormPage extends HookConsumerWidget {
                   minLines: 2,
                   maxLines: 30,
                   validator: FormBuilderValidators.compose([]),
+                ),
+
+                ///
+                /// Weight in Kg
+                ///
+                DynamicNumberField(
+                  name: PatientRecordField.weightInKg,
+                  initialValue: patientRecord?.weightInKg,
+                  decoration: InputDecoration(
+                    label: Text('Weight in Kg'),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                    FormBuilderValidators.numeric(),
+                  ]),
+                  valueTransformer: (value) {
+                    if (value is String) return num.parse(value);
+                  },
                 ),
 
                 ///

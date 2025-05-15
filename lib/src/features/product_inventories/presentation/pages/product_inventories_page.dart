@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
 import 'package:gym_system/src/core/routing/router.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
@@ -14,7 +13,7 @@ import 'package:gym_system/src/features/product_inventories/presentation/control
 import 'package:gym_system/src/features/products/data/product_repository.dart';
 import 'package:gym_system/src/features/product_inventories/domain/product_inventory.dart';
 
-import 'package:gym_system/src/features/products/presentation/widgets/product_inventory_card.dart';
+import 'package:gym_system/src/features/product_inventories/presentation/widgets/product_inventory_card.dart';
 import 'package:gym_system/src/features/products/presentation/widgets/product_status_text.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -62,7 +61,6 @@ class ProductInventoriesPage extends HookConsumerWidget {
           notifier.clearSelection();
           ref.invalidate(productInventoryTableControllerProvider);
           AppSnackBar.root(message: 'Successfully Deleted');
-          if (context.canPop()) context.pop();
         },
       );
     }
@@ -99,7 +97,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
           ],
         ),
         body: SliverDynamicTableView<ProductInventory>(
-          tableKey: TableControllerKeys.productInventory,
+          tableKey: tableKey,
           error: null,
           items: listState.maybeWhen(
             skipError: true,
@@ -181,6 +179,7 @@ class ProductInventoriesPage extends HookConsumerWidget {
           mobileBuilder: (context, index, productInventory, selected) {
             return ProductInventoryCard(
               productInventory: productInventory,
+              onAdjustStocks: () => adjustStock(productInventory),
               onTap: () {
                 if (selected)
                   notifier.toggleRow(index);

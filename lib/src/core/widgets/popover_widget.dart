@@ -125,6 +125,9 @@ class PopoverWidget extends StatelessWidget {
           showModalBottomSheet(
             context: context,
             useRootNavigator: true,
+            constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.8,
+                minHeight: MediaQuery.of(context).size.height * 0.5),
             builder: (ctx) {
               return SafeArea(
                 child: Column(

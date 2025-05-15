@@ -79,7 +79,7 @@ class PatientTreatmentsPage extends HookConsumerWidget {
         opacity: .8,
         isLoading: isLoading.value,
         child: SliverDynamicTableView<PatientTreatment>(
-          tableKey: TableControllerKeys.patientTreatment,
+          tableKey: tableKey,
           error: FailureMessage.asyncValue(listState),
           isLoading: listState.isLoading,
           items: listState.valueOrNull ?? [],

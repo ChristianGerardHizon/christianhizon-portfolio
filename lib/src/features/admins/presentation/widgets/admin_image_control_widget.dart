@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/assets/assets.gen.dart';
 import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
 import 'package:gym_system/src/core/widgets/pb_image_loader.dart';
 import 'package:gym_system/src/core/widgets/photo_viewer.dart';
@@ -34,10 +35,14 @@ class AdminImageControlWidget extends StatelessWidget {
               return Column(
                 children: [
                   InkWell(
-                      onTap: () => PhotoViewer.show(context, url),
+                      onTap: () => url != null && url.isNotEmpty
+                          ? PhotoViewer.show(context, url)
+                          : null,
                       child: CircleAvatar(
                         radius: 60,
-                        backgroundImage: CachedNetworkImageProvider(url),
+                        backgroundImage: url == null || url.isEmpty
+                            ? Assets.icons.appIconTransparent.provider()
+                            : CachedNetworkImageProvider(url),
                       )),
                   SizedBox(height: 20),
                   Row(
@@ -65,10 +70,14 @@ class AdminImageControlWidget extends StatelessWidget {
             return Row(
               children: [
                 InkWell(
-                    onTap: () => PhotoViewer.show(context, url),
+                    onTap: () => url != null && url.isNotEmpty
+                        ? PhotoViewer.show(context, url)
+                        : null,
                     child: CircleAvatar(
                       radius: 60,
-                      backgroundImage: CachedNetworkImageProvider(url),
+                      backgroundImage: url == null || url.isEmpty
+                          ? Assets.icons.appIconTransparent.provider()
+                          : CachedNetworkImageProvider(url),
                     )),
                 Spacer(),
                 FilledButton.icon(

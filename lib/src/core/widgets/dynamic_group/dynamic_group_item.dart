@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gym_system/src/core/routing/router.dart';
-import 'package:gym_system/src/core/widgets/card_ink_well.dart';
 
 class DynamicGroupItem extends StatelessWidget {
   const DynamicGroupItem({
