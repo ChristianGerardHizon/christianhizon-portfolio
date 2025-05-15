@@ -14,6 +14,8 @@ import 'package:gym_system/src/features/appointment_schedules/presentation/pages
 import 'package:gym_system/src/features/appointment_schedules/presentation/pages/appointment_schedule_form_page.dart';
 import 'package:gym_system/src/features/appointment_schedules/presentation/pages/appointment_schedule_page.dart';
 import 'package:gym_system/src/features/appointment_schedules/presentation/pages/appointment_schedules_page.dart';
+import 'package:gym_system/src/features/appointment_schedules/presentation/pages/appointment_schedules_today_page.dart'
+    show AppointmentSchedulesTodayPage;
 import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_page.dart';
 import 'package:gym_system/src/features/authentication/presentation/pages/account_recovery_page.dart';

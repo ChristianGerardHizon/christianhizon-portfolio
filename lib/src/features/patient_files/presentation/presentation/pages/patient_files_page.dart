@@ -92,6 +92,10 @@ class PatientFilesPage extends HookConsumerWidget {
     }
 
     onTap(PatientFile patientFile) {
+      if (!patientFile.isImage) {
+        AppSnackBar.root(message: 'Unable to view file');
+        return;
+      }
       PhotoViewer.show(context, generateUrl(patientFile));
     }
 
@@ -153,6 +157,7 @@ class PatientFilesPage extends HookConsumerWidget {
           isLoading: listState.isLoading,
           items: listState.valueOrNull ?? [],
           onDelete: onDelete,
+          onRowTap: onTap,
 
           ///
           /// Search Features
@@ -166,7 +171,7 @@ class PatientFilesPage extends HookConsumerWidget {
           columns: [
             DynamicTableColumn(
               header: 'File',
-              width: 400,
+              width: 200,
               alignment: Alignment.centerLeft,
               builder: (context, data, row, column) {
                 return Align(
@@ -174,6 +179,20 @@ class PatientFilesPage extends HookConsumerWidget {
                   child: Text(
                     overflow: TextOverflow.ellipsis,
                     data.file.toString(),
+                  ),
+                );
+              },
+            ),
+            DynamicTableColumn(
+              header: 'Notes',
+              width: 200,
+              alignment: Alignment.centerLeft,
+              builder: (context, data, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    overflow: TextOverflow.ellipsis,
+                    data.notes.optional(),
                   ),
                 );
               },

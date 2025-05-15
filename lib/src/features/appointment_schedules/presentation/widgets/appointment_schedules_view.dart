@@ -168,7 +168,7 @@ class AppointmentSchedulesView extends HookConsumerWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 overflow: TextOverflow.ellipsis,
-                data.purpose.optional(),
+                data.notes.optional(),
               ),
             );
           },

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/selectable_card.dart';
 import 'package:gym_system/src/features/patient_files/domain/patient_file.dart';
 
@@ -24,14 +26,16 @@ class PatientFileCard extends StatelessWidget {
       onTap: onTap,
       selected: selected,
       child: ListTile(
-          leading: Icon(Icons.abc),
-          title: Text(patientFile.id),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(patientFile.id),
-            ],
-          )),
+        isThreeLine: true,
+        leading: Icon(patientFile.isImage ? MIcons.image : MIcons.fileOutline),
+        title: Text(patientFile.file),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text((patientFile.notes).optional()),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -36,9 +36,10 @@ class SliverDynamicTableView<T> extends HookConsumerWidget {
     bool selected,
   ) mobileBuilder;
   final bool isLoading;
-
+  final List<Widget> headerWidgets;
   const SliverDynamicTableView({
     super.key,
+    this.headerWidgets = const <Widget>[],
     this.onRowTap,
     required this.tableKey,
     required this.items,
@@ -92,6 +93,11 @@ class SliverDynamicTableView<T> extends HookConsumerWidget {
         children: [
           CustomScrollView(
             slivers: [
+              ///
+              /// header widgets
+              ///
+              ...headerWidgets,
+
               ///
               /// Serch Bar
               ///

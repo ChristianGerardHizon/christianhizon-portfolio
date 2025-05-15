@@ -76,6 +76,7 @@ class AppointmentScheduleRepositoryImpl
         page: pageNo,
         perPage: pageSize,
         expand: expand,
+        sort: sort,
       );
       return PageResults(
         page: result.page,

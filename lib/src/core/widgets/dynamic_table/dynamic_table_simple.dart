@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_base.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_table_base.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/table_sort.dart';
+import 'package:gym_system/src/core/widgets/page_selector.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 typedef MobileBuilderFunc<T> = Widget Function(
@@ -24,6 +24,9 @@ class DynamicTableSimple<T> extends HookConsumerWidget {
   final List<DynamicTableColumn<T>> columns;
   final TextStyle? headerTextStyle;
   final MobileBuilderFunc<T> mobileBuilder;
+  final bool hidePageController;
+  final bool showMore;
+  final Function()? onShowMore;
 
   const DynamicTableSimple({
     super.key,
@@ -35,6 +38,9 @@ class DynamicTableSimple<T> extends HookConsumerWidget {
     required this.columns,
     this.headerTextStyle,
     required this.mobileBuilder,
+    this.hidePageController = false,
+    this.showMore = false,
+    this.onShowMore,
   });
 
   @override
@@ -179,6 +185,26 @@ class DynamicTableSimple<T> extends HookConsumerWidget {
               value.isSelected,
             ),
           ),
+
+        if (!hidePageController)
+          if (error == null)
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: showMore
+                  ? TextButton(
+                      onPressed: onShowMore,
+                      child: const Text('Show More'),
+                    )
+                  : PageSelector(
+                      totalPages: state.totalPages,
+                      page: state.page,
+                      enabled: !state.isLoading,
+                      onPageChange: (newPage) {
+                        notifier..changePage(newPage);
+                      },
+                      hasNext: state.hasNext,
+                    ),
+            )
       ],
     );
   }

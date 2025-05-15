@@ -14,8 +14,11 @@ class AppointmentScheduleState {
   final Patient? patient;
   final PatientRecord? patientRecord;
 
-  AppointmentScheduleState(
-      {this.appointmentSchedule, this.patient, this.patientRecord});
+  AppointmentScheduleState({
+    this.appointmentSchedule,
+    this.patient,
+    this.patientRecord,
+  });
 }
 
 @riverpod
@@ -39,7 +42,8 @@ class AppointmentScheduleFormController
               ? await ref.watch(patientControllerProvider(patientId).future)
               : null,
           patientRecord: patientRecordId is String
-              ? await ref.watch(patientRecordControllerProvider(patientRecordId).future)
+              ? await ref.watch(
+                  patientRecordControllerProvider(patientRecordId).future)
               : null,
         );
       }
@@ -56,9 +60,9 @@ class AppointmentScheduleFormController
             ? await ref.watch(patientControllerProvider(patient).future)
             : null,
         patientRecord: patientRecord is String
-            ? await ref.watch(patientRecordControllerProvider(patientRecord).future)
+            ? await ref
+                .watch(patientRecordControllerProvider(patientRecord).future)
             : null,
-
       );
     }).run();
 

@@ -14,24 +14,36 @@ class PatientRecordTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // RichText(
-          //   text: TextSpan(
-          //     style: Theme.of(context).textTheme.bodySmall,
-          //     children: [
-          //       TextSpan(
-          //         text: patient.expand.breed?.name.optional(),
-          //       ),
-          //       TextSpan(text: ' - '),
-          //       TextSpan(
-          //         text: patient.expand.species?.name.optional(),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          // Text(
-          //   'Owner: ${patient.owner?.optional()}',
-          //   style: Theme.of(context).textTheme.bodySmall,
-          // ),
+          RichText(
+            text: TextSpan(
+              style: Theme.of(context).textTheme.bodySmall,
+              children: [
+                TextSpan(
+                  text: 'Diagnosis',
+                ),
+                TextSpan(text: ': '),
+                TextSpan(
+                  text: patientRecord.diagnosis.optional(),
+                ),
+              ],
+            ),
+          ),
+
+          ///
+          RichText(
+            text: TextSpan(
+              style: Theme.of(context).textTheme.bodySmall,
+              children: [
+                TextSpan(
+                  text: 'Treatment',
+                ),
+                TextSpan(text: ': '),
+                TextSpan(
+                  text: patientRecord.treatment.optional(),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

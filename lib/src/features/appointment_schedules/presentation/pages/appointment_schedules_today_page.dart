@@ -24,19 +24,22 @@ import 'package:gym_system/src/features/appointment_schedules/presentation/contr
 import 'package:gym_system/src/features/appointment_schedules/presentation/widgets/appointment_schedule_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AppointmentSchedulesPage extends HookConsumerWidget {
-  const AppointmentSchedulesPage(
-      {super.key, this.patientId, this.showAppBar = true});
+class AppointmentSchedulesTodayPage extends HookConsumerWidget {
+  const AppointmentSchedulesTodayPage({
+    super.key,
+    this.patientId,
+    this.showAppBar = true,
+  });
 
   final String? patientId;
   final bool showAppBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final now = DateTime.now();
     final searchCtrl = useTextEditingController();
-    final tableKey = patientId is String
-        ? TableControllerKeys.appointmentSchedulePatient(id: patientId!)
-        : TableControllerKeys.appointmentSchedule;
+    final tableKey = TableControllerKeys.appointmentSchedulePatient(
+        id: patientId, date: now);
     final provider = tableControllerProvider(tableKey);
     final notifier = ref.read(provider.notifier);
     final listProvider = appointmentScheduleTableControllerProvider(
@@ -146,7 +149,7 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
     return Scaffold(
       appBar: showAppBar
           ? AppBar(
-              title: Text('AppointmentSchedules'),
+              title: Text('Appointment Schedules Today'),
               actions: [
                 RefreshButton(
                   onPressed: onRefresh,
@@ -209,7 +212,21 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   overflow: TextOverflow.ellipsis,
-                  (data.expand.patient?.name).optional(),
+                  (data.patientDisplayName).optional(),
+                ),
+              );
+            },
+          ),
+          DynamicTableColumn(
+            header: 'Owner',
+            width: 200,
+            alignment: Alignment.centerLeft,
+            builder: (context, data, row, column) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  (data.ownerDisplayName).optional(),
                 ),
               );
             },

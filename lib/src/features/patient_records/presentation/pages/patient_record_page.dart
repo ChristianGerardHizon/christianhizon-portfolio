@@ -13,6 +13,7 @@ import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dar
 import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
+import 'package:gym_system/src/features/appointment_schedules/presentation/widgets/appointment_schedule_group.dart';
 import 'package:gym_system/src/features/patient_prescription_items/presentation/widgets/patient_prescription_items_group.dart';
 import 'package:gym_system/src/features/patient_records/data/patient_record_repository.dart';
 import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
@@ -160,7 +161,7 @@ class PatientRecordPage extends HookConsumerWidget {
                                 left: 8, right: 8, bottom: 12),
                             header: 'Record Information',
                             headerAction: TextButton.icon(
-                              label: const Text('Save'),
+                              label: const Text('Save Changes'),
                               onPressed: () => formChanged(patientRecord),
                               icon: Icon(Icons.save),
                             ),
@@ -228,6 +229,11 @@ class PatientRecordPage extends HookConsumerWidget {
                           PatientPrescriptionItemsGroup(
                             patient: patientRecordState.patient,
                             record: patientRecord,
+                          ),
+
+                          AppointmentScheduleGroup(
+                            patientId: patientRecordState.patient.id,
+                            patientRecordId: patientRecord.id,
                           ),
 
                           ///

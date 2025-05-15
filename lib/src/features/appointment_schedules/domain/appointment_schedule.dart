@@ -16,12 +16,25 @@ class AppointmentSchedule extends PbRecord with AppointmentScheduleMappable {
   @MappableField(hook: DateTimeHook())
   final DateTime date;
   final bool hasTime;
+  final String? notes;
   final String? purpose;
+
   final AppointmentScheduleStatus status;
+
   @MappableField(hook: PbEmptyHook())
   final String? patientRecord;
+
   @MappableField(hook: PbEmptyHook())
   final String? patient;
+
+  @MappableField(hook: PbEmptyHook())
+  final String? patientName;
+
+  @MappableField(hook: PbEmptyHook())
+  final String? ownerName;
+
+  @MappableField(hook: PbEmptyHook())
+  final String? ownerContact;
 
   final AppointmentScheduleExpand expand;
 
@@ -32,6 +45,9 @@ class AppointmentSchedule extends PbRecord with AppointmentScheduleMappable {
     super.isDeleted = false,
     super.created,
     super.updated,
+    this.patientName,
+    this.ownerName,
+    this.ownerContact,
 
     ///
     ///
@@ -39,6 +55,7 @@ class AppointmentSchedule extends PbRecord with AppointmentScheduleMappable {
     required this.date,
     this.patientRecord,
     this.patient,
+    this.notes,
     this.purpose,
     required this.status,
     this.hasTime = false,
@@ -53,6 +70,22 @@ class AppointmentSchedule extends PbRecord with AppointmentScheduleMappable {
   ///
   String get displayDate =>
       hasTime ? date.toLocal().fullDateTime : date.toLocal().fullDate;
+
+  ///
+  ///
+  ///
+  String get patientDisplayName {
+    if (expand.patient != null) return expand.patient!.name;
+    return patientName ?? '';
+  }
+
+  ///
+  ///
+  ///
+  String get ownerDisplayName {
+    if (expand.patient != null) return expand.patient!.name;
+    return ownerName ?? '';
+  }
 }
 
 @MappableClass()

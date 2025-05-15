@@ -201,7 +201,8 @@ class ProductAdjustmentFormPage extends HookConsumerWidget {
                 ///
                 DynamicNumberField(
                   name: ProductAdjustmentField.newValue,
-                  initialValue: productAdjustment?.newValue ?? 0,
+                  initialValue:
+                      productAdjustment?.newValue ?? product?.quantity,
                   decoration: InputDecoration(
                     label: Text('New Value'),
                     border: OutlineInputBorder(),

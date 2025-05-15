@@ -40,15 +40,13 @@ class DynamicGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
       padding: padding,
       child: Column(
         children: [
+          /// header
           Container(
-            margin: EdgeInsets.only(
-                left: padding.horizontal,
-                right: padding.horizontal,
-                bottom: 12),
+            margin: EdgeInsets.only(left: 8, bottom: 12),
             width: double.infinity,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

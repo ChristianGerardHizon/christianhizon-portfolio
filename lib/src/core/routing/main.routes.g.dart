@@ -46,6 +46,7 @@ List<RouteBase> get $appRoutes => [
       $patientTreatmentRecordFormPageRoute,
       $patientAppointmentSchedulesPageRoute,
       $appointmentSchedulesPageRoute,
+      $appointmentSchedulesTodayPageRoute,
       $appointmentScheduleFormPageRoute,
       $appointmentSchedulePageRoute,
       $calendarAppointmentSchedulesPageRoute,
@@ -325,6 +326,10 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/appointmentSchedules',
               factory: $AppointmentSchedulesPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/today/appointmentSchedules',
+              factory: $AppointmentSchedulesTodayPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
               path: '/appointmentSchedule/:id',
@@ -1196,6 +1201,25 @@ extension $AppointmentSchedulesPageRouteExtension
   void replace(BuildContext context) => context.replace(location);
 }
 
+extension $AppointmentSchedulesTodayPageRouteExtension
+    on AppointmentSchedulesTodayPageRoute {
+  static AppointmentSchedulesTodayPageRoute _fromState(GoRouterState state) =>
+      const AppointmentSchedulesTodayPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/today/appointmentSchedules',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
 extension $AppointmentSchedulePageRouteExtension
     on AppointmentSchedulePageRoute {
   static AppointmentSchedulePageRoute _fromState(GoRouterState state) =>
@@ -1223,6 +1247,7 @@ extension $AppointmentScheduleFormPageRouteExtension
       AppointmentScheduleFormPageRoute(
         id: state.uri.queryParameters['id'],
         patientId: state.uri.queryParameters['patient-id'],
+        patientRecordId: state.uri.queryParameters['patient-record-id'],
       );
 
   String get location => GoRouteData.$location(
@@ -1230,6 +1255,7 @@ extension $AppointmentScheduleFormPageRouteExtension
         queryParams: {
           if (id != null) 'id': id,
           if (patientId != null) 'patient-id': patientId,
+          if (patientRecordId != null) 'patient-record-id': patientRecordId,
         },
       );
 
@@ -1718,6 +1744,11 @@ RouteBase get $patientAppointmentSchedulesPageRoute => GoRouteData.$route(
 RouteBase get $appointmentSchedulesPageRoute => GoRouteData.$route(
       path: '/appointmentSchedules',
       factory: $AppointmentSchedulesPageRouteExtension._fromState,
+    );
+
+RouteBase get $appointmentSchedulesTodayPageRoute => GoRouteData.$route(
+      path: '/today/appointmentSchedules',
+      factory: $AppointmentSchedulesTodayPageRouteExtension._fromState,
     );
 
 RouteBase get $appointmentScheduleFormPageRoute => GoRouteData.$route(

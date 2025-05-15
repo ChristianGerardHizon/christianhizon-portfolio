@@ -250,8 +250,12 @@ class AppointmentScheduleField {
   static const String hasNotifiedWhenNear = 'hasNotifiedWhenNear';
   static const String branch = 'branch';
   static const String hasTime = 'hasTime';
-  static const String purpose = 'purpose';
+  static const String notes = 'notes';
   static const String status = 'status';
+  static const String patientName = 'patientName';
+  static const String purpose = 'purpose';
+  static const String ownerName = 'ownerName';
+  static const String ownerContact = 'ownerContact';
 }
 
 class PatientFileField {

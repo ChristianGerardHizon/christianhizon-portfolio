@@ -23,17 +23,22 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
     super.key,
     this.id,
     this.patientId,
+    this.patientRecordId,
   });
 
   final String? id;
   final String? patientId;
+  final String? patientRecordId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
-    final provider =
-        appointmentScheduleFormControllerProvider(id, patientId: patientId);
+    final provider = appointmentScheduleFormControllerProvider(
+      id,
+      patientId: patientId,
+      patientRecordId: patientRecordId,
+    );
     final state = ref.watch(provider);
     final hasTime = useState(false);
 
@@ -77,11 +82,11 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('AppointmentSchedule Form Page'),
+        title: Text('AppointmentSchedule Form'),
       ),
       body: state.when(
           loading: () => Center(child: CircularProgressIndicator()),
-          error:(error, stack) =>  FailureMessage.asyncValue(state),
+          error: (error, stack) => FailureMessage.asyncValue(state),
           data: (formState) {
             final appointmentSchedule = formState.appointmentSchedule;
             final patient = formState.patient;
@@ -119,10 +124,10 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                   ///
                   /// Patient Record
                   ///
-                  if (patientRecord is Patient)
+                  if (patientRecord is PatientRecord)
                     DynamicViewField(
                       name: AppointmentScheduleField.patientRecord,
-                      initialValue: patient,
+                      initialValue: patientRecord,
                       decoration: InputDecoration(
                         label: Text('Patient Record'),
                         border: OutlineInputBorder(),
@@ -137,6 +142,7 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                         return patient?.id;
                       },
                     ),
+
                   DynamicCheckboxField(
                     name: AppointmentScheduleField.hasTime,
                     initialValue: hasTime.value,
@@ -189,28 +195,70 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                               return value.toUtc().toIso8601String();
                           },
                         ),
-                  DynamicSelectField(
-                    name: AppointmentScheduleField.status,
-                    initialValue: appointmentSchedule?.status.name ??
-                        AppointmentScheduleStatus.scheduled.name,
-                    options: AppointmentScheduleStatus.values
-                        .map(
-                          (e) => SelectOption(
-                            value: e.name,
-                            display: e.name,
-                          ),
-                        )
-                        .toList(),
-                    decoration: InputDecoration(
-                      label: Text('Branch'),
-                      border: OutlineInputBorder(),
+                  if (id is String)
+                    DynamicSelectField(
+                      name: AppointmentScheduleField.status,
+                      initialValue: appointmentSchedule?.status.name ??
+                          AppointmentScheduleStatus.scheduled.name,
+                      options: AppointmentScheduleStatus.values
+                          .map(
+                            (e) => SelectOption(
+                              value: e.name,
+                              display: e.name,
+                            ),
+                          )
+                          .toList(),
+                      decoration: InputDecoration(
+                        label: Text('Status'),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: FormBuilderValidators.compose(
+                        [
+                          FormBuilderValidators.required(),
+                        ],
+                      ),
                     ),
-                    validator: FormBuilderValidators.compose(
-                      [
+                  if (id is! String)
+                    DynamicHiddenField(
+                      name: AppointmentScheduleField.status,
+                      initialValue: AppointmentScheduleStatus.scheduled.name,
+                    ),
+
+                  if (patient is! Patient) ...[
+                    DynamicTextField(
+                      name: AppointmentScheduleField.patientName,
+                      initialValue: appointmentSchedule?.patientName,
+                      decoration: const InputDecoration(
+                        label: Text('Patient/Owner Name'),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(),
-                      ],
+                      ]),
                     ),
-                  ),
+                    DynamicTextField(
+                      name: AppointmentScheduleField.ownerName,
+                      initialValue: appointmentSchedule?.ownerName,
+                      decoration: const InputDecoration(
+                        label: Text('Owner Name'),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(),
+                      ]),
+                    ),
+                    DynamicTextField(
+                      name: AppointmentScheduleField.ownerContact,
+                      initialValue: appointmentSchedule?.ownerContact,
+                      decoration: const InputDecoration(
+                        label: Text('Owner Contact'),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(),
+                      ]),
+                    ),
+                  ],
                   DynamicTextField(
                     name: AppointmentScheduleField.purpose,
                     initialValue: appointmentSchedule?.purpose,
@@ -218,11 +266,20 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                       label: Text('Purpose'),
                       border: OutlineInputBorder(),
                     ),
-                    minLines: 3,
-                    maxLines: 10,
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
                     ]),
+                  ),
+                  DynamicTextField(
+                    name: AppointmentScheduleField.notes,
+                    initialValue: appointmentSchedule?.notes,
+                    decoration: const InputDecoration(
+                      label: Text('Notes'),
+                      border: OutlineInputBorder(),
+                    ),
+                    minLines: 3,
+                    maxLines: 10,
+                    validator: FormBuilderValidators.compose([]),
                   ),
                 ],
                 onSubmit: (result) => onSave(appointmentSchedule, result),

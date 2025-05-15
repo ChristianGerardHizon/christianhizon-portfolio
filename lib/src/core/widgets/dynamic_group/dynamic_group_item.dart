@@ -11,6 +11,7 @@ class DynamicGroupItem extends StatelessWidget {
     this.onTap,
     this.leading,
     this.onLongPress,
+    this.contentPadding,
   });
 
   final Widget? title;
@@ -19,6 +20,7 @@ class DynamicGroupItem extends StatelessWidget {
   final Widget? leading;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
+  final EdgeInsets? contentPadding;
 
   static DynamicGroupItem action({
     Widget? leading,
@@ -77,11 +79,13 @@ class DynamicGroupItem extends StatelessWidget {
     required Widget? value,
     VoidCallback? onTap,
     VoidCallback? onLongPress,
+    EdgeInsets? contentPadding,
   }) {
     return DynamicGroupItem(
       onTap: onTap,
       onLongPress: onLongPress,
       value: value,
+      contentPadding: contentPadding,
     );
   }
 
@@ -120,6 +124,7 @@ class DynamicGroupItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // final theme = Theme.of(context);
     return ListTile(
+      contentPadding: contentPadding,
       onTap: onTap,
       onLongPress: onLongPress,
       leading: leading,

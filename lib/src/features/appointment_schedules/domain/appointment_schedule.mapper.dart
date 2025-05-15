@@ -98,6 +98,15 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
   static DateTime? _$updated(AppointmentSchedule v) => v.updated;
   static const Field<AppointmentSchedule, DateTime> _f$updated =
       Field('updated', _$updated, opt: true);
+  static String? _$patientName(AppointmentSchedule v) => v.patientName;
+  static const Field<AppointmentSchedule, String> _f$patientName =
+      Field('patientName', _$patientName, opt: true, hook: PbEmptyHook());
+  static String? _$ownerName(AppointmentSchedule v) => v.ownerName;
+  static const Field<AppointmentSchedule, String> _f$ownerName =
+      Field('ownerName', _$ownerName, opt: true, hook: PbEmptyHook());
+  static String? _$ownerContact(AppointmentSchedule v) => v.ownerContact;
+  static const Field<AppointmentSchedule, String> _f$ownerContact =
+      Field('ownerContact', _$ownerContact, opt: true, hook: PbEmptyHook());
   static DateTime _$date(AppointmentSchedule v) => v.date;
   static const Field<AppointmentSchedule, DateTime> _f$date =
       Field('date', _$date, hook: DateTimeHook());
@@ -107,6 +116,9 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
   static String? _$patient(AppointmentSchedule v) => v.patient;
   static const Field<AppointmentSchedule, String> _f$patient =
       Field('patient', _$patient, opt: true, hook: PbEmptyHook());
+  static String? _$notes(AppointmentSchedule v) => v.notes;
+  static const Field<AppointmentSchedule, String> _f$notes =
+      Field('notes', _$notes, opt: true);
   static String? _$purpose(AppointmentSchedule v) => v.purpose;
   static const Field<AppointmentSchedule, String> _f$purpose =
       Field('purpose', _$purpose, opt: true);
@@ -128,9 +140,13 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
+    #patientName: _f$patientName,
+    #ownerName: _f$ownerName,
+    #ownerContact: _f$ownerContact,
     #date: _f$date,
     #patientRecord: _f$patientRecord,
     #patient: _f$patient,
+    #notes: _f$notes,
     #purpose: _f$purpose,
     #status: _f$status,
     #hasTime: _f$hasTime,
@@ -145,9 +161,13 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
         isDeleted: data.dec(_f$isDeleted),
         created: data.dec(_f$created),
         updated: data.dec(_f$updated),
+        patientName: data.dec(_f$patientName),
+        ownerName: data.dec(_f$ownerName),
+        ownerContact: data.dec(_f$ownerContact),
         date: data.dec(_f$date),
         patientRecord: data.dec(_f$patientRecord),
         patient: data.dec(_f$patient),
+        notes: data.dec(_f$notes),
         purpose: data.dec(_f$purpose),
         status: data.dec(_f$status),
         hasTime: data.dec(_f$hasTime),
@@ -219,9 +239,13 @@ abstract class AppointmentScheduleCopyWith<$R, $In extends AppointmentSchedule,
       bool? isDeleted,
       DateTime? created,
       DateTime? updated,
+      String? patientName,
+      String? ownerName,
+      String? ownerContact,
       DateTime? date,
       String? patientRecord,
       String? patient,
+      String? notes,
       String? purpose,
       AppointmentScheduleStatus? status,
       bool? hasTime,
@@ -250,9 +274,13 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
           bool? isDeleted,
           Object? created = $none,
           Object? updated = $none,
+          Object? patientName = $none,
+          Object? ownerName = $none,
+          Object? ownerContact = $none,
           DateTime? date,
           Object? patientRecord = $none,
           Object? patient = $none,
+          Object? notes = $none,
           Object? purpose = $none,
           AppointmentScheduleStatus? status,
           bool? hasTime,
@@ -264,9 +292,13 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
         if (isDeleted != null) #isDeleted: isDeleted,
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated,
+        if (patientName != $none) #patientName: patientName,
+        if (ownerName != $none) #ownerName: ownerName,
+        if (ownerContact != $none) #ownerContact: ownerContact,
         if (date != null) #date: date,
         if (patientRecord != $none) #patientRecord: patientRecord,
         if (patient != $none) #patient: patient,
+        if (notes != $none) #notes: notes,
         if (purpose != $none) #purpose: purpose,
         if (status != null) #status: status,
         if (hasTime != null) #hasTime: hasTime,
@@ -280,9 +312,13 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
       isDeleted: data.get(#isDeleted, or: $value.isDeleted),
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated),
+      patientName: data.get(#patientName, or: $value.patientName),
+      ownerName: data.get(#ownerName, or: $value.ownerName),
+      ownerContact: data.get(#ownerContact, or: $value.ownerContact),
       date: data.get(#date, or: $value.date),
       patientRecord: data.get(#patientRecord, or: $value.patientRecord),
       patient: data.get(#patient, or: $value.patient),
+      notes: data.get(#notes, or: $value.notes),
       purpose: data.get(#purpose, or: $value.purpose),
       status: data.get(#status, or: $value.status),
       hasTime: data.get(#hasTime, or: $value.hasTime),

@@ -118,7 +118,9 @@ class PopoverWidget extends StatelessWidget {
         : isMobile as bool;
     if (_isMobile) {
       // On mobile, open a bottom sheet with optional header and options
-      return GestureDetector(
+      return InkWell(
+        customBorder: const CircleBorder(),
+        mouseCursor: SystemMouseCursors.click,
         onTap: () {
           showModalBottomSheet(
             context: context,

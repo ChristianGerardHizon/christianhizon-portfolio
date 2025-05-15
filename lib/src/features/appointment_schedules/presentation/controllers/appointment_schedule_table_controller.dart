@@ -19,6 +19,7 @@ class AppointmentScheduleTableController
     String tableKey, {
     String? patientId,
     DateTime? date,
+    AppointmentScheduleStatus? status,
   }) async {
     final repo = ref.read(appointmentScheduleRepositoryProvider);
 
@@ -40,7 +41,9 @@ class AppointmentScheduleTableController
         // 2. patient filter
         .map((f) => _addPatientFilter(f, patientId))
         // 3. date filter
-        .map((f) => _dateTimeFilter(f, date));
+        .map((f) => _dateTimeFilter(f, date))
+        // 4. status filter
+        .map((f) => _statusFilter(f, status));
 
     final result = await filter
         .toTaskEither<Failure>()
@@ -50,7 +53,7 @@ class AppointmentScheduleTableController
               filter: filter.build(),
               pageNo: page,
               pageSize: pageSize,
-              sort: '-updated',
+              sort: '-${AppointmentScheduleField.date}',
             )
             .flatMap((result) => _handleSuccess(result, notifier)))
         .run();
@@ -94,4 +97,16 @@ PocketbaseFilter _dateTimeFilter(
 ) {
   if (date == null) return filter;
   return filter.withinDate(date, field: AppointmentScheduleField.date);
+}
+
+/// Return a new filter that is the same as the input filter, but with
+/// an additional clause that filters on the given [status].
+///
+/// If [status] is null, then the original filter is returned.
+PocketbaseFilter _statusFilter(
+  PocketbaseFilter filter,
+  AppointmentScheduleStatus? status,
+) {
+  if (status == null) return filter;
+  return filter.equal(status.name, field: AppointmentScheduleField.status);
 }

@@ -28,6 +28,7 @@ class PhotoViewer extends HookConsumerWidget {
           },
           imageProvider: CachedNetworkImageProvider(
             url,
+            maxWidth: MediaQuery.of(context).size.width.toInt(),
           ),
         ),
       ),

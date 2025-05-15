@@ -11,6 +11,7 @@ import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
 import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
 import 'package:gym_system/src/core/widgets/modals/dropdown_confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/popover_widget.dart';
 import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/features/patient_prescription_items/data/patient_prescription_item_repository.dart';
 import 'package:gym_system/src/features/patient_prescription_items/domain/patient_prescription_item.dart';
@@ -221,17 +222,16 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
             Text(e.instructions.optional()),
           ],
         ),
-        trailing: PopupMenuButton<_MenuOption>(
+        trailing: PopoverWidget.icon(
           icon: Icon(MIcons.dotsHorizontal),
-          itemBuilder: (context) => <PopupMenuEntry<_MenuOption>>[
-            PopupMenuItem<_MenuOption>(
-              value: _MenuOption.edit,
+          bottomSheetHeader: const Text('Action'),
+          items: [
+            PopoverMenuItemData(
+              name: 'Edit',
               onTap: () => onUpdate(e),
-              child: Text('Edit'),
             ),
-            PopupMenuItem<_MenuOption>(
-              value: _MenuOption.delete,
-              child: Text('Delete'),
+            PopoverMenuItemData(
+              name: 'Delete',
               onTap: () => onDelete(e),
             ),
           ],
@@ -255,12 +255,13 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
     return StackLoader(
       isLoading: isLoading.value,
       child: Padding(
-        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 20, top: 20),
+        padding: const EdgeInsets.only(bottom: 20, top: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (widgets.isNotEmpty)
               DynamicGroup(
+                padding: const EdgeInsets.only(left: 8, right: 8),
                 header: 'Prescriptions',
                 headerAction: TextButton.icon(
                   onPressed: () => addItem(record),
@@ -271,6 +272,7 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
               ),
             if (widgets.isEmpty)
               DynamicGroup(
+                padding: const EdgeInsets.only(left: 8, right: 8),
                 header: 'Prescriptions',
                 items: [
                   DynamicGroupItem.widget(
@@ -305,7 +307,7 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
                   ),
                   TextButton.icon(
                     icon: Icon(MIcons.floppy),
-                    label: Text('Save'),
+                    label: Text('Save to device'),
                     onPressed: () => print(
                         items: list, record: record, action: _Action.save),
                   ),

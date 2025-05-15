@@ -17,6 +17,7 @@ import 'package:gym_system/src/core/widgets/stack_loader.dart';
 import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
 import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
 import 'package:gym_system/src/features/appointment_schedules/presentation/controllers/appointment_schedule_controller.dart';
+import 'package:gym_system/src/features/patients/presentation/widgets/patient_tile.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AppointmentSchedulePage extends HookConsumerWidget {
@@ -83,7 +84,7 @@ class AppointmentSchedulePage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AppointmentSchedule Details'),
+        title: const Text('Appointment Schedule Details'),
         actions: [
           RefreshButton(
             onPressed: () => refresh(id),
@@ -111,15 +112,19 @@ class AppointmentSchedulePage extends HookConsumerWidget {
                         DynamicGroup(
                           padding: const EdgeInsets.only(
                               left: 8, right: 8, bottom: 12),
-                          header: 'Appointment Schedule Details',
+                          header: 'Appointment Details',
                           items: [
                             DynamicGroupItem.text(
                               title: 'Purpose',
                               value: appointmentSchedule.purpose.optional(),
                             ),
                             DynamicGroupItem.text(
-                              title: 'Satatus',
+                              title: 'Status',
                               value: appointmentSchedule.status.name,
+                            ),
+                            DynamicGroupItem.text(
+                              title: 'Notes',
+                              value: appointmentSchedule.notes.optional(),
                             ),
                             DynamicGroupItem.text(
                               title: 'Last Updated',
@@ -137,6 +142,47 @@ class AppointmentSchedulePage extends HookConsumerWidget {
                             ),
                           ],
                         ),
+
+                        if (appointmentSchedule.patientName != null)
+                          DynamicGroup(
+                            padding: const EdgeInsets.only(
+                                left: 8, right: 8, bottom: 12),
+                            header: 'Patient and Owner Details',
+                            items: [
+                              if (appointmentSchedule.patientName != null)
+                                DynamicGroupItem.text(
+                                  title: 'Patient Name',
+                                  value: appointmentSchedule.patientName
+                                      .optional(),
+                                ),
+                              DynamicGroupItem.text(
+                                title: 'Owner Name',
+                                value: appointmentSchedule.ownerName.optional(),
+                              ),
+                              DynamicGroupItem.text(
+                                title: 'Owner Contact',
+                                value:
+                                    appointmentSchedule.ownerContact.optional(),
+                              ),
+                            ],
+                          ),
+
+                        if (appointmentSchedule.expand.patient != null)
+                          DynamicGroup(
+                            padding: const EdgeInsets.only(
+                                left: 8, right: 8, bottom: 12),
+                            header: 'Patient Details',
+                            items: [
+                              /// registered patient
+                              if (appointmentSchedule.expand.patient != null)
+                                DynamicGroupItem.widget(
+                                  value: PatientTile(
+                                    patient:
+                                        appointmentSchedule.expand.patient!,
+                                  ),
+                                ),
+                            ],
+                          ),
 
                         ///
                         /// Actions

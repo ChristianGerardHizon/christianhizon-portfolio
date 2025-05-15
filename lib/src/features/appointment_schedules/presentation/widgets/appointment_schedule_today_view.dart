@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:gym_system/src/core/extensions/date_time_extension.dart';
 import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:gym_system/src/core/failures/failure.dart';
 import 'package:gym_system/src/core/models/type_defs.dart';
+import 'package:gym_system/src/core/routing/router.dart';
+import 'package:gym_system/src/core/strings/fields.dart';
 import 'package:gym_system/src/core/strings/table_controller_keys.dart';
+import 'package:gym_system/src/core/widgets/app_snackbar.dart';
 import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
+import 'package:gym_system/src/core/widgets/circle_widget.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_simple.dart';
 import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
 import 'package:gym_system/src/core/widgets/failure_message.dart';
+import 'package:gym_system/src/core/widgets/modals/dropdown_confirm_modal.dart';
+import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
 import 'package:gym_system/src/core/widgets/popover_widget.dart';
 import 'package:gym_system/src/core/widgets/refresh_button.dart';
+import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
 import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
 import 'package:gym_system/src/features/appointment_schedules/presentation/controllers/appointment_schedule_table_controller.dart';
+import 'package:gym_system/src/features/appointment_schedules/presentation/pages/appointment_schedule_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AppointmentScheduleTodayView extends HookConsumerWidget {
@@ -28,6 +38,53 @@ class AppointmentScheduleTodayView extends HookConsumerWidget {
     );
     final listState = ref.watch(listProvider);
 
+    final isLoading = useState(false);
+
+    onShowMore() {
+      AppointmentSchedulesTodayPageRoute().push(context);
+    }
+
+    void refresh() {
+      ref.invalidate(listProvider);
+    }
+
+    onChangeStatus(AppointmentSchedule appointmentSchedule) async {
+      final repo = ref.read(appointmentScheduleRepositoryProvider);
+      final task =
+          DropdownConfirmModal.showTaskResult<AppointmentScheduleStatus>(
+                  context,
+                  title: 'Select New Status',
+                  initialValue: appointmentSchedule.status,
+                  options: AppointmentScheduleStatus.values.map((e) {
+                    return DropdownConfirmOption(
+                      label: e.name,
+                      value: e,
+                    );
+                  }).toList())
+              .map((status) => {AppointmentScheduleField.status: status.name})
+              .flatMap((value) => repo.update(appointmentSchedule, value))
+              .flatMap((r) => _handleSuccessfulUpdateTaskSidEffects(
+                    context: context,
+                    id: appointmentSchedule.id,
+                    refresh: refresh,
+                  ));
+
+      /// start
+      isLoading.value = true;
+      final result = await task.run();
+      isLoading.value = false;
+
+      // 4. Handle Error
+      result.match(
+        (failure) => _handleFailure(context, failure),
+        (_) {},
+      );
+    }
+
+    onRowTap(AppointmentSchedule appointmentSchedule) {
+      AppointmentSchedulePageRoute(appointmentSchedule.id).push(context);
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -43,9 +100,7 @@ class AppointmentScheduleTodayView extends HookConsumerWidget {
           ),
           subtitle: Text(selectedDate.value.yyyyMMdd()),
           trailing: RefreshButton(
-            onPressed: () {
-              ref.invalidate(listProvider);
-            },
+            onPressed: refresh,
           ),
         ),
 
@@ -75,6 +130,9 @@ class AppointmentScheduleTodayView extends HookConsumerWidget {
                   tableKey: tableKey,
                   error: FailureMessage.asyncValue(listState),
                   items: listState.valueOrNull ?? [],
+                  onRowTap: onRowTap,
+                  showMore: true,
+                  onShowMore: onShowMore,
                   columns: [
                     DynamicTableColumn(
                       header: 'Date and Time',
@@ -91,7 +149,33 @@ class AppointmentScheduleTodayView extends HookConsumerWidget {
                       },
                     ),
                     DynamicTableColumn(
-                      header: 'Name',
+                      header: 'Patient',
+                      alignment: Alignment.centerLeft,
+                      builder: (context, data, row, column) {
+                        return Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            overflow: TextOverflow.ellipsis,
+                            (data.patientDisplayName).optional(),
+                          ),
+                        );
+                      },
+                    ),
+                    DynamicTableColumn(
+                      header: 'Owner',
+                      alignment: Alignment.centerLeft,
+                      builder: (context, data, row, column) {
+                        return Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            overflow: TextOverflow.ellipsis,
+                            (data.ownerDisplayName).optional(),
+                          ),
+                        );
+                      },
+                    ),
+                    DynamicTableColumn(
+                      header: 'Status',
                       width: 200,
                       alignment: Alignment.centerLeft,
                       builder: (context, data, row, column) {
@@ -99,14 +183,14 @@ class AppointmentScheduleTodayView extends HookConsumerWidget {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             overflow: TextOverflow.ellipsis,
-                            (data.expand.patient?.name).optional(),
+                            data.status.name,
                           ),
                         );
                       },
                     ),
                     DynamicTableColumn(
                       header: 'Actions',
-                      width: 200,
+                      width: 80,
                       alignment: Alignment.centerLeft,
                       builder: (context, data, row, column) {
                         return Align(
@@ -118,7 +202,7 @@ class AppointmentScheduleTodayView extends HookConsumerWidget {
                               PopoverMenuItemData(
                                 name: 'Change Status',
                                 onTap: () {
-                                  // onChangeStatus(product);
+                                  onChangeStatus(data);
                                 },
                               ),
                             ],
@@ -128,7 +212,33 @@ class AppointmentScheduleTodayView extends HookConsumerWidget {
                     ),
                   ],
                   mobileBuilder: (context, index, data, isSelected) {
-                    return ListTile(title: Text(data.displayDate));
+                    final patient = data.expand.patient;
+                    if (patient == null)
+                      return ListTile(
+                        leading: CircleWidget(
+                          size: Size.square(40),
+                          child: Icon(MIcons.dog),
+                        ),
+                        title: Text(
+                          (data.patientName).optional(),
+                        ),
+                        subtitle: Text(data.displayDate),
+                      );
+                    return ListTile(
+                      leading: CircleWidget(
+                        size: Size.square(40),
+                        child: PbImageCircle(
+                          collection: patient.collectionId,
+                          recordId: patient.id,
+                          file: patient.avatar,
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                      title: Text(
+                        (patient.name).optional(),
+                      ),
+                      subtitle: Text(data.displayDate),
+                    );
                   },
                 );
               },
@@ -138,4 +248,30 @@ class AppointmentScheduleTodayView extends HookConsumerWidget {
       ],
     );
   }
+}
+
+///
+/// Handles Failure
+/// Shows a snackbar when a failure occurs
+///
+void _handleFailure(BuildContext context, Failure failure) {
+  if (failure is CancelledFailure) return;
+  AppSnackBar.rootFailure(failure);
+}
+
+///
+/// Handles post-delete side effects like showing snackbar,
+/// popping navigation, and refreshing local state.
+///
+TaskResult<void> _handleSuccessfulUpdateTaskSidEffects({
+  required BuildContext context,
+  required String id,
+  required void Function() refresh,
+}) {
+  return Task<void>(() async {
+    if (!context.mounted) return;
+    AppSnackBar.root(message: 'Success');
+    refresh();
+    return null;
+  }).toTaskEither<Failure>();
 }
