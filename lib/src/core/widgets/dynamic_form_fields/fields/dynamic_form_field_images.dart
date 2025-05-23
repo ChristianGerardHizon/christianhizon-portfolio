@@ -48,9 +48,8 @@ class DynamicFormFieldImages extends StatelessWidget {
       previewImages: true,
       allowMultiple: false,
       allowedExtensions: field.allowedExtensions,
-      compressionQuality: field.compressionQuality,
+      compressionQuality: field.allowCompression ? field.compressionQuality : 0,
       maxFiles: field.maxFiles,
-      allowCompression: field.allowCompression,
       typeSelectors: [
         TypeSelector(
           type: FileType.image,
