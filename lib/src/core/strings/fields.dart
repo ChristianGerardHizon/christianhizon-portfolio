@@ -277,3 +277,13 @@ class PatientTreatmentField {
 
   static const String name = 'name';
 }
+
+class SystemVersionField {
+  static const String id = PbField.id;
+  static const String created = PbField.created;
+  static const String updated = PbField.updated;
+  static const String isDeleted = PbField.isDeleted;
+
+  static const String version = 'version';
+  static const String mobile = 'mobile';
+}

@@ -40,4 +40,11 @@ class PocketBaseCollections {
   /// Appointments
   ///
   static const appointmentSchedules = 'appointmentSchedules';
+
+  ///
+  /// System Version
+  ///
+  static const systemVersions = 'systemVersions';
+
+  
 }
