@@ -3,15 +3,15 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/features/product_categories/data/product_category_repository.dart';
-import 'package:gym_system/src/features/product_categories/domain/product_category.dart';
-import 'package:gym_system/src/features/product_categories/presentation/controllers/product_category_controller.dart';
-import 'package:gym_system/src/features/product_categories/presentation/controllers/product_category_form_controller.dart';
-import 'package:gym_system/src/features/product_categories/presentation/controllers/product_category_table_controller.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
+import 'package:sannjosevet/src/features/product_categories/data/product_category_repository.dart';
+import 'package:sannjosevet/src/features/product_categories/domain/product_category.dart';
+import 'package:sannjosevet/src/features/product_categories/presentation/controllers/product_category_controller.dart';
+import 'package:sannjosevet/src/features/product_categories/presentation/controllers/product_category_form_controller.dart';
+import 'package:sannjosevet/src/features/product_categories/presentation/controllers/product_category_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductCategoryFormPage extends HookConsumerWidget {

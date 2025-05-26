@@ -3,11 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:gym_system/src/core/assets/i18n/strings.g.dart';
-import 'package:gym_system/src/core/packages/file_downloader.dart';
-import 'package:gym_system/src/core/routing/router.dart';
-import 'package:gym_system/src/core/strings/app_strings.dart';
-import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
+import 'package:sannjosevet/src/core/assets/i18n/strings.g.dart';
+import 'package:sannjosevet/src/core/packages/file_downloader.dart';
+import 'package:sannjosevet/src/core/routing/router.dart';
+import 'package:sannjosevet/src/core/strings/app_strings.dart';
+import 'package:sannjosevet/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -22,12 +22,11 @@ class Application extends HookConsumerWidget {
     final color = Color.fromARGB(0, 40, 122, 111);
 
     useEffect(() {
-      
-      if(kIsWeb) return;
+      if (kIsWeb) return;
       ref.watch(fileDownloaderProvider).configureNotification(
-        running: TaskNotification('Downloading', 'file: {filename}'),
-        progressBar: true,
-      );
+            running: TaskNotification('Downloading', 'file: {filename}'),
+            progressBar: true,
+          );
       return null;
     }, []);
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/routing/main.routes.dart';
-import 'package:gym_system/src/core/models/custom_navbar_item.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/routing/main.routes.dart';
+import 'package:sannjosevet/src/core/models/custom_navbar_item.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
 
 class MobileBottomNav extends StatelessWidget {
   final List<CustomNavigationBarItem> list;

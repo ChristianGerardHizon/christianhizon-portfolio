@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/features/system_versions/presentation/controllers/status_system_version_controller.dart';
+import 'package:sannjosevet/src/features/system_versions/presentation/controllers/status_system_version_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 

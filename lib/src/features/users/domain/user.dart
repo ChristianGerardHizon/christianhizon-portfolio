@@ -1,8 +1,8 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/models/pb_record.dart';
-import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
-import 'package:gym_system/src/core/utils/pb_utils.dart';
-import 'package:gym_system/src/features/branches/domain/branch.dart';
+import 'package:sannjosevet/src/core/models/pb_record.dart';
+import 'package:sannjosevet/src/core/hooks/pb_empty_hook.dart';
+import 'package:sannjosevet/src/core/utils/pb_utils.dart';
+import 'package:sannjosevet/src/features/branches/domain/branch.dart';
 
 part 'user.mapper.dart';
 

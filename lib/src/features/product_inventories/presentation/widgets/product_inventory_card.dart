@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/widgets/popover_widget.dart';
-import 'package:gym_system/src/core/widgets/selectable_card.dart';
-import 'package:gym_system/src/features/product_inventories/domain/product_inventory.dart';
-import 'package:gym_system/src/features/products/presentation/widgets/product_status_text.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/widgets/popover_widget.dart';
+import 'package:sannjosevet/src/core/widgets/selectable_card.dart';
+import 'package:sannjosevet/src/features/product_inventories/domain/product_inventory.dart';
+import 'package:sannjosevet/src/features/products/presentation/widgets/product_status_text.dart';
 
 class ProductInventoryCard extends StatelessWidget {
   const ProductInventoryCard({

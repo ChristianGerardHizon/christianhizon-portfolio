@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/widgets/failure_message.dart';
-import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/features/product_adjustments/presentation/pages/product_adjustments_page.dart';
-import 'package:gym_system/src/features/product_stocks/presentation/pages/product_stocks_page.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/product_controller.dart';
-import 'package:gym_system/src/features/products/presentation/widgets/product_details_view.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/widgets/failure_message.dart';
+import 'package:sannjosevet/src/core/widgets/refresh_button.dart';
+import 'package:sannjosevet/src/features/product_adjustments/presentation/pages/product_adjustments_page.dart';
+import 'package:sannjosevet/src/features/product_stocks/presentation/pages/product_stocks_page.dart';
+import 'package:sannjosevet/src/features/products/presentation/controllers/product_controller.dart';
+import 'package:sannjosevet/src/features/products/presentation/widgets/product_details_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductPage extends HookConsumerWidget {

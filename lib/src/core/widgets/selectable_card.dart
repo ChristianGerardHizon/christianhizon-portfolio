@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/widgets/card_ink_well.dart';
+import 'package:sannjosevet/src/core/widgets/card_ink_well.dart';
 
 class SelectableCard extends HookWidget {
   final bool selected;

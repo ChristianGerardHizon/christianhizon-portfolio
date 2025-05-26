@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/widgets/collapsing_card.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/widgets/collapsing_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class FailureMessage extends HookWidget {

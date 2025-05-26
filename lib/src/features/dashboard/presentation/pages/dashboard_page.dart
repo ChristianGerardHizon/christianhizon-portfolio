@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/controllers/scaffold_controller.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/widgets/center_progress_indicator.dart';
-import 'package:gym_system/src/features/appointment_schedules/presentation/widgets/appointment_schedule_today_view.dart';
-import 'package:gym_system/src/features/dashboard/presentation/controllers/dashboard_controller.dart';
-import 'package:gym_system/src/features/dashboard/presentation/widgets/kpis/dashboard_kpis.dart';
+import 'package:sannjosevet/src/core/controllers/scaffold_controller.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/widgets/center_progress_indicator.dart';
+import 'package:sannjosevet/src/features/appointment_schedules/presentation/widgets/appointment_schedule_today_view.dart';
+import 'package:sannjosevet/src/features/dashboard/presentation/controllers/dashboard_controller.dart';
+import 'package:sannjosevet/src/features/dashboard/presentation/widgets/kpis/dashboard_kpis.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class DashboardPage extends HookConsumerWidget {

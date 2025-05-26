@@ -1,15 +1,15 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
-import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
-import 'package:gym_system/src/features/branches/domain/branch.dart';
-import 'package:gym_system/src/features/branches/presentation/controllers/branches_controller.dart';
-import 'package:gym_system/src/features/patient_treament_records/data/patient_treatment_record_repository.dart';
-import 'package:gym_system/src/features/patient_treament_records/domain/patient_treatment_record.dart';
-import 'package:gym_system/src/features/patient_treaments/domain/patient_treatment.dart';
-import 'package:gym_system/src/features/patient_treaments/presentation/controllers/patient_treatments_controller.dart';
-import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/authentication/domain/auth_data.dart';
+import 'package:sannjosevet/src/features/authentication/presentation/controllers/auth_controller.dart';
+import 'package:sannjosevet/src/features/branches/domain/branch.dart';
+import 'package:sannjosevet/src/features/branches/presentation/controllers/branches_controller.dart';
+import 'package:sannjosevet/src/features/patient_treament_records/data/patient_treatment_record_repository.dart';
+import 'package:sannjosevet/src/features/patient_treament_records/domain/patient_treatment_record.dart';
+import 'package:sannjosevet/src/features/patient_treaments/domain/patient_treatment.dart';
+import 'package:sannjosevet/src/features/patient_treaments/presentation/controllers/patient_treatments_controller.dart';
+import 'package:sannjosevet/src/features/patients/domain/patient.dart';
+import 'package:sannjosevet/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'patient_treatment_record_form_controller.g.dart';

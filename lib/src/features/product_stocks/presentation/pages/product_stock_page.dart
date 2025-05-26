@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/routing/router.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/card_group.dart';
-import 'package:gym_system/src/core/widgets/collapsing_card.dart';
-import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_list_tile.dart';
-import 'package:gym_system/src/features/product_stocks/data/product_stock_repository.dart';
-import 'package:gym_system/src/features/product_stocks/domain/product_stock.dart';
-import 'package:gym_system/src/features/product_stocks/presentation/controllers/product_stock_controller.dart';
-import 'package:gym_system/src/features/product_stocks/presentation/controllers/product_stock_table_controller.dart';
+import 'package:sannjosevet/src/core/extensions/date_time_extension.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/core/routing/router.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/card_group.dart';
+import 'package:sannjosevet/src/core/widgets/collapsing_card.dart';
+import 'package:sannjosevet/src/core/widgets/modals/confirm_modal.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_list_tile.dart';
+import 'package:sannjosevet/src/features/product_stocks/data/product_stock_repository.dart';
+import 'package:sannjosevet/src/features/product_stocks/domain/product_stock.dart';
+import 'package:sannjosevet/src/features/product_stocks/presentation/controllers/product_stock_controller.dart';
+import 'package:sannjosevet/src/features/product_stocks/presentation/controllers/product_stock_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductStockPage extends HookConsumerWidget {

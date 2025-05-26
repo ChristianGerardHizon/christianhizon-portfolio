@@ -1,12 +1,12 @@
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
-import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
-import 'package:gym_system/src/features/branches/domain/branch.dart';
-import 'package:gym_system/src/features/branches/presentation/controllers/branches_controller.dart';
-import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
-import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_record_controller.dart';
-import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/patients/presentation/controllers/patient_controller.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
+import 'package:sannjosevet/src/features/appointment_schedules/domain/appointment_schedule.dart';
+import 'package:sannjosevet/src/features/branches/domain/branch.dart';
+import 'package:sannjosevet/src/features/branches/presentation/controllers/branches_controller.dart';
+import 'package:sannjosevet/src/features/patient_records/domain/patient_record.dart';
+import 'package:sannjosevet/src/features/patient_records/presentation/controllers/patient_record_controller.dart';
+import 'package:sannjosevet/src/features/patients/domain/patient.dart';
+import 'package:sannjosevet/src/features/patients/presentation/controllers/patient_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'appointment_schedule_form_controller.g.dart';

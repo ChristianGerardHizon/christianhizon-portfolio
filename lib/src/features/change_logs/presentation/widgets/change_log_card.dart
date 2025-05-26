@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/widgets/selectable_card.dart';
-import 'package:gym_system/src/features/change_logs/domain/change_log.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/core/widgets/selectable_card.dart';
+import 'package:sannjosevet/src/features/change_logs/domain/change_log.dart';
 
 class ChangeLogCard extends StatelessWidget {
   const ChangeLogCard({

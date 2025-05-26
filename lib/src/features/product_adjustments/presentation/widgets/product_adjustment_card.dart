@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/features/product_adjustments/domain/product_adjustment.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/features/product_adjustments/domain/product_adjustment.dart';
 
 class ProductAdjustmentCard extends StatelessWidget {
   const ProductAdjustmentCard({

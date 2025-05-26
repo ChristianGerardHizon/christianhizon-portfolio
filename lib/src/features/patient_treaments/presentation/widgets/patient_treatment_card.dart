@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/features/patient_treaments/domain/patient_treatment.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/features/patient_treaments/domain/patient_treatment.dart';
 
 class PatientTreatmentCard extends StatelessWidget {
   final PatientTreatment treatment;

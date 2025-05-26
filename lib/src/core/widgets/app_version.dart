@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/controllers/package_info_controller.dart';
+import 'package:sannjosevet/src/core/controllers/package_info_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AppVersion extends HookConsumerWidget {

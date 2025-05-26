@@ -1,7 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/models/pb_record.dart';
-import 'package:gym_system/src/core/hooks/date_time_hook.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/core/models/pb_record.dart';
+import 'package:sannjosevet/src/core/hooks/date_time_hook.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
 
 part 'product_stock.mapper.dart';
 

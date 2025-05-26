@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/assets/assets.gen.dart';
-import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
-import 'package:gym_system/src/core/widgets/pb_image_loader.dart';
-import 'package:gym_system/src/core/widgets/photo_viewer.dart';
-import 'package:gym_system/src/features/admins/domain/admin.dart';
+import 'package:sannjosevet/src/core/assets/assets.gen.dart';
+import 'package:sannjosevet/src/core/packages/pocketbase_collections.dart';
+import 'package:sannjosevet/src/core/widgets/pb_image_loader.dart';
+import 'package:sannjosevet/src/core/widgets/photo_viewer.dart';
+import 'package:sannjosevet/src/features/admins/domain/admin.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class AdminImageControlWidget extends StatelessWidget {

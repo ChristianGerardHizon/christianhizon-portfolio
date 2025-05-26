@@ -4,14 +4,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/utils/pb_utils.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/features/patient_files/data/patient_file_repository.dart';
-import 'package:gym_system/src/features/patient_files/domain/patient_file.dart';
-import 'package:gym_system/src/features/patient_files/presentation/presentation/controllers/patient_file_form_controller.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/core/utils/pb_utils.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
+import 'package:sannjosevet/src/features/patient_files/data/patient_file_repository.dart';
+import 'package:sannjosevet/src/features/patient_files/domain/patient_file.dart';
+import 'package:sannjosevet/src/features/patient_files/presentation/presentation/controllers/patient_file_form_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientFileFormPage extends HookConsumerWidget {

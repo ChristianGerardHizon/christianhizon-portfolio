@@ -1,6 +1,6 @@
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/patient_treaments/domain/patient_treatment.dart';
-import 'package:gym_system/src/features/patient_treaments/presentation/controllers/patient_treatment_controller.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/patient_treaments/domain/patient_treatment.dart';
+import 'package:sannjosevet/src/features/patient_treaments/presentation/controllers/patient_treatment_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'patient_treatment_form_controller.g.dart';

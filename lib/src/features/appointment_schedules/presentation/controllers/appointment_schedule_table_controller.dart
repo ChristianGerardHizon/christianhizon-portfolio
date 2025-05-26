@@ -1,12 +1,12 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/models/page_results.dart';
-import 'package:gym_system/src/core/models/pb_filter.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
-import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
-import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/page_results.dart';
+import 'package:sannjosevet/src/core/models/pb_filter.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_table/table_controller.dart';
+import 'package:sannjosevet/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
+import 'package:sannjosevet/src/features/appointment_schedules/domain/appointment_schedule.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'appointment_schedule_table_controller.g.dart';

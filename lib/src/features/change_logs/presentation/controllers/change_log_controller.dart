@@ -1,7 +1,7 @@
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/change_logs/data/change_log_repository.dart';
-import 'package:gym_system/src/features/change_logs/domain/change_log.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/change_logs/data/change_log_repository.dart';
+import 'package:sannjosevet/src/features/change_logs/domain/change_log.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'change_log_controller.g.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/packages/pocketbase.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
-import 'package:gym_system/src/features/settings/data/setting_repository.dart';
+import 'package:sannjosevet/src/core/packages/pocketbase.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/modals/confirm_modal.dart';
+import 'package:sannjosevet/src/features/settings/data/setting_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class DomainPage extends HookConsumerWidget {

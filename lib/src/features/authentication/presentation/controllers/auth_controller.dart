@@ -1,7 +1,7 @@
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/authentication/data/auth_repository.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/authentication/data/auth_repository.dart';
+import 'package:sannjosevet/src/features/authentication/domain/auth_data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_controller.g.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
-import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/core/widgets/pb_image_circle.dart';
+import 'package:sannjosevet/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AccountCircleImage extends HookConsumerWidget {

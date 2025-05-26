@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/widgets/selectable_card.dart';
-import 'package:gym_system/src/features/products/domain/product.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/core/widgets/selectable_card.dart';
+import 'package:sannjosevet/src/features/products/domain/product.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({

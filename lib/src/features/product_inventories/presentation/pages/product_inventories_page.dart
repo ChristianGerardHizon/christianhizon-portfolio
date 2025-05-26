@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/routing/router.dart';
-import 'package:gym_system/src/core/strings/table_controller_keys.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/sliver_dynamic_table_view.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
-import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/features/product_inventories/presentation/controllers/product_inventory_table_controller.dart';
-import 'package:gym_system/src/features/products/data/product_repository.dart';
-import 'package:gym_system/src/features/product_inventories/domain/product_inventory.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/core/routing/router.dart';
+import 'package:sannjosevet/src/core/strings/table_controller_keys.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/modals/confirm_modal.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_table/sliver_dynamic_table_view.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_table/dynamic_table_column.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_table/table_controller.dart';
+import 'package:sannjosevet/src/core/widgets/refresh_button.dart';
+import 'package:sannjosevet/src/features/product_inventories/presentation/controllers/product_inventory_table_controller.dart';
+import 'package:sannjosevet/src/features/products/data/product_repository.dart';
+import 'package:sannjosevet/src/features/product_inventories/domain/product_inventory.dart';
 
-import 'package:gym_system/src/features/product_inventories/presentation/widgets/product_inventory_card.dart';
-import 'package:gym_system/src/features/products/presentation/widgets/product_status_text.dart';
+import 'package:sannjosevet/src/features/product_inventories/presentation/widgets/product_inventory_card.dart';
+import 'package:sannjosevet/src/features/products/presentation/widgets/product_status_text.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ProductInventoriesPage extends HookConsumerWidget {

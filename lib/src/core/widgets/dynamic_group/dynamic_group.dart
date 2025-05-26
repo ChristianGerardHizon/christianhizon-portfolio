@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_group/dynamic_group_item.dart';
 
 class DynamicGroup extends StatelessWidget {
   const DynamicGroup({

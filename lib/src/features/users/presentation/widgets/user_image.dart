@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/widgets/image_missing_view.dart';
-import 'package:gym_system/src/features/users/domain/user.dart';
+import 'package:sannjosevet/src/core/widgets/image_missing_view.dart';
+import 'package:sannjosevet/src/features/users/domain/user.dart';
 
 class UserImage extends StatelessWidget {
   final User user;

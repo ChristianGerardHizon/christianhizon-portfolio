@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/widgets/circle_widget.dart';
-import 'package:gym_system/src/core/widgets/pb_image_circle.dart';
-import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/core/widgets/circle_widget.dart';
+import 'package:sannjosevet/src/core/widgets/pb_image_circle.dart';
+import 'package:sannjosevet/src/features/patients/domain/patient.dart';
 
 class PatientTile extends StatelessWidget {
   const PatientTile({super.key, required this.patient});

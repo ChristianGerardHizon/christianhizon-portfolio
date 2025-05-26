@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/widgets/selectable_card.dart';
-import 'package:gym_system/src/features/product_stocks/domain/product_stock.dart';
-import 'package:gym_system/src/features/product_stocks/presentation/widgets/expiration_text.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/core/widgets/selectable_card.dart';
+import 'package:sannjosevet/src/features/product_stocks/domain/product_stock.dart';
+import 'package:sannjosevet/src/features/product_stocks/presentation/widgets/expiration_text.dart';
 
 class ProductStockCard extends StatelessWidget {
   const ProductStockCard({

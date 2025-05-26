@@ -3,17 +3,17 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/utils/pb_utils.dart';
-import 'package:gym_system/src/core/utils/validators.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/features/users/data/user_repository.dart';
-import 'package:gym_system/src/features/users/domain/user.dart';
-import 'package:gym_system/src/features/users/presentation/controllers/user_controller.dart';
-import 'package:gym_system/src/features/users/presentation/controllers/user_form_controller.dart';
-import 'package:gym_system/src/features/users/presentation/controllers/user_table_controller.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/core/utils/pb_utils.dart';
+import 'package:sannjosevet/src/core/utils/validators.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
+import 'package:sannjosevet/src/features/users/data/user_repository.dart';
+import 'package:sannjosevet/src/features/users/domain/user.dart';
+import 'package:sannjosevet/src/features/users/presentation/controllers/user_controller.dart';
+import 'package:sannjosevet/src/features/users/presentation/controllers/user_form_controller.dart';
+import 'package:sannjosevet/src/features/users/presentation/controllers/user_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class UserFormPage extends HookConsumerWidget {

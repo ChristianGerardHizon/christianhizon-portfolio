@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/widgets/popover_widget.dart';
-import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/core/extensions/date_time_extension.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/widgets/popover_widget.dart';
+import 'package:sannjosevet/src/features/appointment_schedules/domain/appointment_schedule.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
 
 class AppointmentScheduleTile extends StatelessWidget {
   const AppointmentScheduleTile({

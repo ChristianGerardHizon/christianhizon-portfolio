@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/features/products/domain/product.dart';
+import 'package:sannjosevet/src/features/products/domain/product.dart';
 
 class ProductTile extends StatelessWidget {
   const ProductTile(

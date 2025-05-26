@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/widgets/failure_message.dart';
-import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/features/patient_breeds/presentation/pages/patient_breeds_page.dart';
-import 'package:gym_system/src/features/patient_species/presentation/controllers/patient_species_controller.dart';
-import 'package:gym_system/src/features/patient_species/presentation/widgets/patient_species_details_view.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/widgets/failure_message.dart';
+import 'package:sannjosevet/src/core/widgets/refresh_button.dart';
+import 'package:sannjosevet/src/features/patient_breeds/presentation/pages/patient_breeds_page.dart';
+import 'package:sannjosevet/src/features/patient_species/presentation/controllers/patient_species_controller.dart';
+import 'package:sannjosevet/src/features/patient_species/presentation/widgets/patient_species_details_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientSpeciesPage extends HookConsumerWidget {

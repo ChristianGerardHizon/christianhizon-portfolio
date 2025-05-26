@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/widgets/loaders/detail_tile.dart';
+import 'package:sannjosevet/src/core/widgets/loaders/detail_tile.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class LoadingDetailsTiles extends StatelessWidget {

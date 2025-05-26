@@ -1,7 +1,7 @@
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/patient_files/data/patient_file_repository.dart';
-import 'package:gym_system/src/features/patient_files/domain/patient_file.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/patient_files/data/patient_file_repository.dart';
+import 'package:sannjosevet/src/features/patient_files/domain/patient_file.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'patient_file_controller.g.dart';

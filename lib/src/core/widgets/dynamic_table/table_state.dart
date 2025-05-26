@@ -1,5 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_sort.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_table/table_sort.dart';
 
 part 'table_state.mapper.dart';
 

@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:gym_system/src/core/models/pb_filter.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
-import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
+import 'package:sannjosevet/src/core/models/pb_filter.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
+import 'package:sannjosevet/src/features/appointment_schedules/domain/appointment_schedule.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'appointment_schedules_controller.g.dart';
@@ -22,7 +22,10 @@ class AppointmentSchedulesController extends _$AppointmentSchedulesController {
         // 3. patient record filter
         .map((f) => _addPatientRecordFilter(f, patientRecordId))
         .run();
-    final result = await repo.listAll(filter: filter.build(), sort: '-${AppointmentScheduleField.date}').run();
+    final result = await repo
+        .listAll(
+            filter: filter.build(), sort: '-${AppointmentScheduleField.date}')
+        .run();
 
     return result.fold(Future.error, (x) => Future.value(x));
   }

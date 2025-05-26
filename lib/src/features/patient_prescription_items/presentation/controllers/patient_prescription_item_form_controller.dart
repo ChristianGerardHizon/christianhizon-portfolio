@@ -1,8 +1,8 @@
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/patient_prescription_items/data/patient_prescription_item_repository.dart';
-import 'package:gym_system/src/features/patient_prescription_items/domain/patient_prescription_item.dart';
-import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
-import 'package:gym_system/src/features/patient_records/presentation/controllers/patient_record_controller.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/patient_prescription_items/data/patient_prescription_item_repository.dart';
+import 'package:sannjosevet/src/features/patient_prescription_items/domain/patient_prescription_item.dart';
+import 'package:sannjosevet/src/features/patient_records/domain/patient_record.dart';
+import 'package:sannjosevet/src/features/patient_records/presentation/controllers/patient_record_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'patient_prescription_item_form_controller.g.dart';

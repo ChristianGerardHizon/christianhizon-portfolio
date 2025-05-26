@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/widgets/popover_widget.dart';
-import 'package:gym_system/src/core/widgets/selectable_card.dart';
-import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
+import 'package:sannjosevet/src/core/extensions/date_time_extension.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/widgets/popover_widget.dart';
+import 'package:sannjosevet/src/core/widgets/selectable_card.dart';
+import 'package:sannjosevet/src/features/patient_records/domain/patient_record.dart';
 
 class PatientRecordCard extends StatelessWidget {
   const PatientRecordCard({

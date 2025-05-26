@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/features/product_stocks/domain/product_stock.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/features/product_stocks/domain/product_stock.dart';
 
 class ProductStockTile extends StatelessWidget {
   const ProductStockTile(

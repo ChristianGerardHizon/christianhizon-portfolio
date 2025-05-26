@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/strings/app_strings.dart';
+import 'package:sannjosevet/src/core/strings/app_strings.dart';
 
 import 'package:window_manager/window_manager.dart';
 

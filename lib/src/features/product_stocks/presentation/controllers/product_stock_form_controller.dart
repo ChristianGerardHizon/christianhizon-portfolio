@@ -1,9 +1,9 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/products/data/product_repository.dart';
-import 'package:gym_system/src/features/product_stocks/data/product_stock_repository.dart';
-import 'package:gym_system/src/features/products/domain/product.dart';
-import 'package:gym_system/src/features/product_stocks/domain/product_stock.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/products/data/product_repository.dart';
+import 'package:sannjosevet/src/features/product_stocks/data/product_stock_repository.dart';
+import 'package:sannjosevet/src/features/products/domain/product.dart';
+import 'package:sannjosevet/src/features/product_stocks/domain/product_stock.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_stock_form_controller.g.dart';

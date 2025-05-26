@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/routing/router.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
-import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
-import 'package:gym_system/src/features/users/data/user_repository.dart';
+import 'package:sannjosevet/src/core/routing/router.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/features/authentication/domain/auth_admin.dart';
+import 'package:sannjosevet/src/features/authentication/domain/auth_data.dart';
+import 'package:sannjosevet/src/features/authentication/domain/auth_user.dart';
+import 'package:sannjosevet/src/features/authentication/presentation/controllers/auth_controller.dart';
+import 'package:sannjosevet/src/features/users/data/user_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class EmailValidationPage extends HookConsumerWidget {

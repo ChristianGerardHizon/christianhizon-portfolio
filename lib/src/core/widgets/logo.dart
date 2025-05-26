@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/assets/assets.gen.dart';
+import 'package:sannjosevet/src/core/assets/assets.gen.dart';
 
 class Logo extends StatelessWidget {
   final EdgeInsets padding;

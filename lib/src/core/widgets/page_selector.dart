@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
 
 class PageSelector extends HookWidget {
   const PageSelector({

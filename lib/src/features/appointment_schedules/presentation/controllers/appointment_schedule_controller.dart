@@ -1,5 +1,5 @@
-import 'package:gym_system/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
-import 'package:gym_system/src/features/appointment_schedules/domain/appointment_schedule.dart';
+import 'package:sannjosevet/src/features/appointment_schedules/data/appointment_schedule_repository.dart';
+import 'package:sannjosevet/src/features/appointment_schedules/domain/appointment_schedule.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

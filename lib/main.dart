@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/application.dart';
-import 'package:gym_system/src/core/assets/i18n/strings.g.dart';
-import 'package:gym_system/src/core/utils/window_utils.dart';
+import 'package:sannjosevet/src/application.dart';
+import 'package:sannjosevet/src/core/assets/i18n/strings.g.dart';
+import 'package:sannjosevet/src/core/utils/window_utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 Future<void> main() async {

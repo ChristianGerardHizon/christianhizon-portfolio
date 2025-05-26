@@ -1,5 +1,5 @@
-import 'package:gym_system/src/core/controllers/package_info_controller.dart';
-import 'package:gym_system/src/features/system_versions/presentation/controllers/latest_system_version_controller.dart';
+import 'package:sannjosevet/src/core/controllers/package_info_controller.dart';
+import 'package:sannjosevet/src/features/system_versions/presentation/controllers/latest_system_version_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'status_system_version_controller.g.dart';

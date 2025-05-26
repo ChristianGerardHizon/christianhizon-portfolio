@@ -1,7 +1,7 @@
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
 
 class FormUtils {
   ///

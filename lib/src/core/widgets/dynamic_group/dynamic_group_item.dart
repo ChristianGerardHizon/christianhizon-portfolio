@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/routing/router.dart';
+import 'package:sannjosevet/src/core/routing/router.dart';
 
 class DynamicGroupItem extends StatelessWidget {
   const DynamicGroupItem({

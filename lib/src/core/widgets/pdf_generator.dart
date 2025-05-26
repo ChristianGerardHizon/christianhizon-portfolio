@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-import 'package:gym_system/src/core/utils/file_utils/file_utils.dart';
+import 'package:sannjosevet/src/core/utils/file_utils/file_utils.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';

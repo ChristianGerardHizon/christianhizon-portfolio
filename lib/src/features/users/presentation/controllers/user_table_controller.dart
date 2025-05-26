@@ -1,10 +1,10 @@
-import 'package:gym_system/src/core/models/page_results.dart';
-import 'package:gym_system/src/core/models/pb_filter.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
-import 'package:gym_system/src/features/users/data/user_repository.dart';
-import 'package:gym_system/src/features/users/domain/user.dart';
+import 'package:sannjosevet/src/core/models/page_results.dart';
+import 'package:sannjosevet/src/core/models/pb_filter.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_table/table_controller.dart';
+import 'package:sannjosevet/src/features/users/data/user_repository.dart';
+import 'package:sannjosevet/src/features/users/domain/user.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_table_controller.g.dart';

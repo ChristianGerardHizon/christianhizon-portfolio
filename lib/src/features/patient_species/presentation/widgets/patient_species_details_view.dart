@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/routing/router.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
-import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
-import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
-import 'package:gym_system/src/features/patient_species/data/patient_species_repository.dart';
-import 'package:gym_system/src/features/patient_species/domain/patient_species.dart';
-import 'package:gym_system/src/features/patient_species/presentation/controllers/patient_species_table_controller.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/routing/router.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_group/dynamic_group.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_group/dynamic_group_item.dart';
+import 'package:sannjosevet/src/core/widgets/modals/confirm_modal.dart';
+import 'package:sannjosevet/src/features/patient_species/data/patient_species_repository.dart';
+import 'package:sannjosevet/src/features/patient_species/domain/patient_species.dart';
+import 'package:sannjosevet/src/features/patient_species/presentation/controllers/patient_species_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientSpeciesDetailsView extends HookConsumerWidget {

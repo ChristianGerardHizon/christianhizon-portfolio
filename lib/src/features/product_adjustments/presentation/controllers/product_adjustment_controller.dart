@@ -1,8 +1,8 @@
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/product_adjustments/data/product_adjustment_repository.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/product_adjustments/data/product_adjustment_repository.dart';
 
-import 'package:gym_system/src/features/product_adjustments/domain/product_adjustment.dart';
+import 'package:sannjosevet/src/features/product_adjustments/domain/product_adjustment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_adjustment_controller.g.dart';

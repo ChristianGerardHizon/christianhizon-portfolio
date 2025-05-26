@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+import 'package:sannjosevet/src/core/extensions/date_time_extension.dart';
 import 'package:intl/intl.dart';
 
 import '../dynamic_field.dart';

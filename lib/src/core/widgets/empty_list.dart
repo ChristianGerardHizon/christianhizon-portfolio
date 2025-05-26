@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
 
 class EmptyList extends StatelessWidget {
   const EmptyList({super.key, this.onPress, this.message});

@@ -1,5 +1,5 @@
-import 'package:gym_system/src/features/settings/data/setting_repository.dart';
-import 'package:gym_system/src/features/settings/domain/settings.dart';
+import 'package:sannjosevet/src/features/settings/data/setting_repository.dart';
+import 'package:sannjosevet/src/features/settings/domain/settings.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'settings_controller.g.dart';

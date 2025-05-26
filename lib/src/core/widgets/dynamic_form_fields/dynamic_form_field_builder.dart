@@ -1,11 +1,11 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:gym_system/src/core/models/pb_file.dart';
+import 'package:sannjosevet/src/core/models/pb_file.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:gym_system/src/core/widgets/loading_filled_button.dart';
+import 'package:sannjosevet/src/core/widgets/loading_filled_button.dart';
 
 import 'dynamic_field.dart';
 import 'dynamic_form_fields.dart';

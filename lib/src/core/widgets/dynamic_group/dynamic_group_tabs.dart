@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_group/dynamic_group_item.dart';
 
 class DynamicGroupTabItem {
   final String title;

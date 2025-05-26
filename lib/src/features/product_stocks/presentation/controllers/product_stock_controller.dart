@@ -1,5 +1,5 @@
-import 'package:gym_system/src/features/product_stocks/data/product_stock_repository.dart';
-import 'package:gym_system/src/features/product_stocks/domain/product_stock.dart';
+import 'package:sannjosevet/src/features/product_stocks/data/product_stock_repository.dart';
+import 'package:sannjosevet/src/features/product_stocks/domain/product_stock.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_stock_controller.g.dart';

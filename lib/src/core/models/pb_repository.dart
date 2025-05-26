@@ -1,5 +1,5 @@
-import 'package:gym_system/src/core/models/page_results.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/models/page_results.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:http/http.dart';
 
 ///

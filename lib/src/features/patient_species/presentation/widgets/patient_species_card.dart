@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/widgets/selectable_card.dart';
-import 'package:gym_system/src/features/patient_species/domain/patient_species.dart';
+import 'package:sannjosevet/src/core/widgets/selectable_card.dart';
+import 'package:sannjosevet/src/features/patient_species/domain/patient_species.dart';
 
 class PatientSpeciesCard extends StatelessWidget {
   const PatientSpeciesCard({

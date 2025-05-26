@@ -1,5 +1,5 @@
-import 'package:gym_system/src/features/users/data/user_repository.dart';
-import 'package:gym_system/src/features/users/domain/user.dart';
+import 'package:sannjosevet/src/features/users/data/user_repository.dart';
+import 'package:sannjosevet/src/features/users/domain/user.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_controller.g.dart';

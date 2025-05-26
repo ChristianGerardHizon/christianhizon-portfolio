@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/features/patient_species/domain/patient_species.dart';
+import 'package:sannjosevet/src/features/patient_species/domain/patient_species.dart';
 
 class PatientSpeciesTile extends StatelessWidget {
   const PatientSpeciesTile({super.key, required this.patientSpecies});

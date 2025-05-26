@@ -1,10 +1,10 @@
-import 'package:gym_system/src/core/models/pb_repository.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/packages/pocketbase.dart';
-import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
-import 'package:gym_system/src/core/models/page_results.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/product_categories/domain/product_category.dart';
+import 'package:sannjosevet/src/core/models/pb_repository.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/packages/pocketbase.dart';
+import 'package:sannjosevet/src/core/packages/pocketbase_collections.dart';
+import 'package:sannjosevet/src/core/models/page_results.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/product_categories/domain/product_category.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pocketbase/pocketbase.dart';

@@ -1,6 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/features/admins/domain/admin.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
+import 'package:sannjosevet/src/features/admins/domain/admin.dart';
+import 'package:sannjosevet/src/features/authentication/domain/auth_data.dart';
 
 part 'auth_admin.mapper.dart';
 
@@ -15,7 +15,9 @@ class AuthAdmin extends AuthData with AuthAdminMappable {
         'id': raw['record']['id'],
       },
     );
-  }  static const fromJson = AuthAdminMapper.fromJson;
+  }
+
+  static const fromJson = AuthAdminMapper.fromJson;
 
   AuthAdmin({
     required super.id,
@@ -24,6 +26,4 @@ class AuthAdmin extends AuthData with AuthAdminMappable {
     required super.collectionId,
     required super.collectionName,
   });
-
-
 }

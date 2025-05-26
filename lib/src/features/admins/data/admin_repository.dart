@@ -1,13 +1,13 @@
 import 'package:cross_file/cross_file.dart';
-import 'package:gym_system/src/core/models/pb_repository.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/packages/pocketbase.dart';
-import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/models/page_results.dart';
-import 'package:gym_system/src/core/strings/pb_expand.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/admins/domain/admin.dart';
+import 'package:sannjosevet/src/core/models/pb_repository.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/packages/pocketbase.dart';
+import 'package:sannjosevet/src/core/packages/pocketbase_collections.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/core/models/page_results.dart';
+import 'package:sannjosevet/src/core/strings/pb_expand.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/admins/domain/admin.dart';
 import 'package:http/http.dart';
 import 'package:pocketbase/pocketbase.dart';
 

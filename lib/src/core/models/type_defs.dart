@@ -1,5 +1,5 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
 
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 

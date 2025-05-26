@@ -1,10 +1,10 @@
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/product_adjustments/domain/product_adjustment.dart';
-import 'package:gym_system/src/features/product_adjustments/presentation/controllers/product_adjustment_controller.dart';
-import 'package:gym_system/src/features/product_stocks/domain/product_stock.dart';
-import 'package:gym_system/src/features/product_stocks/presentation/controllers/product_stock_controller.dart';
-import 'package:gym_system/src/features/products/domain/product.dart';
-import 'package:gym_system/src/features/products/presentation/controllers/product_controller.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/product_adjustments/domain/product_adjustment.dart';
+import 'package:sannjosevet/src/features/product_adjustments/presentation/controllers/product_adjustment_controller.dart';
+import 'package:sannjosevet/src/features/product_stocks/domain/product_stock.dart';
+import 'package:sannjosevet/src/features/product_stocks/presentation/controllers/product_stock_controller.dart';
+import 'package:sannjosevet/src/features/products/domain/product.dart';
+import 'package:sannjosevet/src/features/products/presentation/controllers/product_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_adjustment_form_controller.g.dart';

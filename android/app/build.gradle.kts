@@ -48,17 +48,16 @@ android {
                 keyAlias = System.getenv()["CM_KEY_ALIAS"]
                 keyPassword = System.getenv()["CM_KEY_PASSWORD"]
             } else {
-                println("No key.properties found, falling back to debug keystore")
-                keyAlias = "androiddebugkey"
-                keyPassword = "android"
-                storeFile = rootProject.file(System.getProperty("user.home") + "/.android/debug.keystore")
-                storePassword = "android"            
+                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
             }
         }
     }
 
     buildTypes {
-        release {
+        getByName("release")  {
             // ✅ Use the correct "release" signing config
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false

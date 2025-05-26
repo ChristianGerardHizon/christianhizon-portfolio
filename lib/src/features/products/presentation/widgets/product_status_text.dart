@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/features/product_inventories/domain/product_inventory.dart';
+import 'package:sannjosevet/src/features/product_inventories/domain/product_inventory.dart';
 
 class ProductStatusText extends StatelessWidget {
   final ProductInventory product;

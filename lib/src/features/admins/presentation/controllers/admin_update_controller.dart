@@ -1,8 +1,8 @@
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/admins/data/admin_repository.dart';
-import 'package:gym_system/src/features/admins/domain/admin.dart';
-import 'package:gym_system/src/features/settings/domain/settings.dart';
-import 'package:gym_system/src/features/settings/presentation/controllers/settings_controller.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/admins/data/admin_repository.dart';
+import 'package:sannjosevet/src/features/admins/domain/admin.dart';
+import 'package:sannjosevet/src/features/settings/domain/settings.dart';
+import 'package:sannjosevet/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'admin_update_controller.g.dart';

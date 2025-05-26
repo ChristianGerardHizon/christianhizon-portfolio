@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_base.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_column.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_sort.dart';
-import 'package:gym_system/src/core/widgets/page_selector.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_table/dynamic_table_base.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_table/dynamic_table_column.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_table/table_controller.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_table/table_sort.dart';
+import 'package:sannjosevet/src/core/widgets/page_selector.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 typedef MobileBuilderFunc<T> = Widget Function(

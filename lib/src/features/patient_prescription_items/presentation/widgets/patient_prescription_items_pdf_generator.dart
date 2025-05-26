@@ -1,14 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:gym_system/src/core/assets/assets.gen.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/utils/file_utils/file_utils.dart';
-import 'package:gym_system/src/features/patient_prescription_items/domain/patient_prescription_item.dart';
-import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
-import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:sannjosevet/src/core/assets/assets.gen.dart';
+import 'package:sannjosevet/src/core/extensions/date_time_extension.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/utils/file_utils/file_utils.dart';
+import 'package:sannjosevet/src/features/patient_prescription_items/domain/patient_prescription_item.dart';
+import 'package:sannjosevet/src/features/patient_records/domain/patient_record.dart';
+import 'package:sannjosevet/src/features/patients/domain/patient.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -179,7 +179,8 @@ class PatientPdfGenerator {
                   ),
                 ),
                 _underlineText(pw.Text(
-                  (patient.dateOfBirth?.fullDate).optional(placeholder: ' ', checkNullString: true),
+                  (patient.dateOfBirth?.fullDate)
+                      .optional(placeholder: ' ', checkNullString: true),
                   style: pw.TextStyle(
                     fontSize: 10,
                     fontWeight: pw.FontWeight.bold,

@@ -1,12 +1,12 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/models/pb_record.dart';
-import 'package:gym_system/src/core/hooks/date_time_hook.dart';
-import 'package:gym_system/src/core/hooks/patient_sex_hook.dart';
-import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/features/branches/domain/branch.dart';
-import 'package:gym_system/src/features/patient_breeds/domain/patient_breed.dart';
-import 'package:gym_system/src/features/patient_species/domain/patient_species.dart';
+import 'package:sannjosevet/src/core/models/pb_record.dart';
+import 'package:sannjosevet/src/core/hooks/date_time_hook.dart';
+import 'package:sannjosevet/src/core/hooks/patient_sex_hook.dart';
+import 'package:sannjosevet/src/core/hooks/pb_empty_hook.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/features/branches/domain/branch.dart';
+import 'package:sannjosevet/src/features/patient_breeds/domain/patient_breed.dart';
+import 'package:sannjosevet/src/features/patient_species/domain/patient_species.dart';
 
 part 'patient.mapper.dart';
 

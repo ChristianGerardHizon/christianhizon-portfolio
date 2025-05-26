@@ -1,7 +1,7 @@
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/features/patient_breeds/data/patient_breed_repository.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/features/patient_breeds/data/patient_breed_repository.dart';
 
-import 'package:gym_system/src/features/patient_breeds/domain/patient_breed.dart';
+import 'package:sannjosevet/src/features/patient_breeds/domain/patient_breed.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'patient_breeds_controller.g.dart';

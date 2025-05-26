@@ -1,6 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
-import 'package:gym_system/src/features/users/domain/user.dart';
+import 'package:sannjosevet/src/features/authentication/domain/auth_data.dart';
+import 'package:sannjosevet/src/features/users/domain/user.dart';
 
 part 'auth_user.mapper.dart';
 

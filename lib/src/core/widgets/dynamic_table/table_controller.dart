@@ -1,4 +1,4 @@
-import 'package:gym_system/src/core/widgets/dynamic_table/table_state.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_table/table_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'table_controller.g.dart';

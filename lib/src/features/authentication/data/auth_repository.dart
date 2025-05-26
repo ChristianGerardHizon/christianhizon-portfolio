@@ -1,18 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/packages/flutter_secure_storage.dart';
-import 'package:gym_system/src/core/packages/pocketbase.dart';
-import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/strings/pb_expand.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/admins/domain/admin.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_data.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
-import 'package:gym_system/src/features/users/domain/user.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/packages/flutter_secure_storage.dart';
+import 'package:sannjosevet/src/core/packages/pocketbase.dart';
+import 'package:sannjosevet/src/core/packages/pocketbase_collections.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/core/strings/pb_expand.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/admins/domain/admin.dart';
+import 'package:sannjosevet/src/features/authentication/domain/auth_admin.dart';
+import 'package:sannjosevet/src/features/authentication/domain/auth_data.dart';
+import 'package:sannjosevet/src/features/authentication/domain/auth_user.dart';
+import 'package:sannjosevet/src/features/users/domain/user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pocketbase/pocketbase.dart';
 

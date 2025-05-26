@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/routing/router.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
-import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
-import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/failure_message.dart';
-import 'package:gym_system/src/core/widgets/refresh_button.dart';
-import 'package:gym_system/src/core/widgets/stack_loader.dart';
-import 'package:gym_system/src/features/patient_treament_records/data/patient_treatment_record_repository.dart';
-import 'package:gym_system/src/features/patient_treament_records/domain/patient_treatment_record.dart';
-import 'package:gym_system/src/features/patient_treament_records/presentation/controllers/patient_treatment_record_controller.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/routing/router.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_group/dynamic_group.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_group/dynamic_group_item.dart';
+import 'package:sannjosevet/src/core/widgets/modals/confirm_modal.dart';
+import 'package:sannjosevet/src/core/widgets/failure_message.dart';
+import 'package:sannjosevet/src/core/widgets/refresh_button.dart';
+import 'package:sannjosevet/src/core/widgets/stack_loader.dart';
+import 'package:sannjosevet/src/features/patient_treament_records/data/patient_treatment_record_repository.dart';
+import 'package:sannjosevet/src/features/patient_treament_records/domain/patient_treatment_record.dart';
+import 'package:sannjosevet/src/features/patient_treament_records/presentation/controllers/patient_treatment_record_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientTreatmentRecordPage extends HookConsumerWidget {
@@ -117,13 +117,14 @@ class PatientTreatmentRecordPage extends HookConsumerWidget {
                           items: [
                             DynamicGroupItem.text(
                               title: 'Treatment',
-                              value: patientTreatmentRecord.expand.treatment.name.optional(),
+                              value: patientTreatmentRecord
+                                  .expand.treatment.name
+                                  .optional(),
                             ),
                             DynamicGroupItem.text(
                               title: 'Notes',
                               value: patientTreatmentRecord.notes.optional(),
                             ),
-
                           ],
                         ),
 

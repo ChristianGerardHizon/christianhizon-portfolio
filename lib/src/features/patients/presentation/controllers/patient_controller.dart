@@ -1,5 +1,5 @@
-import 'package:gym_system/src/features/patients/data/patient_repository.dart';
-import 'package:gym_system/src/features/patients/domain/patient.dart';
+import 'package:sannjosevet/src/features/patients/data/patient_repository.dart';
+import 'package:sannjosevet/src/features/patients/domain/patient.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'patient_controller.g.dart';

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/packages/pocketbase.dart';
-import 'package:gym_system/src/core/routing/main.routes.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/app_version.dart';
-import 'package:gym_system/src/core/widgets/modals/confirm_modal.dart';
-import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group.dart';
-import 'package:gym_system/src/core/widgets/dynamic_group/dynamic_group_item.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
-import 'package:gym_system/src/features/authentication/presentation/controllers/auth_controller.dart';
-import 'package:gym_system/src/features/system_versions/presentation/widgets/system_version_widget.dart';
+import 'package:sannjosevet/src/core/packages/pocketbase.dart';
+import 'package:sannjosevet/src/core/routing/main.routes.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/app_version.dart';
+import 'package:sannjosevet/src/core/widgets/modals/confirm_modal.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_group/dynamic_group.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_group/dynamic_group_item.dart';
+import 'package:sannjosevet/src/features/authentication/domain/auth_admin.dart';
+import 'package:sannjosevet/src/features/authentication/presentation/controllers/auth_controller.dart';
+import 'package:sannjosevet/src/features/system_versions/presentation/widgets/system_version_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:theme_provider/theme_provider.dart';
 

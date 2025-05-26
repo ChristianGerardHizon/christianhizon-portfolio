@@ -3,15 +3,15 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/features/change_logs/data/change_log_repository.dart';
-import 'package:gym_system/src/features/change_logs/domain/change_log.dart';
-import 'package:gym_system/src/features/change_logs/presentation/controllers/change_log_controller.dart';
-import 'package:gym_system/src/features/change_logs/presentation/controllers/change_log_form_controller.dart';
-import 'package:gym_system/src/features/change_logs/presentation/controllers/change_log_table_controller.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
+import 'package:sannjosevet/src/features/change_logs/data/change_log_repository.dart';
+import 'package:sannjosevet/src/features/change_logs/domain/change_log.dart';
+import 'package:sannjosevet/src/features/change_logs/presentation/controllers/change_log_controller.dart';
+import 'package:sannjosevet/src/features/change_logs/presentation/controllers/change_log_form_controller.dart';
+import 'package:sannjosevet/src/features/change_logs/presentation/controllers/change_log_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ChangeLogFormPage extends HookConsumerWidget {

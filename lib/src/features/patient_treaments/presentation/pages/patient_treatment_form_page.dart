@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/strings/table_controller_keys.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/features/patient_treaments/data/patient_treatment_repository.dart';
-import 'package:gym_system/src/features/patient_treaments/domain/patient_treatment.dart';
-import 'package:gym_system/src/features/patient_treaments/presentation/controllers/patient_treatment_form_controller.dart';
-import 'package:gym_system/src/features/patient_treaments/presentation/controllers/patient_treatment_table_controller.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/core/strings/table_controller_keys.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
+import 'package:sannjosevet/src/features/patient_treaments/data/patient_treatment_repository.dart';
+import 'package:sannjosevet/src/features/patient_treaments/domain/patient_treatment.dart';
+import 'package:sannjosevet/src/features/patient_treaments/presentation/controllers/patient_treatment_form_controller.dart';
+import 'package:sannjosevet/src/features/patient_treaments/presentation/controllers/patient_treatment_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientTreatmentFormPage extends HookConsumerWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
-import 'package:gym_system/src/core/extensions/string.dart';
-import 'package:gym_system/src/features/patient_records/domain/patient_record.dart';
+import 'package:sannjosevet/src/core/extensions/date_time_extension.dart';
+import 'package:sannjosevet/src/core/extensions/string.dart';
+import 'package:sannjosevet/src/features/patient_records/domain/patient_record.dart';
 
 class PatientRecordTile extends StatelessWidget {
   const PatientRecordTile({super.key, required this.patientRecord});

@@ -1,4 +1,4 @@
-name: gym_system
+name: sannjosevet
 description: "A template application"
 
 publish_to: 'none' 
@@ -82,6 +82,7 @@ dev_dependencies:
   # https://github.com/dart-lang/sdk/issues/60784
   analyzer: 7.3.0
   analyzer_plugin: 0.12.0 
+  change_app_package_name: ^1.5.0
 
 flutter:
   uses-material-design: true

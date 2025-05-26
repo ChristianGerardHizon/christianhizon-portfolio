@@ -1,7 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/packages/pocketbase_collections.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_admin.dart';
-import 'package:gym_system/src/features/authentication/domain/auth_user.dart';
+import 'package:sannjosevet/src/core/packages/pocketbase_collections.dart';
+import 'package:sannjosevet/src/features/authentication/domain/auth_admin.dart';
+import 'package:sannjosevet/src/features/authentication/domain/auth_user.dart';
 
 part 'auth_data.mapper.dart';
 

@@ -1,9 +1,9 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/models/pb_record.dart';
-import 'package:gym_system/src/core/hooks/date_time_hook.dart';
-import 'package:gym_system/src/core/hooks/pb_empty_hook.dart';
-import 'package:gym_system/src/features/branches/domain/branch.dart';
-import 'package:gym_system/src/features/product_categories/domain/product_category.dart';
+import 'package:sannjosevet/src/core/models/pb_record.dart';
+import 'package:sannjosevet/src/core/hooks/date_time_hook.dart';
+import 'package:sannjosevet/src/core/hooks/pb_empty_hook.dart';
+import 'package:sannjosevet/src/features/branches/domain/branch.dart';
+import 'package:sannjosevet/src/features/product_categories/domain/product_category.dart';
 
 part 'product.mapper.dart';
 

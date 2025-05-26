@@ -1,5 +1,5 @@
-import 'package:gym_system/src/features/admins/data/admin_repository.dart';
-import 'package:gym_system/src/features/admins/domain/admin.dart';
+import 'package:sannjosevet/src/features/admins/data/admin_repository.dart';
+import 'package:sannjosevet/src/features/admins/domain/admin.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'admin_controller.g.dart';

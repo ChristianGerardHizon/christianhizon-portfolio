@@ -1,11 +1,10 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:gym_system/src/core/models/pb_record.dart';
+import 'package:sannjosevet/src/core/models/pb_record.dart';
 
 part 'system_version.mapper.dart';
 
 @MappableClass()
 class SystemVersion extends PbRecord with SystemVersionMappable {
-
   final num buildNumber;
   final String mobileUrl;
 
@@ -18,7 +17,6 @@ class SystemVersion extends PbRecord with SystemVersionMappable {
     super.updated,
     required this.buildNumber,
     required this.mobileUrl,
-
   });
 
   static fromMap(Map<String, dynamic> raw) {

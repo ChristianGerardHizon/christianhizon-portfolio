@@ -3,17 +3,17 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/strings/table_controller_keys.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/features/patient_breeds/data/patient_breed_repository.dart';
-import 'package:gym_system/src/features/patient_breeds/domain/patient_breed.dart';
-import 'package:gym_system/src/features/patient_breeds/presentation/controllers/patient_breed_form_controller.dart';
-import 'package:gym_system/src/features/patient_breeds/presentation/controllers/patient_breed_table_controller.dart';
-import 'package:gym_system/src/features/patient_species/domain/patient_species.dart';
-import 'package:gym_system/src/features/patient_species/presentation/widgets/patient_species_tile.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/core/strings/table_controller_keys.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
+import 'package:sannjosevet/src/features/patient_breeds/data/patient_breed_repository.dart';
+import 'package:sannjosevet/src/features/patient_breeds/domain/patient_breed.dart';
+import 'package:sannjosevet/src/features/patient_breeds/presentation/controllers/patient_breed_form_controller.dart';
+import 'package:sannjosevet/src/features/patient_breeds/presentation/controllers/patient_breed_table_controller.dart';
+import 'package:sannjosevet/src/features/patient_species/domain/patient_species.dart';
+import 'package:sannjosevet/src/features/patient_species/presentation/widgets/patient_species_tile.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientBreedFormPage extends HookConsumerWidget {

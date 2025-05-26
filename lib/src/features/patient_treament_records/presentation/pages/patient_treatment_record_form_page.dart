@@ -3,17 +3,17 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gym_system/src/core/strings/fields.dart';
-import 'package:gym_system/src/core/widgets/app_snackbar.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
-import 'package:gym_system/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
-import 'package:gym_system/src/features/patient_treament_records/data/patient_treatment_record_repository.dart';
-import 'package:gym_system/src/features/patient_treament_records/domain/patient_treatment_record.dart';
-import 'package:gym_system/src/features/patient_treament_records/presentation/controllers/patient_treatment_record_controller.dart';
-import 'package:gym_system/src/features/patient_treament_records/presentation/controllers/patient_treatment_record_form_controller.dart';
-import 'package:gym_system/src/features/patient_treament_records/presentation/controllers/patient_treatment_record_table_controller.dart';
-import 'package:gym_system/src/features/patients/domain/patient.dart';
-import 'package:gym_system/src/features/patients/presentation/widgets/patient_tile.dart';
+import 'package:sannjosevet/src/core/strings/fields.dart';
+import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_field.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
+import 'package:sannjosevet/src/features/patient_treament_records/data/patient_treatment_record_repository.dart';
+import 'package:sannjosevet/src/features/patient_treament_records/domain/patient_treatment_record.dart';
+import 'package:sannjosevet/src/features/patient_treament_records/presentation/controllers/patient_treatment_record_controller.dart';
+import 'package:sannjosevet/src/features/patient_treament_records/presentation/controllers/patient_treatment_record_form_controller.dart';
+import 'package:sannjosevet/src/features/patient_treament_records/presentation/controllers/patient_treatment_record_table_controller.dart';
+import 'package:sannjosevet/src/features/patients/domain/patient.dart';
+import 'package:sannjosevet/src/features/patients/presentation/widgets/patient_tile.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientTreatmentRecordFormPage extends HookConsumerWidget {

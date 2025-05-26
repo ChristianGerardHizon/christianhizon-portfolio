@@ -1,9 +1,9 @@
-import 'package:gym_system/src/core/failures/failure.dart';
-import 'package:gym_system/src/core/models/type_defs.dart';
-import 'package:gym_system/src/features/product_inventories/presentation/controllers/product_inventory_controller.dart';
-import 'package:gym_system/src/features/products/data/product_repository.dart';
-import 'package:gym_system/src/features/products/domain/product.dart';
-import 'package:gym_system/src/features/product_inventories/domain/product_inventory.dart';
+import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/type_defs.dart';
+import 'package:sannjosevet/src/features/product_inventories/presentation/controllers/product_inventory_controller.dart';
+import 'package:sannjosevet/src/features/products/data/product_repository.dart';
+import 'package:sannjosevet/src/features/products/domain/product.dart';
+import 'package:sannjosevet/src/features/product_inventories/domain/product_inventory.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_controller.g.dart';

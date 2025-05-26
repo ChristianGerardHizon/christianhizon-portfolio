@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/extensions/date_time_extension.dart';
+import 'package:sannjosevet/src/core/extensions/date_time_extension.dart';
 
 class ExpirationStatusText extends StatelessWidget {
   final DateTime expirationDate;

@@ -1,8 +1,8 @@
-export 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_base_column.dart'
+export 'package:sannjosevet/src/core/widgets/dynamic_table/dynamic_table_base_column.dart'
     show DynamicTableBaseColumn;
-import 'package:gym_system/src/core/widgets/dynamic_table/dynamic_table_base_column.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_table/dynamic_table_base_column.dart';
 import 'package:flutter/material.dart';
-import 'package:gym_system/src/core/widgets/dynamic_table/table_controller.dart';
+import 'package:sannjosevet/src/core/widgets/dynamic_table/table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_table_view/material_table_view.dart';
 import 'package:material_table_view/sliver_table_view.dart';
