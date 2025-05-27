@@ -6,8 +6,8 @@ class AppointmentSchedulesData extends StatefulShellBranchData {
   static const routes = <TypeRouteData>[
     TypedGoRoute<AppointmentSchedulesPageRoute>(
         path: AppointmentSchedulesPageRoute.path),
-    TypedGoRoute<AppointmentSchedulesTodayPageRoute>(
-        path: AppointmentSchedulesTodayPageRoute.path),
+    TypedGoRoute<AppointmentSchedulesByDatePageRoute>(
+        path: AppointmentSchedulesByDatePageRoute.path),
     TypedGoRoute<AppointmentSchedulePageRoute>(
         path: AppointmentSchedulePageRoute.path),
     TypedGoRoute<AppointmentScheduleFormPageRoute>(
@@ -39,15 +39,19 @@ class AppointmentSchedulesPageRoute extends GoRouteData {
   }
 }
 
-@TypedGoRoute<AppointmentSchedulesTodayPageRoute>(
-    path: AppointmentSchedulesTodayPageRoute.path)
-class AppointmentSchedulesTodayPageRoute extends GoRouteData {
-  const AppointmentSchedulesTodayPageRoute();
+@TypedGoRoute<AppointmentSchedulesByDatePageRoute>(
+    path: AppointmentSchedulesByDatePageRoute.path)
+class AppointmentSchedulesByDatePageRoute extends GoRouteData {
+  const AppointmentSchedulesByDatePageRoute({this.date});
   static const path = '/today/appointmentSchedules';
+
+  final DateTime? date;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const AppointmentSchedulesTodayPage();
+    return AppointmentSchedulesByDatePage(
+      date: date,
+    );
   }
 }
 

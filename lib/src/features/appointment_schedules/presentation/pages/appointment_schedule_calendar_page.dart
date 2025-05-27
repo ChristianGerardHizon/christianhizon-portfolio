@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:sannjosevet/src/features/appointment_schedules/presentation/widgets/appointment_calendar_tile.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class AppointmentScheduleCalendarPage extends HookConsumerWidget {
@@ -12,6 +11,8 @@ class AppointmentScheduleCalendarPage extends HookConsumerWidget {
 
     final calendarFocusedDay = useState(now);
     final calendarFormat = useState(CalendarFormat.month);
+
+    final selectedColor = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
       body: SafeArea(
@@ -37,7 +38,7 @@ class AppointmentScheduleCalendarPage extends HookConsumerWidget {
                     return Container(
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: selectedColor,
                           width: 1,
                           style: BorderStyle.solid,
                         ),
@@ -90,10 +91,20 @@ class AppointmentScheduleCalendarPage extends HookConsumerWidget {
               ),
             ),
             SliverToBoxAdapter(child: SizedBox(height: 30)),
-            SliverList.list(children: [
-              Text(
-                  'Appointments Here ${calendarFocusedDay.value.toIso8601String()}'),
-            ])
+
+            ///
+            /// Place Appointments Here
+            ///
+            SliverList.list(
+              children: [
+                Text(
+                    'Appointments Here ${calendarFocusedDay.value.toIso8601String()}'),
+              ],
+            ),
+
+            ///
+            /// List of Appointments based on the selected
+            ///
           ],
         ),
       ),

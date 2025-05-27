@@ -23,12 +23,14 @@ import 'package:sannjosevet/src/features/appointment_schedules/domain/appointmen
 import 'package:sannjosevet/src/features/appointment_schedules/presentation/controllers/appointment_schedule_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AppointmentScheduleTodayView extends HookConsumerWidget {
-  const AppointmentScheduleTodayView({super.key});
+class AppointmentScheduleByDateView extends HookConsumerWidget {
+  const AppointmentScheduleByDateView({super.key, this.date});
+
+  final DateTime? date;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedDate = useState(DateTime.now());
+    final selectedDate = useState(date ?? DateTime.now());
 
     final tableKey = TableControllerKeys.appointmentScheduleToday;
     final listProvider = appointmentScheduleTableControllerProvider(
@@ -40,7 +42,8 @@ class AppointmentScheduleTodayView extends HookConsumerWidget {
     final isLoading = useState(false);
 
     onShowMore() {
-      AppointmentSchedulesTodayPageRoute().push(context);
+      AppointmentSchedulesByDatePageRoute(date: selectedDate.value)
+          .push(context);
     }
 
     void refresh() {
@@ -123,16 +126,9 @@ class AppointmentScheduleTodayView extends HookConsumerWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          MIcons.calendarTodayOutline,
-                          size: 45,
-                        ),
+                        Icon(MIcons.calendarTodayOutline, size: 45),
                         SizedBox(height: 16),
                         Text('No appointments found'),
-                        TextButton(
-                          onPressed: () => onShowMore(),
-                          child: Text('View Today'),
-                        )
                       ],
                     ),
                   );

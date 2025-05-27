@@ -8,13 +8,14 @@ part 'latest_system_version_controller.g.dart';
 @riverpod
 class LatestSystemVersionController extends _$LatestSystemVersionController {
   @override
-  FutureOr<SystemVersion> build() async {
+  FutureOr<SystemVersion?> build() async {
     final repo = ref.read(systemVersionRepositoryProvider);
 
     final result = await repo
         .listAll(batch: 1, sort: '-${SystemVersionField.created}')
+        .map((x) => x.firstOrNull)
         .run();
 
-    return result.fold(Future.error, (x) => Future.value(x.first));
+    return result.fold(Future.error, (x) => Future.value(x));
   }
 }

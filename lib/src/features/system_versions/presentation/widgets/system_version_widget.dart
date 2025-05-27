@@ -15,10 +15,13 @@ class SystemVersionWidget extends HookConsumerWidget {
       loading: () => const Center(child: CircularProgressIndicator()),
       data: (data) {
         final hasNewVersion = data.hasUpdate;
+        final url = data.mobileUrl;
+
+        if (url == null) return SizedBox();
 
         if (hasNewVersion) {
           return InkWell(
-            onTap: () => launchUrl(Uri.parse(data.mobileUrl)),
+            onTap: () => launchUrl(Uri.parse(url)),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(

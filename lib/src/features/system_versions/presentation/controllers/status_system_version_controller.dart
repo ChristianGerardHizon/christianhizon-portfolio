@@ -8,13 +8,13 @@ class StatusSystemVersionState {
   final String version;
   final String build;
   final bool hasUpdate;
-  final String mobileUrl;
+  final String? mobileUrl;
 
   StatusSystemVersionState({
     required this.version,
     required this.build,
     required this.hasUpdate,
-    required this.mobileUrl,
+    this.mobileUrl,
   });
 }
 
@@ -25,11 +25,14 @@ class StatusSystemVersionController extends _$StatusSystemVersionController {
     final package = await ref.watch(packageInfoControllerProvider.future);
     final latestBuild =
         await ref.watch(latestSystemVersionControllerProvider.future);
+
     return StatusSystemVersionState(
       version: package.version,
       build: package.buildNumber,
-      hasUpdate: latestBuild.buildNumber != num.tryParse(package.buildNumber),
-      mobileUrl: latestBuild.mobileUrl,
+      hasUpdate: latestBuild == null
+          ? false
+          : latestBuild.buildNumber != num.tryParse(package.buildNumber),
+      mobileUrl: latestBuild?.mobileUrl,
     );
   }
 }

@@ -7,12 +7,12 @@ part of 'latest_system_version_controller.dart';
 // **************************************************************************
 
 String _$latestSystemVersionControllerHash() =>
-    r'0c9ca1992243a711a00ef089538205ecc3ee74b5';
+    r'ff49f1d586c1f5ca958f691c3531470d0d6fa470';
 
 /// See also [LatestSystemVersionController].
 @ProviderFor(LatestSystemVersionController)
 final latestSystemVersionControllerProvider = AutoDisposeAsyncNotifierProvider<
-    LatestSystemVersionController, SystemVersion>.internal(
+    LatestSystemVersionController, SystemVersion?>.internal(
   LatestSystemVersionController.new,
   name: r'latestSystemVersionControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -23,6 +23,6 @@ final latestSystemVersionControllerProvider = AutoDisposeAsyncNotifierProvider<
 );
 
 typedef _$LatestSystemVersionController
-    = AutoDisposeAsyncNotifier<SystemVersion>;
+    = AutoDisposeAsyncNotifier<SystemVersion?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

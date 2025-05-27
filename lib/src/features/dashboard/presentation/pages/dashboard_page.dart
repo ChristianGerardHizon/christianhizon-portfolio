@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sannjosevet/src/core/controllers/scaffold_controller.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:sannjosevet/src/core/widgets/center_progress_indicator.dart';
-import 'package:sannjosevet/src/features/appointment_schedules/presentation/widgets/appointment_schedule_today_view.dart';
+import 'package:sannjosevet/src/features/appointment_schedules/presentation/widgets/appointment_schedule_by_date_view.dart';
 import 'package:sannjosevet/src/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:sannjosevet/src/features/dashboard/presentation/widgets/kpis/dashboard_kpis.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -65,7 +65,7 @@ class DashboardPage extends HookConsumerWidget {
               SliverPadding(
                 padding: const EdgeInsets.only(left: 18, top: 20, right: 18),
                 sliver: SliverToBoxAdapter(
-                  child: AppointmentScheduleTodayView(),
+                  child: AppointmentScheduleByDateView(),
                 ),
               ),
             ],

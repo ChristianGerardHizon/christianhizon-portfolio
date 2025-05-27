@@ -46,7 +46,7 @@ List<RouteBase> get $appRoutes => [
       $patientTreatmentRecordFormPageRoute,
       $patientAppointmentSchedulesPageRoute,
       $appointmentSchedulesPageRoute,
-      $appointmentSchedulesTodayPageRoute,
+      $appointmentSchedulesByDatePageRoute,
       $appointmentScheduleFormPageRoute,
       $appointmentSchedulePageRoute,
       $calendarAppointmentSchedulesPageRoute,
@@ -329,7 +329,7 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             ),
             GoRouteData.$route(
               path: '/today/appointmentSchedules',
-              factory: $AppointmentSchedulesTodayPageRouteExtension._fromState,
+              factory: $AppointmentSchedulesByDatePageRouteExtension._fromState,
             ),
             GoRouteData.$route(
               path: '/appointmentSchedule/:id',
@@ -1201,13 +1201,19 @@ extension $AppointmentSchedulesPageRouteExtension
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $AppointmentSchedulesTodayPageRouteExtension
-    on AppointmentSchedulesTodayPageRoute {
-  static AppointmentSchedulesTodayPageRoute _fromState(GoRouterState state) =>
-      const AppointmentSchedulesTodayPageRoute();
+extension $AppointmentSchedulesByDatePageRouteExtension
+    on AppointmentSchedulesByDatePageRoute {
+  static AppointmentSchedulesByDatePageRoute _fromState(GoRouterState state) =>
+      AppointmentSchedulesByDatePageRoute(
+        date: _$convertMapValue(
+            'date', state.uri.queryParameters, DateTime.tryParse),
+      );
 
   String get location => GoRouteData.$location(
         '/today/appointmentSchedules',
+        queryParams: {
+          if (date != null) 'date': date!.toString(),
+        },
       );
 
   void go(BuildContext context) => context.go(location);
@@ -1746,9 +1752,9 @@ RouteBase get $appointmentSchedulesPageRoute => GoRouteData.$route(
       factory: $AppointmentSchedulesPageRouteExtension._fromState,
     );
 
-RouteBase get $appointmentSchedulesTodayPageRoute => GoRouteData.$route(
+RouteBase get $appointmentSchedulesByDatePageRoute => GoRouteData.$route(
       path: '/today/appointmentSchedules',
-      factory: $AppointmentSchedulesTodayPageRouteExtension._fromState,
+      factory: $AppointmentSchedulesByDatePageRouteExtension._fromState,
     );
 
 RouteBase get $appointmentScheduleFormPageRoute => GoRouteData.$route(

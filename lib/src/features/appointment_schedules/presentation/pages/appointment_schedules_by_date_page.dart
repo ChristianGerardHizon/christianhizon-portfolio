@@ -23,19 +23,21 @@ import 'package:sannjosevet/src/features/appointment_schedules/presentation/cont
 import 'package:sannjosevet/src/features/appointment_schedules/presentation/widgets/appointment_schedule_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AppointmentSchedulesTodayPage extends HookConsumerWidget {
-  const AppointmentSchedulesTodayPage({
+class AppointmentSchedulesByDatePage extends HookConsumerWidget {
+  const AppointmentSchedulesByDatePage({
     super.key,
     this.patientId,
     this.showAppBar = true,
+    this.date,
   });
 
   final String? patientId;
   final bool showAppBar;
+  final DateTime? date;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final now = DateTime.now();
+    final now = date ?? DateTime.now();
     final searchCtrl = useTextEditingController();
     final tableKey = TableControllerKeys.appointmentSchedulePatient(
         id: patientId, date: now);

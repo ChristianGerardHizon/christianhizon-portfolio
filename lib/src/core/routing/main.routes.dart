@@ -14,8 +14,8 @@ import 'package:sannjosevet/src/features/appointment_schedules/presentation/page
 import 'package:sannjosevet/src/features/appointment_schedules/presentation/pages/appointment_schedule_form_page.dart';
 import 'package:sannjosevet/src/features/appointment_schedules/presentation/pages/appointment_schedule_page.dart';
 import 'package:sannjosevet/src/features/appointment_schedules/presentation/pages/appointment_schedules_page.dart';
-import 'package:sannjosevet/src/features/appointment_schedules/presentation/pages/appointment_schedules_today_page.dart'
-    show AppointmentSchedulesTodayPage;
+import 'package:sannjosevet/src/features/appointment_schedules/presentation/pages/appointment_schedules_by_date_page.dart'
+    show AppointmentSchedulesByDatePage;
 import 'package:sannjosevet/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:sannjosevet/src/features/authentication/presentation/pages/account_page.dart';
 import 'package:sannjosevet/src/features/authentication/presentation/pages/account_recovery_page.dart';
