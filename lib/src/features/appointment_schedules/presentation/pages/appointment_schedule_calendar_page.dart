@@ -12,7 +12,7 @@ class AppointmentScheduleCalendarPage extends HookConsumerWidget {
     final calendarFocusedDay = useState(now);
     final calendarFormat = useState(CalendarFormat.month);
 
-    final selectedColor = Theme.of(context).colorScheme.primary;
+    final selectedColor = Theme.of(context).colorScheme.primaryFixedDim;
 
     return Scaffold(
       body: SafeArea(
@@ -47,7 +47,7 @@ class AppointmentScheduleCalendarPage extends HookConsumerWidget {
                       child: CircleAvatar(
                         backgroundColor:
                             calendarFocusedDay.value.isAtSameMomentAs(day)
-                                ? Colors.amber
+                                ? selectedColor
                                 : Colors.transparent,
                         child: Text(day.day.toString()),
                       ),
@@ -59,14 +59,14 @@ class AppointmentScheduleCalendarPage extends HookConsumerWidget {
                       return Container(
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: Theme.of(context).colorScheme.primary,
+                            color: selectedColor,
                             width: 2,
                             style: BorderStyle.solid,
                           ),
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: CircleAvatar(
-                          backgroundColor: Colors.amber,
+                          backgroundColor: selectedColor,
                           child: Text(day.day.toString()),
                         ),
                       );

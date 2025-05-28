@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:sannjosevet/src/core/assets/assets.gen.dart';
 
@@ -26,8 +27,8 @@ class Logo extends StatelessWidget {
             width: width,
             height: height,
             child: Builder(builder: (context) {
-              // if (kDebugMode)
-              if (false)
+              if (kDebugMode)
+                // if (false)
                 // ignore: dead_code
                 return Placeholder(
                   fallbackHeight: height ?? 400,
