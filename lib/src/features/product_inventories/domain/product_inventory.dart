@@ -1,7 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:sannjosevet/src/core/models/pb_record.dart';
-import 'package:sannjosevet/src/features/branches/domain/branch.dart';
-import 'package:sannjosevet/src/features/product_categories/domain/product_category.dart';
 import 'package:sannjosevet/src/features/products/domain/product.dart';
 
 part 'product_inventory.mapper.dart';

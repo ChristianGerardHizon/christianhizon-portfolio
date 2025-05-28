@@ -4,7 +4,6 @@ import 'package:sannjosevet/src/core/packages/pocketbase.dart';
 import 'package:sannjosevet/src/core/packages/pocketbase_collections.dart';
 import 'package:sannjosevet/src/core/models/page_results.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
-import 'package:sannjosevet/src/features/patient_breeds/domain/patient_breed.dart';
 import 'package:sannjosevet/src/features/system_versions/domain/system_version.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';

@@ -288,8 +288,8 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
                   ///
                   DynamicSelectField(
                     name: PatientRecordField.branch,
-                    initialValue: appointmentSchedule?.branch ??
-                        branches?.firstOrNull?.id,
+                    initialValue:
+                        appointmentSchedule?.branch ?? branches.firstOrNull?.id,
                     decoration: InputDecoration(
                       label: Text('Branch'),
                       border: OutlineInputBorder(),
