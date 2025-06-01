@@ -1,6 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:sannjosevet/src/core/models/pb_file.dart';
-import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/failure.dart';
 import 'package:sannjosevet/src/core/packages/pocketbase.dart';
 import 'package:sannjosevet/src/core/strings/fields.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';

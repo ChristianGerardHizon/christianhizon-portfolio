@@ -4,7 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sannjosevet/src/core/extensions/date_time_extension.dart';
 import 'package:sannjosevet/src/core/extensions/string.dart';
-import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/failure.dart';
 import 'package:sannjosevet/src/core/routing/router.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';

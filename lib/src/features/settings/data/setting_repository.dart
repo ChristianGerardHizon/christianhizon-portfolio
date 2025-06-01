@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/failure.dart';
 import 'package:sannjosevet/src/core/packages/flutter_secure_storage.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:sannjosevet/src/features/settings/domain/settings.dart';

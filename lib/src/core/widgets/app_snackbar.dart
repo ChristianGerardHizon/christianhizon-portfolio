@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/failure.dart';
 import 'package:sannjosevet/src/core/routing/router.dart';
 
 class AppSnackBar extends StatelessWidget {

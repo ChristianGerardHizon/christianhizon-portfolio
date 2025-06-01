@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/failure.dart';
 import 'package:sannjosevet/src/core/strings/fields.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';

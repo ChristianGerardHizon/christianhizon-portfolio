@@ -116,55 +116,6 @@ class AppRoot extends HookConsumerWidget {
             SalesCashierPageRoute().go(context);
           },
         ),
-        // CustomNavigationBarItem(
-        //   route: SalesPageRoute.path,
-        //   icon: Icon(MIcons.chartLineVariant),
-        //   selectedIcon: Icon(MIcons.chartLine),
-        //   label: 'Sales',
-        //   onTap: () {
-        //     SalesPageRoute().go(context);
-        //   },
-        // ),
-        // if (isAdmin)
-        //   CustomNavigationBarItem(
-        //     route: ChangeLogsPageRoute.path,
-        //     icon: Icon(MIcons.pencilOutline),
-        //     selectedIcon: Icon(MIcons.pencil),
-        //     label: 'Changes',
-        //     onTap: () {
-        //       ChangeLogsPageRoute().go(context);
-        //     },
-        //   ),
-        // if (isAdmin)
-        //   CustomNavigationBarItem(
-        //     route: BranchesPageRoute.path,
-        //     icon: Icon(MIcons.storeOutline),
-        //     selectedIcon: Icon(MIcons.store),
-        //     label: 'Branches',
-        //     onTap: () {
-        //       BranchesPageRoute().go(context);
-        //     },
-        //   ),
-        // if (isAdmin)
-        //   CustomNavigationBarItem(
-        //     route: UsersPageRoute.path,
-        //     icon: Icon(MIcons.accountGroupOutline),
-        //     selectedIcon: Icon(MIcons.accountGroup),
-        //     label: 'Users',
-        //     onTap: () {
-        //       UsersPageRoute().go(context);
-        //     },
-        //   ),
-        // if (isAdmin)
-        //   CustomNavigationBarItem(
-        //     route: AdminsPageRoute.path,
-        //     icon: Icon(MIcons.accountSupervisorOutline),
-        //     selectedIcon: Icon(MIcons.accountSupervisor),
-        //     label: 'Admins',
-        //     onTap: () {
-        //       AdminsPageRoute().go(context);
-        //     },
-        //   ),
       ];
     }
 

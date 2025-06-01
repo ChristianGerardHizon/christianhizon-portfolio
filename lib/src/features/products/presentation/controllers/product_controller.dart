@@ -1,4 +1,4 @@
-import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/failure.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:sannjosevet/src/features/product_inventories/presentation/controllers/product_inventory_controller.dart';
 import 'package:sannjosevet/src/features/products/data/product_repository.dart';

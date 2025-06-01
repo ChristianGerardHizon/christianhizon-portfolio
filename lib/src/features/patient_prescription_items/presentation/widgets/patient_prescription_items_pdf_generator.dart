@@ -4,7 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:sannjosevet/src/core/assets/assets.gen.dart';
 import 'package:sannjosevet/src/core/extensions/date_time_extension.dart';
 import 'package:sannjosevet/src/core/extensions/string.dart';
-import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/failure.dart';
 import 'package:sannjosevet/src/core/utils/file_utils/file_utils.dart';
 import 'package:sannjosevet/src/features/patient_prescription_items/domain/patient_prescription_item.dart';
 import 'package:sannjosevet/src/features/patient_records/domain/patient_record.dart';

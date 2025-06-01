@@ -1,5 +1,5 @@
 import 'package:file_picker/file_picker.dart';
-import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/failure.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:http/http.dart';
 

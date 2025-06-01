@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sannjosevet/src/core/extensions/date_time_extension.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:sannjosevet/src/core/routing/router.dart';
-import 'package:sannjosevet/src/features/appointment_schedules/presentation/pages/appointment_schedules_by_date_page.dart';
 import 'package:sannjosevet/src/features/dashboard/presentation/widgets/kpis/kpi_card.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sannjosevet/src/application.dart';
 import 'package:sannjosevet/src/core/assets/i18n/strings.g.dart';
+import 'package:sannjosevet/src/core/loggers/riverpod_logger.dart';
 import 'package:sannjosevet/src/core/utils/window_utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -21,50 +22,10 @@ Future<void> main() async {
   /// Run the application
   /// with the riverpod package root provider
   ///
-  runApp(ProviderScope(
+  runApp(
+    ProviderScope(
       observers: [RiverpodLogger()],
-      child: TranslationProvider(child: Application())));
-}
-
-class RiverpodLogger extends ProviderObserver {
-  @override
-  void didAddProvider(
-    ProviderBase<Object?> provider,
-    Object? value,
-    ProviderContainer container,
-  ) {
-    print('''
-{ 
-  "action": "added",
-  "provider": "${provider.runtimeType} ${provider.argument}",
-  "value": "$value"
-}''');
-  }
-
-  @override
-  void didUpdateProvider(
-    ProviderBase<Object?> provider,
-    Object? previousValue,
-    Object? newValue,
-    ProviderContainer container,
-  ) {
-    print('''
-{
-  "action": "updated",
-  "provider": "${provider.runtimeType}",
-  "newValue": "$newValue"
-}''');
-  }
-
-  /// A provider was disposed
-  void didDisposeProvider(
-    ProviderBase<Object?> provider,
-    ProviderContainer container,
-  ) {
-    print('''
-{
-  "action: "disposed",
-  "provider": "${provider.runtimeType}"
-}''');
-  }
+      child: TranslationProvider(child: Application()),
+    ),
+  );
 }

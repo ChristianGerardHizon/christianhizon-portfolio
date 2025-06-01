@@ -1,4 +1,4 @@
-import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/failure.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:sannjosevet/src/features/patient_treament_records/data/patient_treatment_record_repository.dart';
 import 'package:sannjosevet/src/features/patient_treament_records/domain/patient_treatment_record.dart';

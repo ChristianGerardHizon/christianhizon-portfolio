@@ -1,5 +1,5 @@
 import 'package:sannjosevet/src/core/models/pb_repository.dart';
-import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/failure.dart';
 import 'package:sannjosevet/src/core/packages/pocketbase.dart';
 import 'package:sannjosevet/src/core/packages/pocketbase_collections.dart';
 import 'package:sannjosevet/src/core/models/page_results.dart';

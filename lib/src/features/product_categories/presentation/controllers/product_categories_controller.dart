@@ -1,4 +1,4 @@
-import 'package:sannjosevet/src/core/failures/failure.dart';
+import 'package:sannjosevet/src/core/models/failure.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:sannjosevet/src/features/product_categories/data/product_category_repository.dart';
 import 'package:sannjosevet/src/features/product_categories/domain/product_category.dart';
