@@ -2,6 +2,10 @@ part of '../main.routes.dart';
 
 class DashboardBranchData extends StatefulShellBranchData {
   const DashboardBranchData();
+
+  static const routes = <TypeRouteData>[
+    TypedGoRoute<DashboardPageRoute>(path: DashboardPageRoute.path),
+  ];
 }
 @TypedGoRoute<DashboardPageRoute>(path: DashboardPageRoute.path)
 class DashboardPageRoute extends GoRouteData {

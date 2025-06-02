@@ -2,6 +2,12 @@ part of '../main.routes.dart';
 
 class AdminsBranchData extends StatefulShellBranchData {
   const AdminsBranchData();
+
+  static const routes = <TypeRouteData>[
+    TypedGoRoute<AdminsPageRoute>(path: AdminsPageRoute.path),
+    TypedGoRoute<AdminPageRoute>(path: AdminPageRoute.path),
+    TypedGoRoute<AdminFormPageRoute>(path: AdminFormPageRoute.path),
+  ];
 }
 
 @TypedGoRoute<AdminsPageRoute>(path: AdminsPageRoute.path)

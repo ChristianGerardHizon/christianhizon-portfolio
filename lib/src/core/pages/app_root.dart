@@ -47,7 +47,6 @@ class AppRoot extends HookConsumerWidget {
     final loadingWidget = SizedBox();
 
     final state = ref.watch(navItemsControllerProvider);
-    
 
     return Scaffold(
       key: scaffoldKey,
@@ -62,94 +61,96 @@ class AppRoot extends HookConsumerWidget {
         /// has value
         final items = state.value ?? [];
 
-        return ResponsiveBuilder(builder: (context, sizeInfo) {
-          if (sizeInfo.isTablet || sizeInfo.isDesktop) {
-            return Row(
-              children: [
-                SideMenu(
-                  minWidth: 80,
-                  maxWidth: 200,
-                  controller: sideMenuCtrl,
-                  mode: SideMenuMode.open,
-                  backgroundColor: theme.scaffoldBackgroundColor,
-                  builder: (data) => SideMenuData(
-                    header: Logo(
-                      height: sideMenuCtrl.isCollapsed() ? 60 : 150,
-                    ),
-                    items: items.mapWithIndex((e, index) {
-                      final goRouter = GoRouter.of(context);
-                      final currentLocation = goRouter
-                          .routerDelegate.currentConfiguration.uri
-                          .toString();
-                      return SideMenuItemDataTile(
-                        decoration: BoxDecoration(
-                          color: currentLocation == e.route
-                              ? theme.colorScheme.primaryContainer
-                                  .withValues(alpha: .3)
-                              : null,
-                        ),
-                        clipBehavior: Clip.none,
-                        titleStyle: TextStyle(
-                          color: currentLocation == e.route
-                              ? theme.colorScheme.primary
-                              : null,
-                          fontSize: 14,
-                        ),
-                        selectedTitleStyle: TextStyle(
-                          color: currentLocation == e.route
-                              ? theme.colorScheme.primary
-                              : null,
-                          fontSize: 14,
-                        ),
-                        hasSelectedLine: true,
-                        isSelected: e.isRoot
-                            ? currentLocation == RootRoute.path
-                            : currentLocation.contains(e.route),
-                        onTap: () => e.onTap?.call(context),
-                        title: e.label,
-                        icon: e.icon,
-                        selectedIcon: e.selectedIcon,
-                      );
-                    }).toList(),
-                    footer: Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: InkWell(
-                        onTap: () => YourAccountPageRoute().go(context),
-                        child: AccountCircleImage(
-                          radius: !sideMenuCtrl.isCollapsed() ? 30 : 40,
-                          showName: !sideMenuCtrl.isCollapsed(),
-                        ),
+        final isMobile = getValueForScreenType<bool>(
+          context: context,
+          mobile: true,
+        );
+
+        if (!isMobile) {
+          return Row(
+            children: [
+              SideMenu(
+                minWidth: 80,
+                maxWidth: 200,
+                controller: sideMenuCtrl,
+                mode: SideMenuMode.open,
+                backgroundColor: theme.scaffoldBackgroundColor,
+                builder: (data) => SideMenuData(
+                  header: Logo(
+                    height: sideMenuCtrl.isCollapsed() ? 60 : 150,
+                  ),
+                  items: items.mapWithIndex((e, index) {
+                    final goRouter = GoRouter.of(context);
+                    final currentLocation = goRouter
+                        .routerDelegate.currentConfiguration.uri
+                        .toString();
+                    return SideMenuItemDataTile(
+                      decoration: BoxDecoration(
+                        color: currentLocation == e.route
+                            ? theme.colorScheme.primaryContainer
+                                .withValues(alpha: .3)
+                            : null,
+                      ),
+                      clipBehavior: Clip.none,
+                      titleStyle: TextStyle(
+                        color: currentLocation == e.route
+                            ? theme.colorScheme.primary
+                            : null,
+                        fontSize: 14,
+                      ),
+                      selectedTitleStyle: TextStyle(
+                        color: currentLocation == e.route
+                            ? theme.colorScheme.primary
+                            : null,
+                        fontSize: 14,
+                      ),
+                      hasSelectedLine: true,
+                      isSelected: e.isRoot
+                          ? currentLocation == RootRoute.path
+                          : currentLocation.contains(e.route),
+                      onTap: () => e.onTap?.call(context),
+                      title: e.label,
+                      icon: e.icon,
+                      selectedIcon: e.selectedIcon,
+                    );
+                  }).toList(),
+                  footer: Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: InkWell(
+                      onTap: () => YourAccountPageRoute().go(context),
+                      child: AccountCircleImage(
+                        radius: !sideMenuCtrl.isCollapsed() ? 30 : 40,
+                        showName: !sideMenuCtrl.isCollapsed(),
                       ),
                     ),
                   ),
                 ),
-                Expanded(child: shell),
-              ],
-            );
-          }
-
-          return PopScope(
-            canPop: canPop.value,
-            onPopInvokedWithResult: (didPop, result) async {
-              if (didPop) return;
-              final confirm = await ConfirmModal.show(context,
-                      title: 'Exit',
-                      message: 'Are you sure you want to exit?') ??
-                  false;
-              if (context.mounted && confirm) {
-                context.canPop();
-              }
-            },
-            child: Scaffold(
-              body: shell,
-              bottomNavigationBar: MobileBottomNav(
-                index: shell.currentIndex,
-                list: items,
-                state: routerState,
               ),
-            ),
+              Expanded(child: shell),
+            ],
           );
-        });
+        }
+
+        return PopScope(
+          canPop: canPop.value,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (didPop) return;
+            final confirm = await ConfirmModal.show(context,
+                    title: 'Exit', message: 'Are you sure you want to exit?') ??
+                false;
+            if (context.mounted && confirm) {
+              context.canPop();
+            }
+          },
+          child: Scaffold(
+            body: shell,
+            bottomNavigationBar: MobileBottomNav(
+              index: shell.currentIndex,
+              list: items,
+              state: routerState,
+            ),
+          ),
+        );
       }),
     );
   }

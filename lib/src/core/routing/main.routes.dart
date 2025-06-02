@@ -121,9 +121,7 @@ class SplashPageRoute extends GoRouteData {
     /// dashboard
     ///
     TypedStatefulShellBranch<DashboardBranchData>(
-      routes: <TypeRouteData>[
-        TypedGoRoute<DashboardPageRoute>(path: DashboardPageRoute.path),
-      ],
+      routes: DashboardBranchData.routes,
     ),
 
     ///
@@ -211,17 +209,6 @@ class SplashPageRoute extends GoRouteData {
         TypedGoRoute<ProductStockPageRoute>(path: ProductStockPageRoute.path),
       ],
     ),
-
-    ///
-    /// Sales
-    ///
-    TypedStatefulShellBranch<SalesBranchData>(
-      routes: <TypeRouteData>[
-        TypedGoRoute<SalesPageRoute>(path: SalesPageRoute.path),
-      ],
-    ),
-
-    ///
     /// Calendar
     ///
     TypedStatefulShellBranch<CalendarAppointmentSchedulesData>(
@@ -242,7 +229,7 @@ class SplashPageRoute extends GoRouteData {
 
     ///
     /// Branches
-    ///
+    ///AppointmentSchedulesByDatePageRoute
     TypedStatefulShellBranch<BranchesBranchData>(
       routes: <TypeRouteData>[
         TypedGoRoute<BranchesPageRoute>(path: BranchesPageRoute.path),

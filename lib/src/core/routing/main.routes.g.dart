@@ -219,14 +219,6 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
-              path: '/sales',
-              factory: $SalesPageRouteExtension._fromState,
-            ),
-          ],
-        ),
-        StatefulShellBranchData.$branch(
-          routes: [
-            GoRouteData.$route(
               path: '/calendar',
               factory:
                   $CalendarAppointmentSchedulesPageRouteExtension._fromState,
@@ -838,24 +830,6 @@ extension $ProductStockPageRouteExtension on ProductStockPageRoute {
 
   String get location => GoRouteData.$location(
         '/product/form/${Uri.encodeComponent(id)}',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
-
-extension $SalesPageRouteExtension on SalesPageRoute {
-  static SalesPageRoute _fromState(GoRouterState state) =>
-      const SalesPageRoute();
-
-  String get location => GoRouteData.$location(
-        '/sales',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -1681,6 +1655,24 @@ RouteBase get $salesPageRoute => GoRouteData.$route(
       path: '/sales',
       factory: $SalesPageRouteExtension._fromState,
     );
+
+extension $SalesPageRouteExtension on SalesPageRoute {
+  static SalesPageRoute _fromState(GoRouterState state) =>
+      const SalesPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/sales',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
 
 RouteBase get $salesCashierPageRoute => GoRouteData.$route(
       path: '/cashier',
