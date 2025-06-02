@@ -7,7 +7,7 @@ part of 'status_system_version_controller.dart';
 // **************************************************************************
 
 String _$statusSystemVersionControllerHash() =>
-    r'a06105c5cffdb198ea55ad9155b55dbae9472cd5';
+    r'53f4006c8dc6efa55f96c38e9c0847e40143adff';
 
 /// See also [StatusSystemVersionController].
 @ProviderFor(StatusSystemVersionController)

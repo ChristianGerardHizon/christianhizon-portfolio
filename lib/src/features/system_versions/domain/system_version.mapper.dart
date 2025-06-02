@@ -14,6 +14,7 @@ class SystemVersionMapper extends ClassMapperBase<SystemVersion> {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = SystemVersionMapper._());
       PbRecordMapper.ensureInitialized();
+      SystemArtifactMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -41,9 +42,9 @@ class SystemVersionMapper extends ClassMapperBase<SystemVersion> {
   static num _$buildNumber(SystemVersion v) => v.buildNumber;
   static const Field<SystemVersion, num> _f$buildNumber =
       Field('buildNumber', _$buildNumber);
-  static String _$mobileUrl(SystemVersion v) => v.mobileUrl;
-  static const Field<SystemVersion, String> _f$mobileUrl =
-      Field('mobileUrl', _$mobileUrl);
+  static List<SystemArtifact> _$artifacts(SystemVersion v) => v.artifacts;
+  static const Field<SystemVersion, List<SystemArtifact>> _f$artifacts =
+      Field('artifacts', _$artifacts, opt: true, def: const []);
 
   @override
   final MappableFields<SystemVersion> fields = const {
@@ -54,7 +55,7 @@ class SystemVersionMapper extends ClassMapperBase<SystemVersion> {
     #created: _f$created,
     #updated: _f$updated,
     #buildNumber: _f$buildNumber,
-    #mobileUrl: _f$mobileUrl,
+    #artifacts: _f$artifacts,
   };
 
   static SystemVersion _instantiate(DecodingData data) {
@@ -66,7 +67,7 @@ class SystemVersionMapper extends ClassMapperBase<SystemVersion> {
         created: data.dec(_f$created),
         updated: data.dec(_f$updated),
         buildNumber: data.dec(_f$buildNumber),
-        mobileUrl: data.dec(_f$mobileUrl));
+        artifacts: data.dec(_f$artifacts));
   }
 
   @override
@@ -122,6 +123,8 @@ extension SystemVersionValueCopy<$R, $Out>
 
 abstract class SystemVersionCopyWith<$R, $In extends SystemVersion, $Out>
     implements PbRecordCopyWith<$R, $In, $Out> {
+  ListCopyWith<$R, SystemArtifact,
+      SystemArtifactCopyWith<$R, SystemArtifact, SystemArtifact>> get artifacts;
   @override
   $R call(
       {String? id,
@@ -131,7 +134,7 @@ abstract class SystemVersionCopyWith<$R, $In extends SystemVersion, $Out>
       DateTime? created,
       DateTime? updated,
       num? buildNumber,
-      String? mobileUrl});
+      List<SystemArtifact>? artifacts});
   SystemVersionCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -144,6 +147,11 @@ class _SystemVersionCopyWithImpl<$R, $Out>
   late final ClassMapperBase<SystemVersion> $mapper =
       SystemVersionMapper.ensureInitialized();
   @override
+  ListCopyWith<$R, SystemArtifact,
+          SystemArtifactCopyWith<$R, SystemArtifact, SystemArtifact>>
+      get artifacts => ListCopyWith($value.artifacts,
+          (v, t) => v.copyWith.$chain(t), (v) => call(artifacts: v));
+  @override
   $R call(
           {String? id,
           String? collectionId,
@@ -152,7 +160,7 @@ class _SystemVersionCopyWithImpl<$R, $Out>
           Object? created = $none,
           Object? updated = $none,
           num? buildNumber,
-          String? mobileUrl}) =>
+          List<SystemArtifact>? artifacts}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
@@ -161,7 +169,7 @@ class _SystemVersionCopyWithImpl<$R, $Out>
         if (created != $none) #created: created,
         if (updated != $none) #updated: updated,
         if (buildNumber != null) #buildNumber: buildNumber,
-        if (mobileUrl != null) #mobileUrl: mobileUrl
+        if (artifacts != null) #artifacts: artifacts
       }));
   @override
   SystemVersion $make(CopyWithData data) => SystemVersion(
@@ -172,7 +180,7 @@ class _SystemVersionCopyWithImpl<$R, $Out>
       created: data.get(#created, or: $value.created),
       updated: data.get(#updated, or: $value.updated),
       buildNumber: data.get(#buildNumber, or: $value.buildNumber),
-      mobileUrl: data.get(#mobileUrl, or: $value.mobileUrl));
+      artifacts: data.get(#artifacts, or: $value.artifacts));
 
   @override
   SystemVersionCopyWith<$R2, SystemVersion, $Out2> $chain<$R2, $Out2>(

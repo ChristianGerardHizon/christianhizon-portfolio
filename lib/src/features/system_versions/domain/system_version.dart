@@ -1,12 +1,13 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:sannjosevet/src/core/models/pb_record.dart';
+import 'package:sannjosevet/src/features/system_versions/domain/system_artifact.dart';
 
 part 'system_version.mapper.dart';
 
 @MappableClass()
 class SystemVersion extends PbRecord with SystemVersionMappable {
   final num buildNumber;
-  final String mobileUrl;
+  final List<SystemArtifact> artifacts;
 
   SystemVersion({
     required super.id,
@@ -16,7 +17,7 @@ class SystemVersion extends PbRecord with SystemVersionMappable {
     super.created,
     super.updated,
     required this.buildNumber,
-    required this.mobileUrl,
+     this.artifacts = const [],
   });
 
   static fromMap(Map<String, dynamic> raw) {

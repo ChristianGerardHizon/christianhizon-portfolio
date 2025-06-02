@@ -1,4 +1,5 @@
 import 'package:sannjosevet/src/core/controllers/package_info_controller.dart';
+import 'package:sannjosevet/src/features/system_versions/domain/system_artifact.dart';
 import 'package:sannjosevet/src/features/system_versions/presentation/controllers/latest_system_version_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -8,13 +9,13 @@ class StatusSystemVersionState {
   final String version;
   final String build;
   final bool hasUpdate;
-  final String? mobileUrl;
+  final List<SystemArtifact> artifacts;
 
   StatusSystemVersionState({
     required this.version,
     required this.build,
     required this.hasUpdate,
-    this.mobileUrl,
+    this.artifacts = const [],
   });
 }
 
@@ -32,7 +33,7 @@ class StatusSystemVersionController extends _$StatusSystemVersionController {
       hasUpdate: latestBuild == null
           ? false
           : latestBuild.buildNumber != num.tryParse(package.buildNumber),
-      mobileUrl: latestBuild?.mobileUrl,
+      artifacts: latestBuild?.artifacts ?? [],
     );
   }
 }

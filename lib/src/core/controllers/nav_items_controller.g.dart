@@ -7,7 +7,7 @@ part of 'nav_items_controller.dart';
 // **************************************************************************
 
 String _$navItemsControllerHash() =>
-    r'427a31ca8fde336f9bf5dd9e192c7bcc9f0c20c2';
+    r'25e01a5fa360df5e972e1752fc56efc4201719fc';
 
 /// See also [NavItemsController].
 @ProviderFor(NavItemsController)
