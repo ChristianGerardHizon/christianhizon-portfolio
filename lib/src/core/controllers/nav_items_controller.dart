@@ -14,8 +14,8 @@ class NavItemsController extends _$NavItemsController {
         CustomNavigationBarItem(
           isRoot: true,
           route: RootRoute.path,
-          icon: Icon(MIcons.viewDashboardOutline),
-          selectedIcon: Icon(MIcons.viewDashboard),
+          icon: Icon(MIcons.homeOutline),
+          selectedIcon: Icon(MIcons.home),
           label: 'Dashboard',
           onTap: (context) {
             RootRoute().go(context);

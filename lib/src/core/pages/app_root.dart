@@ -61,12 +61,14 @@ class AppRoot extends HookConsumerWidget {
         /// has value
         final items = state.value ?? [];
 
-        final isMobile = getValueForScreenType<bool>(
+        final isDesktop = getValueForScreenType<bool>(
           context: context,
-          mobile: true,
+          mobile: false,
+          desktop: true,
+          tablet: true,
         );
 
-        if (!isMobile) {
+        if (isDesktop) {
           return Row(
             children: [
               SideMenu(
