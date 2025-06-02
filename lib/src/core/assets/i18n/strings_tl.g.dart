@@ -68,6 +68,8 @@ class _TranslationsCommonTl implements TranslationsCommonEn {
 	final TranslationsTl _root; // ignore: unused_field
 
 	// Translations
+	@override String get appName => 'SannJoseVet';
+	@override String get placeholderText => 'N/A';
 }
 
 // Path: failures
@@ -103,6 +105,8 @@ extension on TranslationsTl {
 			case 'authentication.returnToLoginAsUser.0': return 'Hindi ka tagapamahala? ';
 			case 'authentication.returnToLoginAsUser.1': return 'Mag-log in bilang User';
 			case 'authentication.loginSuccess': return 'Nagtagumpay sa pag-log in';
+			case 'common.appName': return 'SannJoseVet';
+			case 'common.placeholderText': return 'N/A';
 			case 'fields.email': return 'Email';
 			case 'fields.password': return 'Password';
 			case 'fields.passwordConfirmation': return 'Password confirmation';

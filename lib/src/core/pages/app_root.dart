@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sannjosevet/src/core/controllers/nav_items_controller.dart';
 import 'package:sannjosevet/src/core/controllers/scaffold_controller.dart';
 import 'package:sannjosevet/src/core/routing/main.routes.dart';
 import 'package:sannjosevet/src/core/strings/table_controller_keys.dart';
@@ -24,9 +25,9 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 class AppRoot extends HookConsumerWidget {
   final StatefulNavigationShell shell;
-  final GoRouterState state;
+  final GoRouterState routerState;
 
-  const AppRoot({super.key, required this.shell, required this.state});
+  const AppRoot({super.key, required this.shell, required this.routerState});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,180 +47,114 @@ class AppRoot extends HookConsumerWidget {
     final sideMenuCtrl = useMemoized(() => SideMenuController(), []);
     final canPop = useState(false);
 
-    ///
-    /// these are the bottom navigation items. ex. home, bids, orders, account.
-    /// always starts with 0.
-    ///
-    ///
-    /// [icon] -> the icon of the bottom nav bar
-    /// [label] -> the name or the display title of the bottom nav bar
-    /// [onTap] -> the function that will be called when the button is tapped
-    /// in this case the on tap will redirect you to the the other pages
-    ///
-    List<CustomNavigationBarItem> buildItems(AuthData auth) {
-      // final isAdmin = auth is AuthAdmin;
-      // final isUser = auth is AuthUser;
-
-      return [
-        CustomNavigationBarItem(
-          isRoot: true,
-          route: RootRoute.path,
-          icon: Icon(MIcons.viewDashboardOutline),
-          selectedIcon: Icon(MIcons.viewDashboard),
-          label: 'Dashboard',
-          onTap: () {
-            RootRoute().go(context);
-          },
-        ),
-        CustomNavigationBarItem(
-          route: PatientsPageRoute.path,
-          icon: Icon(MIcons.dog),
-          selectedIcon: Icon(MIcons.dog),
-          label: 'Patients',
-          onTap: () {
-            PatientsPageRoute().go(context);
-          },
-        ),
-        CustomNavigationBarItem(
-          route: AppointmentSchedulesPageRoute.path,
-          icon: Icon(MIcons.calendarAccount),
-          selectedIcon: Icon(MIcons.calendarAccountOutline),
-          label: 'Appointments',
-          onTap: () {
-            AppointmentSchedulesPageRoute().go(context);
-          },
-        ),
-        CustomNavigationBarItem(
-          route: CalendarAppointmentSchedulesPageRoute.path,
-          icon: Icon(MIcons.calendarOutline),
-          selectedIcon: Icon(MIcons.calendar),
-          label: 'Calendar',
-          onTap: () {
-            CalendarAppointmentSchedulesPageRoute().go(context);
-          },
-        ),
-        CustomNavigationBarItem(
-          route: ProductInventoriesPageRoute.path,
-          icon: Icon(MIcons.shoppingOutline),
-          selectedIcon: Icon(MIcons.shopping),
-          label: 'Products',
-          onTap: () {
-            ProductInventoriesPageRoute().go(context);
-          },
-        ),
-        CustomNavigationBarItem(
-          route: SalesCashierPageRoute.path,
-          icon: Icon(MIcons.cashRegister),
-          selectedIcon: Icon(MIcons.cashRegister),
-          label: 'Cashier',
-          onTap: () {
-            SalesCashierPageRoute().go(context);
-          },
-        ),
-      ];
-    }
-
     final errorWidget = SizedBox();
     final loadingWidget = SizedBox();
+
+    final state = ref.watch(navItemsControllerProvider);
+    
 
     return Scaffold(
       key: scaffoldKey,
       drawer: MobileDrawer(rootContext: context),
-      body: ref.watch(authControllerProvider).when(
-            error: (error, stack) => errorWidget,
-            loading: () => loadingWidget,
-            data: (auth) {
-              final items = buildItems(auth);
-              return ResponsiveBuilder(builder: (context, sizeInfo) {
-                if (sizeInfo.isTablet || sizeInfo.isDesktop) {
-                  return Row(
-                    children: [
-                      SideMenu(
-                        minWidth: 80,
-                        maxWidth: 200,
-                        controller: sideMenuCtrl,
-                        mode: SideMenuMode.open,
-                        backgroundColor: theme.scaffoldBackgroundColor,
-                        builder: (data) => SideMenuData(
-                          header: Logo(
-                            height: sideMenuCtrl.isCollapsed() ? 60 : 150,
-                          ),
-                          items: items.mapWithIndex((e, index) {
-                            final goRouter = GoRouter.of(context);
-                            final currentLocation = goRouter
-                                .routerDelegate.currentConfiguration.uri
-                                .toString();
-                            return SideMenuItemDataTile(
-                              decoration: BoxDecoration(
-                                color: currentLocation == e.route
-                                    ? theme.colorScheme.primaryContainer
-                                        .withValues(alpha: .3)
-                                    : null,
-                              ),
-                              clipBehavior: Clip.none,
-                              titleStyle: TextStyle(
-                                color: currentLocation == e.route
-                                    ? theme.primaryColor
-                                    : null,
-                                fontSize: 14,
-                              ),
-                              selectedTitleStyle: TextStyle(
-                                color: currentLocation == e.route
-                                    ? theme.colorScheme.primary
-                                    : null,
-                                fontSize: 14,
-                              ),
-                              hasSelectedLine: true,
-                              isSelected: e.isRoot
-                                  ? currentLocation == RootRoute.path
-                                  : currentLocation.contains(e.route),
-                              onTap: () => e.onTap?.call(),
-                              title: e.label,
-                              icon: e.icon,
-                              selectedIcon: e.selectedIcon,
-                            );
-                          }).toList(),
-                          footer: Padding(
-                            padding: const EdgeInsets.only(bottom: 20),
-                            child: InkWell(
-                              onTap: () => YourAccountPageRoute().go(context),
-                              child: AccountCircleImage(
-                                radius: !sideMenuCtrl.isCollapsed() ? 30 : 40,
-                                showName: !sideMenuCtrl.isCollapsed(),
-                              ),
-                            ),
-                          ),
+      body: Builder(builder: (context) {
+        /// has error
+        if (state.hasError) return errorWidget;
+
+        /// is loading
+        if (state.isLoading) return loadingWidget;
+
+        /// has value
+        final items = state.value ?? [];
+
+        return ResponsiveBuilder(builder: (context, sizeInfo) {
+          if (sizeInfo.isTablet || sizeInfo.isDesktop) {
+            return Row(
+              children: [
+                SideMenu(
+                  minWidth: 80,
+                  maxWidth: 200,
+                  controller: sideMenuCtrl,
+                  mode: SideMenuMode.open,
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  builder: (data) => SideMenuData(
+                    header: Logo(
+                      height: sideMenuCtrl.isCollapsed() ? 60 : 150,
+                    ),
+                    items: items.mapWithIndex((e, index) {
+                      final goRouter = GoRouter.of(context);
+                      final currentLocation = goRouter
+                          .routerDelegate.currentConfiguration.uri
+                          .toString();
+                      return SideMenuItemDataTile(
+                        decoration: BoxDecoration(
+                          color: currentLocation == e.route
+                              ? theme.colorScheme.primaryContainer
+                                  .withValues(alpha: .3)
+                              : null,
+                        ),
+                        clipBehavior: Clip.none,
+                        titleStyle: TextStyle(
+                          color: currentLocation == e.route
+                              ? theme.colorScheme.primary
+                              : null,
+                          fontSize: 14,
+                        ),
+                        selectedTitleStyle: TextStyle(
+                          color: currentLocation == e.route
+                              ? theme.colorScheme.primary
+                              : null,
+                          fontSize: 14,
+                        ),
+                        hasSelectedLine: true,
+                        isSelected: e.isRoot
+                            ? currentLocation == RootRoute.path
+                            : currentLocation.contains(e.route),
+                        onTap: () => e.onTap?.call(context),
+                        title: e.label,
+                        icon: e.icon,
+                        selectedIcon: e.selectedIcon,
+                      );
+                    }).toList(),
+                    footer: Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: InkWell(
+                        onTap: () => YourAccountPageRoute().go(context),
+                        child: AccountCircleImage(
+                          radius: !sideMenuCtrl.isCollapsed() ? 30 : 40,
+                          showName: !sideMenuCtrl.isCollapsed(),
                         ),
                       ),
-                      Expanded(child: shell),
-                    ],
-                  );
-                }
-
-                return PopScope(
-                  canPop: canPop.value,
-                  onPopInvokedWithResult: (didPop, result) async {
-                    if (didPop) return;
-                    final confirm = await ConfirmModal.show(context,
-                            title: 'Exit',
-                            message: 'Are you sure you want to exit?') ??
-                        false;
-                    if (context.mounted && confirm) {
-                      context.canPop();
-                    }
-                  },
-                  child: Scaffold(
-                    body: shell,
-                    bottomNavigationBar: MobileBottomNav(
-                      index: shell.currentIndex,
-                      list: items,
-                      state: state,
                     ),
                   ),
-                );
-              });
+                ),
+                Expanded(child: shell),
+              ],
+            );
+          }
+
+          return PopScope(
+            canPop: canPop.value,
+            onPopInvokedWithResult: (didPop, result) async {
+              if (didPop) return;
+              final confirm = await ConfirmModal.show(context,
+                      title: 'Exit',
+                      message: 'Are you sure you want to exit?') ??
+                  false;
+              if (context.mounted && confirm) {
+                context.canPop();
+              }
             },
-          ),
+            child: Scaffold(
+              body: shell,
+              bottomNavigationBar: MobileBottomNav(
+                index: shell.currentIndex,
+                list: items,
+                state: routerState,
+              ),
+            ),
+          );
+        });
+      }),
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomNavigationBarItem extends BottomNavigationBarItem {
-  final Function()? onTap;
+  final Function(BuildContext context)? onTap;
   final String route;
   final Icon? selectedIcon;
   final bool isRoot;

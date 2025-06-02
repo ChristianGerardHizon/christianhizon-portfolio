@@ -347,5 +347,5 @@ class RootRouteData extends StatefulShellRouteData {
 
   @override
   Widget builder(context, state, navigationShell) =>
-      AppRoot(shell: navigationShell, state: state);
+      AppRoot(shell: navigationShell, routerState: state);
 }

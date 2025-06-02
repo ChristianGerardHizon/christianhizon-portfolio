@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sannjosevet/src/core/assets/i18n/strings.g.dart';
 import 'package:sannjosevet/src/core/controllers/scaffold_controller.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:sannjosevet/src/core/widgets/center_progress_indicator.dart';
@@ -31,25 +32,41 @@ class DashboardPage extends HookConsumerWidget {
               ///
               /// Welcome Message
               ///
-              SliverPadding(
-                padding: const EdgeInsets.only(left: 18, top: 30, right: 18),
-                sliver: SliverToBoxAdapter(
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () => scaffoldKey.currentState?.openDrawer(),
-                        icon: Icon(MIcons.menu),
+              SliverAppBar(
+                floating: true,
+                pinned: true,
+                snap: true,
+                leading: IconButton(
+                  onPressed: () => scaffoldKey.currentState?.openDrawer(),
+                  icon: Icon(MIcons.menu),
+                ),
+                title: Text(
+                  context.t.common.appName,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
-                      Text(
-                        'Welcome ${name}',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                      )
-                    ],
+                ),
+                centerTitle: false,
+              ),
+
+              ///
+              /// Welcome Message
+              ///
+              SliverPadding(
+                padding: const EdgeInsets.only(left: 18, top: 20, right: 18),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    'Welcome, $name',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                 ),
               ),
+
+              ///
+              /// KPIs
+              ///
               SliverPadding(
                 padding: const EdgeInsets.only(left: 18, top: 20, right: 18),
                 sliver: SliverList.list(

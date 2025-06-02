@@ -71,6 +71,8 @@ class TranslationsCommonEn {
 	final Translations _root; // ignore: unused_field
 
 	// Translations
+	String get appName => 'SannJoseVet';
+	String get placeholderText => 'N/A';
 }
 
 // Path: failures
@@ -106,6 +108,8 @@ extension on Translations {
 			case 'authentication.returnToLoginAsUser.0': return 'Not an administrator? ';
 			case 'authentication.returnToLoginAsUser.1': return 'Login as User';
 			case 'authentication.loginSuccess': return 'Logged in successfully';
+			case 'common.appName': return 'SannJoseVet';
+			case 'common.placeholderText': return 'N/A';
 			case 'fields.email': return 'Email';
 			case 'fields.password': return 'Password';
 			case 'fields.passwordConfirmation': return 'Password confirmation';

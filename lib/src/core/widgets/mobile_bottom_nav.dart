@@ -33,7 +33,7 @@ class MobileBottomNav extends StatelessWidget {
       route: YourAccountPageRoute.path,
       icon: Icon(MIcons.homeCircleOutline),
       label: 'Account',
-      onTap: () {
+      onTap: (context) {
         YourAccountPageRoute().push(context);
       },
     );
@@ -61,10 +61,10 @@ class MobileBottomNav extends StatelessWidget {
     onRouteChanged(int index, List<CustomNavigationBarItem> list) {
       final item = list[index];
       if (index == 4) {
-        moreWidget.onTap?.call();
+        moreWidget.onTap?.call(context);
         return;
       }
-      item.onTap?.call();
+      item.onTap?.call(context);
     }
 
     ///
