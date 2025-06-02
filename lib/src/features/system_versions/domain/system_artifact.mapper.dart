@@ -24,15 +24,31 @@ class SystemArtifactMapper extends ClassMapperBase<SystemArtifact> {
   static const Field<SystemArtifact, String> _f$name = Field('name', _$name);
   static String _$url(SystemArtifact v) => v.url;
   static const Field<SystemArtifact, String> _f$url = Field('url', _$url);
+  static String _$type(SystemArtifact v) => v.type;
+  static const Field<SystemArtifact, String> _f$type = Field('type', _$type);
+  static String? _$version(SystemArtifact v) => v.version;
+  static const Field<SystemArtifact, String> _f$version =
+      Field('version', _$version, opt: true);
+  static String? _$versionCode(SystemArtifact v) => v.versionCode;
+  static const Field<SystemArtifact, String> _f$versionCode =
+      Field('versionCode', _$versionCode, opt: true);
 
   @override
   final MappableFields<SystemArtifact> fields = const {
     #name: _f$name,
     #url: _f$url,
+    #type: _f$type,
+    #version: _f$version,
+    #versionCode: _f$versionCode,
   };
 
   static SystemArtifact _instantiate(DecodingData data) {
-    return SystemArtifact(name: data.dec(_f$name), url: data.dec(_f$url));
+    return SystemArtifact(
+        name: data.dec(_f$name),
+        url: data.dec(_f$url),
+        type: data.dec(_f$type),
+        version: data.dec(_f$version),
+        versionCode: data.dec(_f$versionCode));
   }
 
   @override
@@ -89,7 +105,12 @@ extension SystemArtifactValueCopy<$R, $Out>
 
 abstract class SystemArtifactCopyWith<$R, $In extends SystemArtifact, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call({String? name, String? url});
+  $R call(
+      {String? name,
+      String? url,
+      String? type,
+      String? version,
+      String? versionCode});
   SystemArtifactCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -103,12 +124,26 @@ class _SystemArtifactCopyWithImpl<$R, $Out>
   late final ClassMapperBase<SystemArtifact> $mapper =
       SystemArtifactMapper.ensureInitialized();
   @override
-  $R call({String? name, String? url}) => $apply(FieldCopyWithData(
-      {if (name != null) #name: name, if (url != null) #url: url}));
+  $R call(
+          {String? name,
+          String? url,
+          String? type,
+          Object? version = $none,
+          Object? versionCode = $none}) =>
+      $apply(FieldCopyWithData({
+        if (name != null) #name: name,
+        if (url != null) #url: url,
+        if (type != null) #type: type,
+        if (version != $none) #version: version,
+        if (versionCode != $none) #versionCode: versionCode
+      }));
   @override
   SystemArtifact $make(CopyWithData data) => SystemArtifact(
       name: data.get(#name, or: $value.name),
-      url: data.get(#url, or: $value.url));
+      url: data.get(#url, or: $value.url),
+      type: data.get(#type, or: $value.type),
+      version: data.get(#version, or: $value.version),
+      versionCode: data.get(#versionCode, or: $value.versionCode));
 
   @override
   SystemArtifactCopyWith<$R2, SystemArtifact, $Out2> $chain<$R2, $Out2>(

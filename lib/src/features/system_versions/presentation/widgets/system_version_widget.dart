@@ -19,7 +19,7 @@ class SystemVersionWidget extends HookConsumerWidget {
       return DropdownConfirmModal.showTaskResult<String>(
         context,
         title: 'Select Artifact',
-        options: artifacts.map((e) => DropdownConfirmOption(label: e.name, value: e.url)).toList(),
+        options: artifacts.map((e) => DropdownConfirmOption(label: e.display, value: e.url)).toList(),
         confirm: 'Download',
         cancel: 'Cancel',
       )
