@@ -2,6 +2,12 @@ part of '../main.routes.dart';
 
 class ChangeLogsBranchData extends StatefulShellBranchData {
   const ChangeLogsBranchData();
+
+  static const routes = <TypeRouteData>[
+    TypedGoRoute<ChangeLogsPageRoute>(path: ChangeLogsPageRoute.path),
+    TypedGoRoute<ChangeLogPageRoute>(path: ChangeLogPageRoute.path),
+    TypedGoRoute<ChangeLogFormPageRoute>(path: ChangeLogFormPageRoute.path),
+  ];
 }
 
 @TypedGoRoute<ChangeLogsPageRoute>(path: ChangeLogsPageRoute.path)

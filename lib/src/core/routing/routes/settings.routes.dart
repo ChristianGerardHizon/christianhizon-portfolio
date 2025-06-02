@@ -2,6 +2,11 @@ part of '../main.routes.dart';
 
 class SettingsBranchData extends StatefulShellBranchData {
   const SettingsBranchData();
+
+  static const routes = <TypeRouteData>[
+    TypedGoRoute<SettingsPageRoute>(path: SettingsPageRoute.path),
+    TypedGoRoute<DomainPageRoute>(path: DomainPageRoute.path),
+  ];
 }
 
 ///

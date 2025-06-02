@@ -240,12 +240,12 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
               factory: $BranchesPageRouteExtension._fromState,
             ),
             GoRouteData.$route(
-              path: '/branch/:id',
-              factory: $BranchPageRouteExtension._fromState,
-            ),
-            GoRouteData.$route(
               path: '/form/branch',
               factory: $BranchFormPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/branch/:id',
+              factory: $BranchPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -286,6 +286,10 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
             GoRouteData.$route(
               path: '/settings',
               factory: $SettingsPageRouteExtension._fromState,
+            ),
+            GoRouteData.$route(
+              path: '/domain',
+              factory: $DomainPageRouteExtension._fromState,
             ),
           ],
         ),
@@ -898,13 +902,17 @@ extension $BranchesPageRouteExtension on BranchesPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $BranchPageRouteExtension on BranchPageRoute {
-  static BranchPageRoute _fromState(GoRouterState state) => BranchPageRoute(
-        state.pathParameters['id']!,
+extension $BranchFormPageRouteExtension on BranchFormPageRoute {
+  static BranchFormPageRoute _fromState(GoRouterState state) =>
+      BranchFormPageRoute(
+        id: state.uri.queryParameters['id'],
       );
 
   String get location => GoRouteData.$location(
-        '/branch/${Uri.encodeComponent(id)}',
+        '/form/branch',
+        queryParams: {
+          if (id != null) 'id': id,
+        },
       );
 
   void go(BuildContext context) => context.go(location);
@@ -917,17 +925,13 @@ extension $BranchPageRouteExtension on BranchPageRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $BranchFormPageRouteExtension on BranchFormPageRoute {
-  static BranchFormPageRoute _fromState(GoRouterState state) =>
-      BranchFormPageRoute(
-        id: state.uri.queryParameters['id'],
+extension $BranchPageRouteExtension on BranchPageRoute {
+  static BranchPageRoute _fromState(GoRouterState state) => BranchPageRoute(
+        state.pathParameters['id']!,
       );
 
   String get location => GoRouteData.$location(
-        '/form/branch',
-        queryParams: {
-          if (id != null) 'id': id,
-        },
+        '/branch/${Uri.encodeComponent(id)}',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -1065,6 +1069,24 @@ extension $SettingsPageRouteExtension on SettingsPageRoute {
 
   String get location => GoRouteData.$location(
         '/settings',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $DomainPageRouteExtension on DomainPageRoute {
+  static DomainPageRoute _fromState(GoRouterState state) =>
+      const DomainPageRoute();
+
+  String get location => GoRouteData.$location(
+        '/domain',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -1590,24 +1612,6 @@ RouteBase get $domainPageRoute => GoRouteData.$route(
       path: '/domain',
       factory: $DomainPageRouteExtension._fromState,
     );
-
-extension $DomainPageRouteExtension on DomainPageRoute {
-  static DomainPageRoute _fromState(GoRouterState state) =>
-      const DomainPageRoute();
-
-  String get location => GoRouteData.$location(
-        '/domain',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
 
 RouteBase get $patientsPageRoute => GoRouteData.$route(
       path: '/patients',

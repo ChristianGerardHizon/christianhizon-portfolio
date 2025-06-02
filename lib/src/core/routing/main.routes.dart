@@ -2,11 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+
 import 'package:sannjosevet/src/core/pages/more_page.dart';
 import 'package:sannjosevet/src/core/pages/not_found_page.dart';
 import 'package:sannjosevet/src/core/pages/splash_page.dart';
 import 'package:sannjosevet/src/core/pages/app_root.dart';
+
 import 'package:sannjosevet/src/core/pages/work_in_progress_page.dart';
+import 'package:sannjosevet/src/core/routing/routes/_root.routes.dart';
+import 'package:sannjosevet/src/core/routing/router.dart' show TypeRouteData, rootKey;
 import 'package:sannjosevet/src/features/admins/presentation/pages/admin_page.dart';
 import 'package:sannjosevet/src/features/admins/presentation/pages/admin_form_page.dart';
 import 'package:sannjosevet/src/features/admins/presentation/pages/admins_page.dart';
@@ -62,9 +68,9 @@ import 'package:sannjosevet/src/features/users/presentation/pages/user_form_page
 import 'package:sannjosevet/src/features/users/presentation/pages/user_page.dart';
 import 'package:sannjosevet/src/features/users/presentation/pages/users_page.dart';
 import 'package:sannjosevet/src/features/authentication/presentation/pages/your_account_page.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 part 'main.routes.g.dart';
+part 'routes/common.routes.dart';
 part 'routes/admins.routes.dart';
 part 'routes/branches.routes.dart';
 part 'routes/authentication.routes.dart';
@@ -87,252 +93,3 @@ part 'routes/patient_species.routes.dart';
 part 'routes/patient_breeds.routes.dart';
 part 'routes/patient_treatment.routes.dart';
 
-typedef TypeRouteData = TypedRoute<RouteData>;
-
-typedef RootRoute = DashboardPageRoute;
-
-final rootKey = GlobalKey<NavigatorState>(debugLabel: 'routerKey');
-
-@TypedGoRoute<NotFoundRoute>(path: NotFoundRoute.path)
-class NotFoundRoute extends GoRouteData {
-  const NotFoundRoute();
-  static const path = '/not-found';
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const NotFoundPage();
-  }
-}
-
-@TypedGoRoute<SplashPageRoute>(path: SplashPageRoute.path)
-class SplashPageRoute extends GoRouteData {
-  const SplashPageRoute();
-  static const path = '/splash';
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const SplashPage();
-  }
-}
-
-@TypedStatefulShellRoute<RootRouteData>(
-  branches: <TypedStatefulShellBranch<StatefulShellBranchData>>[
-    ///
-    /// dashboard
-    ///
-    TypedStatefulShellBranch<DashboardBranchData>(
-      routes: DashboardBranchData.routes,
-    ),
-
-    ///
-    /// patients
-    ///
-    TypedStatefulShellBranch<PatientsBranchData>(
-      routes: <TypeRouteData>[
-        ///
-        /// Patient
-        ///
-        TypedGoRoute<PatientsPageRoute>(path: PatientsPageRoute.path),
-        TypedGoRoute<PatientFormPageRoute>(path: PatientFormPageRoute.path),
-        TypedGoRoute<PatientPageRoute>(path: PatientPageRoute.path),
-
-        ///
-        /// Patient Record
-        ///
-        TypedGoRoute<PatientRecordPageRoute>(path: PatientRecordPageRoute.path),
-        TypedGoRoute<PatientRecordFormPageRoute>(
-            path: PatientRecordFormPageRoute.path),
-
-        ///
-        /// Categories
-        ///
-        TypedGoRoute<ProductCategoriesPageRoute>(
-            path: ProductCategoriesPageRoute.path),
-        TypedGoRoute<ProductCategoryPageRoute>(
-            path: ProductCategoryPageRoute.path),
-        TypedGoRoute<ProductCategoryFormPageRoute>(
-            path: ProductCategoryFormPageRoute.path),
-
-        ///
-        /// Patient Treatment Records
-        ///
-        TypedGoRoute<PatientTreatmentsRecordPageRoute>(
-            path: PatientTreatmentsRecordPageRoute.path),
-        TypedGoRoute<PatientTreatmentRecordPageRoute>(
-            path: PatientTreatmentRecordPageRoute.path),
-        TypedGoRoute<PatientTreatmentRecordFormPageRoute>(
-            path: PatientTreatmentRecordFormPageRoute.path),
-
-        ///
-        /// Patient Prescription Item
-        ///
-        TypedGoRoute<PatientPrescriptionItemFormPageRoute>(
-            path: PatientPrescriptionItemFormPageRoute.path),
-
-        ///
-        /// Appointments
-        ///
-        TypedGoRoute<PatientAppointmentSchedulesPageRoute>(
-            path: PatientAppointmentSchedulesPageRoute.path),
-
-        ///
-        /// Files
-        ///
-        TypedGoRoute<PatientFileFormPageRoute>(
-            path: PatientFileFormPageRoute.path),
-      ],
-    ),
-
-    ///
-    /// Products
-    ///
-    TypedStatefulShellBranch<ProductsBranchData>(
-      routes: <TypeRouteData>[
-        ///
-        /// Products
-        ///
-        TypedGoRoute<ProductsPageRoute>(path: ProductsPageRoute.path),
-        TypedGoRoute<ProductPageRoute>(path: ProductPageRoute.path),
-        TypedGoRoute<ProductFormPageRoute>(path: ProductFormPageRoute.path),
-
-        ///
-        /// Inventory
-        ///
-        TypedGoRoute<ProductInventoriesPageRoute>(
-            path: ProductInventoriesPageRoute.path),
-
-        ///
-        /// Stocks
-        ///
-        TypedGoRoute<ProductStockFormPageRoute>(
-            path: ProductStockFormPageRoute.path),
-        TypedGoRoute<ProductStockPageRoute>(path: ProductStockPageRoute.path),
-      ],
-    ),
-    /// Calendar
-    ///
-    TypedStatefulShellBranch<CalendarAppointmentSchedulesData>(
-      routes: <TypeRouteData>[
-        TypedGoRoute<CalendarAppointmentSchedulesPageRoute>(
-            path: CalendarAppointmentSchedulesPageRoute.path),
-      ],
-    ),
-
-    ///
-    /// Sales Cashier
-    ///
-    TypedStatefulShellBranch<SalesCashierBranchData>(
-      routes: <TypeRouteData>[
-        TypedGoRoute<SalesCashierPageRoute>(path: SalesCashierPageRoute.path),
-      ],
-    ),
-
-    ///
-    /// Branches
-    ///AppointmentSchedulesByDatePageRoute
-    TypedStatefulShellBranch<BranchesBranchData>(
-      routes: <TypeRouteData>[
-        TypedGoRoute<BranchesPageRoute>(path: BranchesPageRoute.path),
-        TypedGoRoute<BranchPageRoute>(path: BranchPageRoute.path),
-        TypedGoRoute<BranchFormPageRoute>(path: BranchFormPageRoute.path),
-      ],
-    ),
-
-    ///
-    /// Users
-    ///
-    TypedStatefulShellBranch<UsersBranchData>(
-      routes: <TypeRouteData>[
-        TypedGoRoute<UsersPageRoute>(path: UsersPageRoute.path),
-        TypedGoRoute<UserPageRoute>(path: UserPageRoute.path),
-        TypedGoRoute<UserFormPageRoute>(path: UserFormPageRoute.path),
-      ],
-    ),
-
-    ///
-    /// Admins
-    ///
-    TypedStatefulShellBranch<AdminsBranchData>(
-      routes: <TypeRouteData>[
-        TypedGoRoute<AdminsPageRoute>(path: AdminsPageRoute.path),
-        TypedGoRoute<AdminPageRoute>(path: AdminPageRoute.path),
-        TypedGoRoute<AdminFormPageRoute>(path: AdminFormPageRoute.path),
-      ],
-    ),
-
-    ///
-    /// Settings
-    ///
-    TypedStatefulShellBranch<SettingsBranchData>(
-      routes: <TypeRouteData>[
-        TypedGoRoute<SettingsPageRoute>(path: SettingsPageRoute.path),
-      ],
-    ),
-
-    ///
-    /// ChangeLogs
-    ///
-    TypedStatefulShellBranch<ChangeLogsBranchData>(
-      routes: <TypeRouteData>[
-        TypedGoRoute<ChangeLogsPageRoute>(path: ChangeLogsPageRoute.path),
-        TypedGoRoute<ChangeLogPageRoute>(path: ChangeLogPageRoute.path),
-        TypedGoRoute<ChangeLogFormPageRoute>(path: ChangeLogFormPageRoute.path),
-      ],
-    ),
-
-    ///
-    /// Account
-    ///
-    TypedStatefulShellBranch<AuthenticationBranchData>(
-      routes: <TypeRouteData>[
-        TypedGoRoute<YourAccountPageRoute>(path: YourAccountPageRoute.path),
-      ],
-    ),
-
-    ///
-    /// Appointments
-    ///
-    TypedStatefulShellBranch<AppointmentSchedulesData>(
-      routes: AppointmentSchedulesData.routes,
-    ),
-
-    ///
-    /// Species
-    ///
-    TypedStatefulShellBranch<PatientSpieciesBranchData>(
-      routes: PatientSpieciesBranchData.routes,
-    ),
-
-    ///
-    /// Breeds
-    ///
-    TypedStatefulShellBranch<PatientBreedsBranchData>(
-      routes: PatientBreedsBranchData.routes,
-    ),
-
-    ///
-    /// Stock Adjustments
-    ///
-    TypedStatefulShellBranch<ProductAdjustmentsBranchData>(
-      routes: ProductAdjustmentsBranchData.routes,
-    ),
-
-    ///
-    /// Patient Treatments
-    ///
-    TypedStatefulShellBranch<PatientTreamentsBranchData>(
-      routes: PatientTreamentsBranchData.routes,
-    ),
-  ],
-)
-class RootRouteData extends StatefulShellRouteData {
-  const RootRouteData();
-
-  static const String $restorationScopeId = 'restorationScopeId';
-
-  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootKey;
-
-  @override
-  Widget builder(context, state, navigationShell) =>
-      AppRoot(shell: navigationShell, routerState: state);
-}

@@ -95,6 +95,11 @@ class AppointmentSchedulePageRoute extends GoRouteData {
 
 class CalendarAppointmentSchedulesData extends StatefulShellBranchData {
   const CalendarAppointmentSchedulesData();
+
+  static const routes = <TypeRouteData>[
+    TypedGoRoute<CalendarAppointmentSchedulesPageRoute>(
+        path: CalendarAppointmentSchedulesPageRoute.path),
+  ];
 }
 
 @TypedGoRoute<CalendarAppointmentSchedulesPageRoute>(

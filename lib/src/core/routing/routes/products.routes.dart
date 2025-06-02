@@ -2,6 +2,28 @@ part of '../main.routes.dart';
 
 class ProductsBranchData extends StatefulShellBranchData {
   const ProductsBranchData();
+
+  static const routes = <TypeRouteData>[
+        ///
+        /// Products
+        ///
+        TypedGoRoute<ProductsPageRoute>(path: ProductsPageRoute.path),
+        TypedGoRoute<ProductPageRoute>(path: ProductPageRoute.path),
+        TypedGoRoute<ProductFormPageRoute>(path: ProductFormPageRoute.path),
+
+        ///
+        /// Inventory
+        ///
+        TypedGoRoute<ProductInventoriesPageRoute>(
+            path: ProductInventoriesPageRoute.path),
+
+        ///
+        /// Stocks
+        ///
+        TypedGoRoute<ProductStockFormPageRoute>(
+            path: ProductStockFormPageRoute.path),
+        TypedGoRoute<ProductStockPageRoute>(path: ProductStockPageRoute.path),
+      ];
 }
 
 @TypedGoRoute<ProductsPageRoute>(path: ProductsPageRoute.path)

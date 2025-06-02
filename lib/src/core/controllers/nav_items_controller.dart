@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sannjosevet/src/core/models/custom_navbar_item.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
-import 'package:sannjosevet/src/core/routing/main.routes.dart';
+import 'package:sannjosevet/src/core/routing/router.dart';
 
 part 'nav_items_controller.g.dart';
 

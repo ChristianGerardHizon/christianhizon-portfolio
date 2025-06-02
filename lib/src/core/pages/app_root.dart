@@ -5,7 +5,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sannjosevet/src/core/controllers/nav_items_controller.dart';
 import 'package:sannjosevet/src/core/controllers/scaffold_controller.dart';
-import 'package:sannjosevet/src/core/routing/main.routes.dart';
+import 'package:sannjosevet/src/core/routing/router.dart';
 import 'package:sannjosevet/src/core/strings/table_controller_keys.dart';
 import 'package:sannjosevet/src/core/widgets/modals/confirm_modal.dart';
 import 'package:sannjosevet/src/core/widgets/dynamic_table/table_controller.dart';

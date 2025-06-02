@@ -2,6 +2,10 @@ part of '../main.routes.dart';
 
 class SalesBranchData extends StatefulShellBranchData {
   const SalesBranchData();
+
+  static const routes = <TypeRouteData>[
+    TypedGoRoute<SalesPageRoute>(path: SalesPageRoute.path),
+  ];
 }
 
 @TypedGoRoute<SalesPageRoute>(path: SalesPageRoute.path)
@@ -17,6 +21,10 @@ class SalesPageRoute extends GoRouteData {
 
 class SalesCashierBranchData extends StatefulShellBranchData {
   const SalesCashierBranchData();
+
+  static const routes = <TypeRouteData>[
+    TypedGoRoute<SalesCashierPageRoute>(path: SalesCashierPageRoute.path),
+  ];
 }
 
 @TypedGoRoute<SalesCashierPageRoute>(path: SalesCashierPageRoute.path)

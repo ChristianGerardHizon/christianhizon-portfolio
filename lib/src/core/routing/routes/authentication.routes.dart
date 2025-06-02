@@ -6,6 +6,10 @@ part of '../main.routes.dart';
 
 class AuthenticationBranchData extends StatefulShellBranchData {
   const AuthenticationBranchData();
+
+  static const routes = <TypeRouteData>[
+    TypedGoRoute<YourAccountPageRoute>(path: YourAccountPageRoute.path),
+  ];
 }
 
 @TypedGoRoute<LoginPageRoute>(path: LoginPageRoute.path)

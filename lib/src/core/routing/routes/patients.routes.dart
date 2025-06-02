@@ -2,6 +2,60 @@ part of '../main.routes.dart';
 
 class PatientsBranchData extends StatefulShellBranchData {
   const PatientsBranchData();
+
+  static const routes = <TypeRouteData>[
+        ///
+        /// Patient
+        ///
+        TypedGoRoute<PatientsPageRoute>(path: PatientsPageRoute.path),
+        TypedGoRoute<PatientFormPageRoute>(path: PatientFormPageRoute.path),
+        TypedGoRoute<PatientPageRoute>(path: PatientPageRoute.path),
+
+        ///
+        /// Patient Record
+        ///
+        TypedGoRoute<PatientRecordPageRoute>(path: PatientRecordPageRoute.path),
+        TypedGoRoute<PatientRecordFormPageRoute>(
+            path: PatientRecordFormPageRoute.path),
+
+        ///
+        /// Categories
+        ///
+        TypedGoRoute<ProductCategoriesPageRoute>(
+            path: ProductCategoriesPageRoute.path),
+        TypedGoRoute<ProductCategoryPageRoute>(
+            path: ProductCategoryPageRoute.path),
+        TypedGoRoute<ProductCategoryFormPageRoute>(
+            path: ProductCategoryFormPageRoute.path),
+
+        ///
+        /// Patient Treatment Records
+        ///
+        TypedGoRoute<PatientTreatmentsRecordPageRoute>(
+            path: PatientTreatmentsRecordPageRoute.path),
+        TypedGoRoute<PatientTreatmentRecordPageRoute>(
+            path: PatientTreatmentRecordPageRoute.path),
+        TypedGoRoute<PatientTreatmentRecordFormPageRoute>(
+            path: PatientTreatmentRecordFormPageRoute.path),
+
+        ///
+        /// Patient Prescription Item
+        ///
+        TypedGoRoute<PatientPrescriptionItemFormPageRoute>(
+            path: PatientPrescriptionItemFormPageRoute.path),
+
+        ///
+        /// Appointments
+        ///
+        TypedGoRoute<PatientAppointmentSchedulesPageRoute>(
+            path: PatientAppointmentSchedulesPageRoute.path),
+
+        ///
+        /// Files
+        ///
+        TypedGoRoute<PatientFileFormPageRoute>(
+            path: PatientFileFormPageRoute.path),
+      ];
 }
 
 @TypedGoRoute<PatientsPageRoute>(path: PatientsPageRoute.path)
