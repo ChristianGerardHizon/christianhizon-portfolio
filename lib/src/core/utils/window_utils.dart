@@ -27,10 +27,13 @@ class WindowUtils {
     // * Initialize the WindowManager
     await windowManager.ensureInitialized();
 
+    const mobileSize = Size(380, 700);
+    const desktopSize = Size(1000, 800);
+
     // * Set the window options
-    WindowOptions windowOptions = const WindowOptions(
-      minimumSize: Size(380, 700), // Set the minimum size of the window
-      size: Size(1000, 800), // Set the initial size of the window
+    WindowOptions windowOptions = WindowOptions(
+      minimumSize: mobileSize, // Set the minimum size of the window
+      size: kDebugMode ? mobileSize : desktopSize, // Set the initial size of the window
       backgroundColor:
           Colors.transparent, // Set the background color of the window
       skipTaskbar: false, // Set if the window should be shown in the taskbar
