@@ -6,7 +6,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sannjosevet/src/core/assets/i18n/strings.g.dart';
 import 'package:sannjosevet/src/core/packages/file_downloader.dart';
 import 'package:sannjosevet/src/core/routing/router.dart';
-import 'package:sannjosevet/src/core/strings/app_strings.dart';
 import 'package:sannjosevet/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -65,7 +64,7 @@ class Application extends HookConsumerWidget {
                 ...GlobalMaterialLocalizations.delegates,
               ],
               debugShowCheckedModeBanner: false,
-              title: AppStrings.appName,
+              title: context.t.common.appName,
               theme: theme,
 
               routerConfig: ref.watch(routerProvider),

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sannjosevet/src/core/strings/app_strings.dart';
 
 import 'package:window_manager/window_manager.dart';
 
@@ -30,7 +29,6 @@ class WindowUtils {
 
     // * Set the window options
     WindowOptions windowOptions = const WindowOptions(
-      title: AppStrings.appName, // Set the window title
       minimumSize: Size(380, 700), // Set the minimum size of the window
       size: Size(1000, 800), // Set the initial size of the window
       backgroundColor:
