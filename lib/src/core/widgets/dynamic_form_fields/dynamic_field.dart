@@ -3,8 +3,6 @@ export 'package:sannjosevet/src/core/widgets/dynamic_form_fields/fields/dynamic_
     show DynamicCheckboxField;
 export 'package:sannjosevet/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_date.dart'
     show DynamicDateField;
-export 'package:sannjosevet/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_files.dart'
-    show DynamicFilesField;
 export 'package:sannjosevet/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_hidden.dart'
     show DynamicHiddenField;
 export 'package:sannjosevet/src/core/widgets/dynamic_form_fields/fields/dynamic_form_field_images.dart'

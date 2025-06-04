@@ -14,7 +14,6 @@ import 'fields/dynamic_form_field_text.dart';
 import 'fields/dynamic_form_field_checkbox.dart';
 import 'fields/dynamic_form_field_select.dart';
 import 'fields/dynamic_form_field_date.dart';
-import 'fields/dynamic_form_field_files.dart';
 
 class DynamicFormField extends HookWidget {
   final DynamicField field;
@@ -42,10 +41,6 @@ class DynamicFormField extends HookWidget {
 
           if (field is DynamicDateField) {
             return DynamicFormFieldDate(field as DynamicDateField);
-          }
-
-          if (field is DynamicFilesField) {
-            return DynamicFormFieldFiles(field as DynamicFilesField);
           }
 
           if (field is DynamicImagesField) {

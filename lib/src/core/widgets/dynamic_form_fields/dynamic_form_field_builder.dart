@@ -57,8 +57,6 @@ class DynamicFormBuilder extends HookConsumerWidget {
             f.fieldTransformer!(value),
           DynamicDateField f when f.fieldTransformer != null =>
             f.fieldTransformer!(value as DateTime?),
-          DynamicFilesField f when f.fieldTransformer != null =>
-            f.fieldTransformer!(value as List<PlatformFile>?),
           DynamicPBFilesField f when f.fieldTransformer != null =>
             f.fieldTransformer!(value as List<PBFile>?),
           DynamicDateTimeField f when f.fieldTransformer != null =>
