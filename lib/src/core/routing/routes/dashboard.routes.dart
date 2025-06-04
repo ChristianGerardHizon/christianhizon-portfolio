@@ -7,6 +7,7 @@ class DashboardBranchData extends StatefulShellBranchData {
     TypedGoRoute<DashboardPageRoute>(path: DashboardPageRoute.path),
   ];
 }
+
 @TypedGoRoute<DashboardPageRoute>(path: DashboardPageRoute.path)
 class DashboardPageRoute extends GoRouteData {
   const DashboardPageRoute();

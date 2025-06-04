@@ -6,8 +6,8 @@ A new Flutter project.
 
 
 ### Build packages
-`dart pub get ;dart run build_runner watch --delete-conflicting-outputs`
-
+`dart pub get ;dart run build_runner build --delete-conflicting-outputs`
+`dart run slang`
 `dart run change_app_package_name:main com.it2do.dev`
 
 ### Generate ymal icon file

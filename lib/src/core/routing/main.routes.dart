@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-
 import 'package:sannjosevet/src/core/pages/more_page.dart';
 import 'package:sannjosevet/src/core/pages/not_found_page.dart';
 import 'package:sannjosevet/src/core/pages/splash_page.dart';
@@ -12,7 +11,8 @@ import 'package:sannjosevet/src/core/pages/app_root.dart';
 
 import 'package:sannjosevet/src/core/pages/work_in_progress_page.dart';
 import 'package:sannjosevet/src/core/routing/routes/_root.routes.dart';
-import 'package:sannjosevet/src/core/routing/router.dart' show TypeRouteData, rootKey;
+import 'package:sannjosevet/src/core/routing/router.dart'
+    show TypeRouteData, rootKey;
 import 'package:sannjosevet/src/features/admins/presentation/pages/admin_page.dart';
 import 'package:sannjosevet/src/features/admins/presentation/pages/admin_form_page.dart';
 import 'package:sannjosevet/src/features/admins/presentation/pages/admins_page.dart';
@@ -92,4 +92,3 @@ part 'routes/product_adjustments.routes.dart';
 part 'routes/patient_species.routes.dart';
 part 'routes/patient_breeds.routes.dart';
 part 'routes/patient_treatment.routes.dart';
-
