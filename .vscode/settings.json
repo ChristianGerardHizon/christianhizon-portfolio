@@ -137,5 +137,16 @@
             // fold every import block it sees
             "firstMatchOnly": false
         }
-    ]
+    ],
+    "dart-barrel-file-generator.excludeFileList": [
+        "**/*.realm.dart",
+        "**/*.freezed.dart",
+        "**/*.g.dart",
+        "**/*.mapper.dart",
+        "**/*.routes.dart",
+    ],
+    "dart-barrel-file-generator.defaultBarrelName": "_index",
+    "dart-barrel-file-generator.excludeGenerated": true,
+    "dart-barrel-file-generator.excludeFreezed": true,
+    "dart-barrel-file-generator.promptName": true
 }
