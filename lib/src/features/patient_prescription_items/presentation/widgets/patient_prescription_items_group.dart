@@ -118,15 +118,15 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
           .flatMap((gen) => TaskResult.tryCatch(
                 () async {
                   if (action == _Action.print) {
-                    gen.print();
+                    return gen.print();
                   }
 
                   if (action == _Action.share) {
-                    gen.share();
+                    return gen.share();
                   }
 
                   if (action == _Action.save) {
-                    gen.save();
+                    return gen.save();
                   }
                 },
                 Failure.handle,
@@ -135,8 +135,14 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
 
       result.match(
         AppSnackBar.rootFailure,
-        (_) {
-          AppSnackBar.root(message: 'Success');
+        (data) {
+          if (data == null) return;
+          if (data is String) {
+            AppSnackBar.root(message: 'Downloaded file on $data');
+          }
+          if (data == true) {
+            AppSnackBar.root(message: 'Success');
+          }
         },
       );
     }

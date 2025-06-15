@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:sannjosevet/src/core/assets/assets.gen.dart';
 import 'package:sannjosevet/src/core/extensions/date_time_extension.dart';
@@ -49,13 +50,19 @@ class PatientPdfGenerator {
   }
 
   /// Saves the generated PDF to local storage
-  Future<bool> save() async {
+  Future<String?> save() async {
     if (kIsWeb)
       throw PresentationFailure('this feature is not available in web');
 
     final pdfData = await _generatePdf();
-    final filePath = await _savePdfToFile(pdfData);
-    return filePath != null;
+
+    final filePath = await FilePicker.platform.saveFile(
+      dialogTitle: 'Please select an output file:',
+      fileName: buildFileName(),
+      bytes: pdfData,
+      type: FileType.custom,
+    );
+    return filePath;
   }
 
   /// Generates the prescription PDF
