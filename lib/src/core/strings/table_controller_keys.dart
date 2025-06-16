@@ -8,6 +8,11 @@ class TableControllerKeys {
   static String productStockProduct(String x) => '${productStock}_${x}';
   static String patient = 'PATIENT';
   static String patientRecord = 'PATIENT_RECORD';
+  static String patientRecordPatient(String? x) {
+    if (x == null) return patientRecord;
+    return '${patientRecord}_${x}';
+  }
+
   static String patientTreatmentRecord = 'PATIENT_TREATMENT_RECORD';
   static String patientTreatmentRecordPatient(String x) =>
       '${patientTreatmentRecord}_${x}';

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fpdart/fpdart.dart';
@@ -118,6 +119,11 @@ class PatientDetailsView extends HookConsumerWidget {
                 padding: const EdgeInsets.only(left: 8, right: 8, bottom: 12),
                 header: 'Patient Information',
                 items: [
+                  if (kDebugMode)
+                    DynamicGroupItem.text(
+                      title: 'ID',
+                      value: patient.id,
+                    ),
                   DynamicGroupItem.text(
                     title: 'Name',
                     value: patient.name,

@@ -7,7 +7,7 @@ part of 'patient_record_table_controller.dart';
 // **************************************************************************
 
 String _$patientRecordTableControllerHash() =>
-    r'cbb2fdf616143e74c01e84f8c4731aea26aa8db1';
+    r'6a24f21786bc4ec51acf759e7c53dffb6bc6be32';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -33,10 +33,12 @@ class _SystemHash {
 abstract class _$PatientRecordTableController
     extends BuildlessAutoDisposeAsyncNotifier<List<PatientRecord>> {
   late final String tableKey;
+  late final String? patientId;
 
   FutureOr<List<PatientRecord>> build(
-    String tableKey,
-  );
+    String tableKey, {
+    String? patientId,
+  });
 }
 
 /// See also [PatientRecordTableController].
@@ -52,10 +54,12 @@ class PatientRecordTableControllerFamily
 
   /// See also [PatientRecordTableController].
   PatientRecordTableControllerProvider call(
-    String tableKey,
-  ) {
+    String tableKey, {
+    String? patientId,
+  }) {
     return PatientRecordTableControllerProvider(
       tableKey,
+      patientId: patientId,
     );
   }
 
@@ -65,6 +69,7 @@ class PatientRecordTableControllerFamily
   ) {
     return call(
       provider.tableKey,
+      patientId: provider.patientId,
     );
   }
 
@@ -89,9 +94,12 @@ class PatientRecordTableControllerProvider
         List<PatientRecord>> {
   /// See also [PatientRecordTableController].
   PatientRecordTableControllerProvider(
-    String tableKey,
-  ) : this._internal(
-          () => PatientRecordTableController()..tableKey = tableKey,
+    String tableKey, {
+    String? patientId,
+  }) : this._internal(
+          () => PatientRecordTableController()
+            ..tableKey = tableKey
+            ..patientId = patientId,
           from: patientRecordTableControllerProvider,
           name: r'patientRecordTableControllerProvider',
           debugGetCreateSourceHash:
@@ -102,6 +110,7 @@ class PatientRecordTableControllerProvider
           allTransitiveDependencies:
               PatientRecordTableControllerFamily._allTransitiveDependencies,
           tableKey: tableKey,
+          patientId: patientId,
         );
 
   PatientRecordTableControllerProvider._internal(
@@ -112,9 +121,11 @@ class PatientRecordTableControllerProvider
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.tableKey,
+    required this.patientId,
   }) : super.internal();
 
   final String tableKey;
+  final String? patientId;
 
   @override
   FutureOr<List<PatientRecord>> runNotifierBuild(
@@ -122,6 +133,7 @@ class PatientRecordTableControllerProvider
   ) {
     return notifier.build(
       tableKey,
+      patientId: patientId,
     );
   }
 
@@ -130,13 +142,16 @@ class PatientRecordTableControllerProvider
     return ProviderOverride(
       origin: this,
       override: PatientRecordTableControllerProvider._internal(
-        () => create()..tableKey = tableKey,
+        () => create()
+          ..tableKey = tableKey
+          ..patientId = patientId,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         tableKey: tableKey,
+        patientId: patientId,
       ),
     );
   }
@@ -150,13 +165,15 @@ class PatientRecordTableControllerProvider
   @override
   bool operator ==(Object other) {
     return other is PatientRecordTableControllerProvider &&
-        other.tableKey == tableKey;
+        other.tableKey == tableKey &&
+        other.patientId == patientId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, tableKey.hashCode);
+    hash = _SystemHash.combine(hash, patientId.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -168,6 +185,9 @@ mixin PatientRecordTableControllerRef
     on AutoDisposeAsyncNotifierProviderRef<List<PatientRecord>> {
   /// The parameter `tableKey` of this provider.
   String get tableKey;
+
+  /// The parameter `patientId` of this provider.
+  String? get patientId;
 }
 
 class _PatientRecordTableControllerProviderElement
@@ -179,6 +199,9 @@ class _PatientRecordTableControllerProviderElement
   @override
   String get tableKey =>
       (origin as PatientRecordTableControllerProvider).tableKey;
+  @override
+  String? get patientId =>
+      (origin as PatientRecordTableControllerProvider).patientId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

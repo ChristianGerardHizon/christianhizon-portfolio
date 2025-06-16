@@ -34,10 +34,11 @@ class PatientRecordsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchCtrl = useTextEditingController();
-    final tableKey = TableControllerKeys.patientRecord;
+    final tableKey = TableControllerKeys.patientRecordPatient(patient.id);
     final provider = tableControllerProvider(tableKey);
     final notifier = ref.read(provider.notifier);
-    final listProvider = patientRecordTableControllerProvider(tableKey);
+    final listProvider =
+        patientRecordTableControllerProvider(tableKey, patientId: patient.id);
     final listState = ref.watch(listProvider);
 
     final isLoading = useState(false);

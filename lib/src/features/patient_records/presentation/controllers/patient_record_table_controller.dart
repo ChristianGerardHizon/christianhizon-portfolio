@@ -12,7 +12,8 @@ part 'patient_record_table_controller.g.dart';
 @riverpod
 class PatientRecordTableController extends _$PatientRecordTableController {
   @override
-  Future<List<PatientRecord>> build(String tableKey) async {
+  Future<List<PatientRecord>> build(String tableKey,
+      {String? patientId}) async {
     final repo = ref.watch(patientRecordRepositoryProvider);
 
     final page = ref
@@ -26,7 +27,9 @@ class PatientRecordTableController extends _$PatientRecordTableController {
 
     // fix warning here
     final notifier = ref.read(tableControllerProvider(tableKey).notifier);
-    final baseFilter = '${PatientRecordField.isDeleted} = false';
+    final baseFilter = patientId != null
+        ? '${PatientRecordField.isDeleted} = false && ${PatientRecordField.patient} = "$patientId"'
+        : '${PatientRecordField.isDeleted} = false';
     final filterFunc = PocketbaseFilter(baseFilter: baseFilter);
 
     final result = await repo
