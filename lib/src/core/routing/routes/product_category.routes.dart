@@ -6,7 +6,7 @@ class ProductCategoryBranchData extends StatefulShellBranchData {
 }
 
 @TypedGoRoute<ProductCategoriesPageRoute>(path: ProductCategoriesPageRoute.path)
-class ProductCategoriesPageRoute extends GoRouteData {
+class ProductCategoriesPageRoute extends GoRouteData with _$ProductCategoriesPageRoute {
   const ProductCategoriesPageRoute();
   static const path = '/product-categories';
 
@@ -17,7 +17,7 @@ class ProductCategoriesPageRoute extends GoRouteData {
 }
 
 @TypedGoRoute<ProductCategoryPageRoute>(path: ProductCategoryPageRoute.path)
-class ProductCategoryPageRoute extends GoRouteData {
+class ProductCategoryPageRoute extends GoRouteData with _$ProductCategoryPageRoute {
   const ProductCategoryPageRoute(this.id);
   static const path = '/product-category/:id';
 
@@ -31,7 +31,7 @@ class ProductCategoryPageRoute extends GoRouteData {
 
 @TypedGoRoute<ProductCategoryFormPageRoute>(
     path: ProductCategoryFormPageRoute.path)
-class ProductCategoryFormPageRoute extends GoRouteData {
+class ProductCategoryFormPageRoute extends GoRouteData with _$ProductCategoryFormPageRoute {
   const ProductCategoryFormPageRoute({this.id});
   static const path = '/form/product-category';
 

@@ -34,3 +34,7 @@ surge --domain stg-sannjose.surge.sh build/web
 # update splash screen
 
 dart run flutter_native_splash:create
+
+
+git config  user.email "christiangerardhizon@gmail.com"
+git config --global user.name "Christian Hizon"

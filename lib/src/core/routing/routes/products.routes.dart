@@ -27,7 +27,7 @@ class ProductsBranchData extends StatefulShellBranchData {
 }
 
 @TypedGoRoute<ProductsPageRoute>(path: ProductsPageRoute.path)
-class ProductsPageRoute extends GoRouteData {
+class ProductsPageRoute extends GoRouteData with _$ProductsPageRoute {
   const ProductsPageRoute();
   static const path = '/products';
 
@@ -39,7 +39,7 @@ class ProductsPageRoute extends GoRouteData {
 
 @TypedGoRoute<ProductInventoriesPageRoute>(
     path: ProductInventoriesPageRoute.path)
-class ProductInventoriesPageRoute extends GoRouteData {
+class ProductInventoriesPageRoute extends GoRouteData with _$ProductInventoriesPageRoute {
   const ProductInventoriesPageRoute();
   static const path = '/productInventories';
 
@@ -50,7 +50,7 @@ class ProductInventoriesPageRoute extends GoRouteData {
 }
 
 @TypedGoRoute<ProductFormPageRoute>(path: ProductFormPageRoute.path)
-class ProductFormPageRoute extends GoRouteData {
+class ProductFormPageRoute extends GoRouteData with _$ProductFormPageRoute {
   const ProductFormPageRoute({this.id});
   static const path = '/form/product';
 
@@ -63,7 +63,7 @@ class ProductFormPageRoute extends GoRouteData {
 }
 
 @TypedGoRoute<ProductStockFormPageRoute>(path: ProductStockFormPageRoute.path)
-class ProductStockFormPageRoute extends GoRouteData {
+class ProductStockFormPageRoute extends GoRouteData with _$ProductStockFormPageRoute {
   const ProductStockFormPageRoute({this.id, required this.productId});
   static const path = '/form/productStock';
 
@@ -80,7 +80,7 @@ class ProductStockFormPageRoute extends GoRouteData {
 }
 
 @TypedGoRoute<ProductPageRoute>(path: ProductPageRoute.path)
-class ProductPageRoute extends GoRouteData {
+class ProductPageRoute extends GoRouteData with _$ProductPageRoute {
   const ProductPageRoute(this.id);
   static const path = '/product/:id';
 
@@ -94,7 +94,7 @@ class ProductPageRoute extends GoRouteData {
 
 // @TypedGoRoute<ProductAddStockFormPageRoute>(
 //     path: ProductAddStockFormPageRoute.path)
-// class ProductAddStockFormPageRoute extends GoRouteData {
+// class ProductAddStockFormPageRoute extends GoRouteData with _$ProductAddStockFormPageRoute {
 //   const ProductAddStockFormPageRoute(this.id);
 //   static const path = '/product/simple/add';
 
@@ -107,7 +107,7 @@ class ProductPageRoute extends GoRouteData {
 // }
 
 @TypedGoRoute<ProductStockPageRoute>(path: ProductStockPageRoute.path)
-class ProductStockPageRoute extends GoRouteData {
+class ProductStockPageRoute extends GoRouteData with _$ProductStockPageRoute {
   const ProductStockPageRoute(this.id);
   static const path = '/product/form/:id';
 

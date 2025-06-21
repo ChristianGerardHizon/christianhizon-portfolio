@@ -6,7 +6,7 @@ class PatientTreatmentRecordsBranchData extends StatefulShellBranchData {
 
 @TypedGoRoute<PatientTreatmentRecordPageRoute>(
     path: PatientTreatmentRecordPageRoute.path)
-class PatientTreatmentRecordPageRoute extends GoRouteData {
+class PatientTreatmentRecordPageRoute extends GoRouteData with _$PatientTreatmentRecordPageRoute {
   const PatientTreatmentRecordPageRoute(this.id);
   static const path = '/patientTreatmentRecord/:id';
 
@@ -20,7 +20,7 @@ class PatientTreatmentRecordPageRoute extends GoRouteData {
 
 @TypedGoRoute<PatientTreatmentsRecordPageRoute>(
     path: PatientTreatmentsRecordPageRoute.path)
-class PatientTreatmentsRecordPageRoute extends GoRouteData {
+class PatientTreatmentsRecordPageRoute extends GoRouteData with _$PatientTreatmentsRecordPageRoute {
   const PatientTreatmentsRecordPageRoute(this.id);
   static const path = '/patientTreatmentRecords';
 
@@ -34,7 +34,7 @@ class PatientTreatmentsRecordPageRoute extends GoRouteData {
 
 @TypedGoRoute<PatientTreatmentRecordFormPageRoute>(
     path: PatientTreatmentRecordFormPageRoute.path)
-class PatientTreatmentRecordFormPageRoute extends GoRouteData {
+class PatientTreatmentRecordFormPageRoute extends GoRouteData with _$PatientTreatmentRecordFormPageRoute {
   const PatientTreatmentRecordFormPageRoute({required this.parentId, this.id});
   static const path = '/form/patientTreatmentRecord';
 

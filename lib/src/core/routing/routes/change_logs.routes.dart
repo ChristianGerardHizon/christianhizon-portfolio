@@ -11,7 +11,7 @@ class ChangeLogsBranchData extends StatefulShellBranchData {
 }
 
 @TypedGoRoute<ChangeLogsPageRoute>(path: ChangeLogsPageRoute.path)
-class ChangeLogsPageRoute extends GoRouteData {
+class ChangeLogsPageRoute extends GoRouteData with _$ChangeLogsPageRoute {
   const ChangeLogsPageRoute();
   static const path = '/changeLogs';
 
@@ -22,7 +22,7 @@ class ChangeLogsPageRoute extends GoRouteData {
 }
 
 @TypedGoRoute<ChangeLogPageRoute>(path: ChangeLogPageRoute.path)
-class ChangeLogPageRoute extends GoRouteData {
+class ChangeLogPageRoute extends GoRouteData with _$ChangeLogPageRoute {
   const ChangeLogPageRoute(this.id);
   static const path = '/changeLog/:id';
 
@@ -35,7 +35,7 @@ class ChangeLogPageRoute extends GoRouteData {
 }
 
 @TypedGoRoute<ChangeLogFormPageRoute>(path: ChangeLogFormPageRoute.path)
-class ChangeLogFormPageRoute extends GoRouteData {
+class ChangeLogFormPageRoute extends GoRouteData with _$ChangeLogFormPageRoute {
   const ChangeLogFormPageRoute({this.id});
   static const path = '/form/changelog';
 

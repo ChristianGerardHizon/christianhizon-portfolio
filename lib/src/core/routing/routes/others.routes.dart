@@ -6,7 +6,7 @@ class MoreBranchData extends StatefulShellBranchData {
 }
 
 @TypedGoRoute<MorePageRoute>(path: MorePageRoute.path)
-class MorePageRoute extends GoRouteData {
+class MorePageRoute extends GoRouteData with _$MorePageRoute {
   const MorePageRoute();
   static const path = '/more';
 

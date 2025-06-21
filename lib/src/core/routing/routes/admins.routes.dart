@@ -11,7 +11,7 @@ class AdminsBranchData extends StatefulShellBranchData {
 }
 
 @TypedGoRoute<AdminsPageRoute>(path: AdminsPageRoute.path)
-class AdminsPageRoute extends GoRouteData {
+class AdminsPageRoute extends GoRouteData with _$AdminsPageRoute {
   const AdminsPageRoute();
   static const path = '/admins';
 
@@ -22,7 +22,7 @@ class AdminsPageRoute extends GoRouteData {
 }
 
 @TypedGoRoute<AdminPageRoute>(path: AdminPageRoute.path)
-class AdminPageRoute extends GoRouteData {
+class AdminPageRoute extends GoRouteData with _$AdminPageRoute {
   const AdminPageRoute(this.id);
   static const path = '/admin/:id';
 
@@ -35,7 +35,7 @@ class AdminPageRoute extends GoRouteData {
 }
 
 @TypedGoRoute<AdminFormPageRoute>(path: AdminFormPageRoute.path)
-class AdminFormPageRoute extends GoRouteData {
+class AdminFormPageRoute extends GoRouteData with _$AdminFormPageRoute {
   const AdminFormPageRoute({this.id});
   static const path = '/form/admin';
 

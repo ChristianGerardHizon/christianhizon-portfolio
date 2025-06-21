@@ -3,6 +3,7 @@ import 'package:sannjosevet/src/core/models/failure.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:sannjosevet/src/core/utils/codemagic_utils.dart';
 import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
+import 'package:sannjosevet/src/core/widgets/failure_message.dart';
 import 'package:sannjosevet/src/core/widgets/modals/dropdown_confirm_modal.dart';
 import 'package:sannjosevet/src/features/system_versions/domain/system_artifact.dart';
 import 'package:sannjosevet/src/features/system_versions/presentation/controllers/status_system_version_controller.dart';
@@ -39,7 +40,7 @@ class SystemVersionWidget extends HookConsumerWidget {
 
     return state.maybeWhen(
       orElse: () => const SizedBox(),
-      error: (error, stackTrace) => Center(child: Text(error.toString())),
+      error: (error, stackTrace) => FailureMessage(error, stackTrace),
       loading: () => const Center(child: CircularProgressIndicator()),
       data: (data) {
         final hasNewVersion = data.hasUpdate;

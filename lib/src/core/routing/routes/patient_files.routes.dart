@@ -5,7 +5,7 @@ class PatientFilesBranchData extends StatefulShellBranchData {
 }
 
 @TypedGoRoute<PatientFileFormPageRoute>(path: PatientFileFormPageRoute.path)
-class PatientFileFormPageRoute extends GoRouteData {
+class PatientFileFormPageRoute extends GoRouteData with _$PatientFileFormPageRoute {
   const PatientFileFormPageRoute({required this.parentId, this.id});
   static const path = '/form/patientFiles';
 

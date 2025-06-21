@@ -9,7 +9,7 @@ class SalesBranchData extends StatefulShellBranchData {
 }
 
 @TypedGoRoute<SalesPageRoute>(path: SalesPageRoute.path)
-class SalesPageRoute extends GoRouteData {
+class SalesPageRoute extends GoRouteData with _$SalesPageRoute {
   const SalesPageRoute();
   static const path = '/sales';
 
@@ -28,7 +28,7 @@ class SalesCashierBranchData extends StatefulShellBranchData {
 }
 
 @TypedGoRoute<SalesCashierPageRoute>(path: SalesCashierPageRoute.path)
-class SalesCashierPageRoute extends GoRouteData {
+class SalesCashierPageRoute extends GoRouteData with _$SalesCashierPageRoute {
   const SalesCashierPageRoute();
   static const path = '/cashier';
 
