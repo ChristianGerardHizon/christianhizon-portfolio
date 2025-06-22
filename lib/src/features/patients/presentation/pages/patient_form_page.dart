@@ -271,11 +271,25 @@ class PatientFormPage extends HookConsumerWidget {
                     ),
                     validator: FormBuilderValidators.compose(
                       [
-                        FormBuilderValidators.required(),
-                        FormBuilderValidators.email()
+                        FormBuilderValidators.email(),
                       ],
                     ),
                   ),
+                ),
+
+                ///
+                /// Address
+                ///
+                DynamicTextField(
+                  name: PatientField.address,
+                  initialValue: patient?.address,
+                  decoration: InputDecoration(
+                    label: Text('Address'),
+                    border: OutlineInputBorder(),
+                  ),
+                  minLines: 2,
+                  maxLines: 5,
+                  validator: FormBuilderValidators.compose([]),
                 ),
 
                 ///
