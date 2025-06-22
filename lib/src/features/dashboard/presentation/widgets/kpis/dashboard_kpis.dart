@@ -16,17 +16,17 @@ class DashboardKpis extends StatelessWidget {
           date: DateTime.now().startOfDay,
         ).push(context),
         title: "Today's Appointments ",
-        value: '5',
+        value: '-',
         icon: MIcons.clockOutline,
       ),
       KpiCard(
         title: "New Patients Today",
-        value: '10',
+        value: '-',
         icon: MIcons.accountOutline,
       ),
       KpiCard(
         title: 'Products Near Expiration',
-        value: '10',
+        value: '-',
         icon: MIcons.alertOutline,
       ),
       KpiCard(
