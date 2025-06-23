@@ -36,7 +36,7 @@ class Logo extends ConsumerWidget {
                   fallbackWidth: width ?? 400,
                   child: Center(
                     child: Text(
-                      'Debug Mode',
+                      'Developer Mode',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             color: Theme.of(context).colorScheme.error,
                           ),
