@@ -67,24 +67,24 @@ class PatientRecordCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // RichText(
-                  //   maxLines: 3,
-                  //   overflow: TextOverflow.ellipsis,
-                  //   text: TextSpan(
-                  //     style: Theme.of(context).textTheme.bodyMedium,
-                  //     children: [
-                  //       TextSpan(
-                  //           text: 'Patient: ',
-                  //           style: Theme.of(context)
-                  //               .textTheme
-                  //               .bodyMedium
-                  //               ?.copyWith(fontWeight: FontWeight.w600)),
-                  //       TextSpan(
-                  //         text: patientRecord.patient.optional(),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+                  RichText(
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      children: [
+                        TextSpan(
+                            text: 'Patient: ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w600)),
+                        TextSpan(
+                          text: patientRecord.patient.optional(),
+                        ),
+                      ],
+                    ),
+                  ),
                   RichText(
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
