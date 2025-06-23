@@ -167,6 +167,21 @@ class PatientRecordFormPage extends HookConsumerWidget {
                 ),
 
                 ///
+                /// Tests
+                ///
+                DynamicTextField(
+                  name: PatientRecordField.tests,
+                  initialValue: patientRecord?.tests,
+                  decoration: InputDecoration(
+                    label: Text('Tests Done'),
+                    border: OutlineInputBorder(),
+                  ),
+                  minLines: 2,
+                  maxLines: 30,
+                  validator: FormBuilderValidators.compose([]),
+                ),
+
+                ///
                 /// Diagnosis
                 ///
                 DynamicTextField(

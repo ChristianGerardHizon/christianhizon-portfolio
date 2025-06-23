@@ -117,6 +117,7 @@ class PatientRecordField {
   static const String diagnosis = 'diagnosis';
   static const String vistDate = 'visitDate';
   static const String treatment = 'treatment';
+  static const String tests = 'tests';
   static const String prescription = 'prescription';
   static const String notes = 'notes';
   static const String user = 'user';

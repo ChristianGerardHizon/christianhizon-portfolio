@@ -142,6 +142,9 @@ class PatientRecordPage extends HookConsumerWidget {
                   PatientRecordField.notes: patientRecord.notes,
                   PatientRecordField.vistDate:
                       patientRecord.visitDate.toLocal(),
+                  PatientRecordField.tests: patientRecord.tests,
+                  PatientRecordField.weightInKg:
+                      patientRecord.weightInKg?.toString(),
                 },
                 child: StackLoader(
                   isLoading: isLoading.value,
@@ -189,6 +192,17 @@ class PatientRecordPage extends HookConsumerWidget {
                                 ),
                               ),
                               DynamicGroupItem.field(
+                                title: 'Tests Done',
+                                value: FormBuilderTextField(
+                                  name: PatientRecordField.tests,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+                                  minLines: 3,
+                                  maxLines: 10,
+                                ),
+                              ),
+                              DynamicGroupItem.field(
                                 title: 'Diagnosis',
                                 value: FormBuilderTextField(
                                   name: PatientRecordField.diagnosis,
@@ -213,8 +227,6 @@ class PatientRecordPage extends HookConsumerWidget {
                               DynamicGroupItem.field(
                                 title: 'Weight in Kg',
                                 value: FormBuilderTextField(
-                                  initialValue:
-                                      patientRecord.weightInKg.toString(),
                                   name: PatientRecordField.weightInKg,
                                   decoration: const InputDecoration(
                                     border: InputBorder.none,

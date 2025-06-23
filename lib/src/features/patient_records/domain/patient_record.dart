@@ -18,6 +18,8 @@ class PatientRecord extends PbRecord with PatientRecordMappable {
   @MappableField(hook: PbNumHook())
   final num? weightInKg;
 
+  final String? tests;
+
   PatientRecord({
     required super.id,
     required super.collectionId,
@@ -32,6 +34,7 @@ class PatientRecord extends PbRecord with PatientRecordMappable {
     super.updated,
     this.weightInKg,
     this.branch,
+    this.tests,
   });
 
   static fromMap(Map<String, dynamic> raw) {
