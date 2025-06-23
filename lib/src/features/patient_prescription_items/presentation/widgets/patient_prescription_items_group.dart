@@ -201,7 +201,7 @@ class PatientPrescriptionItemsGroup extends HookConsumerWidget {
       // 4. Handle Error
       result.match(
         (failure) => _handleFailure(context, failure),
-        (_) {},
+        (_) => refresh(patientPrescriptionItem.patientRecord),
       );
     }
 
@@ -342,7 +342,7 @@ TaskResult<void> _handleSuccessfulDeleteTaskSidEffects({
   return Task<void>(() async {
     if (!context.mounted) return;
     AppSnackBar.root(message: 'Successfully Deleted');
-    refresh(patientPrescriptionItemId);
+    refresh.call(patientPrescriptionItemId);
     return null;
   }).toTaskEither<Failure>();
 }
