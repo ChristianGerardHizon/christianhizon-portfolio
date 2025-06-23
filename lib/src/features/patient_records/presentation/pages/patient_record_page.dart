@@ -213,6 +213,8 @@ class PatientRecordPage extends HookConsumerWidget {
                               DynamicGroupItem.field(
                                 title: 'Weight in Kg',
                                 value: FormBuilderTextField(
+                                  initialValue:
+                                      patientRecord.weightInKg.toString(),
                                   name: PatientRecordField.weightInKg,
                                   decoration: const InputDecoration(
                                     border: InputBorder.none,
@@ -299,12 +301,16 @@ class PatientRecordPage extends HookConsumerWidget {
 
 TaskResult<Map<String, dynamic>> getFormData(
     GlobalKey<FormBuilderState> formKey) {
-  return Task<Map<String, dynamic>>(() async {
+  return TaskResult<Map<String, dynamic>>.tryCatch(() async {
     final state = formKey.currentState;
     if (state == null) throw PresentationFailure('form is null');
-    if (state.saveAndValidate() != true) throw CancelledFailure();
+    if (state.saveAndValidate() != true)
+      throw PresentationFailure('form is invalid');
+    ();
     return state.instantValue;
-  }).toTaskEither<Failure>();
+  }, (error, stackTrace) {
+    return Failure.handle(error, stackTrace);
+  });
 }
 
 ///
