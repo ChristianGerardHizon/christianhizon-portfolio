@@ -42,7 +42,12 @@ class PbImageLoader extends ConsumerWidget {
       error: (error, stack) => Center(
         child: Text(error.toString()),
       ),
-      loading: () => loader?.call() ?? CenteredProgressIndicator(),
+      loading: () =>
+          loader?.call() ??
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: CenteredProgressIndicator(),
+          ),
     );
   }
 }

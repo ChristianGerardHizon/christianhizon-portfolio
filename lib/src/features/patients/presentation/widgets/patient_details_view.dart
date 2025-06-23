@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 import 'package:sannjosevet/src/core/extensions/date_time_extension.dart';
 import 'package:sannjosevet/src/core/extensions/string.dart';
 import 'package:sannjosevet/src/core/models/failure.dart';
@@ -99,7 +100,11 @@ class PatientDetailsView extends HookConsumerWidget {
                   collection: patient.collectionId,
                   recordId: patient.id,
                   file: patient.avatar,
-                  fit: BoxFit.contain,
+                  fit: getValueForScreenType<BoxFit>(
+                    context: context,
+                    mobile: BoxFit.cover,
+                    desktop: BoxFit.contain,
+                  ),
                 ),
               ),
             ),
