@@ -29,11 +29,10 @@ class PbImageCircle extends StatelessWidget {
       return SizedBox(
         width: radius,
         height: radius,
-        child: const DecoratedBox(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.grey,
-          ),
+        child: Assets.icons.appIconTransparent.image(
+          fit: BoxFit.cover,
+          width: radius,
+          height: radius,
         ),
       );
     }
@@ -88,7 +87,6 @@ class PbImageCircle extends StatelessWidget {
       height: radius,
       decoration: const BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.grey,
       ),
       child: Assets.icons.appIconTransparent.image(
         fit: BoxFit.cover,
