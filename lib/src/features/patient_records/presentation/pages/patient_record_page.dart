@@ -192,6 +192,38 @@ class PatientRecordPage extends HookConsumerWidget {
                                 ),
                               ),
                               DynamicGroupItem.field(
+                                title: 'Temperature',
+                                value: FormBuilderTextField(
+                                  name: PatientRecordField.temperature,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                              DynamicGroupItem.field(
+                                title: 'Weight in Kg',
+                                value: FormBuilderTextField(
+                                  name: PatientRecordField.weightInKg,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'^\d*\.?\d*$')),
+                                  ],
+                                  validator: FormBuilderValidators.compose([
+                                    FormBuilderValidators.required(),
+                                    FormBuilderValidators.numeric(),
+                                  ]),
+                                  valueTransformer: (value) {
+                                    if (value is String) {
+                                      return num.parse(value);
+                                    }
+                                  },
+                                ),
+                              ),
+                              DynamicGroupItem.field(
                                 title: 'Tests Done',
                                 value: FormBuilderTextField(
                                   name: PatientRecordField.tests,
@@ -222,29 +254,6 @@ class PatientRecordPage extends HookConsumerWidget {
                                   ),
                                   minLines: 3,
                                   maxLines: 10,
-                                ),
-                              ),
-                              DynamicGroupItem.field(
-                                title: 'Weight in Kg',
-                                value: FormBuilderTextField(
-                                  name: PatientRecordField.weightInKg,
-                                  decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                  ),
-                                  keyboardType: TextInputType.number,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp(r'^\d*\.?\d*$')),
-                                  ],
-                                  validator: FormBuilderValidators.compose([
-                                    FormBuilderValidators.required(),
-                                    FormBuilderValidators.numeric(),
-                                  ]),
-                                  valueTransformer: (value) {
-                                    if (value is String) {
-                                      return num.parse(value);
-                                    }
-                                  },
                                 ),
                               ),
                               DynamicGroupItem.field(

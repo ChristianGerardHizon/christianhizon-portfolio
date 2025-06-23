@@ -19,6 +19,7 @@ class PatientRecord extends PbRecord with PatientRecordMappable {
   final num? weightInKg;
 
   final String? tests;
+  final String? temperature;
 
   PatientRecord({
     required super.id,
@@ -35,6 +36,7 @@ class PatientRecord extends PbRecord with PatientRecordMappable {
     this.weightInKg,
     this.branch,
     this.tests,
+    this.temperature,
   });
 
   static fromMap(Map<String, dynamic> raw) {

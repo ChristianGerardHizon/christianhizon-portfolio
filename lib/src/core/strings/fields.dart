@@ -125,6 +125,7 @@ class PatientRecordField {
   static const String branch = 'branch';
   static const String hasTime = 'hasTime';
   static const String weightInKg = 'weightInKg';
+  static const String temperature = 'temperature';
 }
 
 class PatientPrescriptionItemField {

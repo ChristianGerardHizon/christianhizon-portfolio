@@ -187,6 +187,34 @@ class PatientRecordsPage extends HookConsumerWidget {
               },
             ),
             DynamicTableColumn(
+              header: 'Weight in Kg',
+              width: 120,
+              alignment: Alignment.centerLeft,
+              builder: (context, data, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    overflow: TextOverflow.ellipsis,
+                    data.displayWeightInKg.optional(),
+                  ),
+                );
+              },
+            ),
+            DynamicTableColumn(
+              header: 'Tests',
+              width: 200,
+              alignment: Alignment.centerLeft,
+              builder: (context, data, row, column) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    overflow: TextOverflow.ellipsis,
+                    data.tests.optional(),
+                  ),
+                );
+              },
+            ),
+            DynamicTableColumn(
               header: 'Diagnosis',
               width: 200,
               alignment: Alignment.centerLeft,
@@ -201,7 +229,7 @@ class PatientRecordsPage extends HookConsumerWidget {
               },
             ),
             DynamicTableColumn(
-              header: 'Weight in Kg',
+              header: 'Treatment',
               width: 200,
               alignment: Alignment.centerLeft,
               builder: (context, data, row, column) {
@@ -209,7 +237,7 @@ class PatientRecordsPage extends HookConsumerWidget {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     overflow: TextOverflow.ellipsis,
-                    data.displayWeightInKg.optional(),
+                    data.treatment.optional(),
                   ),
                 );
               },

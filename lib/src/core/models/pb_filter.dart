@@ -39,9 +39,11 @@ class PocketbaseFilter {
   }
 
   /// f1 == "query" || f2 == "query" || …
-  PocketbaseFilter searchFields(String? query, {required List<String> fields}) {
+  PocketbaseFilter searchFields(String? query,
+      {required List<String> fields, bool isWildCard = false}) {
     if (query == null || query.isEmpty) return this;
-    final clause = fields.map((f) => '$f = "$query"').join(' || ');
+    final clause =
+        fields.map((f) => '$f ${isWildCard ? '~' : '='} "$query"').join(' || ');
     return PocketbaseFilter._(_baseFilter, _combine(_filter, clause));
   }
 

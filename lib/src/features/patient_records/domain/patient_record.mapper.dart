@@ -62,6 +62,9 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
   static String? _$tests(PatientRecord v) => v.tests;
   static const Field<PatientRecord, String> _f$tests =
       Field('tests', _$tests, opt: true);
+  static String? _$temperature(PatientRecord v) => v.temperature;
+  static const Field<PatientRecord, String> _f$temperature =
+      Field('temperature', _$temperature, opt: true);
 
   @override
   final MappableFields<PatientRecord> fields = const {
@@ -79,6 +82,7 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
     #weightInKg: _f$weightInKg,
     #branch: _f$branch,
     #tests: _f$tests,
+    #temperature: _f$temperature,
   };
 
   static PatientRecord _instantiate(DecodingData data) {
@@ -96,7 +100,8 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
         updated: data.dec(_f$updated),
         weightInKg: data.dec(_f$weightInKg),
         branch: data.dec(_f$branch),
-        tests: data.dec(_f$tests));
+        tests: data.dec(_f$tests),
+        temperature: data.dec(_f$temperature));
   }
 
   @override
@@ -167,7 +172,8 @@ abstract class PatientRecordCopyWith<$R, $In extends PatientRecord, $Out>
       DateTime? updated,
       num? weightInKg,
       String? branch,
-      String? tests});
+      String? tests,
+      String? temperature});
   PatientRecordCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -194,7 +200,8 @@ class _PatientRecordCopyWithImpl<$R, $Out>
           Object? updated = $none,
           Object? weightInKg = $none,
           Object? branch = $none,
-          Object? tests = $none}) =>
+          Object? tests = $none,
+          Object? temperature = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (collectionId != null) #collectionId: collectionId,
@@ -209,7 +216,8 @@ class _PatientRecordCopyWithImpl<$R, $Out>
         if (updated != $none) #updated: updated,
         if (weightInKg != $none) #weightInKg: weightInKg,
         if (branch != $none) #branch: branch,
-        if (tests != $none) #tests: tests
+        if (tests != $none) #tests: tests,
+        if (temperature != $none) #temperature: temperature
       }));
   @override
   PatientRecord $make(CopyWithData data) => PatientRecord(
@@ -226,7 +234,8 @@ class _PatientRecordCopyWithImpl<$R, $Out>
       updated: data.get(#updated, or: $value.updated),
       weightInKg: data.get(#weightInKg, or: $value.weightInKg),
       branch: data.get(#branch, or: $value.branch),
-      tests: data.get(#tests, or: $value.tests));
+      tests: data.get(#tests, or: $value.tests),
+      temperature: data.get(#temperature, or: $value.temperature));
 
   @override
   PatientRecordCopyWith<$R2, PatientRecord, $Out2> $chain<$R2, $Out2>(

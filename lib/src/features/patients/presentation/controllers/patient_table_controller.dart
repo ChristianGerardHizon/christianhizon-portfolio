@@ -29,7 +29,18 @@ class PatientTableController extends _$PatientTableController {
 
         // 1. Fetch data
         .list(
-          filter: filterFunc.searchName(tableFilter).build(),
+          filter: filterFunc
+              .searchFields(
+                tableFilter,
+                fields: [
+                  PatientField.name,
+                  PatientField.owner,
+                  PatientField.contactNumber,
+                  PatientField.email
+                ],
+                isWildCard: true,
+              )
+              .build(),
           pageNo: page,
           pageSize: pageSize,
           sort: '-updated',
