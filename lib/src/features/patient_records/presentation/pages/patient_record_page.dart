@@ -224,7 +224,7 @@ class PatientRecordPage extends HookConsumerWidget {
                                 ),
                               ),
                               DynamicGroupItem.field(
-                                title: 'Tests Done',
+                                title: 'Test Done',
                                 value: FormBuilderTextField(
                                   name: PatientRecordField.tests,
                                   decoration: const InputDecoration(

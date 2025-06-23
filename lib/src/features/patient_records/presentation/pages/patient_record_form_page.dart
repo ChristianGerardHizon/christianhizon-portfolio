@@ -173,7 +173,7 @@ class PatientRecordFormPage extends HookConsumerWidget {
                   name: PatientRecordField.tests,
                   initialValue: patientRecord?.tests,
                   decoration: InputDecoration(
-                    label: Text('Tests Done'),
+                    label: Text('Test Done'),
                     border: OutlineInputBorder(),
                   ),
                   minLines: 2,
