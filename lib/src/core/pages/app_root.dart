@@ -5,6 +5,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sannjosevet/src/core/controllers/nav_items_controller.dart';
 import 'package:sannjosevet/src/core/controllers/scaffold_controller.dart';
+import 'package:sannjosevet/src/core/packages/pocketbase.dart';
 import 'package:sannjosevet/src/core/routing/router.dart';
 import 'package:sannjosevet/src/core/strings/table_controller_keys.dart';
 import 'package:sannjosevet/src/core/widgets/modals/confirm_modal.dart';
@@ -49,6 +50,20 @@ class AppRoot extends HookConsumerWidget {
     final state = ref.watch(navItemsControllerProvider);
 
     return Scaffold(
+      appBar: ref.watch(pbDebugControllerProvider)
+          ? AppBar(
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              automaticallyImplyLeading: false,
+              title: Padding(
+                padding: const EdgeInsets.only(top: 2, bottom: 2),
+                child: Text(
+                  ref.watch(pocketbaseProvider).baseURL,
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ),
+              toolbarHeight: 20,
+            )
+          : null,
       key: scaffoldKey,
       drawer: MobileDrawer(rootContext: context),
       body: Builder(builder: (context) {

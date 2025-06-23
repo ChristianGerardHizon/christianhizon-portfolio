@@ -1,8 +1,9 @@
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sannjosevet/src/core/assets/assets.gen.dart';
+import 'package:sannjosevet/src/core/packages/pocketbase.dart';
 
-class Logo extends StatelessWidget {
+class Logo extends ConsumerWidget {
   final EdgeInsets padding;
   final double? width;
   final double? height;
@@ -15,7 +16,7 @@ class Logo extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: padding,
       child: DecoratedBox(
@@ -27,12 +28,20 @@ class Logo extends StatelessWidget {
             width: width,
             height: height,
             child: Builder(builder: (context) {
-              if (kDebugMode)
+              if (ref.watch(pbDebugControllerProvider))
                 // if (false)
                 // ignore: dead_code
                 return Placeholder(
                   fallbackHeight: height ?? 400,
                   fallbackWidth: width ?? 400,
+                  child: Center(
+                    child: Text(
+                      'Debug Mode',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                    ),
+                  ),
                 );
 
               return Assets.icons.appIconTransparent.image(

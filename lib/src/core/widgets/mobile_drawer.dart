@@ -37,38 +37,38 @@ class MobileDrawer extends HookConsumerWidget {
                 DashboardPageRoute().go(context);
               },
             ),
-            ExpansionTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.person),
-                  title: const Text('Account'),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: const Icon(Icons.lock),
-                  title: const Text('Privacy'),
-                  onTap: () {},
-                ),
-              ],
-            ),
-            ExpansionTile(
-              leading: const Icon(Icons.category),
-              title: const Text('Products'),
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.list),
-                  title: const Text('All Products'),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: const Icon(Icons.star),
-                  title: const Text('Featured'),
-                  onTap: () {},
-                ),
-              ],
-            ),
+            // ExpansionTile(
+            //   leading: const Icon(Icons.settings),
+            //   title: const Text('Settings'),
+            //   children: [
+            //     ListTile(
+            //       leading: const Icon(Icons.person),
+            //       title: const Text('Account'),
+            //       onTap: () {},
+            //     ),
+            //     ListTile(
+            //       leading: const Icon(Icons.lock),
+            //       title: const Text('Privacy'),
+            //       onTap: () {},
+            //     ),
+            //   ],
+            // ),
+            // ExpansionTile(
+            //   leading: const Icon(Icons.category),
+            //   title: const Text('Products'),
+            //   children: [
+            //     ListTile(
+            //       leading: const Icon(Icons.list),
+            //       title: const Text('All Products'),
+            //       onTap: () {},
+            //     ),
+            //     ListTile(
+            //       leading: const Icon(Icons.star),
+            //       title: const Text('Featured'),
+            //       onTap: () {},
+            //     ),
+            //   ],
+            // ),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),

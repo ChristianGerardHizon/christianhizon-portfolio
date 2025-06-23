@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:sannjosevet/src/core/assets/i18n/strings.g.dart';
+import 'package:sannjosevet/src/core/packages/pocketbase.dart';
 import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
 import 'package:sannjosevet/src/core/widgets/loading_filled_button.dart';
 import 'package:sannjosevet/src/core/routing/router.dart';
@@ -57,16 +58,26 @@ class UserLoginPage extends HookConsumerWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         actions: [
+          // IconButton(
+          //   icon: Icon(MIcons.earth),
+          //   onPressed: () {
+          //     if (LocaleSettings.currentLocale == AppLocale.en) {
+          //       LocaleSettings.setLocale(AppLocale.tl);
+          //     } else {
+          //       LocaleSettings.setLocale(AppLocale.en);
+          //     }
+          //   },
+          // ),
+
           IconButton(
-            icon: Icon(MIcons.earth),
-            onPressed: () {
-              if (LocaleSettings.currentLocale == AppLocale.en) {
-                LocaleSettings.setLocale(AppLocale.tl);
-              } else {
-                LocaleSettings.setLocale(AppLocale.en);
-              }
+            onPressed: () {},
+            icon: Icon(MIcons.bugOutline),
+            onLongPress: () {
+              ref.read(pbDebugControllerProvider.notifier).toggle();
+
+              AppSnackBar.root(message: ref.read(pocketbaseProvider).baseURL);
             },
-          ),
+          )
         ],
       ),
       body: ResponsiveBuilder(builder: (context, si) {
