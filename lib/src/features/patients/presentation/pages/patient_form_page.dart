@@ -271,7 +271,7 @@ class PatientFormPage extends HookConsumerWidget {
                     ),
                     validator: FormBuilderValidators.compose(
                       [
-                        FormBuilderValidators.email(),
+                        // FormBuilderValidators.email(),
                       ],
                     ),
                   ),
