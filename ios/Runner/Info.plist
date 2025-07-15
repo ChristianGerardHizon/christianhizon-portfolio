@@ -60,6 +60,19 @@
 	<true/>
 	<key>UIFileSharingEnabled</key>
 	<true/>
-
+	<array>
+	<dict>
+		<key>CFBundleTypeRole</key>
+		<string>Editor</string>
+		<key>CFBundleURLName</key>
+		<!-- You can find it on /ios/project.pbxproj - 'PRODUCT_BUNDLE_IDENTIFIER' -->
+		<string>com.mobileapp.sannjosevet</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+		<!-- Your app title -->
+		<string>example</string>
+		</array>
+	</dict>
+	</array>
 </dict>
 </plist>

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:sannjosevet/src/core/assets/i18n/strings.g.dart';
 import 'package:sannjosevet/src/core/packages/pocketbase.dart';
 import 'package:sannjosevet/src/core/widgets/app_snackbar.dart';
@@ -13,6 +14,7 @@ import 'package:sannjosevet/src/features/authentication/domain/auth_data.dart';
 import 'package:sannjosevet/src/features/authentication/presentation/controllers/auth_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:universal_io/io.dart';
 
 class UserLoginPage extends HookConsumerWidget {
   const UserLoginPage({super.key});
@@ -72,10 +74,19 @@ class UserLoginPage extends HookConsumerWidget {
           IconButton(
             onPressed: () {},
             icon: Icon(MIcons.bugOutline),
-            onLongPress: () {
-              ref.read(pbDebugControllerProvider.notifier).toggle();
+            onLongPress: () async {
+              await ref.read(pbDebugControllerProvider.notifier).toggle();
+              ref.read(pocketbaseProvider).authStore.clear();
 
               AppSnackBar.root(message: ref.read(pocketbaseProvider).baseURL);
+              Restart.restartApp(
+                /// In Web Platform, Fill webOrigin only when your new origin is different than the app's origin
+                // webOrigin: 'http://example.com',
+
+                // Customizing the restart notification message (only needed on iOS)
+                notificationTitle: 'Restarting App',
+                notificationBody: 'Please tap here to open the app again.',
+              );
             },
           )
         ],

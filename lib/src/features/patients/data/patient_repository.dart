@@ -48,6 +48,7 @@ class PatientRepositoryImpl extends PBCollectionRepository<Patient> {
     List<MultipartFile> files = const [],
   }) {
     return TaskResult.tryCatch(() async {
+      final token = pb.authStore;
       final response = await collection.create(
         body: payload,
         expand: expand,

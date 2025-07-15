@@ -6,7 +6,7 @@ part of 'pocketbase.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$pocketbaseHash() => r'5d5cb6f73f32133f0d87a5ab1bcdf727f4c3fa21';
+String _$pocketbaseHash() => r'66d7d1d57486b8aa5a070d20455d74af871248fe';
 
 /// See also [pocketbase].
 @ProviderFor(pocketbase)
@@ -22,12 +22,12 @@ final pocketbaseProvider = Provider<PocketBase>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef PocketbaseRef = ProviderRef<PocketBase>;
-String _$pbDebugControllerHash() => r'3ff6b384b70bc907ec3763aa4281ec5ce3b188fe';
+String _$pbDebugControllerHash() => r'679e550fec3e9549f24b091a0d860b489f38f6c1';
 
 /// See also [PbDebugController].
 @ProviderFor(PbDebugController)
 final pbDebugControllerProvider =
-    AutoDisposeNotifierProvider<PbDebugController, bool>.internal(
+    AutoDisposeAsyncNotifierProvider<PbDebugController, bool>.internal(
   PbDebugController.new,
   name: r'pbDebugControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -37,6 +37,6 @@ final pbDebugControllerProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$PbDebugController = AutoDisposeNotifier<bool>;
+typedef _$PbDebugController = AutoDisposeAsyncNotifier<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -50,10 +50,11 @@ class AppRoot extends HookConsumerWidget {
     final state = ref.watch(navItemsControllerProvider);
 
     return Scaffold(
-      appBar: ref.watch(pbDebugControllerProvider)
+      appBar: ref.watch(pbDebugControllerProvider).valueOrNull ?? false
           ? AppBar(
               backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               automaticallyImplyLeading: false,
+              centerTitle: true,
               title: Padding(
                 padding: const EdgeInsets.only(top: 2, bottom: 2),
                 child: Text(
