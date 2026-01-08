@@ -6,174 +6,95 @@ part of 'branch_table_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$branchTableControllerHash() =>
-    r'da1d2b94e1671cd26b6355132eb3b4841eed2ae0';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$BranchTableController
-    extends BuildlessAutoDisposeAsyncNotifier<List<Branch>> {
-  late final String tableKey;
-
-  FutureOr<List<Branch>> build(
-    String tableKey,
-  );
-}
-
-/// See also [BranchTableController].
 @ProviderFor(BranchTableController)
-const branchTableControllerProvider = BranchTableControllerFamily();
+final branchTableControllerProvider = BranchTableControllerFamily._();
 
-/// See also [BranchTableController].
-class BranchTableControllerFamily extends Family<AsyncValue<List<Branch>>> {
-  /// See also [BranchTableController].
-  const BranchTableControllerFamily();
-
-  /// See also [BranchTableController].
-  BranchTableControllerProvider call(
-    String tableKey,
-  ) {
-    return BranchTableControllerProvider(
-      tableKey,
-    );
-  }
-
-  @override
-  BranchTableControllerProvider getProviderOverride(
-    covariant BranchTableControllerProvider provider,
-  ) {
-    return call(
-      provider.tableKey,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'branchTableControllerProvider';
-}
-
-/// See also [BranchTableController].
-class BranchTableControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<BranchTableController,
-        List<Branch>> {
-  /// See also [BranchTableController].
-  BranchTableControllerProvider(
-    String tableKey,
-  ) : this._internal(
-          () => BranchTableController()..tableKey = tableKey,
-          from: branchTableControllerProvider,
+final class BranchTableControllerProvider
+    extends $AsyncNotifierProvider<BranchTableController, List<Branch>> {
+  BranchTableControllerProvider._(
+      {required BranchTableControllerFamily super.from,
+      required String super.argument})
+      : super(
+          retry: null,
           name: r'branchTableControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$branchTableControllerHash,
-          dependencies: BranchTableControllerFamily._dependencies,
-          allTransitiveDependencies:
-              BranchTableControllerFamily._allTransitiveDependencies,
-          tableKey: tableKey,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  BranchTableControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.tableKey,
-  }) : super.internal();
-
-  final String tableKey;
+  @override
+  String debugGetCreateSourceHash() => _$branchTableControllerHash();
 
   @override
-  FutureOr<List<Branch>> runNotifierBuild(
-    covariant BranchTableController notifier,
-  ) {
-    return notifier.build(
-      tableKey,
-    );
+  String toString() {
+    return r'branchTableControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(BranchTableController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: BranchTableControllerProvider._internal(
-        () => create()..tableKey = tableKey,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        tableKey: tableKey,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<BranchTableController, List<Branch>>
-      createElement() {
-    return _BranchTableControllerProviderElement(this);
-  }
+  BranchTableController create() => BranchTableController();
 
   @override
   bool operator ==(Object other) {
-    return other is BranchTableControllerProvider && other.tableKey == tableKey;
+    return other is BranchTableControllerProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, tableKey.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin BranchTableControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<List<Branch>> {
-  /// The parameter `tableKey` of this provider.
-  String get tableKey;
-}
+String _$branchTableControllerHash() =>
+    r'49bef22e402314cef0645d624c8e78131f0efe7e';
 
-class _BranchTableControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<BranchTableController,
-        List<Branch>> with BranchTableControllerRef {
-  _BranchTableControllerProviderElement(super.provider);
+final class BranchTableControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<BranchTableController, AsyncValue<List<Branch>>,
+            List<Branch>, FutureOr<List<Branch>>, String> {
+  BranchTableControllerFamily._()
+      : super(
+          retry: null,
+          name: r'branchTableControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  BranchTableControllerProvider call(
+    String tableKey,
+  ) =>
+      BranchTableControllerProvider._(argument: tableKey, from: this);
 
   @override
-  String get tableKey => (origin as BranchTableControllerProvider).tableKey;
+  String toString() => r'branchTableControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$BranchTableController extends $AsyncNotifier<List<Branch>> {
+  late final _$args = ref.$arg as String;
+  String get tableKey => _$args;
+
+  FutureOr<List<Branch>> build(
+    String tableKey,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<List<Branch>>, List<Branch>>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<List<Branch>>, List<Branch>>,
+        AsyncValue<List<Branch>>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

@@ -6,174 +6,101 @@ part of 'admin_update_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$adminUpdateControllerHash() =>
-    r'd7e037029341bf35a69e63c41ef11710153a639b';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$AdminUpdateController
-    extends BuildlessAutoDisposeAsyncNotifier<AdminUpdateState> {
-  late final String id;
-
-  FutureOr<AdminUpdateState> build(
-    String id,
-  );
-}
-
-/// See also [AdminUpdateController].
 @ProviderFor(AdminUpdateController)
-const adminUpdateControllerProvider = AdminUpdateControllerFamily();
+final adminUpdateControllerProvider = AdminUpdateControllerFamily._();
 
-/// See also [AdminUpdateController].
-class AdminUpdateControllerFamily extends Family<AsyncValue<AdminUpdateState>> {
-  /// See also [AdminUpdateController].
-  const AdminUpdateControllerFamily();
-
-  /// See also [AdminUpdateController].
-  AdminUpdateControllerProvider call(
-    String id,
-  ) {
-    return AdminUpdateControllerProvider(
-      id,
-    );
-  }
-
-  @override
-  AdminUpdateControllerProvider getProviderOverride(
-    covariant AdminUpdateControllerProvider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'adminUpdateControllerProvider';
-}
-
-/// See also [AdminUpdateController].
-class AdminUpdateControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<AdminUpdateController,
-        AdminUpdateState> {
-  /// See also [AdminUpdateController].
-  AdminUpdateControllerProvider(
-    String id,
-  ) : this._internal(
-          () => AdminUpdateController()..id = id,
-          from: adminUpdateControllerProvider,
+final class AdminUpdateControllerProvider
+    extends $AsyncNotifierProvider<AdminUpdateController, AdminUpdateState> {
+  AdminUpdateControllerProvider._(
+      {required AdminUpdateControllerFamily super.from,
+      required String super.argument})
+      : super(
+          retry: null,
           name: r'adminUpdateControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$adminUpdateControllerHash,
-          dependencies: AdminUpdateControllerFamily._dependencies,
-          allTransitiveDependencies:
-              AdminUpdateControllerFamily._allTransitiveDependencies,
-          id: id,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  AdminUpdateControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final String id;
+  @override
+  String debugGetCreateSourceHash() => _$adminUpdateControllerHash();
 
   @override
-  FutureOr<AdminUpdateState> runNotifierBuild(
-    covariant AdminUpdateController notifier,
-  ) {
-    return notifier.build(
-      id,
-    );
+  String toString() {
+    return r'adminUpdateControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(AdminUpdateController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: AdminUpdateControllerProvider._internal(
-        () => create()..id = id,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<AdminUpdateController,
-      AdminUpdateState> createElement() {
-    return _AdminUpdateControllerProviderElement(this);
-  }
+  AdminUpdateController create() => AdminUpdateController();
 
   @override
   bool operator ==(Object other) {
-    return other is AdminUpdateControllerProvider && other.id == id;
+    return other is AdminUpdateControllerProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin AdminUpdateControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<AdminUpdateState> {
-  /// The parameter `id` of this provider.
-  String get id;
-}
+String _$adminUpdateControllerHash() =>
+    r'd7e037029341bf35a69e63c41ef11710153a639b';
 
-class _AdminUpdateControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<AdminUpdateController,
-        AdminUpdateState> with AdminUpdateControllerRef {
-  _AdminUpdateControllerProviderElement(super.provider);
+final class AdminUpdateControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            AdminUpdateController,
+            AsyncValue<AdminUpdateState>,
+            AdminUpdateState,
+            FutureOr<AdminUpdateState>,
+            String> {
+  AdminUpdateControllerFamily._()
+      : super(
+          retry: null,
+          name: r'adminUpdateControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  AdminUpdateControllerProvider call(
+    String id,
+  ) =>
+      AdminUpdateControllerProvider._(argument: id, from: this);
 
   @override
-  String get id => (origin as AdminUpdateControllerProvider).id;
+  String toString() => r'adminUpdateControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$AdminUpdateController
+    extends $AsyncNotifier<AdminUpdateState> {
+  late final _$args = ref.$arg as String;
+  String get id => _$args;
+
+  FutureOr<AdminUpdateState> build(
+    String id,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref =
+        this.ref as $Ref<AsyncValue<AdminUpdateState>, AdminUpdateState>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<AdminUpdateState>, AdminUpdateState>,
+        AsyncValue<AdminUpdateState>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

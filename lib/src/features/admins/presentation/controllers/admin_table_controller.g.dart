@@ -6,173 +6,95 @@ part of 'admin_table_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$adminTableControllerHash() =>
-    r'5f940c31358aa0e5deb8df02e501e0b7e56c92bc';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$AdminTableController
-    extends BuildlessAutoDisposeAsyncNotifier<List<Admin>> {
-  late final String tableKey;
-
-  FutureOr<List<Admin>> build(
-    String tableKey,
-  );
-}
-
-/// See also [AdminTableController].
 @ProviderFor(AdminTableController)
-const adminTableControllerProvider = AdminTableControllerFamily();
+final adminTableControllerProvider = AdminTableControllerFamily._();
 
-/// See also [AdminTableController].
-class AdminTableControllerFamily extends Family<AsyncValue<List<Admin>>> {
-  /// See also [AdminTableController].
-  const AdminTableControllerFamily();
-
-  /// See also [AdminTableController].
-  AdminTableControllerProvider call(
-    String tableKey,
-  ) {
-    return AdminTableControllerProvider(
-      tableKey,
-    );
-  }
-
-  @override
-  AdminTableControllerProvider getProviderOverride(
-    covariant AdminTableControllerProvider provider,
-  ) {
-    return call(
-      provider.tableKey,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'adminTableControllerProvider';
-}
-
-/// See also [AdminTableController].
-class AdminTableControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    AdminTableController, List<Admin>> {
-  /// See also [AdminTableController].
-  AdminTableControllerProvider(
-    String tableKey,
-  ) : this._internal(
-          () => AdminTableController()..tableKey = tableKey,
-          from: adminTableControllerProvider,
+final class AdminTableControllerProvider
+    extends $AsyncNotifierProvider<AdminTableController, List<Admin>> {
+  AdminTableControllerProvider._(
+      {required AdminTableControllerFamily super.from,
+      required String super.argument})
+      : super(
+          retry: null,
           name: r'adminTableControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$adminTableControllerHash,
-          dependencies: AdminTableControllerFamily._dependencies,
-          allTransitiveDependencies:
-              AdminTableControllerFamily._allTransitiveDependencies,
-          tableKey: tableKey,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  AdminTableControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.tableKey,
-  }) : super.internal();
-
-  final String tableKey;
+  @override
+  String debugGetCreateSourceHash() => _$adminTableControllerHash();
 
   @override
-  FutureOr<List<Admin>> runNotifierBuild(
-    covariant AdminTableController notifier,
-  ) {
-    return notifier.build(
-      tableKey,
-    );
+  String toString() {
+    return r'adminTableControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(AdminTableController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: AdminTableControllerProvider._internal(
-        () => create()..tableKey = tableKey,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        tableKey: tableKey,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<AdminTableController, List<Admin>>
-      createElement() {
-    return _AdminTableControllerProviderElement(this);
-  }
+  AdminTableController create() => AdminTableController();
 
   @override
   bool operator ==(Object other) {
-    return other is AdminTableControllerProvider && other.tableKey == tableKey;
+    return other is AdminTableControllerProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, tableKey.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin AdminTableControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<List<Admin>> {
-  /// The parameter `tableKey` of this provider.
-  String get tableKey;
-}
+String _$adminTableControllerHash() =>
+    r'0d2af82856c0b88f0c36873c4baa45c345287804';
 
-class _AdminTableControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<AdminTableController,
-        List<Admin>> with AdminTableControllerRef {
-  _AdminTableControllerProviderElement(super.provider);
+final class AdminTableControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<AdminTableController, AsyncValue<List<Admin>>,
+            List<Admin>, FutureOr<List<Admin>>, String> {
+  AdminTableControllerFamily._()
+      : super(
+          retry: null,
+          name: r'adminTableControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  AdminTableControllerProvider call(
+    String tableKey,
+  ) =>
+      AdminTableControllerProvider._(argument: tableKey, from: this);
 
   @override
-  String get tableKey => (origin as AdminTableControllerProvider).tableKey;
+  String toString() => r'adminTableControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$AdminTableController extends $AsyncNotifier<List<Admin>> {
+  late final _$args = ref.$arg as String;
+  String get tableKey => _$args;
+
+  FutureOr<List<Admin>> build(
+    String tableKey,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<List<Admin>>, List<Admin>>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<List<Admin>>, List<Admin>>,
+        AsyncValue<List<Admin>>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

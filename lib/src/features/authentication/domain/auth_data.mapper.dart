@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -69,11 +70,15 @@ class AuthDataMapper extends ClassMapperBase<AuthData> {
   static String _$id(AuthData v) => v.id;
   static const Field<AuthData, String> _f$id = Field('id', _$id);
   static String _$collectionId(AuthData v) => v.collectionId;
-  static const Field<AuthData, String> _f$collectionId =
-      Field('collectionId', _$collectionId);
+  static const Field<AuthData, String> _f$collectionId = Field(
+    'collectionId',
+    _$collectionId,
+  );
   static String _$collectionName(AuthData v) => v.collectionName;
-  static const Field<AuthData, String> _f$collectionName =
-      Field('collectionName', _$collectionName);
+  static const Field<AuthData, String> _f$collectionName = Field(
+    'collectionName',
+    _$collectionName,
+  );
   static String _$token(AuthData v) => v.token;
   static const Field<AuthData, String> _f$token = Field('token', _$token);
 
@@ -109,10 +114,12 @@ mixin AuthDataMappable {
 
 abstract class AuthDataCopyWith<$R, $In extends AuthData, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call(
-      {String? id,
-      String? collectionId,
-      String? collectionName,
-      String? token});
+  $R call({
+    String? id,
+    String? collectionId,
+    String? collectionName,
+    String? token,
+  });
   AuthDataCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
+

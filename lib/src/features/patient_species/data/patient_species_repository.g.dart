@@ -6,25 +6,51 @@ part of 'patient_species_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(patientSpeciesRepository)
+final patientSpeciesRepositoryProvider = PatientSpeciesRepositoryProvider._();
+
+final class PatientSpeciesRepositoryProvider extends $FunctionalProvider<
+        PBCollectionRepository<PatientSpecies>,
+        PBCollectionRepository<PatientSpecies>,
+        PBCollectionRepository<PatientSpecies>>
+    with $Provider<PBCollectionRepository<PatientSpecies>> {
+  PatientSpeciesRepositoryProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'patientSpeciesRepositoryProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$patientSpeciesRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PBCollectionRepository<PatientSpecies>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  PBCollectionRepository<PatientSpecies> create(Ref ref) {
+    return patientSpeciesRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PBCollectionRepository<PatientSpecies> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<PBCollectionRepository<PatientSpecies>>(value),
+    );
+  }
+}
+
 String _$patientSpeciesRepositoryHash() =>
     r'944b57a2f50eaa77b7ccf18e6031c776ec9c053d';
-
-/// See also [patientSpeciesRepository].
-@ProviderFor(patientSpeciesRepository)
-final patientSpeciesRepositoryProvider =
-    Provider<PBCollectionRepository<PatientSpecies>>.internal(
-  patientSpeciesRepository,
-  name: r'patientSpeciesRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$patientSpeciesRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef PatientSpeciesRepositoryRef
-    = ProviderRef<PBCollectionRepository<PatientSpecies>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -13,7 +13,7 @@ class AuthenticationBranchData extends StatefulShellBranchData {
 }
 
 @TypedGoRoute<LoginPageRoute>(path: LoginPageRoute.path,)
-class LoginPageRoute extends GoRouteData with _$LoginPageRoute {
+class LoginPageRoute extends GoRouteData with $LoginPageRoute {
   const LoginPageRoute();
   static const path = '/login/user';
 
@@ -34,7 +34,7 @@ class LoginPageRoute extends GoRouteData with _$LoginPageRoute {
 }
 
 @TypedGoRoute<EmailValidationPageRoute>(path: EmailValidationPageRoute.path)
-class EmailValidationPageRoute extends GoRouteData with _$EmailValidationPageRoute {
+class EmailValidationPageRoute extends GoRouteData with $EmailValidationPageRoute {
   const EmailValidationPageRoute();
   static const path = '/email/validation';
 
@@ -45,7 +45,7 @@ class EmailValidationPageRoute extends GoRouteData with _$EmailValidationPageRou
 }
 
 @TypedGoRoute<AdminLoginPageRoute>(path: AdminLoginPageRoute.path)
-class AdminLoginPageRoute extends GoRouteData with _$AdminLoginPageRoute {
+class AdminLoginPageRoute extends GoRouteData with $AdminLoginPageRoute {
   const AdminLoginPageRoute();
   static const path = '/login/admin';
 
@@ -55,7 +55,7 @@ class AdminLoginPageRoute extends GoRouteData with _$AdminLoginPageRoute {
   }
 }
 @TypedGoRoute<AccountRecoveryPageRoute>(path: AccountRecoveryPageRoute.path)
-class AccountRecoveryPageRoute extends GoRouteData with _$AccountRecoveryPageRoute {
+class AccountRecoveryPageRoute extends GoRouteData with $AccountRecoveryPageRoute {
   const AccountRecoveryPageRoute();
   static const path = 'recovery';
 
@@ -69,7 +69,7 @@ class AccountRecoveryPageRoute extends GoRouteData with _$AccountRecoveryPageRou
 /// Account
 ///
 @TypedGoRoute<AccountPageRoute>(path: AccountPageRoute.path, routes: [])
-class AccountPageRoute extends GoRouteData with _$AccountPageRoute {
+class AccountPageRoute extends GoRouteData with $AccountPageRoute {
   const AccountPageRoute();
   static const path = '/account';
 
@@ -80,7 +80,7 @@ class AccountPageRoute extends GoRouteData with _$AccountPageRoute {
 }
 
 @TypedGoRoute<YourAccountPageRoute>(path: YourAccountPageRoute.path)
-class YourAccountPageRoute extends GoRouteData with _$YourAccountPageRoute {
+class YourAccountPageRoute extends GoRouteData with $YourAccountPageRoute {
   const YourAccountPageRoute();
   static const path = '/your-account';
 

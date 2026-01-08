@@ -6,174 +6,96 @@ part of 'product_stock_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$productStockControllerHash() =>
-    r'519cb593ac500c7463a76bab2b282ebb4f25afac';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$ProductStockController
-    extends BuildlessAutoDisposeAsyncNotifier<ProductStock> {
-  late final String id;
-
-  FutureOr<ProductStock> build(
-    String id,
-  );
-}
-
-/// See also [ProductStockController].
 @ProviderFor(ProductStockController)
-const productStockControllerProvider = ProductStockControllerFamily();
+final productStockControllerProvider = ProductStockControllerFamily._();
 
-/// See also [ProductStockController].
-class ProductStockControllerFamily extends Family<AsyncValue<ProductStock>> {
-  /// See also [ProductStockController].
-  const ProductStockControllerFamily();
-
-  /// See also [ProductStockController].
-  ProductStockControllerProvider call(
-    String id,
-  ) {
-    return ProductStockControllerProvider(
-      id,
-    );
-  }
-
-  @override
-  ProductStockControllerProvider getProviderOverride(
-    covariant ProductStockControllerProvider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'productStockControllerProvider';
-}
-
-/// See also [ProductStockController].
-class ProductStockControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<ProductStockController,
-        ProductStock> {
-  /// See also [ProductStockController].
-  ProductStockControllerProvider(
-    String id,
-  ) : this._internal(
-          () => ProductStockController()..id = id,
-          from: productStockControllerProvider,
+final class ProductStockControllerProvider
+    extends $AsyncNotifierProvider<ProductStockController, ProductStock> {
+  ProductStockControllerProvider._(
+      {required ProductStockControllerFamily super.from,
+      required String super.argument})
+      : super(
+          retry: null,
           name: r'productStockControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$productStockControllerHash,
-          dependencies: ProductStockControllerFamily._dependencies,
-          allTransitiveDependencies:
-              ProductStockControllerFamily._allTransitiveDependencies,
-          id: id,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  ProductStockControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final String id;
+  @override
+  String debugGetCreateSourceHash() => _$productStockControllerHash();
 
   @override
-  FutureOr<ProductStock> runNotifierBuild(
-    covariant ProductStockController notifier,
-  ) {
-    return notifier.build(
-      id,
-    );
+  String toString() {
+    return r'productStockControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(ProductStockController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: ProductStockControllerProvider._internal(
-        () => create()..id = id,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<ProductStockController, ProductStock>
-      createElement() {
-    return _ProductStockControllerProviderElement(this);
-  }
+  ProductStockController create() => ProductStockController();
 
   @override
   bool operator ==(Object other) {
-    return other is ProductStockControllerProvider && other.id == id;
+    return other is ProductStockControllerProvider &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin ProductStockControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<ProductStock> {
-  /// The parameter `id` of this provider.
-  String get id;
-}
+String _$productStockControllerHash() =>
+    r'519cb593ac500c7463a76bab2b282ebb4f25afac';
 
-class _ProductStockControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<ProductStockController,
-        ProductStock> with ProductStockControllerRef {
-  _ProductStockControllerProviderElement(super.provider);
+final class ProductStockControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<ProductStockController, AsyncValue<ProductStock>,
+            ProductStock, FutureOr<ProductStock>, String> {
+  ProductStockControllerFamily._()
+      : super(
+          retry: null,
+          name: r'productStockControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  ProductStockControllerProvider call(
+    String id,
+  ) =>
+      ProductStockControllerProvider._(argument: id, from: this);
 
   @override
-  String get id => (origin as ProductStockControllerProvider).id;
+  String toString() => r'productStockControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$ProductStockController extends $AsyncNotifier<ProductStock> {
+  late final _$args = ref.$arg as String;
+  String get id => _$args;
+
+  FutureOr<ProductStock> build(
+    String id,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<ProductStock>, ProductStock>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<ProductStock>, ProductStock>,
+        AsyncValue<ProductStock>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

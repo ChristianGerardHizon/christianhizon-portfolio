@@ -13,7 +13,7 @@ class ProductAdjustmentsBranchData extends StatefulShellBranchData {
 
 @TypedGoRoute<ProductAdjustmentsPageRoute>(
     path: ProductAdjustmentsPageRoute.path)
-class ProductAdjustmentsPageRoute extends GoRouteData with _$ProductAdjustmentsPageRoute {
+class ProductAdjustmentsPageRoute extends GoRouteData with $ProductAdjustmentsPageRoute {
   const ProductAdjustmentsPageRoute({this.productId, this.productStockId});
   static const path = '/product-adjustments';
 
@@ -31,7 +31,7 @@ class ProductAdjustmentsPageRoute extends GoRouteData with _$ProductAdjustmentsP
 
 @TypedGoRoute<ProductAdjustmentFormPageRoute>(
     path: ProductAdjustmentFormPageRoute.path)
-class ProductAdjustmentFormPageRoute extends GoRouteData with _$ProductAdjustmentFormPageRoute {
+class ProductAdjustmentFormPageRoute extends GoRouteData with $ProductAdjustmentFormPageRoute {
   const ProductAdjustmentFormPageRoute(
       {this.id, this.productId, this.productStockId});
   static const path = '/form/product-adjustments';

@@ -13,7 +13,7 @@ class SettingsBranchData extends StatefulShellBranchData {
 /// Settings
 ///
 @TypedGoRoute<SettingsPageRoute>(path: SettingsPageRoute.path)
-class SettingsPageRoute extends GoRouteData with _$SettingsPageRoute {
+class SettingsPageRoute extends GoRouteData with $SettingsPageRoute {
   const SettingsPageRoute();
   static const path = '/settings';
 
@@ -24,7 +24,7 @@ class SettingsPageRoute extends GoRouteData with _$SettingsPageRoute {
 }
 
 @TypedGoRoute<DomainPageRoute>(path: DomainPageRoute.path)
-class DomainPageRoute extends GoRouteData with _$DomainPageRoute {
+class DomainPageRoute extends GoRouteData with $DomainPageRoute {
   const DomainPageRoute();
   static const path = '/domain';
 

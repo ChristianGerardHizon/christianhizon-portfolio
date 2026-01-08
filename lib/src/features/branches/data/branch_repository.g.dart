@@ -6,23 +6,50 @@ part of 'branch_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$branchRepositoryHash() => r'49afa507e6fabf4961ab4cb95cd670e86dbd226e';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [branchRepository].
 @ProviderFor(branchRepository)
-final branchRepositoryProvider =
-    Provider<PBCollectionRepository<Branch>>.internal(
-  branchRepository,
-  name: r'branchRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$branchRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final branchRepositoryProvider = BranchRepositoryProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef BranchRepositoryRef = ProviderRef<PBCollectionRepository<Branch>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class BranchRepositoryProvider extends $FunctionalProvider<
+        PBCollectionRepository<Branch>,
+        PBCollectionRepository<Branch>,
+        PBCollectionRepository<Branch>>
+    with $Provider<PBCollectionRepository<Branch>> {
+  BranchRepositoryProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'branchRepositoryProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$branchRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PBCollectionRepository<Branch>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  PBCollectionRepository<Branch> create(Ref ref) {
+    return branchRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PBCollectionRepository<Branch> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<PBCollectionRepository<Branch>>(value),
+    );
+  }
+}
+
+String _$branchRepositoryHash() => r'49afa507e6fabf4961ab4cb95cd670e86dbd226e';

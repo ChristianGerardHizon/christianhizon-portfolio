@@ -6,25 +6,51 @@ part of 'patient_record_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(patientRecordRepository)
+final patientRecordRepositoryProvider = PatientRecordRepositoryProvider._();
+
+final class PatientRecordRepositoryProvider extends $FunctionalProvider<
+        PBCollectionRepository<PatientRecord>,
+        PBCollectionRepository<PatientRecord>,
+        PBCollectionRepository<PatientRecord>>
+    with $Provider<PBCollectionRepository<PatientRecord>> {
+  PatientRecordRepositoryProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'patientRecordRepositoryProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$patientRecordRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PBCollectionRepository<PatientRecord>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  PBCollectionRepository<PatientRecord> create(Ref ref) {
+    return patientRecordRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PBCollectionRepository<PatientRecord> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<PBCollectionRepository<PatientRecord>>(value),
+    );
+  }
+}
+
 String _$patientRecordRepositoryHash() =>
     r'8da54c2b04938deca4cfc62223bed15b81e93e90';
-
-/// See also [patientRecordRepository].
-@ProviderFor(patientRecordRepository)
-final patientRecordRepositoryProvider =
-    Provider<PBCollectionRepository<PatientRecord>>.internal(
-  patientRecordRepository,
-  name: r'patientRecordRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$patientRecordRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef PatientRecordRepositoryRef
-    = ProviderRef<PBCollectionRepository<PatientRecord>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -6,23 +6,50 @@ part of 'product_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$productRepositoryHash() => r'd6e5ac5c5a6692e8d0cdd15ba76fd64870a1bb36';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [productRepository].
 @ProviderFor(productRepository)
-final productRepositoryProvider =
-    Provider<PBCollectionRepository<Product>>.internal(
-  productRepository,
-  name: r'productRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$productRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final productRepositoryProvider = ProductRepositoryProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ProductRepositoryRef = ProviderRef<PBCollectionRepository<Product>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class ProductRepositoryProvider extends $FunctionalProvider<
+        PBCollectionRepository<Product>,
+        PBCollectionRepository<Product>,
+        PBCollectionRepository<Product>>
+    with $Provider<PBCollectionRepository<Product>> {
+  ProductRepositoryProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'productRepositoryProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$productRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PBCollectionRepository<Product>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  PBCollectionRepository<Product> create(Ref ref) {
+    return productRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PBCollectionRepository<Product> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<PBCollectionRepository<Product>>(value),
+    );
+  }
+}
+
+String _$productRepositoryHash() => r'd6e5ac5c5a6692e8d0cdd15ba76fd64870a1bb36';

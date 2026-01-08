@@ -6,25 +6,54 @@ part of 'appointment_schedule_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appointmentScheduleRepositoryHash() =>
-    r'd5e170a66c7ee0dfe94b5c6ece818ea846e126b2';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [appointmentScheduleRepository].
 @ProviderFor(appointmentScheduleRepository)
 final appointmentScheduleRepositoryProvider =
-    Provider<PBCollectionRepository<AppointmentSchedule>>.internal(
-  appointmentScheduleRepository,
-  name: r'appointmentScheduleRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$appointmentScheduleRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+    AppointmentScheduleRepositoryProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AppointmentScheduleRepositoryRef
-    = ProviderRef<PBCollectionRepository<AppointmentSchedule>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class AppointmentScheduleRepositoryProvider extends $FunctionalProvider<
+        PBCollectionRepository<AppointmentSchedule>,
+        PBCollectionRepository<AppointmentSchedule>,
+        PBCollectionRepository<AppointmentSchedule>>
+    with $Provider<PBCollectionRepository<AppointmentSchedule>> {
+  AppointmentScheduleRepositoryProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'appointmentScheduleRepositoryProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$appointmentScheduleRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PBCollectionRepository<AppointmentSchedule>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  PBCollectionRepository<AppointmentSchedule> create(Ref ref) {
+    return appointmentScheduleRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(
+      PBCollectionRepository<AppointmentSchedule> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<PBCollectionRepository<AppointmentSchedule>>(
+              value),
+    );
+  }
+}
+
+String _$appointmentScheduleRepositoryHash() =>
+    r'd5e170a66c7ee0dfe94b5c6ece818ea846e126b2';

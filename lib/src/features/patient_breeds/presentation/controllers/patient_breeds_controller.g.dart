@@ -6,23 +6,49 @@ part of 'patient_breeds_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(PatientBreedsController)
+final patientBreedsControllerProvider = PatientBreedsControllerProvider._();
+
+final class PatientBreedsControllerProvider extends $AsyncNotifierProvider<
+    PatientBreedsController, List<PatientBreed>> {
+  PatientBreedsControllerProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'patientBreedsControllerProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$patientBreedsControllerHash();
+
+  @$internal
+  @override
+  PatientBreedsController create() => PatientBreedsController();
+}
+
 String _$patientBreedsControllerHash() =>
     r'aa23a73a3986a878504b73606085b713b5711e7f';
 
-/// See also [PatientBreedsController].
-@ProviderFor(PatientBreedsController)
-final patientBreedsControllerProvider = AutoDisposeAsyncNotifierProvider<
-    PatientBreedsController, List<PatientBreed>>.internal(
-  PatientBreedsController.new,
-  name: r'patientBreedsControllerProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$patientBreedsControllerHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$PatientBreedsController
-    = AutoDisposeAsyncNotifier<List<PatientBreed>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$PatientBreedsController
+    extends $AsyncNotifier<List<PatientBreed>> {
+  FutureOr<List<PatientBreed>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref =
+        this.ref as $Ref<AsyncValue<List<PatientBreed>>, List<PatientBreed>>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<List<PatientBreed>>, List<PatientBreed>>,
+        AsyncValue<List<PatientBreed>>,
+        Object?,
+        Object?>;
+    element.handleCreate(ref, build);
+  }
+}

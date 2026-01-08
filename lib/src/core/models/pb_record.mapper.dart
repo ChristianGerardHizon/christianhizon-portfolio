@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -23,20 +24,32 @@ class PbRecordMapper extends ClassMapperBase<PbRecord> {
   static String _$id(PbRecord v) => v.id;
   static const Field<PbRecord, String> _f$id = Field('id', _$id);
   static bool _$isDeleted(PbRecord v) => v.isDeleted;
-  static const Field<PbRecord, bool> _f$isDeleted =
-      Field('isDeleted', _$isDeleted);
+  static const Field<PbRecord, bool> _f$isDeleted = Field(
+    'isDeleted',
+    _$isDeleted,
+  );
   static String _$collectionId(PbRecord v) => v.collectionId;
-  static const Field<PbRecord, String> _f$collectionId =
-      Field('collectionId', _$collectionId);
+  static const Field<PbRecord, String> _f$collectionId = Field(
+    'collectionId',
+    _$collectionId,
+  );
   static String _$collectionName(PbRecord v) => v.collectionName;
-  static const Field<PbRecord, String> _f$collectionName =
-      Field('collectionName', _$collectionName);
+  static const Field<PbRecord, String> _f$collectionName = Field(
+    'collectionName',
+    _$collectionName,
+  );
   static DateTime? _$created(PbRecord v) => v.created;
-  static const Field<PbRecord, DateTime> _f$created =
-      Field('created', _$created, opt: true);
+  static const Field<PbRecord, DateTime> _f$created = Field(
+    'created',
+    _$created,
+    opt: true,
+  );
   static DateTime? _$updated(PbRecord v) => v.updated;
-  static const Field<PbRecord, DateTime> _f$updated =
-      Field('updated', _$updated, opt: true);
+  static const Field<PbRecord, DateTime> _f$updated = Field(
+    'updated',
+    _$updated,
+    opt: true,
+  );
 
   @override
   final MappableFields<PbRecord> fields = const {
@@ -72,12 +85,14 @@ mixin PbRecordMappable {
 
 abstract class PbRecordCopyWith<$R, $In extends PbRecord, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call(
-      {String? id,
-      bool? isDeleted,
-      String? collectionId,
-      String? collectionName,
-      DateTime? created,
-      DateTime? updated});
+  $R call({
+    String? id,
+    bool? isDeleted,
+    String? collectionId,
+    String? collectionName,
+    DateTime? created,
+    DateTime? updated,
+  });
   PbRecordCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
+

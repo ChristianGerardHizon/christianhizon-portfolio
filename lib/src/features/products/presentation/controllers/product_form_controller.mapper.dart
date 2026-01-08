@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -25,17 +26,26 @@ class ProductFormStateMapper extends ClassMapperBase<ProductFormState> {
   final String id = 'ProductFormState';
 
   static Product? _$product(ProductFormState v) => v.product;
-  static const Field<ProductFormState, Product> _f$product =
-      Field('product', _$product);
+  static const Field<ProductFormState, Product> _f$product = Field(
+    'product',
+    _$product,
+  );
   static List<Branch> _$branches(ProductFormState v) => v.branches;
-  static const Field<ProductFormState, List<Branch>> _f$branches =
-      Field('branches', _$branches, opt: true, def: const []);
+  static const Field<ProductFormState, List<Branch>> _f$branches = Field(
+    'branches',
+    _$branches,
+    opt: true,
+    def: const [],
+  );
   static List<ProductCategory> _$categories(ProductFormState v) => v.categories;
   static const Field<ProductFormState, List<ProductCategory>> _f$categories =
       Field('categories', _$categories, opt: true, def: const []);
   static List<PBFile>? _$images(ProductFormState v) => v.images;
-  static const Field<ProductFormState, List<PBFile>> _f$images =
-      Field('images', _$images, opt: true);
+  static const Field<ProductFormState, List<PBFile>> _f$images = Field(
+    'images',
+    _$images,
+    opt: true,
+  );
 
   @override
   final MappableFields<ProductFormState> fields = const {
@@ -47,10 +57,11 @@ class ProductFormStateMapper extends ClassMapperBase<ProductFormState> {
 
   static ProductFormState _instantiate(DecodingData data) {
     return ProductFormState(
-        product: data.dec(_f$product),
-        branches: data.dec(_f$branches),
-        categories: data.dec(_f$categories),
-        images: data.dec(_f$images));
+      product: data.dec(_f$product),
+      branches: data.dec(_f$branches),
+      categories: data.dec(_f$categories),
+      images: data.dec(_f$images),
+    );
   }
 
   @override
@@ -77,50 +88,62 @@ mixin ProductFormStateMappable {
   }
 
   ProductFormStateCopyWith<ProductFormState, ProductFormState, ProductFormState>
-      get copyWith =>
-          _ProductFormStateCopyWithImpl<ProductFormState, ProductFormState>(
-              this as ProductFormState, $identity, $identity);
+  get copyWith =>
+      _ProductFormStateCopyWithImpl<ProductFormState, ProductFormState>(
+        this as ProductFormState,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return ProductFormStateMapper.ensureInitialized()
-        .stringifyValue(this as ProductFormState);
+    return ProductFormStateMapper.ensureInitialized().stringifyValue(
+      this as ProductFormState,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return ProductFormStateMapper.ensureInitialized()
-        .equalsValue(this as ProductFormState, other);
+    return ProductFormStateMapper.ensureInitialized().equalsValue(
+      this as ProductFormState,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return ProductFormStateMapper.ensureInitialized()
-        .hashValue(this as ProductFormState);
+    return ProductFormStateMapper.ensureInitialized().hashValue(
+      this as ProductFormState,
+    );
   }
 }
 
 extension ProductFormStateValueCopy<$R, $Out>
     on ObjectCopyWith<$R, ProductFormState, $Out> {
   ProductFormStateCopyWith<$R, ProductFormState, $Out>
-      get $asProductFormState => $base
-          .as((v, t, t2) => _ProductFormStateCopyWithImpl<$R, $Out>(v, t, t2));
+  get $asProductFormState =>
+      $base.as((v, t, t2) => _ProductFormStateCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class ProductFormStateCopyWith<$R, $In extends ProductFormState, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   ProductCopyWith<$R, Product, Product>? get product;
   ListCopyWith<$R, Branch, BranchCopyWith<$R, Branch, Branch>> get branches;
-  ListCopyWith<$R, ProductCategory,
-          ProductCategoryCopyWith<$R, ProductCategory, ProductCategory>>
-      get categories;
+  ListCopyWith<
+    $R,
+    ProductCategory,
+    ProductCategoryCopyWith<$R, ProductCategory, ProductCategory>
+  >
+  get categories;
   ListCopyWith<$R, PBFile, ObjectCopyWith<$R, PBFile, PBFile>>? get images;
-  $R call(
-      {Product? product,
-      List<Branch>? branches,
-      List<ProductCategory>? categories,
-      List<PBFile>? images});
+  $R call({
+    Product? product,
+    List<Branch>? branches,
+    List<ProductCategory>? categories,
+    List<PBFile>? images,
+  });
   ProductFormStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _ProductFormStateCopyWithImpl<$R, $Out>
@@ -136,40 +159,56 @@ class _ProductFormStateCopyWithImpl<$R, $Out>
       $value.product?.copyWith.$chain((v) => call(product: v));
   @override
   ListCopyWith<$R, Branch, BranchCopyWith<$R, Branch, Branch>> get branches =>
-      ListCopyWith($value.branches, (v, t) => v.copyWith.$chain(t),
-          (v) => call(branches: v));
+      ListCopyWith(
+        $value.branches,
+        (v, t) => v.copyWith.$chain(t),
+        (v) => call(branches: v),
+      );
   @override
-  ListCopyWith<$R, ProductCategory,
-          ProductCategoryCopyWith<$R, ProductCategory, ProductCategory>>
-      get categories => ListCopyWith($value.categories,
-          (v, t) => v.copyWith.$chain(t), (v) => call(categories: v));
+  ListCopyWith<
+    $R,
+    ProductCategory,
+    ProductCategoryCopyWith<$R, ProductCategory, ProductCategory>
+  >
+  get categories => ListCopyWith(
+    $value.categories,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(categories: v),
+  );
   @override
   ListCopyWith<$R, PBFile, ObjectCopyWith<$R, PBFile, PBFile>>? get images =>
       $value.images != null
-          ? ListCopyWith($value.images!,
-              (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(images: v))
-          : null;
+      ? ListCopyWith(
+          $value.images!,
+          (v, t) => ObjectCopyWith(v, $identity, t),
+          (v) => call(images: v),
+        )
+      : null;
   @override
-  $R call(
-          {Object? product = $none,
-          List<Branch>? branches,
-          List<ProductCategory>? categories,
-          Object? images = $none}) =>
-      $apply(FieldCopyWithData({
-        if (product != $none) #product: product,
-        if (branches != null) #branches: branches,
-        if (categories != null) #categories: categories,
-        if (images != $none) #images: images
-      }));
+  $R call({
+    Object? product = $none,
+    List<Branch>? branches,
+    List<ProductCategory>? categories,
+    Object? images = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (product != $none) #product: product,
+      if (branches != null) #branches: branches,
+      if (categories != null) #categories: categories,
+      if (images != $none) #images: images,
+    }),
+  );
   @override
   ProductFormState $make(CopyWithData data) => ProductFormState(
-      product: data.get(#product, or: $value.product),
-      branches: data.get(#branches, or: $value.branches),
-      categories: data.get(#categories, or: $value.categories),
-      images: data.get(#images, or: $value.images));
+    product: data.get(#product, or: $value.product),
+    branches: data.get(#branches, or: $value.branches),
+    categories: data.get(#categories, or: $value.categories),
+    images: data.get(#images, or: $value.images),
+  );
 
   @override
   ProductFormStateCopyWith<$R2, ProductFormState, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _ProductFormStateCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _ProductFormStateCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

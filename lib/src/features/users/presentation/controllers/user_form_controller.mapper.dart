@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -26,11 +27,18 @@ class UserFormStateMapper extends ClassMapperBase<UserFormState> {
   static User? _$user(UserFormState v) => v.user;
   static const Field<UserFormState, User> _f$user = Field('user', _$user);
   static List<PBFile>? _$images(UserFormState v) => v.images;
-  static const Field<UserFormState, List<PBFile>> _f$images =
-      Field('images', _$images, opt: true);
+  static const Field<UserFormState, List<PBFile>> _f$images = Field(
+    'images',
+    _$images,
+    opt: true,
+  );
   static List<Branch> _$branches(UserFormState v) => v.branches;
-  static const Field<UserFormState, List<Branch>> _f$branches =
-      Field('branches', _$branches, opt: true, def: const []);
+  static const Field<UserFormState, List<Branch>> _f$branches = Field(
+    'branches',
+    _$branches,
+    opt: true,
+    def: const [],
+  );
 
   @override
   final MappableFields<UserFormState> fields = const {
@@ -41,9 +49,10 @@ class UserFormStateMapper extends ClassMapperBase<UserFormState> {
 
   static UserFormState _instantiate(DecodingData data) {
     return UserFormState(
-        user: data.dec(_f$user),
-        images: data.dec(_f$images),
-        branches: data.dec(_f$branches));
+      user: data.dec(_f$user),
+      images: data.dec(_f$images),
+      branches: data.dec(_f$branches),
+    );
   }
 
   @override
@@ -60,34 +69,43 @@ class UserFormStateMapper extends ClassMapperBase<UserFormState> {
 
 mixin UserFormStateMappable {
   String toJson() {
-    return UserFormStateMapper.ensureInitialized()
-        .encodeJson<UserFormState>(this as UserFormState);
+    return UserFormStateMapper.ensureInitialized().encodeJson<UserFormState>(
+      this as UserFormState,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return UserFormStateMapper.ensureInitialized()
-        .encodeMap<UserFormState>(this as UserFormState);
+    return UserFormStateMapper.ensureInitialized().encodeMap<UserFormState>(
+      this as UserFormState,
+    );
   }
 
   UserFormStateCopyWith<UserFormState, UserFormState, UserFormState>
-      get copyWith => _UserFormStateCopyWithImpl<UserFormState, UserFormState>(
-          this as UserFormState, $identity, $identity);
+  get copyWith => _UserFormStateCopyWithImpl<UserFormState, UserFormState>(
+    this as UserFormState,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return UserFormStateMapper.ensureInitialized()
-        .stringifyValue(this as UserFormState);
+    return UserFormStateMapper.ensureInitialized().stringifyValue(
+      this as UserFormState,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return UserFormStateMapper.ensureInitialized()
-        .equalsValue(this as UserFormState, other);
+    return UserFormStateMapper.ensureInitialized().equalsValue(
+      this as UserFormState,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return UserFormStateMapper.ensureInitialized()
-        .hashValue(this as UserFormState);
+    return UserFormStateMapper.ensureInitialized().hashValue(
+      this as UserFormState,
+    );
   }
 }
 
@@ -120,31 +138,41 @@ class _UserFormStateCopyWithImpl<$R, $Out>
   @override
   ListCopyWith<$R, PBFile, ObjectCopyWith<$R, PBFile, PBFile>>? get images =>
       $value.images != null
-          ? ListCopyWith($value.images!,
-              (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(images: v))
-          : null;
+      ? ListCopyWith(
+          $value.images!,
+          (v, t) => ObjectCopyWith(v, $identity, t),
+          (v) => call(images: v),
+        )
+      : null;
   @override
   ListCopyWith<$R, Branch, BranchCopyWith<$R, Branch, Branch>> get branches =>
-      ListCopyWith($value.branches, (v, t) => v.copyWith.$chain(t),
-          (v) => call(branches: v));
+      ListCopyWith(
+        $value.branches,
+        (v, t) => v.copyWith.$chain(t),
+        (v) => call(branches: v),
+      );
   @override
-  $R call(
-          {Object? user = $none,
-          Object? images = $none,
-          List<Branch>? branches}) =>
-      $apply(FieldCopyWithData({
-        if (user != $none) #user: user,
-        if (images != $none) #images: images,
-        if (branches != null) #branches: branches
-      }));
+  $R call({
+    Object? user = $none,
+    Object? images = $none,
+    List<Branch>? branches,
+  }) => $apply(
+    FieldCopyWithData({
+      if (user != $none) #user: user,
+      if (images != $none) #images: images,
+      if (branches != null) #branches: branches,
+    }),
+  );
   @override
   UserFormState $make(CopyWithData data) => UserFormState(
-      user: data.get(#user, or: $value.user),
-      images: data.get(#images, or: $value.images),
-      branches: data.get(#branches, or: $value.branches));
+    user: data.get(#user, or: $value.user),
+    images: data.get(#images, or: $value.images),
+    branches: data.get(#branches, or: $value.branches),
+  );
 
   @override
   UserFormStateCopyWith<$R2, UserFormState, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _UserFormStateCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _UserFormStateCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

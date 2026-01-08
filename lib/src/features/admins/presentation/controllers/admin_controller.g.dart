@@ -6,171 +6,94 @@ part of 'admin_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$adminControllerHash() => r'5e38e82ddc971ce50fffde82947b2435e8a37e53';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$AdminController
-    extends BuildlessAutoDisposeAsyncNotifier<Admin> {
-  late final String id;
-
-  FutureOr<Admin> build(
-    String id,
-  );
-}
-
-/// See also [AdminController].
 @ProviderFor(AdminController)
-const adminControllerProvider = AdminControllerFamily();
+final adminControllerProvider = AdminControllerFamily._();
 
-/// See also [AdminController].
-class AdminControllerFamily extends Family<AsyncValue<Admin>> {
-  /// See also [AdminController].
-  const AdminControllerFamily();
-
-  /// See also [AdminController].
-  AdminControllerProvider call(
-    String id,
-  ) {
-    return AdminControllerProvider(
-      id,
-    );
-  }
-
-  @override
-  AdminControllerProvider getProviderOverride(
-    covariant AdminControllerProvider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'adminControllerProvider';
-}
-
-/// See also [AdminController].
-class AdminControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<AdminController, Admin> {
-  /// See also [AdminController].
-  AdminControllerProvider(
-    String id,
-  ) : this._internal(
-          () => AdminController()..id = id,
-          from: adminControllerProvider,
+final class AdminControllerProvider
+    extends $AsyncNotifierProvider<AdminController, Admin> {
+  AdminControllerProvider._(
+      {required AdminControllerFamily super.from,
+      required String super.argument})
+      : super(
+          retry: null,
           name: r'adminControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$adminControllerHash,
-          dependencies: AdminControllerFamily._dependencies,
-          allTransitiveDependencies:
-              AdminControllerFamily._allTransitiveDependencies,
-          id: id,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  AdminControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final String id;
+  @override
+  String debugGetCreateSourceHash() => _$adminControllerHash();
 
   @override
-  FutureOr<Admin> runNotifierBuild(
-    covariant AdminController notifier,
-  ) {
-    return notifier.build(
-      id,
-    );
+  String toString() {
+    return r'adminControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(AdminController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: AdminControllerProvider._internal(
-        () => create()..id = id,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<AdminController, Admin>
-      createElement() {
-    return _AdminControllerProviderElement(this);
-  }
+  AdminController create() => AdminController();
 
   @override
   bool operator ==(Object other) {
-    return other is AdminControllerProvider && other.id == id;
+    return other is AdminControllerProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin AdminControllerRef on AutoDisposeAsyncNotifierProviderRef<Admin> {
-  /// The parameter `id` of this provider.
-  String get id;
-}
+String _$adminControllerHash() => r'5e38e82ddc971ce50fffde82947b2435e8a37e53';
 
-class _AdminControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<AdminController, Admin>
-    with AdminControllerRef {
-  _AdminControllerProviderElement(super.provider);
+final class AdminControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<AdminController, AsyncValue<Admin>, Admin,
+            FutureOr<Admin>, String> {
+  AdminControllerFamily._()
+      : super(
+          retry: null,
+          name: r'adminControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  AdminControllerProvider call(
+    String id,
+  ) =>
+      AdminControllerProvider._(argument: id, from: this);
 
   @override
-  String get id => (origin as AdminControllerProvider).id;
+  String toString() => r'adminControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$AdminController extends $AsyncNotifier<Admin> {
+  late final _$args = ref.$arg as String;
+  String get id => _$args;
+
+  FutureOr<Admin> build(
+    String id,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<Admin>, Admin>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<Admin>, Admin>,
+        AsyncValue<Admin>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

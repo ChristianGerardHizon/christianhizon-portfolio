@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -31,11 +32,15 @@ class FailureMapper extends ClassMapperBase<Failure> {
   static dynamic _$message(Failure v) => v.message;
   static const Field<Failure, dynamic> _f$message = Field('message', _$message);
   static StackTrace? _$stackTrace(Failure v) => v.stackTrace;
-  static const Field<Failure, StackTrace> _f$stackTrace =
-      Field('stackTrace', _$stackTrace);
+  static const Field<Failure, StackTrace> _f$stackTrace = Field(
+    'stackTrace',
+    _$stackTrace,
+  );
   static String? _$identifier(Failure v) => v.identifier;
-  static const Field<Failure, String> _f$identifier =
-      Field('identifier', _$identifier);
+  static const Field<Failure, String> _f$identifier = Field(
+    'identifier',
+    _$identifier,
+  );
 
   @override
   final MappableFields<Failure> fields = const {
@@ -46,7 +51,10 @@ class FailureMapper extends ClassMapperBase<Failure> {
 
   static Failure _instantiate(DecodingData data) {
     throw MapperException.missingSubclass(
-        'Failure', 'type', '${data.value['type']}');
+      'Failure',
+      'type',
+      '${data.value['type']}',
+    );
   }
 
   @override
@@ -89,14 +97,23 @@ class PocketbaseFailureMapper extends SubClassMapperBase<PocketbaseFailure> {
   final String id = 'PocketbaseFailure';
 
   static dynamic _$message(PocketbaseFailure v) => v.message;
-  static const Field<PocketbaseFailure, dynamic> _f$message =
-      Field('message', _$message, opt: true);
+  static const Field<PocketbaseFailure, dynamic> _f$message = Field(
+    'message',
+    _$message,
+    opt: true,
+  );
   static StackTrace? _$stackTrace(PocketbaseFailure v) => v.stackTrace;
-  static const Field<PocketbaseFailure, StackTrace> _f$stackTrace =
-      Field('stackTrace', _$stackTrace, opt: true);
+  static const Field<PocketbaseFailure, StackTrace> _f$stackTrace = Field(
+    'stackTrace',
+    _$stackTrace,
+    opt: true,
+  );
   static String? _$identifier(PocketbaseFailure v) => v.identifier;
-  static const Field<PocketbaseFailure, String> _f$identifier =
-      Field('identifier', _$identifier, opt: true);
+  static const Field<PocketbaseFailure, String> _f$identifier = Field(
+    'identifier',
+    _$identifier,
+    opt: true,
+  );
 
   @override
   final MappableFields<PocketbaseFailure> fields = const {
@@ -114,7 +131,10 @@ class PocketbaseFailureMapper extends SubClassMapperBase<PocketbaseFailure> {
 
   static PocketbaseFailure _instantiate(DecodingData data) {
     return PocketbaseFailure(
-        data.dec(_f$message), data.dec(_f$stackTrace), data.dec(_f$identifier));
+      data.dec(_f$message),
+      data.dec(_f$stackTrace),
+      data.dec(_f$identifier),
+    );
   }
 
   @override
@@ -140,43 +160,59 @@ mixin PocketbaseFailureMappable {
         .encodeMap<PocketbaseFailure>(this as PocketbaseFailure);
   }
 
-  PocketbaseFailureCopyWith<PocketbaseFailure, PocketbaseFailure,
-          PocketbaseFailure>
-      get copyWith =>
-          _PocketbaseFailureCopyWithImpl<PocketbaseFailure, PocketbaseFailure>(
-              this as PocketbaseFailure, $identity, $identity);
+  PocketbaseFailureCopyWith<
+    PocketbaseFailure,
+    PocketbaseFailure,
+    PocketbaseFailure
+  >
+  get copyWith =>
+      _PocketbaseFailureCopyWithImpl<PocketbaseFailure, PocketbaseFailure>(
+        this as PocketbaseFailure,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return PocketbaseFailureMapper.ensureInitialized()
-        .stringifyValue(this as PocketbaseFailure);
+    return PocketbaseFailureMapper.ensureInitialized().stringifyValue(
+      this as PocketbaseFailure,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return PocketbaseFailureMapper.ensureInitialized()
-        .equalsValue(this as PocketbaseFailure, other);
+    return PocketbaseFailureMapper.ensureInitialized().equalsValue(
+      this as PocketbaseFailure,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return PocketbaseFailureMapper.ensureInitialized()
-        .hashValue(this as PocketbaseFailure);
+    return PocketbaseFailureMapper.ensureInitialized().hashValue(
+      this as PocketbaseFailure,
+    );
   }
 }
 
 extension PocketbaseFailureValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PocketbaseFailure, $Out> {
   PocketbaseFailureCopyWith<$R, PocketbaseFailure, $Out>
-      get $asPocketbaseFailure => $base
-          .as((v, t, t2) => _PocketbaseFailureCopyWithImpl<$R, $Out>(v, t, t2));
+  get $asPocketbaseFailure => $base.as(
+    (v, t, t2) => _PocketbaseFailureCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class PocketbaseFailureCopyWith<$R, $In extends PocketbaseFailure,
-    $Out> implements FailureCopyWith<$R, $In, $Out> {
+abstract class PocketbaseFailureCopyWith<
+  $R,
+  $In extends PocketbaseFailure,
+  $Out
+>
+    implements FailureCopyWith<$R, $In, $Out> {
   @override
   $R call({dynamic message, StackTrace? stackTrace, String? identifier});
   PocketbaseFailureCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _PocketbaseFailureCopyWithImpl<$R, $Out>
@@ -188,25 +224,28 @@ class _PocketbaseFailureCopyWithImpl<$R, $Out>
   late final ClassMapperBase<PocketbaseFailure> $mapper =
       PocketbaseFailureMapper.ensureInitialized();
   @override
-  $R call(
-          {Object? message = $none,
-          Object? stackTrace = $none,
-          Object? identifier = $none}) =>
-      $apply(FieldCopyWithData({
-        if (message != $none) #message: message,
-        if (stackTrace != $none) #stackTrace: stackTrace,
-        if (identifier != $none) #identifier: identifier
-      }));
+  $R call({
+    Object? message = $none,
+    Object? stackTrace = $none,
+    Object? identifier = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (message != $none) #message: message,
+      if (stackTrace != $none) #stackTrace: stackTrace,
+      if (identifier != $none) #identifier: identifier,
+    }),
+  );
   @override
   PocketbaseFailure $make(CopyWithData data) => PocketbaseFailure(
-      data.get(#message, or: $value.message),
-      data.get(#stackTrace, or: $value.stackTrace),
-      data.get(#identifier, or: $value.identifier));
+    data.get(#message, or: $value.message),
+    data.get(#stackTrace, or: $value.stackTrace),
+    data.get(#identifier, or: $value.identifier),
+  );
 
   @override
   PocketbaseFailureCopyWith<$R2, PocketbaseFailure, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _PocketbaseFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _PocketbaseFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class AuthFailureMapper extends SubClassMapperBase<AuthFailure> {
@@ -225,14 +264,23 @@ class AuthFailureMapper extends SubClassMapperBase<AuthFailure> {
   final String id = 'AuthFailure';
 
   static dynamic _$message(AuthFailure v) => v.message;
-  static const Field<AuthFailure, dynamic> _f$message =
-      Field('message', _$message, opt: true);
+  static const Field<AuthFailure, dynamic> _f$message = Field(
+    'message',
+    _$message,
+    opt: true,
+  );
   static StackTrace? _$stackTrace(AuthFailure v) => v.stackTrace;
-  static const Field<AuthFailure, StackTrace> _f$stackTrace =
-      Field('stackTrace', _$stackTrace, opt: true);
+  static const Field<AuthFailure, StackTrace> _f$stackTrace = Field(
+    'stackTrace',
+    _$stackTrace,
+    opt: true,
+  );
   static String? _$identifier(AuthFailure v) => v.identifier;
-  static const Field<AuthFailure, String> _f$identifier =
-      Field('identifier', _$identifier, opt: true);
+  static const Field<AuthFailure, String> _f$identifier = Field(
+    'identifier',
+    _$identifier,
+    opt: true,
+  );
 
   @override
   final MappableFields<AuthFailure> fields = const {
@@ -250,7 +298,10 @@ class AuthFailureMapper extends SubClassMapperBase<AuthFailure> {
 
   static AuthFailure _instantiate(DecodingData data) {
     return AuthFailure(
-        data.dec(_f$message), data.dec(_f$stackTrace), data.dec(_f$identifier));
+      data.dec(_f$message),
+      data.dec(_f$stackTrace),
+      data.dec(_f$identifier),
+    );
   }
 
   @override
@@ -267,28 +318,36 @@ class AuthFailureMapper extends SubClassMapperBase<AuthFailure> {
 
 mixin AuthFailureMappable {
   String toJson() {
-    return AuthFailureMapper.ensureInitialized()
-        .encodeJson<AuthFailure>(this as AuthFailure);
+    return AuthFailureMapper.ensureInitialized().encodeJson<AuthFailure>(
+      this as AuthFailure,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return AuthFailureMapper.ensureInitialized()
-        .encodeMap<AuthFailure>(this as AuthFailure);
+    return AuthFailureMapper.ensureInitialized().encodeMap<AuthFailure>(
+      this as AuthFailure,
+    );
   }
 
   AuthFailureCopyWith<AuthFailure, AuthFailure, AuthFailure> get copyWith =>
       _AuthFailureCopyWithImpl<AuthFailure, AuthFailure>(
-          this as AuthFailure, $identity, $identity);
+        this as AuthFailure,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return AuthFailureMapper.ensureInitialized()
-        .stringifyValue(this as AuthFailure);
+    return AuthFailureMapper.ensureInitialized().stringifyValue(
+      this as AuthFailure,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return AuthFailureMapper.ensureInitialized()
-        .equalsValue(this as AuthFailure, other);
+    return AuthFailureMapper.ensureInitialized().equalsValue(
+      this as AuthFailure,
+      other,
+    );
   }
 
   @override
@@ -319,25 +378,28 @@ class _AuthFailureCopyWithImpl<$R, $Out>
   late final ClassMapperBase<AuthFailure> $mapper =
       AuthFailureMapper.ensureInitialized();
   @override
-  $R call(
-          {Object? message = $none,
-          Object? stackTrace = $none,
-          Object? identifier = $none}) =>
-      $apply(FieldCopyWithData({
-        if (message != $none) #message: message,
-        if (stackTrace != $none) #stackTrace: stackTrace,
-        if (identifier != $none) #identifier: identifier
-      }));
+  $R call({
+    Object? message = $none,
+    Object? stackTrace = $none,
+    Object? identifier = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (message != $none) #message: message,
+      if (stackTrace != $none) #stackTrace: stackTrace,
+      if (identifier != $none) #identifier: identifier,
+    }),
+  );
   @override
   AuthFailure $make(CopyWithData data) => AuthFailure(
-      data.get(#message, or: $value.message),
-      data.get(#stackTrace, or: $value.stackTrace),
-      data.get(#identifier, or: $value.identifier));
+    data.get(#message, or: $value.message),
+    data.get(#stackTrace, or: $value.stackTrace),
+    data.get(#identifier, or: $value.identifier),
+  );
 
   @override
   AuthFailureCopyWith<$R2, AuthFailure, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _AuthFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _AuthFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class PresentationFailureMapper
@@ -357,14 +419,23 @@ class PresentationFailureMapper
   final String id = 'PresentationFailure';
 
   static dynamic _$message(PresentationFailure v) => v.message;
-  static const Field<PresentationFailure, dynamic> _f$message =
-      Field('message', _$message, opt: true);
+  static const Field<PresentationFailure, dynamic> _f$message = Field(
+    'message',
+    _$message,
+    opt: true,
+  );
   static StackTrace? _$stackTrace(PresentationFailure v) => v.stackTrace;
-  static const Field<PresentationFailure, StackTrace> _f$stackTrace =
-      Field('stackTrace', _$stackTrace, opt: true);
+  static const Field<PresentationFailure, StackTrace> _f$stackTrace = Field(
+    'stackTrace',
+    _$stackTrace,
+    opt: true,
+  );
   static String? _$identifier(PresentationFailure v) => v.identifier;
-  static const Field<PresentationFailure, String> _f$identifier =
-      Field('identifier', _$identifier, opt: true);
+  static const Field<PresentationFailure, String> _f$identifier = Field(
+    'identifier',
+    _$identifier,
+    opt: true,
+  );
 
   @override
   final MappableFields<PresentationFailure> fields = const {
@@ -382,7 +453,10 @@ class PresentationFailureMapper
 
   static PresentationFailure _instantiate(DecodingData data) {
     return PresentationFailure(
-        data.dec(_f$message), data.dec(_f$stackTrace), data.dec(_f$identifier));
+      data.dec(_f$message),
+      data.dec(_f$stackTrace),
+      data.dec(_f$identifier),
+    );
   }
 
   @override
@@ -408,42 +482,58 @@ mixin PresentationFailureMappable {
         .encodeMap<PresentationFailure>(this as PresentationFailure);
   }
 
-  PresentationFailureCopyWith<PresentationFailure, PresentationFailure,
-      PresentationFailure> get copyWith => _PresentationFailureCopyWithImpl<
-          PresentationFailure, PresentationFailure>(
-      this as PresentationFailure, $identity, $identity);
+  PresentationFailureCopyWith<
+    PresentationFailure,
+    PresentationFailure,
+    PresentationFailure
+  >
+  get copyWith =>
+      _PresentationFailureCopyWithImpl<
+        PresentationFailure,
+        PresentationFailure
+      >(this as PresentationFailure, $identity, $identity);
   @override
   String toString() {
-    return PresentationFailureMapper.ensureInitialized()
-        .stringifyValue(this as PresentationFailure);
+    return PresentationFailureMapper.ensureInitialized().stringifyValue(
+      this as PresentationFailure,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return PresentationFailureMapper.ensureInitialized()
-        .equalsValue(this as PresentationFailure, other);
+    return PresentationFailureMapper.ensureInitialized().equalsValue(
+      this as PresentationFailure,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return PresentationFailureMapper.ensureInitialized()
-        .hashValue(this as PresentationFailure);
+    return PresentationFailureMapper.ensureInitialized().hashValue(
+      this as PresentationFailure,
+    );
   }
 }
 
 extension PresentationFailureValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PresentationFailure, $Out> {
   PresentationFailureCopyWith<$R, PresentationFailure, $Out>
-      get $asPresentationFailure => $base.as(
-          (v, t, t2) => _PresentationFailureCopyWithImpl<$R, $Out>(v, t, t2));
+  get $asPresentationFailure => $base.as(
+    (v, t, t2) => _PresentationFailureCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class PresentationFailureCopyWith<$R, $In extends PresentationFailure,
-    $Out> implements FailureCopyWith<$R, $In, $Out> {
+abstract class PresentationFailureCopyWith<
+  $R,
+  $In extends PresentationFailure,
+  $Out
+>
+    implements FailureCopyWith<$R, $In, $Out> {
   @override
   $R call({dynamic message, StackTrace? stackTrace, String? identifier});
   PresentationFailureCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _PresentationFailureCopyWithImpl<$R, $Out>
@@ -455,25 +545,28 @@ class _PresentationFailureCopyWithImpl<$R, $Out>
   late final ClassMapperBase<PresentationFailure> $mapper =
       PresentationFailureMapper.ensureInitialized();
   @override
-  $R call(
-          {Object? message = $none,
-          Object? stackTrace = $none,
-          Object? identifier = $none}) =>
-      $apply(FieldCopyWithData({
-        if (message != $none) #message: message,
-        if (stackTrace != $none) #stackTrace: stackTrace,
-        if (identifier != $none) #identifier: identifier
-      }));
+  $R call({
+    Object? message = $none,
+    Object? stackTrace = $none,
+    Object? identifier = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (message != $none) #message: message,
+      if (stackTrace != $none) #stackTrace: stackTrace,
+      if (identifier != $none) #identifier: identifier,
+    }),
+  );
   @override
   PresentationFailure $make(CopyWithData data) => PresentationFailure(
-      data.get(#message, or: $value.message),
-      data.get(#stackTrace, or: $value.stackTrace),
-      data.get(#identifier, or: $value.identifier));
+    data.get(#message, or: $value.message),
+    data.get(#stackTrace, or: $value.stackTrace),
+    data.get(#identifier, or: $value.identifier),
+  );
 
   @override
   PresentationFailureCopyWith<$R2, PresentationFailure, $Out2>
-      $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _PresentationFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _PresentationFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class DataFailureMapper extends SubClassMapperBase<DataFailure> {
@@ -492,14 +585,23 @@ class DataFailureMapper extends SubClassMapperBase<DataFailure> {
   final String id = 'DataFailure';
 
   static dynamic _$message(DataFailure v) => v.message;
-  static const Field<DataFailure, dynamic> _f$message =
-      Field('message', _$message, opt: true);
+  static const Field<DataFailure, dynamic> _f$message = Field(
+    'message',
+    _$message,
+    opt: true,
+  );
   static StackTrace? _$stackTrace(DataFailure v) => v.stackTrace;
-  static const Field<DataFailure, StackTrace> _f$stackTrace =
-      Field('stackTrace', _$stackTrace, opt: true);
+  static const Field<DataFailure, StackTrace> _f$stackTrace = Field(
+    'stackTrace',
+    _$stackTrace,
+    opt: true,
+  );
   static String? _$identifier(DataFailure v) => v.identifier;
-  static const Field<DataFailure, String> _f$identifier =
-      Field('identifier', _$identifier, opt: true);
+  static const Field<DataFailure, String> _f$identifier = Field(
+    'identifier',
+    _$identifier,
+    opt: true,
+  );
 
   @override
   final MappableFields<DataFailure> fields = const {
@@ -517,7 +619,10 @@ class DataFailureMapper extends SubClassMapperBase<DataFailure> {
 
   static DataFailure _instantiate(DecodingData data) {
     return DataFailure(
-        data.dec(_f$message), data.dec(_f$stackTrace), data.dec(_f$identifier));
+      data.dec(_f$message),
+      data.dec(_f$stackTrace),
+      data.dec(_f$identifier),
+    );
   }
 
   @override
@@ -534,28 +639,36 @@ class DataFailureMapper extends SubClassMapperBase<DataFailure> {
 
 mixin DataFailureMappable {
   String toJson() {
-    return DataFailureMapper.ensureInitialized()
-        .encodeJson<DataFailure>(this as DataFailure);
+    return DataFailureMapper.ensureInitialized().encodeJson<DataFailure>(
+      this as DataFailure,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return DataFailureMapper.ensureInitialized()
-        .encodeMap<DataFailure>(this as DataFailure);
+    return DataFailureMapper.ensureInitialized().encodeMap<DataFailure>(
+      this as DataFailure,
+    );
   }
 
   DataFailureCopyWith<DataFailure, DataFailure, DataFailure> get copyWith =>
       _DataFailureCopyWithImpl<DataFailure, DataFailure>(
-          this as DataFailure, $identity, $identity);
+        this as DataFailure,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return DataFailureMapper.ensureInitialized()
-        .stringifyValue(this as DataFailure);
+    return DataFailureMapper.ensureInitialized().stringifyValue(
+      this as DataFailure,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return DataFailureMapper.ensureInitialized()
-        .equalsValue(this as DataFailure, other);
+    return DataFailureMapper.ensureInitialized().equalsValue(
+      this as DataFailure,
+      other,
+    );
   }
 
   @override
@@ -586,25 +699,28 @@ class _DataFailureCopyWithImpl<$R, $Out>
   late final ClassMapperBase<DataFailure> $mapper =
       DataFailureMapper.ensureInitialized();
   @override
-  $R call(
-          {Object? message = $none,
-          Object? stackTrace = $none,
-          Object? identifier = $none}) =>
-      $apply(FieldCopyWithData({
-        if (message != $none) #message: message,
-        if (stackTrace != $none) #stackTrace: stackTrace,
-        if (identifier != $none) #identifier: identifier
-      }));
+  $R call({
+    Object? message = $none,
+    Object? stackTrace = $none,
+    Object? identifier = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (message != $none) #message: message,
+      if (stackTrace != $none) #stackTrace: stackTrace,
+      if (identifier != $none) #identifier: identifier,
+    }),
+  );
   @override
   DataFailure $make(CopyWithData data) => DataFailure(
-      data.get(#message, or: $value.message),
-      data.get(#stackTrace, or: $value.stackTrace),
-      data.get(#identifier, or: $value.identifier));
+    data.get(#message, or: $value.message),
+    data.get(#stackTrace, or: $value.stackTrace),
+    data.get(#identifier, or: $value.identifier),
+  );
 
   @override
   DataFailureCopyWith<$R2, DataFailure, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _DataFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _DataFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class CancelledFailureMapper extends SubClassMapperBase<CancelledFailure> {
@@ -623,14 +739,23 @@ class CancelledFailureMapper extends SubClassMapperBase<CancelledFailure> {
   final String id = 'CancelledFailure';
 
   static dynamic _$message(CancelledFailure v) => v.message;
-  static const Field<CancelledFailure, dynamic> _f$message =
-      Field('message', _$message, opt: true);
+  static const Field<CancelledFailure, dynamic> _f$message = Field(
+    'message',
+    _$message,
+    opt: true,
+  );
   static StackTrace? _$stackTrace(CancelledFailure v) => v.stackTrace;
-  static const Field<CancelledFailure, StackTrace> _f$stackTrace =
-      Field('stackTrace', _$stackTrace, opt: true);
+  static const Field<CancelledFailure, StackTrace> _f$stackTrace = Field(
+    'stackTrace',
+    _$stackTrace,
+    opt: true,
+  );
   static String? _$identifier(CancelledFailure v) => v.identifier;
-  static const Field<CancelledFailure, String> _f$identifier =
-      Field('identifier', _$identifier, opt: true);
+  static const Field<CancelledFailure, String> _f$identifier = Field(
+    'identifier',
+    _$identifier,
+    opt: true,
+  );
 
   @override
   final MappableFields<CancelledFailure> fields = const {
@@ -648,7 +773,10 @@ class CancelledFailureMapper extends SubClassMapperBase<CancelledFailure> {
 
   static CancelledFailure _instantiate(DecodingData data) {
     return CancelledFailure(
-        data.dec(_f$message), data.dec(_f$stackTrace), data.dec(_f$identifier));
+      data.dec(_f$message),
+      data.dec(_f$stackTrace),
+      data.dec(_f$identifier),
+    );
   }
 
   @override
@@ -675,33 +803,40 @@ mixin CancelledFailureMappable {
   }
 
   CancelledFailureCopyWith<CancelledFailure, CancelledFailure, CancelledFailure>
-      get copyWith =>
-          _CancelledFailureCopyWithImpl<CancelledFailure, CancelledFailure>(
-              this as CancelledFailure, $identity, $identity);
+  get copyWith =>
+      _CancelledFailureCopyWithImpl<CancelledFailure, CancelledFailure>(
+        this as CancelledFailure,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return CancelledFailureMapper.ensureInitialized()
-        .stringifyValue(this as CancelledFailure);
+    return CancelledFailureMapper.ensureInitialized().stringifyValue(
+      this as CancelledFailure,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return CancelledFailureMapper.ensureInitialized()
-        .equalsValue(this as CancelledFailure, other);
+    return CancelledFailureMapper.ensureInitialized().equalsValue(
+      this as CancelledFailure,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return CancelledFailureMapper.ensureInitialized()
-        .hashValue(this as CancelledFailure);
+    return CancelledFailureMapper.ensureInitialized().hashValue(
+      this as CancelledFailure,
+    );
   }
 }
 
 extension CancelledFailureValueCopy<$R, $Out>
     on ObjectCopyWith<$R, CancelledFailure, $Out> {
   CancelledFailureCopyWith<$R, CancelledFailure, $Out>
-      get $asCancelledFailure => $base
-          .as((v, t, t2) => _CancelledFailureCopyWithImpl<$R, $Out>(v, t, t2));
+  get $asCancelledFailure =>
+      $base.as((v, t, t2) => _CancelledFailureCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class CancelledFailureCopyWith<$R, $In extends CancelledFailure, $Out>
@@ -709,7 +844,8 @@ abstract class CancelledFailureCopyWith<$R, $In extends CancelledFailure, $Out>
   @override
   $R call({dynamic message, StackTrace? stackTrace, String? identifier});
   CancelledFailureCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _CancelledFailureCopyWithImpl<$R, $Out>
@@ -721,25 +857,28 @@ class _CancelledFailureCopyWithImpl<$R, $Out>
   late final ClassMapperBase<CancelledFailure> $mapper =
       CancelledFailureMapper.ensureInitialized();
   @override
-  $R call(
-          {Object? message = $none,
-          Object? stackTrace = $none,
-          Object? identifier = $none}) =>
-      $apply(FieldCopyWithData({
-        if (message != $none) #message: message,
-        if (stackTrace != $none) #stackTrace: stackTrace,
-        if (identifier != $none) #identifier: identifier
-      }));
+  $R call({
+    Object? message = $none,
+    Object? stackTrace = $none,
+    Object? identifier = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (message != $none) #message: message,
+      if (stackTrace != $none) #stackTrace: stackTrace,
+      if (identifier != $none) #identifier: identifier,
+    }),
+  );
   @override
   CancelledFailure $make(CopyWithData data) => CancelledFailure(
-      data.get(#message, or: $value.message),
-      data.get(#stackTrace, or: $value.stackTrace),
-      data.get(#identifier, or: $value.identifier));
+    data.get(#message, or: $value.message),
+    data.get(#stackTrace, or: $value.stackTrace),
+    data.get(#identifier, or: $value.identifier),
+  );
 
   @override
   CancelledFailureCopyWith<$R2, CancelledFailure, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _CancelledFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _CancelledFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class NoAuthFailureMapper extends SubClassMapperBase<NoAuthFailure> {
@@ -758,14 +897,23 @@ class NoAuthFailureMapper extends SubClassMapperBase<NoAuthFailure> {
   final String id = 'NoAuthFailure';
 
   static dynamic _$message(NoAuthFailure v) => v.message;
-  static const Field<NoAuthFailure, dynamic> _f$message =
-      Field('message', _$message, opt: true);
+  static const Field<NoAuthFailure, dynamic> _f$message = Field(
+    'message',
+    _$message,
+    opt: true,
+  );
   static StackTrace? _$stackTrace(NoAuthFailure v) => v.stackTrace;
-  static const Field<NoAuthFailure, StackTrace> _f$stackTrace =
-      Field('stackTrace', _$stackTrace, opt: true);
+  static const Field<NoAuthFailure, StackTrace> _f$stackTrace = Field(
+    'stackTrace',
+    _$stackTrace,
+    opt: true,
+  );
   static String? _$identifier(NoAuthFailure v) => v.identifier;
-  static const Field<NoAuthFailure, String> _f$identifier =
-      Field('identifier', _$identifier, opt: true);
+  static const Field<NoAuthFailure, String> _f$identifier = Field(
+    'identifier',
+    _$identifier,
+    opt: true,
+  );
 
   @override
   final MappableFields<NoAuthFailure> fields = const {
@@ -783,7 +931,10 @@ class NoAuthFailureMapper extends SubClassMapperBase<NoAuthFailure> {
 
   static NoAuthFailure _instantiate(DecodingData data) {
     return NoAuthFailure(
-        data.dec(_f$message), data.dec(_f$stackTrace), data.dec(_f$identifier));
+      data.dec(_f$message),
+      data.dec(_f$stackTrace),
+      data.dec(_f$identifier),
+    );
   }
 
   @override
@@ -800,34 +951,43 @@ class NoAuthFailureMapper extends SubClassMapperBase<NoAuthFailure> {
 
 mixin NoAuthFailureMappable {
   String toJson() {
-    return NoAuthFailureMapper.ensureInitialized()
-        .encodeJson<NoAuthFailure>(this as NoAuthFailure);
+    return NoAuthFailureMapper.ensureInitialized().encodeJson<NoAuthFailure>(
+      this as NoAuthFailure,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return NoAuthFailureMapper.ensureInitialized()
-        .encodeMap<NoAuthFailure>(this as NoAuthFailure);
+    return NoAuthFailureMapper.ensureInitialized().encodeMap<NoAuthFailure>(
+      this as NoAuthFailure,
+    );
   }
 
   NoAuthFailureCopyWith<NoAuthFailure, NoAuthFailure, NoAuthFailure>
-      get copyWith => _NoAuthFailureCopyWithImpl<NoAuthFailure, NoAuthFailure>(
-          this as NoAuthFailure, $identity, $identity);
+  get copyWith => _NoAuthFailureCopyWithImpl<NoAuthFailure, NoAuthFailure>(
+    this as NoAuthFailure,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return NoAuthFailureMapper.ensureInitialized()
-        .stringifyValue(this as NoAuthFailure);
+    return NoAuthFailureMapper.ensureInitialized().stringifyValue(
+      this as NoAuthFailure,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return NoAuthFailureMapper.ensureInitialized()
-        .equalsValue(this as NoAuthFailure, other);
+    return NoAuthFailureMapper.ensureInitialized().equalsValue(
+      this as NoAuthFailure,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return NoAuthFailureMapper.ensureInitialized()
-        .hashValue(this as NoAuthFailure);
+    return NoAuthFailureMapper.ensureInitialized().hashValue(
+      this as NoAuthFailure,
+    );
   }
 }
 
@@ -853,25 +1013,28 @@ class _NoAuthFailureCopyWithImpl<$R, $Out>
   late final ClassMapperBase<NoAuthFailure> $mapper =
       NoAuthFailureMapper.ensureInitialized();
   @override
-  $R call(
-          {Object? message = $none,
-          Object? stackTrace = $none,
-          Object? identifier = $none}) =>
-      $apply(FieldCopyWithData({
-        if (message != $none) #message: message,
-        if (stackTrace != $none) #stackTrace: stackTrace,
-        if (identifier != $none) #identifier: identifier
-      }));
+  $R call({
+    Object? message = $none,
+    Object? stackTrace = $none,
+    Object? identifier = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (message != $none) #message: message,
+      if (stackTrace != $none) #stackTrace: stackTrace,
+      if (identifier != $none) #identifier: identifier,
+    }),
+  );
   @override
   NoAuthFailure $make(CopyWithData data) => NoAuthFailure(
-      data.get(#message, or: $value.message),
-      data.get(#stackTrace, or: $value.stackTrace),
-      data.get(#identifier, or: $value.identifier));
+    data.get(#message, or: $value.message),
+    data.get(#stackTrace, or: $value.stackTrace),
+    data.get(#identifier, or: $value.identifier),
+  );
 
   @override
   NoAuthFailureCopyWith<$R2, NoAuthFailure, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _NoAuthFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _NoAuthFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class GenericFailureMapper extends SubClassMapperBase<GenericFailure> {
@@ -890,14 +1053,23 @@ class GenericFailureMapper extends SubClassMapperBase<GenericFailure> {
   final String id = 'GenericFailure';
 
   static dynamic _$message(GenericFailure v) => v.message;
-  static const Field<GenericFailure, dynamic> _f$message =
-      Field('message', _$message, opt: true);
+  static const Field<GenericFailure, dynamic> _f$message = Field(
+    'message',
+    _$message,
+    opt: true,
+  );
   static StackTrace? _$stackTrace(GenericFailure v) => v.stackTrace;
-  static const Field<GenericFailure, StackTrace> _f$stackTrace =
-      Field('stackTrace', _$stackTrace, opt: true);
+  static const Field<GenericFailure, StackTrace> _f$stackTrace = Field(
+    'stackTrace',
+    _$stackTrace,
+    opt: true,
+  );
   static String? _$identifier(GenericFailure v) => v.identifier;
-  static const Field<GenericFailure, String> _f$identifier =
-      Field('identifier', _$identifier, opt: true);
+  static const Field<GenericFailure, String> _f$identifier = Field(
+    'identifier',
+    _$identifier,
+    opt: true,
+  );
 
   @override
   final MappableFields<GenericFailure> fields = const {
@@ -915,7 +1087,10 @@ class GenericFailureMapper extends SubClassMapperBase<GenericFailure> {
 
   static GenericFailure _instantiate(DecodingData data) {
     return GenericFailure(
-        data.dec(_f$message), data.dec(_f$stackTrace), data.dec(_f$identifier));
+      data.dec(_f$message),
+      data.dec(_f$stackTrace),
+      data.dec(_f$identifier),
+    );
   }
 
   @override
@@ -932,35 +1107,43 @@ class GenericFailureMapper extends SubClassMapperBase<GenericFailure> {
 
 mixin GenericFailureMappable {
   String toJson() {
-    return GenericFailureMapper.ensureInitialized()
-        .encodeJson<GenericFailure>(this as GenericFailure);
+    return GenericFailureMapper.ensureInitialized().encodeJson<GenericFailure>(
+      this as GenericFailure,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return GenericFailureMapper.ensureInitialized()
-        .encodeMap<GenericFailure>(this as GenericFailure);
+    return GenericFailureMapper.ensureInitialized().encodeMap<GenericFailure>(
+      this as GenericFailure,
+    );
   }
 
   GenericFailureCopyWith<GenericFailure, GenericFailure, GenericFailure>
-      get copyWith =>
-          _GenericFailureCopyWithImpl<GenericFailure, GenericFailure>(
-              this as GenericFailure, $identity, $identity);
+  get copyWith => _GenericFailureCopyWithImpl<GenericFailure, GenericFailure>(
+    this as GenericFailure,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return GenericFailureMapper.ensureInitialized()
-        .stringifyValue(this as GenericFailure);
+    return GenericFailureMapper.ensureInitialized().stringifyValue(
+      this as GenericFailure,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return GenericFailureMapper.ensureInitialized()
-        .equalsValue(this as GenericFailure, other);
+    return GenericFailureMapper.ensureInitialized().equalsValue(
+      this as GenericFailure,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return GenericFailureMapper.ensureInitialized()
-        .hashValue(this as GenericFailure);
+    return GenericFailureMapper.ensureInitialized().hashValue(
+      this as GenericFailure,
+    );
   }
 }
 
@@ -975,7 +1158,8 @@ abstract class GenericFailureCopyWith<$R, $In extends GenericFailure, $Out>
   @override
   $R call({dynamic message, StackTrace? stackTrace, String? identifier});
   GenericFailureCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _GenericFailureCopyWithImpl<$R, $Out>
@@ -987,25 +1171,28 @@ class _GenericFailureCopyWithImpl<$R, $Out>
   late final ClassMapperBase<GenericFailure> $mapper =
       GenericFailureMapper.ensureInitialized();
   @override
-  $R call(
-          {Object? message = $none,
-          Object? stackTrace = $none,
-          Object? identifier = $none}) =>
-      $apply(FieldCopyWithData({
-        if (message != $none) #message: message,
-        if (stackTrace != $none) #stackTrace: stackTrace,
-        if (identifier != $none) #identifier: identifier
-      }));
+  $R call({
+    Object? message = $none,
+    Object? stackTrace = $none,
+    Object? identifier = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (message != $none) #message: message,
+      if (stackTrace != $none) #stackTrace: stackTrace,
+      if (identifier != $none) #identifier: identifier,
+    }),
+  );
   @override
   GenericFailure $make(CopyWithData data) => GenericFailure(
-      data.get(#message, or: $value.message),
-      data.get(#stackTrace, or: $value.stackTrace),
-      data.get(#identifier, or: $value.identifier));
+    data.get(#message, or: $value.message),
+    data.get(#stackTrace, or: $value.stackTrace),
+    data.get(#identifier, or: $value.identifier),
+  );
 
   @override
   GenericFailureCopyWith<$R2, GenericFailure, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _GenericFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _GenericFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class MapperFailureMapper extends SubClassMapperBase<MapperFailure> {
@@ -1024,14 +1211,23 @@ class MapperFailureMapper extends SubClassMapperBase<MapperFailure> {
   final String id = 'MapperFailure';
 
   static dynamic _$message(MapperFailure v) => v.message;
-  static const Field<MapperFailure, dynamic> _f$message =
-      Field('message', _$message, opt: true);
+  static const Field<MapperFailure, dynamic> _f$message = Field(
+    'message',
+    _$message,
+    opt: true,
+  );
   static StackTrace? _$stackTrace(MapperFailure v) => v.stackTrace;
-  static const Field<MapperFailure, StackTrace> _f$stackTrace =
-      Field('stackTrace', _$stackTrace, opt: true);
+  static const Field<MapperFailure, StackTrace> _f$stackTrace = Field(
+    'stackTrace',
+    _$stackTrace,
+    opt: true,
+  );
   static String? _$identifier(MapperFailure v) => v.identifier;
-  static const Field<MapperFailure, String> _f$identifier =
-      Field('identifier', _$identifier, opt: true);
+  static const Field<MapperFailure, String> _f$identifier = Field(
+    'identifier',
+    _$identifier,
+    opt: true,
+  );
 
   @override
   final MappableFields<MapperFailure> fields = const {
@@ -1049,7 +1245,10 @@ class MapperFailureMapper extends SubClassMapperBase<MapperFailure> {
 
   static MapperFailure _instantiate(DecodingData data) {
     return MapperFailure(
-        data.dec(_f$message), data.dec(_f$stackTrace), data.dec(_f$identifier));
+      data.dec(_f$message),
+      data.dec(_f$stackTrace),
+      data.dec(_f$identifier),
+    );
   }
 
   @override
@@ -1066,34 +1265,43 @@ class MapperFailureMapper extends SubClassMapperBase<MapperFailure> {
 
 mixin MapperFailureMappable {
   String toJson() {
-    return MapperFailureMapper.ensureInitialized()
-        .encodeJson<MapperFailure>(this as MapperFailure);
+    return MapperFailureMapper.ensureInitialized().encodeJson<MapperFailure>(
+      this as MapperFailure,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return MapperFailureMapper.ensureInitialized()
-        .encodeMap<MapperFailure>(this as MapperFailure);
+    return MapperFailureMapper.ensureInitialized().encodeMap<MapperFailure>(
+      this as MapperFailure,
+    );
   }
 
   MapperFailureCopyWith<MapperFailure, MapperFailure, MapperFailure>
-      get copyWith => _MapperFailureCopyWithImpl<MapperFailure, MapperFailure>(
-          this as MapperFailure, $identity, $identity);
+  get copyWith => _MapperFailureCopyWithImpl<MapperFailure, MapperFailure>(
+    this as MapperFailure,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return MapperFailureMapper.ensureInitialized()
-        .stringifyValue(this as MapperFailure);
+    return MapperFailureMapper.ensureInitialized().stringifyValue(
+      this as MapperFailure,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return MapperFailureMapper.ensureInitialized()
-        .equalsValue(this as MapperFailure, other);
+    return MapperFailureMapper.ensureInitialized().equalsValue(
+      this as MapperFailure,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return MapperFailureMapper.ensureInitialized()
-        .hashValue(this as MapperFailure);
+    return MapperFailureMapper.ensureInitialized().hashValue(
+      this as MapperFailure,
+    );
   }
 }
 
@@ -1119,23 +1327,27 @@ class _MapperFailureCopyWithImpl<$R, $Out>
   late final ClassMapperBase<MapperFailure> $mapper =
       MapperFailureMapper.ensureInitialized();
   @override
-  $R call(
-          {Object? message = $none,
-          Object? stackTrace = $none,
-          Object? identifier = $none}) =>
-      $apply(FieldCopyWithData({
-        if (message != $none) #message: message,
-        if (stackTrace != $none) #stackTrace: stackTrace,
-        if (identifier != $none) #identifier: identifier
-      }));
+  $R call({
+    Object? message = $none,
+    Object? stackTrace = $none,
+    Object? identifier = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (message != $none) #message: message,
+      if (stackTrace != $none) #stackTrace: stackTrace,
+      if (identifier != $none) #identifier: identifier,
+    }),
+  );
   @override
   MapperFailure $make(CopyWithData data) => MapperFailure(
-      data.get(#message, or: $value.message),
-      data.get(#stackTrace, or: $value.stackTrace),
-      data.get(#identifier, or: $value.identifier));
+    data.get(#message, or: $value.message),
+    data.get(#stackTrace, or: $value.stackTrace),
+    data.get(#identifier, or: $value.identifier),
+  );
 
   @override
   MapperFailureCopyWith<$R2, MapperFailure, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _MapperFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _MapperFailureCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

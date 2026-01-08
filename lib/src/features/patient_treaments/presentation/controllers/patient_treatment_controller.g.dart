@@ -6,175 +6,102 @@ part of 'patient_treatment_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$patientTreatmentControllerHash() =>
-    r'4ae3e68a14dab6e041ee08186a8b9099748878a3';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$PatientTreatmentController
-    extends BuildlessAutoDisposeAsyncNotifier<PatientTreatment> {
-  late final String id;
-
-  FutureOr<PatientTreatment> build(
-    String id,
-  );
-}
-
-/// See also [PatientTreatmentController].
 @ProviderFor(PatientTreatmentController)
-const patientTreatmentControllerProvider = PatientTreatmentControllerFamily();
+final patientTreatmentControllerProvider = PatientTreatmentControllerFamily._();
 
-/// See also [PatientTreatmentController].
-class PatientTreatmentControllerFamily
-    extends Family<AsyncValue<PatientTreatment>> {
-  /// See also [PatientTreatmentController].
-  const PatientTreatmentControllerFamily();
-
-  /// See also [PatientTreatmentController].
-  PatientTreatmentControllerProvider call(
-    String id,
-  ) {
-    return PatientTreatmentControllerProvider(
-      id,
-    );
-  }
-
-  @override
-  PatientTreatmentControllerProvider getProviderOverride(
-    covariant PatientTreatmentControllerProvider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'patientTreatmentControllerProvider';
-}
-
-/// See also [PatientTreatmentController].
-class PatientTreatmentControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<PatientTreatmentController,
-        PatientTreatment> {
-  /// See also [PatientTreatmentController].
-  PatientTreatmentControllerProvider(
-    String id,
-  ) : this._internal(
-          () => PatientTreatmentController()..id = id,
-          from: patientTreatmentControllerProvider,
+final class PatientTreatmentControllerProvider extends $AsyncNotifierProvider<
+    PatientTreatmentController, PatientTreatment> {
+  PatientTreatmentControllerProvider._(
+      {required PatientTreatmentControllerFamily super.from,
+      required String super.argument})
+      : super(
+          retry: null,
           name: r'patientTreatmentControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$patientTreatmentControllerHash,
-          dependencies: PatientTreatmentControllerFamily._dependencies,
-          allTransitiveDependencies:
-              PatientTreatmentControllerFamily._allTransitiveDependencies,
-          id: id,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  PatientTreatmentControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final String id;
+  @override
+  String debugGetCreateSourceHash() => _$patientTreatmentControllerHash();
 
   @override
-  FutureOr<PatientTreatment> runNotifierBuild(
-    covariant PatientTreatmentController notifier,
-  ) {
-    return notifier.build(
-      id,
-    );
+  String toString() {
+    return r'patientTreatmentControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(PatientTreatmentController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: PatientTreatmentControllerProvider._internal(
-        () => create()..id = id,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<PatientTreatmentController,
-      PatientTreatment> createElement() {
-    return _PatientTreatmentControllerProviderElement(this);
-  }
+  PatientTreatmentController create() => PatientTreatmentController();
 
   @override
   bool operator ==(Object other) {
-    return other is PatientTreatmentControllerProvider && other.id == id;
+    return other is PatientTreatmentControllerProvider &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin PatientTreatmentControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<PatientTreatment> {
-  /// The parameter `id` of this provider.
-  String get id;
-}
+String _$patientTreatmentControllerHash() =>
+    r'4ae3e68a14dab6e041ee08186a8b9099748878a3';
 
-class _PatientTreatmentControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<PatientTreatmentController,
-        PatientTreatment> with PatientTreatmentControllerRef {
-  _PatientTreatmentControllerProviderElement(super.provider);
+final class PatientTreatmentControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            PatientTreatmentController,
+            AsyncValue<PatientTreatment>,
+            PatientTreatment,
+            FutureOr<PatientTreatment>,
+            String> {
+  PatientTreatmentControllerFamily._()
+      : super(
+          retry: null,
+          name: r'patientTreatmentControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  PatientTreatmentControllerProvider call(
+    String id,
+  ) =>
+      PatientTreatmentControllerProvider._(argument: id, from: this);
 
   @override
-  String get id => (origin as PatientTreatmentControllerProvider).id;
+  String toString() => r'patientTreatmentControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$PatientTreatmentController
+    extends $AsyncNotifier<PatientTreatment> {
+  late final _$args = ref.$arg as String;
+  String get id => _$args;
+
+  FutureOr<PatientTreatment> build(
+    String id,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref =
+        this.ref as $Ref<AsyncValue<PatientTreatment>, PatientTreatment>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<PatientTreatment>, PatientTreatment>,
+        AsyncValue<PatientTreatment>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

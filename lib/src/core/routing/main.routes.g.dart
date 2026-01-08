@@ -71,10 +71,10 @@ List<RouteBase> get $appRoutes => [
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
       path: '/not-found',
-      factory: _$NotFoundRoute._fromState,
+      factory: $NotFoundRoute._fromState,
     );
 
-mixin _$NotFoundRoute on GoRouteData {
+mixin $NotFoundRoute on GoRouteData {
   static NotFoundRoute _fromState(GoRouterState state) => const NotFoundRoute();
 
   @override
@@ -98,10 +98,10 @@ mixin _$NotFoundRoute on GoRouteData {
 
 RouteBase get $splashPageRoute => GoRouteData.$route(
       path: '/splash',
-      factory: _$SplashPageRoute._fromState,
+      factory: $SplashPageRoute._fromState,
     );
 
-mixin _$SplashPageRoute on GoRouteData {
+mixin $SplashPageRoute on GoRouteData {
   static SplashPageRoute _fromState(GoRouterState state) =>
       const SplashPageRoute();
 
@@ -133,7 +133,7 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/',
-              factory: _$DashboardPageRoute._fromState,
+              factory: $DashboardPageRoute._fromState,
             ),
           ],
         ),
@@ -141,59 +141,59 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/patients',
-              factory: _$PatientsPageRoute._fromState,
+              factory: $PatientsPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/patient',
-              factory: _$PatientFormPageRoute._fromState,
+              factory: $PatientFormPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/patient/:id',
-              factory: _$PatientPageRoute._fromState,
+              factory: $PatientPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/patientRecord/:id',
-              factory: _$PatientRecordPageRoute._fromState,
+              factory: $PatientRecordPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/patientRecord',
-              factory: _$PatientRecordFormPageRoute._fromState,
+              factory: $PatientRecordFormPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/product-categories',
-              factory: _$ProductCategoriesPageRoute._fromState,
+              factory: $ProductCategoriesPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/product-category/:id',
-              factory: _$ProductCategoryPageRoute._fromState,
+              factory: $ProductCategoryPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/product-category',
-              factory: _$ProductCategoryFormPageRoute._fromState,
+              factory: $ProductCategoryFormPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/patientTreatmentRecords',
-              factory: _$PatientTreatmentsRecordPageRoute._fromState,
+              factory: $PatientTreatmentsRecordPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/patientTreatmentRecord/:id',
-              factory: _$PatientTreatmentRecordPageRoute._fromState,
+              factory: $PatientTreatmentRecordPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/patientTreatmentRecord',
-              factory: _$PatientTreatmentRecordFormPageRoute._fromState,
+              factory: $PatientTreatmentRecordFormPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/patientPrescriptionItem',
-              factory: _$PatientPrescriptionItemFormPageRoute._fromState,
+              factory: $PatientPrescriptionItemFormPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/patient/appointmentSchedules',
-              factory: _$PatientAppointmentSchedulesPageRoute._fromState,
+              factory: $PatientAppointmentSchedulesPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/patientFiles',
-              factory: _$PatientFileFormPageRoute._fromState,
+              factory: $PatientFileFormPageRoute._fromState,
             ),
           ],
         ),
@@ -201,27 +201,27 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/products',
-              factory: _$ProductsPageRoute._fromState,
+              factory: $ProductsPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/product/:id',
-              factory: _$ProductPageRoute._fromState,
+              factory: $ProductPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/product',
-              factory: _$ProductFormPageRoute._fromState,
+              factory: $ProductFormPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/productInventories',
-              factory: _$ProductInventoriesPageRoute._fromState,
+              factory: $ProductInventoriesPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/productStock',
-              factory: _$ProductStockFormPageRoute._fromState,
+              factory: $ProductStockFormPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/product/form/:id',
-              factory: _$ProductStockPageRoute._fromState,
+              factory: $ProductStockPageRoute._fromState,
             ),
           ],
         ),
@@ -229,7 +229,7 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/calendar',
-              factory: _$CalendarAppointmentSchedulesPageRoute._fromState,
+              factory: $CalendarAppointmentSchedulesPageRoute._fromState,
             ),
           ],
         ),
@@ -237,7 +237,7 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/cashier',
-              factory: _$SalesCashierPageRoute._fromState,
+              factory: $SalesCashierPageRoute._fromState,
             ),
           ],
         ),
@@ -245,15 +245,15 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/branches',
-              factory: _$BranchesPageRoute._fromState,
+              factory: $BranchesPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/branch',
-              factory: _$BranchFormPageRoute._fromState,
+              factory: $BranchFormPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/branch/:id',
-              factory: _$BranchPageRoute._fromState,
+              factory: $BranchPageRoute._fromState,
             ),
           ],
         ),
@@ -261,15 +261,15 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/user',
-              factory: _$UsersPageRoute._fromState,
+              factory: $UsersPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/user/:id',
-              factory: _$UserPageRoute._fromState,
+              factory: $UserPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/user',
-              factory: _$UserFormPageRoute._fromState,
+              factory: $UserFormPageRoute._fromState,
             ),
           ],
         ),
@@ -277,15 +277,15 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/admins',
-              factory: _$AdminsPageRoute._fromState,
+              factory: $AdminsPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/admin/:id',
-              factory: _$AdminPageRoute._fromState,
+              factory: $AdminPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/admin',
-              factory: _$AdminFormPageRoute._fromState,
+              factory: $AdminFormPageRoute._fromState,
             ),
           ],
         ),
@@ -293,11 +293,11 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/settings',
-              factory: _$SettingsPageRoute._fromState,
+              factory: $SettingsPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/domain',
-              factory: _$DomainPageRoute._fromState,
+              factory: $DomainPageRoute._fromState,
             ),
           ],
         ),
@@ -305,15 +305,15 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/changeLogs',
-              factory: _$ChangeLogsPageRoute._fromState,
+              factory: $ChangeLogsPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/changeLog/:id',
-              factory: _$ChangeLogPageRoute._fromState,
+              factory: $ChangeLogPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/changelog',
-              factory: _$ChangeLogFormPageRoute._fromState,
+              factory: $ChangeLogFormPageRoute._fromState,
             ),
           ],
         ),
@@ -321,7 +321,7 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/your-account',
-              factory: _$YourAccountPageRoute._fromState,
+              factory: $YourAccountPageRoute._fromState,
             ),
           ],
         ),
@@ -329,19 +329,19 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/appointmentSchedules',
-              factory: _$AppointmentSchedulesPageRoute._fromState,
+              factory: $AppointmentSchedulesPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/today/appointmentSchedules',
-              factory: _$AppointmentSchedulesByDatePageRoute._fromState,
+              factory: $AppointmentSchedulesByDatePageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/appointmentSchedule/:id',
-              factory: _$AppointmentSchedulePageRoute._fromState,
+              factory: $AppointmentSchedulePageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/appointmentSchedule',
-              factory: _$AppointmentScheduleFormPageRoute._fromState,
+              factory: $AppointmentScheduleFormPageRoute._fromState,
             ),
           ],
         ),
@@ -349,15 +349,15 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/patientSpecies',
-              factory: _$PatientSpeciesListPageRoute._fromState,
+              factory: $PatientSpeciesListPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/patientSpecies',
-              factory: _$PatientSpeciesFormPageRoute._fromState,
+              factory: $PatientSpeciesFormPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/patientSpecies/:id',
-              factory: _$PatientSpeciesPageRoute._fromState,
+              factory: $PatientSpeciesPageRoute._fromState,
             ),
           ],
         ),
@@ -365,7 +365,7 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/form/patientBreeds',
-              factory: _$PatientBreedFormPageRoute._fromState,
+              factory: $PatientBreedFormPageRoute._fromState,
             ),
           ],
         ),
@@ -373,11 +373,11 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/product-adjustments',
-              factory: _$ProductAdjustmentsPageRoute._fromState,
+              factory: $ProductAdjustmentsPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/product-adjustments',
-              factory: _$ProductAdjustmentFormPageRoute._fromState,
+              factory: $ProductAdjustmentFormPageRoute._fromState,
             ),
           ],
         ),
@@ -385,11 +385,11 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/patientTreaments',
-              factory: _$PatientTreatmentPageRoute._fromState,
+              factory: $PatientTreatmentPageRoute._fromState,
             ),
             GoRouteData.$route(
               path: '/form/patientTreaments',
-              factory: _$PatientTreamentFormPageRoute._fromState,
+              factory: $PatientTreamentFormPageRoute._fromState,
             ),
           ],
         ),
@@ -400,7 +400,7 @@ extension $RootRouteDataExtension on RootRouteData {
   static RootRouteData _fromState(GoRouterState state) => const RootRouteData();
 }
 
-mixin _$DashboardPageRoute on GoRouteData {
+mixin $DashboardPageRoute on GoRouteData {
   static DashboardPageRoute _fromState(GoRouterState state) =>
       const DashboardPageRoute();
 
@@ -423,7 +423,7 @@ mixin _$DashboardPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientsPageRoute on GoRouteData {
+mixin $PatientsPageRoute on GoRouteData {
   static PatientsPageRoute _fromState(GoRouterState state) =>
       const PatientsPageRoute();
 
@@ -446,7 +446,7 @@ mixin _$PatientsPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientFormPageRoute on GoRouteData {
+mixin $PatientFormPageRoute on GoRouteData {
   static PatientFormPageRoute _fromState(GoRouterState state) =>
       PatientFormPageRoute(
         id: state.uri.queryParameters['id'],
@@ -476,7 +476,7 @@ mixin _$PatientFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientPageRoute on GoRouteData {
+mixin $PatientPageRoute on GoRouteData {
   static PatientPageRoute _fromState(GoRouterState state) => PatientPageRoute(
         state.pathParameters['id']!,
         page: _$convertMapValue('page', state.uri.queryParameters, int.parse) ??
@@ -507,7 +507,7 @@ mixin _$PatientPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientRecordPageRoute on GoRouteData {
+mixin $PatientRecordPageRoute on GoRouteData {
   static PatientRecordPageRoute _fromState(GoRouterState state) =>
       PatientRecordPageRoute(
         state.pathParameters['id']!,
@@ -534,7 +534,7 @@ mixin _$PatientRecordPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientRecordFormPageRoute on GoRouteData {
+mixin $PatientRecordFormPageRoute on GoRouteData {
   static PatientRecordFormPageRoute _fromState(GoRouterState state) =>
       PatientRecordFormPageRoute(
         parentId: state.uri.queryParameters['parent-id']!,
@@ -566,7 +566,7 @@ mixin _$PatientRecordFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ProductCategoriesPageRoute on GoRouteData {
+mixin $ProductCategoriesPageRoute on GoRouteData {
   static ProductCategoriesPageRoute _fromState(GoRouterState state) =>
       const ProductCategoriesPageRoute();
 
@@ -589,7 +589,7 @@ mixin _$ProductCategoriesPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ProductCategoryPageRoute on GoRouteData {
+mixin $ProductCategoryPageRoute on GoRouteData {
   static ProductCategoryPageRoute _fromState(GoRouterState state) =>
       ProductCategoryPageRoute(
         state.pathParameters['id']!,
@@ -616,7 +616,7 @@ mixin _$ProductCategoryPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ProductCategoryFormPageRoute on GoRouteData {
+mixin $ProductCategoryFormPageRoute on GoRouteData {
   static ProductCategoryFormPageRoute _fromState(GoRouterState state) =>
       ProductCategoryFormPageRoute(
         id: state.uri.queryParameters['id'],
@@ -647,7 +647,7 @@ mixin _$ProductCategoryFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientTreatmentsRecordPageRoute on GoRouteData {
+mixin $PatientTreatmentsRecordPageRoute on GoRouteData {
   static PatientTreatmentsRecordPageRoute _fromState(GoRouterState state) =>
       PatientTreatmentsRecordPageRoute(
         state.uri.queryParameters['id']!,
@@ -678,7 +678,7 @@ mixin _$PatientTreatmentsRecordPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientTreatmentRecordPageRoute on GoRouteData {
+mixin $PatientTreatmentRecordPageRoute on GoRouteData {
   static PatientTreatmentRecordPageRoute _fromState(GoRouterState state) =>
       PatientTreatmentRecordPageRoute(
         state.pathParameters['id']!,
@@ -706,7 +706,7 @@ mixin _$PatientTreatmentRecordPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientTreatmentRecordFormPageRoute on GoRouteData {
+mixin $PatientTreatmentRecordFormPageRoute on GoRouteData {
   static PatientTreatmentRecordFormPageRoute _fromState(GoRouterState state) =>
       PatientTreatmentRecordFormPageRoute(
         parentId: state.uri.queryParameters['parent-id']!,
@@ -739,7 +739,7 @@ mixin _$PatientTreatmentRecordFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientPrescriptionItemFormPageRoute on GoRouteData {
+mixin $PatientPrescriptionItemFormPageRoute on GoRouteData {
   static PatientPrescriptionItemFormPageRoute _fromState(GoRouterState state) =>
       PatientPrescriptionItemFormPageRoute(
         parentId: state.uri.queryParameters['parent-id']!,
@@ -772,7 +772,7 @@ mixin _$PatientPrescriptionItemFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientAppointmentSchedulesPageRoute on GoRouteData {
+mixin $PatientAppointmentSchedulesPageRoute on GoRouteData {
   static PatientAppointmentSchedulesPageRoute _fromState(GoRouterState state) =>
       const PatientAppointmentSchedulesPageRoute();
 
@@ -795,7 +795,7 @@ mixin _$PatientAppointmentSchedulesPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientFileFormPageRoute on GoRouteData {
+mixin $PatientFileFormPageRoute on GoRouteData {
   static PatientFileFormPageRoute _fromState(GoRouterState state) =>
       PatientFileFormPageRoute(
         parentId: state.uri.queryParameters['parent-id']!,
@@ -827,7 +827,7 @@ mixin _$PatientFileFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ProductsPageRoute on GoRouteData {
+mixin $ProductsPageRoute on GoRouteData {
   static ProductsPageRoute _fromState(GoRouterState state) =>
       const ProductsPageRoute();
 
@@ -850,7 +850,7 @@ mixin _$ProductsPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ProductPageRoute on GoRouteData {
+mixin $ProductPageRoute on GoRouteData {
   static ProductPageRoute _fromState(GoRouterState state) => ProductPageRoute(
         state.pathParameters['id']!,
       );
@@ -876,7 +876,7 @@ mixin _$ProductPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ProductFormPageRoute on GoRouteData {
+mixin $ProductFormPageRoute on GoRouteData {
   static ProductFormPageRoute _fromState(GoRouterState state) =>
       ProductFormPageRoute(
         id: state.uri.queryParameters['id'],
@@ -906,7 +906,7 @@ mixin _$ProductFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ProductInventoriesPageRoute on GoRouteData {
+mixin $ProductInventoriesPageRoute on GoRouteData {
   static ProductInventoriesPageRoute _fromState(GoRouterState state) =>
       const ProductInventoriesPageRoute();
 
@@ -929,7 +929,7 @@ mixin _$ProductInventoriesPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ProductStockFormPageRoute on GoRouteData {
+mixin $ProductStockFormPageRoute on GoRouteData {
   static ProductStockFormPageRoute _fromState(GoRouterState state) =>
       ProductStockFormPageRoute(
         id: state.uri.queryParameters['id'],
@@ -961,7 +961,7 @@ mixin _$ProductStockFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ProductStockPageRoute on GoRouteData {
+mixin $ProductStockPageRoute on GoRouteData {
   static ProductStockPageRoute _fromState(GoRouterState state) =>
       ProductStockPageRoute(
         state.pathParameters['id']!,
@@ -988,7 +988,7 @@ mixin _$ProductStockPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$CalendarAppointmentSchedulesPageRoute on GoRouteData {
+mixin $CalendarAppointmentSchedulesPageRoute on GoRouteData {
   static CalendarAppointmentSchedulesPageRoute _fromState(
           GoRouterState state) =>
       const CalendarAppointmentSchedulesPageRoute();
@@ -1012,7 +1012,7 @@ mixin _$CalendarAppointmentSchedulesPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$SalesCashierPageRoute on GoRouteData {
+mixin $SalesCashierPageRoute on GoRouteData {
   static SalesCashierPageRoute _fromState(GoRouterState state) =>
       const SalesCashierPageRoute();
 
@@ -1035,7 +1035,7 @@ mixin _$SalesCashierPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$BranchesPageRoute on GoRouteData {
+mixin $BranchesPageRoute on GoRouteData {
   static BranchesPageRoute _fromState(GoRouterState state) =>
       const BranchesPageRoute();
 
@@ -1058,7 +1058,7 @@ mixin _$BranchesPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$BranchFormPageRoute on GoRouteData {
+mixin $BranchFormPageRoute on GoRouteData {
   static BranchFormPageRoute _fromState(GoRouterState state) =>
       BranchFormPageRoute(
         id: state.uri.queryParameters['id'],
@@ -1088,7 +1088,7 @@ mixin _$BranchFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$BranchPageRoute on GoRouteData {
+mixin $BranchPageRoute on GoRouteData {
   static BranchPageRoute _fromState(GoRouterState state) => BranchPageRoute(
         state.pathParameters['id']!,
       );
@@ -1114,7 +1114,7 @@ mixin _$BranchPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$UsersPageRoute on GoRouteData {
+mixin $UsersPageRoute on GoRouteData {
   static UsersPageRoute _fromState(GoRouterState state) =>
       const UsersPageRoute();
 
@@ -1137,7 +1137,7 @@ mixin _$UsersPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$UserPageRoute on GoRouteData {
+mixin $UserPageRoute on GoRouteData {
   static UserPageRoute _fromState(GoRouterState state) => UserPageRoute(
         state.pathParameters['id']!,
       );
@@ -1163,7 +1163,7 @@ mixin _$UserPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$UserFormPageRoute on GoRouteData {
+mixin $UserFormPageRoute on GoRouteData {
   static UserFormPageRoute _fromState(GoRouterState state) => UserFormPageRoute(
         id: state.uri.queryParameters['id'],
       );
@@ -1192,7 +1192,7 @@ mixin _$UserFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$AdminsPageRoute on GoRouteData {
+mixin $AdminsPageRoute on GoRouteData {
   static AdminsPageRoute _fromState(GoRouterState state) =>
       const AdminsPageRoute();
 
@@ -1215,7 +1215,7 @@ mixin _$AdminsPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$AdminPageRoute on GoRouteData {
+mixin $AdminPageRoute on GoRouteData {
   static AdminPageRoute _fromState(GoRouterState state) => AdminPageRoute(
         state.pathParameters['id']!,
       );
@@ -1241,7 +1241,7 @@ mixin _$AdminPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$AdminFormPageRoute on GoRouteData {
+mixin $AdminFormPageRoute on GoRouteData {
   static AdminFormPageRoute _fromState(GoRouterState state) =>
       AdminFormPageRoute(
         id: state.uri.queryParameters['id'],
@@ -1271,7 +1271,7 @@ mixin _$AdminFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$SettingsPageRoute on GoRouteData {
+mixin $SettingsPageRoute on GoRouteData {
   static SettingsPageRoute _fromState(GoRouterState state) =>
       const SettingsPageRoute();
 
@@ -1294,7 +1294,7 @@ mixin _$SettingsPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$DomainPageRoute on GoRouteData {
+mixin $DomainPageRoute on GoRouteData {
   static DomainPageRoute _fromState(GoRouterState state) =>
       const DomainPageRoute();
 
@@ -1317,7 +1317,7 @@ mixin _$DomainPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ChangeLogsPageRoute on GoRouteData {
+mixin $ChangeLogsPageRoute on GoRouteData {
   static ChangeLogsPageRoute _fromState(GoRouterState state) =>
       const ChangeLogsPageRoute();
 
@@ -1340,7 +1340,7 @@ mixin _$ChangeLogsPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ChangeLogPageRoute on GoRouteData {
+mixin $ChangeLogPageRoute on GoRouteData {
   static ChangeLogPageRoute _fromState(GoRouterState state) =>
       ChangeLogPageRoute(
         state.pathParameters['id']!,
@@ -1367,7 +1367,7 @@ mixin _$ChangeLogPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ChangeLogFormPageRoute on GoRouteData {
+mixin $ChangeLogFormPageRoute on GoRouteData {
   static ChangeLogFormPageRoute _fromState(GoRouterState state) =>
       ChangeLogFormPageRoute(
         id: state.uri.queryParameters['id'],
@@ -1397,7 +1397,7 @@ mixin _$ChangeLogFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$YourAccountPageRoute on GoRouteData {
+mixin $YourAccountPageRoute on GoRouteData {
   static YourAccountPageRoute _fromState(GoRouterState state) =>
       const YourAccountPageRoute();
 
@@ -1420,7 +1420,7 @@ mixin _$YourAccountPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$AppointmentSchedulesPageRoute on GoRouteData {
+mixin $AppointmentSchedulesPageRoute on GoRouteData {
   static AppointmentSchedulesPageRoute _fromState(GoRouterState state) =>
       const AppointmentSchedulesPageRoute();
 
@@ -1443,7 +1443,7 @@ mixin _$AppointmentSchedulesPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$AppointmentSchedulesByDatePageRoute on GoRouteData {
+mixin $AppointmentSchedulesByDatePageRoute on GoRouteData {
   static AppointmentSchedulesByDatePageRoute _fromState(GoRouterState state) =>
       AppointmentSchedulesByDatePageRoute(
         date: _$convertMapValue(
@@ -1475,7 +1475,7 @@ mixin _$AppointmentSchedulesByDatePageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$AppointmentSchedulePageRoute on GoRouteData {
+mixin $AppointmentSchedulePageRoute on GoRouteData {
   static AppointmentSchedulePageRoute _fromState(GoRouterState state) =>
       AppointmentSchedulePageRoute(
         state.pathParameters['id']!,
@@ -1503,7 +1503,7 @@ mixin _$AppointmentSchedulePageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$AppointmentScheduleFormPageRoute on GoRouteData {
+mixin $AppointmentScheduleFormPageRoute on GoRouteData {
   static AppointmentScheduleFormPageRoute _fromState(GoRouterState state) =>
       AppointmentScheduleFormPageRoute(
         id: state.uri.queryParameters['id'],
@@ -1539,7 +1539,7 @@ mixin _$AppointmentScheduleFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientSpeciesListPageRoute on GoRouteData {
+mixin $PatientSpeciesListPageRoute on GoRouteData {
   static PatientSpeciesListPageRoute _fromState(GoRouterState state) =>
       const PatientSpeciesListPageRoute();
 
@@ -1562,7 +1562,7 @@ mixin _$PatientSpeciesListPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientSpeciesFormPageRoute on GoRouteData {
+mixin $PatientSpeciesFormPageRoute on GoRouteData {
   static PatientSpeciesFormPageRoute _fromState(GoRouterState state) =>
       PatientSpeciesFormPageRoute(
         id: state.uri.queryParameters['id'],
@@ -1592,7 +1592,7 @@ mixin _$PatientSpeciesFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientSpeciesPageRoute on GoRouteData {
+mixin $PatientSpeciesPageRoute on GoRouteData {
   static PatientSpeciesPageRoute _fromState(GoRouterState state) =>
       PatientSpeciesPageRoute(
         state.pathParameters['id']!,
@@ -1619,7 +1619,7 @@ mixin _$PatientSpeciesPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientBreedFormPageRoute on GoRouteData {
+mixin $PatientBreedFormPageRoute on GoRouteData {
   static PatientBreedFormPageRoute _fromState(GoRouterState state) =>
       PatientBreedFormPageRoute(
         id: state.uri.queryParameters['id'],
@@ -1651,7 +1651,7 @@ mixin _$PatientBreedFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ProductAdjustmentsPageRoute on GoRouteData {
+mixin $ProductAdjustmentsPageRoute on GoRouteData {
   static ProductAdjustmentsPageRoute _fromState(GoRouterState state) =>
       ProductAdjustmentsPageRoute(
         productId: state.uri.queryParameters['product-id'],
@@ -1684,7 +1684,7 @@ mixin _$ProductAdjustmentsPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$ProductAdjustmentFormPageRoute on GoRouteData {
+mixin $ProductAdjustmentFormPageRoute on GoRouteData {
   static ProductAdjustmentFormPageRoute _fromState(GoRouterState state) =>
       ProductAdjustmentFormPageRoute(
         id: state.uri.queryParameters['id'],
@@ -1720,7 +1720,7 @@ mixin _$ProductAdjustmentFormPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientTreatmentPageRoute on GoRouteData {
+mixin $PatientTreatmentPageRoute on GoRouteData {
   static PatientTreatmentPageRoute _fromState(GoRouterState state) =>
       const PatientTreatmentPageRoute();
 
@@ -1743,7 +1743,7 @@ mixin _$PatientTreatmentPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin _$PatientTreamentFormPageRoute on GoRouteData {
+mixin $PatientTreamentFormPageRoute on GoRouteData {
   static PatientTreamentFormPageRoute _fromState(GoRouterState state) =>
       PatientTreamentFormPageRoute(
         id: state.uri.queryParameters['id'],
@@ -1785,40 +1785,40 @@ T? _$convertMapValue<T>(
 
 RouteBase get $adminsPageRoute => GoRouteData.$route(
       path: '/admins',
-      factory: _$AdminsPageRoute._fromState,
+      factory: $AdminsPageRoute._fromState,
     );
 
 RouteBase get $adminPageRoute => GoRouteData.$route(
       path: '/admin/:id',
-      factory: _$AdminPageRoute._fromState,
+      factory: $AdminPageRoute._fromState,
     );
 
 RouteBase get $adminFormPageRoute => GoRouteData.$route(
       path: '/form/admin',
-      factory: _$AdminFormPageRoute._fromState,
+      factory: $AdminFormPageRoute._fromState,
     );
 
 RouteBase get $branchesPageRoute => GoRouteData.$route(
       path: '/branches',
-      factory: _$BranchesPageRoute._fromState,
+      factory: $BranchesPageRoute._fromState,
     );
 
 RouteBase get $branchFormPageRoute => GoRouteData.$route(
       path: '/form/branch',
-      factory: _$BranchFormPageRoute._fromState,
+      factory: $BranchFormPageRoute._fromState,
     );
 
 RouteBase get $branchPageRoute => GoRouteData.$route(
       path: '/branch/:id',
-      factory: _$BranchPageRoute._fromState,
+      factory: $BranchPageRoute._fromState,
     );
 
 RouteBase get $loginPageRoute => GoRouteData.$route(
       path: '/login/user',
-      factory: _$LoginPageRoute._fromState,
+      factory: $LoginPageRoute._fromState,
     );
 
-mixin _$LoginPageRoute on GoRouteData {
+mixin $LoginPageRoute on GoRouteData {
   static LoginPageRoute _fromState(GoRouterState state) =>
       const LoginPageRoute();
 
@@ -1843,10 +1843,10 @@ mixin _$LoginPageRoute on GoRouteData {
 
 RouteBase get $emailValidationPageRoute => GoRouteData.$route(
       path: '/email/validation',
-      factory: _$EmailValidationPageRoute._fromState,
+      factory: $EmailValidationPageRoute._fromState,
     );
 
-mixin _$EmailValidationPageRoute on GoRouteData {
+mixin $EmailValidationPageRoute on GoRouteData {
   static EmailValidationPageRoute _fromState(GoRouterState state) =>
       const EmailValidationPageRoute();
 
@@ -1871,10 +1871,10 @@ mixin _$EmailValidationPageRoute on GoRouteData {
 
 RouteBase get $adminLoginPageRoute => GoRouteData.$route(
       path: '/login/admin',
-      factory: _$AdminLoginPageRoute._fromState,
+      factory: $AdminLoginPageRoute._fromState,
     );
 
-mixin _$AdminLoginPageRoute on GoRouteData {
+mixin $AdminLoginPageRoute on GoRouteData {
   static AdminLoginPageRoute _fromState(GoRouterState state) =>
       const AdminLoginPageRoute();
 
@@ -1899,10 +1899,10 @@ mixin _$AdminLoginPageRoute on GoRouteData {
 
 RouteBase get $accountRecoveryPageRoute => GoRouteData.$route(
       path: 'recovery',
-      factory: _$AccountRecoveryPageRoute._fromState,
+      factory: $AccountRecoveryPageRoute._fromState,
     );
 
-mixin _$AccountRecoveryPageRoute on GoRouteData {
+mixin $AccountRecoveryPageRoute on GoRouteData {
   static AccountRecoveryPageRoute _fromState(GoRouterState state) =>
       const AccountRecoveryPageRoute();
 
@@ -1927,10 +1927,10 @@ mixin _$AccountRecoveryPageRoute on GoRouteData {
 
 RouteBase get $accountPageRoute => GoRouteData.$route(
       path: '/account',
-      factory: _$AccountPageRoute._fromState,
+      factory: $AccountPageRoute._fromState,
     );
 
-mixin _$AccountPageRoute on GoRouteData {
+mixin $AccountPageRoute on GoRouteData {
   static AccountPageRoute _fromState(GoRouterState state) =>
       const AccountPageRoute();
 
@@ -1955,60 +1955,60 @@ mixin _$AccountPageRoute on GoRouteData {
 
 RouteBase get $yourAccountPageRoute => GoRouteData.$route(
       path: '/your-account',
-      factory: _$YourAccountPageRoute._fromState,
+      factory: $YourAccountPageRoute._fromState,
     );
 
 RouteBase get $usersPageRoute => GoRouteData.$route(
       path: '/user',
-      factory: _$UsersPageRoute._fromState,
+      factory: $UsersPageRoute._fromState,
     );
 
 RouteBase get $userPageRoute => GoRouteData.$route(
       path: '/user/:id',
-      factory: _$UserPageRoute._fromState,
+      factory: $UserPageRoute._fromState,
     );
 
 RouteBase get $userFormPageRoute => GoRouteData.$route(
       path: '/form/user',
-      factory: _$UserFormPageRoute._fromState,
+      factory: $UserFormPageRoute._fromState,
     );
 
 RouteBase get $settingsPageRoute => GoRouteData.$route(
       path: '/settings',
-      factory: _$SettingsPageRoute._fromState,
+      factory: $SettingsPageRoute._fromState,
     );
 
 RouteBase get $domainPageRoute => GoRouteData.$route(
       path: '/domain',
-      factory: _$DomainPageRoute._fromState,
+      factory: $DomainPageRoute._fromState,
     );
 
 RouteBase get $patientsPageRoute => GoRouteData.$route(
       path: '/patients',
-      factory: _$PatientsPageRoute._fromState,
+      factory: $PatientsPageRoute._fromState,
     );
 
 RouteBase get $patientPageRoute => GoRouteData.$route(
       path: '/patient/:id',
-      factory: _$PatientPageRoute._fromState,
+      factory: $PatientPageRoute._fromState,
     );
 
 RouteBase get $patientFormPageRoute => GoRouteData.$route(
       path: '/form/patient',
-      factory: _$PatientFormPageRoute._fromState,
+      factory: $PatientFormPageRoute._fromState,
     );
 
 RouteBase get $dashboardPageRoute => GoRouteData.$route(
       path: '/',
-      factory: _$DashboardPageRoute._fromState,
+      factory: $DashboardPageRoute._fromState,
     );
 
 RouteBase get $morePageRoute => GoRouteData.$route(
       path: '/more',
-      factory: _$MorePageRoute._fromState,
+      factory: $MorePageRoute._fromState,
     );
 
-mixin _$MorePageRoute on GoRouteData {
+mixin $MorePageRoute on GoRouteData {
   static MorePageRoute _fromState(GoRouterState state) => const MorePageRoute();
 
   @override
@@ -2032,10 +2032,10 @@ mixin _$MorePageRoute on GoRouteData {
 
 RouteBase get $salesPageRoute => GoRouteData.$route(
       path: '/sales',
-      factory: _$SalesPageRoute._fromState,
+      factory: $SalesPageRoute._fromState,
     );
 
-mixin _$SalesPageRoute on GoRouteData {
+mixin $SalesPageRoute on GoRouteData {
   static SalesPageRoute _fromState(GoRouterState state) =>
       const SalesPageRoute();
 
@@ -2060,170 +2060,170 @@ mixin _$SalesPageRoute on GoRouteData {
 
 RouteBase get $salesCashierPageRoute => GoRouteData.$route(
       path: '/cashier',
-      factory: _$SalesCashierPageRoute._fromState,
+      factory: $SalesCashierPageRoute._fromState,
     );
 
 RouteBase get $productsPageRoute => GoRouteData.$route(
       path: '/products',
-      factory: _$ProductsPageRoute._fromState,
+      factory: $ProductsPageRoute._fromState,
     );
 
 RouteBase get $productInventoriesPageRoute => GoRouteData.$route(
       path: '/productInventories',
-      factory: _$ProductInventoriesPageRoute._fromState,
+      factory: $ProductInventoriesPageRoute._fromState,
     );
 
 RouteBase get $productFormPageRoute => GoRouteData.$route(
       path: '/form/product',
-      factory: _$ProductFormPageRoute._fromState,
+      factory: $ProductFormPageRoute._fromState,
     );
 
 RouteBase get $productStockFormPageRoute => GoRouteData.$route(
       path: '/form/productStock',
-      factory: _$ProductStockFormPageRoute._fromState,
+      factory: $ProductStockFormPageRoute._fromState,
     );
 
 RouteBase get $productPageRoute => GoRouteData.$route(
       path: '/product/:id',
-      factory: _$ProductPageRoute._fromState,
+      factory: $ProductPageRoute._fromState,
     );
 
 RouteBase get $productStockPageRoute => GoRouteData.$route(
       path: '/product/form/:id',
-      factory: _$ProductStockPageRoute._fromState,
+      factory: $ProductStockPageRoute._fromState,
     );
 
 RouteBase get $patientRecordPageRoute => GoRouteData.$route(
       path: '/patientRecord/:id',
-      factory: _$PatientRecordPageRoute._fromState,
+      factory: $PatientRecordPageRoute._fromState,
     );
 
 RouteBase get $patientRecordFormPageRoute => GoRouteData.$route(
       path: '/form/patientRecord',
-      factory: _$PatientRecordFormPageRoute._fromState,
+      factory: $PatientRecordFormPageRoute._fromState,
     );
 
 RouteBase get $patientTreatmentRecordPageRoute => GoRouteData.$route(
       path: '/patientTreatmentRecord/:id',
-      factory: _$PatientTreatmentRecordPageRoute._fromState,
+      factory: $PatientTreatmentRecordPageRoute._fromState,
     );
 
 RouteBase get $patientTreatmentsRecordPageRoute => GoRouteData.$route(
       path: '/patientTreatmentRecords',
-      factory: _$PatientTreatmentsRecordPageRoute._fromState,
+      factory: $PatientTreatmentsRecordPageRoute._fromState,
     );
 
 RouteBase get $patientTreatmentRecordFormPageRoute => GoRouteData.$route(
       path: '/form/patientTreatmentRecord',
-      factory: _$PatientTreatmentRecordFormPageRoute._fromState,
+      factory: $PatientTreatmentRecordFormPageRoute._fromState,
     );
 
 RouteBase get $patientAppointmentSchedulesPageRoute => GoRouteData.$route(
       path: '/patient/appointmentSchedules',
-      factory: _$PatientAppointmentSchedulesPageRoute._fromState,
+      factory: $PatientAppointmentSchedulesPageRoute._fromState,
     );
 
 RouteBase get $appointmentSchedulesPageRoute => GoRouteData.$route(
       path: '/appointmentSchedules',
-      factory: _$AppointmentSchedulesPageRoute._fromState,
+      factory: $AppointmentSchedulesPageRoute._fromState,
     );
 
 RouteBase get $appointmentSchedulesByDatePageRoute => GoRouteData.$route(
       path: '/today/appointmentSchedules',
-      factory: _$AppointmentSchedulesByDatePageRoute._fromState,
+      factory: $AppointmentSchedulesByDatePageRoute._fromState,
     );
 
 RouteBase get $appointmentScheduleFormPageRoute => GoRouteData.$route(
       path: '/form/appointmentSchedule',
-      factory: _$AppointmentScheduleFormPageRoute._fromState,
+      factory: $AppointmentScheduleFormPageRoute._fromState,
     );
 
 RouteBase get $appointmentSchedulePageRoute => GoRouteData.$route(
       path: '/appointmentSchedule/:id',
-      factory: _$AppointmentSchedulePageRoute._fromState,
+      factory: $AppointmentSchedulePageRoute._fromState,
     );
 
 RouteBase get $calendarAppointmentSchedulesPageRoute => GoRouteData.$route(
       path: '/calendar',
-      factory: _$CalendarAppointmentSchedulesPageRoute._fromState,
+      factory: $CalendarAppointmentSchedulesPageRoute._fromState,
     );
 
 RouteBase get $changeLogsPageRoute => GoRouteData.$route(
       path: '/changeLogs',
-      factory: _$ChangeLogsPageRoute._fromState,
+      factory: $ChangeLogsPageRoute._fromState,
     );
 
 RouteBase get $changeLogPageRoute => GoRouteData.$route(
       path: '/changeLog/:id',
-      factory: _$ChangeLogPageRoute._fromState,
+      factory: $ChangeLogPageRoute._fromState,
     );
 
 RouteBase get $changeLogFormPageRoute => GoRouteData.$route(
       path: '/form/changelog',
-      factory: _$ChangeLogFormPageRoute._fromState,
+      factory: $ChangeLogFormPageRoute._fromState,
     );
 
 RouteBase get $productCategoriesPageRoute => GoRouteData.$route(
       path: '/product-categories',
-      factory: _$ProductCategoriesPageRoute._fromState,
+      factory: $ProductCategoriesPageRoute._fromState,
     );
 
 RouteBase get $productCategoryPageRoute => GoRouteData.$route(
       path: '/product-category/:id',
-      factory: _$ProductCategoryPageRoute._fromState,
+      factory: $ProductCategoryPageRoute._fromState,
     );
 
 RouteBase get $productCategoryFormPageRoute => GoRouteData.$route(
       path: '/form/product-category',
-      factory: _$ProductCategoryFormPageRoute._fromState,
+      factory: $ProductCategoryFormPageRoute._fromState,
     );
 
 RouteBase get $patientPrescriptionItemFormPageRoute => GoRouteData.$route(
       path: '/form/patientPrescriptionItem',
-      factory: _$PatientPrescriptionItemFormPageRoute._fromState,
+      factory: $PatientPrescriptionItemFormPageRoute._fromState,
     );
 
 RouteBase get $patientFileFormPageRoute => GoRouteData.$route(
       path: '/form/patientFiles',
-      factory: _$PatientFileFormPageRoute._fromState,
+      factory: $PatientFileFormPageRoute._fromState,
     );
 
 RouteBase get $productAdjustmentsPageRoute => GoRouteData.$route(
       path: '/product-adjustments',
-      factory: _$ProductAdjustmentsPageRoute._fromState,
+      factory: $ProductAdjustmentsPageRoute._fromState,
     );
 
 RouteBase get $productAdjustmentFormPageRoute => GoRouteData.$route(
       path: '/form/product-adjustments',
-      factory: _$ProductAdjustmentFormPageRoute._fromState,
+      factory: $ProductAdjustmentFormPageRoute._fromState,
     );
 
 RouteBase get $patientSpeciesListPageRoute => GoRouteData.$route(
       path: '/patientSpecies',
-      factory: _$PatientSpeciesListPageRoute._fromState,
+      factory: $PatientSpeciesListPageRoute._fromState,
     );
 
 RouteBase get $patientSpeciesFormPageRoute => GoRouteData.$route(
       path: '/form/patientSpecies',
-      factory: _$PatientSpeciesFormPageRoute._fromState,
+      factory: $PatientSpeciesFormPageRoute._fromState,
     );
 
 RouteBase get $patientSpeciesPageRoute => GoRouteData.$route(
       path: '/patientSpecies/:id',
-      factory: _$PatientSpeciesPageRoute._fromState,
+      factory: $PatientSpeciesPageRoute._fromState,
     );
 
 RouteBase get $patientBreedFormPageRoute => GoRouteData.$route(
       path: '/form/patientBreeds',
-      factory: _$PatientBreedFormPageRoute._fromState,
+      factory: $PatientBreedFormPageRoute._fromState,
     );
 
 RouteBase get $patientTreatmentPageRoute => GoRouteData.$route(
       path: '/patientTreaments',
-      factory: _$PatientTreatmentPageRoute._fromState,
+      factory: $PatientTreatmentPageRoute._fromState,
     );
 
 RouteBase get $patientTreamentFormPageRoute => GoRouteData.$route(
       path: '/form/patientTreaments',
-      factory: _$PatientTreamentFormPageRoute._fromState,
+      factory: $PatientTreamentFormPageRoute._fromState,
     );

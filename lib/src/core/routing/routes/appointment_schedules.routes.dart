@@ -17,7 +17,7 @@ class AppointmentSchedulesData extends StatefulShellBranchData {
 
 @TypedGoRoute<PatientAppointmentSchedulesPageRoute>(
     path: PatientAppointmentSchedulesPageRoute.path)
-class PatientAppointmentSchedulesPageRoute extends GoRouteData with _$PatientAppointmentSchedulesPageRoute {
+class PatientAppointmentSchedulesPageRoute extends GoRouteData with $PatientAppointmentSchedulesPageRoute {
   const PatientAppointmentSchedulesPageRoute();
   static const path = '/patient/appointmentSchedules';
 
@@ -29,7 +29,7 @@ class PatientAppointmentSchedulesPageRoute extends GoRouteData with _$PatientApp
 
 @TypedGoRoute<AppointmentSchedulesPageRoute>(
     path: AppointmentSchedulesPageRoute.path)
-class AppointmentSchedulesPageRoute extends GoRouteData with _$AppointmentSchedulesPageRoute {
+class AppointmentSchedulesPageRoute extends GoRouteData with $AppointmentSchedulesPageRoute {
   const AppointmentSchedulesPageRoute();
   static const path = '/appointmentSchedules';
 
@@ -41,7 +41,7 @@ class AppointmentSchedulesPageRoute extends GoRouteData with _$AppointmentSchedu
 
 @TypedGoRoute<AppointmentSchedulesByDatePageRoute>(
     path: AppointmentSchedulesByDatePageRoute.path)
-class AppointmentSchedulesByDatePageRoute extends GoRouteData with _$AppointmentSchedulesByDatePageRoute {
+class AppointmentSchedulesByDatePageRoute extends GoRouteData with $AppointmentSchedulesByDatePageRoute {
   const AppointmentSchedulesByDatePageRoute({this.date});
   static const path = '/today/appointmentSchedules';
 
@@ -57,7 +57,7 @@ class AppointmentSchedulesByDatePageRoute extends GoRouteData with _$Appointment
 
 @TypedGoRoute<AppointmentScheduleFormPageRoute>(
     path: AppointmentScheduleFormPageRoute.path)
-class AppointmentScheduleFormPageRoute extends GoRouteData with _$AppointmentScheduleFormPageRoute {
+class AppointmentScheduleFormPageRoute extends GoRouteData with $AppointmentScheduleFormPageRoute {
   const AppointmentScheduleFormPageRoute({
     this.id,
     this.patientId,
@@ -81,7 +81,7 @@ class AppointmentScheduleFormPageRoute extends GoRouteData with _$AppointmentSch
 
 @TypedGoRoute<AppointmentSchedulePageRoute>(
     path: AppointmentSchedulePageRoute.path)
-class AppointmentSchedulePageRoute extends GoRouteData with _$AppointmentSchedulePageRoute {
+class AppointmentSchedulePageRoute extends GoRouteData with $AppointmentSchedulePageRoute {
   const AppointmentSchedulePageRoute(this.id);
   static const path = '/appointmentSchedule/:id';
 
@@ -104,7 +104,7 @@ class CalendarAppointmentSchedulesData extends StatefulShellBranchData {
 
 @TypedGoRoute<CalendarAppointmentSchedulesPageRoute>(
     path: CalendarAppointmentSchedulesPageRoute.path)
-class CalendarAppointmentSchedulesPageRoute extends GoRouteData with _$CalendarAppointmentSchedulesPageRoute {
+class CalendarAppointmentSchedulesPageRoute extends GoRouteData with $CalendarAppointmentSchedulesPageRoute {
   const CalendarAppointmentSchedulesPageRoute();
   static const path = '/calendar';
 

@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -24,22 +25,36 @@ class BranchMapper extends ClassMapperBase<Branch> {
   static String _$id(Branch v) => v.id;
   static const Field<Branch, String> _f$id = Field('id', _$id);
   static String _$collectionId(Branch v) => v.collectionId;
-  static const Field<Branch, String> _f$collectionId =
-      Field('collectionId', _$collectionId);
+  static const Field<Branch, String> _f$collectionId = Field(
+    'collectionId',
+    _$collectionId,
+  );
   static String _$collectionName(Branch v) => v.collectionName;
-  static const Field<Branch, String> _f$collectionName =
-      Field('collectionName', _$collectionName);
+  static const Field<Branch, String> _f$collectionName = Field(
+    'collectionName',
+    _$collectionName,
+  );
   static String _$name(Branch v) => v.name;
   static const Field<Branch, String> _f$name = Field('name', _$name);
   static bool _$isDeleted(Branch v) => v.isDeleted;
-  static const Field<Branch, bool> _f$isDeleted =
-      Field('isDeleted', _$isDeleted, opt: true, def: false);
+  static const Field<Branch, bool> _f$isDeleted = Field(
+    'isDeleted',
+    _$isDeleted,
+    opt: true,
+    def: false,
+  );
   static DateTime? _$created(Branch v) => v.created;
-  static const Field<Branch, DateTime> _f$created =
-      Field('created', _$created, opt: true);
+  static const Field<Branch, DateTime> _f$created = Field(
+    'created',
+    _$created,
+    opt: true,
+  );
   static DateTime? _$updated(Branch v) => v.updated;
-  static const Field<Branch, DateTime> _f$updated =
-      Field('updated', _$updated, opt: true);
+  static const Field<Branch, DateTime> _f$updated = Field(
+    'updated',
+    _$updated,
+    opt: true,
+  );
 
   @override
   final MappableFields<Branch> fields = const {
@@ -54,13 +69,14 @@ class BranchMapper extends ClassMapperBase<Branch> {
 
   static Branch _instantiate(DecodingData data) {
     return Branch(
-        id: data.dec(_f$id),
-        collectionId: data.dec(_f$collectionId),
-        collectionName: data.dec(_f$collectionName),
-        name: data.dec(_f$name),
-        isDeleted: data.dec(_f$isDeleted),
-        created: data.dec(_f$created),
-        updated: data.dec(_f$updated));
+      id: data.dec(_f$id),
+      collectionId: data.dec(_f$collectionId),
+      collectionName: data.dec(_f$collectionName),
+      name: data.dec(_f$name),
+      isDeleted: data.dec(_f$isDeleted),
+      created: data.dec(_f$created),
+      updated: data.dec(_f$updated),
+    );
   }
 
   @override
@@ -110,14 +126,15 @@ extension BranchValueCopy<$R, $Out> on ObjectCopyWith<$R, Branch, $Out> {
 abstract class BranchCopyWith<$R, $In extends Branch, $Out>
     implements PbRecordCopyWith<$R, $In, $Out> {
   @override
-  $R call(
-      {String? id,
-      String? collectionId,
-      String? collectionName,
-      String? name,
-      bool? isDeleted,
-      DateTime? created,
-      DateTime? updated});
+  $R call({
+    String? id,
+    String? collectionId,
+    String? collectionName,
+    String? name,
+    bool? isDeleted,
+    DateTime? created,
+    DateTime? updated,
+  });
   BranchCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -128,34 +145,38 @@ class _BranchCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Branch, $Out>
   @override
   late final ClassMapperBase<Branch> $mapper = BranchMapper.ensureInitialized();
   @override
-  $R call(
-          {String? id,
-          String? collectionId,
-          String? collectionName,
-          String? name,
-          bool? isDeleted,
-          Object? created = $none,
-          Object? updated = $none}) =>
-      $apply(FieldCopyWithData({
-        if (id != null) #id: id,
-        if (collectionId != null) #collectionId: collectionId,
-        if (collectionName != null) #collectionName: collectionName,
-        if (name != null) #name: name,
-        if (isDeleted != null) #isDeleted: isDeleted,
-        if (created != $none) #created: created,
-        if (updated != $none) #updated: updated
-      }));
+  $R call({
+    String? id,
+    String? collectionId,
+    String? collectionName,
+    String? name,
+    bool? isDeleted,
+    Object? created = $none,
+    Object? updated = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (id != null) #id: id,
+      if (collectionId != null) #collectionId: collectionId,
+      if (collectionName != null) #collectionName: collectionName,
+      if (name != null) #name: name,
+      if (isDeleted != null) #isDeleted: isDeleted,
+      if (created != $none) #created: created,
+      if (updated != $none) #updated: updated,
+    }),
+  );
   @override
   Branch $make(CopyWithData data) => Branch(
-      id: data.get(#id, or: $value.id),
-      collectionId: data.get(#collectionId, or: $value.collectionId),
-      collectionName: data.get(#collectionName, or: $value.collectionName),
-      name: data.get(#name, or: $value.name),
-      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
-      created: data.get(#created, or: $value.created),
-      updated: data.get(#updated, or: $value.updated));
+    id: data.get(#id, or: $value.id),
+    collectionId: data.get(#collectionId, or: $value.collectionId),
+    collectionName: data.get(#collectionName, or: $value.collectionName),
+    name: data.get(#name, or: $value.name),
+    isDeleted: data.get(#isDeleted, or: $value.isDeleted),
+    created: data.get(#created, or: $value.created),
+    updated: data.get(#updated, or: $value.updated),
+  );
 
   @override
   BranchCopyWith<$R2, Branch, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
       _BranchCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

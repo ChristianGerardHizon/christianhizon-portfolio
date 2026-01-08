@@ -11,7 +11,7 @@ class BranchesBranchData extends StatefulShellBranchData {
 }
 
 @TypedGoRoute<BranchesPageRoute>(path: BranchesPageRoute.path)
-class BranchesPageRoute extends GoRouteData with _$BranchesPageRoute {
+class BranchesPageRoute extends GoRouteData with $BranchesPageRoute {
   const BranchesPageRoute();
   static const path = '/branches';
 
@@ -22,7 +22,7 @@ class BranchesPageRoute extends GoRouteData with _$BranchesPageRoute {
 }
 
 @TypedGoRoute<BranchFormPageRoute>(path: BranchFormPageRoute.path)
-class BranchFormPageRoute extends GoRouteData with _$BranchFormPageRoute {
+class BranchFormPageRoute extends GoRouteData with $BranchFormPageRoute {
   const BranchFormPageRoute({this.id});
   static const path = '/form/branch';
 
@@ -35,7 +35,7 @@ class BranchFormPageRoute extends GoRouteData with _$BranchFormPageRoute {
 }
 
 @TypedGoRoute<BranchPageRoute>(path: BranchPageRoute.path)
-class BranchPageRoute extends GoRouteData with _$BranchPageRoute {
+class BranchPageRoute extends GoRouteData with $BranchPageRoute {
   const BranchPageRoute(this.id);
   static const path = '/branch/:id';
 

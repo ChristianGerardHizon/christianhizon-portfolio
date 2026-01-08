@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -24,26 +25,46 @@ class PatientBreedMapper extends ClassMapperBase<PatientBreed> {
   static String _$id(PatientBreed v) => v.id;
   static const Field<PatientBreed, String> _f$id = Field('id', _$id);
   static String _$collectionId(PatientBreed v) => v.collectionId;
-  static const Field<PatientBreed, String> _f$collectionId =
-      Field('collectionId', _$collectionId);
+  static const Field<PatientBreed, String> _f$collectionId = Field(
+    'collectionId',
+    _$collectionId,
+  );
   static String _$collectionName(PatientBreed v) => v.collectionName;
-  static const Field<PatientBreed, String> _f$collectionName =
-      Field('collectionName', _$collectionName);
+  static const Field<PatientBreed, String> _f$collectionName = Field(
+    'collectionName',
+    _$collectionName,
+  );
   static String _$name(PatientBreed v) => v.name;
-  static const Field<PatientBreed, String> _f$name =
-      Field('name', _$name, opt: true, def: '');
+  static const Field<PatientBreed, String> _f$name = Field(
+    'name',
+    _$name,
+    opt: true,
+    def: '',
+  );
   static String _$species(PatientBreed v) => v.species;
-  static const Field<PatientBreed, String> _f$species =
-      Field('species', _$species);
+  static const Field<PatientBreed, String> _f$species = Field(
+    'species',
+    _$species,
+  );
   static bool _$isDeleted(PatientBreed v) => v.isDeleted;
-  static const Field<PatientBreed, bool> _f$isDeleted =
-      Field('isDeleted', _$isDeleted, opt: true, def: false);
+  static const Field<PatientBreed, bool> _f$isDeleted = Field(
+    'isDeleted',
+    _$isDeleted,
+    opt: true,
+    def: false,
+  );
   static DateTime? _$created(PatientBreed v) => v.created;
-  static const Field<PatientBreed, DateTime> _f$created =
-      Field('created', _$created, opt: true);
+  static const Field<PatientBreed, DateTime> _f$created = Field(
+    'created',
+    _$created,
+    opt: true,
+  );
   static DateTime? _$updated(PatientBreed v) => v.updated;
-  static const Field<PatientBreed, DateTime> _f$updated =
-      Field('updated', _$updated, opt: true);
+  static const Field<PatientBreed, DateTime> _f$updated = Field(
+    'updated',
+    _$updated,
+    opt: true,
+  );
 
   @override
   final MappableFields<PatientBreed> fields = const {
@@ -59,14 +80,15 @@ class PatientBreedMapper extends ClassMapperBase<PatientBreed> {
 
   static PatientBreed _instantiate(DecodingData data) {
     return PatientBreed(
-        id: data.dec(_f$id),
-        collectionId: data.dec(_f$collectionId),
-        collectionName: data.dec(_f$collectionName),
-        name: data.dec(_f$name),
-        species: data.dec(_f$species),
-        isDeleted: data.dec(_f$isDeleted),
-        created: data.dec(_f$created),
-        updated: data.dec(_f$updated));
+      id: data.dec(_f$id),
+      collectionId: data.dec(_f$collectionId),
+      collectionName: data.dec(_f$collectionName),
+      name: data.dec(_f$name),
+      species: data.dec(_f$species),
+      isDeleted: data.dec(_f$isDeleted),
+      created: data.dec(_f$created),
+      updated: data.dec(_f$updated),
+    );
   }
 
   @override
@@ -83,34 +105,43 @@ class PatientBreedMapper extends ClassMapperBase<PatientBreed> {
 
 mixin PatientBreedMappable {
   String toJson() {
-    return PatientBreedMapper.ensureInitialized()
-        .encodeJson<PatientBreed>(this as PatientBreed);
+    return PatientBreedMapper.ensureInitialized().encodeJson<PatientBreed>(
+      this as PatientBreed,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return PatientBreedMapper.ensureInitialized()
-        .encodeMap<PatientBreed>(this as PatientBreed);
+    return PatientBreedMapper.ensureInitialized().encodeMap<PatientBreed>(
+      this as PatientBreed,
+    );
   }
 
   PatientBreedCopyWith<PatientBreed, PatientBreed, PatientBreed> get copyWith =>
       _PatientBreedCopyWithImpl<PatientBreed, PatientBreed>(
-          this as PatientBreed, $identity, $identity);
+        this as PatientBreed,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return PatientBreedMapper.ensureInitialized()
-        .stringifyValue(this as PatientBreed);
+    return PatientBreedMapper.ensureInitialized().stringifyValue(
+      this as PatientBreed,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return PatientBreedMapper.ensureInitialized()
-        .equalsValue(this as PatientBreed, other);
+    return PatientBreedMapper.ensureInitialized().equalsValue(
+      this as PatientBreed,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return PatientBreedMapper.ensureInitialized()
-        .hashValue(this as PatientBreed);
+    return PatientBreedMapper.ensureInitialized().hashValue(
+      this as PatientBreed,
+    );
   }
 }
 
@@ -123,15 +154,16 @@ extension PatientBreedValueCopy<$R, $Out>
 abstract class PatientBreedCopyWith<$R, $In extends PatientBreed, $Out>
     implements PbRecordCopyWith<$R, $In, $Out> {
   @override
-  $R call(
-      {String? id,
-      String? collectionId,
-      String? collectionName,
-      String? name,
-      String? species,
-      bool? isDeleted,
-      DateTime? created,
-      DateTime? updated});
+  $R call({
+    String? id,
+    String? collectionId,
+    String? collectionName,
+    String? name,
+    String? species,
+    bool? isDeleted,
+    DateTime? created,
+    DateTime? updated,
+  });
   PatientBreedCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -144,38 +176,42 @@ class _PatientBreedCopyWithImpl<$R, $Out>
   late final ClassMapperBase<PatientBreed> $mapper =
       PatientBreedMapper.ensureInitialized();
   @override
-  $R call(
-          {String? id,
-          String? collectionId,
-          String? collectionName,
-          String? name,
-          String? species,
-          bool? isDeleted,
-          Object? created = $none,
-          Object? updated = $none}) =>
-      $apply(FieldCopyWithData({
-        if (id != null) #id: id,
-        if (collectionId != null) #collectionId: collectionId,
-        if (collectionName != null) #collectionName: collectionName,
-        if (name != null) #name: name,
-        if (species != null) #species: species,
-        if (isDeleted != null) #isDeleted: isDeleted,
-        if (created != $none) #created: created,
-        if (updated != $none) #updated: updated
-      }));
+  $R call({
+    String? id,
+    String? collectionId,
+    String? collectionName,
+    String? name,
+    String? species,
+    bool? isDeleted,
+    Object? created = $none,
+    Object? updated = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (id != null) #id: id,
+      if (collectionId != null) #collectionId: collectionId,
+      if (collectionName != null) #collectionName: collectionName,
+      if (name != null) #name: name,
+      if (species != null) #species: species,
+      if (isDeleted != null) #isDeleted: isDeleted,
+      if (created != $none) #created: created,
+      if (updated != $none) #updated: updated,
+    }),
+  );
   @override
   PatientBreed $make(CopyWithData data) => PatientBreed(
-      id: data.get(#id, or: $value.id),
-      collectionId: data.get(#collectionId, or: $value.collectionId),
-      collectionName: data.get(#collectionName, or: $value.collectionName),
-      name: data.get(#name, or: $value.name),
-      species: data.get(#species, or: $value.species),
-      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
-      created: data.get(#created, or: $value.created),
-      updated: data.get(#updated, or: $value.updated));
+    id: data.get(#id, or: $value.id),
+    collectionId: data.get(#collectionId, or: $value.collectionId),
+    collectionName: data.get(#collectionName, or: $value.collectionName),
+    name: data.get(#name, or: $value.name),
+    species: data.get(#species, or: $value.species),
+    isDeleted: data.get(#isDeleted, or: $value.isDeleted),
+    created: data.get(#created, or: $value.created),
+    updated: data.get(#updated, or: $value.updated),
+  );
 
   @override
   PatientBreedCopyWith<$R2, PatientBreed, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _PatientBreedCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _PatientBreedCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

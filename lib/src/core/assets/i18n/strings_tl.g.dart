@@ -3,6 +3,7 @@
 ///
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
+// dart format off
 
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -10,7 +11,7 @@ import 'package:slang/generated.dart';
 import 'strings.g.dart';
 
 // Path: <root>
-class TranslationsTl implements Translations {
+class TranslationsTl with BaseTranslations<AppLocale, Translations> implements Translations {
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
 	TranslationsTl({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver, TranslationMetadata<AppLocale, Translations>? meta})
@@ -38,7 +39,6 @@ class TranslationsTl implements Translations {
 	// Translations
 	@override late final _TranslationsAuthenticationTl authentication = _TranslationsAuthenticationTl._(_root);
 	@override late final _TranslationsCommonTl common = _TranslationsCommonTl._(_root);
-	@override late final _TranslationsFailuresTl failures = _TranslationsFailuresTl._(_root);
 	@override late final _TranslationsFieldsTl fields = _TranslationsFieldsTl._(_root);
 }
 
@@ -72,15 +72,6 @@ class _TranslationsCommonTl implements TranslationsCommonEn {
 	@override String get placeholderText => 'N/A';
 }
 
-// Path: failures
-class _TranslationsFailuresTl implements TranslationsFailuresEn {
-	_TranslationsFailuresTl._(this._root);
-
-	final TranslationsTl _root; // ignore: unused_field
-
-	// Translations
-}
-
 // Path: fields
 class _TranslationsFieldsTl implements TranslationsFieldsEn {
 	_TranslationsFieldsTl._(this._root);
@@ -94,25 +85,27 @@ class _TranslationsFieldsTl implements TranslationsFieldsEn {
 	@override String get name => 'Name';
 }
 
-/// Flat map(s) containing all translations.
+/// The flat map containing all translations for locale <tl>.
 /// Only for edge cases! For simple maps, use the map function of this library.
+///
+/// The Dart AOT compiler has issues with very large switch statements,
+/// so the map is split into smaller functions (512 entries each).
 extension on TranslationsTl {
 	dynamic _flatMapFunction(String path) {
-		switch (path) {
-			case 'authentication.login': return 'Mag-log in';
-			case 'authentication.loginAsAdminList.0': return 'Hindi ka user?';
-			case 'authentication.loginAsAdminList.1': return 'Mag-log in bilang Tagapamahala';
-			case 'authentication.returnToLoginAsUser.0': return 'Hindi ka tagapamahala? ';
-			case 'authentication.returnToLoginAsUser.1': return 'Mag-log in bilang User';
-			case 'authentication.loginSuccess': return 'Nagtagumpay sa pag-log in';
-			case 'common.appName': return 'SannJoseVet';
-			case 'common.placeholderText': return 'N/A';
-			case 'fields.email': return 'Email';
-			case 'fields.password': return 'Password';
-			case 'fields.passwordConfirmation': return 'Password confirmation';
-			case 'fields.name': return 'Name';
-			default: return null;
-		}
+		return switch (path) {
+			'authentication.login' => 'Mag-log in',
+			'authentication.loginAsAdminList.0' => 'Hindi ka user?',
+			'authentication.loginAsAdminList.1' => 'Mag-log in bilang Tagapamahala',
+			'authentication.returnToLoginAsUser.0' => 'Hindi ka tagapamahala? ',
+			'authentication.returnToLoginAsUser.1' => 'Mag-log in bilang User',
+			'authentication.loginSuccess' => 'Nagtagumpay sa pag-log in',
+			'common.appName' => 'SannJoseVet',
+			'common.placeholderText' => 'N/A',
+			'fields.email' => 'Email',
+			'fields.password' => 'Password',
+			'fields.passwordConfirmation' => 'Password confirmation',
+			'fields.name' => 'Name',
+			_ => null,
+		};
 	}
 }
-

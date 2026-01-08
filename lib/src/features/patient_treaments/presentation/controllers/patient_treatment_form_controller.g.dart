@@ -6,177 +6,105 @@ part of 'patient_treatment_form_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$patientTreatmentFormControllerHash() =>
-    r'ec1e21ca3583113a2a67ed705125e9ba06f9f80a';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$PatientTreatmentFormController
-    extends BuildlessAutoDisposeAsyncNotifier<PatientTreatmentFormState> {
-  late final String? id;
-
-  FutureOr<PatientTreatmentFormState> build(
-    String? id,
-  );
-}
-
-/// See also [PatientTreatmentFormController].
 @ProviderFor(PatientTreatmentFormController)
-const patientTreatmentFormControllerProvider =
-    PatientTreatmentFormControllerFamily();
+final patientTreatmentFormControllerProvider =
+    PatientTreatmentFormControllerFamily._();
 
-/// See also [PatientTreatmentFormController].
-class PatientTreatmentFormControllerFamily
-    extends Family<AsyncValue<PatientTreatmentFormState>> {
-  /// See also [PatientTreatmentFormController].
-  const PatientTreatmentFormControllerFamily();
-
-  /// See also [PatientTreatmentFormController].
-  PatientTreatmentFormControllerProvider call(
-    String? id,
-  ) {
-    return PatientTreatmentFormControllerProvider(
-      id,
-    );
-  }
-
-  @override
-  PatientTreatmentFormControllerProvider getProviderOverride(
-    covariant PatientTreatmentFormControllerProvider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'patientTreatmentFormControllerProvider';
-}
-
-/// See also [PatientTreatmentFormController].
-class PatientTreatmentFormControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<PatientTreatmentFormController,
+final class PatientTreatmentFormControllerProvider
+    extends $AsyncNotifierProvider<PatientTreatmentFormController,
         PatientTreatmentFormState> {
-  /// See also [PatientTreatmentFormController].
-  PatientTreatmentFormControllerProvider(
-    String? id,
-  ) : this._internal(
-          () => PatientTreatmentFormController()..id = id,
-          from: patientTreatmentFormControllerProvider,
+  PatientTreatmentFormControllerProvider._(
+      {required PatientTreatmentFormControllerFamily super.from,
+      required String? super.argument})
+      : super(
+          retry: null,
           name: r'patientTreatmentFormControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$patientTreatmentFormControllerHash,
-          dependencies: PatientTreatmentFormControllerFamily._dependencies,
-          allTransitiveDependencies:
-              PatientTreatmentFormControllerFamily._allTransitiveDependencies,
-          id: id,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  PatientTreatmentFormControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final String? id;
+  @override
+  String debugGetCreateSourceHash() => _$patientTreatmentFormControllerHash();
 
   @override
-  FutureOr<PatientTreatmentFormState> runNotifierBuild(
-    covariant PatientTreatmentFormController notifier,
-  ) {
-    return notifier.build(
-      id,
-    );
+  String toString() {
+    return r'patientTreatmentFormControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(PatientTreatmentFormController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: PatientTreatmentFormControllerProvider._internal(
-        () => create()..id = id,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<PatientTreatmentFormController,
-      PatientTreatmentFormState> createElement() {
-    return _PatientTreatmentFormControllerProviderElement(this);
-  }
+  PatientTreatmentFormController create() => PatientTreatmentFormController();
 
   @override
   bool operator ==(Object other) {
-    return other is PatientTreatmentFormControllerProvider && other.id == id;
+    return other is PatientTreatmentFormControllerProvider &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin PatientTreatmentFormControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<PatientTreatmentFormState> {
-  /// The parameter `id` of this provider.
-  String? get id;
-}
+String _$patientTreatmentFormControllerHash() =>
+    r'ec1e21ca3583113a2a67ed705125e9ba06f9f80a';
 
-class _PatientTreatmentFormControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<
-        PatientTreatmentFormController,
-        PatientTreatmentFormState> with PatientTreatmentFormControllerRef {
-  _PatientTreatmentFormControllerProviderElement(super.provider);
+final class PatientTreatmentFormControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            PatientTreatmentFormController,
+            AsyncValue<PatientTreatmentFormState>,
+            PatientTreatmentFormState,
+            FutureOr<PatientTreatmentFormState>,
+            String?> {
+  PatientTreatmentFormControllerFamily._()
+      : super(
+          retry: null,
+          name: r'patientTreatmentFormControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  PatientTreatmentFormControllerProvider call(
+    String? id,
+  ) =>
+      PatientTreatmentFormControllerProvider._(argument: id, from: this);
 
   @override
-  String? get id => (origin as PatientTreatmentFormControllerProvider).id;
+  String toString() => r'patientTreatmentFormControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$PatientTreatmentFormController
+    extends $AsyncNotifier<PatientTreatmentFormState> {
+  late final _$args = ref.$arg as String?;
+  String? get id => _$args;
+
+  FutureOr<PatientTreatmentFormState> build(
+    String? id,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<PatientTreatmentFormState>,
+        PatientTreatmentFormState>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<PatientTreatmentFormState>,
+            PatientTreatmentFormState>,
+        AsyncValue<PatientTreatmentFormState>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

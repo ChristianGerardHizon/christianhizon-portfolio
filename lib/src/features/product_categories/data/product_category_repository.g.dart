@@ -6,25 +6,51 @@ part of 'product_category_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(productCategoryRepository)
+final productCategoryRepositoryProvider = ProductCategoryRepositoryProvider._();
+
+final class ProductCategoryRepositoryProvider extends $FunctionalProvider<
+        PBCollectionRepository<ProductCategory>,
+        PBCollectionRepository<ProductCategory>,
+        PBCollectionRepository<ProductCategory>>
+    with $Provider<PBCollectionRepository<ProductCategory>> {
+  ProductCategoryRepositoryProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'productCategoryRepositoryProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$productCategoryRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PBCollectionRepository<ProductCategory>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  PBCollectionRepository<ProductCategory> create(Ref ref) {
+    return productCategoryRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PBCollectionRepository<ProductCategory> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<PBCollectionRepository<ProductCategory>>(value),
+    );
+  }
+}
+
 String _$productCategoryRepositoryHash() =>
     r'2abf95ee033a0264b2bbc8e7e7f65e7f23f4a733';
-
-/// See also [productCategoryRepository].
-@ProviderFor(productCategoryRepository)
-final productCategoryRepositoryProvider =
-    Provider<PBCollectionRepository<ProductCategory>>.internal(
-  productCategoryRepository,
-  name: r'productCategoryRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$productCategoryRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ProductCategoryRepositoryRef
-    = ProviderRef<PBCollectionRepository<ProductCategory>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

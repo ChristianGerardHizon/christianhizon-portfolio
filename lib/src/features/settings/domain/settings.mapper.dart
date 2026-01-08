@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -41,18 +42,23 @@ class SettingsMapper extends ClassMapperBase<Settings> {
 
 mixin SettingsMappable {
   String toJson() {
-    return SettingsMapper.ensureInitialized()
-        .encodeJson<Settings>(this as Settings);
+    return SettingsMapper.ensureInitialized().encodeJson<Settings>(
+      this as Settings,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return SettingsMapper.ensureInitialized()
-        .encodeMap<Settings>(this as Settings);
+    return SettingsMapper.ensureInitialized().encodeMap<Settings>(
+      this as Settings,
+    );
   }
 
   SettingsCopyWith<Settings, Settings, Settings> get copyWith =>
       _SettingsCopyWithImpl<Settings, Settings>(
-          this as Settings, $identity, $identity);
+        this as Settings,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
     return SettingsMapper.ensureInitialized().stringifyValue(this as Settings);
@@ -60,8 +66,10 @@ mixin SettingsMappable {
 
   @override
   bool operator ==(Object other) {
-    return SettingsMapper.ensureInitialized()
-        .equalsValue(this as Settings, other);
+    return SettingsMapper.ensureInitialized().equalsValue(
+      this as Settings,
+      other,
+    );
   }
 
   @override
@@ -96,6 +104,7 @@ class _SettingsCopyWithImpl<$R, $Out>
 
   @override
   SettingsCopyWith<$R2, Settings, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _SettingsCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _SettingsCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

@@ -6,176 +6,101 @@ part of 'change_log_table_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$changeLogTableControllerHash() =>
-    r'40465b130447d397ba52e93c9a714234600fd8a1';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$ChangeLogTableController
-    extends BuildlessAutoDisposeAsyncNotifier<List<ChangeLog>> {
-  late final String tableKey;
-
-  FutureOr<List<ChangeLog>> build(
-    String tableKey,
-  );
-}
-
-/// See also [ChangeLogTableController].
 @ProviderFor(ChangeLogTableController)
-const changeLogTableControllerProvider = ChangeLogTableControllerFamily();
+final changeLogTableControllerProvider = ChangeLogTableControllerFamily._();
 
-/// See also [ChangeLogTableController].
-class ChangeLogTableControllerFamily
-    extends Family<AsyncValue<List<ChangeLog>>> {
-  /// See also [ChangeLogTableController].
-  const ChangeLogTableControllerFamily();
-
-  /// See also [ChangeLogTableController].
-  ChangeLogTableControllerProvider call(
-    String tableKey,
-  ) {
-    return ChangeLogTableControllerProvider(
-      tableKey,
-    );
-  }
-
-  @override
-  ChangeLogTableControllerProvider getProviderOverride(
-    covariant ChangeLogTableControllerProvider provider,
-  ) {
-    return call(
-      provider.tableKey,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'changeLogTableControllerProvider';
-}
-
-/// See also [ChangeLogTableController].
-class ChangeLogTableControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<ChangeLogTableController,
-        List<ChangeLog>> {
-  /// See also [ChangeLogTableController].
-  ChangeLogTableControllerProvider(
-    String tableKey,
-  ) : this._internal(
-          () => ChangeLogTableController()..tableKey = tableKey,
-          from: changeLogTableControllerProvider,
+final class ChangeLogTableControllerProvider
+    extends $AsyncNotifierProvider<ChangeLogTableController, List<ChangeLog>> {
+  ChangeLogTableControllerProvider._(
+      {required ChangeLogTableControllerFamily super.from,
+      required String super.argument})
+      : super(
+          retry: null,
           name: r'changeLogTableControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$changeLogTableControllerHash,
-          dependencies: ChangeLogTableControllerFamily._dependencies,
-          allTransitiveDependencies:
-              ChangeLogTableControllerFamily._allTransitiveDependencies,
-          tableKey: tableKey,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  ChangeLogTableControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.tableKey,
-  }) : super.internal();
-
-  final String tableKey;
+  @override
+  String debugGetCreateSourceHash() => _$changeLogTableControllerHash();
 
   @override
-  FutureOr<List<ChangeLog>> runNotifierBuild(
-    covariant ChangeLogTableController notifier,
-  ) {
-    return notifier.build(
-      tableKey,
-    );
+  String toString() {
+    return r'changeLogTableControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(ChangeLogTableController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: ChangeLogTableControllerProvider._internal(
-        () => create()..tableKey = tableKey,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        tableKey: tableKey,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<ChangeLogTableController,
-      List<ChangeLog>> createElement() {
-    return _ChangeLogTableControllerProviderElement(this);
-  }
+  ChangeLogTableController create() => ChangeLogTableController();
 
   @override
   bool operator ==(Object other) {
     return other is ChangeLogTableControllerProvider &&
-        other.tableKey == tableKey;
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, tableKey.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin ChangeLogTableControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<List<ChangeLog>> {
-  /// The parameter `tableKey` of this provider.
-  String get tableKey;
-}
+String _$changeLogTableControllerHash() =>
+    r'aeddb2d977c3dae46b0bfe37573531be0daf5aa4';
 
-class _ChangeLogTableControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<ChangeLogTableController,
-        List<ChangeLog>> with ChangeLogTableControllerRef {
-  _ChangeLogTableControllerProviderElement(super.provider);
+final class ChangeLogTableControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            ChangeLogTableController,
+            AsyncValue<List<ChangeLog>>,
+            List<ChangeLog>,
+            FutureOr<List<ChangeLog>>,
+            String> {
+  ChangeLogTableControllerFamily._()
+      : super(
+          retry: null,
+          name: r'changeLogTableControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  ChangeLogTableControllerProvider call(
+    String tableKey,
+  ) =>
+      ChangeLogTableControllerProvider._(argument: tableKey, from: this);
 
   @override
-  String get tableKey => (origin as ChangeLogTableControllerProvider).tableKey;
+  String toString() => r'changeLogTableControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$ChangeLogTableController
+    extends $AsyncNotifier<List<ChangeLog>> {
+  late final _$args = ref.$arg as String;
+  String get tableKey => _$args;
+
+  FutureOr<List<ChangeLog>> build(
+    String tableKey,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<List<ChangeLog>>, List<ChangeLog>>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<List<ChangeLog>>, List<ChangeLog>>,
+        AsyncValue<List<ChangeLog>>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

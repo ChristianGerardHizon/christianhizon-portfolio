@@ -6,22 +6,48 @@ part of 'admin_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$adminRepositoryHash() => r'a4b523e3f0c5cf992975e02bec70631a52e14ff2';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [adminRepository].
 @ProviderFor(adminRepository)
-final adminRepositoryProvider = Provider<PBAuthRepository<Admin>>.internal(
-  adminRepository,
-  name: r'adminRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$adminRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final adminRepositoryProvider = AdminRepositoryProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AdminRepositoryRef = ProviderRef<PBAuthRepository<Admin>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class AdminRepositoryProvider extends $FunctionalProvider<
+    PBAuthRepository<Admin>,
+    PBAuthRepository<Admin>,
+    PBAuthRepository<Admin>> with $Provider<PBAuthRepository<Admin>> {
+  AdminRepositoryProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'adminRepositoryProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$adminRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PBAuthRepository<Admin>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  PBAuthRepository<Admin> create(Ref ref) {
+    return adminRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PBAuthRepository<Admin> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<PBAuthRepository<Admin>>(value),
+    );
+  }
+}
+
+String _$adminRepositoryHash() => r'a4b523e3f0c5cf992975e02bec70631a52e14ff2';

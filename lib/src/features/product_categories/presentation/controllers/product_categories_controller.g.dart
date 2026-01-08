@@ -6,23 +6,50 @@ part of 'product_categories_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(ProductCategoriesController)
+final productCategoriesControllerProvider =
+    ProductCategoriesControllerProvider._();
+
+final class ProductCategoriesControllerProvider extends $AsyncNotifierProvider<
+    ProductCategoriesController, List<ProductCategory>> {
+  ProductCategoriesControllerProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'productCategoriesControllerProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$productCategoriesControllerHash();
+
+  @$internal
+  @override
+  ProductCategoriesController create() => ProductCategoriesController();
+}
+
 String _$productCategoriesControllerHash() =>
     r'793e5c3beb5bddf19f216f24f35ea746d4bc227a';
 
-/// See also [ProductCategoriesController].
-@ProviderFor(ProductCategoriesController)
-final productCategoriesControllerProvider = AutoDisposeAsyncNotifierProvider<
-    ProductCategoriesController, List<ProductCategory>>.internal(
-  ProductCategoriesController.new,
-  name: r'productCategoriesControllerProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$productCategoriesControllerHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$ProductCategoriesController
-    = AutoDisposeAsyncNotifier<List<ProductCategory>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$ProductCategoriesController
+    extends $AsyncNotifier<List<ProductCategory>> {
+  FutureOr<List<ProductCategory>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref
+        as $Ref<AsyncValue<List<ProductCategory>>, List<ProductCategory>>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<List<ProductCategory>>, List<ProductCategory>>,
+        AsyncValue<List<ProductCategory>>,
+        Object?,
+        Object?>;
+    element.handleCreate(ref, build);
+  }
+}

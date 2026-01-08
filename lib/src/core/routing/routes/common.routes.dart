@@ -1,7 +1,7 @@
 part of '../main.routes.dart';
 
 @TypedGoRoute<NotFoundRoute>(path: NotFoundRoute.path)
-class NotFoundRoute extends GoRouteData with _$NotFoundRoute {
+class NotFoundRoute extends GoRouteData with $NotFoundRoute {
   const NotFoundRoute();
   static const path = '/not-found';
 
@@ -12,7 +12,7 @@ class NotFoundRoute extends GoRouteData with _$NotFoundRoute {
 }
 
 @TypedGoRoute<SplashPageRoute>(path: SplashPageRoute.path)
-class SplashPageRoute extends GoRouteData with _$SplashPageRoute {
+class SplashPageRoute extends GoRouteData with $SplashPageRoute {
   const SplashPageRoute();
   static const path = '/splash';
 

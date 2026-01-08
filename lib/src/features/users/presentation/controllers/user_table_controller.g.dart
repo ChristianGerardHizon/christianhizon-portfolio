@@ -6,173 +6,95 @@ part of 'user_table_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userTableControllerHash() =>
-    r'3efe0975528b0b77ad4a0692be1566200a8e6bf2';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$UserTableController
-    extends BuildlessAutoDisposeAsyncNotifier<List<User>> {
-  late final String tableKey;
-
-  FutureOr<List<User>> build(
-    String tableKey,
-  );
-}
-
-/// See also [UserTableController].
 @ProviderFor(UserTableController)
-const userTableControllerProvider = UserTableControllerFamily();
+final userTableControllerProvider = UserTableControllerFamily._();
 
-/// See also [UserTableController].
-class UserTableControllerFamily extends Family<AsyncValue<List<User>>> {
-  /// See also [UserTableController].
-  const UserTableControllerFamily();
-
-  /// See also [UserTableController].
-  UserTableControllerProvider call(
-    String tableKey,
-  ) {
-    return UserTableControllerProvider(
-      tableKey,
-    );
-  }
-
-  @override
-  UserTableControllerProvider getProviderOverride(
-    covariant UserTableControllerProvider provider,
-  ) {
-    return call(
-      provider.tableKey,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'userTableControllerProvider';
-}
-
-/// See also [UserTableController].
-class UserTableControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    UserTableController, List<User>> {
-  /// See also [UserTableController].
-  UserTableControllerProvider(
-    String tableKey,
-  ) : this._internal(
-          () => UserTableController()..tableKey = tableKey,
-          from: userTableControllerProvider,
+final class UserTableControllerProvider
+    extends $AsyncNotifierProvider<UserTableController, List<User>> {
+  UserTableControllerProvider._(
+      {required UserTableControllerFamily super.from,
+      required String super.argument})
+      : super(
+          retry: null,
           name: r'userTableControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$userTableControllerHash,
-          dependencies: UserTableControllerFamily._dependencies,
-          allTransitiveDependencies:
-              UserTableControllerFamily._allTransitiveDependencies,
-          tableKey: tableKey,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  UserTableControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.tableKey,
-  }) : super.internal();
-
-  final String tableKey;
+  @override
+  String debugGetCreateSourceHash() => _$userTableControllerHash();
 
   @override
-  FutureOr<List<User>> runNotifierBuild(
-    covariant UserTableController notifier,
-  ) {
-    return notifier.build(
-      tableKey,
-    );
+  String toString() {
+    return r'userTableControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(UserTableController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: UserTableControllerProvider._internal(
-        () => create()..tableKey = tableKey,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        tableKey: tableKey,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<UserTableController, List<User>>
-      createElement() {
-    return _UserTableControllerProviderElement(this);
-  }
+  UserTableController create() => UserTableController();
 
   @override
   bool operator ==(Object other) {
-    return other is UserTableControllerProvider && other.tableKey == tableKey;
+    return other is UserTableControllerProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, tableKey.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin UserTableControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<List<User>> {
-  /// The parameter `tableKey` of this provider.
-  String get tableKey;
-}
+String _$userTableControllerHash() =>
+    r'f124a9b2edf7a59de0af2f45b6237a799e9ef4c7';
 
-class _UserTableControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<UserTableController,
-        List<User>> with UserTableControllerRef {
-  _UserTableControllerProviderElement(super.provider);
+final class UserTableControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<UserTableController, AsyncValue<List<User>>,
+            List<User>, FutureOr<List<User>>, String> {
+  UserTableControllerFamily._()
+      : super(
+          retry: null,
+          name: r'userTableControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  UserTableControllerProvider call(
+    String tableKey,
+  ) =>
+      UserTableControllerProvider._(argument: tableKey, from: this);
 
   @override
-  String get tableKey => (origin as UserTableControllerProvider).tableKey;
+  String toString() => r'userTableControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$UserTableController extends $AsyncNotifier<List<User>> {
+  late final _$args = ref.$arg as String;
+  String get tableKey => _$args;
+
+  FutureOr<List<User>> build(
+    String tableKey,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<List<User>>, List<User>>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<List<User>>, List<User>>,
+        AsyncValue<List<User>>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

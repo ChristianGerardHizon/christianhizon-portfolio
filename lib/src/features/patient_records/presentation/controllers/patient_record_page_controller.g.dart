@@ -6,175 +6,103 @@ part of 'patient_record_page_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$patientRecordPageControllerHash() =>
-    r'02594c8f27239285b8fa89244b1c0d0d04c20247';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$PatientRecordPageController
-    extends BuildlessAutoDisposeAsyncNotifier<PatientRecordPageState> {
-  late final String id;
-
-  FutureOr<PatientRecordPageState> build(
-    String id,
-  );
-}
-
-/// See also [PatientRecordPageController].
 @ProviderFor(PatientRecordPageController)
-const patientRecordPageControllerProvider = PatientRecordPageControllerFamily();
+final patientRecordPageControllerProvider =
+    PatientRecordPageControllerFamily._();
 
-/// See also [PatientRecordPageController].
-class PatientRecordPageControllerFamily
-    extends Family<AsyncValue<PatientRecordPageState>> {
-  /// See also [PatientRecordPageController].
-  const PatientRecordPageControllerFamily();
-
-  /// See also [PatientRecordPageController].
-  PatientRecordPageControllerProvider call(
-    String id,
-  ) {
-    return PatientRecordPageControllerProvider(
-      id,
-    );
-  }
-
-  @override
-  PatientRecordPageControllerProvider getProviderOverride(
-    covariant PatientRecordPageControllerProvider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'patientRecordPageControllerProvider';
-}
-
-/// See also [PatientRecordPageController].
-class PatientRecordPageControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<PatientRecordPageController,
-        PatientRecordPageState> {
-  /// See also [PatientRecordPageController].
-  PatientRecordPageControllerProvider(
-    String id,
-  ) : this._internal(
-          () => PatientRecordPageController()..id = id,
-          from: patientRecordPageControllerProvider,
+final class PatientRecordPageControllerProvider extends $AsyncNotifierProvider<
+    PatientRecordPageController, PatientRecordPageState> {
+  PatientRecordPageControllerProvider._(
+      {required PatientRecordPageControllerFamily super.from,
+      required String super.argument})
+      : super(
+          retry: null,
           name: r'patientRecordPageControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$patientRecordPageControllerHash,
-          dependencies: PatientRecordPageControllerFamily._dependencies,
-          allTransitiveDependencies:
-              PatientRecordPageControllerFamily._allTransitiveDependencies,
-          id: id,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  PatientRecordPageControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final String id;
+  @override
+  String debugGetCreateSourceHash() => _$patientRecordPageControllerHash();
 
   @override
-  FutureOr<PatientRecordPageState> runNotifierBuild(
-    covariant PatientRecordPageController notifier,
-  ) {
-    return notifier.build(
-      id,
-    );
+  String toString() {
+    return r'patientRecordPageControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(PatientRecordPageController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: PatientRecordPageControllerProvider._internal(
-        () => create()..id = id,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<PatientRecordPageController,
-      PatientRecordPageState> createElement() {
-    return _PatientRecordPageControllerProviderElement(this);
-  }
+  PatientRecordPageController create() => PatientRecordPageController();
 
   @override
   bool operator ==(Object other) {
-    return other is PatientRecordPageControllerProvider && other.id == id;
+    return other is PatientRecordPageControllerProvider &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin PatientRecordPageControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<PatientRecordPageState> {
-  /// The parameter `id` of this provider.
-  String get id;
-}
+String _$patientRecordPageControllerHash() =>
+    r'02594c8f27239285b8fa89244b1c0d0d04c20247';
 
-class _PatientRecordPageControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<PatientRecordPageController,
-        PatientRecordPageState> with PatientRecordPageControllerRef {
-  _PatientRecordPageControllerProviderElement(super.provider);
+final class PatientRecordPageControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            PatientRecordPageController,
+            AsyncValue<PatientRecordPageState>,
+            PatientRecordPageState,
+            FutureOr<PatientRecordPageState>,
+            String> {
+  PatientRecordPageControllerFamily._()
+      : super(
+          retry: null,
+          name: r'patientRecordPageControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  PatientRecordPageControllerProvider call(
+    String id,
+  ) =>
+      PatientRecordPageControllerProvider._(argument: id, from: this);
 
   @override
-  String get id => (origin as PatientRecordPageControllerProvider).id;
+  String toString() => r'patientRecordPageControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$PatientRecordPageController
+    extends $AsyncNotifier<PatientRecordPageState> {
+  late final _$args = ref.$arg as String;
+  String get id => _$args;
+
+  FutureOr<PatientRecordPageState> build(
+    String id,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref
+        as $Ref<AsyncValue<PatientRecordPageState>, PatientRecordPageState>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<PatientRecordPageState>, PatientRecordPageState>,
+        AsyncValue<PatientRecordPageState>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

@@ -6,174 +6,101 @@ part of 'change_log_form_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$changeLogFormControllerHash() =>
-    r'95fb4abede18ef0784c90b75c084abb739d4641e';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$ChangeLogFormController
-    extends BuildlessAutoDisposeAsyncNotifier<ChangeLogState> {
-  late final String? id;
-
-  FutureOr<ChangeLogState> build(
-    String? id,
-  );
-}
-
-/// See also [ChangeLogFormController].
 @ProviderFor(ChangeLogFormController)
-const changeLogFormControllerProvider = ChangeLogFormControllerFamily();
+final changeLogFormControllerProvider = ChangeLogFormControllerFamily._();
 
-/// See also [ChangeLogFormController].
-class ChangeLogFormControllerFamily extends Family<AsyncValue<ChangeLogState>> {
-  /// See also [ChangeLogFormController].
-  const ChangeLogFormControllerFamily();
-
-  /// See also [ChangeLogFormController].
-  ChangeLogFormControllerProvider call(
-    String? id,
-  ) {
-    return ChangeLogFormControllerProvider(
-      id,
-    );
-  }
-
-  @override
-  ChangeLogFormControllerProvider getProviderOverride(
-    covariant ChangeLogFormControllerProvider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'changeLogFormControllerProvider';
-}
-
-/// See also [ChangeLogFormController].
-class ChangeLogFormControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<ChangeLogFormController,
-        ChangeLogState> {
-  /// See also [ChangeLogFormController].
-  ChangeLogFormControllerProvider(
-    String? id,
-  ) : this._internal(
-          () => ChangeLogFormController()..id = id,
-          from: changeLogFormControllerProvider,
+final class ChangeLogFormControllerProvider
+    extends $AsyncNotifierProvider<ChangeLogFormController, ChangeLogState> {
+  ChangeLogFormControllerProvider._(
+      {required ChangeLogFormControllerFamily super.from,
+      required String? super.argument})
+      : super(
+          retry: null,
           name: r'changeLogFormControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$changeLogFormControllerHash,
-          dependencies: ChangeLogFormControllerFamily._dependencies,
-          allTransitiveDependencies:
-              ChangeLogFormControllerFamily._allTransitiveDependencies,
-          id: id,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  ChangeLogFormControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final String? id;
+  @override
+  String debugGetCreateSourceHash() => _$changeLogFormControllerHash();
 
   @override
-  FutureOr<ChangeLogState> runNotifierBuild(
-    covariant ChangeLogFormController notifier,
-  ) {
-    return notifier.build(
-      id,
-    );
+  String toString() {
+    return r'changeLogFormControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(ChangeLogFormController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: ChangeLogFormControllerProvider._internal(
-        () => create()..id = id,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<ChangeLogFormController,
-      ChangeLogState> createElement() {
-    return _ChangeLogFormControllerProviderElement(this);
-  }
+  ChangeLogFormController create() => ChangeLogFormController();
 
   @override
   bool operator ==(Object other) {
-    return other is ChangeLogFormControllerProvider && other.id == id;
+    return other is ChangeLogFormControllerProvider &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin ChangeLogFormControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<ChangeLogState> {
-  /// The parameter `id` of this provider.
-  String? get id;
-}
+String _$changeLogFormControllerHash() =>
+    r'95fb4abede18ef0784c90b75c084abb739d4641e';
 
-class _ChangeLogFormControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<ChangeLogFormController,
-        ChangeLogState> with ChangeLogFormControllerRef {
-  _ChangeLogFormControllerProviderElement(super.provider);
+final class ChangeLogFormControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            ChangeLogFormController,
+            AsyncValue<ChangeLogState>,
+            ChangeLogState,
+            FutureOr<ChangeLogState>,
+            String?> {
+  ChangeLogFormControllerFamily._()
+      : super(
+          retry: null,
+          name: r'changeLogFormControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  ChangeLogFormControllerProvider call(
+    String? id,
+  ) =>
+      ChangeLogFormControllerProvider._(argument: id, from: this);
 
   @override
-  String? get id => (origin as ChangeLogFormControllerProvider).id;
+  String toString() => r'changeLogFormControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$ChangeLogFormController
+    extends $AsyncNotifier<ChangeLogState> {
+  late final _$args = ref.$arg as String?;
+  String? get id => _$args;
+
+  FutureOr<ChangeLogState> build(
+    String? id,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<ChangeLogState>, ChangeLogState>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<ChangeLogState>, ChangeLogState>,
+        AsyncValue<ChangeLogState>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

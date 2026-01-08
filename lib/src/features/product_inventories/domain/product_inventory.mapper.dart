@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -80,38 +81,68 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
   static String _$id(ProductInventory v) => v.id;
   static const Field<ProductInventory, String> _f$id = Field('id', _$id);
   static String _$collectionId(ProductInventory v) => v.collectionId;
-  static const Field<ProductInventory, String> _f$collectionId =
-      Field('collectionId', _$collectionId);
+  static const Field<ProductInventory, String> _f$collectionId = Field(
+    'collectionId',
+    _$collectionId,
+  );
   static String _$collectionName(ProductInventory v) => v.collectionName;
-  static const Field<ProductInventory, String> _f$collectionName =
-      Field('collectionName', _$collectionName);
+  static const Field<ProductInventory, String> _f$collectionName = Field(
+    'collectionName',
+    _$collectionName,
+  );
   static String _$product(ProductInventory v) => v.product;
-  static const Field<ProductInventory, String> _f$product =
-      Field('product', _$product);
+  static const Field<ProductInventory, String> _f$product = Field(
+    'product',
+    _$product,
+  );
   static ProductStatus _$status(ProductInventory v) => v.status;
-  static const Field<ProductInventory, ProductStatus> _f$status =
-      Field('status', _$status);
+  static const Field<ProductInventory, ProductStatus> _f$status = Field(
+    'status',
+    _$status,
+  );
   static ProductInventoryExpand _$expand(ProductInventory v) => v.expand;
   static const Field<ProductInventory, ProductInventoryExpand> _f$expand =
       Field('expand', _$expand);
   static num _$totalExpired(ProductInventory v) => v.totalExpired;
-  static const Field<ProductInventory, num> _f$totalExpired =
-      Field('totalExpired', _$totalExpired, opt: true, def: 0);
+  static const Field<ProductInventory, num> _f$totalExpired = Field(
+    'totalExpired',
+    _$totalExpired,
+    opt: true,
+    def: 0,
+  );
   static num _$totalQuantity(ProductInventory v) => v.totalQuantity;
-  static const Field<ProductInventory, num> _f$totalQuantity =
-      Field('totalQuantity', _$totalQuantity, opt: true, def: 0);
+  static const Field<ProductInventory, num> _f$totalQuantity = Field(
+    'totalQuantity',
+    _$totalQuantity,
+    opt: true,
+    def: 0,
+  );
   static bool _$forSale(ProductInventory v) => v.forSale;
-  static const Field<ProductInventory, bool> _f$forSale =
-      Field('forSale', _$forSale, opt: true, def: false);
+  static const Field<ProductInventory, bool> _f$forSale = Field(
+    'forSale',
+    _$forSale,
+    opt: true,
+    def: false,
+  );
   static bool _$isDeleted(ProductInventory v) => v.isDeleted;
-  static const Field<ProductInventory, bool> _f$isDeleted =
-      Field('isDeleted', _$isDeleted, opt: true, def: false);
+  static const Field<ProductInventory, bool> _f$isDeleted = Field(
+    'isDeleted',
+    _$isDeleted,
+    opt: true,
+    def: false,
+  );
   static DateTime? _$created(ProductInventory v) => v.created;
-  static const Field<ProductInventory, DateTime> _f$created =
-      Field('created', _$created, opt: true);
+  static const Field<ProductInventory, DateTime> _f$created = Field(
+    'created',
+    _$created,
+    opt: true,
+  );
   static DateTime? _$updated(ProductInventory v) => v.updated;
-  static const Field<ProductInventory, DateTime> _f$updated =
-      Field('updated', _$updated, opt: true);
+  static const Field<ProductInventory, DateTime> _f$updated = Field(
+    'updated',
+    _$updated,
+    opt: true,
+  );
 
   @override
   final MappableFields<ProductInventory> fields = const {
@@ -131,18 +162,19 @@ class ProductInventoryMapper extends ClassMapperBase<ProductInventory> {
 
   static ProductInventory _instantiate(DecodingData data) {
     return ProductInventory(
-        id: data.dec(_f$id),
-        collectionId: data.dec(_f$collectionId),
-        collectionName: data.dec(_f$collectionName),
-        product: data.dec(_f$product),
-        status: data.dec(_f$status),
-        expand: data.dec(_f$expand),
-        totalExpired: data.dec(_f$totalExpired),
-        totalQuantity: data.dec(_f$totalQuantity),
-        forSale: data.dec(_f$forSale),
-        isDeleted: data.dec(_f$isDeleted),
-        created: data.dec(_f$created),
-        updated: data.dec(_f$updated));
+      id: data.dec(_f$id),
+      collectionId: data.dec(_f$collectionId),
+      collectionName: data.dec(_f$collectionName),
+      product: data.dec(_f$product),
+      status: data.dec(_f$status),
+      expand: data.dec(_f$expand),
+      totalExpired: data.dec(_f$totalExpired),
+      totalQuantity: data.dec(_f$totalQuantity),
+      forSale: data.dec(_f$forSale),
+      isDeleted: data.dec(_f$isDeleted),
+      created: data.dec(_f$created),
+      updated: data.dec(_f$updated),
+    );
   }
 
   @override
@@ -169,55 +201,68 @@ mixin ProductInventoryMappable {
   }
 
   ProductInventoryCopyWith<ProductInventory, ProductInventory, ProductInventory>
-      get copyWith =>
-          _ProductInventoryCopyWithImpl<ProductInventory, ProductInventory>(
-              this as ProductInventory, $identity, $identity);
+  get copyWith =>
+      _ProductInventoryCopyWithImpl<ProductInventory, ProductInventory>(
+        this as ProductInventory,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return ProductInventoryMapper.ensureInitialized()
-        .stringifyValue(this as ProductInventory);
+    return ProductInventoryMapper.ensureInitialized().stringifyValue(
+      this as ProductInventory,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return ProductInventoryMapper.ensureInitialized()
-        .equalsValue(this as ProductInventory, other);
+    return ProductInventoryMapper.ensureInitialized().equalsValue(
+      this as ProductInventory,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return ProductInventoryMapper.ensureInitialized()
-        .hashValue(this as ProductInventory);
+    return ProductInventoryMapper.ensureInitialized().hashValue(
+      this as ProductInventory,
+    );
   }
 }
 
 extension ProductInventoryValueCopy<$R, $Out>
     on ObjectCopyWith<$R, ProductInventory, $Out> {
   ProductInventoryCopyWith<$R, ProductInventory, $Out>
-      get $asProductInventory => $base
-          .as((v, t, t2) => _ProductInventoryCopyWithImpl<$R, $Out>(v, t, t2));
+  get $asProductInventory =>
+      $base.as((v, t, t2) => _ProductInventoryCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class ProductInventoryCopyWith<$R, $In extends ProductInventory, $Out>
     implements PbRecordCopyWith<$R, $In, $Out> {
-  ProductInventoryExpandCopyWith<$R, ProductInventoryExpand,
-      ProductInventoryExpand> get expand;
+  ProductInventoryExpandCopyWith<
+    $R,
+    ProductInventoryExpand,
+    ProductInventoryExpand
+  >
+  get expand;
   @override
-  $R call(
-      {String? id,
-      String? collectionId,
-      String? collectionName,
-      String? product,
-      ProductStatus? status,
-      ProductInventoryExpand? expand,
-      num? totalExpired,
-      num? totalQuantity,
-      bool? forSale,
-      bool? isDeleted,
-      DateTime? created,
-      DateTime? updated});
+  $R call({
+    String? id,
+    String? collectionId,
+    String? collectionName,
+    String? product,
+    ProductStatus? status,
+    ProductInventoryExpand? expand,
+    num? totalExpired,
+    num? totalQuantity,
+    bool? forSale,
+    bool? isDeleted,
+    DateTime? created,
+    DateTime? updated,
+  });
   ProductInventoryCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _ProductInventoryCopyWithImpl<$R, $Out>
@@ -229,56 +274,62 @@ class _ProductInventoryCopyWithImpl<$R, $Out>
   late final ClassMapperBase<ProductInventory> $mapper =
       ProductInventoryMapper.ensureInitialized();
   @override
-  ProductInventoryExpandCopyWith<$R, ProductInventoryExpand,
-          ProductInventoryExpand>
-      get expand => $value.expand.copyWith.$chain((v) => call(expand: v));
+  ProductInventoryExpandCopyWith<
+    $R,
+    ProductInventoryExpand,
+    ProductInventoryExpand
+  >
+  get expand => $value.expand.copyWith.$chain((v) => call(expand: v));
   @override
-  $R call(
-          {String? id,
-          String? collectionId,
-          String? collectionName,
-          String? product,
-          ProductStatus? status,
-          ProductInventoryExpand? expand,
-          num? totalExpired,
-          num? totalQuantity,
-          bool? forSale,
-          bool? isDeleted,
-          Object? created = $none,
-          Object? updated = $none}) =>
-      $apply(FieldCopyWithData({
-        if (id != null) #id: id,
-        if (collectionId != null) #collectionId: collectionId,
-        if (collectionName != null) #collectionName: collectionName,
-        if (product != null) #product: product,
-        if (status != null) #status: status,
-        if (expand != null) #expand: expand,
-        if (totalExpired != null) #totalExpired: totalExpired,
-        if (totalQuantity != null) #totalQuantity: totalQuantity,
-        if (forSale != null) #forSale: forSale,
-        if (isDeleted != null) #isDeleted: isDeleted,
-        if (created != $none) #created: created,
-        if (updated != $none) #updated: updated
-      }));
+  $R call({
+    String? id,
+    String? collectionId,
+    String? collectionName,
+    String? product,
+    ProductStatus? status,
+    ProductInventoryExpand? expand,
+    num? totalExpired,
+    num? totalQuantity,
+    bool? forSale,
+    bool? isDeleted,
+    Object? created = $none,
+    Object? updated = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (id != null) #id: id,
+      if (collectionId != null) #collectionId: collectionId,
+      if (collectionName != null) #collectionName: collectionName,
+      if (product != null) #product: product,
+      if (status != null) #status: status,
+      if (expand != null) #expand: expand,
+      if (totalExpired != null) #totalExpired: totalExpired,
+      if (totalQuantity != null) #totalQuantity: totalQuantity,
+      if (forSale != null) #forSale: forSale,
+      if (isDeleted != null) #isDeleted: isDeleted,
+      if (created != $none) #created: created,
+      if (updated != $none) #updated: updated,
+    }),
+  );
   @override
   ProductInventory $make(CopyWithData data) => ProductInventory(
-      id: data.get(#id, or: $value.id),
-      collectionId: data.get(#collectionId, or: $value.collectionId),
-      collectionName: data.get(#collectionName, or: $value.collectionName),
-      product: data.get(#product, or: $value.product),
-      status: data.get(#status, or: $value.status),
-      expand: data.get(#expand, or: $value.expand),
-      totalExpired: data.get(#totalExpired, or: $value.totalExpired),
-      totalQuantity: data.get(#totalQuantity, or: $value.totalQuantity),
-      forSale: data.get(#forSale, or: $value.forSale),
-      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
-      created: data.get(#created, or: $value.created),
-      updated: data.get(#updated, or: $value.updated));
+    id: data.get(#id, or: $value.id),
+    collectionId: data.get(#collectionId, or: $value.collectionId),
+    collectionName: data.get(#collectionName, or: $value.collectionName),
+    product: data.get(#product, or: $value.product),
+    status: data.get(#status, or: $value.status),
+    expand: data.get(#expand, or: $value.expand),
+    totalExpired: data.get(#totalExpired, or: $value.totalExpired),
+    totalQuantity: data.get(#totalQuantity, or: $value.totalQuantity),
+    forSale: data.get(#forSale, or: $value.forSale),
+    isDeleted: data.get(#isDeleted, or: $value.isDeleted),
+    created: data.get(#created, or: $value.created),
+    updated: data.get(#updated, or: $value.updated),
+  );
 
   @override
   ProductInventoryCopyWith<$R2, ProductInventory, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _ProductInventoryCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _ProductInventoryCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class ProductInventoryExpandMapper
@@ -298,8 +349,10 @@ class ProductInventoryExpandMapper
   final String id = 'ProductInventoryExpand';
 
   static Product _$product(ProductInventoryExpand v) => v.product;
-  static const Field<ProductInventoryExpand, Product> _f$product =
-      Field('product', _$product);
+  static const Field<ProductInventoryExpand, Product> _f$product = Field(
+    'product',
+    _$product,
+  );
 
   @override
   final MappableFields<ProductInventoryExpand> fields = const {
@@ -333,45 +386,58 @@ mixin ProductInventoryExpandMappable {
         .encodeMap<ProductInventoryExpand>(this as ProductInventoryExpand);
   }
 
-  ProductInventoryExpandCopyWith<ProductInventoryExpand, ProductInventoryExpand,
-          ProductInventoryExpand>
-      get copyWith => _ProductInventoryExpandCopyWithImpl<
-              ProductInventoryExpand, ProductInventoryExpand>(
-          this as ProductInventoryExpand, $identity, $identity);
+  ProductInventoryExpandCopyWith<
+    ProductInventoryExpand,
+    ProductInventoryExpand,
+    ProductInventoryExpand
+  >
+  get copyWith =>
+      _ProductInventoryExpandCopyWithImpl<
+        ProductInventoryExpand,
+        ProductInventoryExpand
+      >(this as ProductInventoryExpand, $identity, $identity);
   @override
   String toString() {
-    return ProductInventoryExpandMapper.ensureInitialized()
-        .stringifyValue(this as ProductInventoryExpand);
+    return ProductInventoryExpandMapper.ensureInitialized().stringifyValue(
+      this as ProductInventoryExpand,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return ProductInventoryExpandMapper.ensureInitialized()
-        .equalsValue(this as ProductInventoryExpand, other);
+    return ProductInventoryExpandMapper.ensureInitialized().equalsValue(
+      this as ProductInventoryExpand,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return ProductInventoryExpandMapper.ensureInitialized()
-        .hashValue(this as ProductInventoryExpand);
+    return ProductInventoryExpandMapper.ensureInitialized().hashValue(
+      this as ProductInventoryExpand,
+    );
   }
 }
 
 extension ProductInventoryExpandValueCopy<$R, $Out>
     on ObjectCopyWith<$R, ProductInventoryExpand, $Out> {
   ProductInventoryExpandCopyWith<$R, ProductInventoryExpand, $Out>
-      get $asProductInventoryExpand => $base.as((v, t, t2) =>
-          _ProductInventoryExpandCopyWithImpl<$R, $Out>(v, t, t2));
+  get $asProductInventoryExpand => $base.as(
+    (v, t, t2) => _ProductInventoryExpandCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
 abstract class ProductInventoryExpandCopyWith<
-    $R,
-    $In extends ProductInventoryExpand,
-    $Out> implements ClassCopyWith<$R, $In, $Out> {
+  $R,
+  $In extends ProductInventoryExpand,
+  $Out
+>
+    implements ClassCopyWith<$R, $In, $Out> {
   ProductCopyWith<$R, Product, Product> get product;
   $R call({Product? product});
   ProductInventoryExpandCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _ProductInventoryExpandCopyWithImpl<$R, $Out>
@@ -395,6 +461,7 @@ class _ProductInventoryExpandCopyWithImpl<$R, $Out>
 
   @override
   ProductInventoryExpandCopyWith<$R2, ProductInventoryExpand, $Out2>
-      $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _ProductInventoryExpandCopyWithImpl<$R2, $Out2>($value, $cast, t);
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _ProductInventoryExpandCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

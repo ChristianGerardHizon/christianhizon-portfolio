@@ -6,24 +6,51 @@ part of 'change_log_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(changeLogRepository)
+final changeLogRepositoryProvider = ChangeLogRepositoryProvider._();
+
+final class ChangeLogRepositoryProvider extends $FunctionalProvider<
+        PBCollectionRepository<ChangeLog>,
+        PBCollectionRepository<ChangeLog>,
+        PBCollectionRepository<ChangeLog>>
+    with $Provider<PBCollectionRepository<ChangeLog>> {
+  ChangeLogRepositoryProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'changeLogRepositoryProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$changeLogRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PBCollectionRepository<ChangeLog>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  PBCollectionRepository<ChangeLog> create(Ref ref) {
+    return changeLogRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PBCollectionRepository<ChangeLog> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<PBCollectionRepository<ChangeLog>>(value),
+    );
+  }
+}
+
 String _$changeLogRepositoryHash() =>
     r'1dfcb5d766882055ee2f38654b8e2f95a02f1e33';
-
-/// See also [changeLogRepository].
-@ProviderFor(changeLogRepository)
-final changeLogRepositoryProvider =
-    Provider<PBCollectionRepository<ChangeLog>>.internal(
-  changeLogRepository,
-  name: r'changeLogRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$changeLogRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ChangeLogRepositoryRef = ProviderRef<PBCollectionRepository<ChangeLog>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

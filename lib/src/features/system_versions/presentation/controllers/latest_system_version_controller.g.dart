@@ -6,23 +6,50 @@ part of 'latest_system_version_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(LatestSystemVersionController)
+final latestSystemVersionControllerProvider =
+    LatestSystemVersionControllerProvider._();
+
+final class LatestSystemVersionControllerProvider
+    extends $AsyncNotifierProvider<LatestSystemVersionController,
+        SystemVersion?> {
+  LatestSystemVersionControllerProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'latestSystemVersionControllerProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$latestSystemVersionControllerHash();
+
+  @$internal
+  @override
+  LatestSystemVersionController create() => LatestSystemVersionController();
+}
+
 String _$latestSystemVersionControllerHash() =>
     r'ff49f1d586c1f5ca958f691c3531470d0d6fa470';
 
-/// See also [LatestSystemVersionController].
-@ProviderFor(LatestSystemVersionController)
-final latestSystemVersionControllerProvider = AutoDisposeAsyncNotifierProvider<
-    LatestSystemVersionController, SystemVersion?>.internal(
-  LatestSystemVersionController.new,
-  name: r'latestSystemVersionControllerProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$latestSystemVersionControllerHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$LatestSystemVersionController
-    = AutoDisposeAsyncNotifier<SystemVersion?>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$LatestSystemVersionController
+    extends $AsyncNotifier<SystemVersion?> {
+  FutureOr<SystemVersion?> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<SystemVersion?>, SystemVersion?>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<SystemVersion?>, SystemVersion?>,
+        AsyncValue<SystemVersion?>,
+        Object?,
+        Object?>;
+    element.handleCreate(ref, build);
+  }
+}

@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -25,53 +26,94 @@ class ProductMapper extends ClassMapperBase<Product> {
   static String _$id(Product v) => v.id;
   static const Field<Product, String> _f$id = Field('id', _$id);
   static String _$collectionId(Product v) => v.collectionId;
-  static const Field<Product, String> _f$collectionId =
-      Field('collectionId', _$collectionId);
+  static const Field<Product, String> _f$collectionId = Field(
+    'collectionId',
+    _$collectionId,
+  );
   static String _$collectionName(Product v) => v.collectionName;
-  static const Field<Product, String> _f$collectionName =
-      Field('collectionName', _$collectionName);
+  static const Field<Product, String> _f$collectionName = Field(
+    'collectionName',
+    _$collectionName,
+  );
   static String _$name(Product v) => v.name;
   static const Field<Product, String> _f$name = Field('name', _$name);
   static num _$price(Product v) => v.price;
   static const Field<Product, num> _f$price = Field('price', _$price);
   static String? _$image(Product v) => v.image;
-  static const Field<Product, String> _f$image =
-      Field('image', _$image, opt: true);
+  static const Field<Product, String> _f$image = Field(
+    'image',
+    _$image,
+    opt: true,
+  );
   static bool _$forSale(Product v) => v.forSale;
   static const Field<Product, bool> _f$forSale = Field('forSale', _$forSale);
   static String? _$description(Product v) => v.description;
-  static const Field<Product, String> _f$description =
-      Field('description', _$description, opt: true);
+  static const Field<Product, String> _f$description = Field(
+    'description',
+    _$description,
+    opt: true,
+  );
   static String? _$category(Product v) => v.category;
-  static const Field<Product, String> _f$category =
-      Field('category', _$category, opt: true);
+  static const Field<Product, String> _f$category = Field(
+    'category',
+    _$category,
+    opt: true,
+  );
   static String? _$branch(Product v) => v.branch;
-  static const Field<Product, String> _f$branch =
-      Field('branch', _$branch, opt: true, hook: PbEmptyHook());
+  static const Field<Product, String> _f$branch = Field(
+    'branch',
+    _$branch,
+    opt: true,
+    hook: PbEmptyHook(),
+  );
   static num? _$stockThreshold(Product v) => v.stockThreshold;
-  static const Field<Product, num> _f$stockThreshold =
-      Field('stockThreshold', _$stockThreshold, opt: true);
+  static const Field<Product, num> _f$stockThreshold = Field(
+    'stockThreshold',
+    _$stockThreshold,
+    opt: true,
+  );
   static ProductExpand _$expand(Product v) => v.expand;
-  static const Field<Product, ProductExpand> _f$expand =
-      Field('expand', _$expand);
+  static const Field<Product, ProductExpand> _f$expand = Field(
+    'expand',
+    _$expand,
+  );
   static bool _$isDeleted(Product v) => v.isDeleted;
-  static const Field<Product, bool> _f$isDeleted =
-      Field('isDeleted', _$isDeleted, opt: true, def: false);
+  static const Field<Product, bool> _f$isDeleted = Field(
+    'isDeleted',
+    _$isDeleted,
+    opt: true,
+    def: false,
+  );
   static DateTime? _$created(Product v) => v.created;
-  static const Field<Product, DateTime> _f$created =
-      Field('created', _$created, opt: true);
+  static const Field<Product, DateTime> _f$created = Field(
+    'created',
+    _$created,
+    opt: true,
+  );
   static DateTime? _$updated(Product v) => v.updated;
-  static const Field<Product, DateTime> _f$updated =
-      Field('updated', _$updated, opt: true);
+  static const Field<Product, DateTime> _f$updated = Field(
+    'updated',
+    _$updated,
+    opt: true,
+  );
   static num? _$quantity(Product v) => v.quantity;
-  static const Field<Product, num> _f$quantity =
-      Field('quantity', _$quantity, opt: true);
+  static const Field<Product, num> _f$quantity = Field(
+    'quantity',
+    _$quantity,
+    opt: true,
+  );
   static bool _$trackByLot(Product v) => v.trackByLot;
-  static const Field<Product, bool> _f$trackByLot =
-      Field('trackByLot', _$trackByLot);
+  static const Field<Product, bool> _f$trackByLot = Field(
+    'trackByLot',
+    _$trackByLot,
+  );
   static DateTime? _$expiration(Product v) => v.expiration;
-  static const Field<Product, DateTime> _f$expiration =
-      Field('expiration', _$expiration, opt: true, hook: DateTimeHook());
+  static const Field<Product, DateTime> _f$expiration = Field(
+    'expiration',
+    _$expiration,
+    opt: true,
+    hook: DateTimeHook(),
+  );
 
   @override
   final MappableFields<Product> fields = const {
@@ -97,24 +139,25 @@ class ProductMapper extends ClassMapperBase<Product> {
 
   static Product _instantiate(DecodingData data) {
     return Product(
-        id: data.dec(_f$id),
-        collectionId: data.dec(_f$collectionId),
-        collectionName: data.dec(_f$collectionName),
-        name: data.dec(_f$name),
-        price: data.dec(_f$price),
-        image: data.dec(_f$image),
-        forSale: data.dec(_f$forSale),
-        description: data.dec(_f$description),
-        category: data.dec(_f$category),
-        branch: data.dec(_f$branch),
-        stockThreshold: data.dec(_f$stockThreshold),
-        expand: data.dec(_f$expand),
-        isDeleted: data.dec(_f$isDeleted),
-        created: data.dec(_f$created),
-        updated: data.dec(_f$updated),
-        quantity: data.dec(_f$quantity),
-        trackByLot: data.dec(_f$trackByLot),
-        expiration: data.dec(_f$expiration));
+      id: data.dec(_f$id),
+      collectionId: data.dec(_f$collectionId),
+      collectionName: data.dec(_f$collectionName),
+      name: data.dec(_f$name),
+      price: data.dec(_f$price),
+      image: data.dec(_f$image),
+      forSale: data.dec(_f$forSale),
+      description: data.dec(_f$description),
+      category: data.dec(_f$category),
+      branch: data.dec(_f$branch),
+      stockThreshold: data.dec(_f$stockThreshold),
+      expand: data.dec(_f$expand),
+      isDeleted: data.dec(_f$isDeleted),
+      created: data.dec(_f$created),
+      updated: data.dec(_f$updated),
+      quantity: data.dec(_f$quantity),
+      trackByLot: data.dec(_f$trackByLot),
+      expiration: data.dec(_f$expiration),
+    );
   }
 
   @override
@@ -131,18 +174,23 @@ class ProductMapper extends ClassMapperBase<Product> {
 
 mixin ProductMappable {
   String toJson() {
-    return ProductMapper.ensureInitialized()
-        .encodeJson<Product>(this as Product);
+    return ProductMapper.ensureInitialized().encodeJson<Product>(
+      this as Product,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return ProductMapper.ensureInitialized()
-        .encodeMap<Product>(this as Product);
+    return ProductMapper.ensureInitialized().encodeMap<Product>(
+      this as Product,
+    );
   }
 
   ProductCopyWith<Product, Product, Product> get copyWith =>
       _ProductCopyWithImpl<Product, Product>(
-          this as Product, $identity, $identity);
+        this as Product,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
     return ProductMapper.ensureInitialized().stringifyValue(this as Product);
@@ -150,8 +198,10 @@ mixin ProductMappable {
 
   @override
   bool operator ==(Object other) {
-    return ProductMapper.ensureInitialized()
-        .equalsValue(this as Product, other);
+    return ProductMapper.ensureInitialized().equalsValue(
+      this as Product,
+      other,
+    );
   }
 
   @override
@@ -169,25 +219,26 @@ abstract class ProductCopyWith<$R, $In extends Product, $Out>
     implements PbRecordCopyWith<$R, $In, $Out> {
   ProductExpandCopyWith<$R, ProductExpand, ProductExpand> get expand;
   @override
-  $R call(
-      {String? id,
-      String? collectionId,
-      String? collectionName,
-      String? name,
-      num? price,
-      String? image,
-      bool? forSale,
-      String? description,
-      String? category,
-      String? branch,
-      num? stockThreshold,
-      ProductExpand? expand,
-      bool? isDeleted,
-      DateTime? created,
-      DateTime? updated,
-      num? quantity,
-      bool? trackByLot,
-      DateTime? expiration});
+  $R call({
+    String? id,
+    String? collectionId,
+    String? collectionName,
+    String? name,
+    num? price,
+    String? image,
+    bool? forSale,
+    String? description,
+    String? category,
+    String? branch,
+    num? stockThreshold,
+    ProductExpand? expand,
+    bool? isDeleted,
+    DateTime? created,
+    DateTime? updated,
+    num? quantity,
+    bool? trackByLot,
+    DateTime? expiration,
+  });
   ProductCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -203,65 +254,68 @@ class _ProductCopyWithImpl<$R, $Out>
   ProductExpandCopyWith<$R, ProductExpand, ProductExpand> get expand =>
       $value.expand.copyWith.$chain((v) => call(expand: v));
   @override
-  $R call(
-          {String? id,
-          String? collectionId,
-          String? collectionName,
-          String? name,
-          num? price,
-          Object? image = $none,
-          bool? forSale,
-          Object? description = $none,
-          Object? category = $none,
-          Object? branch = $none,
-          Object? stockThreshold = $none,
-          ProductExpand? expand,
-          bool? isDeleted,
-          Object? created = $none,
-          Object? updated = $none,
-          Object? quantity = $none,
-          bool? trackByLot,
-          Object? expiration = $none}) =>
-      $apply(FieldCopyWithData({
-        if (id != null) #id: id,
-        if (collectionId != null) #collectionId: collectionId,
-        if (collectionName != null) #collectionName: collectionName,
-        if (name != null) #name: name,
-        if (price != null) #price: price,
-        if (image != $none) #image: image,
-        if (forSale != null) #forSale: forSale,
-        if (description != $none) #description: description,
-        if (category != $none) #category: category,
-        if (branch != $none) #branch: branch,
-        if (stockThreshold != $none) #stockThreshold: stockThreshold,
-        if (expand != null) #expand: expand,
-        if (isDeleted != null) #isDeleted: isDeleted,
-        if (created != $none) #created: created,
-        if (updated != $none) #updated: updated,
-        if (quantity != $none) #quantity: quantity,
-        if (trackByLot != null) #trackByLot: trackByLot,
-        if (expiration != $none) #expiration: expiration
-      }));
+  $R call({
+    String? id,
+    String? collectionId,
+    String? collectionName,
+    String? name,
+    num? price,
+    Object? image = $none,
+    bool? forSale,
+    Object? description = $none,
+    Object? category = $none,
+    Object? branch = $none,
+    Object? stockThreshold = $none,
+    ProductExpand? expand,
+    bool? isDeleted,
+    Object? created = $none,
+    Object? updated = $none,
+    Object? quantity = $none,
+    bool? trackByLot,
+    Object? expiration = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (id != null) #id: id,
+      if (collectionId != null) #collectionId: collectionId,
+      if (collectionName != null) #collectionName: collectionName,
+      if (name != null) #name: name,
+      if (price != null) #price: price,
+      if (image != $none) #image: image,
+      if (forSale != null) #forSale: forSale,
+      if (description != $none) #description: description,
+      if (category != $none) #category: category,
+      if (branch != $none) #branch: branch,
+      if (stockThreshold != $none) #stockThreshold: stockThreshold,
+      if (expand != null) #expand: expand,
+      if (isDeleted != null) #isDeleted: isDeleted,
+      if (created != $none) #created: created,
+      if (updated != $none) #updated: updated,
+      if (quantity != $none) #quantity: quantity,
+      if (trackByLot != null) #trackByLot: trackByLot,
+      if (expiration != $none) #expiration: expiration,
+    }),
+  );
   @override
   Product $make(CopyWithData data) => Product(
-      id: data.get(#id, or: $value.id),
-      collectionId: data.get(#collectionId, or: $value.collectionId),
-      collectionName: data.get(#collectionName, or: $value.collectionName),
-      name: data.get(#name, or: $value.name),
-      price: data.get(#price, or: $value.price),
-      image: data.get(#image, or: $value.image),
-      forSale: data.get(#forSale, or: $value.forSale),
-      description: data.get(#description, or: $value.description),
-      category: data.get(#category, or: $value.category),
-      branch: data.get(#branch, or: $value.branch),
-      stockThreshold: data.get(#stockThreshold, or: $value.stockThreshold),
-      expand: data.get(#expand, or: $value.expand),
-      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
-      created: data.get(#created, or: $value.created),
-      updated: data.get(#updated, or: $value.updated),
-      quantity: data.get(#quantity, or: $value.quantity),
-      trackByLot: data.get(#trackByLot, or: $value.trackByLot),
-      expiration: data.get(#expiration, or: $value.expiration));
+    id: data.get(#id, or: $value.id),
+    collectionId: data.get(#collectionId, or: $value.collectionId),
+    collectionName: data.get(#collectionName, or: $value.collectionName),
+    name: data.get(#name, or: $value.name),
+    price: data.get(#price, or: $value.price),
+    image: data.get(#image, or: $value.image),
+    forSale: data.get(#forSale, or: $value.forSale),
+    description: data.get(#description, or: $value.description),
+    category: data.get(#category, or: $value.category),
+    branch: data.get(#branch, or: $value.branch),
+    stockThreshold: data.get(#stockThreshold, or: $value.stockThreshold),
+    expand: data.get(#expand, or: $value.expand),
+    isDeleted: data.get(#isDeleted, or: $value.isDeleted),
+    created: data.get(#created, or: $value.created),
+    updated: data.get(#updated, or: $value.updated),
+    quantity: data.get(#quantity, or: $value.quantity),
+    trackByLot: data.get(#trackByLot, or: $value.trackByLot),
+    expiration: data.get(#expiration, or: $value.expiration),
+  );
 
   @override
   ProductCopyWith<$R2, Product, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
@@ -285,11 +339,17 @@ class ProductExpandMapper extends ClassMapperBase<ProductExpand> {
   final String id = 'ProductExpand';
 
   static Branch? _$branch(ProductExpand v) => v.branch;
-  static const Field<ProductExpand, Branch> _f$branch =
-      Field('branch', _$branch, opt: true);
+  static const Field<ProductExpand, Branch> _f$branch = Field(
+    'branch',
+    _$branch,
+    opt: true,
+  );
   static ProductCategory? _$category(ProductExpand v) => v.category;
-  static const Field<ProductExpand, ProductCategory> _f$category =
-      Field('category', _$category, opt: true);
+  static const Field<ProductExpand, ProductCategory> _f$category = Field(
+    'category',
+    _$category,
+    opt: true,
+  );
 
   @override
   final MappableFields<ProductExpand> fields = const {
@@ -299,7 +359,9 @@ class ProductExpandMapper extends ClassMapperBase<ProductExpand> {
 
   static ProductExpand _instantiate(DecodingData data) {
     return ProductExpand(
-        branch: data.dec(_f$branch), category: data.dec(_f$category));
+      branch: data.dec(_f$branch),
+      category: data.dec(_f$category),
+    );
   }
 
   @override
@@ -316,34 +378,43 @@ class ProductExpandMapper extends ClassMapperBase<ProductExpand> {
 
 mixin ProductExpandMappable {
   String toJson() {
-    return ProductExpandMapper.ensureInitialized()
-        .encodeJson<ProductExpand>(this as ProductExpand);
+    return ProductExpandMapper.ensureInitialized().encodeJson<ProductExpand>(
+      this as ProductExpand,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return ProductExpandMapper.ensureInitialized()
-        .encodeMap<ProductExpand>(this as ProductExpand);
+    return ProductExpandMapper.ensureInitialized().encodeMap<ProductExpand>(
+      this as ProductExpand,
+    );
   }
 
   ProductExpandCopyWith<ProductExpand, ProductExpand, ProductExpand>
-      get copyWith => _ProductExpandCopyWithImpl<ProductExpand, ProductExpand>(
-          this as ProductExpand, $identity, $identity);
+  get copyWith => _ProductExpandCopyWithImpl<ProductExpand, ProductExpand>(
+    this as ProductExpand,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return ProductExpandMapper.ensureInitialized()
-        .stringifyValue(this as ProductExpand);
+    return ProductExpandMapper.ensureInitialized().stringifyValue(
+      this as ProductExpand,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return ProductExpandMapper.ensureInitialized()
-        .equalsValue(this as ProductExpand, other);
+    return ProductExpandMapper.ensureInitialized().equalsValue(
+      this as ProductExpand,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return ProductExpandMapper.ensureInitialized()
-        .hashValue(this as ProductExpand);
+    return ProductExpandMapper.ensureInitialized().hashValue(
+      this as ProductExpand,
+    );
   }
 }
 
@@ -376,18 +447,21 @@ class _ProductExpandCopyWithImpl<$R, $Out>
   ProductCategoryCopyWith<$R, ProductCategory, ProductCategory>? get category =>
       $value.category?.copyWith.$chain((v) => call(category: v));
   @override
-  $R call({Object? branch = $none, Object? category = $none}) =>
-      $apply(FieldCopyWithData({
-        if (branch != $none) #branch: branch,
-        if (category != $none) #category: category
-      }));
+  $R call({Object? branch = $none, Object? category = $none}) => $apply(
+    FieldCopyWithData({
+      if (branch != $none) #branch: branch,
+      if (category != $none) #category: category,
+    }),
+  );
   @override
   ProductExpand $make(CopyWithData data) => ProductExpand(
-      branch: data.get(#branch, or: $value.branch),
-      category: data.get(#category, or: $value.category));
+    branch: data.get(#branch, or: $value.branch),
+    category: data.get(#category, or: $value.category),
+  );
 
   @override
   ProductExpandCopyWith<$R2, ProductExpand, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _ProductExpandCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _ProductExpandCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

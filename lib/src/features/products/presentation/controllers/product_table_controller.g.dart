@@ -6,175 +6,96 @@ part of 'product_table_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$productTableControllerHash() =>
-    r'4a85ed552dea7e21286c32ded9aa949a34dd034d';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$ProductTableController
-    extends BuildlessAutoDisposeAsyncNotifier<List<Product>> {
-  late final String tableKey;
-
-  FutureOr<List<Product>> build(
-    String tableKey,
-  );
-}
-
-/// See also [ProductTableController].
 @ProviderFor(ProductTableController)
-const productTableControllerProvider = ProductTableControllerFamily();
+final productTableControllerProvider = ProductTableControllerFamily._();
 
-/// See also [ProductTableController].
-class ProductTableControllerFamily extends Family<AsyncValue<List<Product>>> {
-  /// See also [ProductTableController].
-  const ProductTableControllerFamily();
-
-  /// See also [ProductTableController].
-  ProductTableControllerProvider call(
-    String tableKey,
-  ) {
-    return ProductTableControllerProvider(
-      tableKey,
-    );
-  }
-
-  @override
-  ProductTableControllerProvider getProviderOverride(
-    covariant ProductTableControllerProvider provider,
-  ) {
-    return call(
-      provider.tableKey,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'productTableControllerProvider';
-}
-
-/// See also [ProductTableController].
-class ProductTableControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<ProductTableController,
-        List<Product>> {
-  /// See also [ProductTableController].
-  ProductTableControllerProvider(
-    String tableKey,
-  ) : this._internal(
-          () => ProductTableController()..tableKey = tableKey,
-          from: productTableControllerProvider,
+final class ProductTableControllerProvider
+    extends $AsyncNotifierProvider<ProductTableController, List<Product>> {
+  ProductTableControllerProvider._(
+      {required ProductTableControllerFamily super.from,
+      required String super.argument})
+      : super(
+          retry: null,
           name: r'productTableControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$productTableControllerHash,
-          dependencies: ProductTableControllerFamily._dependencies,
-          allTransitiveDependencies:
-              ProductTableControllerFamily._allTransitiveDependencies,
-          tableKey: tableKey,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  ProductTableControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.tableKey,
-  }) : super.internal();
-
-  final String tableKey;
+  @override
+  String debugGetCreateSourceHash() => _$productTableControllerHash();
 
   @override
-  FutureOr<List<Product>> runNotifierBuild(
-    covariant ProductTableController notifier,
-  ) {
-    return notifier.build(
-      tableKey,
-    );
+  String toString() {
+    return r'productTableControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(ProductTableController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: ProductTableControllerProvider._internal(
-        () => create()..tableKey = tableKey,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        tableKey: tableKey,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<ProductTableController, List<Product>>
-      createElement() {
-    return _ProductTableControllerProviderElement(this);
-  }
+  ProductTableController create() => ProductTableController();
 
   @override
   bool operator ==(Object other) {
     return other is ProductTableControllerProvider &&
-        other.tableKey == tableKey;
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, tableKey.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin ProductTableControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<List<Product>> {
-  /// The parameter `tableKey` of this provider.
-  String get tableKey;
-}
+String _$productTableControllerHash() =>
+    r'9c5ec15cd8f3fbaad97fed221590341883c78684';
 
-class _ProductTableControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<ProductTableController,
-        List<Product>> with ProductTableControllerRef {
-  _ProductTableControllerProviderElement(super.provider);
+final class ProductTableControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<ProductTableController, AsyncValue<List<Product>>,
+            List<Product>, FutureOr<List<Product>>, String> {
+  ProductTableControllerFamily._()
+      : super(
+          retry: null,
+          name: r'productTableControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  ProductTableControllerProvider call(
+    String tableKey,
+  ) =>
+      ProductTableControllerProvider._(argument: tableKey, from: this);
 
   @override
-  String get tableKey => (origin as ProductTableControllerProvider).tableKey;
+  String toString() => r'productTableControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$ProductTableController extends $AsyncNotifier<List<Product>> {
+  late final _$args = ref.$arg as String;
+  String get tableKey => _$args;
+
+  FutureOr<List<Product>> build(
+    String tableKey,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<List<Product>>, List<Product>>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<List<Product>>, List<Product>>,
+        AsyncValue<List<Product>>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -23,8 +24,10 @@ class TableSortMapper extends ClassMapperBase<TableSort> {
   static String _$key(TableSort v) => v.key;
   static const Field<TableSort, String> _f$key = Field('key', _$key);
   static bool _$isAscending(TableSort v) => v.isAscending;
-  static const Field<TableSort, bool> _f$isAscending =
-      Field('isAscending', _$isAscending);
+  static const Field<TableSort, bool> _f$isAscending = Field(
+    'isAscending',
+    _$isAscending,
+  );
 
   @override
   final MappableFields<TableSort> fields = const {
@@ -34,7 +37,9 @@ class TableSortMapper extends ClassMapperBase<TableSort> {
 
   static TableSort _instantiate(DecodingData data) {
     return TableSort(
-        key: data.dec(_f$key), isAscending: data.dec(_f$isAscending));
+      key: data.dec(_f$key),
+      isAscending: data.dec(_f$isAscending),
+    );
   }
 
   @override
@@ -51,28 +56,36 @@ class TableSortMapper extends ClassMapperBase<TableSort> {
 
 mixin TableSortMappable {
   String toJson() {
-    return TableSortMapper.ensureInitialized()
-        .encodeJson<TableSort>(this as TableSort);
+    return TableSortMapper.ensureInitialized().encodeJson<TableSort>(
+      this as TableSort,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return TableSortMapper.ensureInitialized()
-        .encodeMap<TableSort>(this as TableSort);
+    return TableSortMapper.ensureInitialized().encodeMap<TableSort>(
+      this as TableSort,
+    );
   }
 
   TableSortCopyWith<TableSort, TableSort, TableSort> get copyWith =>
       _TableSortCopyWithImpl<TableSort, TableSort>(
-          this as TableSort, $identity, $identity);
+        this as TableSort,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return TableSortMapper.ensureInitialized()
-        .stringifyValue(this as TableSort);
+    return TableSortMapper.ensureInitialized().stringifyValue(
+      this as TableSort,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return TableSortMapper.ensureInitialized()
-        .equalsValue(this as TableSort, other);
+    return TableSortMapper.ensureInitialized().equalsValue(
+      this as TableSort,
+      other,
+    );
   }
 
   @override
@@ -101,17 +114,21 @@ class _TableSortCopyWithImpl<$R, $Out>
   late final ClassMapperBase<TableSort> $mapper =
       TableSortMapper.ensureInitialized();
   @override
-  $R call({String? key, bool? isAscending}) => $apply(FieldCopyWithData({
-        if (key != null) #key: key,
-        if (isAscending != null) #isAscending: isAscending
-      }));
+  $R call({String? key, bool? isAscending}) => $apply(
+    FieldCopyWithData({
+      if (key != null) #key: key,
+      if (isAscending != null) #isAscending: isAscending,
+    }),
+  );
   @override
   TableSort $make(CopyWithData data) => TableSort(
-      key: data.get(#key, or: $value.key),
-      isAscending: data.get(#isAscending, or: $value.isAscending));
+    key: data.get(#key, or: $value.key),
+    isAscending: data.get(#isAscending, or: $value.isAscending),
+  );
 
   @override
   TableSortCopyWith<$R2, TableSort, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _TableSortCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _TableSortCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

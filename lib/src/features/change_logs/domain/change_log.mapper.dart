@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -75,40 +76,70 @@ class ChangeLogMapper extends ClassMapperBase<ChangeLog> {
   static String _$id(ChangeLog v) => v.id;
   static const Field<ChangeLog, String> _f$id = Field('id', _$id);
   static String _$collectionId(ChangeLog v) => v.collectionId;
-  static const Field<ChangeLog, String> _f$collectionId =
-      Field('collectionId', _$collectionId);
+  static const Field<ChangeLog, String> _f$collectionId = Field(
+    'collectionId',
+    _$collectionId,
+  );
   static String _$collectionName(ChangeLog v) => v.collectionName;
-  static const Field<ChangeLog, String> _f$collectionName =
-      Field('collectionName', _$collectionName);
+  static const Field<ChangeLog, String> _f$collectionName = Field(
+    'collectionName',
+    _$collectionName,
+  );
   static bool _$isDeleted(ChangeLog v) => v.isDeleted;
-  static const Field<ChangeLog, bool> _f$isDeleted =
-      Field('isDeleted', _$isDeleted, opt: true, def: false);
+  static const Field<ChangeLog, bool> _f$isDeleted = Field(
+    'isDeleted',
+    _$isDeleted,
+    opt: true,
+    def: false,
+  );
   static ChangeLogType _$type(ChangeLog v) => v.type;
   static const Field<ChangeLog, ChangeLogType> _f$type = Field('type', _$type);
   static String? _$message(ChangeLog v) => v.message;
-  static const Field<ChangeLog, String> _f$message =
-      Field('message', _$message, opt: true);
+  static const Field<ChangeLog, String> _f$message = Field(
+    'message',
+    _$message,
+    opt: true,
+  );
   static String _$collection(ChangeLog v) => v.collection;
-  static const Field<ChangeLog, String> _f$collection =
-      Field('collection', _$collection);
+  static const Field<ChangeLog, String> _f$collection = Field(
+    'collection',
+    _$collection,
+  );
   static String _$reference(ChangeLog v) => v.reference;
-  static const Field<ChangeLog, String> _f$reference =
-      Field('reference', _$reference);
+  static const Field<ChangeLog, String> _f$reference = Field(
+    'reference',
+    _$reference,
+  );
   static DateTime? _$created(ChangeLog v) => v.created;
-  static const Field<ChangeLog, DateTime> _f$created =
-      Field('created', _$created, opt: true);
+  static const Field<ChangeLog, DateTime> _f$created = Field(
+    'created',
+    _$created,
+    opt: true,
+  );
   static DateTime? _$updated(ChangeLog v) => v.updated;
-  static const Field<ChangeLog, DateTime> _f$updated =
-      Field('updated', _$updated, opt: true);
+  static const Field<ChangeLog, DateTime> _f$updated = Field(
+    'updated',
+    _$updated,
+    opt: true,
+  );
   static String? _$user(ChangeLog v) => v.user;
-  static const Field<ChangeLog, String> _f$user =
-      Field('user', _$user, opt: true);
+  static const Field<ChangeLog, String> _f$user = Field(
+    'user',
+    _$user,
+    opt: true,
+  );
   static String? _$admin(ChangeLog v) => v.admin;
-  static const Field<ChangeLog, String> _f$admin =
-      Field('admin', _$admin, opt: true);
+  static const Field<ChangeLog, String> _f$admin = Field(
+    'admin',
+    _$admin,
+    opt: true,
+  );
   static dynamic _$change(ChangeLog v) => v.change;
-  static const Field<ChangeLog, dynamic> _f$change =
-      Field('change', _$change, opt: true);
+  static const Field<ChangeLog, dynamic> _f$change = Field(
+    'change',
+    _$change,
+    opt: true,
+  );
 
   @override
   final MappableFields<ChangeLog> fields = const {
@@ -129,19 +160,20 @@ class ChangeLogMapper extends ClassMapperBase<ChangeLog> {
 
   static ChangeLog _instantiate(DecodingData data) {
     return ChangeLog(
-        id: data.dec(_f$id),
-        collectionId: data.dec(_f$collectionId),
-        collectionName: data.dec(_f$collectionName),
-        isDeleted: data.dec(_f$isDeleted),
-        type: data.dec(_f$type),
-        message: data.dec(_f$message),
-        collection: data.dec(_f$collection),
-        reference: data.dec(_f$reference),
-        created: data.dec(_f$created),
-        updated: data.dec(_f$updated),
-        user: data.dec(_f$user),
-        admin: data.dec(_f$admin),
-        change: data.dec(_f$change));
+      id: data.dec(_f$id),
+      collectionId: data.dec(_f$collectionId),
+      collectionName: data.dec(_f$collectionName),
+      isDeleted: data.dec(_f$isDeleted),
+      type: data.dec(_f$type),
+      message: data.dec(_f$message),
+      collection: data.dec(_f$collection),
+      reference: data.dec(_f$reference),
+      created: data.dec(_f$created),
+      updated: data.dec(_f$updated),
+      user: data.dec(_f$user),
+      admin: data.dec(_f$admin),
+      change: data.dec(_f$change),
+    );
   }
 
   @override
@@ -158,28 +190,36 @@ class ChangeLogMapper extends ClassMapperBase<ChangeLog> {
 
 mixin ChangeLogMappable {
   String toJson() {
-    return ChangeLogMapper.ensureInitialized()
-        .encodeJson<ChangeLog>(this as ChangeLog);
+    return ChangeLogMapper.ensureInitialized().encodeJson<ChangeLog>(
+      this as ChangeLog,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return ChangeLogMapper.ensureInitialized()
-        .encodeMap<ChangeLog>(this as ChangeLog);
+    return ChangeLogMapper.ensureInitialized().encodeMap<ChangeLog>(
+      this as ChangeLog,
+    );
   }
 
   ChangeLogCopyWith<ChangeLog, ChangeLog, ChangeLog> get copyWith =>
       _ChangeLogCopyWithImpl<ChangeLog, ChangeLog>(
-          this as ChangeLog, $identity, $identity);
+        this as ChangeLog,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return ChangeLogMapper.ensureInitialized()
-        .stringifyValue(this as ChangeLog);
+    return ChangeLogMapper.ensureInitialized().stringifyValue(
+      this as ChangeLog,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return ChangeLogMapper.ensureInitialized()
-        .equalsValue(this as ChangeLog, other);
+    return ChangeLogMapper.ensureInitialized().equalsValue(
+      this as ChangeLog,
+      other,
+    );
   }
 
   @override
@@ -196,20 +236,21 @@ extension ChangeLogValueCopy<$R, $Out> on ObjectCopyWith<$R, ChangeLog, $Out> {
 abstract class ChangeLogCopyWith<$R, $In extends ChangeLog, $Out>
     implements PbRecordCopyWith<$R, $In, $Out> {
   @override
-  $R call(
-      {String? id,
-      String? collectionId,
-      String? collectionName,
-      bool? isDeleted,
-      ChangeLogType? type,
-      String? message,
-      String? collection,
-      String? reference,
-      DateTime? created,
-      DateTime? updated,
-      String? user,
-      String? admin,
-      dynamic change});
+  $R call({
+    String? id,
+    String? collectionId,
+    String? collectionName,
+    bool? isDeleted,
+    ChangeLogType? type,
+    String? message,
+    String? collection,
+    String? reference,
+    DateTime? created,
+    DateTime? updated,
+    String? user,
+    String? admin,
+    dynamic change,
+  });
   ChangeLogCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -222,55 +263,58 @@ class _ChangeLogCopyWithImpl<$R, $Out>
   late final ClassMapperBase<ChangeLog> $mapper =
       ChangeLogMapper.ensureInitialized();
   @override
-  $R call(
-          {String? id,
-          String? collectionId,
-          String? collectionName,
-          bool? isDeleted,
-          ChangeLogType? type,
-          Object? message = $none,
-          String? collection,
-          String? reference,
-          Object? created = $none,
-          Object? updated = $none,
-          Object? user = $none,
-          Object? admin = $none,
-          Object? change = $none}) =>
-      $apply(FieldCopyWithData({
-        if (id != null) #id: id,
-        if (collectionId != null) #collectionId: collectionId,
-        if (collectionName != null) #collectionName: collectionName,
-        if (isDeleted != null) #isDeleted: isDeleted,
-        if (type != null) #type: type,
-        if (message != $none) #message: message,
-        if (collection != null) #collection: collection,
-        if (reference != null) #reference: reference,
-        if (created != $none) #created: created,
-        if (updated != $none) #updated: updated,
-        if (user != $none) #user: user,
-        if (admin != $none) #admin: admin,
-        if (change != $none) #change: change
-      }));
+  $R call({
+    String? id,
+    String? collectionId,
+    String? collectionName,
+    bool? isDeleted,
+    ChangeLogType? type,
+    Object? message = $none,
+    String? collection,
+    String? reference,
+    Object? created = $none,
+    Object? updated = $none,
+    Object? user = $none,
+    Object? admin = $none,
+    Object? change = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (id != null) #id: id,
+      if (collectionId != null) #collectionId: collectionId,
+      if (collectionName != null) #collectionName: collectionName,
+      if (isDeleted != null) #isDeleted: isDeleted,
+      if (type != null) #type: type,
+      if (message != $none) #message: message,
+      if (collection != null) #collection: collection,
+      if (reference != null) #reference: reference,
+      if (created != $none) #created: created,
+      if (updated != $none) #updated: updated,
+      if (user != $none) #user: user,
+      if (admin != $none) #admin: admin,
+      if (change != $none) #change: change,
+    }),
+  );
   @override
   ChangeLog $make(CopyWithData data) => ChangeLog(
-      id: data.get(#id, or: $value.id),
-      collectionId: data.get(#collectionId, or: $value.collectionId),
-      collectionName: data.get(#collectionName, or: $value.collectionName),
-      isDeleted: data.get(#isDeleted, or: $value.isDeleted),
-      type: data.get(#type, or: $value.type),
-      message: data.get(#message, or: $value.message),
-      collection: data.get(#collection, or: $value.collection),
-      reference: data.get(#reference, or: $value.reference),
-      created: data.get(#created, or: $value.created),
-      updated: data.get(#updated, or: $value.updated),
-      user: data.get(#user, or: $value.user),
-      admin: data.get(#admin, or: $value.admin),
-      change: data.get(#change, or: $value.change));
+    id: data.get(#id, or: $value.id),
+    collectionId: data.get(#collectionId, or: $value.collectionId),
+    collectionName: data.get(#collectionName, or: $value.collectionName),
+    isDeleted: data.get(#isDeleted, or: $value.isDeleted),
+    type: data.get(#type, or: $value.type),
+    message: data.get(#message, or: $value.message),
+    collection: data.get(#collection, or: $value.collection),
+    reference: data.get(#reference, or: $value.reference),
+    created: data.get(#created, or: $value.created),
+    updated: data.get(#updated, or: $value.updated),
+    user: data.get(#user, or: $value.user),
+    admin: data.get(#admin, or: $value.admin),
+    change: data.get(#change, or: $value.change),
+  );
 
   @override
   ChangeLogCopyWith<$R2, ChangeLog, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _ChangeLogCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _ChangeLogCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class ChangeLogExpandMapper extends ClassMapperBase<ChangeLogExpand> {
@@ -290,11 +334,17 @@ class ChangeLogExpandMapper extends ClassMapperBase<ChangeLogExpand> {
   final String id = 'ChangeLogExpand';
 
   static User? _$user(ChangeLogExpand v) => v.user;
-  static const Field<ChangeLogExpand, User> _f$user =
-      Field('user', _$user, opt: true);
+  static const Field<ChangeLogExpand, User> _f$user = Field(
+    'user',
+    _$user,
+    opt: true,
+  );
   static Admin? _$admin(ChangeLogExpand v) => v.admin;
-  static const Field<ChangeLogExpand, Admin> _f$admin =
-      Field('admin', _$admin, opt: true);
+  static const Field<ChangeLogExpand, Admin> _f$admin = Field(
+    'admin',
+    _$admin,
+    opt: true,
+  );
 
   @override
   final MappableFields<ChangeLogExpand> fields = const {
@@ -325,30 +375,38 @@ mixin ChangeLogExpandMappable {
   }
 
   Map<String, dynamic> toMap() {
-    return ChangeLogExpandMapper.ensureInitialized()
-        .encodeMap<ChangeLogExpand>(this as ChangeLogExpand);
+    return ChangeLogExpandMapper.ensureInitialized().encodeMap<ChangeLogExpand>(
+      this as ChangeLogExpand,
+    );
   }
 
   ChangeLogExpandCopyWith<ChangeLogExpand, ChangeLogExpand, ChangeLogExpand>
-      get copyWith =>
-          _ChangeLogExpandCopyWithImpl<ChangeLogExpand, ChangeLogExpand>(
-              this as ChangeLogExpand, $identity, $identity);
+  get copyWith =>
+      _ChangeLogExpandCopyWithImpl<ChangeLogExpand, ChangeLogExpand>(
+        this as ChangeLogExpand,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return ChangeLogExpandMapper.ensureInitialized()
-        .stringifyValue(this as ChangeLogExpand);
+    return ChangeLogExpandMapper.ensureInitialized().stringifyValue(
+      this as ChangeLogExpand,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return ChangeLogExpandMapper.ensureInitialized()
-        .equalsValue(this as ChangeLogExpand, other);
+    return ChangeLogExpandMapper.ensureInitialized().equalsValue(
+      this as ChangeLogExpand,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return ChangeLogExpandMapper.ensureInitialized()
-        .hashValue(this as ChangeLogExpand);
+    return ChangeLogExpandMapper.ensureInitialized().hashValue(
+      this as ChangeLogExpand,
+    );
   }
 }
 
@@ -364,7 +422,8 @@ abstract class ChangeLogExpandCopyWith<$R, $In extends ChangeLogExpand, $Out>
   AdminCopyWith<$R, Admin, Admin>? get admin;
   $R call({User? user, Admin? admin});
   ChangeLogExpandCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _ChangeLogExpandCopyWithImpl<$R, $Out>
@@ -382,16 +441,21 @@ class _ChangeLogExpandCopyWithImpl<$R, $Out>
   AdminCopyWith<$R, Admin, Admin>? get admin =>
       $value.admin?.copyWith.$chain((v) => call(admin: v));
   @override
-  $R call({Object? user = $none, Object? admin = $none}) =>
-      $apply(FieldCopyWithData(
-          {if (user != $none) #user: user, if (admin != $none) #admin: admin}));
+  $R call({Object? user = $none, Object? admin = $none}) => $apply(
+    FieldCopyWithData({
+      if (user != $none) #user: user,
+      if (admin != $none) #admin: admin,
+    }),
+  );
   @override
   ChangeLogExpand $make(CopyWithData data) => ChangeLogExpand(
-      user: data.get(#user, or: $value.user),
-      admin: data.get(#admin, or: $value.admin));
+    user: data.get(#user, or: $value.user),
+    admin: data.get(#admin, or: $value.admin),
+  );
 
   @override
   ChangeLogExpandCopyWith<$R2, ChangeLogExpand, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _ChangeLogExpandCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _ChangeLogExpandCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

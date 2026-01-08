@@ -6,179 +6,104 @@ part of 'patient_treatment_table_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$patientTreatmentTableControllerHash() =>
-    r'd0a9fba4c68d78b57aed4a7671f7e319d869b820';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$PatientTreatmentTableController
-    extends BuildlessAutoDisposeAsyncNotifier<List<PatientTreatment>> {
-  late final String tableKey;
-
-  FutureOr<List<PatientTreatment>> build(
-    String tableKey,
-  );
-}
-
-/// See also [PatientTreatmentTableController].
 @ProviderFor(PatientTreatmentTableController)
-const patientTreatmentTableControllerProvider =
-    PatientTreatmentTableControllerFamily();
+final patientTreatmentTableControllerProvider =
+    PatientTreatmentTableControllerFamily._();
 
-/// See also [PatientTreatmentTableController].
-class PatientTreatmentTableControllerFamily
-    extends Family<AsyncValue<List<PatientTreatment>>> {
-  /// See also [PatientTreatmentTableController].
-  const PatientTreatmentTableControllerFamily();
-
-  /// See also [PatientTreatmentTableController].
-  PatientTreatmentTableControllerProvider call(
-    String tableKey,
-  ) {
-    return PatientTreatmentTableControllerProvider(
-      tableKey,
-    );
-  }
-
-  @override
-  PatientTreatmentTableControllerProvider getProviderOverride(
-    covariant PatientTreatmentTableControllerProvider provider,
-  ) {
-    return call(
-      provider.tableKey,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'patientTreatmentTableControllerProvider';
-}
-
-/// See also [PatientTreatmentTableController].
-class PatientTreatmentTableControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<
-        PatientTreatmentTableController, List<PatientTreatment>> {
-  /// See also [PatientTreatmentTableController].
-  PatientTreatmentTableControllerProvider(
-    String tableKey,
-  ) : this._internal(
-          () => PatientTreatmentTableController()..tableKey = tableKey,
-          from: patientTreatmentTableControllerProvider,
+final class PatientTreatmentTableControllerProvider
+    extends $AsyncNotifierProvider<PatientTreatmentTableController,
+        List<PatientTreatment>> {
+  PatientTreatmentTableControllerProvider._(
+      {required PatientTreatmentTableControllerFamily super.from,
+      required String super.argument})
+      : super(
+          retry: null,
           name: r'patientTreatmentTableControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$patientTreatmentTableControllerHash,
-          dependencies: PatientTreatmentTableControllerFamily._dependencies,
-          allTransitiveDependencies:
-              PatientTreatmentTableControllerFamily._allTransitiveDependencies,
-          tableKey: tableKey,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  PatientTreatmentTableControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.tableKey,
-  }) : super.internal();
-
-  final String tableKey;
+  @override
+  String debugGetCreateSourceHash() => _$patientTreatmentTableControllerHash();
 
   @override
-  FutureOr<List<PatientTreatment>> runNotifierBuild(
-    covariant PatientTreatmentTableController notifier,
-  ) {
-    return notifier.build(
-      tableKey,
-    );
+  String toString() {
+    return r'patientTreatmentTableControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(PatientTreatmentTableController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: PatientTreatmentTableControllerProvider._internal(
-        () => create()..tableKey = tableKey,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        tableKey: tableKey,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<PatientTreatmentTableController,
-      List<PatientTreatment>> createElement() {
-    return _PatientTreatmentTableControllerProviderElement(this);
-  }
+  PatientTreatmentTableController create() => PatientTreatmentTableController();
 
   @override
   bool operator ==(Object other) {
     return other is PatientTreatmentTableControllerProvider &&
-        other.tableKey == tableKey;
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, tableKey.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin PatientTreatmentTableControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<List<PatientTreatment>> {
-  /// The parameter `tableKey` of this provider.
-  String get tableKey;
-}
+String _$patientTreatmentTableControllerHash() =>
+    r'77075e38b0dc4ff059114717ed68c16cf755042f';
 
-class _PatientTreatmentTableControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<
-        PatientTreatmentTableController,
-        List<PatientTreatment>> with PatientTreatmentTableControllerRef {
-  _PatientTreatmentTableControllerProviderElement(super.provider);
+final class PatientTreatmentTableControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            PatientTreatmentTableController,
+            AsyncValue<List<PatientTreatment>>,
+            List<PatientTreatment>,
+            FutureOr<List<PatientTreatment>>,
+            String> {
+  PatientTreatmentTableControllerFamily._()
+      : super(
+          retry: null,
+          name: r'patientTreatmentTableControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  PatientTreatmentTableControllerProvider call(
+    String tableKey,
+  ) =>
+      PatientTreatmentTableControllerProvider._(argument: tableKey, from: this);
 
   @override
-  String get tableKey =>
-      (origin as PatientTreatmentTableControllerProvider).tableKey;
+  String toString() => r'patientTreatmentTableControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$PatientTreatmentTableController
+    extends $AsyncNotifier<List<PatientTreatment>> {
+  late final _$args = ref.$arg as String;
+  String get tableKey => _$args;
+
+  FutureOr<List<PatientTreatment>> build(
+    String tableKey,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref
+        as $Ref<AsyncValue<List<PatientTreatment>>, List<PatientTreatment>>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<List<PatientTreatment>>, List<PatientTreatment>>,
+        AsyncValue<List<PatientTreatment>>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

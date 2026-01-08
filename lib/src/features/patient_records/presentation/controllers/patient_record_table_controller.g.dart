@@ -6,202 +6,120 @@ part of 'patient_record_table_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$patientRecordTableControllerHash() =>
-    r'6a24f21786bc4ec51acf759e7c53dffb6bc6be32';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
+@ProviderFor(PatientRecordTableController)
+final patientRecordTableControllerProvider =
+    PatientRecordTableControllerFamily._();
 
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
+final class PatientRecordTableControllerProvider extends $AsyncNotifierProvider<
+    PatientRecordTableController, List<PatientRecord>> {
+  PatientRecordTableControllerProvider._(
+      {required PatientRecordTableControllerFamily super.from,
+      required (
+        String, {
+        String? patientId,
+      })
+          super.argument})
+      : super(
+          retry: null,
+          name: r'patientRecordTableControllerProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$patientRecordTableControllerHash();
+
+  @override
+  String toString() {
+    return r'patientRecordTableControllerProvider'
+        ''
+        '$argument';
   }
 
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  @$internal
+  @override
+  PatientRecordTableController create() => PatientRecordTableController();
+
+  @override
+  bool operator ==(Object other) {
+    return other is PatientRecordTableControllerProvider &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
+String _$patientRecordTableControllerHash() =>
+    r'919cca69bf79e8d79c69c406eb433204efe6c0d1';
+
+final class PatientRecordTableControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            PatientRecordTableController,
+            AsyncValue<List<PatientRecord>>,
+            List<PatientRecord>,
+            FutureOr<List<PatientRecord>>,
+            (
+              String, {
+              String? patientId,
+            })> {
+  PatientRecordTableControllerFamily._()
+      : super(
+          retry: null,
+          name: r'patientRecordTableControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  PatientRecordTableControllerProvider call(
+    String tableKey, {
+    String? patientId,
+  }) =>
+      PatientRecordTableControllerProvider._(argument: (
+        tableKey,
+        patientId: patientId,
+      ), from: this);
+
+  @override
+  String toString() => r'patientRecordTableControllerProvider';
+}
+
 abstract class _$PatientRecordTableController
-    extends BuildlessAutoDisposeAsyncNotifier<List<PatientRecord>> {
-  late final String tableKey;
-  late final String? patientId;
+    extends $AsyncNotifier<List<PatientRecord>> {
+  late final _$args = ref.$arg as (
+    String, {
+    String? patientId,
+  });
+  String get tableKey => _$args.$1;
+  String? get patientId => _$args.patientId;
 
   FutureOr<List<PatientRecord>> build(
     String tableKey, {
     String? patientId,
   });
-}
-
-/// See also [PatientRecordTableController].
-@ProviderFor(PatientRecordTableController)
-const patientRecordTableControllerProvider =
-    PatientRecordTableControllerFamily();
-
-/// See also [PatientRecordTableController].
-class PatientRecordTableControllerFamily
-    extends Family<AsyncValue<List<PatientRecord>>> {
-  /// See also [PatientRecordTableController].
-  const PatientRecordTableControllerFamily();
-
-  /// See also [PatientRecordTableController].
-  PatientRecordTableControllerProvider call(
-    String tableKey, {
-    String? patientId,
-  }) {
-    return PatientRecordTableControllerProvider(
-      tableKey,
-      patientId: patientId,
-    );
-  }
-
+  @$mustCallSuper
   @override
-  PatientRecordTableControllerProvider getProviderOverride(
-    covariant PatientRecordTableControllerProvider provider,
-  ) {
-    return call(
-      provider.tableKey,
-      patientId: provider.patientId,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'patientRecordTableControllerProvider';
-}
-
-/// See also [PatientRecordTableController].
-class PatientRecordTableControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<PatientRecordTableController,
-        List<PatientRecord>> {
-  /// See also [PatientRecordTableController].
-  PatientRecordTableControllerProvider(
-    String tableKey, {
-    String? patientId,
-  }) : this._internal(
-          () => PatientRecordTableController()
-            ..tableKey = tableKey
-            ..patientId = patientId,
-          from: patientRecordTableControllerProvider,
-          name: r'patientRecordTableControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$patientRecordTableControllerHash,
-          dependencies: PatientRecordTableControllerFamily._dependencies,
-          allTransitiveDependencies:
-              PatientRecordTableControllerFamily._allTransitiveDependencies,
-          tableKey: tableKey,
-          patientId: patientId,
-        );
-
-  PatientRecordTableControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.tableKey,
-    required this.patientId,
-  }) : super.internal();
-
-  final String tableKey;
-  final String? patientId;
-
-  @override
-  FutureOr<List<PatientRecord>> runNotifierBuild(
-    covariant PatientRecordTableController notifier,
-  ) {
-    return notifier.build(
-      tableKey,
-      patientId: patientId,
-    );
-  }
-
-  @override
-  Override overrideWith(PatientRecordTableController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: PatientRecordTableControllerProvider._internal(
-        () => create()
-          ..tableKey = tableKey
-          ..patientId = patientId,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        tableKey: tableKey,
-        patientId: patientId,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<PatientRecordTableController,
-      List<PatientRecord>> createElement() {
-    return _PatientRecordTableControllerProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is PatientRecordTableControllerProvider &&
-        other.tableKey == tableKey &&
-        other.patientId == patientId;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, tableKey.hashCode);
-    hash = _SystemHash.combine(hash, patientId.hashCode);
-
-    return _SystemHash.finish(hash);
+  void runBuild() {
+    final ref =
+        this.ref as $Ref<AsyncValue<List<PatientRecord>>, List<PatientRecord>>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<List<PatientRecord>>, List<PatientRecord>>,
+        AsyncValue<List<PatientRecord>>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args.$1,
+              patientId: _$args.patientId,
+            ));
   }
 }
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin PatientRecordTableControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<List<PatientRecord>> {
-  /// The parameter `tableKey` of this provider.
-  String get tableKey;
-
-  /// The parameter `patientId` of this provider.
-  String? get patientId;
-}
-
-class _PatientRecordTableControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<
-        PatientRecordTableController,
-        List<PatientRecord>> with PatientRecordTableControllerRef {
-  _PatientRecordTableControllerProviderElement(super.provider);
-
-  @override
-  String get tableKey =>
-      (origin as PatientRecordTableControllerProvider).tableKey;
-  @override
-  String? get patientId =>
-      (origin as PatientRecordTableControllerProvider).patientId;
-}
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

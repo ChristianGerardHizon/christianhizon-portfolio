@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -27,11 +28,17 @@ class SystemArtifactMapper extends ClassMapperBase<SystemArtifact> {
   static String _$type(SystemArtifact v) => v.type;
   static const Field<SystemArtifact, String> _f$type = Field('type', _$type);
   static String? _$version(SystemArtifact v) => v.version;
-  static const Field<SystemArtifact, String> _f$version =
-      Field('version', _$version, opt: true);
+  static const Field<SystemArtifact, String> _f$version = Field(
+    'version',
+    _$version,
+    opt: true,
+  );
   static String? _$versionCode(SystemArtifact v) => v.versionCode;
-  static const Field<SystemArtifact, String> _f$versionCode =
-      Field('versionCode', _$versionCode, opt: true);
+  static const Field<SystemArtifact, String> _f$versionCode = Field(
+    'versionCode',
+    _$versionCode,
+    opt: true,
+  );
 
   @override
   final MappableFields<SystemArtifact> fields = const {
@@ -44,11 +51,12 @@ class SystemArtifactMapper extends ClassMapperBase<SystemArtifact> {
 
   static SystemArtifact _instantiate(DecodingData data) {
     return SystemArtifact(
-        name: data.dec(_f$name),
-        url: data.dec(_f$url),
-        type: data.dec(_f$type),
-        version: data.dec(_f$version),
-        versionCode: data.dec(_f$versionCode));
+      name: data.dec(_f$name),
+      url: data.dec(_f$url),
+      type: data.dec(_f$type),
+      version: data.dec(_f$version),
+      versionCode: data.dec(_f$versionCode),
+    );
   }
 
   @override
@@ -65,35 +73,43 @@ class SystemArtifactMapper extends ClassMapperBase<SystemArtifact> {
 
 mixin SystemArtifactMappable {
   String toJson() {
-    return SystemArtifactMapper.ensureInitialized()
-        .encodeJson<SystemArtifact>(this as SystemArtifact);
+    return SystemArtifactMapper.ensureInitialized().encodeJson<SystemArtifact>(
+      this as SystemArtifact,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return SystemArtifactMapper.ensureInitialized()
-        .encodeMap<SystemArtifact>(this as SystemArtifact);
+    return SystemArtifactMapper.ensureInitialized().encodeMap<SystemArtifact>(
+      this as SystemArtifact,
+    );
   }
 
   SystemArtifactCopyWith<SystemArtifact, SystemArtifact, SystemArtifact>
-      get copyWith =>
-          _SystemArtifactCopyWithImpl<SystemArtifact, SystemArtifact>(
-              this as SystemArtifact, $identity, $identity);
+  get copyWith => _SystemArtifactCopyWithImpl<SystemArtifact, SystemArtifact>(
+    this as SystemArtifact,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return SystemArtifactMapper.ensureInitialized()
-        .stringifyValue(this as SystemArtifact);
+    return SystemArtifactMapper.ensureInitialized().stringifyValue(
+      this as SystemArtifact,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return SystemArtifactMapper.ensureInitialized()
-        .equalsValue(this as SystemArtifact, other);
+    return SystemArtifactMapper.ensureInitialized().equalsValue(
+      this as SystemArtifact,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return SystemArtifactMapper.ensureInitialized()
-        .hashValue(this as SystemArtifact);
+    return SystemArtifactMapper.ensureInitialized().hashValue(
+      this as SystemArtifact,
+    );
   }
 }
 
@@ -105,14 +121,16 @@ extension SystemArtifactValueCopy<$R, $Out>
 
 abstract class SystemArtifactCopyWith<$R, $In extends SystemArtifact, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call(
-      {String? name,
-      String? url,
-      String? type,
-      String? version,
-      String? versionCode});
+  $R call({
+    String? name,
+    String? url,
+    String? type,
+    String? version,
+    String? versionCode,
+  });
   SystemArtifactCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _SystemArtifactCopyWithImpl<$R, $Out>
@@ -124,29 +142,33 @@ class _SystemArtifactCopyWithImpl<$R, $Out>
   late final ClassMapperBase<SystemArtifact> $mapper =
       SystemArtifactMapper.ensureInitialized();
   @override
-  $R call(
-          {String? name,
-          String? url,
-          String? type,
-          Object? version = $none,
-          Object? versionCode = $none}) =>
-      $apply(FieldCopyWithData({
-        if (name != null) #name: name,
-        if (url != null) #url: url,
-        if (type != null) #type: type,
-        if (version != $none) #version: version,
-        if (versionCode != $none) #versionCode: versionCode
-      }));
+  $R call({
+    String? name,
+    String? url,
+    String? type,
+    Object? version = $none,
+    Object? versionCode = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (name != null) #name: name,
+      if (url != null) #url: url,
+      if (type != null) #type: type,
+      if (version != $none) #version: version,
+      if (versionCode != $none) #versionCode: versionCode,
+    }),
+  );
   @override
   SystemArtifact $make(CopyWithData data) => SystemArtifact(
-      name: data.get(#name, or: $value.name),
-      url: data.get(#url, or: $value.url),
-      type: data.get(#type, or: $value.type),
-      version: data.get(#version, or: $value.version),
-      versionCode: data.get(#versionCode, or: $value.versionCode));
+    name: data.get(#name, or: $value.name),
+    url: data.get(#url, or: $value.url),
+    type: data.get(#type, or: $value.type),
+    version: data.get(#version, or: $value.version),
+    versionCode: data.get(#versionCode, or: $value.versionCode),
+  );
 
   @override
   SystemArtifactCopyWith<$R2, SystemArtifact, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _SystemArtifactCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _SystemArtifactCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

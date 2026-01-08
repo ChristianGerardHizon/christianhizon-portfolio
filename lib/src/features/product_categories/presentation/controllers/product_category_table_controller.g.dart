@@ -6,179 +6,104 @@ part of 'product_category_table_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$productCategoryTableControllerHash() =>
-    r'85a993e6e18926db56b1d284f87ad7f89b286a28';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$ProductCategoryTableController
-    extends BuildlessAutoDisposeAsyncNotifier<List<ProductCategory>> {
-  late final String tableKey;
-
-  FutureOr<List<ProductCategory>> build(
-    String tableKey,
-  );
-}
-
-/// See also [ProductCategoryTableController].
 @ProviderFor(ProductCategoryTableController)
-const productCategoryTableControllerProvider =
-    ProductCategoryTableControllerFamily();
+final productCategoryTableControllerProvider =
+    ProductCategoryTableControllerFamily._();
 
-/// See also [ProductCategoryTableController].
-class ProductCategoryTableControllerFamily
-    extends Family<AsyncValue<List<ProductCategory>>> {
-  /// See also [ProductCategoryTableController].
-  const ProductCategoryTableControllerFamily();
-
-  /// See also [ProductCategoryTableController].
-  ProductCategoryTableControllerProvider call(
-    String tableKey,
-  ) {
-    return ProductCategoryTableControllerProvider(
-      tableKey,
-    );
-  }
-
-  @override
-  ProductCategoryTableControllerProvider getProviderOverride(
-    covariant ProductCategoryTableControllerProvider provider,
-  ) {
-    return call(
-      provider.tableKey,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'productCategoryTableControllerProvider';
-}
-
-/// See also [ProductCategoryTableController].
-class ProductCategoryTableControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<ProductCategoryTableController,
+final class ProductCategoryTableControllerProvider
+    extends $AsyncNotifierProvider<ProductCategoryTableController,
         List<ProductCategory>> {
-  /// See also [ProductCategoryTableController].
-  ProductCategoryTableControllerProvider(
-    String tableKey,
-  ) : this._internal(
-          () => ProductCategoryTableController()..tableKey = tableKey,
-          from: productCategoryTableControllerProvider,
+  ProductCategoryTableControllerProvider._(
+      {required ProductCategoryTableControllerFamily super.from,
+      required String super.argument})
+      : super(
+          retry: null,
           name: r'productCategoryTableControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$productCategoryTableControllerHash,
-          dependencies: ProductCategoryTableControllerFamily._dependencies,
-          allTransitiveDependencies:
-              ProductCategoryTableControllerFamily._allTransitiveDependencies,
-          tableKey: tableKey,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  ProductCategoryTableControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.tableKey,
-  }) : super.internal();
-
-  final String tableKey;
+  @override
+  String debugGetCreateSourceHash() => _$productCategoryTableControllerHash();
 
   @override
-  FutureOr<List<ProductCategory>> runNotifierBuild(
-    covariant ProductCategoryTableController notifier,
-  ) {
-    return notifier.build(
-      tableKey,
-    );
+  String toString() {
+    return r'productCategoryTableControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(ProductCategoryTableController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: ProductCategoryTableControllerProvider._internal(
-        () => create()..tableKey = tableKey,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        tableKey: tableKey,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<ProductCategoryTableController,
-      List<ProductCategory>> createElement() {
-    return _ProductCategoryTableControllerProviderElement(this);
-  }
+  ProductCategoryTableController create() => ProductCategoryTableController();
 
   @override
   bool operator ==(Object other) {
     return other is ProductCategoryTableControllerProvider &&
-        other.tableKey == tableKey;
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, tableKey.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin ProductCategoryTableControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<List<ProductCategory>> {
-  /// The parameter `tableKey` of this provider.
-  String get tableKey;
-}
+String _$productCategoryTableControllerHash() =>
+    r'2479b3836de6d4070102e47144406c4b18a45d48';
 
-class _ProductCategoryTableControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<
-        ProductCategoryTableController,
-        List<ProductCategory>> with ProductCategoryTableControllerRef {
-  _ProductCategoryTableControllerProviderElement(super.provider);
+final class ProductCategoryTableControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            ProductCategoryTableController,
+            AsyncValue<List<ProductCategory>>,
+            List<ProductCategory>,
+            FutureOr<List<ProductCategory>>,
+            String> {
+  ProductCategoryTableControllerFamily._()
+      : super(
+          retry: null,
+          name: r'productCategoryTableControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  ProductCategoryTableControllerProvider call(
+    String tableKey,
+  ) =>
+      ProductCategoryTableControllerProvider._(argument: tableKey, from: this);
 
   @override
-  String get tableKey =>
-      (origin as ProductCategoryTableControllerProvider).tableKey;
+  String toString() => r'productCategoryTableControllerProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$ProductCategoryTableController
+    extends $AsyncNotifier<List<ProductCategory>> {
+  late final _$args = ref.$arg as String;
+  String get tableKey => _$args;
+
+  FutureOr<List<ProductCategory>> build(
+    String tableKey,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref
+        as $Ref<AsyncValue<List<ProductCategory>>, List<ProductCategory>>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<List<ProductCategory>>, List<ProductCategory>>,
+        AsyncValue<List<ProductCategory>>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
+  }
+}

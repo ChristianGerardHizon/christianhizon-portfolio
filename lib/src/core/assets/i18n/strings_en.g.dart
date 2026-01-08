@@ -3,12 +3,13 @@
 ///
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
+// dart format off
 
 part of 'strings.g.dart';
 
 // Path: <root>
 typedef TranslationsEn = Translations; // ignore: unused_element
-class Translations implements BaseTranslations<AppLocale, Translations> {
+class Translations with BaseTranslations<AppLocale, Translations> {
 	/// Returns the current translations of the given [context].
 	///
 	/// Usage:
@@ -41,7 +42,6 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	// Translations
 	late final TranslationsAuthenticationEn authentication = TranslationsAuthenticationEn._(_root);
 	late final TranslationsCommonEn common = TranslationsCommonEn._(_root);
-	late final TranslationsFailuresEn failures = TranslationsFailuresEn._(_root);
 	late final TranslationsFieldsEn fields = TranslationsFieldsEn._(_root);
 }
 
@@ -52,7 +52,10 @@ class TranslationsAuthenticationEn {
 	final Translations _root; // ignore: unused_field
 
 	// Translations
+
+	/// en: 'Login'
 	String get login => 'Login';
+
 	List<String> get loginAsAdminList => [
 		'Not a user? ',
 		'Login as Administrator',
@@ -61,6 +64,8 @@ class TranslationsAuthenticationEn {
 		'Not an administrator? ',
 		'Login as User',
 	];
+
+	/// en: 'Logged in successfully'
 	String get loginSuccess => 'Logged in successfully';
 }
 
@@ -71,17 +76,12 @@ class TranslationsCommonEn {
 	final Translations _root; // ignore: unused_field
 
 	// Translations
+
+	/// en: 'SannJoseVet'
 	String get appName => 'SannJoseVet';
+
+	/// en: 'N/A'
 	String get placeholderText => 'N/A';
-}
-
-// Path: failures
-class TranslationsFailuresEn {
-	TranslationsFailuresEn._(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
 }
 
 // Path: fields
@@ -91,31 +91,41 @@ class TranslationsFieldsEn {
 	final Translations _root; // ignore: unused_field
 
 	// Translations
+
+	/// en: 'Email'
 	String get email => 'Email';
+
+	/// en: 'Password'
 	String get password => 'Password';
+
+	/// en: 'Password confirmation'
 	String get passwordConfirmation => 'Password confirmation';
+
+	/// en: 'Name'
 	String get name => 'Name';
 }
 
-/// Flat map(s) containing all translations.
+/// The flat map containing all translations for locale <en>.
 /// Only for edge cases! For simple maps, use the map function of this library.
+///
+/// The Dart AOT compiler has issues with very large switch statements,
+/// so the map is split into smaller functions (512 entries each).
 extension on Translations {
 	dynamic _flatMapFunction(String path) {
-		switch (path) {
-			case 'authentication.login': return 'Login';
-			case 'authentication.loginAsAdminList.0': return 'Not a user? ';
-			case 'authentication.loginAsAdminList.1': return 'Login as Administrator';
-			case 'authentication.returnToLoginAsUser.0': return 'Not an administrator? ';
-			case 'authentication.returnToLoginAsUser.1': return 'Login as User';
-			case 'authentication.loginSuccess': return 'Logged in successfully';
-			case 'common.appName': return 'SannJoseVet';
-			case 'common.placeholderText': return 'N/A';
-			case 'fields.email': return 'Email';
-			case 'fields.password': return 'Password';
-			case 'fields.passwordConfirmation': return 'Password confirmation';
-			case 'fields.name': return 'Name';
-			default: return null;
-		}
+		return switch (path) {
+			'authentication.login' => 'Login',
+			'authentication.loginAsAdminList.0' => 'Not a user? ',
+			'authentication.loginAsAdminList.1' => 'Login as Administrator',
+			'authentication.returnToLoginAsUser.0' => 'Not an administrator? ',
+			'authentication.returnToLoginAsUser.1' => 'Login as User',
+			'authentication.loginSuccess' => 'Logged in successfully',
+			'common.appName' => 'SannJoseVet',
+			'common.placeholderText' => 'N/A',
+			'fields.email' => 'Email',
+			'fields.password' => 'Password',
+			'fields.passwordConfirmation' => 'Password confirmation',
+			'fields.name' => 'Name',
+			_ => null,
+		};
 	}
 }
-

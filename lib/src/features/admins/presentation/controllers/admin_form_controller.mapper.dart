@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -26,11 +27,18 @@ class AdminFormStateMapper extends ClassMapperBase<AdminFormState> {
   static Admin? _$admin(AdminFormState v) => v.admin;
   static const Field<AdminFormState, Admin> _f$admin = Field('admin', _$admin);
   static List<Branch> _$branches(AdminFormState v) => v.branches;
-  static const Field<AdminFormState, List<Branch>> _f$branches =
-      Field('branches', _$branches, opt: true, def: const []);
+  static const Field<AdminFormState, List<Branch>> _f$branches = Field(
+    'branches',
+    _$branches,
+    opt: true,
+    def: const [],
+  );
   static List<PBFile>? _$images(AdminFormState v) => v.images;
-  static const Field<AdminFormState, List<PBFile>> _f$images =
-      Field('images', _$images, opt: true);
+  static const Field<AdminFormState, List<PBFile>> _f$images = Field(
+    'images',
+    _$images,
+    opt: true,
+  );
 
   @override
   final MappableFields<AdminFormState> fields = const {
@@ -41,9 +49,10 @@ class AdminFormStateMapper extends ClassMapperBase<AdminFormState> {
 
   static AdminFormState _instantiate(DecodingData data) {
     return AdminFormState(
-        admin: data.dec(_f$admin),
-        branches: data.dec(_f$branches),
-        images: data.dec(_f$images));
+      admin: data.dec(_f$admin),
+      branches: data.dec(_f$branches),
+      images: data.dec(_f$images),
+    );
   }
 
   @override
@@ -60,35 +69,43 @@ class AdminFormStateMapper extends ClassMapperBase<AdminFormState> {
 
 mixin AdminFormStateMappable {
   String toJson() {
-    return AdminFormStateMapper.ensureInitialized()
-        .encodeJson<AdminFormState>(this as AdminFormState);
+    return AdminFormStateMapper.ensureInitialized().encodeJson<AdminFormState>(
+      this as AdminFormState,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return AdminFormStateMapper.ensureInitialized()
-        .encodeMap<AdminFormState>(this as AdminFormState);
+    return AdminFormStateMapper.ensureInitialized().encodeMap<AdminFormState>(
+      this as AdminFormState,
+    );
   }
 
   AdminFormStateCopyWith<AdminFormState, AdminFormState, AdminFormState>
-      get copyWith =>
-          _AdminFormStateCopyWithImpl<AdminFormState, AdminFormState>(
-              this as AdminFormState, $identity, $identity);
+  get copyWith => _AdminFormStateCopyWithImpl<AdminFormState, AdminFormState>(
+    this as AdminFormState,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return AdminFormStateMapper.ensureInitialized()
-        .stringifyValue(this as AdminFormState);
+    return AdminFormStateMapper.ensureInitialized().stringifyValue(
+      this as AdminFormState,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return AdminFormStateMapper.ensureInitialized()
-        .equalsValue(this as AdminFormState, other);
+    return AdminFormStateMapper.ensureInitialized().equalsValue(
+      this as AdminFormState,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return AdminFormStateMapper.ensureInitialized()
-        .hashValue(this as AdminFormState);
+    return AdminFormStateMapper.ensureInitialized().hashValue(
+      this as AdminFormState,
+    );
   }
 }
 
@@ -105,7 +122,8 @@ abstract class AdminFormStateCopyWith<$R, $In extends AdminFormState, $Out>
   ListCopyWith<$R, PBFile, ObjectCopyWith<$R, PBFile, PBFile>>? get images;
   $R call({Admin? admin, List<Branch>? branches, List<PBFile>? images});
   AdminFormStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _AdminFormStateCopyWithImpl<$R, $Out>
@@ -121,32 +139,42 @@ class _AdminFormStateCopyWithImpl<$R, $Out>
       $value.admin?.copyWith.$chain((v) => call(admin: v));
   @override
   ListCopyWith<$R, Branch, BranchCopyWith<$R, Branch, Branch>> get branches =>
-      ListCopyWith($value.branches, (v, t) => v.copyWith.$chain(t),
-          (v) => call(branches: v));
+      ListCopyWith(
+        $value.branches,
+        (v, t) => v.copyWith.$chain(t),
+        (v) => call(branches: v),
+      );
   @override
   ListCopyWith<$R, PBFile, ObjectCopyWith<$R, PBFile, PBFile>>? get images =>
       $value.images != null
-          ? ListCopyWith($value.images!,
-              (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(images: v))
-          : null;
+      ? ListCopyWith(
+          $value.images!,
+          (v, t) => ObjectCopyWith(v, $identity, t),
+          (v) => call(images: v),
+        )
+      : null;
   @override
-  $R call(
-          {Object? admin = $none,
-          List<Branch>? branches,
-          Object? images = $none}) =>
-      $apply(FieldCopyWithData({
-        if (admin != $none) #admin: admin,
-        if (branches != null) #branches: branches,
-        if (images != $none) #images: images
-      }));
+  $R call({
+    Object? admin = $none,
+    List<Branch>? branches,
+    Object? images = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (admin != $none) #admin: admin,
+      if (branches != null) #branches: branches,
+      if (images != $none) #images: images,
+    }),
+  );
   @override
   AdminFormState $make(CopyWithData data) => AdminFormState(
-      admin: data.get(#admin, or: $value.admin),
-      branches: data.get(#branches, or: $value.branches),
-      images: data.get(#images, or: $value.images));
+    admin: data.get(#admin, or: $value.admin),
+    branches: data.get(#branches, or: $value.branches),
+    images: data.get(#images, or: $value.images),
+  );
 
   @override
   AdminFormStateCopyWith<$R2, AdminFormState, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _AdminFormStateCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _AdminFormStateCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

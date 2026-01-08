@@ -6,222 +6,132 @@ part of 'appointment_schedule_form_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appointmentScheduleFormControllerHash() =>
-    r'dd4b545c1e9ce4d2804cec9d6584cf0fbf242a7b';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
+@ProviderFor(AppointmentScheduleFormController)
+final appointmentScheduleFormControllerProvider =
+    AppointmentScheduleFormControllerFamily._();
 
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
+final class AppointmentScheduleFormControllerProvider
+    extends $AsyncNotifierProvider<AppointmentScheduleFormController,
+        AppointmentScheduleState> {
+  AppointmentScheduleFormControllerProvider._(
+      {required AppointmentScheduleFormControllerFamily super.from,
+      required (
+        String?, {
+        String? patientId,
+        String? patientRecordId,
+      })
+          super.argument})
+      : super(
+          retry: null,
+          name: r'appointmentScheduleFormControllerProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$appointmentScheduleFormControllerHash();
+
+  @override
+  String toString() {
+    return r'appointmentScheduleFormControllerProvider'
+        ''
+        '$argument';
   }
 
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  @$internal
+  @override
+  AppointmentScheduleFormController create() =>
+      AppointmentScheduleFormController();
+
+  @override
+  bool operator ==(Object other) {
+    return other is AppointmentScheduleFormControllerProvider &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
+String _$appointmentScheduleFormControllerHash() =>
+    r'dd4b545c1e9ce4d2804cec9d6584cf0fbf242a7b';
+
+final class AppointmentScheduleFormControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            AppointmentScheduleFormController,
+            AsyncValue<AppointmentScheduleState>,
+            AppointmentScheduleState,
+            FutureOr<AppointmentScheduleState>,
+            (
+              String?, {
+              String? patientId,
+              String? patientRecordId,
+            })> {
+  AppointmentScheduleFormControllerFamily._()
+      : super(
+          retry: null,
+          name: r'appointmentScheduleFormControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  AppointmentScheduleFormControllerProvider call(
+    String? id, {
+    String? patientId,
+    String? patientRecordId,
+  }) =>
+      AppointmentScheduleFormControllerProvider._(argument: (
+        id,
+        patientId: patientId,
+        patientRecordId: patientRecordId,
+      ), from: this);
+
+  @override
+  String toString() => r'appointmentScheduleFormControllerProvider';
+}
+
 abstract class _$AppointmentScheduleFormController
-    extends BuildlessAutoDisposeAsyncNotifier<AppointmentScheduleState> {
-  late final String? id;
-  late final String? patientId;
-  late final String? patientRecordId;
+    extends $AsyncNotifier<AppointmentScheduleState> {
+  late final _$args = ref.$arg as (
+    String?, {
+    String? patientId,
+    String? patientRecordId,
+  });
+  String? get id => _$args.$1;
+  String? get patientId => _$args.patientId;
+  String? get patientRecordId => _$args.patientRecordId;
 
   FutureOr<AppointmentScheduleState> build(
     String? id, {
     String? patientId,
     String? patientRecordId,
   });
-}
-
-/// See also [AppointmentScheduleFormController].
-@ProviderFor(AppointmentScheduleFormController)
-const appointmentScheduleFormControllerProvider =
-    AppointmentScheduleFormControllerFamily();
-
-/// See also [AppointmentScheduleFormController].
-class AppointmentScheduleFormControllerFamily
-    extends Family<AsyncValue<AppointmentScheduleState>> {
-  /// See also [AppointmentScheduleFormController].
-  const AppointmentScheduleFormControllerFamily();
-
-  /// See also [AppointmentScheduleFormController].
-  AppointmentScheduleFormControllerProvider call(
-    String? id, {
-    String? patientId,
-    String? patientRecordId,
-  }) {
-    return AppointmentScheduleFormControllerProvider(
-      id,
-      patientId: patientId,
-      patientRecordId: patientRecordId,
-    );
-  }
-
+  @$mustCallSuper
   @override
-  AppointmentScheduleFormControllerProvider getProviderOverride(
-    covariant AppointmentScheduleFormControllerProvider provider,
-  ) {
-    return call(
-      provider.id,
-      patientId: provider.patientId,
-      patientRecordId: provider.patientRecordId,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'appointmentScheduleFormControllerProvider';
-}
-
-/// See also [AppointmentScheduleFormController].
-class AppointmentScheduleFormControllerProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<
-        AppointmentScheduleFormController, AppointmentScheduleState> {
-  /// See also [AppointmentScheduleFormController].
-  AppointmentScheduleFormControllerProvider(
-    String? id, {
-    String? patientId,
-    String? patientRecordId,
-  }) : this._internal(
-          () => AppointmentScheduleFormController()
-            ..id = id
-            ..patientId = patientId
-            ..patientRecordId = patientRecordId,
-          from: appointmentScheduleFormControllerProvider,
-          name: r'appointmentScheduleFormControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$appointmentScheduleFormControllerHash,
-          dependencies: AppointmentScheduleFormControllerFamily._dependencies,
-          allTransitiveDependencies: AppointmentScheduleFormControllerFamily
-              ._allTransitiveDependencies,
-          id: id,
-          patientId: patientId,
-          patientRecordId: patientRecordId,
-        );
-
-  AppointmentScheduleFormControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-    required this.patientId,
-    required this.patientRecordId,
-  }) : super.internal();
-
-  final String? id;
-  final String? patientId;
-  final String? patientRecordId;
-
-  @override
-  FutureOr<AppointmentScheduleState> runNotifierBuild(
-    covariant AppointmentScheduleFormController notifier,
-  ) {
-    return notifier.build(
-      id,
-      patientId: patientId,
-      patientRecordId: patientRecordId,
-    );
-  }
-
-  @override
-  Override overrideWith(AppointmentScheduleFormController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: AppointmentScheduleFormControllerProvider._internal(
-        () => create()
-          ..id = id
-          ..patientId = patientId
-          ..patientRecordId = patientRecordId,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-        patientId: patientId,
-        patientRecordId: patientRecordId,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<AppointmentScheduleFormController,
-      AppointmentScheduleState> createElement() {
-    return _AppointmentScheduleFormControllerProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is AppointmentScheduleFormControllerProvider &&
-        other.id == id &&
-        other.patientId == patientId &&
-        other.patientRecordId == patientRecordId;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-    hash = _SystemHash.combine(hash, patientId.hashCode);
-    hash = _SystemHash.combine(hash, patientRecordId.hashCode);
-
-    return _SystemHash.finish(hash);
+  void runBuild() {
+    final ref = this.ref
+        as $Ref<AsyncValue<AppointmentScheduleState>, AppointmentScheduleState>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<AppointmentScheduleState>,
+            AppointmentScheduleState>,
+        AsyncValue<AppointmentScheduleState>,
+        Object?,
+        Object?>;
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args.$1,
+              patientId: _$args.patientId,
+              patientRecordId: _$args.patientRecordId,
+            ));
   }
 }
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin AppointmentScheduleFormControllerRef
-    on AutoDisposeAsyncNotifierProviderRef<AppointmentScheduleState> {
-  /// The parameter `id` of this provider.
-  String? get id;
-
-  /// The parameter `patientId` of this provider.
-  String? get patientId;
-
-  /// The parameter `patientRecordId` of this provider.
-  String? get patientRecordId;
-}
-
-class _AppointmentScheduleFormControllerProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<
-        AppointmentScheduleFormController,
-        AppointmentScheduleState> with AppointmentScheduleFormControllerRef {
-  _AppointmentScheduleFormControllerProviderElement(super.provider);
-
-  @override
-  String? get id => (origin as AppointmentScheduleFormControllerProvider).id;
-  @override
-  String? get patientId =>
-      (origin as AppointmentScheduleFormControllerProvider).patientId;
-  @override
-  String? get patientRecordId =>
-      (origin as AppointmentScheduleFormControllerProvider).patientRecordId;
-}
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
