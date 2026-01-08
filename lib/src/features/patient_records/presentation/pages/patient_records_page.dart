@@ -158,7 +158,7 @@ class PatientRecordsPage extends HookConsumerWidget {
           tableKey: TableControllerKeys.patientRecord,
           error: FailureMessage.asyncValue(listState),
           isLoading: listState.isLoading,
-          items: listState.valueOrNull ?? [],
+          items: listState.value ?? [],
           onDelete: onDelete,
           onRowTap: onTap,
 

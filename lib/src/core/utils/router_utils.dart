@@ -22,7 +22,7 @@ class RouterUtils {
   static FutureOr<String?> redirect(
     BuildContext context,
     GoRouterState state,
-    Ref<Object?> ref,
+    Ref ref,
   ) {
     // If the current path is in ignored routes, do not redirect
     final isIgnored =

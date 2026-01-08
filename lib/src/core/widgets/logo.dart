@@ -28,7 +28,7 @@ class Logo extends ConsumerWidget {
             width: width,
             height: height,
             child: Builder(builder: (context) {
-              if (ref.watch(pbDebugControllerProvider).valueOrNull ?? false)
+              if (ref.watch(pbDebugControllerProvider).value ?? false)
                 // if (false)
                 // ignore: dead_code
                 return Placeholder(

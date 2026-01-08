@@ -97,7 +97,7 @@ class ProductStocksPage extends HookConsumerWidget {
         tableKey: tableKey,
         error: listState.hasError ? Text('list has error') : null,
         isLoading: listState.isLoading,
-        items: listState.valueOrNull ?? [],
+        items: listState.value ?? [],
         onDelete: onDelete,
         onRowTap: onTap,
 

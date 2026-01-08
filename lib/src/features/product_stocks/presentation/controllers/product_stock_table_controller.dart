@@ -15,12 +15,10 @@ class ProductStockTableController extends _$ProductStockTableController {
   Future<List<ProductStock>> build(String tableKey, String productId) async {
     final repo = ref.read(productStockRepositoryProvider);
 
-    final page = ref
-        .watch(tableControllerProvider(tableKey).select((state) => state.page));
-    final pageSize = ref.watch(
-        tableControllerProvider(tableKey).select((state) => state.pageSize));
-    final tableFilter = ref.watch(
-        tableControllerProvider(tableKey).select((state) => state.filter));
+    final tableState = ref.watch(tableControllerProvider(tableKey));
+    final page = tableState.page;
+    final pageSize = tableState.pageSize;
+    final tableFilter = tableState.filter;
 
     final notifier = ref.read(tableControllerProvider(tableKey).notifier);
     final baseFilter =

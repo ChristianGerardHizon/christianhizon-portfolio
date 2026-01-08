@@ -121,7 +121,7 @@ class AppointmentScheduleByDateView extends HookConsumerWidget {
                 }
 
                 // empty
-                if (listState.valueOrNull?.isEmpty ?? false) {
+                if (listState.value?.isEmpty ?? false) {
                   return Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -138,11 +138,11 @@ class AppointmentScheduleByDateView extends HookConsumerWidget {
                 return DynamicTableSimple<AppointmentSchedule>(
                   tableKey: tableKey,
                   error: FailureMessage.asyncValue(listState),
-                  items: listState.valueOrNull ?? [],
+                  items: listState.value ?? [],
                   onRowTap: onRowTap,
                   showMore: true,
                   onShowMore: onShowMore,
-                  hidePageController: (listState.valueOrNull ?? []).length > 5,
+                  hidePageController: (listState.value ?? []).length > 5,
                   columns: [
                     DynamicTableColumn(
                       header: 'Date and Time',

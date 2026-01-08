@@ -74,7 +74,7 @@ class AppointmentScheduleFormPage extends HookConsumerWidget {
     }
 
     ref.listen(provider, (prev, next) {
-      final hasNext = next.valueOrNull?.appointmentSchedule?.hasTime;
+      final hasNext = next.value?.appointmentSchedule?.hasTime;
       if (hasNext is bool) {
         hasTime.value = hasNext;
       }

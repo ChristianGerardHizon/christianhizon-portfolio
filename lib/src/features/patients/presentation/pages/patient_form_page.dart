@@ -29,7 +29,7 @@ class PatientFormPage extends HookConsumerWidget {
     final selectedSpecies = useState<String?>(null);
 
     ref.listen(patientFormControllerProvider(id), (previous, next) {
-      final patient = next.valueOrNull?.patient;
+      final patient = next.value?.patient;
       if (patient is Patient) {
         selectedSpecies.value = patient.species;
       }

@@ -14,7 +14,7 @@ class PbDebugController extends _$PbDebugController {
   }
 
   Future<void> toggle() async {
-    await save(!(state.valueOrNull ?? false));
+    await save(!(state.value ?? false));
     ref.invalidateSelf();
   }
 
@@ -35,7 +35,7 @@ class PbDebugController extends _$PbDebugController {
 @Riverpod(keepAlive: true)
 PocketBase pocketbase(Ref ref) {
   // return PocketBase('https://hizonelaundry.sannjosevet.xyz/');
-  if (ref.watch(pbDebugControllerProvider).valueOrNull ?? false) {
+  if (ref.watch(pbDebugControllerProvider).value ?? false) {
     return PocketBase('https://dev.sannjosevet.xyz');
   } else {
     return PocketBase('https://www.sannjosevet.xyz');

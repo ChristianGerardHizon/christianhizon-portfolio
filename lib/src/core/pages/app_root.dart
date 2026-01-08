@@ -50,7 +50,7 @@ class AppRoot extends HookConsumerWidget {
     final state = ref.watch(navItemsControllerProvider);
 
     return Scaffold(
-      appBar: ref.watch(pbDebugControllerProvider).valueOrNull ?? false
+      appBar: ref.watch(pbDebugControllerProvider).value ?? false
           ? AppBar(
               backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               automaticallyImplyLeading: false,

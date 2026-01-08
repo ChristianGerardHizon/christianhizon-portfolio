@@ -156,7 +156,7 @@ class AppointmentSchedulesPage extends HookConsumerWidget {
         tableKey: TableControllerKeys.appointmentSchedule,
         error: FailureMessage.asyncValue(listState),
         isLoading: listState.isLoading,
-        items: listState.valueOrNull ?? [],
+        items: listState.value ?? [],
         onDelete: onDelete,
         onRowTap: onTap,
 

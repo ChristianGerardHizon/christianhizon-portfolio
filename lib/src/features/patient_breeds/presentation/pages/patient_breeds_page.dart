@@ -130,7 +130,7 @@ class PatientBreedsPage extends HookConsumerWidget {
           tableKey: TableControllerKeys.patientBreed,
           error: FailureMessage.asyncValue(listState),
           isLoading: listState.isLoading,
-          items: listState.valueOrNull ?? [],
+          items: listState.value ?? [],
           onDelete: onDelete,
           onRowTap: onTap,
 
