@@ -82,7 +82,7 @@ dart format lib/
 - Access form state via `FormBuilder.of(context)`
 
 ### Error Handling
-- Use `Failure` class from `core/models/failure.dart`
+- Use `Failure` class from `core/foundation/failure.dart`
 - Return `Either<Failure, T>` for operations that can fail (using fpdart)
 
 ## File Naming Conventions

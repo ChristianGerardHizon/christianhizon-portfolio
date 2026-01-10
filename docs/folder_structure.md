@@ -604,10 +604,11 @@ core/
 ├── hooks/                       # Custom Flutter hooks
 │   └── use_debounce.dart
 │
-├── models/                      # Shared models
+├── foundation/                  # Base classes and type definitions
 │   ├── failure.dart             # Error handling
 │   ├── pb_record.dart           # PocketBase base class
-│   └── pb_repository.dart       # Repository interface
+│   ├── pb_repository.dart       # Repository interface
+│   └── type_defs.dart           # Type aliases (Json, FutureEither, etc.)
 │
 ├── packages/                    # Third-party integrations
 │   ├── pocketbase/
