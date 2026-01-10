@@ -105,3 +105,11 @@ Tests are located in `/test` directory mirroring the `lib/` structure.
 - `/lib/src/core/packages/` - Package integrations (PocketBase, storage)
 - `/assets/` - Static assets and icons
 - `/server/` - Backend server configurations
+
+## Documentation
+
+Detailed documentation is available in the `/docs` directory:
+
+- **[Entities](docs/entities.md)** - All domain models with fields, relationships, and collection names (18 collections, 5 enums)
+- **[Folder Structure](docs/folder_structure.md)** - Architecture layers, feature module structure, DTOs, repositories, and code patterns
+- **[UI Structure](docs/ui.md)** - Responsive layouts, navigation hierarchy, routing structure, and component architecture
