@@ -101,10 +101,49 @@ core/
 
 ### Feature Modules (`lib/src/features/`)
 
-Each feature follows a consistent structure:
+Features are organized into **domain groups** for better discoverability and maintainability:
 
 ```
-feature_name/
+features/
+├── patients/                    # Patient domain group
+│   ├── core/                    # Main patient entity
+│   ├── breeds/                  # Breed definitions
+│   ├── files/                   # Medical documents/images
+│   ├── prescriptions/           # Prescription records
+│   ├── records/                 # Medical visit records
+│   ├── species/                 # Species catalog
+│   ├── treatments/              # Treatment type catalog
+│   └── treatment_records/       # Treatment instances
+│
+├── products/                    # Product domain group
+│   ├── core/                    # Main product entity
+│   ├── adjustments/             # Inventory adjustments
+│   ├── categories/              # Product categories
+│   ├── inventories/             # Aggregated inventory views
+│   └── stocks/                  # Lot/batch inventory
+│
+├── appointments/                # Appointments domain
+│   └── schedules/               # Scheduled appointments
+│
+├── organization/                # Organization management
+│   ├── admins/                  # Administrator accounts
+│   ├── branches/                # Organization locations
+│   └── users/                   # Regular user accounts
+│
+├── system/                      # System features
+│   ├── authentication/          # Login/logout, auth state
+│   ├── change_logs/             # Audit trail
+│   ├── dashboard/               # Dashboard/home
+│   ├── settings/                # App settings
+│   └── system_versions/         # Version management
+│
+└── sales/                       # Point of sale (presentation only)
+```
+
+Each feature follows a consistent internal structure:
+
+```
+{feature}/
 ├── data/
 │   └── {feature}_repository.dart    # Repository implementation
 ├── domain/
@@ -114,17 +153,6 @@ feature_name/
     ├── pages/                        # Full-screen UI
     └── widgets/                      # Feature-specific components
 ```
-
-**25 Feature Modules:**
-
-| Category | Features |
-|----------|----------|
-| **User Management** | `admins`, `users`, `authentication` |
-| **Patient Care** | `patients`, `patient_species`, `patient_breeds`, `patient_records`, `patient_files`, `patient_treatments`, `patient_treatment_records`, `patient_prescription_items` |
-| **Scheduling** | `appointment_schedules` |
-| **Inventory** | `products`, `product_categories`, `product_stocks`, `product_inventories`, `product_adjustments` |
-| **Organization** | `branches`, `dashboard`, `sales`, `settings` |
-| **System** | `change_logs`, `system_versions` |
 
 ## Packages
 
