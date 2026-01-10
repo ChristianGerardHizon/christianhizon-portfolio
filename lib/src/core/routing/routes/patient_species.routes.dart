@@ -1,7 +1,7 @@
 part of '../main.routes.dart';
 
-class PatientSpieciesBranchData extends StatefulShellBranchData {
-  const PatientSpieciesBranchData();
+class PatientSpeciesBranchData extends StatefulShellBranchData {
+  const PatientSpeciesBranchData();
 
   static const routes = <TypeRouteData>[
     TypedGoRoute<PatientSpeciesListPageRoute>(

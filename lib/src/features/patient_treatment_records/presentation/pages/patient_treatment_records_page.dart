@@ -13,10 +13,10 @@ import 'package:sannjosevet/src/core/widgets/dynamic_table/table_controller.dart
 import 'package:sannjosevet/src/core/widgets/failure_message.dart';
 import 'package:sannjosevet/src/core/widgets/popover_widget.dart';
 import 'package:sannjosevet/src/core/widgets/refresh_button.dart';
-import 'package:sannjosevet/src/features/patient_treament_records/data/patient_treatment_record_repository.dart';
-import 'package:sannjosevet/src/features/patient_treament_records/domain/patient_treatment_record.dart';
-import 'package:sannjosevet/src/features/patient_treament_records/presentation/controllers/patient_treatment_record_table_controller.dart';
-import 'package:sannjosevet/src/features/patient_treament_records/presentation/widgets/patient_treament_record_card.dart';
+import 'package:sannjosevet/src/features/patient_treatment_records/data/patient_treatment_record_repository.dart';
+import 'package:sannjosevet/src/features/patient_treatment_records/domain/patient_treatment_record.dart';
+import 'package:sannjosevet/src/features/patient_treatment_records/presentation/controllers/patient_treatment_record_table_controller.dart';
+import 'package:sannjosevet/src/features/patient_treatment_records/presentation/widgets/patient_treatment_record_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientTreatmentRecordsPage extends HookConsumerWidget {

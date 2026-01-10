@@ -1,5 +1,5 @@
-import 'package:sannjosevet/src/features/patient_treaments/data/patient_treatment_repository.dart';
-import 'package:sannjosevet/src/features/patient_treaments/domain/patient_treatment.dart';
+import 'package:sannjosevet/src/features/patient_treatments/data/patient_treatment_repository.dart';
+import 'package:sannjosevet/src/features/patient_treatments/domain/patient_treatment.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

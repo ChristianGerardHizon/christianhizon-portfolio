@@ -43,11 +43,11 @@ import 'package:sannjosevet/src/features/patient_records/presentation/pages/pati
 import 'package:sannjosevet/src/features/patient_species/presentation/pages/patient_species_form_page.dart';
 import 'package:sannjosevet/src/features/patient_species/presentation/pages/patient_species_list_page.dart';
 import 'package:sannjosevet/src/features/patient_species/presentation/pages/patient_species_page.dart';
-import 'package:sannjosevet/src/features/patient_treament_records/presentation/pages/patient_treatment_record_form_page.dart';
-import 'package:sannjosevet/src/features/patient_treament_records/presentation/pages/patient_treatment_record_page.dart';
-import 'package:sannjosevet/src/features/patient_treament_records/presentation/pages/patient_treatment_records_page.dart';
-import 'package:sannjosevet/src/features/patient_treaments/presentation/pages/patient_treatment_form_page.dart';
-import 'package:sannjosevet/src/features/patient_treaments/presentation/pages/patient_treatments_page.dart';
+import 'package:sannjosevet/src/features/patient_treatment_records/presentation/pages/patient_treatment_record_form_page.dart';
+import 'package:sannjosevet/src/features/patient_treatment_records/presentation/pages/patient_treatment_record_page.dart';
+import 'package:sannjosevet/src/features/patient_treatment_records/presentation/pages/patient_treatment_records_page.dart';
+import 'package:sannjosevet/src/features/patient_treatments/presentation/pages/patient_treatment_form_page.dart';
+import 'package:sannjosevet/src/features/patient_treatments/presentation/pages/patient_treatments_page.dart';
 import 'package:sannjosevet/src/features/patients/presentation/pages/patient_form_page.dart';
 import 'package:sannjosevet/src/features/patients/presentation/pages/patient_page.dart';
 import 'package:sannjosevet/src/features/patients/presentation/pages/patients_page.dart';

@@ -12,11 +12,11 @@ import 'package:sannjosevet/src/core/widgets/failure_message.dart';
 import 'package:sannjosevet/src/core/widgets/popover_widget.dart';
 import 'package:sannjosevet/src/core/widgets/refresh_button.dart';
 import 'package:sannjosevet/src/core/widgets/stack_loader.dart';
-import 'package:sannjosevet/src/features/patient_treaments/data/patient_treatment_repository.dart';
-import 'package:sannjosevet/src/features/patient_treaments/domain/patient_treatment.dart';
-import 'package:sannjosevet/src/features/patient_treaments/presentation/controllers/patient_treatment_table_controller.dart';
+import 'package:sannjosevet/src/features/patient_treatments/data/patient_treatment_repository.dart';
+import 'package:sannjosevet/src/features/patient_treatments/domain/patient_treatment.dart';
+import 'package:sannjosevet/src/features/patient_treatments/presentation/controllers/patient_treatment_table_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:sannjosevet/src/features/patient_treaments/presentation/widgets/patient_treatment_card.dart';
+import 'package:sannjosevet/src/features/patient_treatments/presentation/widgets/patient_treatment_card.dart';
 
 class PatientTreatmentsPage extends HookConsumerWidget {
   const PatientTreatmentsPage({
@@ -42,7 +42,7 @@ class PatientTreatmentsPage extends HookConsumerWidget {
     }
 
     void onEdit(PatientTreatment treatment) {
-      PatientTreamentFormPageRoute(id: treatment.id).push(context);
+      PatientTreatmentFormPageRoute(id: treatment.id).push(context);
     }
 
     Future<void> onDelete(List<PatientTreatment> items) async {
@@ -62,7 +62,7 @@ class PatientTreatmentsPage extends HookConsumerWidget {
     }
 
     void onCreate() {
-      PatientTreamentFormPageRoute().push(context);
+      PatientTreatmentFormPageRoute().push(context);
     }
 
     return Scaffold(

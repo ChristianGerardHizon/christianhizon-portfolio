@@ -5,7 +5,7 @@ import 'package:sannjosevet/src/core/packages/pocketbase_collections.dart';
 import 'package:sannjosevet/src/core/models/page_results.dart';
 import 'package:sannjosevet/src/core/strings/pb_expand.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
-import 'package:sannjosevet/src/features/patient_treament_records/domain/patient_treatment_record.dart';
+import 'package:sannjosevet/src/features/patient_treatment_records/domain/patient_treatment_record.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pocketbase/pocketbase.dart';

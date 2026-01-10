@@ -1,13 +1,13 @@
 part of '../main.routes.dart';
 
-class PatientTreamentsBranchData extends StatefulShellBranchData {
-  const PatientTreamentsBranchData();
+class PatientTreatmentsBranchData extends StatefulShellBranchData {
+  const PatientTreatmentsBranchData();
 
   static const routes = <TypeRouteData>[
     TypedGoRoute<PatientTreatmentPageRoute>(
         path: PatientTreatmentPageRoute.path),
-    TypedGoRoute<PatientTreamentFormPageRoute>(
-        path: PatientTreamentFormPageRoute.path),
+    TypedGoRoute<PatientTreatmentFormPageRoute>(
+        path: PatientTreatmentFormPageRoute.path),
   ];
 }
 
@@ -15,7 +15,7 @@ class PatientTreamentsBranchData extends StatefulShellBranchData {
 class PatientTreatmentPageRoute extends GoRouteData with $PatientTreatmentPageRoute {
   const PatientTreatmentPageRoute();
 
-  static const path = '/patientTreaments';
+  static const path = '/patientTreatments';
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
@@ -23,11 +23,11 @@ class PatientTreatmentPageRoute extends GoRouteData with $PatientTreatmentPageRo
   }
 }
 
-@TypedGoRoute<PatientTreamentFormPageRoute>(
-    path: PatientTreamentFormPageRoute.path)
-class PatientTreamentFormPageRoute extends GoRouteData with $PatientTreamentFormPageRoute {
-  const PatientTreamentFormPageRoute({this.id});
-  static const path = '/form/patientTreaments';
+@TypedGoRoute<PatientTreatmentFormPageRoute>(
+    path: PatientTreatmentFormPageRoute.path)
+class PatientTreatmentFormPageRoute extends GoRouteData with $PatientTreatmentFormPageRoute {
+  const PatientTreatmentFormPageRoute({this.id});
+  static const path = '/form/patientTreatments';
 
   final String? id;
 

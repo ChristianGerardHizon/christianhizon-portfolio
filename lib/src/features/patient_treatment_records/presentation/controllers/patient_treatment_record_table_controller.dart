@@ -3,36 +3,45 @@ import 'package:sannjosevet/src/core/models/pb_filter.dart';
 import 'package:sannjosevet/src/core/strings/fields.dart';
 import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:sannjosevet/src/core/widgets/dynamic_table/table_controller.dart';
-import 'package:sannjosevet/src/features/patient_treaments/data/patient_treatment_repository.dart';
-import 'package:sannjosevet/src/features/patient_treaments/domain/patient_treatment.dart';
+import 'package:sannjosevet/src/features/patient_treatment_records/data/patient_treatment_record_repository.dart';
+import 'package:sannjosevet/src/features/patient_treatment_records/domain/patient_treatment_record.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'patient_treatment_table_controller.g.dart';
+part 'patient_treatment_record_table_controller.g.dart';
 
 @riverpod
-class PatientTreatmentTableController
-    extends _$PatientTreatmentTableController {
+class PatientTreatmentRecordTableController
+    extends _$PatientTreatmentRecordTableController {
   @override
-  Future<List<PatientTreatment>> build(String tableKey) async {
-    final repo = ref.watch(patientTreatmentRepositoryProvider);
+  Future<List<PatientTreatmentRecord>> build(
+      String tableKey, String patientId) async {
+    final repo = ref.watch(patientTreatmentRecordRepositoryProvider);
 
     final tableState = ref.watch(tableControllerProvider(tableKey));
     final page = tableState.page;
     final pageSize = tableState.pageSize;
     final tableFilter = tableState.filter;
 
+    // fix warning here
     final notifier = ref.read(tableControllerProvider(tableKey).notifier);
-    final baseFilter = "${PatientTreatmentField.isDeleted} = false";
+    final baseFilter =
+        "${PatientTreatmentRecordField.isDeleted} = false && patient = '$patientId' ";
     final filterFunc = PocketbaseFilter(baseFilter: baseFilter);
 
     final result = await repo
+
+        // 1. Fetch data
         .list(
           filter: filterFunc.searchName(tableFilter).build(),
           pageNo: page,
           pageSize: pageSize,
           sort: '-updated',
         )
+
+        // 2. success sideffect
         .flatMap((result) => _handleSuccess(result, notifier))
+
+        // 3. run
         .run();
 
     return result.fold(Future.error, (x) => Future.value(x.items));
@@ -40,7 +49,7 @@ class PatientTreatmentTableController
 }
 
 TaskResult _handleSuccess(
-  PageResults<PatientTreatment> result,
+  PageResults<PatientTreatmentRecord> result,
   TableController notifier,
 ) {
   notifier.fetchSuccess(

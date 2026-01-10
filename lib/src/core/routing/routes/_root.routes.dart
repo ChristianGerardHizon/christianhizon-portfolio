@@ -89,8 +89,8 @@ class RootRoutes {
     ///
     /// Species
     ///
-    TypedStatefulShellBranch<PatientSpieciesBranchData>(
-      routes: PatientSpieciesBranchData.routes,
+    TypedStatefulShellBranch<PatientSpeciesBranchData>(
+      routes: PatientSpeciesBranchData.routes,
     ),
 
     ///
@@ -110,8 +110,8 @@ class RootRoutes {
     ///
     /// Patient Treatments
     ///
-    TypedStatefulShellBranch<PatientTreamentsBranchData>(
-      routes: PatientTreamentsBranchData.routes,
+    TypedStatefulShellBranch<PatientTreatmentsBranchData>(
+      routes: PatientTreatmentsBranchData.routes,
     ),
   ];
 }

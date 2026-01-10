@@ -15,7 +15,7 @@ import 'package:sannjosevet/src/core/widgets/mobile_bottom_nav.dart';
 import 'package:sannjosevet/src/core/widgets/mobile_drawer.dart';
 import 'package:sannjosevet/src/features/authentication/presentation/widgets/account_circle_image.dart';
 import 'package:sannjosevet/src/features/branches/presentation/controllers/branches_controller.dart';
-import 'package:sannjosevet/src/features/patient_treaments/presentation/controllers/patient_treatments_controller.dart';
+import 'package:sannjosevet/src/features/patient_treatments/presentation/controllers/patient_treatments_controller.dart';
 import 'package:sannjosevet/src/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';

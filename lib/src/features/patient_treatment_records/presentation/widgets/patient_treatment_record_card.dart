@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sannjosevet/src/core/extensions/date_time_extension.dart';
 import 'package:sannjosevet/src/core/extensions/string.dart';
 import 'package:sannjosevet/src/core/widgets/selectable_card.dart';
-import 'package:sannjosevet/src/features/patient_treament_records/domain/patient_treatment_record.dart';
+import 'package:sannjosevet/src/features/patient_treatment_records/domain/patient_treatment_record.dart';
 
 class PatientTreatmentRecordCard extends StatelessWidget {
   const PatientTreatmentRecordCard({

@@ -66,7 +66,7 @@ List<RouteBase> get $appRoutes => [
       $patientSpeciesPageRoute,
       $patientBreedFormPageRoute,
       $patientTreatmentPageRoute,
-      $patientTreamentFormPageRoute,
+      $patientTreatmentFormPageRoute,
     ];
 
 RouteBase get $notFoundRoute => GoRouteData.$route(
@@ -384,12 +384,12 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
-              path: '/patientTreaments',
+              path: '/patientTreatments',
               factory: $PatientTreatmentPageRoute._fromState,
             ),
             GoRouteData.$route(
-              path: '/form/patientTreaments',
-              factory: $PatientTreamentFormPageRoute._fromState,
+              path: '/form/patientTreatments',
+              factory: $PatientTreatmentFormPageRoute._fromState,
             ),
           ],
         ),
@@ -1726,7 +1726,7 @@ mixin $PatientTreatmentPageRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location(
-        '/patientTreaments',
+        '/patientTreatments',
       );
 
   @override
@@ -1743,18 +1743,18 @@ mixin $PatientTreatmentPageRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin $PatientTreamentFormPageRoute on GoRouteData {
-  static PatientTreamentFormPageRoute _fromState(GoRouterState state) =>
-      PatientTreamentFormPageRoute(
+mixin $PatientTreatmentFormPageRoute on GoRouteData {
+  static PatientTreatmentFormPageRoute _fromState(GoRouterState state) =>
+      PatientTreatmentFormPageRoute(
         id: state.uri.queryParameters['id'],
       );
 
-  PatientTreamentFormPageRoute get _self =>
-      this as PatientTreamentFormPageRoute;
+  PatientTreatmentFormPageRoute get _self =>
+      this as PatientTreatmentFormPageRoute;
 
   @override
   String get location => GoRouteData.$location(
-        '/form/patientTreaments',
+        '/form/patientTreatments',
         queryParams: {
           if (_self.id != null) 'id': _self.id,
         },
@@ -2219,11 +2219,11 @@ RouteBase get $patientBreedFormPageRoute => GoRouteData.$route(
     );
 
 RouteBase get $patientTreatmentPageRoute => GoRouteData.$route(
-      path: '/patientTreaments',
+      path: '/patientTreatments',
       factory: $PatientTreatmentPageRoute._fromState,
     );
 
-RouteBase get $patientTreamentFormPageRoute => GoRouteData.$route(
-      path: '/form/patientTreaments',
-      factory: $PatientTreamentFormPageRoute._fromState,
+RouteBase get $patientTreatmentFormPageRoute => GoRouteData.$route(
+      path: '/form/patientTreatments',
+      factory: $PatientTreatmentFormPageRoute._fromState,
     );

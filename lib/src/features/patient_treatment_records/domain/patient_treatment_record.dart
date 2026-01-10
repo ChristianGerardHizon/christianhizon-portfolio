@@ -1,7 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:sannjosevet/src/core/models/pb_record.dart';
 import 'package:sannjosevet/src/core/hooks/date_time_hook.dart';
-import 'package:sannjosevet/src/features/patient_treaments/domain/patient_treatment.dart';
+import 'package:sannjosevet/src/features/patient_treatments/domain/patient_treatment.dart';
 
 part 'patient_treatment_record.mapper.dart';
 
