@@ -1,117 +1,47 @@
 import 'package:go_router/go_router.dart';
 import 'package:sannjosevet/src/core/routing/router.dart';
 
+/// Root routes configuration with 8 consolidated branches
 class RootRoutes {
   static const branches = <TypedStatefulShellBranch<StatefulShellBranchData>>[
-    ///
-    /// dashboard
-    ///
+    /// Dashboard - main entry point
     TypedStatefulShellBranch<DashboardBranchData>(
       routes: DashboardBranchData.routes,
     ),
 
-    ///
-    /// patients
-    ///
+    /// Patients - core patient management, records, treatment records, prescriptions, files
     TypedStatefulShellBranch<PatientsBranchData>(
       routes: PatientsBranchData.routes,
     ),
 
-    ///
-    /// Products
-    ///
+    /// Patient Config - species, breeds, treatments catalog
+    TypedStatefulShellBranch<PatientConfigBranchData>(
+      routes: PatientConfigBranchData.routes,
+    ),
+
+    /// Products - products, inventories, stocks, categories, adjustments
     TypedStatefulShellBranch<ProductsBranchData>(
       routes: ProductsBranchData.routes,
     ),
 
-    /// Calendar
-    ///
-    TypedStatefulShellBranch<CalendarAppointmentSchedulesData>(
-      routes: CalendarAppointmentSchedulesData.routes,
+    /// Appointments - schedules, calendar view
+    TypedStatefulShellBranch<AppointmentsBranchData>(
+      routes: AppointmentsBranchData.routes,
     ),
 
-    ///
-    /// Sales Cashier
-    ///
+    /// Organization - admins, users, branches
+    TypedStatefulShellBranch<OrganizationBranchData>(
+      routes: OrganizationBranchData.routes,
+    ),
+
+    /// System - settings, domain, change-logs, account
+    TypedStatefulShellBranch<SystemBranchData>(
+      routes: SystemBranchData.routes,
+    ),
+
+    /// Sales - cashier, sales
     TypedStatefulShellBranch<SalesCashierBranchData>(
       routes: SalesCashierBranchData.routes,
-    ),
-
-    ///
-    /// Branches
-    ///
-    TypedStatefulShellBranch<BranchesBranchData>(
-      routes: BranchesBranchData.routes,
-    ),
-
-    ///
-    /// Users
-    ///
-    TypedStatefulShellBranch<UsersBranchData>(
-      routes: UsersBranchData.routes,
-    ),
-
-    ///
-    /// Admins
-    ///
-    TypedStatefulShellBranch<AdminsBranchData>(
-      routes: AdminsBranchData.routes,
-    ),
-
-    ///
-    /// Settings
-    ///
-    TypedStatefulShellBranch<SettingsBranchData>(
-      routes: SettingsBranchData.routes,
-    ),
-
-    ///
-    /// ChangeLogs
-    ///
-    TypedStatefulShellBranch<ChangeLogsBranchData>(
-      routes: ChangeLogsBranchData.routes,
-    ),
-
-    ///
-    /// Account
-    ///
-    TypedStatefulShellBranch<AuthenticationBranchData>(
-      routes: AuthenticationBranchData.routes,
-    ),
-
-    ///
-    /// Appointments
-    ///
-    TypedStatefulShellBranch<AppointmentSchedulesData>(
-      routes: AppointmentSchedulesData.routes,
-    ),
-
-    ///
-    /// Species
-    ///
-    TypedStatefulShellBranch<PatientSpeciesBranchData>(
-      routes: PatientSpeciesBranchData.routes,
-    ),
-
-    ///
-    /// Breeds
-    ///
-    TypedStatefulShellBranch<PatientBreedsBranchData>(
-      routes: PatientBreedsBranchData.routes,
-    ),
-
-    ///
-    /// Stock Adjustments
-    ///
-    TypedStatefulShellBranch<ProductAdjustmentsBranchData>(
-      routes: ProductAdjustmentsBranchData.routes,
-    ),
-
-    ///
-    /// Patient Treatments
-    ///
-    TypedStatefulShellBranch<PatientTreatmentsBranchData>(
-      routes: PatientTreatmentsBranchData.routes,
     ),
   ];
 }

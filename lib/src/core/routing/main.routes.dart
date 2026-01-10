@@ -70,25 +70,21 @@ import 'package:sannjosevet/src/features/organization/users/presentation/pages/u
 import 'package:sannjosevet/src/features/system/authentication/presentation/pages/your_account_page.dart';
 
 part 'main.routes.g.dart';
+
+// Core routes
 part 'routes/common.routes.dart';
-part 'routes/admins.routes.dart';
-part 'routes/branches.routes.dart';
-part 'routes/authentication.routes.dart';
-part 'routes/users.routes.dart';
-part 'routes/settings.routes.dart';
-part 'routes/patients/patients.routes.dart';
 part 'routes/dashboard.routes.dart';
 part 'routes/others.routes.dart';
 part 'routes/sales.routes.dart';
+
+// Consolidated domain routes
+part 'routes/organization/organization.routes.dart';
+part 'routes/system/system.routes.dart';
+part 'routes/appointments/appointments.routes.dart';
+
+// Patients routes
+part 'routes/patients/patients.routes.dart';
+part 'routes/patients/patient_config.routes.dart';
+
+// Products routes
 part 'routes/products/products.routes.dart';
-part 'routes/patients/patient_records.routes.dart';
-part 'routes/patients/patient_treatment_records.routes.dart';
-part 'routes/appointment_schedules.routes.dart';
-part 'routes/change_logs.routes.dart';
-part 'routes/products/product_category.routes.dart';
-part 'routes/patients/patient_prescription_item.routes.dart';
-part 'routes/patients/patient_files.routes.dart';
-part 'routes/products/product_adjustments.routes.dart';
-part 'routes/patients/patient_species.routes.dart';
-part 'routes/patients/patient_breeds.routes.dart';
-part 'routes/patients/patient_treatment.routes.dart';

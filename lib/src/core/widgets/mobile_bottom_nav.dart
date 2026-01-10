@@ -25,16 +25,16 @@ class MobileBottomNav extends StatelessWidget {
       DashboardPageRoute.path,
       PatientsPageRoute.path,
       AppointmentSchedulesPageRoute.path,
-      ProductInventoriesPageRoute.path,
-      YourAccountPageRoute.path,
+      ProductsPageRoute.path,
+      MorePageRoute.path,
     ];
 
     final moreWidget = CustomNavigationBarItem(
-      route: YourAccountPageRoute.path,
-      icon: Icon(MIcons.homeCircleOutline),
-      label: 'Account',
+      route: MorePageRoute.path,
+      icon: Icon(MIcons.dotsHorizontal),
+      label: 'More',
       onTap: (context) {
-        YourAccountPageRoute().push(context);
+        MorePageRoute().push(context);
       },
     );
 
@@ -47,17 +47,6 @@ class MobileBottomNav extends StatelessWidget {
         .toList()
       ..add(moreWidget);
 
-    ///
-    ///
-    ///
-    bool shouldShowBottomNav(String? path) {
-      if (path == null) return false;
-      return routes.contains(path);
-    }
-
-    ///
-    ///
-    ///
     onRouteChanged(int index, List<CustomNavigationBarItem> list) {
       final item = list[index];
       if (index == 4) {
@@ -67,26 +56,17 @@ class MobileBottomNav extends StatelessWidget {
       item.onTap?.call(context);
     }
 
-    ///
-    ///
-    ///
-    int bottomNavIndeCalulator(int index, String? path) {
+    int bottomNavIndexCalculator(int index, String? path) {
       if (path == null) return 0;
-      if (path == (DashboardPageRoute.path)) return 0;
-      if (path.contains(PatientsPageRoute.path)) return 1;
-      if (path.contains(AppointmentSchedulesPageRoute.path)) return 2;
-      if (path.contains(ProductInventoriesPageRoute.path)) return 3;
-      if (path.contains(YourAccountPageRoute.path)) return 4;
-      return 0;
+      if (path == '/') return 0;
+      if (path.startsWith('/patients')) return 1;
+      if (path.startsWith('/appointments')) return 2;
+      if (path.startsWith('/products')) return 3;
+      // Default to "More" for all other routes (organization, system, sales, etc.)
+      return 4;
     }
 
-    ///
-    ///
-    ///
-    if (shouldShowBottomNav(state.fullPath) == false) {
-      return SizedBox();
-    }
-
+    // Always show bottom nav on mobile
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -95,7 +75,7 @@ class MobileBottomNav extends StatelessWidget {
           items: finalList,
           landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
           elevation: 0,
-          currentIndex: bottomNavIndeCalulator(index, state.fullPath),
+          currentIndex: bottomNavIndexCalculator(index, state.fullPath),
           selectedFontSize: 13,
           unselectedFontSize: 11,
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
