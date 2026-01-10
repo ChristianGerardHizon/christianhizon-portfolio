@@ -24,8 +24,9 @@ lib/
 
 | Layer | Purpose | Contains |
 |-------|---------|----------|
-| **Data** | External data access | Repositories, data sources, API clients |
+| **Data** | External data access | Repositories, DTOs, data sources |
 | **Domain** | Business entities | Models, entities, value objects |
+| **Application** | Business logic | Services, use cases, orchestration |
 | **Presentation** | UI and state | Controllers, pages, widgets |
 
 ### Data Flow
@@ -36,9 +37,17 @@ lib/
 │  ┌─────────────┐    ┌──────────────┐    ┌─────────────────┐    │
 │  │   Pages     │ ◄─►│  Controllers │ ◄─►│    Widgets      │    │
 │  └─────────────┘    └──────────────┘    └─────────────────┘    │
-│         │                  │                                    │
-│         └──────────────────┼────────────────────────────────────┤
 │                            │                                    │
+├────────────────────────────┼────────────────────────────────────┤
+│                            ▼                                    │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                    APPLICATION                           │   │
+│  │  ┌───────────────┐    ┌───────────────┐                 │   │
+│  │  │   Services    │    │   Use Cases   │                 │   │
+│  │  └───────────────┘    └───────────────┘                 │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                            │                                    │
+├────────────────────────────┼────────────────────────────────────┤
 │                            ▼                                    │
 │  ┌─────────────────────────────────────────────────────────┐   │
 │  │                      DOMAIN                              │   │
@@ -47,12 +56,13 @@ lib/
 │  │  └───────────────┘    └───────────────┘                 │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                            │                                    │
+├────────────────────────────┼────────────────────────────────────┤
 │                            ▼                                    │
 │  ┌─────────────────────────────────────────────────────────┐   │
 │  │                       DATA                               │   │
-│  │  ┌───────────────┐    ┌───────────────┐                 │   │
-│  │  │  Repositories │ ◄─►│  PocketBase   │                 │   │
-│  │  └───────────────┘    └───────────────┘                 │   │
+│  │  ┌───────────────┐    ┌───────────────┐    ┌─────────┐  │   │
+│  │  │  Repositories │ ◄─►│     DTOs      │ ◄─►│ Backend │  │   │
+│  │  └───────────────┘    └───────────────┘    └─────────┘  │   │
 │  └─────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -61,17 +71,22 @@ lib/
 
 ## Feature Module Structure
 
-Each feature follows the same three-layer pattern:
+Each feature follows a four-layer pattern:
 
 ```
 features/
 └── [domain]/
     └── [feature]/
         ├── data/
-        │   └── [feature]_repository.dart
+        │   ├── [feature]_repository.dart
+        │   └── dto/
+        │       ├── [feature]_dto.dart
+        │       └── create_[feature]_dto.dart
         ├── domain/
         │   └── [feature].dart
         └── presentation/
+            ├── application/
+            │   └── [feature]_service.dart
             ├── controllers/
             │   └── [feature]_controller.dart
             ├── pages/
@@ -88,12 +103,17 @@ features/
 └── patients/
     └── patients/
         ├── data/
-        │   └── patient_repository.dart      # PocketBase CRUD operations
+        │   ├── patient_repository.dart      # PocketBase CRUD operations
+        │   └── dto/
+        │       ├── patient_dto.dart         # Response mapping from API
+        │       └── create_patient_dto.dart  # Request payload for create/update
         ├── domain/
         │   └── patient.dart                 # Patient entity with dart_mappable
         └── presentation/
+            ├── application/
+            │   └── patient_service.dart     # Business logic & use cases
             ├── controllers/
-            │   └── patient_controller.dart  # Riverpod AsyncNotifier
+            │   └── patient_controller.dart  # UI state management
             ├── pages/
             │   ├── patients_page.dart       # List view
             │   ├── patient_page.dart        # Detail view
@@ -113,10 +133,117 @@ The data layer handles all external data operations.
 
 ```
 data/
-└── [feature]_repository.dart
+├── [feature]_repository.dart
+└── dto/
+    ├── [feature]_dto.dart          # Response DTO (API -> Domain)
+    └── create_[feature]_dto.dart   # Request DTO (Domain -> API)
 ```
 
-**Repository Pattern:**
+#### DTOs (Data Transfer Objects)
+
+DTOs are used to decouple API data structures from domain entities. They handle serialization/deserialization and data transformation.
+
+**Response DTO Pattern (API -> Domain):**
+
+```dart
+@MappableClass()
+class PatientDto with PatientDtoMappable {
+  final String id;
+  final String name;
+  final String species;
+  final String? breed;
+  final String owner;
+  final String? birthDate;  // API returns string
+  final String gender;
+  final String? notes;
+  final String created;
+  final String updated;
+
+  const PatientDto({
+    required this.id,
+    required this.name,
+    required this.species,
+    this.breed,
+    required this.owner,
+    this.birthDate,
+    required this.gender,
+    this.notes,
+    required this.created,
+    required this.updated,
+  });
+
+  /// Converts DTO to domain entity
+  Patient toEntity() {
+    return Patient(
+      id: id,
+      name: name,
+      species: species,
+      breed: breed,
+      owner: owner,
+      birthDate: birthDate != null ? DateTime.parse(birthDate!) : null,
+      gender: Gender.values.byName(gender),
+      notes: notes,
+      created: DateTime.parse(created),
+      updated: DateTime.parse(updated),
+    );
+  }
+
+  /// Creates DTO from PocketBase record
+  factory PatientDto.fromRecord(RecordModel record) {
+    return PatientDtoMapper.fromMap(record.toJson());
+  }
+}
+```
+
+**Request DTO Pattern (Domain -> API):**
+
+```dart
+@MappableClass()
+class CreatePatientDto with CreatePatientDtoMappable {
+  final String name;
+  final String species;
+  final String? breed;
+  final String owner;
+  final String? birthDate;
+  final String gender;
+  final String? notes;
+
+  const CreatePatientDto({
+    required this.name,
+    required this.species,
+    this.breed,
+    required this.owner,
+    this.birthDate,
+    required this.gender,
+    this.notes,
+  });
+
+  /// Creates request DTO from domain entity
+  factory CreatePatientDto.fromEntity(Patient patient) {
+    return CreatePatientDto(
+      name: patient.name,
+      species: patient.species,
+      breed: patient.breed,
+      owner: patient.owner,
+      birthDate: patient.birthDate?.toIso8601String(),
+      gender: patient.gender.name,
+      notes: patient.notes,
+    );
+  }
+
+  /// Converts to Map for API request body
+  Map<String, dynamic> toBody() => toMap();
+}
+```
+
+**Key DTO Concepts:**
+- Response DTOs map API responses to domain entities (`toEntity()`)
+- Request DTOs convert domain entities to API payloads (`fromEntity()`, `toBody()`)
+- Handle type conversions (String dates -> DateTime, String enums -> Enum)
+- Isolate API changes from domain layer
+- Use `@MappableClass()` for JSON serialization
+
+#### Repository Pattern
 
 ```dart
 class PatientRepository implements PBRepository<Patient> {
@@ -129,28 +256,48 @@ class PatientRepository implements PBRepository<Patient> {
   Future<Either<Failure, List<Patient>>> getAll() async {
     try {
       final records = await pb.collection(collectionName).getFullList();
-      return Right(records.map((r) => PatientMapper.fromMap(r.toJson())).toList());
+      final patients = records
+          .map((r) => PatientDto.fromRecord(r).toEntity())
+          .toList();
+      return Right(patients);
     } catch (e) {
       return Left(Failure.fromException(e));
     }
   }
 
   @override
-  Future<Either<Failure, Patient>> create(Patient entity) async { ... }
+  Future<Either<Failure, Patient>> create(Patient entity) async {
+    try {
+      final dto = CreatePatientDto.fromEntity(entity);
+      final record = await pb.collection(collectionName).create(body: dto.toBody());
+      return Right(PatientDto.fromRecord(record).toEntity());
+    } catch (e) {
+      return Left(Failure.fromException(e));
+    }
+  }
 
   @override
-  Future<Either<Failure, Patient>> update(Patient entity) async { ... }
+  Future<Either<Failure, Patient>> update(Patient entity) async {
+    try {
+      final dto = CreatePatientDto.fromEntity(entity);
+      final record = await pb.collection(collectionName).update(entity.id, body: dto.toBody());
+      return Right(PatientDto.fromRecord(record).toEntity());
+    } catch (e) {
+      return Left(Failure.fromException(e));
+    }
+  }
 
   @override
   Future<Either<Failure, void>> delete(String id) async { ... }
 }
 ```
 
-**Key Concepts:**
+**Key Repository Concepts:**
 - Implements `PBRepository<T>` interface
 - Returns `Either<Failure, T>` for error handling
-- Uses PocketBase client for backend operations
-- Maps between PocketBase records and domain entities
+- Uses DTOs for request/response transformation
+- `PatientDto.fromRecord()` -> `toEntity()` for responses
+- `CreatePatientDto.fromEntity()` -> `toBody()` for requests
 
 ---
 
@@ -203,16 +350,103 @@ class Patient extends PbRecord with PatientMappable {
 
 ### Presentation Layer
 
-The presentation layer handles UI and state management.
+The presentation layer handles UI, state management, and business logic orchestration.
 
 ```
 presentation/
-├── controllers/      # State management
+├── application/      # Business logic services
+├── controllers/      # UI state management
 ├── pages/            # Full-screen UI
 └── widgets/          # Reusable components
 ```
 
+#### Application Layer (Services)
+
+The application layer contains business logic, use cases, and orchestration between repositories. Services coordinate complex operations that involve multiple entities or require business rules.
+
+**Service Pattern:**
+
+```dart
+@riverpod
+class PatientService extends _$PatientService {
+  @override
+  PatientService build() => this;
+
+  /// Creates a patient with associated default records
+  Future<Either<Failure, Patient>> createPatientWithDefaults({
+    required CreatePatientDto dto,
+    required String branchId,
+  }) async {
+    final patientRepo = ref.read(patientRepositoryProvider);
+    final recordRepo = ref.read(patientRecordRepositoryProvider);
+
+    // Create patient
+    final patientResult = await patientRepo.create(dto);
+
+    return patientResult.fold(
+      (failure) => Left(failure),
+      (patient) async {
+        // Create initial health record
+        final recordDto = CreatePatientRecordDto(
+          patient: patient.id,
+          visitDate: DateTime.now(),
+          diagnosis: 'Initial registration',
+          type: RecordType.checkup,
+        );
+        await recordRepo.create(recordDto);
+
+        return Right(patient);
+      },
+    );
+  }
+
+  /// Transfers patient to another branch with history
+  Future<Either<Failure, Patient>> transferPatient({
+    required String patientId,
+    required String targetBranchId,
+    required String reason,
+  }) async {
+    // Complex business logic involving multiple repositories
+    // ...
+  }
+
+  /// Calculates patient statistics
+  Future<PatientStats> getPatientStats(String patientId) async {
+    final records = await ref.read(patientRecordRepositoryProvider)
+        .getByPatient(patientId);
+    final appointments = await ref.read(appointmentRepositoryProvider)
+        .getByPatient(patientId);
+
+    return PatientStats(
+      totalVisits: records.length,
+      upcomingAppointments: appointments.where((a) => a.date.isAfter(DateTime.now())).length,
+      lastVisit: records.isNotEmpty ? records.last.visitDate : null,
+    );
+  }
+}
+```
+
+**Key Application Layer Concepts:**
+- Contains business logic that spans multiple repositories
+- Orchestrates complex operations (create with related entities)
+- Implements use cases (transfer, archive, merge)
+- Calculates derived data and statistics
+- Keeps controllers thin and focused on UI state
+- Uses `@riverpod` for dependency injection
+
+**When to Use Application Layer:**
+| Use Application Layer | Use Repository Directly |
+|-----------------------|-------------------------|
+| Multi-entity operations | Simple CRUD |
+| Business rule validation | Single entity fetch |
+| Complex calculations | List/filter queries |
+| Workflow orchestration | Basic create/update |
+
+---
+
 #### Controllers
+
+Controllers manage UI state and delegate business logic to services.
 
 **AsyncNotifier Pattern:**
 
@@ -499,7 +733,10 @@ class PatientsRoute extends GoRouteData {
 | Forms | `*_form_page.dart` | `patient_form_page.dart` |
 | Widgets | Descriptive name | `patient_card.dart` |
 | Controllers | `*_controller.dart` | `patient_controller.dart` |
+| Services | `*_service.dart` | `patient_service.dart` |
 | Repositories | `*_repository.dart` | `patient_repository.dart` |
+| DTOs (Response) | `*_dto.dart` | `patient_dto.dart` |
+| DTOs (Request) | `create_*_dto.dart` | `create_patient_dto.dart` |
 | Models | Entity name | `patient.dart` |
 | Routes | `*.routes.dart` | `patients.routes.dart` |
 
