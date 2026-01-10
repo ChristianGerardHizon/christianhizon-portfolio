@@ -11,7 +11,7 @@ import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_field.d
 import 'package:sannjosevet/src/core/widgets/dynamic_form_fields/dynamic_form_field_builder.dart';
 import 'package:sannjosevet/src/features/patient_files/data/patient_file_repository.dart';
 import 'package:sannjosevet/src/features/patient_files/domain/patient_file.dart';
-import 'package:sannjosevet/src/features/patient_files/presentation/presentation/controllers/patient_file_form_controller.dart';
+import 'package:sannjosevet/src/features/patient_files/presentation/controllers/patient_file_form_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PatientFileFormPage extends HookConsumerWidget {

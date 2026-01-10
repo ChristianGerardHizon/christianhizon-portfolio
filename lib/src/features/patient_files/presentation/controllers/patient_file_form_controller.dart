@@ -5,7 +5,7 @@ import 'package:sannjosevet/src/core/packages/pocketbase.dart';
 import 'package:sannjosevet/src/core/strings/fields.dart';
 import 'package:sannjosevet/src/core/utils/pb_utils.dart';
 import 'package:sannjosevet/src/features/patient_files/domain/patient_file.dart';
-import 'package:sannjosevet/src/features/patient_files/presentation/presentation/controllers/patient_file_controller.dart';
+import 'package:sannjosevet/src/features/patient_files/presentation/controllers/patient_file_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'patient_file_form_controller.g.dart';

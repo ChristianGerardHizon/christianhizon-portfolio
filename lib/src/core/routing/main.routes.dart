@@ -36,7 +36,7 @@ import 'package:sannjosevet/src/features/change_logs/presentation/pages/change_l
 import 'package:sannjosevet/src/features/change_logs/presentation/pages/change_logs_page.dart';
 import 'package:sannjosevet/src/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:sannjosevet/src/features/patient_breeds/presentation/pages/patient_breed_form_page.dart';
-import 'package:sannjosevet/src/features/patient_files/presentation/presentation/pages/patient_file_form_page.dart';
+import 'package:sannjosevet/src/features/patient_files/presentation/pages/patient_file_form_page.dart';
 import 'package:sannjosevet/src/features/patient_prescription_items/presentation/pages/patient_prescription_item_form_page.dart';
 import 'package:sannjosevet/src/features/patient_records/presentation/pages/patient_record_form_page.dart';
 import 'package:sannjosevet/src/features/patient_records/presentation/pages/patient_record_page.dart';

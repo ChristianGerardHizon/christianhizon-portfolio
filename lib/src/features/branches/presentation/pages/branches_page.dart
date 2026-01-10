@@ -14,7 +14,7 @@ import 'package:sannjosevet/src/core/widgets/refresh_button.dart';
 import 'package:sannjosevet/src/features/branches/data/branch_repository.dart';
 import 'package:sannjosevet/src/features/branches/domain/branch.dart';
 import 'package:sannjosevet/src/features/branches/presentation/controllers/branch_table_controller.dart';
-import 'package:sannjosevet/src/features/branches/presentation/widget/branch_card.dart';
+import 'package:sannjosevet/src/features/branches/presentation/widgets/branch_card.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class BranchesPage extends HookConsumerWidget {

@@ -3,7 +3,7 @@ import 'package:sannjosevet/src/core/models/type_defs.dart';
 import 'package:sannjosevet/src/core/widgets/failure_message.dart';
 import 'package:sannjosevet/src/core/widgets/refresh_button.dart';
 import 'package:sannjosevet/src/features/appointment_schedules/presentation/pages/appointment_schedules_page.dart';
-import 'package:sannjosevet/src/features/patient_files/presentation/presentation/pages/patient_files_page.dart';
+import 'package:sannjosevet/src/features/patient_files/presentation/pages/patient_files_page.dart';
 import 'package:sannjosevet/src/features/patient_records/presentation/pages/patient_records_page.dart';
 import 'package:sannjosevet/src/features/patient_treatment_records/presentation/pages/patient_treatment_records_page.dart';
 import 'package:sannjosevet/src/features/patient_treatments/presentation/controllers/patient_treatments_controller.dart';
