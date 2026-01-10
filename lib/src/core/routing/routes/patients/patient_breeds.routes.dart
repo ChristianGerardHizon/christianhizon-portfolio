@@ -1,4 +1,4 @@
-part of '../main.routes.dart';
+part of '../../main.routes.dart';
 
 class PatientBreedsBranchData extends StatefulShellBranchData {
   const PatientBreedsBranchData();
