@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sannjosevet/src/core/routing/router.dart';
-import 'package:sannjosevet/src/features/authentication/domain/auth_admin.dart';
-import 'package:sannjosevet/src/features/authentication/domain/auth_user.dart';
-import 'package:sannjosevet/src/features/authentication/presentation/controllers/auth_controller.dart';
+import 'package:sannjosevet/src/features/system/authentication/domain/auth_admin.dart';
+import 'package:sannjosevet/src/features/system/authentication/domain/auth_user.dart';
+import 'package:sannjosevet/src/features/system/authentication/presentation/controllers/auth_controller.dart';
 
 class RouterUtils {
   ///

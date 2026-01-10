@@ -1,5 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:sannjosevet/src/features/patients/domain/patient.dart';
+import 'package:sannjosevet/src/features/patients/core/domain/patient.dart';
 
 class PatientSexHook extends MappingHook {
   const PatientSexHook();

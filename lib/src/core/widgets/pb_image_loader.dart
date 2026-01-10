@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sannjosevet/src/core/packages/pocketbase.dart';
 import 'package:sannjosevet/src/core/widgets/center_progress_indicator.dart';
-import 'package:sannjosevet/src/features/settings/presentation/controllers/settings_controller.dart';
+import 'package:sannjosevet/src/features/system/settings/presentation/controllers/settings_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PbImageLoader extends ConsumerWidget {
