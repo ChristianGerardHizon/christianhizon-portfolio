@@ -4,6 +4,8 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/i18n/strings.g.dart';
+
 /// Forgot password page for requesting a password reset.
 class ForgotPasswordPage extends HookConsumerWidget {
   const ForgotPasswordPage({super.key});
@@ -24,7 +26,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Forgot Password'),
+        title: Text(t.auth.forgotPasswordTitle),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -51,13 +53,13 @@ class ForgotPasswordPage extends HookConsumerWidget {
         ),
         const SizedBox(height: 24),
         Text(
-          'Check Your Email',
+          t.auth.checkEmail,
           style: Theme.of(context).textTheme.headlineSmall,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
         Text(
-          'Password reset link has been sent to $email',
+          t.auth.resetLinkSent(email: email),
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Colors.grey,
               ),
@@ -66,7 +68,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
         const SizedBox(height: 32),
         OutlinedButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Back to Login'),
+          child: Text(t.auth.backToLogin),
         ),
       ],
     );
@@ -90,13 +92,13 @@ class ForgotPasswordPage extends HookConsumerWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Forgot Password?',
+            t.auth.forgotPasswordTitle,
             style: Theme.of(context).textTheme.headlineSmall,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
-            'Enter your email address and we\'ll send you a link to reset your password.',
+            t.auth.forgotPasswordSubtitle,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Colors.grey,
                 ),
@@ -105,11 +107,10 @@ class ForgotPasswordPage extends HookConsumerWidget {
           const SizedBox(height: 32),
           FormBuilderTextField(
             name: 'email',
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              hintText: 'Enter your email address',
-              prefixIcon: Icon(Icons.email_outlined),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: t.fields.email,
+              prefixIcon: const Icon(Icons.email_outlined),
+              border: const OutlineInputBorder(),
             ),
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.done,
@@ -123,15 +124,15 @@ class ForgotPasswordPage extends HookConsumerWidget {
           const SizedBox(height: 24),
           FilledButton(
             onPressed: onSubmit,
-            child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 12),
-              child: Text('Send Reset Link'),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Text(t.auth.sendResetLink),
             ),
           ),
           const SizedBox(height: 16),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Back to Login'),
+            child: Text(t.auth.backToLogin),
           ),
         ],
       ),

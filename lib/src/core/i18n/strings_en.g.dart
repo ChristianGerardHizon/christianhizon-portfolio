@@ -40,21 +40,27 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	Translations $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => Translations(meta: meta ?? this.$meta);
 
 	// Translations
-	late final TranslationsAuthenticationEn authentication = TranslationsAuthenticationEn._(_root);
+	late final TranslationsAuthEn auth = TranslationsAuthEn._(_root);
 	late final TranslationsCommonEn common = TranslationsCommonEn._(_root);
+	late final TranslationsFailuresEn failures = TranslationsFailuresEn._(_root);
 	late final TranslationsFieldsEn fields = TranslationsFieldsEn._(_root);
+	late final TranslationsNavigationEn navigation = TranslationsNavigationEn._(_root);
+	late final TranslationsValidationEn validation = TranslationsValidationEn._(_root);
 }
 
-// Path: authentication
-class TranslationsAuthenticationEn {
-	TranslationsAuthenticationEn._(this._root);
+// Path: auth
+class TranslationsAuthEn {
+	TranslationsAuthEn._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
 	/// en: 'Login'
-	String get login => 'Login';
+	String get pageTitle => 'Login';
+
+	/// en: 'Login'
+	String get loginButton => 'Login';
 
 	List<String> get loginAsAdminList => [
 		'Not a user? ',
@@ -67,6 +73,39 @@ class TranslationsAuthenticationEn {
 
 	/// en: 'Logged in successfully'
 	String get loginSuccess => 'Logged in successfully';
+
+	/// en: 'Logout'
+	String get logoutButton => 'Logout';
+
+	/// en: 'Are you sure you want to logout?'
+	String get logoutConfirm => 'Are you sure you want to logout?';
+
+	/// en: 'Forgot Password?'
+	String get forgotPassword => 'Forgot Password?';
+
+	/// en: 'Forgot Password'
+	String get forgotPasswordTitle => 'Forgot Password';
+
+	/// en: 'Enter your email address and we'll send you a link to reset your password.'
+	String get forgotPasswordSubtitle => 'Enter your email address and we\'ll send you a link to reset your password.';
+
+	/// en: 'Send Reset Link'
+	String get sendResetLink => 'Send Reset Link';
+
+	/// en: 'Back to Login'
+	String get backToLogin => 'Back to Login';
+
+	/// en: 'Check Your Email'
+	String get checkEmail => 'Check Your Email';
+
+	/// en: 'Password reset link has been sent to $email'
+	String resetLinkSent({required Object email}) => 'Password reset link has been sent to ${email}';
+
+	/// en: 'Sign in to continue'
+	String get signInToContinue => 'Sign in to continue';
+
+	/// en: 'Signing in...'
+	String get signingIn => 'Signing in...';
 }
 
 // Path: common
@@ -82,6 +121,129 @@ class TranslationsCommonEn {
 
 	/// en: 'N/A'
 	String get placeholderText => 'N/A';
+
+	/// en: 'Save'
+	String get save => 'Save';
+
+	/// en: 'Cancel'
+	String get cancel => 'Cancel';
+
+	/// en: 'Delete'
+	String get delete => 'Delete';
+
+	/// en: 'Edit'
+	String get edit => 'Edit';
+
+	/// en: 'Add'
+	String get add => 'Add';
+
+	/// en: 'Close'
+	String get close => 'Close';
+
+	/// en: 'Confirm'
+	String get confirm => 'Confirm';
+
+	/// en: 'Submit'
+	String get submit => 'Submit';
+
+	/// en: 'Search'
+	String get search => 'Search';
+
+	/// en: 'Filter'
+	String get filter => 'Filter';
+
+	/// en: 'Refresh'
+	String get refresh => 'Refresh';
+
+	/// en: 'Loading...'
+	String get loading => 'Loading...';
+
+	/// en: 'Retry'
+	String get retry => 'Retry';
+
+	/// en: 'Yes'
+	String get yes => 'Yes';
+
+	/// en: 'No'
+	String get no => 'No';
+
+	/// en: 'OK'
+	String get ok => 'OK';
+
+	/// en: 'Done'
+	String get done => 'Done';
+
+	/// en: 'Next'
+	String get next => 'Next';
+
+	/// en: 'Previous'
+	String get previous => 'Previous';
+
+	/// en: 'Back'
+	String get back => 'Back';
+
+	/// en: 'View All'
+	String get viewAll => 'View All';
+
+	/// en: 'See More'
+	String get seeMore => 'See More';
+
+	/// en: 'No results found'
+	String get noResults => 'No results found';
+
+	/// en: 'No items to display'
+	String get emptyList => 'No items to display';
+}
+
+// Path: failures
+class TranslationsFailuresEn {
+	TranslationsFailuresEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Something went wrong. Please try again.'
+	String get generic => 'Something went wrong. Please try again.';
+
+	/// en: 'Network error. Please check your connection.'
+	String get networkError => 'Network error. Please check your connection.';
+
+	/// en: 'Server error. Please try again later.'
+	String get serverError => 'Server error. Please try again later.';
+
+	/// en: 'You are not authorized to perform this action.'
+	String get unauthorized => 'You are not authorized to perform this action.';
+
+	/// en: 'Your session has expired. Please login again.'
+	String get sessionExpired => 'Your session has expired. Please login again.';
+
+	/// en: 'The requested resource was not found.'
+	String get notFound => 'The requested resource was not found.';
+
+	/// en: 'Invalid request. Please check your input.'
+	String get badRequest => 'Invalid request. Please check your input.';
+
+	/// en: 'A conflict occurred. The resource may already exist.'
+	String get conflict => 'A conflict occurred. The resource may already exist.';
+
+	/// en: 'Request timed out. Please try again.'
+	String get timeout => 'Request timed out. Please try again.';
+
+	/// en: 'No internet connection.'
+	String get noInternet => 'No internet connection.';
+
+	/// en: 'Invalid email or password.'
+	String get invalidCredentials => 'Invalid email or password.';
+
+	/// en: 'Your account has been disabled.'
+	String get accountDisabled => 'Your account has been disabled.';
+
+	/// en: 'Please verify your email address.'
+	String get emailNotVerified => 'Please verify your email address.';
+
+	/// en: 'Too many requests. Please wait a moment.'
+	String get tooManyRequests => 'Too many requests. Please wait a moment.';
 }
 
 // Path: fields
@@ -105,6 +267,90 @@ class TranslationsFieldsEn {
 	String get name => 'Name';
 }
 
+// Path: navigation
+class TranslationsNavigationEn {
+	TranslationsNavigationEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Dashboard'
+	String get dashboard => 'Dashboard';
+
+	/// en: 'Patients'
+	String get patients => 'Patients';
+
+	/// en: 'Appointments'
+	String get appointments => 'Appointments';
+
+	/// en: 'Products'
+	String get products => 'Products';
+
+	/// en: 'Inventory'
+	String get inventory => 'Inventory';
+
+	/// en: 'Settings'
+	String get settings => 'Settings';
+
+	/// en: 'Profile'
+	String get profile => 'Profile';
+
+	/// en: 'Reports'
+	String get reports => 'Reports';
+
+	/// en: 'Users'
+	String get users => 'Users';
+
+	/// en: 'Branches'
+	String get branches => 'Branches';
+}
+
+// Path: validation
+class TranslationsValidationEn {
+	TranslationsValidationEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'This field is required'
+	String get required => 'This field is required';
+
+	/// en: 'Please enter a valid email address'
+	String get invalidEmail => 'Please enter a valid email address';
+
+	/// en: 'Please enter a valid phone number'
+	String get invalidPhone => 'Please enter a valid phone number';
+
+	/// en: 'Must be at least {min} characters'
+	String get minLength => 'Must be at least {min} characters';
+
+	/// en: 'Must be at most {max} characters'
+	String get maxLength => 'Must be at most {max} characters';
+
+	/// en: 'Passwords do not match'
+	String get passwordMismatch => 'Passwords do not match';
+
+	/// en: 'Please enter a valid number'
+	String get invalidNumber => 'Please enter a valid number';
+
+	/// en: 'Please enter a valid date'
+	String get invalidDate => 'Please enter a valid date';
+
+	/// en: 'Please enter a valid URL'
+	String get invalidUrl => 'Please enter a valid URL';
+
+	/// en: 'Value must be at least {min}'
+	String get minValue => 'Value must be at least {min}';
+
+	/// en: 'Value must be at most {max}'
+	String get maxValue => 'Value must be at most {max}';
+
+	/// en: 'Please enter a positive number'
+	String get positiveNumber => 'Please enter a positive number';
+}
+
 /// The flat map containing all translations for locale <en>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
@@ -113,18 +359,90 @@ class TranslationsFieldsEn {
 extension on Translations {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
-			'authentication.login' => 'Login',
-			'authentication.loginAsAdminList.0' => 'Not a user? ',
-			'authentication.loginAsAdminList.1' => 'Login as Administrator',
-			'authentication.returnToLoginAsUser.0' => 'Not an administrator? ',
-			'authentication.returnToLoginAsUser.1' => 'Login as User',
-			'authentication.loginSuccess' => 'Logged in successfully',
+			'auth.pageTitle' => 'Login',
+			'auth.loginButton' => 'Login',
+			'auth.loginAsAdminList.0' => 'Not a user? ',
+			'auth.loginAsAdminList.1' => 'Login as Administrator',
+			'auth.returnToLoginAsUser.0' => 'Not an administrator? ',
+			'auth.returnToLoginAsUser.1' => 'Login as User',
+			'auth.loginSuccess' => 'Logged in successfully',
+			'auth.logoutButton' => 'Logout',
+			'auth.logoutConfirm' => 'Are you sure you want to logout?',
+			'auth.forgotPassword' => 'Forgot Password?',
+			'auth.forgotPasswordTitle' => 'Forgot Password',
+			'auth.forgotPasswordSubtitle' => 'Enter your email address and we\'ll send you a link to reset your password.',
+			'auth.sendResetLink' => 'Send Reset Link',
+			'auth.backToLogin' => 'Back to Login',
+			'auth.checkEmail' => 'Check Your Email',
+			'auth.resetLinkSent' => ({required Object email}) => 'Password reset link has been sent to ${email}',
+			'auth.signInToContinue' => 'Sign in to continue',
+			'auth.signingIn' => 'Signing in...',
 			'common.appName' => 'SannJoseVet',
 			'common.placeholderText' => 'N/A',
+			'common.save' => 'Save',
+			'common.cancel' => 'Cancel',
+			'common.delete' => 'Delete',
+			'common.edit' => 'Edit',
+			'common.add' => 'Add',
+			'common.close' => 'Close',
+			'common.confirm' => 'Confirm',
+			'common.submit' => 'Submit',
+			'common.search' => 'Search',
+			'common.filter' => 'Filter',
+			'common.refresh' => 'Refresh',
+			'common.loading' => 'Loading...',
+			'common.retry' => 'Retry',
+			'common.yes' => 'Yes',
+			'common.no' => 'No',
+			'common.ok' => 'OK',
+			'common.done' => 'Done',
+			'common.next' => 'Next',
+			'common.previous' => 'Previous',
+			'common.back' => 'Back',
+			'common.viewAll' => 'View All',
+			'common.seeMore' => 'See More',
+			'common.noResults' => 'No results found',
+			'common.emptyList' => 'No items to display',
+			'failures.generic' => 'Something went wrong. Please try again.',
+			'failures.networkError' => 'Network error. Please check your connection.',
+			'failures.serverError' => 'Server error. Please try again later.',
+			'failures.unauthorized' => 'You are not authorized to perform this action.',
+			'failures.sessionExpired' => 'Your session has expired. Please login again.',
+			'failures.notFound' => 'The requested resource was not found.',
+			'failures.badRequest' => 'Invalid request. Please check your input.',
+			'failures.conflict' => 'A conflict occurred. The resource may already exist.',
+			'failures.timeout' => 'Request timed out. Please try again.',
+			'failures.noInternet' => 'No internet connection.',
+			'failures.invalidCredentials' => 'Invalid email or password.',
+			'failures.accountDisabled' => 'Your account has been disabled.',
+			'failures.emailNotVerified' => 'Please verify your email address.',
+			'failures.tooManyRequests' => 'Too many requests. Please wait a moment.',
 			'fields.email' => 'Email',
 			'fields.password' => 'Password',
 			'fields.passwordConfirmation' => 'Password confirmation',
 			'fields.name' => 'Name',
+			'navigation.dashboard' => 'Dashboard',
+			'navigation.patients' => 'Patients',
+			'navigation.appointments' => 'Appointments',
+			'navigation.products' => 'Products',
+			'navigation.inventory' => 'Inventory',
+			'navigation.settings' => 'Settings',
+			'navigation.profile' => 'Profile',
+			'navigation.reports' => 'Reports',
+			'navigation.users' => 'Users',
+			'navigation.branches' => 'Branches',
+			'validation.required' => 'This field is required',
+			'validation.invalidEmail' => 'Please enter a valid email address',
+			'validation.invalidPhone' => 'Please enter a valid phone number',
+			'validation.minLength' => 'Must be at least {min} characters',
+			'validation.maxLength' => 'Must be at most {max} characters',
+			'validation.passwordMismatch' => 'Passwords do not match',
+			'validation.invalidNumber' => 'Please enter a valid number',
+			'validation.invalidDate' => 'Please enter a valid date',
+			'validation.invalidUrl' => 'Please enter a valid URL',
+			'validation.minValue' => 'Value must be at least {min}',
+			'validation.maxValue' => 'Value must be at most {max}',
+			'validation.positiveNumber' => 'Please enter a positive number',
 			_ => null,
 		};
 	}

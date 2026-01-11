@@ -4,6 +4,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/routing/routes/auth.routes.dart';
 import '../controllers/auth_controller.dart';
 
@@ -20,8 +21,8 @@ class LoginPage extends HookConsumerWidget {
     ref.listen(authControllerProvider, (prev, next) {
       if (next.hasError && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login failed. Please check your credentials.'),
+          SnackBar(
+            content: Text(t.failures.invalidCredentials),
             backgroundColor: Colors.red,
           ),
         );
@@ -59,13 +60,13 @@ class LoginPage extends HookConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'SanJoseVet',
+                    t.common.appName,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Sign in to continue',
+                    t.auth.signInToContinue,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: Colors.grey,
@@ -76,10 +77,10 @@ class LoginPage extends HookConsumerWidget {
                   // Email field
                   FormBuilderTextField(
                     name: 'email',
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email_outlined),
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: t.fields.email,
+                      prefixIcon: const Icon(Icons.email_outlined),
+                      border: const OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
@@ -94,7 +95,7 @@ class LoginPage extends HookConsumerWidget {
                   FormBuilderTextField(
                     name: 'password',
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: t.fields.password,
                       prefixIcon: const Icon(Icons.lock_outlined),
                       border: const OutlineInputBorder(),
                       suffixIcon: IconButton(
@@ -118,9 +119,9 @@ class LoginPage extends HookConsumerWidget {
                   // Login button
                   FilledButton(
                     onPressed: handleLogin,
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      child: Text('Sign In'),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Text(t.auth.loginButton),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -128,7 +129,7 @@ class LoginPage extends HookConsumerWidget {
                   // Forgot password link
                   TextButton(
                     onPressed: () => const ForgotPasswordRoute().push(context),
-                    child: const Text('Forgot Password?'),
+                    child: Text(t.auth.forgotPassword),
                   ),
                 ],
               ),

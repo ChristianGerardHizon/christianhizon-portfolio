@@ -1,0 +1,12 @@
+{
+    "dashboard": "Dashboard",
+    "patients": "Patients",
+    "appointments": "Appointments",
+    "products": "Products",
+    "inventory": "Inventory",
+    "settings": "Settings",
+    "profile": "Profile",
+    "reports": "Reports",
+    "users": "Users",
+    "branches": "Branches"
+}

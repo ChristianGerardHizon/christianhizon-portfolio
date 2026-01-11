@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/i18n/strings.g.dart';
+
 /// Auth loading page shown while login is in progress.
 ///
 /// Displayed when the user submits login credentials and
@@ -21,14 +23,14 @@ class AuthLoadingPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'SanJoseVet',
+              t.common.appName,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 24),
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(
-              'Signing in...',
+              t.auth.signingIn,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Colors.grey,
                   ),

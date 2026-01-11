@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/routing/routes/dashboard.routes.dart';
 
 /// Splash page shown while the app is initializing.
@@ -41,7 +42,7 @@ class _SplashPageState extends State<SplashPage> {
             ),
             const SizedBox(height: 24),
             Text(
-              'SanJoseVet',
+              t.common.appName,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 24),
