@@ -7,6 +7,7 @@ This directory contains shared functionality used across all features.
 ```
 core/
 ├── assets/           # Generated asset files
+├── constants/        # App-wide constant values
 ├── controllers/      # Global state providers
 ├── extensions/       # Dart extensions
 ├── foundation/       # Base classes and type definitions
@@ -17,6 +18,33 @@ core/
 ├── routing/          # Navigation configuration
 ├── utils/            # Utility functions
 └── widgets/          # Shared UI components
+```
+
+---
+
+## constants/
+
+App-wide constant values used throughout the application.
+
+**Should contain:**
+- `app_constants.dart` - Application metadata (name, version)
+- `api_constants.dart` - Network timeouts and API configuration
+- `spacing.dart` - UI spacing values
+- `radii.dart` - Border radius values
+- `durations.dart` - Animation durations
+
+**Existing files:**
+- `constants.dart` - Contains all constants (`AppConstants`, `ApiConstants`, `Spacing`, `Radii`, `Durations`, `Pagination`)
+
+**Pattern:**
+```dart
+abstract class Spacing {
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+}
 ```
 
 ---
@@ -162,11 +190,13 @@ class PatientsRoute extends GoRouteData { ... }
 Utility functions and helpers.
 
 **Should contain:**
-- `constants.dart` - App-wide constants
 - `validators.dart` - Form validation functions
 - `formatters.dart` - Data formatting (dates, currency, etc.)
 - `file_picker.dart` - File selection utilities
 - `window_utils.dart` - Desktop window management
+
+**Existing files:**
+- `window_utils.dart` - Desktop window configuration
 
 **Pattern:**
 ```dart

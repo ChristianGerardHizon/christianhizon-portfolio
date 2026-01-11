@@ -6,7 +6,8 @@
       "mcp__filesystem__*",
       "Bash(done)",
       "Bash(xargs ls:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "mcp__filesystem__directory_tree"
     ],
     "deny": [
       "Bash(rm:*)",
