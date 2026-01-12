@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/routing/routes/patients.routes.dart';
-import '../controllers/patient_controller.dart';
+import '../controllers/patients_controller.dart';
 import '../widgets/patient_list_panel.dart';
 
 /// Patients list page for mobile view.
@@ -13,7 +13,7 @@ class PatientsListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final patientsAsync = ref.watch(patientControllerProvider);
+    final patientsAsync = ref.watch(patientsControllerProvider);
 
     return patientsAsync.when(
       loading: () => const Scaffold(
@@ -30,7 +30,7 @@ class PatientsListPage extends ConsumerWidget {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () =>
-                    ref.read(patientControllerProvider.notifier).refresh(),
+                    ref.read(patientsControllerProvider.notifier).refresh(),
                 child: const Text('Retry'),
               ),
             ],

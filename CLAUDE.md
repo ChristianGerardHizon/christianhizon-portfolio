@@ -66,6 +66,16 @@ dart format lib/
 - AsyncNotifier for async state with loading/error handling
 - Controllers extend `AsyncNotifier<T>` or use `Notifier<T>`
 
+### Controller Naming (Singular vs Plural)
+- **IMPORTANT:** Use singular/plural names consistently based on what the controller manages:
+  - **Plural** (`PatientsController`) - Manages a **list** of entities (e.g., `List<Patient>`)
+  - **Singular** (`patientProvider`) - Fetches/manages a **single** entity by ID
+- Examples:
+  - `PatientsController` → `patientsControllerProvider` → returns `List<Patient>`
+  - `patient(id)` → `patientProvider(id)` → returns `Patient?`
+  - `PatientRecordController(patientId)` → `patientRecordControllerProvider(patientId)` → returns `List<PatientRecord>`
+  - `patientRecord(id)` → `patientRecordProvider(id)` → returns `PatientRecord?`
+
 ### Routing
 - Routes defined in `lib/src/core/routing/`
 - Each feature has its own `*.routes.dart` file

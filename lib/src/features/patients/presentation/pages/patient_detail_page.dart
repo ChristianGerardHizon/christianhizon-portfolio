@@ -7,7 +7,7 @@ import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../domain/patient.dart';
 import '../../domain/patient_tab.dart';
-import '../controllers/patient_controller.dart';
+import '../controllers/patients_controller.dart';
 import '../widgets/sheets/edit_patient_sheet.dart';
 import '../widgets/tabs/details_tab.dart';
 import '../widgets/tabs/placeholder_tab.dart';
@@ -216,7 +216,7 @@ class PatientDetailPage extends HookConsumerWidget {
             onPressed: () async {
               Navigator.pop(context);
               final success = await ref
-                  .read(patientControllerProvider.notifier)
+                  .read(patientsControllerProvider.notifier)
                   .deletePatient(patient.id);
               if (context.mounted) {
                 if (success) {

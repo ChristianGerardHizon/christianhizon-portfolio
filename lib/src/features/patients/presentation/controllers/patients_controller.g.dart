@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'patient_controller.dart';
+part of 'patients_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -12,43 +12,44 @@ part of 'patient_controller.dart';
 ///
 /// Provides methods for fetching, searching, and CRUD operations on patients.
 
-@ProviderFor(PatientController)
-final patientControllerProvider = PatientControllerProvider._();
+@ProviderFor(PatientsController)
+final patientsControllerProvider = PatientsControllerProvider._();
 
 /// Controller for managing patient list state.
 ///
 /// Provides methods for fetching, searching, and CRUD operations on patients.
-final class PatientControllerProvider
-    extends $AsyncNotifierProvider<PatientController, List<Patient>> {
+final class PatientsControllerProvider
+    extends $AsyncNotifierProvider<PatientsController, List<Patient>> {
   /// Controller for managing patient list state.
   ///
   /// Provides methods for fetching, searching, and CRUD operations on patients.
-  PatientControllerProvider._()
+  PatientsControllerProvider._()
       : super(
           from: null,
           argument: null,
           retry: null,
-          name: r'patientControllerProvider',
+          name: r'patientsControllerProvider',
           isAutoDispose: false,
           dependencies: null,
           $allTransitiveDependencies: null,
         );
 
   @override
-  String debugGetCreateSourceHash() => _$patientControllerHash();
+  String debugGetCreateSourceHash() => _$patientsControllerHash();
 
   @$internal
   @override
-  PatientController create() => PatientController();
+  PatientsController create() => PatientsController();
 }
 
-String _$patientControllerHash() => r'1a0dc04be9173e727c2bfb3396f8b50ee971dc42';
+String _$patientsControllerHash() =>
+    r'd42c67269e2309ad1e4d536ad531461dd322f54d';
 
 /// Controller for managing patient list state.
 ///
 /// Provides methods for fetching, searching, and CRUD operations on patients.
 
-abstract class _$PatientController extends $AsyncNotifier<List<Patient>> {
+abstract class _$PatientsController extends $AsyncNotifier<List<Patient>> {
   FutureOr<List<Patient>> build();
   @$mustCallSuper
   @override

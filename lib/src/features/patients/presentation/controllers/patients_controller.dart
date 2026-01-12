@@ -3,13 +3,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../data/patient_repository.dart';
 import '../../domain/patient.dart';
 
-part 'patient_controller.g.dart';
+part 'patients_controller.g.dart';
 
 /// Controller for managing patient list state.
 ///
 /// Provides methods for fetching, searching, and CRUD operations on patients.
 @Riverpod(keepAlive: true)
-class PatientController extends _$PatientController {
+class PatientsController extends _$PatientsController {
   PatientRepository get _repository => ref.read(patientRepositoryProvider);
 
   @override

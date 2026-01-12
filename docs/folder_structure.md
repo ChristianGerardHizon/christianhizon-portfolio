@@ -117,7 +117,7 @@ features/
     │   └── prescription.dart             # Prescription entity
     └── presentation/
         ├── controllers/
-        │   ├── patient_controller.dart       # @Riverpod(keepAlive: true) for list
+        │   ├── patients_controller.dart       # @Riverpod(keepAlive: true) for list
         │   ├── patient_record_controller.dart # Family provider by patientId
         │   └── prescription_controller.dart   # Family provider by recordId
         ├── pages/
@@ -508,7 +508,7 @@ Controllers manage UI state and delegate to repositories. Two main patterns are 
 ```dart
 /// Controller for managing the patients list.
 @Riverpod(keepAlive: true)
-class PatientController extends _$PatientController {
+class PatientsController extends _$PatientsController {
   PatientRepository get _repository => ref.read(patientRepositoryProvider);
 
   @override
@@ -607,7 +607,7 @@ class PatientsListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final patientsAsync = ref.watch(patientControllerProvider);
+    final patientsAsync = ref.watch(patientsControllerProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Patients')),
@@ -622,7 +622,7 @@ class PatientsListPage extends ConsumerWidget {
               Text('Error: ${error.toString()}'),
               const SizedBox(height: 16),
               OutlinedButton.icon(
-                onPressed: () => ref.read(patientControllerProvider.notifier).refresh(),
+                onPressed: () => ref.read(patientsControllerProvider.notifier).refresh(),
                 icon: const Icon(Icons.refresh),
                 label: const Text('Retry'),
               ),
@@ -630,7 +630,7 @@ class PatientsListPage extends ConsumerWidget {
           ),
         ),
         data: (patients) => RefreshIndicator(
-          onRefresh: () => ref.read(patientControllerProvider.notifier).refresh(),
+          onRefresh: () => ref.read(patientsControllerProvider.notifier).refresh(),
           child: ListView.builder(
             itemCount: patients.length,
             itemBuilder: (context, index) => PatientCard(
@@ -926,7 +926,7 @@ class PatientsRoute extends GoRouteData {
 | Pages | `*_page.dart` | `patients_list_page.dart` |
 | Sheets | `*_sheet.dart` | `add_record_sheet.dart` |
 | Widgets | Descriptive name | `patient_card.dart` |
-| Controllers | `*_controller.dart` | `patient_controller.dart` |
+| Controllers | `*_controller.dart` | `patients_controller.dart` |
 | Repositories | `*_repository.dart` | `patient_repository.dart` |
 | DTOs | `*_dto.dart` | `patient_dto.dart` |
 | Models | Entity name | `patient.dart` |

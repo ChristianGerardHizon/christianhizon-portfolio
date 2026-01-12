@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../controllers/patient_controller.dart';
+import '../controllers/patients_controller.dart';
 import '../pages/patient_detail_page.dart';
 import 'empty_detail_state.dart';
 import 'patient_list_panel.dart';
@@ -22,7 +22,7 @@ class _TabletPatientsLayoutState extends ConsumerState<TabletPatientsLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final patientsAsync = ref.watch(patientControllerProvider);
+    final patientsAsync = ref.watch(patientsControllerProvider);
 
     return patientsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -36,7 +36,7 @@ class _TabletPatientsLayoutState extends ConsumerState<TabletPatientsLayout> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () =>
-                  ref.read(patientControllerProvider.notifier).refresh(),
+                  ref.read(patientsControllerProvider.notifier).refresh(),
               child: const Text('Retry'),
             ),
           ],
