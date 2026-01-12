@@ -136,9 +136,9 @@ class _AppRootState extends State<AppRoot> {
           // Main content area
           Expanded(
             child: Scaffold(
-              appBar: AppBar(
-                title: Text(_getPageTitle(t, selectedIndex)),
-              ),
+              // appBar: AppBar(
+              //   title: Text(_getPageTitle(t, selectedIndex)),
+              // ),
               body: ColoredBox(
                 color: Theme.of(context).scaffoldBackgroundColor,
                 child: widget.child,

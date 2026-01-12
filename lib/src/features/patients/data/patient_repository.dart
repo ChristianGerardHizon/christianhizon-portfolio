@@ -62,8 +62,6 @@ class PatientRepositoryImpl implements PatientRepository {
         final filterString =
             filter != null ? '$baseFilter && $filter' : baseFilter;
 
-        final authStore = _pb.authStore;
-
         final records = await _collection.getFullList(
           expand: _expand,
           filter: filterString,

@@ -47,11 +47,5 @@ class PbDebugController extends _$PbDebugController {
 /// the [PbDebugController] state.
 @Riverpod(keepAlive: true)
 PocketBase pocketbase(Ref ref) {
-  final isDebug = ref.watch(pbDebugControllerProvider).value ?? false;
-
-  if (isDebug) {
-    return PocketBase(PocketBaseUrls.dev);
-  } else {
-    return PocketBase(PocketBaseUrls.prod);
-  }
+  return PocketBase(PocketBaseUrls.prod);
 }

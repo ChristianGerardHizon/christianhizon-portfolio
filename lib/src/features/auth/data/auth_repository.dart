@@ -73,6 +73,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
         final authDto = AuthDto.fromAuthResult(result);
         await authStorage.save(authDto);
+        pb.authStore.save(authDto.token, authDto.toRecordModel());
         return _createAuthState(authDto);
       },
       Failure.handle,
@@ -98,6 +99,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
         final authDto = AuthDto.fromAuthResult(result);
         await authStorage.save(authDto);
+        pb.authStore.save(authDto.token, authDto.toRecordModel());
         return _createAuthState(authDto);
       },
       Failure.handle,

@@ -24,6 +24,7 @@ class AuthController extends _$AuthController {
       (authState) {
         // Fetch user role after restoring session
         _fetchUserRole(authState.user.id);
+
         return authState;
       },
     );
