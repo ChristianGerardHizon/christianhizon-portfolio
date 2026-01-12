@@ -55,6 +55,8 @@ class _TabletPatientsLayoutState extends ConsumerState<TabletPatientsLayout> {
                   _selectedPatientId = patient.id;
                 });
               },
+              onRefresh: () =>
+                  ref.read(patientsControllerProvider.notifier).refresh(),
             ),
           ),
           const VerticalDivider(width: 1),

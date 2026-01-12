@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/foundation/failure.dart';
 import '../../../core/foundation/type_defs.dart';
+import '../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../domain/prescription.dart';
@@ -49,7 +50,7 @@ class PrescriptionRepositoryImpl implements PrescriptionRepository {
     return TaskEither.tryCatch(
       () async {
         final records = await _collection.getFullList(
-          filter: 'patientRecord = "$recordId" && isDeleted = false',
+          filter: PBFilters.forRecord(recordId).build(),
           sort: '-created',
         );
         return records

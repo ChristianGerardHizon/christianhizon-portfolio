@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/foundation/failure.dart';
 import '../../../core/foundation/type_defs.dart';
+import '../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../domain/patient_record.dart';
@@ -49,7 +50,7 @@ class PatientRecordRepositoryImpl implements PatientRecordRepository {
     return TaskEither.tryCatch(
       () async {
         final records = await _collection.getFullList(
-          filter: 'patient = "$patientId" && isDeleted = false',
+          filter: PBFilters.forPatient(patientId).build(),
           sort: '-visitDate',
         );
         return records

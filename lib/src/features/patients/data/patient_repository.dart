@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/foundation/failure.dart';
 import '../../../core/foundation/type_defs.dart';
+import '../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../domain/patient.dart';
@@ -47,7 +48,6 @@ class PatientRepositoryImpl implements PatientRepository {
   RecordService get _collection =>
       _pb.collection(PocketBaseCollections.patients);
   String get _expand => 'species,breed';
-  String get _baseFilter => 'isDeleted = false';
 
   Patient _toEntity(RecordModel record) {
     final dto = PatientDto.fromRecord(record);
@@ -58,12 +58,15 @@ class PatientRepositoryImpl implements PatientRepository {
   FutureEither<List<Patient>> fetchAll({String? filter, String? sort}) async {
     return TaskEither.tryCatch(
       () async {
-        final combinedFilter =
-            filter != null ? '$_baseFilter && $filter' : _baseFilter;
+        final baseFilter = PBFilters.active.build();
+        final filterString =
+            filter != null ? '$baseFilter && $filter' : baseFilter;
+
+        final authStore = _pb.authStore;
 
         final records = await _collection.getFullList(
           expand: _expand,
-          filter: combinedFilter,
+          filter: filterString,
           sort: sort ?? '-created',
         );
 
@@ -158,12 +161,13 @@ class PatientRepositoryImpl implements PatientRepository {
   FutureEither<List<Patient>> search(String query) async {
     return TaskEither.tryCatch(
       () async {
-        final searchFilter = '(name ~ "$query" || owner ~ "$query")';
-        final combinedFilter = '$_baseFilter && $searchFilter';
+        final filter = PBFilter()
+            .notDeleted()
+            .searchFields(query, ['name', 'owner']).build();
 
         final records = await _collection.getFullList(
           expand: _expand,
-          filter: combinedFilter,
+          filter: filter,
           sort: 'name',
         );
 

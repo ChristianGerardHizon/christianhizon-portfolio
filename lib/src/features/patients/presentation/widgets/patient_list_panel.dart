@@ -12,11 +12,13 @@ class PatientListPanel extends StatelessWidget {
     required this.patients,
     required this.selectedId,
     required this.onPatientTap,
+    this.onRefresh,
   });
 
   final List<Patient> patients;
   final String? selectedId;
   final ValueChanged<Patient> onPatientTap;
+  final Future<void> Function()? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -60,40 +62,47 @@ class PatientListPanel extends StatelessWidget {
 
           // Patient list
           Expanded(
-            child: ListView.builder(
-              itemCount: patients.length,
-              itemBuilder: (context, index) {
-                final patient = patients[index];
-                final isSelected = patient.id == selectedId;
+            child: RefreshIndicator(
+              onRefresh: onRefresh ?? () async {},
+              notificationPredicate:
+                  onRefresh != null ? (_) => true : (_) => false,
+              child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemCount: patients.length,
+                itemBuilder: (context, index) {
+                  final patient = patients[index];
+                  final isSelected = patient.id == selectedId;
 
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: patient.species == 'Dog'
-                        ? theme.colorScheme.primaryContainer
-                        : theme.colorScheme.tertiaryContainer,
-                    child: Icon(
-                      patient.species == 'Dog'
-                          ? Icons.pets
-                          : Icons.catching_pokemon,
-                      color: patient.species == 'Dog'
-                          ? theme.colorScheme.primary
-                          : theme.colorScheme.tertiary,
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: patient.species == 'Dog'
+                          ? theme.colorScheme.primaryContainer
+                          : theme.colorScheme.tertiaryContainer,
+                      child: Icon(
+                        patient.species == 'Dog'
+                            ? Icons.pets
+                            : Icons.catching_pokemon,
+                        color: patient.species == 'Dog'
+                            ? theme.colorScheme.primary
+                            : theme.colorScheme.tertiary,
+                      ),
                     ),
-                  ),
-                  title: Text(
-                    patient.name,
-                    style: TextStyle(
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
+                    title: Text(
+                      patient.name,
+                      style: TextStyle(
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.normal,
+                      ),
                     ),
-                  ),
-                  subtitle: Text('${patient.species} - ${patient.breed}'),
-                  selected: isSelected,
-                  selectedTileColor: theme.colorScheme.primaryContainer,
-                  trailing: isSelected ? const Icon(Icons.chevron_right) : null,
-                  onTap: () => onPatientTap(patient),
-                );
-              },
+                    subtitle: Text('${patient.species} - ${patient.breed}'),
+                    selected: isSelected,
+                    selectedTileColor: theme.colorScheme.primaryContainer,
+                    trailing:
+                        isSelected ? const Icon(Icons.chevron_right) : null,
+                    onTap: () => onPatientTap(patient),
+                  );
+                },
+              ),
             ),
           ),
         ],

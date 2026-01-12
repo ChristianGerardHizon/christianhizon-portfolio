@@ -43,6 +43,7 @@ class PatientsListPage extends ConsumerWidget {
         onPatientTap: (patient) {
           PatientDetailRoute(id: patient.id).push(context);
         },
+        onRefresh: () => ref.read(patientsControllerProvider.notifier).refresh(),
       ),
     );
   }
