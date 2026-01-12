@@ -70,6 +70,9 @@ dart format lib/
 - Routes defined in `lib/src/core/routing/`
 - Each feature has its own `*.routes.dart` file
 - Use `@TypedGoRoute` annotation with go_router_builder
+- **IMPORTANT:** Always use generated route extensions instead of manual navigation
+  - Prefer: `const PatientsRoute().go(context)` or `PatientDetailRoute(id: patientId).go(context)`
+  - Avoid: `context.push('/patients')` or `context.go('/patients/$patientId')`
 
 ### Models
 - Use `@MappableClass()` decorator from dart_mappable

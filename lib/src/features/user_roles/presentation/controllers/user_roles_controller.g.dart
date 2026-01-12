@@ -46,7 +46,7 @@ final class UserRolesControllerProvider
 }
 
 String _$userRolesControllerHash() =>
-    r'7e6bb78129cdce051599840a8d437da098e29bb3';
+    r'59dabaf167106cc0c37937bcf6984bcf73b50c9e';
 
 /// Controller for managing the current user's role.
 ///

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../../../../core/routing/routes/patients.routes.dart';
 import '../../../domain/patient.dart';
 import '../../../domain/patient_record.dart';
 
@@ -65,7 +65,7 @@ class RecordCard extends StatelessWidget {
   }
 
   void _navigateToRecordDetail(BuildContext context) {
-    context.push('/patients/${patient.id}/records/${record.id}');
+    RecordDetailRoute(id: patient.id, recordId: record.id).push(context);
   }
 
   String _formatDate(DateTime date) {

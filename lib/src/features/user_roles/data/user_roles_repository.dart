@@ -1,41 +1,54 @@
+import 'package:fpdart/fpdart.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/foundation/failure.dart';
+import '../../../core/foundation/type_defs.dart';
+import '../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../domain/user_role_entity.dart';
 import 'user_role_dto.dart';
 
 part 'user_roles_repository.g.dart';
 
-/// Provides the UserRolesRepository instance.
-@riverpod
-UserRolesRepository userRolesRepository(Ref ref) {
-  return UserRolesRepository(ref.watch(pocketbaseProvider));
+/// Repository interface for user role operations.
+abstract class UserRolesRepository {
+  /// Fetches a user role by its ID.
+  FutureEither<UserRoleEntity> fetchUserRole(String roleId);
 }
 
-/// Repository for fetching user roles from PocketBase.
-class UserRolesRepository {
+/// Provides the UserRolesRepository instance.
+@Riverpod(keepAlive: true)
+UserRolesRepository userRolesRepository(Ref ref) {
+  return UserRolesRepositoryImpl(ref.watch(pocketbaseProvider));
+}
+
+/// Implementation of [UserRolesRepository] using PocketBase.
+class UserRolesRepositoryImpl implements UserRolesRepository {
   final PocketBase _pb;
 
-  static const String _collection = 'user_roles';
+  UserRolesRepositoryImpl(this._pb);
 
-  UserRolesRepository(this._pb);
+  RecordService get _collection =>
+      _pb.collection(PocketBaseCollections.userRoles);
 
-  /// Fetches a user role by its ID.
-  ///
-  /// Returns null if the role is not found or if roleId is empty.
-  Future<UserRoleEntity?> fetchUserRole(String? roleId) async {
-    if (roleId == null || roleId.isEmpty) {
-      return null;
-    }
+  @override
+  FutureEither<UserRoleEntity> fetchUserRole(String roleId) async {
+    return TaskEither.tryCatch(
+      () async {
+        if (roleId.isEmpty) {
+          throw const DataFailure(
+            'Role ID cannot be empty',
+            null,
+            'invalid_role_id',
+          );
+        }
 
-    try {
-      final record = await _pb.collection(_collection).getOne(roleId);
-      final dto = UserRoleDto.fromRecord(record);
-      return dto.toEntity();
-    } catch (e) {
-      // Role not found or other error
-      return null;
-    }
+        final record = await _collection.getOne(roleId);
+        final dto = UserRoleDto.fromRecord(record);
+        return dto.toEntity();
+      },
+      Failure.handle,
+    ).run();
   }
 }

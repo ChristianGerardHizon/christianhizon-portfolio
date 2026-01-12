@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../data/dummy_patients_data.dart';
 import '../../domain/patient.dart';
 import '../../domain/patient_record.dart';
+import '../controllers/patient_controller.dart';
+import '../controllers/patient_record_controller.dart';
 import '../widgets/sections/prescriptions_section.dart';
 
 /// Full-screen page showing record details.
-class RecordDetailPage extends StatelessWidget {
+class RecordDetailPage extends ConsumerWidget {
   const RecordDetailPage({
     super.key,
     required this.patientId,
@@ -17,19 +19,77 @@ class RecordDetailPage extends StatelessWidget {
   final String recordId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final patientAsync = ref.watch(patientProvider(patientId));
+    final recordAsync = ref.watch(patientRecordProvider(recordId));
 
-    // Find patient and record
-    final patient = dummyPatients.firstWhere(
-      (p) => p.id == patientId,
-      orElse: () => dummyPatients.first,
-    );
-    final record = dummyRecords.firstWhere(
-      (r) => r.id == recordId,
-      orElse: () => dummyRecords.first,
-    );
+    // Handle loading state for both patient and record
+    if (patientAsync.isLoading || recordAsync.isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
+    // Handle error state
+    if (patientAsync.hasError) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Record Details')),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error: ${patientAsync.error.toString()}'),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (recordAsync.hasError) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Record Details')),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error: ${recordAsync.error.toString()}'),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final patient = patientAsync.value;
+    final record = recordAsync.value;
+
+    if (patient == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Record Details')),
+        body: const Center(child: Text('Patient not found')),
+      );
+    }
+
+    if (record == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Record Details')),
+        body: const Center(child: Text('Record not found')),
+      );
+    }
+
+    return _buildContent(context, theme, patient, record);
+  }
+
+  Widget _buildContent(
+    BuildContext context,
+    ThemeData theme,
+    Patient patient,
+    PatientRecord record,
+  ) {
     final dateStr = _formatDate(record.date);
 
     return Scaffold(
@@ -164,7 +224,7 @@ class RecordDetailPage extends StatelessWidget {
                     patient.name,
                     style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  Text('${patient.species} - ${patient.breed}'),
+                  Text('${patient.species ?? ''} - ${patient.breed ?? ''}'),
                 ],
               ),
             ),

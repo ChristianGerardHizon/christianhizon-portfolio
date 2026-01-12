@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../data/dummy_patients_data.dart';
 import '../../../domain/prescription.dart';
+import '../../controllers/prescription_controller.dart';
 import '../cards/prescription_card.dart';
 import '../sheets/add_prescription_sheet.dart';
 
 /// Section displaying prescriptions for a record.
-class PrescriptionsSection extends StatefulWidget {
+class PrescriptionsSection extends ConsumerWidget {
   const PrescriptionsSection({
     super.key,
     required this.recordId,
@@ -15,42 +16,127 @@ class PrescriptionsSection extends StatefulWidget {
   final String recordId;
 
   @override
-  State<PrescriptionsSection> createState() => _PrescriptionsSectionState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final prescriptionsAsync = ref.watch(prescriptionControllerProvider(recordId));
+    final theme = Theme.of(context);
 
-class _PrescriptionsSectionState extends State<PrescriptionsSection> {
-  List<Prescription> get _prescriptions =>
-      dummyPrescriptions.where((p) => p.recordId == widget.recordId).toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header
+        Row(
+          children: [
+            Icon(Icons.medication, color: theme.colorScheme.primary),
+            const SizedBox(width: 8),
+            Text('Prescriptions', style: theme.textTheme.titleMedium),
+            const Spacer(),
+            FilledButton.icon(
+              onPressed: () => _handleAddPrescription(context, ref),
+              icon: const Icon(Icons.add, size: 18),
+              label: const Text('Add'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
 
-  void _handleAddPrescription() {
+        // Content
+        prescriptionsAsync.when(
+          loading: () => const Center(
+            child: Padding(
+              padding: EdgeInsets.all(32),
+              child: CircularProgressIndicator(),
+            ),
+          ),
+          error: (error, stack) => Card(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 48,
+                    color: theme.colorScheme.error,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Failed to load prescriptions',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.error,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  OutlinedButton.icon(
+                    onPressed: () => ref
+                        .read(prescriptionControllerProvider(recordId).notifier)
+                        .refresh(),
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Retry'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          data: (prescriptions) {
+            if (prescriptions.isEmpty) {
+              return _EmptyState(
+                onAdd: () => _handleAddPrescription(context, ref),
+              );
+            }
+
+            return ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: prescriptions.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 8),
+              itemBuilder: (context, index) {
+                final prescription = prescriptions[index];
+                return PrescriptionCard(
+                  prescription: prescription,
+                  onEdit: () => _handleEditPrescription(context, ref, prescription),
+                  onDelete: () => _handleDeletePrescription(context, ref, prescription),
+                );
+              },
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  void _handleAddPrescription(BuildContext context, WidgetRef ref) {
     showPrescriptionSheet(
       context,
-      recordId: widget.recordId,
-      onSave: (prescription) {
-        setState(() {
-          dummyPrescriptions.add(prescription);
-        });
+      recordId: recordId,
+      onSave: (prescription) async {
+        return await ref
+            .read(prescriptionControllerProvider(recordId).notifier)
+            .createPrescription(prescription);
       },
     );
   }
 
-  void _handleEditPrescription(Prescription prescription) {
+  void _handleEditPrescription(
+    BuildContext context,
+    WidgetRef ref,
+    Prescription prescription,
+  ) {
     showPrescriptionSheet(
       context,
-      recordId: widget.recordId,
+      recordId: recordId,
       existingPrescription: prescription,
-      onSave: (updated) {
-        setState(() {
-          final index = dummyPrescriptions.indexWhere((p) => p.id == updated.id);
-          if (index != -1) {
-            dummyPrescriptions[index] = updated;
-          }
-        });
+      onSave: (updated) async {
+        return await ref
+            .read(prescriptionControllerProvider(recordId).notifier)
+            .updatePrescription(updated);
       },
     );
   }
 
-  Future<void> _handleDeletePrescription(Prescription prescription) async {
+  Future<void> _handleDeletePrescription(
+    BuildContext context,
+    WidgetRef ref,
+    Prescription prescription,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -69,63 +155,21 @@ class _PrescriptionsSectionState extends State<PrescriptionsSection> {
       ),
     );
 
-    if (confirmed == true && mounted) {
-      setState(() {
-        dummyPrescriptions.removeWhere((p) => p.id == prescription.id);
-      });
+    if (confirmed == true && context.mounted) {
+      final success = await ref
+          .read(prescriptionControllerProvider(recordId).notifier)
+          .deletePrescription(prescription.id);
 
-      if (mounted) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Prescription deleted')),
+          SnackBar(
+            content: Text(
+              success ? 'Prescription deleted' : 'Failed to delete prescription',
+            ),
+          ),
         );
       }
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final prescriptions = _prescriptions;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Header
-        Row(
-          children: [
-            Icon(Icons.medication, color: theme.colorScheme.primary),
-            const SizedBox(width: 8),
-            Text('Prescriptions', style: theme.textTheme.titleMedium),
-            const Spacer(),
-            FilledButton.icon(
-              onPressed: _handleAddPrescription,
-              icon: const Icon(Icons.add, size: 18),
-              label: const Text('Add'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-
-        // Content
-        if (prescriptions.isEmpty)
-          _EmptyState(onAdd: _handleAddPrescription)
-        else
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: prescriptions.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 8),
-            itemBuilder: (context, index) {
-              final prescription = prescriptions[index];
-              return PrescriptionCard(
-                prescription: prescription,
-                onEdit: () => _handleEditPrescription(prescription),
-                onDelete: () => _handleDeletePrescription(prescription),
-              );
-            },
-          ),
-      ],
-    );
   }
 }
 

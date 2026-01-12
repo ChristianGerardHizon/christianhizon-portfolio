@@ -72,13 +72,13 @@ class DetailsTab extends StatelessWidget {
               children: [
                 ListTile(
                   leading: const Icon(Icons.person),
-                  title: Text(patient.ownerName),
+                  title: Text(patient.owner ?? ''),
                   subtitle: const Text('Owner'),
                 ),
                 const Divider(height: 1),
                 ListTile(
                   leading: const Icon(Icons.phone),
-                  title: Text(patient.ownerPhone),
+                  title: Text(patient.contactNumber ?? ''),
                   subtitle: const Text('Phone'),
                   trailing: IconButton(
                     icon: const Icon(Icons.call),

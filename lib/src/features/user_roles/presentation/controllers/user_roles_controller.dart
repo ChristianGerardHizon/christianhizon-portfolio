@@ -11,24 +11,36 @@ part 'user_roles_controller.g.dart';
 /// The role is cleared on logout.
 @Riverpod(keepAlive: true)
 class UserRolesController extends _$UserRolesController {
+  UserRolesRepository get _repository => ref.read(userRolesRepositoryProvider);
+
   @override
   Future<UserRoleEntity?> build() async {
     return null;
   }
 
   /// Fetches the user role by ID and stores it in state.
-  Future<void> fetchRole(String? roleId) async {
+  ///
+  /// Returns `true` if the role was fetched successfully, `false` otherwise.
+  Future<bool> fetchRole(String? roleId) async {
     if (roleId == null || roleId.isEmpty) {
       state = const AsyncData(null);
-      return;
+      return false;
     }
 
     state = const AsyncLoading();
 
-    final repository = ref.read(userRolesRepositoryProvider);
-    final role = await repository.fetchUserRole(roleId);
+    final result = await _repository.fetchUserRole(roleId);
 
-    state = AsyncData(role);
+    return result.fold(
+      (failure) {
+        state = AsyncError(failure, StackTrace.current);
+        return false;
+      },
+      (role) {
+        state = AsyncData(role);
+        return true;
+      },
+    );
   }
 
   /// Clears the stored user role.

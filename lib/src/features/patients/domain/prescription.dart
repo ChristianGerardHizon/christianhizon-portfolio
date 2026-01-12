@@ -1,40 +1,46 @@
-/// Model representing a prescription for a patient record.
-class Prescription {
+import 'package:dart_mappable/dart_mappable.dart';
+
+part 'prescription.mapper.dart';
+
+/// Model representing a prescription item for a patient record.
+@MappableClass()
+class Prescription with PrescriptionMappable {
   const Prescription({
     required this.id,
     required this.recordId,
     required this.medication,
-    required this.dosage,
-    required this.frequency,
-    this.duration,
+    this.dosage,
     this.instructions,
+    this.date,
+    this.isDeleted = false,
+    this.created,
+    this.updated,
   });
 
+  /// PocketBase record ID.
   final String id;
+
+  /// FK to PatientRecord.
   final String recordId;
+
+  /// Medication name.
   final String medication;
-  final String dosage;
-  final String frequency;
-  final String? duration;
+
+  /// Dosage information.
+  final String? dosage;
+
+  /// Usage instructions.
   final String? instructions;
 
-  Prescription copyWith({
-    String? id,
-    String? recordId,
-    String? medication,
-    String? dosage,
-    String? frequency,
-    String? duration,
-    String? instructions,
-  }) {
-    return Prescription(
-      id: id ?? this.id,
-      recordId: recordId ?? this.recordId,
-      medication: medication ?? this.medication,
-      dosage: dosage ?? this.dosage,
-      frequency: frequency ?? this.frequency,
-      duration: duration ?? this.duration,
-      instructions: instructions ?? this.instructions,
-    );
-  }
+  /// Prescription date.
+  final DateTime? date;
+
+  /// Soft delete flag.
+  final bool isDeleted;
+
+  /// Creation timestamp.
+  final DateTime? created;
+
+  /// Last update timestamp.
+  final DateTime? updated;
 }

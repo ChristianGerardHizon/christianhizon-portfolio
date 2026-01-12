@@ -4,20 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../domain/prescription.dart';
 
-/// Frequency options for prescription.
-const _frequencyOptions = [
-  '1x daily',
-  '2x daily',
-  '3x daily',
-  '4x daily',
-  'Every 4 hours',
-  'Every 6 hours',
-  'Every 8 hours',
-  'Weekly',
-  'Monthly',
-  'As needed',
-];
-
 /// Bottom sheet for adding or editing a prescription.
 class AddPrescriptionSheet extends HookWidget {
   const AddPrescriptionSheet({
@@ -29,7 +15,7 @@ class AddPrescriptionSheet extends HookWidget {
 
   final String recordId;
   final Prescription? existingPrescription;
-  final void Function(Prescription prescription) onSave;
+  final Future<bool> Function(Prescription prescription) onSave;
 
   @override
   Widget build(BuildContext context) {
@@ -44,37 +30,50 @@ class AddPrescriptionSheet extends HookWidget {
     final dosageController = useTextEditingController(
       text: existingPrescription?.dosage ?? '',
     );
-    final frequency = useState<String>(
-      existingPrescription?.frequency ?? '1x daily',
-    );
-    final durationController = useTextEditingController(
-      text: existingPrescription?.duration ?? '',
-    );
     final instructionsController = useTextEditingController(
       text: existingPrescription?.instructions ?? '',
     );
+    final isSaving = useState(false);
 
-    void handleSave() {
+    Future<void> handleSave() async {
       if (!formKey.currentState!.validate()) return;
 
+      isSaving.value = true;
+
       final prescription = Prescription(
-        id: existingPrescription?.id ?? 'p${DateTime.now().millisecondsSinceEpoch}',
+        id: existingPrescription?.id ?? '',
         recordId: recordId,
         medication: medicationController.text.trim(),
-        dosage: dosageController.text.trim(),
-        frequency: frequency.value,
-        duration: durationController.text.trim().isEmpty ? null : durationController.text.trim(),
-        instructions: instructionsController.text.trim().isEmpty ? null : instructionsController.text.trim(),
+        dosage: dosageController.text.trim().isEmpty
+            ? null
+            : dosageController.text.trim(),
+        instructions: instructionsController.text.trim().isEmpty
+            ? null
+            : instructionsController.text.trim(),
+        date: existingPrescription?.date ?? DateTime.now(),
       );
 
-      onSave(prescription);
-      Navigator.pop(context);
+      final success = await onSave(prescription);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(isEditing ? 'Prescription updated' : 'Prescription added'),
-        ),
-      );
+      if (context.mounted) {
+        isSaving.value = false;
+        if (success) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content:
+                  Text(isEditing ? 'Prescription updated' : 'Prescription added'),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  isEditing ? 'Failed to update prescription' : 'Failed to add prescription'),
+            ),
+          );
+        }
+      }
     }
 
     return Padding(
@@ -120,6 +119,7 @@ class AddPrescriptionSheet extends HookWidget {
                   prefixIcon: Icon(Icons.medication),
                 ),
                 textCapitalization: TextCapitalization.words,
+                enabled: !isSaving.value,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Medication is required';
@@ -133,60 +133,24 @@ class AddPrescriptionSheet extends HookWidget {
               TextFormField(
                 controller: dosageController,
                 decoration: const InputDecoration(
-                  labelText: 'Dosage *',
-                  hintText: 'e.g., 250mg',
+                  labelText: 'Dosage',
+                  hintText: 'e.g., 250mg, 2x daily',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Dosage is required';
-                  }
-                  return null;
-                },
+                enabled: !isSaving.value,
               ),
               const SizedBox(height: 16),
 
-              // Frequency dropdown
-              DropdownButtonFormField<String>(
-                initialValue: frequency.value,
-                decoration: const InputDecoration(
-                  labelText: 'Frequency *',
-                  border: OutlineInputBorder(),
-                ),
-                items: _frequencyOptions.map((option) {
-                  return DropdownMenuItem(
-                    value: option,
-                    child: Text(option),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    frequency.value = value;
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
-
-              // Duration (optional)
-              TextFormField(
-                controller: durationController,
-                decoration: const InputDecoration(
-                  labelText: 'Duration',
-                  hintText: 'e.g., 7 days, 2 weeks',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Instructions (optional)
+              // Instructions
               TextFormField(
                 controller: instructionsController,
                 decoration: const InputDecoration(
                   labelText: 'Instructions',
-                  hintText: 'e.g., Take with food',
+                  hintText: 'e.g., Take with food for 7 days',
                   border: OutlineInputBorder(),
                 ),
-                maxLines: 2,
+                maxLines: 3,
+                enabled: !isSaving.value,
               ),
               const SizedBox(height: 24),
 
@@ -195,15 +159,21 @@ class AddPrescriptionSheet extends HookWidget {
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: isSaving.value ? null : () => Navigator.pop(context),
                       child: Text(t.common.cancel),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: FilledButton(
-                      onPressed: handleSave,
-                      child: Text(t.common.save),
+                      onPressed: isSaving.value ? null : handleSave,
+                      child: isSaving.value
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(t.common.save),
                     ),
                   ),
                 ],
@@ -221,7 +191,7 @@ void showPrescriptionSheet(
   BuildContext context, {
   required String recordId,
   Prescription? existingPrescription,
-  required void Function(Prescription prescription) onSave,
+  required Future<bool> Function(Prescription prescription) onSave,
 }) {
   showModalBottomSheet(
     context: context,

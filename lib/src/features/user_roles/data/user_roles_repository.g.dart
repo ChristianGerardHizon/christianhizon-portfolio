@@ -26,7 +26,7 @@ final class UserRolesRepositoryProvider extends $FunctionalProvider<
           argument: null,
           retry: null,
           name: r'userRolesRepositoryProvider',
-          isAutoDispose: true,
+          isAutoDispose: false,
           dependencies: null,
           $allTransitiveDependencies: null,
         );
@@ -55,4 +55,4 @@ final class UserRolesRepositoryProvider extends $FunctionalProvider<
 }
 
 String _$userRolesRepositoryHash() =>
-    r'26486753b731abfbd2bb23d5adae2073c2779604';
+    r'9b4f53d686f2918e813c141d890d3777886725b6';

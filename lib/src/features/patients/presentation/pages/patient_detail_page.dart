@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/i18n/strings.g.dart';
+import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
-import '../../data/dummy_patients_data.dart';
 import '../../domain/patient.dart';
 import '../../domain/patient_tab.dart';
+import '../controllers/patient_controller.dart';
 import '../widgets/sheets/edit_patient_sheet.dart';
 import '../widgets/tabs/details_tab.dart';
 import '../widgets/tabs/placeholder_tab.dart';
@@ -20,7 +21,7 @@ import '../widgets/tabs/records_tab.dart';
 /// - Treatments: Prescribed treatments (placeholder)
 /// - Appointments: Scheduled appointments (placeholder)
 /// - Files: Attached documents (placeholder)
-class PatientDetailPage extends HookWidget {
+class PatientDetailPage extends HookConsumerWidget {
   const PatientDetailPage({
     super.key,
     required this.patientId,
@@ -31,11 +32,8 @@ class PatientDetailPage extends HookWidget {
   final PatientTab initialTab;
 
   @override
-  Widget build(BuildContext context) {
-    final patient = dummyPatients.firstWhere(
-      (p) => p.id == patientId,
-      orElse: () => dummyPatients.first,
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final patientAsync = ref.watch(patientProvider(patientId));
 
     final tabController = useTabController(
       initialLength: 5,
@@ -44,49 +42,98 @@ class PatientDetailPage extends HookWidget {
     final isTablet = Breakpoints.isTabletOrLarger(context);
     final t = Translations.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: !isTablet,
-        leading: isTablet
-            ? null
-            : IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.go('/patients'),
+    return patientAsync.when(
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, stack) => Scaffold(
+        appBar: AppBar(
+          leading: isTablet
+              ? null
+              : IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () => const PatientsRoute().go(context),
+                ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error loading patient: ${error.toString()}'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => ref.invalidate(patientProvider(patientId)),
+                child: const Text('Retry'),
               ),
-        title: Text('${patient.name} - ${patient.breed}'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () => _showEditPatientDialog(context, patient),
-            tooltip: t.common.edit,
+            ],
           ),
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () => _showMoreOptions(context),
-          ),
-        ],
-        bottom: TabBar(
-          controller: tabController,
-          isScrollable: true,
-          tabs: const [
-            Tab(text: 'Details'),
-            Tab(text: 'Records'),
-            Tab(text: 'Treatments'),
-            Tab(text: 'Appointments'),
-            Tab(text: 'Files'),
-          ],
         ),
       ),
-      body: TabBarView(
-        controller: tabController,
-        children: [
-          DetailsTab(patient: patient),
-          RecordsTab(patient: patient),
-          const PlaceholderTab(title: 'Treatments', icon: Icons.healing),
-          const PlaceholderTab(title: 'Appointments', icon: Icons.calendar_today),
-          const PlaceholderTab(title: 'Files', icon: Icons.folder),
-        ],
-      ),
+      data: (patient) {
+        if (patient == null) {
+          return Scaffold(
+            appBar: AppBar(
+              leading: isTablet
+                  ? null
+                  : IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () => const PatientsRoute().go(context),
+                    ),
+            ),
+            body: const Center(
+              child: Text('Patient not found'),
+            ),
+          );
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: !isTablet,
+            leading: isTablet
+                ? null
+                : IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => const PatientsRoute().go(context),
+                  ),
+            title: Text('${patient.name} - ${patient.breed ?? "Unknown breed"}'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () => _showEditPatientDialog(context, patient),
+                tooltip: t.common.edit,
+              ),
+              IconButton(
+                icon: const Icon(Icons.more_vert),
+                onPressed: () => _showMoreOptions(context, ref, patient),
+              ),
+            ],
+            bottom: TabBar(
+              controller: tabController,
+              isScrollable: true,
+              tabs: const [
+                Tab(text: 'Details'),
+                Tab(text: 'Records'),
+                Tab(text: 'Treatments'),
+                Tab(text: 'Appointments'),
+                Tab(text: 'Files'),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            controller: tabController,
+            children: [
+              DetailsTab(patient: patient),
+              RecordsTab(patient: patient),
+              const PlaceholderTab(title: 'Treatments', icon: Icons.healing),
+              const PlaceholderTab(
+                  title: 'Appointments', icon: Icons.calendar_today),
+              const PlaceholderTab(title: 'Files', icon: Icons.folder),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -103,7 +150,7 @@ class PatientDetailPage extends HookWidget {
     );
   }
 
-  void _showMoreOptions(BuildContext context) {
+  void _showMoreOptions(BuildContext context, WidgetRef ref, Patient patient) {
     final t = Translations.of(context);
 
     showModalBottomSheet(
@@ -118,7 +165,8 @@ class PatientDetailPage extends HookWidget {
               onTap: () {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Print functionality coming soon')),
+                  const SnackBar(
+                      content: Text('Print functionality coming soon')),
                 );
               },
             ),
@@ -128,16 +176,20 @@ class PatientDetailPage extends HookWidget {
               onTap: () {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Share functionality coming soon')),
+                  const SnackBar(
+                      content: Text('Share functionality coming soon')),
                 );
               },
             ),
             ListTile(
-              leading: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
-              title: Text(t.common.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              leading:
+                  Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+              title: Text(t.common.delete,
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.error)),
               onTap: () {
                 Navigator.pop(context);
-                _showDeleteConfirmation(context);
+                _showDeleteConfirmation(context, ref, patient);
               },
             ),
           ],
@@ -146,7 +198,8 @@ class PatientDetailPage extends HookWidget {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context) {
+  void _showDeleteConfirmation(
+      BuildContext context, WidgetRef ref, Patient patient) {
     final t = Translations.of(context);
 
     showDialog(
@@ -160,11 +213,23 @@ class PatientDetailPage extends HookWidget {
             child: Text(t.common.cancel),
           ),
           FilledButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Patient deleted (demo)')),
-              );
+              final success = await ref
+                  .read(patientControllerProvider.notifier)
+                  .deletePatient(patient.id);
+              if (context.mounted) {
+                if (success) {
+                  const PatientsRoute().go(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Patient deleted')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Failed to delete patient')),
+                  );
+                }
+              }
             },
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,

@@ -17,8 +17,8 @@ class EditPatientSheet extends HookWidget {
 
     final nameController = useTextEditingController(text: patient.name);
     final breedController = useTextEditingController(text: patient.breed);
-    final ownerController = useTextEditingController(text: patient.ownerName);
-    final phoneController = useTextEditingController(text: patient.ownerPhone);
+    final ownerController = useTextEditingController(text: patient.owner);
+    final phoneController = useTextEditingController(text: patient.contactNumber);
 
     return Padding(
       padding: EdgeInsets.only(

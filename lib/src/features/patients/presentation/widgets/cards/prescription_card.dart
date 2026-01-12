@@ -51,18 +51,11 @@ class PrescriptionCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${prescription.dosage} • ${prescription.frequency}',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  if (prescription.duration != null) ...[
+                  if (prescription.dosage != null) ...[
                     const SizedBox(height: 4),
                     Text(
-                      'Duration: ${prescription.duration}',
-                      style: theme.textTheme.bodySmall?.copyWith(
+                      prescription.dosage!,
+                      style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
                     ),

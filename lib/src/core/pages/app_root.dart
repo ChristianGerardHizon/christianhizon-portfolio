@@ -48,6 +48,17 @@ class _AppRootState extends State<AppRoot> {
     SystemRoute.path, // 6: /system
   ];
 
+  /// Routes in order of navigation index.
+  static const _routes = <GoRouteData>[
+    DashboardRoute(), // 0
+    PatientsRoute(), // 1
+    AppointmentsRoute(), // 2
+    ProductsRoute(), // 3
+    SalesRoute(), // 4
+    OrganizationRoute(), // 5
+    SystemRoute(), // 6
+  ];
+
   /// Gets the selected index based on current route location.
   int _getSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
@@ -56,8 +67,8 @@ class _AppRootState extends State<AppRoot> {
   }
 
   void _onDestinationSelected(int index) {
-    if (index >= 0 && index < _routePaths.length) {
-      context.go(_routePaths[index]);
+    if (index >= 0 && index < _routes.length) {
+      _routes[index].go(context);
     }
   }
 

@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import 'routes/auth.routes.dart';
+import 'routes/dashboard.routes.dart';
 
 /// Utility functions for router configuration.
 abstract class RouterUtils {
@@ -96,7 +97,7 @@ abstract class RouterUtils {
             ),
             const SizedBox(height: 24),
             FilledButton(
-              onPressed: () => context.go('/'),
+              onPressed: () => const DashboardRoute().go(context),
               child: const Text('Go Home'),
             ),
           ],

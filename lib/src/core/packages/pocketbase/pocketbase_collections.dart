@@ -12,9 +12,13 @@ abstract class PocketBaseCollections {
 
   // Patients
   static const String patients = 'patients';
-  static const String patientSpecies = 'patientSpecies';
-  static const String patientBreeds = 'patientBreeds';
-  static const String patientTreatments = 'patientTreatments';
+  static const String patientSpecies = 'patient_species';
+  static const String patientBreeds = 'patient_breeds';
+  static const String patientRecords = 'patient_records';
+  static const String patientFiles = 'patient_files';
+  static const String patientTreatments = 'patient_treatments';
+  static const String patientTreatmentRecords = 'patient_treatment_records';
+  static const String patientPrescriptionItems = 'patient_prescription_items';
 
   // Products
   static const String products = 'products';
