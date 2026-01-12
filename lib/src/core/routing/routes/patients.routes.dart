@@ -3,23 +3,42 @@ import 'package:go_router/go_router.dart';
 
 import '../../../features/patients/domain/patient_tab.dart';
 import '../../../features/patients/presentation/pages/patient_detail_page.dart';
+import '../../../features/patients/presentation/pages/patients_list_page.dart';
 import '../../../features/patients/presentation/pages/patients_shell.dart';
 import '../../../features/patients/presentation/pages/record_detail_page.dart';
+import '../../utils/breakpoints.dart';
 
 part 'patients.routes.g.dart';
 
-/// Patients list page route.
-@TypedGoRoute<PatientsRoute>(
-  path: PatientsRoute.path,
+/// Patients shell route for master-detail layout.
+///
+/// On tablet: Shows list and detail side-by-side
+/// On mobile: Shows list, then navigates to detail
+@TypedShellRoute<PatientsShellRoute>(
   routes: [
-    TypedGoRoute<PatientDetailRoute>(
-      path: ':id',
+    TypedGoRoute<PatientsRoute>(
+      path: PatientsRoute.path,
       routes: [
-        TypedGoRoute<RecordDetailRoute>(path: 'records/:recordId'),
+        TypedGoRoute<PatientDetailRoute>(
+          path: ':id',
+          routes: [
+            TypedGoRoute<RecordDetailRoute>(path: 'records/:recordId'),
+          ],
+        ),
       ],
     ),
   ],
 )
+class PatientsShellRoute extends ShellRouteData {
+  const PatientsShellRoute();
+
+  @override
+  Widget builder(BuildContext context, GoRouterState state, Widget navigator) {
+    return PatientsShell(child: navigator);
+  }
+}
+
+/// Patients list page route.
 class PatientsRoute extends GoRouteData with $PatientsRoute {
   const PatientsRoute();
 
@@ -27,7 +46,12 @@ class PatientsRoute extends GoRouteData with $PatientsRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const PatientsShell();
+    // On tablet, this is handled by the shell - return empty container
+    // On mobile, this shows the list page
+    if (Breakpoints.isTabletOrLarger(context)) {
+      return const SizedBox.shrink();
+    }
+    return const PatientsListPage();
   }
 }
 

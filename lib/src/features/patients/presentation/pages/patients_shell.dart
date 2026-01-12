@@ -2,25 +2,30 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/breakpoints.dart';
 import '../widgets/tablet_patients_layout.dart';
-import 'patients_list_page.dart';
 
 /// Adaptive shell for patients list/detail layout.
 ///
-/// - Mobile: Shows only the list page
-/// - Tablet: Shows   -pane layout with list and detail side by side
+/// - Mobile: Passes through the child (list or detail page)
+/// - Tablet: Shows two-pane layout with list and detail side by side
 class PatientsShell extends StatelessWidget {
-  const PatientsShell({super.key});
+  const PatientsShell({
+    super.key,
+    required this.child,
+  });
+
+  /// The child widget from the router (detail page or placeholder).
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     final isTablet = Breakpoints.isTabletOrLarger(context);
 
     if (isTablet) {
-      // Tablet: Two-pane layout
-      return const TabletPatientsLayout();
+      // Tablet: Two-pane layout with list always visible
+      return TabletPatientsLayout(detailChild: child);
     }
 
-    // Mobile: Just show the list
-    return const PatientsListPage();
+    // Mobile: Just show the routed child (list or detail)
+    return child;
   }
 }

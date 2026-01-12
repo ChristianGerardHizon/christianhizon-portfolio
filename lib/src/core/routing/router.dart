@@ -48,7 +48,7 @@ GoRouter router(Ref ref) {
         builder: (context, state, child) => AppRoot(child: child),
         routes: [
           $dashboardRoute,
-          $patientsRoute,
+          $patientsShellRoute,
           $appointmentsRoute,
           $productsRoute,
           $salesRoute,

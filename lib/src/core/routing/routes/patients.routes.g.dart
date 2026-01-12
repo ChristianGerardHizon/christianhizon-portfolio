@@ -7,25 +7,35 @@ part of 'patients.routes.dart';
 // **************************************************************************
 
 List<RouteBase> get $appRoutes => [
-      $patientsRoute,
+      $patientsShellRoute,
     ];
 
-RouteBase get $patientsRoute => GoRouteData.$route(
-      path: '/patients',
-      factory: $PatientsRoute._fromState,
+RouteBase get $patientsShellRoute => ShellRouteData.$route(
+      factory: $PatientsShellRouteExtension._fromState,
       routes: [
         GoRouteData.$route(
-          path: ':id',
-          factory: $PatientDetailRoute._fromState,
+          path: '/patients',
+          factory: $PatientsRoute._fromState,
           routes: [
             GoRouteData.$route(
-              path: 'records/:recordId',
-              factory: $RecordDetailRoute._fromState,
+              path: ':id',
+              factory: $PatientDetailRoute._fromState,
+              routes: [
+                GoRouteData.$route(
+                  path: 'records/:recordId',
+                  factory: $RecordDetailRoute._fromState,
+                ),
+              ],
             ),
           ],
         ),
       ],
     );
+
+extension $PatientsShellRouteExtension on PatientsShellRoute {
+  static PatientsShellRoute _fromState(GoRouterState state) =>
+      const PatientsShellRoute();
+}
 
 mixin $PatientsRoute on GoRouteData {
   static PatientsRoute _fromState(GoRouterState state) => const PatientsRoute();
