@@ -156,7 +156,7 @@ class _TranslationsNavigationTl implements TranslationsNavigationEn {
 	// Translations
 	@override String get dashboard => 'Dashboard';
 	@override String get patients => 'Mga Pasyente';
-	@override String get appointments => 'Mga Appointment';
+	@override String get appointments => 'Appts';
 	@override String get products => 'Mga Produkto';
 	@override String get inventory => 'Imbentaryo';
 	@override String get settings => 'Mga Setting';
@@ -164,6 +164,12 @@ class _TranslationsNavigationTl implements TranslationsNavigationEn {
 	@override String get reports => 'Mga Ulat';
 	@override String get users => 'Mga User';
 	@override String get branches => 'Mga Sangay';
+	@override String get more => 'Iba Pa';
+	@override String get sales => 'Mga Benta';
+	@override String get organization => 'Organisasyon';
+	@override String get system => 'Sistema';
+	@override String get patientConfig => 'Config ng Pasyente';
+	@override String get account => 'Account';
 }
 
 // Path: validation
@@ -259,7 +265,7 @@ extension on TranslationsTl {
 			'fields.name' => 'Name',
 			'navigation.dashboard' => 'Dashboard',
 			'navigation.patients' => 'Mga Pasyente',
-			'navigation.appointments' => 'Mga Appointment',
+			'navigation.appointments' => 'Appts',
 			'navigation.products' => 'Mga Produkto',
 			'navigation.inventory' => 'Imbentaryo',
 			'navigation.settings' => 'Mga Setting',
@@ -267,6 +273,12 @@ extension on TranslationsTl {
 			'navigation.reports' => 'Mga Ulat',
 			'navigation.users' => 'Mga User',
 			'navigation.branches' => 'Mga Sangay',
+			'navigation.more' => 'Iba Pa',
+			'navigation.sales' => 'Mga Benta',
+			'navigation.organization' => 'Organisasyon',
+			'navigation.system' => 'Sistema',
+			'navigation.patientConfig' => 'Config ng Pasyente',
+			'navigation.account' => 'Account',
 			'validation.required' => 'Kinakailangan ang field na ito',
 			'validation.invalidEmail' => 'Maglagay ng valid na email address',
 			'validation.invalidPhone' => 'Maglagay ng valid na numero ng telepono',

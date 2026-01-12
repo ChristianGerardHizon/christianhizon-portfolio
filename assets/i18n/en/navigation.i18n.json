@@ -1,12 +1,18 @@
 {
     "dashboard": "Dashboard",
     "patients": "Patients",
-    "appointments": "Appointments",
+    "appointments": "Appts",
     "products": "Products",
     "inventory": "Inventory",
     "settings": "Settings",
     "profile": "Profile",
     "reports": "Reports",
     "users": "Users",
-    "branches": "Branches"
+    "branches": "Branches",
+    "more": "More",
+    "sales": "Sales",
+    "organization": "Organization",
+    "system": "System",
+    "patientConfig": "Patient Config",
+    "account": "Account"
 }

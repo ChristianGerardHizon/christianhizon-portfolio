@@ -3,9 +3,16 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../features/auth/presentation/controllers/auth_controller.dart';
+import '../pages/app_root.dart';
 import 'router_utils.dart';
+import 'routes/appointments.routes.dart';
 import 'routes/auth.routes.dart';
 import 'routes/dashboard.routes.dart';
+import 'routes/organization.routes.dart';
+import 'routes/patients.routes.dart';
+import 'routes/products.routes.dart';
+import 'routes/sales.routes.dart';
+import 'routes/system.routes.dart';
 
 part 'router.g.dart';
 
@@ -30,14 +37,25 @@ GoRouter router(Ref ref) {
     redirect: (context, state) => RouterUtils.redirect(context, state, ref),
     errorBuilder: RouterUtils.errorBuilder,
     routes: [
-      // Auth routes
+      // Auth routes (outside shell)
       $splashRoute,
       $loginRoute,
       $forgotPasswordRoute,
       $authLoadingRoute,
 
-      // Main app routes
-      $dashboardRoute,
+      // Main app shell with navigation
+      ShellRoute(
+        builder: (context, state, child) => AppRoot(child: child),
+        routes: [
+          $dashboardRoute,
+          $patientsRoute,
+          $appointmentsRoute,
+          $productsRoute,
+          $salesRoute,
+          $organizationRoute,
+          $systemRoute,
+        ],
+      ),
     ],
   );
 }

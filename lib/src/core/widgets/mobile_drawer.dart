@@ -1,0 +1,185 @@
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../../features/auth/presentation/controllers/auth_controller.dart';
+import '../i18n/strings.g.dart';
+
+/// Mobile drawer with full navigation menu.
+///
+/// Contains all navigation sections:
+/// - Primary: Dashboard, Patients, Appointments, Products
+/// - Secondary: Sales, Organization, System
+/// - Actions: Logout
+class MobileDrawer extends ConsumerWidget {
+  const MobileDrawer({
+    super.key,
+    required this.selectedIndex,
+    required this.onDestinationSelected,
+  });
+
+  /// Currently selected navigation index.
+  final int selectedIndex;
+
+  /// Callback when a destination is selected.
+  final ValueChanged<int> onDestinationSelected;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = Translations.of(context);
+    final theme = Theme.of(context);
+
+    return Drawer(
+      child: SafeArea(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            // Header
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primaryContainer,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: theme.colorScheme.primary,
+                    child: Icon(
+                      Icons.local_hospital,
+                      size: 30,
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    t.common.appName,
+                    style: theme.textTheme.titleLarge,
+                  ),
+                  Text(
+                    'Veterinary Management System',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onPrimaryContainer.withValues(
+                        alpha: 0.7,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Primary navigation
+            _DrawerItem(
+              icon: Icons.dashboard,
+              label: t.navigation.dashboard,
+              selected: selectedIndex == 0,
+              onTap: () => _selectAndClose(context, 0),
+            ),
+            _DrawerItem(
+              icon: Icons.pets,
+              label: t.navigation.patients,
+              selected: selectedIndex == 1,
+              onTap: () => _selectAndClose(context, 1),
+            ),
+            _DrawerItem(
+              icon: Icons.calendar_today,
+              label: t.navigation.appointments,
+              selected: selectedIndex == 2,
+              onTap: () => _selectAndClose(context, 2),
+            ),
+            _DrawerItem(
+              icon: Icons.inventory_2,
+              label: t.navigation.products,
+              selected: selectedIndex == 3,
+              onTap: () => _selectAndClose(context, 3),
+            ),
+
+            const Divider(),
+
+            // Secondary navigation
+            _DrawerItem(
+              icon: Icons.point_of_sale,
+              label: t.navigation.sales,
+              selected: selectedIndex == 4,
+              onTap: () => _selectAndClose(context, 4),
+            ),
+            _DrawerItem(
+              icon: Icons.business,
+              label: t.navigation.organization,
+              selected: selectedIndex == 5,
+              onTap: () => _selectAndClose(context, 5),
+            ),
+            _DrawerItem(
+              icon: Icons.settings,
+              label: t.navigation.system,
+              selected: selectedIndex == 6,
+              onTap: () => _selectAndClose(context, 6),
+            ),
+
+            const Divider(),
+
+            // Logout
+            _DrawerItem(
+              icon: Icons.logout,
+              label: t.auth.logoutButton,
+              selected: false,
+              onTap: () => _confirmLogout(context, ref, t),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _selectAndClose(BuildContext context, int index) {
+    Navigator.of(context).pop();
+    onDestinationSelected(index);
+  }
+
+  void _confirmLogout(BuildContext context, WidgetRef ref, Translations t) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(t.auth.logoutButton),
+        content: Text(t.auth.logoutConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(t.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              ref.read(authControllerProvider.notifier).logout();
+            },
+            child: Text(t.auth.logoutButton),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DrawerItem extends StatelessWidget {
+  const _DrawerItem({
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(label),
+      selected: selected,
+      onTap: onTap,
+    );
+  }
+}

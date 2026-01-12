@@ -281,8 +281,8 @@ class TranslationsNavigationEn {
 	/// en: 'Patients'
 	String get patients => 'Patients';
 
-	/// en: 'Appointments'
-	String get appointments => 'Appointments';
+	/// en: 'Appts'
+	String get appointments => 'Appts';
 
 	/// en: 'Products'
 	String get products => 'Products';
@@ -304,6 +304,24 @@ class TranslationsNavigationEn {
 
 	/// en: 'Branches'
 	String get branches => 'Branches';
+
+	/// en: 'More'
+	String get more => 'More';
+
+	/// en: 'Sales'
+	String get sales => 'Sales';
+
+	/// en: 'Organization'
+	String get organization => 'Organization';
+
+	/// en: 'System'
+	String get system => 'System';
+
+	/// en: 'Patient Config'
+	String get patientConfig => 'Patient Config';
+
+	/// en: 'Account'
+	String get account => 'Account';
 }
 
 // Path: validation
@@ -423,7 +441,7 @@ extension on Translations {
 			'fields.name' => 'Name',
 			'navigation.dashboard' => 'Dashboard',
 			'navigation.patients' => 'Patients',
-			'navigation.appointments' => 'Appointments',
+			'navigation.appointments' => 'Appts',
 			'navigation.products' => 'Products',
 			'navigation.inventory' => 'Inventory',
 			'navigation.settings' => 'Settings',
@@ -431,6 +449,12 @@ extension on Translations {
 			'navigation.reports' => 'Reports',
 			'navigation.users' => 'Users',
 			'navigation.branches' => 'Branches',
+			'navigation.more' => 'More',
+			'navigation.sales' => 'Sales',
+			'navigation.organization' => 'Organization',
+			'navigation.system' => 'System',
+			'navigation.patientConfig' => 'Patient Config',
+			'navigation.account' => 'Account',
 			'validation.required' => 'This field is required',
 			'validation.invalidEmail' => 'Please enter a valid email address',
 			'validation.invalidPhone' => 'Please enter a valid phone number',

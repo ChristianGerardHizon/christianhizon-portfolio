@@ -1,12 +1,18 @@
 {
     "dashboard": "Dashboard",
     "patients": "Mga Pasyente",
-    "appointments": "Mga Appointment",
+    "appointments": "Appts",
     "products": "Mga Produkto",
     "inventory": "Imbentaryo",
     "settings": "Mga Setting",
     "profile": "Profile",
     "reports": "Mga Ulat",
     "users": "Mga User",
-    "branches": "Mga Sangay"
+    "branches": "Mga Sangay",
+    "more": "Iba Pa",
+    "sales": "Mga Benta",
+    "organization": "Organisasyon",
+    "system": "Sistema",
+    "patientConfig": "Config ng Pasyente",
+    "account": "Account"
 }

@@ -3,27 +3,27 @@ import 'package:go_router/go_router.dart';
 
 import '../../i18n/strings.g.dart';
 
-part 'dashboard.routes.g.dart';
+part 'appointments.routes.g.dart';
 
-/// Dashboard/home page route.
-@TypedGoRoute<DashboardRoute>(path: DashboardRoute.path)
-class DashboardRoute extends GoRouteData with $DashboardRoute {
-  const DashboardRoute();
+/// Appointments page route.
+@TypedGoRoute<AppointmentsRoute>(path: AppointmentsRoute.path)
+class AppointmentsRoute extends GoRouteData with $AppointmentsRoute {
+  const AppointmentsRoute();
 
-  static const path = '/';
+  static const path = '/appointments';
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const DashboardPage();
+    return const AppointmentsPage();
   }
 }
 
-/// Dashboard page content.
+/// Appointments page content placeholder.
 ///
 /// This is rendered within the [AppRoot] shell which provides
 /// the AppBar and navigation. Only the body content is defined here.
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class AppointmentsPage extends StatelessWidget {
+  const AppointmentsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,18 +36,18 @@ class DashboardPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.dashboard,
+              Icons.calendar_today,
               size: 80,
               color: theme.colorScheme.primary,
             ),
             const SizedBox(height: 24),
             Text(
-              'Welcome to ${t.common.appName}',
+              t.navigation.appointments,
               style: theme.textTheme.headlineMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              'Dashboard - Coming Soon',
+              'Coming Soon',
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: theme.colorScheme.outline,
               ),

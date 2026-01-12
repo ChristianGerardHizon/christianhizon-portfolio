@@ -3,27 +3,27 @@ import 'package:go_router/go_router.dart';
 
 import '../../i18n/strings.g.dart';
 
-part 'dashboard.routes.g.dart';
+part 'products.routes.g.dart';
 
-/// Dashboard/home page route.
-@TypedGoRoute<DashboardRoute>(path: DashboardRoute.path)
-class DashboardRoute extends GoRouteData with $DashboardRoute {
-  const DashboardRoute();
+/// Products page route.
+@TypedGoRoute<ProductsRoute>(path: ProductsRoute.path)
+class ProductsRoute extends GoRouteData with $ProductsRoute {
+  const ProductsRoute();
 
-  static const path = '/';
+  static const path = '/products';
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const DashboardPage();
+    return const ProductsPage();
   }
 }
 
-/// Dashboard page content.
+/// Products page content placeholder.
 ///
 /// This is rendered within the [AppRoot] shell which provides
 /// the AppBar and navigation. Only the body content is defined here.
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class ProductsPage extends StatelessWidget {
+  const ProductsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,18 +36,18 @@ class DashboardPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.dashboard,
+              Icons.inventory_2,
               size: 80,
               color: theme.colorScheme.primary,
             ),
             const SizedBox(height: 24),
             Text(
-              'Welcome to ${t.common.appName}',
+              t.navigation.products,
               style: theme.textTheme.headlineMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              'Dashboard - Coming Soon',
+              'Coming Soon',
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: theme.colorScheme.outline,
               ),

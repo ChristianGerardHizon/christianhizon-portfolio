@@ -95,7 +95,10 @@ class _AppRootState extends State<AppRoot> {
         selectedIndex: selectedIndex,
         onDestinationSelected: _onDestinationSelected,
       ),
-      body: widget.child,
+      body: ColoredBox(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: widget.child,
+      ),
       bottomNavigationBar: MobileBottomNav(
         selectedIndex: selectedIndex,
         onDestinationSelected: _onDestinationSelected,
@@ -125,7 +128,10 @@ class _AppRootState extends State<AppRoot> {
               appBar: AppBar(
                 title: Text(_getPageTitle(t, selectedIndex)),
               ),
-              body: widget.child,
+              body: ColoredBox(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: widget.child,
+              ),
             ),
           ),
         ],
