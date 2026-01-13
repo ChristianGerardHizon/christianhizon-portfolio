@@ -35,10 +35,9 @@ class PatientSearchFields extends _$PatientSearchFields {
   Set<String> build() => {'name'}; // Default: only name
 
   void toggleField(String field) {
-    // Name is always required
-    if (field == 'name') return;
-
     if (state.contains(field)) {
+      // Prevent removing if it's the last field
+      if (state.length <= 1) return;
       state = {...state}..remove(field);
     } else {
       state = {...state, field};
@@ -50,7 +49,11 @@ class PatientSearchFields extends _$PatientSearchFields {
   }
 
   void setFields(Set<String> fields) {
-    // Ensure name is always included
-    state = {...fields, 'name'};
+    // Ensure at least one field is selected
+    if (fields.isEmpty) {
+      state = {'name'}; // fallback to name
+    } else {
+      state = fields;
+    }
   }
 }

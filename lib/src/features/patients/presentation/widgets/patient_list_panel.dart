@@ -63,12 +63,6 @@ class PatientListPanel extends HookConsumerWidget {
       ref.read(patientsControllerProvider.notifier).refresh();
     }
 
-    void editSearch() {
-      searchController.text = activeQuery.value ?? '';
-      searchText.value = activeQuery.value ?? '';
-      activeQuery.value = null;
-    }
-
     return Scaffold(
       body: Column(
         children: [
@@ -96,7 +90,6 @@ class PatientListPanel extends HookConsumerWidget {
                     query: activeQuery.value!,
                     fieldCount: activeFieldCount,
                     onClear: clearSearch,
-                    onEdit: editSearch,
                   )
                 : _SearchInput(
                     controller: searchController,
@@ -151,18 +144,15 @@ class _ActiveSearchChip extends StatelessWidget {
     required this.query,
     required this.fieldCount,
     required this.onClear,
-    required this.onEdit,
   });
 
   final String query;
   final int fieldCount;
   final VoidCallback onClear;
-  final VoidCallback onEdit;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final t = Translations.of(context);
 
     return Row(
       children: [
@@ -228,12 +218,6 @@ class _ActiveSearchChip extends StatelessWidget {
               ],
             ),
           ),
-        ),
-        const SizedBox(width: 8),
-        IconButton.filledTonal(
-          icon: const Icon(Icons.edit),
-          onPressed: onEdit,
-          tooltip: t.common.edit,
         ),
       ],
     );

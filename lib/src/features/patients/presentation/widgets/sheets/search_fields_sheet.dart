@@ -56,19 +56,19 @@ class SearchFieldsSheet extends ConsumerWidget {
             // Field checkboxes
             ...patientSearchableFields.map((field) {
               final isSelected = selectedFields.contains(field);
-              final isName = field == 'name';
+              final isLastSelected = isSelected && selectedFields.length == 1;
 
               return CheckboxListTile(
                 value: isSelected,
-                onChanged: isName
-                    ? null // Name is always required
+                onChanged: isLastSelected
+                    ? null // Can't deselect the last field
                     : (_) => ref
                         .read(patientSearchFieldsProvider.notifier)
                         .toggleField(field),
                 title: Text(_getFieldLabel(field, t)),
-                subtitle: isName
+                subtitle: isLastSelected
                     ? Text(
-                        t.fields.requiredField,
+                        t.fields.atLeastOneRequired,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.primary,
                         ),

@@ -292,6 +292,9 @@ class TranslationsFieldsEn {
 
 	/// en: 'Required'
 	String get requiredField => 'Required';
+
+	/// en: 'At least one field required'
+	String get atLeastOneRequired => 'At least one field required';
 }
 
 // Path: navigation
@@ -475,6 +478,7 @@ extension on Translations {
 			'fields.searchFields' => 'Search Fields',
 			'fields.searchFieldsHint' => 'Select which fields to include in your search',
 			'fields.requiredField' => 'Required',
+			'fields.atLeastOneRequired' => 'At least one field required',
 			'navigation.dashboard' => 'Dashboard',
 			'navigation.patients' => 'Patients',
 			'navigation.appointments' => 'Appts',

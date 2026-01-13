@@ -154,6 +154,7 @@ class _TranslationsFieldsTl implements TranslationsFieldsEn {
 	@override String get searchFields => 'Mga Field na Hahanapin';
 	@override String get searchFieldsHint => 'Piliin kung aling mga field ang isasama sa iyong paghahanap';
 	@override String get requiredField => 'Kinakailangan';
+	@override String get atLeastOneRequired => 'Kailangan ng kahit isang field';
 }
 
 // Path: navigation
@@ -281,6 +282,7 @@ extension on TranslationsTl {
 			'fields.searchFields' => 'Mga Field na Hahanapin',
 			'fields.searchFieldsHint' => 'Piliin kung aling mga field ang isasama sa iyong paghahanap',
 			'fields.requiredField' => 'Kinakailangan',
+			'fields.atLeastOneRequired' => 'Kailangan ng kahit isang field',
 			'navigation.dashboard' => 'Dashboard',
 			'navigation.patients' => 'Mga Pasyente',
 			'navigation.appointments' => 'Appts',

@@ -98,7 +98,7 @@ final class PatientSearchFieldsProvider
 }
 
 String _$patientSearchFieldsHash() =>
-    r'76d296acdd455fc3320160c9b04c1db9505f87cd';
+    r'1e56cbea6847dc27cb170e3f94401becd1b80004';
 
 /// Provider for managing which fields are included in patient search.
 

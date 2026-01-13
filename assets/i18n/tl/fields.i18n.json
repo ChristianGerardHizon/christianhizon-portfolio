@@ -10,5 +10,6 @@
     "address": "Address",
     "searchFields": "Mga Field na Hahanapin",
     "searchFieldsHint": "Piliin kung aling mga field ang isasama sa iyong paghahanap",
-    "requiredField": "Kinakailangan"
+    "requiredField": "Kinakailangan",
+    "atLeastOneRequired": "Kailangan ng kahit isang field"
 }
