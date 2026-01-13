@@ -16,21 +16,22 @@ class LoginPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final obscurePassword = useState(true);
+    final errorMessage = useState<String?>(null);
 
-    // Listen for auth errors to show snackbar
+    final authState = ref.watch(authControllerProvider);
+    final isLoading = authState.isLoading;
+
+    // Listen for auth errors to show error message
     ref.listen(authControllerProvider, (prev, next) {
       if (next.hasError && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(t.failures.invalidCredentials),
-            backgroundColor: Colors.red,
-          ),
-        );
+        errorMessage.value = t.failures.invalidCredentials;
       }
     });
 
     void handleLogin() {
       if (formKey.currentState?.saveAndValidate() ?? false) {
+        // Clear any previous error
+        errorMessage.value = null;
         final values = formKey.currentState!.value;
         ref.read(authControllerProvider.notifier).login(
               values['email'] as String,
@@ -74,9 +75,45 @@ class LoginPage extends HookConsumerWidget {
                   ),
                   const SizedBox(height: 48),
 
+                  // Error message
+                  if (errorMessage.value != null) ...[
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .error
+                            .withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              errorMessage.value!,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
                   // Email field
                   FormBuilderTextField(
                     name: 'email',
+                    enabled: !isLoading,
                     decoration: InputDecoration(
                       labelText: t.fields.email,
                       prefixIcon: const Icon(Icons.email_outlined),
@@ -94,6 +131,7 @@ class LoginPage extends HookConsumerWidget {
                   // Password field
                   FormBuilderTextField(
                     name: 'password',
+                    enabled: !isLoading,
                     decoration: InputDecoration(
                       labelText: t.fields.password,
                       prefixIcon: const Icon(Icons.lock_outlined),
@@ -104,31 +142,44 @@ class LoginPage extends HookConsumerWidget {
                               ? Icons.visibility_outlined
                               : Icons.visibility_off_outlined,
                         ),
-                        onPressed: () {
-                          obscurePassword.value = !obscurePassword.value;
-                        },
+                        onPressed: isLoading
+                            ? null
+                            : () {
+                                obscurePassword.value = !obscurePassword.value;
+                              },
                       ),
                     ),
                     obscureText: obscurePassword.value,
                     textInputAction: TextInputAction.done,
                     validator: FormBuilderValidators.required(),
-                    onSubmitted: (_) => handleLogin(),
+                    onSubmitted: isLoading ? null : (_) => handleLogin(),
                   ),
                   const SizedBox(height: 24),
 
                   // Login button
                   FilledButton(
-                    onPressed: handleLogin,
+                    onPressed: isLoading ? null : handleLogin,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Text(t.auth.loginButton),
+                      child: isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(t.auth.loginButton),
                     ),
                   ),
                   const SizedBox(height: 16),
 
                   // Forgot password link
                   TextButton(
-                    onPressed: () => const ForgotPasswordRoute().push(context),
+                    onPressed: isLoading
+                        ? null
+                        : () => const ForgotPasswordRoute().push(context),
                     child: Text(t.auth.forgotPassword),
                   ),
                 ],
