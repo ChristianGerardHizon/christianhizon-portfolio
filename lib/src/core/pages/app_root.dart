@@ -93,15 +93,6 @@ class _AppRootState extends State<AppRoot> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(_getPageTitle(t, selectedIndex)),
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-      ),
       drawer: MobileDrawer(
         selectedIndex: selectedIndex,
         onDestinationSelected: _onDestinationSelected,
@@ -148,26 +139,5 @@ class _AppRootState extends State<AppRoot> {
         ],
       ),
     );
-  }
-
-  String _getPageTitle(Translations t, int selectedIndex) {
-    switch (selectedIndex) {
-      case 0:
-        return t.navigation.dashboard;
-      case 1:
-        return t.navigation.patients;
-      case 2:
-        return t.navigation.appointments;
-      case 3:
-        return t.navigation.products;
-      case 4:
-        return t.navigation.sales;
-      case 5:
-        return t.navigation.organization;
-      case 6:
-        return t.navigation.system;
-      default:
-        return t.navigation.dashboard;
-    }
   }
 }
