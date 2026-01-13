@@ -2,13 +2,13 @@ import 'package:fpdart/fpdart.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/foundation/failure.dart';
-import '../../../core/foundation/type_defs.dart';
-import '../../../core/packages/pocketbase/pb_filter.dart';
-import '../../../core/packages/pocketbase/pocketbase_collections.dart';
-import '../../../core/packages/pocketbase/pocketbase_provider.dart';
-import '../domain/prescription.dart';
-import 'prescription_dto.dart';
+import '../../../../core/foundation/failure.dart';
+import '../../../../core/foundation/type_defs.dart';
+import '../../../../core/packages/pocketbase/pb_filter.dart';
+import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
+import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
+import '../../domain/prescription.dart';
+import '../dto/prescription_dto.dart';
 
 part 'prescription_repository.g.dart';
 

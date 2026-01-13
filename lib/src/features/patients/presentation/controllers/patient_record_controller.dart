@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../data/patient_record_repository.dart';
+import '../../data/repositories/patient_record_repository.dart';
 import '../../domain/patient_record.dart';
 
 part 'patient_record_controller.g.dart';

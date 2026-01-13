@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../data/prescription_repository.dart';
+import '../../data/repositories/prescription_repository.dart';
 import '../../domain/prescription.dart';
 
 part 'prescription_controller.g.dart';

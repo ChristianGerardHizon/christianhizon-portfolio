@@ -1,7 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
-import '../domain/prescription.dart';
+import '../../domain/prescription.dart';
 
 part 'prescription_dto.mapper.dart';
 

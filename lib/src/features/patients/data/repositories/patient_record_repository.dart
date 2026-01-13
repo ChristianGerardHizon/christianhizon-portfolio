@@ -2,13 +2,13 @@ import 'package:fpdart/fpdart.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/foundation/failure.dart';
-import '../../../core/foundation/type_defs.dart';
-import '../../../core/packages/pocketbase/pb_filter.dart';
-import '../../../core/packages/pocketbase/pocketbase_collections.dart';
-import '../../../core/packages/pocketbase/pocketbase_provider.dart';
-import '../domain/patient_record.dart';
-import 'patient_record_dto.dart';
+import '../../../../core/foundation/failure.dart';
+import '../../../../core/foundation/type_defs.dart';
+import '../../../../core/packages/pocketbase/pb_filter.dart';
+import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
+import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
+import '../../domain/patient_record.dart';
+import '../dto/patient_record_dto.dart';
 
 part 'patient_record_repository.g.dart';
 

@@ -1,7 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
-import '../domain/patient_record.dart';
+import '../../domain/patient_record.dart';
 
 part 'patient_record_dto.mapper.dart';
 
