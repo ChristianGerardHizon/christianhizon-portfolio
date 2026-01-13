@@ -298,12 +298,6 @@ class _SearchInput extends StatelessWidget {
             tooltip: t.common.filter,
           ),
         ),
-        const SizedBox(width: 4),
-        IconButton.filled(
-          icon: const Icon(Icons.search),
-          onPressed: onSearch,
-          tooltip: t.common.search,
-        ),
       ],
     );
   }
