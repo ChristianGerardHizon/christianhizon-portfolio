@@ -29,8 +29,8 @@ abstract class PatientRepository {
   /// Soft deletes a patient (sets isDeleted = true).
   FutureEither<void> delete(String id);
 
-  /// Searches patients by name or owner.
-  FutureEither<List<Patient>> search(String query);
+  /// Searches patients by the specified fields.
+  FutureEither<List<Patient>> search(String query, {List<String>? fields});
 }
 
 /// Provides the PatientRepository instance.
@@ -156,12 +156,17 @@ class PatientRepositoryImpl implements PatientRepository {
   }
 
   @override
-  FutureEither<List<Patient>> search(String query) async {
+  FutureEither<List<Patient>> search(
+    String query, {
+    List<String>? fields,
+  }) async {
     return TaskEither.tryCatch(
       () async {
+        final searchFields = fields ?? ['name'];
         final filter = PBFilter()
             .notDeleted()
-            .searchFields(query, ['name', 'owner']).build();
+            .searchFields(query, searchFields)
+            .build();
 
         final records = await _collection.getFullList(
           expand: _expand,
