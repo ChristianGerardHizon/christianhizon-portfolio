@@ -11,12 +11,14 @@ import '../controllers/patient_provider.dart';
 import '../controllers/patients_controller.dart';
 import '../widgets/sheets/edit_patient_sheet.dart';
 import '../widgets/tabs/details_tab.dart';
+import '../widgets/tabs/overview_tab.dart';
 import '../widgets/tabs/placeholder_tab.dart';
 import '../widgets/tabs/records_tab.dart';
 
 /// Patient detail page with tabbed content.
 ///
-/// Shows patient info across 5 tabs:
+/// Shows patient info across 6 tabs:
+/// - Overview: Brief customizable summary
 /// - Details: Patient and owner information
 /// - Records: Medical records/visits
 /// - Treatments: Prescribed treatments (placeholder)
@@ -26,7 +28,7 @@ class PatientDetailPage extends HookConsumerWidget {
   const PatientDetailPage({
     super.key,
     required this.patientId,
-    this.initialTab = PatientTab.details,
+    this.initialTab = PatientTab.overview,
   });
 
   final String patientId;
@@ -37,7 +39,7 @@ class PatientDetailPage extends HookConsumerWidget {
     final patientAsync = ref.watch(patientProvider(patientId));
 
     final tabController = useTabController(
-      initialLength: 5,
+      initialLength: 6,
       initialIndex: initialTab.index,
     );
     final isTablet = Breakpoints.isTabletOrLarger(context);
@@ -114,6 +116,7 @@ class PatientDetailPage extends HookConsumerWidget {
               controller: tabController,
               isScrollable: true,
               tabs: const [
+                Tab(text: 'Overview'),
                 Tab(text: 'Details'),
                 Tab(text: 'Records'),
                 Tab(text: 'Treatments'),
@@ -125,6 +128,7 @@ class PatientDetailPage extends HookConsumerWidget {
           body: TabBarView(
             controller: tabController,
             children: [
+              OverviewTab(patient: patient),
               DetailsTab(patient: patient),
               RecordsTab(patient: patient),
               const PlaceholderTab(title: 'Treatments', icon: Icons.healing),

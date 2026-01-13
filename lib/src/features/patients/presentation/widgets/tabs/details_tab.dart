@@ -92,14 +92,15 @@ class DetailsTab extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Actions
-          Row(
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
             children: [
               FilledButton.icon(
                 onPressed: () {},
                 icon: const Icon(Icons.edit),
                 label: const Text('Edit Details'),
               ),
-              const SizedBox(width: 8),
               OutlinedButton.icon(
                 onPressed: () {},
                 icon: const Icon(Icons.calendar_today),
