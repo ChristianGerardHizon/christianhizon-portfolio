@@ -10,10 +10,10 @@ import '../../domain/patient_tab.dart';
 import '../controllers/patient_provider.dart';
 import '../controllers/patients_controller.dart';
 import '../widgets/sheets/edit_patient_sheet.dart';
-import '../widgets/tabs/details_tab.dart';
-import '../widgets/tabs/overview_tab.dart';
-import '../widgets/tabs/placeholder_tab.dart';
-import '../widgets/tabs/records_tab.dart';
+import '../widgets/tabs/patient_details_tab.dart';
+import '../widgets/tabs/patient_overview_tab.dart';
+import '../widgets/tabs/patient_placeholder_tab.dart';
+import '../widgets/tabs/patient_records_tab.dart';
 
 /// Patient detail page with tabbed content.
 ///
@@ -128,13 +128,13 @@ class PatientDetailPage extends HookConsumerWidget {
           body: TabBarView(
             controller: tabController,
             children: [
-              OverviewTab(patient: patient),
-              DetailsTab(patient: patient),
-              RecordsTab(patient: patient),
-              const PlaceholderTab(title: 'Treatments', icon: Icons.healing),
-              const PlaceholderTab(
+              PatientOverviewTab(patient: patient),
+              PatientDetailsTab(patient: patient),
+              PatientRecordsTab(patient: patient),
+              const PatientPlaceholderTab(title: 'Treatments', icon: Icons.healing),
+              const PatientPlaceholderTab(
                   title: 'Appointments', icon: Icons.calendar_today),
-              const PlaceholderTab(title: 'Files', icon: Icons.folder),
+              const PatientPlaceholderTab(title: 'Files', icon: Icons.folder),
             ],
           ),
         );

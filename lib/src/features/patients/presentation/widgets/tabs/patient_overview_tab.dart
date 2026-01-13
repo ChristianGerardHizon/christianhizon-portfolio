@@ -6,8 +6,8 @@ import '../../../domain/patient.dart';
 ///
 /// This tab will be customizable to show a brief summary of the patient
 /// based on user preferences. Currently under development.
-class OverviewTab extends StatelessWidget {
-  const OverviewTab({super.key, required this.patient});
+class PatientOverviewTab extends StatelessWidget {
+  const PatientOverviewTab({super.key, required this.patient});
 
   final Patient patient;
 

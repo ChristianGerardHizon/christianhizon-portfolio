@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 /// Placeholder tab for unimplemented tab content.
-class PlaceholderTab extends StatelessWidget {
-  const PlaceholderTab({
+class PatientPlaceholderTab extends StatelessWidget {
+  const PatientPlaceholderTab({
     super.key,
     required this.title,
     required this.icon,

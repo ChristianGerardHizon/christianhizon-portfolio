@@ -7,8 +7,8 @@ import '../cards/record_card.dart';
 import '../sheets/add_record_sheet.dart';
 
 /// Records tab showing patient medical records/visits.
-class RecordsTab extends HookConsumerWidget {
-  const RecordsTab({super.key, required this.patient});
+class PatientRecordsTab extends HookConsumerWidget {
+  const PatientRecordsTab({super.key, required this.patient});
 
   final Patient patient;
 

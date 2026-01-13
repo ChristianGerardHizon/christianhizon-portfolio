@@ -6,8 +6,8 @@ import '../patient_avatar.dart';
 import '../sheets/edit_patient_sheet.dart';
 
 /// Details tab content showing comprehensive patient and owner information.
-class DetailsTab extends StatelessWidget {
-  const DetailsTab({super.key, required this.patient});
+class PatientDetailsTab extends StatelessWidget {
+  const PatientDetailsTab({super.key, required this.patient});
 
   final Patient patient;
 
