@@ -10,6 +10,7 @@ import '../routing/routes/products.routes.dart';
 import '../routing/routes/sales.routes.dart';
 import '../routing/routes/system.routes.dart';
 import '../utils/breakpoints.dart';
+import '../widgets/breadcrumb_nav.dart';
 import '../widgets/mobile_bottom_nav.dart';
 import '../widgets/mobile_drawer.dart';
 import '../widgets/tablet_nav_rail.dart';
@@ -127,12 +128,18 @@ class _AppRootState extends State<AppRoot> {
           // Main content area
           Expanded(
             child: Scaffold(
-              // appBar: AppBar(
-              //   title: Text(_getPageTitle(t, selectedIndex)),
-              // ),
               body: ColoredBox(
                 color: Theme.of(context).scaffoldBackgroundColor,
-                child: widget.child,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: BreadcrumbNav(),
+                    ),
+                    Expanded(child: widget.child),
+                  ],
+                ),
               ),
             ),
           ),
