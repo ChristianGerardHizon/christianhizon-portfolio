@@ -7,6 +7,7 @@ import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../domain/patient.dart';
 import '../../domain/patient_tab.dart';
+import '../controllers/patient_provider.dart';
 import '../controllers/patients_controller.dart';
 import '../widgets/sheets/edit_patient_sheet.dart';
 import '../widgets/tabs/details_tab.dart';

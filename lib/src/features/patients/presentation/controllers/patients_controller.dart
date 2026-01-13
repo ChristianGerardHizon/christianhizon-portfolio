@@ -15,7 +15,6 @@ class PatientsController extends _$PatientsController {
   @override
   Future<List<Patient>> build() async {
     final result = await _repository.fetchAll();
-
     return result.fold(
       (failure) => throw failure,
       (patients) => patients,
@@ -34,15 +33,15 @@ class PatientsController extends _$PatientsController {
     );
   }
 
-  /// Searches patients by name or owner.
-  Future<void> search(String query) async {
+  /// Searches patients by the specified fields.
+  Future<void> search(String query, {List<String>? fields}) async {
     if (query.isEmpty) {
       return refresh();
     }
 
     state = const AsyncLoading();
 
-    final result = await _repository.search(query);
+    final result = await _repository.search(query, fields: fields);
 
     state = result.fold(
       (failure) => AsyncError(failure, StackTrace.current),
@@ -97,32 +96,5 @@ class PatientsController extends _$PatientsController {
         return true;
       },
     );
-  }
-}
-
-/// Provider for a single patient by ID.
-@riverpod
-Future<Patient?> patient(Ref ref, String id) async {
-  final repository = ref.read(patientRepositoryProvider);
-  final result = await repository.fetchOne(id);
-
-  return result.fold(
-    (failure) => null,
-    (patient) => patient,
-  );
-}
-
-/// Provider for patient search query state.
-@riverpod
-class PatientSearchQuery extends _$PatientSearchQuery {
-  @override
-  String build() => '';
-
-  void setQuery(String query) {
-    state = query;
-  }
-
-  void clear() {
-    state = '';
   }
 }
