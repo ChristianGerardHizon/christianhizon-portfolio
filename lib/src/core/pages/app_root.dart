@@ -63,8 +63,21 @@ class _AppRootState extends State<AppRoot> {
   /// Gets the selected index based on current route location.
   int _getSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
+
+    // Try exact match first
     final index = _routePaths.indexOf(location);
-    return index >= 0 ? index : 0;
+    if (index >= 0) return index;
+
+    // For nested routes, check if location starts with any route path
+    // Skip index 0 ('/') to prevent matching everything
+    for (int i = 1; i < _routePaths.length; i++) {
+      if (location.startsWith(_routePaths[i])) {
+        return i;
+      }
+    }
+
+    // Fallback to dashboard
+    return 0;
   }
 
   void _onDestinationSelected(int index) {
