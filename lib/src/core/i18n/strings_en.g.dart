@@ -173,6 +173,9 @@ class TranslationsCommonEn {
 	/// en: 'Done'
 	String get done => 'Done';
 
+	/// en: 'Reset'
+	String get reset => 'Reset';
+
 	/// en: 'Next'
 	String get next => 'Next';
 
@@ -265,6 +268,30 @@ class TranslationsFieldsEn {
 
 	/// en: 'Name'
 	String get name => 'Name';
+
+	/// en: 'Owner'
+	String get owner => 'Owner';
+
+	/// en: 'Species'
+	String get species => 'Species';
+
+	/// en: 'Breed'
+	String get breed => 'Breed';
+
+	/// en: 'Contact Number'
+	String get contactNumber => 'Contact Number';
+
+	/// en: 'Address'
+	String get address => 'Address';
+
+	/// en: 'Search Fields'
+	String get searchFields => 'Search Fields';
+
+	/// en: 'Select which fields to include in your search'
+	String get searchFieldsHint => 'Select which fields to include in your search';
+
+	/// en: 'Required'
+	String get requiredField => 'Required';
 }
 
 // Path: navigation
@@ -414,6 +441,7 @@ extension on Translations {
 			'common.no' => 'No',
 			'common.ok' => 'OK',
 			'common.done' => 'Done',
+			'common.reset' => 'Reset',
 			'common.next' => 'Next',
 			'common.previous' => 'Previous',
 			'common.back' => 'Back',
@@ -439,6 +467,14 @@ extension on Translations {
 			'fields.password' => 'Password',
 			'fields.passwordConfirmation' => 'Password confirmation',
 			'fields.name' => 'Name',
+			'fields.owner' => 'Owner',
+			'fields.species' => 'Species',
+			'fields.breed' => 'Breed',
+			'fields.contactNumber' => 'Contact Number',
+			'fields.address' => 'Address',
+			'fields.searchFields' => 'Search Fields',
+			'fields.searchFieldsHint' => 'Select which fields to include in your search',
+			'fields.requiredField' => 'Required',
 			'navigation.dashboard' => 'Dashboard',
 			'navigation.patients' => 'Patients',
 			'navigation.appointments' => 'Appts',

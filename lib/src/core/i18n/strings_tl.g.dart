@@ -102,6 +102,7 @@ class _TranslationsCommonTl implements TranslationsCommonEn {
 	@override String get no => 'Hindi';
 	@override String get ok => 'OK';
 	@override String get done => 'Tapos na';
+	@override String get reset => 'I-reset';
 	@override String get next => 'Susunod';
 	@override String get previous => 'Nakaraan';
 	@override String get back => 'Bumalik';
@@ -144,7 +145,15 @@ class _TranslationsFieldsTl implements TranslationsFieldsEn {
 	@override String get email => 'Email';
 	@override String get password => 'Password';
 	@override String get passwordConfirmation => 'Password confirmation';
-	@override String get name => 'Name';
+	@override String get name => 'Pangalan';
+	@override String get owner => 'May-ari';
+	@override String get species => 'Uri ng Hayop';
+	@override String get breed => 'Lahi';
+	@override String get contactNumber => 'Contact Number';
+	@override String get address => 'Address';
+	@override String get searchFields => 'Mga Field na Hahanapin';
+	@override String get searchFieldsHint => 'Piliin kung aling mga field ang isasama sa iyong paghahanap';
+	@override String get requiredField => 'Kinakailangan';
 }
 
 // Path: navigation
@@ -238,6 +247,7 @@ extension on TranslationsTl {
 			'common.no' => 'Hindi',
 			'common.ok' => 'OK',
 			'common.done' => 'Tapos na',
+			'common.reset' => 'I-reset',
 			'common.next' => 'Susunod',
 			'common.previous' => 'Nakaraan',
 			'common.back' => 'Bumalik',
@@ -262,7 +272,15 @@ extension on TranslationsTl {
 			'fields.email' => 'Email',
 			'fields.password' => 'Password',
 			'fields.passwordConfirmation' => 'Password confirmation',
-			'fields.name' => 'Name',
+			'fields.name' => 'Pangalan',
+			'fields.owner' => 'May-ari',
+			'fields.species' => 'Uri ng Hayop',
+			'fields.breed' => 'Lahi',
+			'fields.contactNumber' => 'Contact Number',
+			'fields.address' => 'Address',
+			'fields.searchFields' => 'Mga Field na Hahanapin',
+			'fields.searchFieldsHint' => 'Piliin kung aling mga field ang isasama sa iyong paghahanap',
+			'fields.requiredField' => 'Kinakailangan',
 			'navigation.dashboard' => 'Dashboard',
 			'navigation.patients' => 'Mga Pasyente',
 			'navigation.appointments' => 'Appts',

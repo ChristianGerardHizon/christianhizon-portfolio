@@ -2,5 +2,13 @@
     "email": "Email",
     "password": "Password",
     "passwordConfirmation": "Password confirmation",
-    "name": "Name"
+    "name": "Pangalan",
+    "owner": "May-ari",
+    "species": "Uri ng Hayop",
+    "breed": "Lahi",
+    "contactNumber": "Contact Number",
+    "address": "Address",
+    "searchFields": "Mga Field na Hahanapin",
+    "searchFieldsHint": "Piliin kung aling mga field ang isasama sa iyong paghahanap",
+    "requiredField": "Kinakailangan"
 }
