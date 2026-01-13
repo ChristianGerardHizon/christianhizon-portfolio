@@ -160,6 +160,7 @@ class PatientDetailPage extends HookConsumerWidget {
 
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       builder: (context) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
