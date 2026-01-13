@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/patient.dart';
+import '../patient_avatar.dart';
 
 /// Details tab content showing patient and owner information.
 class DetailsTab extends StatelessWidget {
@@ -23,18 +24,9 @@ class DetailsTab extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  CircleAvatar(
+                  PatientAvatar(
+                    patient: patient,
                     radius: 40,
-                    backgroundColor: patient.species == 'Dog'
-                        ? theme.colorScheme.primaryContainer
-                        : theme.colorScheme.tertiaryContainer,
-                    child: Icon(
-                      patient.species == 'Dog' ? Icons.pets : Icons.catching_pokemon,
-                      size: 40,
-                      color: patient.species == 'Dog'
-                          ? theme.colorScheme.primary
-                          : theme.colorScheme.tertiary,
-                    ),
                   ),
                   const SizedBox(width: 24),
                   Expanded(

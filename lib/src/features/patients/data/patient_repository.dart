@@ -31,6 +31,9 @@ abstract class PatientRepository {
 
   /// Searches patients by the specified fields.
   FutureEither<List<Patient>> search(String query, {List<String>? fields});
+
+  /// Invalidates the patient list cache.
+  void invalidateCache();
 }
 
 /// Provides the PatientRepository instance.
@@ -49,6 +52,31 @@ class PatientRepositoryImpl implements PatientRepository {
       _pb.collection(PocketBaseCollections.patients);
   String get _expand => 'species,breed';
 
+  // Cache for patient list
+  List<Patient>? _cachedPatients;
+  DateTime? _cacheTimestamp;
+  String? _cachedFilter;
+  String? _cachedSort;
+
+  // Cache TTL (5 minutes)
+  static const _cacheTtl = Duration(minutes: 5);
+
+  /// Checks if the cache is valid.
+  bool _isCacheValid(String? filter, String? sort) {
+    if (_cachedPatients == null || _cacheTimestamp == null) return false;
+    if (_cachedFilter != filter || _cachedSort != sort) return false;
+    return DateTime.now().difference(_cacheTimestamp!) < _cacheTtl;
+  }
+
+  /// Invalidates the cache.
+  @override
+  void invalidateCache() {
+    _cachedPatients = null;
+    _cacheTimestamp = null;
+    _cachedFilter = null;
+    _cachedSort = null;
+  }
+
   Patient _toEntity(RecordModel record) {
     final dto = PatientDto.fromRecord(record);
     return dto.toEntity(baseUrl: _pb.baseURL);
@@ -56,6 +84,11 @@ class PatientRepositoryImpl implements PatientRepository {
 
   @override
   FutureEither<List<Patient>> fetchAll({String? filter, String? sort}) async {
+    // Return cached data if valid
+    if (_isCacheValid(filter, sort)) {
+      return Right(_cachedPatients!);
+    }
+
     return TaskEither.tryCatch(
       () async {
         final baseFilter = PBFilters.active.build();
@@ -68,7 +101,15 @@ class PatientRepositoryImpl implements PatientRepository {
           sort: sort ?? '-created',
         );
 
-        return records.map(_toEntity).toList();
+        final patients = records.map(_toEntity).toList();
+
+        // Update cache
+        _cachedPatients = patients;
+        _cacheTimestamp = DateTime.now();
+        _cachedFilter = filter;
+        _cachedSort = sort;
+
+        return patients;
       },
       Failure.handle,
     ).run();
@@ -113,6 +154,7 @@ class PatientRepositoryImpl implements PatientRepository {
         };
 
         final record = await _collection.create(body: body, expand: _expand);
+        invalidateCache(); // Invalidate cache on create
         return _toEntity(record);
       },
       Failure.handle,
@@ -139,6 +181,7 @@ class PatientRepositoryImpl implements PatientRepository {
 
         final record =
             await _collection.update(patient.id, body: body, expand: _expand);
+        invalidateCache(); // Invalidate cache on update
         return _toEntity(record);
       },
       Failure.handle,
@@ -150,6 +193,7 @@ class PatientRepositoryImpl implements PatientRepository {
     return TaskEither.tryCatch(
       () async {
         await _collection.update(id, body: {'isDeleted': true});
+        invalidateCache(); // Invalidate cache on delete
       },
       Failure.handle,
     ).run();

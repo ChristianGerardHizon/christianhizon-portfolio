@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../domain/patient.dart';
+import '../patient_avatar.dart';
 
 /// Overview tab showing a customizable brief summary of the patient.
 ///
@@ -21,7 +23,7 @@ class OverviewTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Main patient card with avatar and key info
-          _buildPatientCard(theme),
+          _buildPatientCard(context, theme),
           const SizedBox(height: 16),
 
           // Quick info chips
@@ -39,14 +41,14 @@ class OverviewTab extends StatelessWidget {
     );
   }
 
-  Widget _buildPatientCard(ThemeData theme) {
+  Widget _buildPatientCard(BuildContext context, ThemeData theme) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Row(
           children: [
             // Avatar
-            _buildAvatar(theme, radius: 48),
+            _buildAvatar(context, theme, radius: 48),
             const SizedBox(width: 20),
             // Info
             Expanded(
@@ -84,24 +86,79 @@ class OverviewTab extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatar(ThemeData theme, {double radius = 36}) {
-    if (patient.hasAvatar) {
-      return CircleAvatar(
-        radius: radius,
-        backgroundImage: NetworkImage(patient.avatar!),
-      );
-    }
-
-    final isDog = patient.species?.toLowerCase() == 'dog';
-    return CircleAvatar(
+  Widget _buildAvatar(BuildContext context, ThemeData theme, {double radius = 36}) {
+    return PatientAvatar(
+      patient: patient,
       radius: radius,
-      backgroundColor: isDog
-          ? theme.colorScheme.primaryContainer
-          : theme.colorScheme.tertiaryContainer,
-      child: Icon(
-        isDog ? Icons.pets : Icons.catching_pokemon,
-        size: radius,
-        color: isDog ? theme.colorScheme.primary : theme.colorScheme.tertiary,
+      onTap: patient.hasAvatar ? () => _showImageViewer(context, patient.avatar!) : null,
+    );
+  }
+
+  void _showImageViewer(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(16),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: InteractiveViewer(
+                minScale: 0.5,
+                maxScale: 4.0,
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.contain,
+                  placeholder: (context, url) => Center(
+                    child: Icon(
+                      Icons.pets,
+                      size: 64,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    padding: const EdgeInsets.all(32),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.errorContainer,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.broken_image,
+                          size: 48,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Failed to load image',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onErrorContainer,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: IconButton.filled(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.black54,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

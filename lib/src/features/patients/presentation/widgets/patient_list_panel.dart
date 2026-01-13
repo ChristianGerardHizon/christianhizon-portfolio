@@ -6,6 +6,7 @@ import '../../../../core/i18n/strings.g.dart';
 import '../../domain/patient.dart';
 import '../controllers/patient_search_controller.dart';
 import '../controllers/patients_controller.dart';
+import 'patient_avatar.dart';
 import 'sheets/search_fields_sheet.dart';
 
 /// Patient list panel with search header.
@@ -120,19 +121,7 @@ class PatientListPanel extends HookConsumerWidget {
                   final isSelected = patient.id == selectedId;
 
                   return ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: patient.species == 'Dog'
-                          ? theme.colorScheme.primaryContainer
-                          : theme.colorScheme.tertiaryContainer,
-                      child: Icon(
-                        patient.species == 'Dog'
-                            ? Icons.pets
-                            : Icons.catching_pokemon,
-                        color: patient.species == 'Dog'
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.tertiary,
-                      ),
-                    ),
+                    leading: PatientAvatar(patient: patient),
                     title: Text(
                       patient.name,
                       style: TextStyle(
