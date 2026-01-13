@@ -66,6 +66,29 @@ dart format lib/
 - AsyncNotifier for async state with loading/error handling
 - Controllers extend `AsyncNotifier<T>` or use `Notifier<T>`
 
+### Widget Patterns
+- **Always use `HookConsumerWidget`** for widgets that need Riverpod and/or local state
+- Use **flutter_hooks** for local state management (`useState`, `useEffect`, `useMemoized`, etc.)
+- Use **fpdart** for functional programming patterns (`Either`, `Option`, `Task`, etc.)
+- Prefer hooks over `StatefulWidget` for cleaner, more composable code
+- Example:
+  ```dart
+  class MyWidget extends HookConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      final counter = useState(0);
+      final data = ref.watch(myProvider);
+
+      useEffect(() {
+        // Side effect on mount
+        return () { /* cleanup */ };
+      }, []);
+
+      return Text('${counter.value}');
+    }
+  }
+  ```
+
 ### Controller Naming (Singular vs Plural)
 - **IMPORTANT:** Use singular/plural names consistently based on what the controller manages:
   - **Plural** (`PatientsController`) - Manages a **list** of entities (e.g., `List<Patient>`)
