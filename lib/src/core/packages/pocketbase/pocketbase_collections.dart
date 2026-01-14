@@ -5,20 +5,20 @@
 abstract class PocketBaseCollections {
   // Authentication
   static const String users = 'users';
-  static const String userRoles = 'user_roles';
+  static const String userRoles = 'userRoles';
 
   // Organization
   static const String branches = 'branches';
 
   // Patients
   static const String patients = 'patients';
-  static const String patientSpecies = 'patient_species';
-  static const String patientBreeds = 'patient_breeds';
-  static const String patientRecords = 'patient_records';
-  static const String patientFiles = 'patient_files';
-  static const String patientTreatments = 'patient_treatments';
-  static const String patientTreatmentRecords = 'patient_treatment_records';
-  static const String patientPrescriptionItems = 'patient_prescription_items';
+  static const String patientSpecies = 'patientSpecies';
+  static const String patientBreeds = 'patientBreeds';
+  static const String patientRecords = 'patientRecords';
+  static const String patientFiles = 'patientFiles';
+  static const String patientTreatments = 'patientTreatments';
+  static const String patientTreatmentRecords = 'patientTreatmentRecords';
+  static const String patientPrescriptionItems = 'patientPrescriptionItems';
 
   // Products
   static const String products = 'products';
