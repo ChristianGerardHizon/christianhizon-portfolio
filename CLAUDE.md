@@ -96,8 +96,15 @@ dart format lib/
 - Examples:
   - `PatientsController` → `patientsControllerProvider` → returns `List<Patient>`
   - `patient(id)` → `patientProvider(id)` → returns `Patient?`
-  - `PatientRecordController(patientId)` → `patientRecordControllerProvider(patientId)` → returns `List<PatientRecord>`
+  - `PatientRecordsController(patientId)` → `patientRecordsControllerProvider(patientId)` → returns `List<PatientRecord>`
   - `patientRecord(id)` → `patientRecordProvider(id)` → returns `PatientRecord?`
+
+### Provider File Setup
+- Keep list controllers and single-entity providers in separate files.
+- File names should match singular/plural intent:
+  - `*_records_controller.dart` or `*_controller.dart` for list controllers
+  - `*_record_provider.dart` or `*_provider.dart` for single-entity providers
+- Each provider file has its own `part '...g.dart';` and must be regenerated when renaming files.
 
 ### Routing
 - Routes defined in `lib/src/core/routing/`
