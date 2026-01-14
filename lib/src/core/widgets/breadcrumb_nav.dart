@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 
 import '../i18n/strings.g.dart';
 import '../routing/routes/appointments.routes.dart';
-import '../routing/routes/dashboard.routes.dart';
 import '../routing/routes/organization.routes.dart';
 import '../routing/routes/patients.routes.dart';
 import '../routing/routes/products.routes.dart';
@@ -43,7 +42,8 @@ class BreadcrumbNav extends StatelessWidget {
         children: [
           for (int i = 0; i < items.length; i++) ...[
             if (i > 0) _buildSeparator(context),
-            _buildBreadcrumbItem(context, items[i], isLast: i == items.length - 1),
+            _buildBreadcrumbItem(context, items[i],
+                isLast: i == items.length - 1),
           ],
         ],
       ),
@@ -96,7 +96,8 @@ class BreadcrumbNav extends StatelessWidget {
   }
 
   /// Builds breadcrumb items from the current router state.
-  List<BreadcrumbItem> _buildBreadcrumbs(BuildContext context, GoRouterState state) {
+  List<BreadcrumbItem> _buildBreadcrumbs(
+      BuildContext context, GoRouterState state) {
     final t = Translations.of(context);
     final location = state.uri.path;
     final pathParameters = state.pathParameters;
