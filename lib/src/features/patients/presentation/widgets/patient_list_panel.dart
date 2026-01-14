@@ -7,6 +7,7 @@ import '../../domain/patient.dart';
 import '../controllers/patient_search_controller.dart';
 import '../controllers/patients_controller.dart';
 import 'patient_avatar.dart';
+import 'sheets/create_patient_sheet.dart';
 import 'sheets/search_fields_sheet.dart';
 
 /// Patient list panel with search header.
@@ -64,6 +65,11 @@ class PatientListPanel extends HookConsumerWidget {
     }
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showCreatePatientSheet(context),
+        tooltip: 'Add Patient',
+        child: const Icon(Icons.add),
+      ),
       body: Column(
         children: [
           // Header

@@ -113,16 +113,90 @@ dart format lib/
 - **IMPORTANT:** Always use generated route extensions instead of manual navigation
   - Prefer: `const PatientsRoute().go(context)` or `PatientDetailRoute(id: patientId).go(context)`
   - Avoid: `context.push('/patients')` or `context.go('/patients/$patientId')`
+- **IMPORTANT:** Use `context.pop()` instead of `Navigator.pop(context)` for consistency with GoRouter
 
 ### Models
 - Use `@MappableClass()` decorator from dart_mappable
 - Extend `PBObject` for PocketBase models
 - Include `collectionName` static constant
 
-### Forms
-- Use `FormBuilderTextField`, `FormBuilderDropdown`, etc.
-- Wrap forms in `FormBuilder` widget
-- Access form state via `FormBuilder.of(context)`
+### Forms (flutter_form_builder)
+- **Always use flutter_form_builder** for forms instead of raw TextField/DropdownMenu widgets
+- Wrap forms in `FormBuilder` widget with a `GlobalKey<FormBuilderState>`
+- Use form builder widgets: `FormBuilderTextField`, `FormBuilderDropdown`, `FormBuilderDateTimePicker`, `FormBuilderSegmentedControl`, etc.
+- Access field values via `_formKey.currentState?.fields['fieldName']?.value`
+- Validate with `_formKey.currentState?.saveAndValidate()`
+
+**Example pattern:**
+```dart
+class MyFormSheet extends HookConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final isSaving = useState(false);
+
+    Future<void> handleSave() async {
+      if (!formKey.currentState!.saveAndValidate()) return;
+
+      final values = formKey.currentState!.value;
+      // values is Map<String, dynamic> with all field values
+      final name = values['name'] as String?;
+      // ...
+    }
+
+    return FormBuilder(
+      key: formKey,
+      child: Column(
+        children: [
+          FormBuilderTextField(
+            name: 'name',
+            decoration: const InputDecoration(labelText: 'Name *'),
+            validator: FormBuilderValidators.required(),
+          ),
+          FormBuilderDropdown<String>(
+            name: 'species',
+            decoration: const InputDecoration(labelText: 'Species'),
+            items: speciesList.map((s) =>
+              DropdownMenuItem(value: s.id, child: Text(s.name))
+            ).toList(),
+          ),
+          FormBuilderDateTimePicker(
+            name: 'dateOfBirth',
+            decoration: const InputDecoration(labelText: 'Date of Birth'),
+            inputType: InputType.date,
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+**Key widgets:**
+- `FormBuilderTextField` - Text input with validation
+- `FormBuilderDropdown<T>` - Dropdown selection
+- `FormBuilderDateTimePicker` - Date/time picker
+- `FormBuilderChoiceChips<T>` - Choice chips for single selection
+- `FormBuilderRadioGroup<T>` - Radio button group
+- `FormBuilderCheckbox` - Single checkbox
+- `FormBuilderSwitch` - Toggle switch
+- `FormBuilderFilterChips<T>` - Filter chips for multi-selection
+
+**Validation:**
+- Use `FormBuilderValidators` from `form_builder_validators` package
+- Common validators: `.required()`, `.email()`, `.numeric()`, `.minLength()`, `.maxLength()`
+- Compose validators: `FormBuilderValidators.compose([...])`
+
+**Listening to field changes:**
+```dart
+FormBuilderTextField(
+  name: 'species',
+  onChanged: (value) {
+    // React to changes, e.g., clear dependent fields
+    formKey.currentState?.fields['breed']?.didChange(null);
+  },
+)
+```
 
 ### Error Handling
 - Use `Failure` class from `core/foundation/failure.dart`
