@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../domain/patient.dart';
 import '../../domain/patient_record.dart';
 import '../controllers/patient_provider.dart';
-import '../controllers/patient_record_controller.dart';
+import '../controllers/patient_record_provider.dart';
 import '../widgets/sections/prescriptions_section.dart';
 
 /// Full-screen page showing record details.

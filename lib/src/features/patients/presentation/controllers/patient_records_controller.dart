@@ -3,13 +3,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../data/repositories/patient_record_repository.dart';
 import '../../domain/patient_record.dart';
 
-part 'patient_record_controller.g.dart';
+part 'patient_records_controller.g.dart';
 
 /// Controller for managing patient records for a specific patient.
 ///
 /// This is a family provider - each patient has its own record list state.
 @riverpod
-class PatientRecordController extends _$PatientRecordController {
+class PatientRecordsController extends _$PatientRecordsController {
   PatientRecordRepository get _repository =>
       ref.read(patientRecordRepositoryProvider);
 
@@ -84,16 +84,4 @@ class PatientRecordController extends _$PatientRecordController {
       },
     );
   }
-}
-
-/// Provider for a single patient record by ID.
-@riverpod
-Future<PatientRecord?> patientRecord(Ref ref, String id) async {
-  final repository = ref.read(patientRecordRepositoryProvider);
-  final result = await repository.fetchOne(id);
-
-  return result.fold(
-    (failure) => null,
-    (record) => record,
-  );
 }

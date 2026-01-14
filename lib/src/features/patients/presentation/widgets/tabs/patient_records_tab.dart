@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../domain/patient.dart';
-import '../../controllers/patient_record_controller.dart';
+import '../../controllers/patient_records_controller.dart';
 import '../cards/record_card.dart';
 import '../sheets/add_record_sheet.dart';
 
@@ -14,7 +14,8 @@ class PatientRecordsTab extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final recordsAsync = ref.watch(patientRecordControllerProvider(patient.id));
+    final recordsAsync =
+        ref.watch(patientRecordsControllerProvider(patient.id));
     final theme = Theme.of(context);
 
     return recordsAsync.when(
@@ -34,7 +35,7 @@ class PatientRecordsTab extends HookConsumerWidget {
             const SizedBox(height: 8),
             FilledButton.icon(
               onPressed: () => ref
-                  .read(patientRecordControllerProvider(patient.id).notifier)
+                  .read(patientRecordsControllerProvider(patient.id).notifier)
                   .refresh(),
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),
@@ -91,7 +92,7 @@ class PatientRecordsTab extends HookConsumerWidget {
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () => ref
-                    .read(patientRecordControllerProvider(patient.id).notifier)
+                    .read(patientRecordsControllerProvider(patient.id).notifier)
                     .refresh(),
                 child: ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -126,7 +127,7 @@ class PatientRecordsTab extends HookConsumerWidget {
         patientId: patient.id,
         onSave: (record) async {
           final success = await ref
-              .read(patientRecordControllerProvider(patient.id).notifier)
+              .read(patientRecordsControllerProvider(patient.id).notifier)
               .createRecord(record);
           return success;
         },
