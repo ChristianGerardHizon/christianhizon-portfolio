@@ -1,12 +1,16 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../domain/prescription.dart';
 import '../../controllers/prescription_controller.dart';
 import '../cards/prescription_card.dart';
+import '../sheets/add_prescription_group_sheet.dart';
 import '../sheets/add_prescription_sheet.dart';
 
-/// Section displaying prescriptions for a record.
+/// Section displaying prescriptions for a record, grouped by date.
 class PrescriptionsSection extends ConsumerWidget {
   const PrescriptionsSection({
     super.key,
@@ -14,6 +18,36 @@ class PrescriptionsSection extends ConsumerWidget {
   });
 
   final String recordId;
+
+  /// Groups prescriptions by date and returns a sorted map (newest first).
+  Map<DateTime, List<Prescription>> _groupByDate(List<Prescription> prescriptions) {
+    final grouped = groupBy<Prescription, DateTime>(
+      prescriptions,
+      (p) {
+        final date = p.date ?? p.created ?? DateTime.now();
+        // Normalize to date only (no time component)
+        return DateTime(date.year, date.month, date.day);
+      },
+    );
+
+    // Sort by date descending (newest first)
+    final sortedKeys = grouped.keys.toList()..sort((a, b) => b.compareTo(a));
+    return {for (final key in sortedKeys) key: grouped[key]!};
+  }
+
+  String _formatDateHeader(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+
+    if (date == today) {
+      return 'Today';
+    } else if (date == yesterday) {
+      return 'Yesterday';
+    } else {
+      return DateFormat('MMMM d, yyyy').format(date);
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,6 +64,12 @@ class PrescriptionsSection extends ConsumerWidget {
             const SizedBox(width: 8),
             Text('Prescriptions', style: theme.textTheme.titleMedium),
             const Spacer(),
+            OutlinedButton.icon(
+              onPressed: () => _handleAddPrescriptionGroup(context, ref),
+              icon: const Icon(Icons.playlist_add, size: 18),
+              label: const Text('Add Group'),
+            ),
+            const SizedBox(width: 8),
             FilledButton.icon(
               onPressed: () => _handleAddPrescription(context, ref),
               icon: const Icon(Icons.add, size: 18),
@@ -83,19 +123,35 @@ class PrescriptionsSection extends ConsumerWidget {
               );
             }
 
-            return ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: prescriptions.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final prescription = prescriptions[index];
-                return PrescriptionCard(
-                  prescription: prescription,
-                  onEdit: () => _handleEditPrescription(context, ref, prescription),
-                  onDelete: () => _handleDeletePrescription(context, ref, prescription),
+            final groupedPrescriptions = _groupByDate(prescriptions);
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: groupedPrescriptions.entries.map((entry) {
+                final date = entry.key;
+                final datePrescriptions = entry.value;
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Date header
+                    _DateHeader(date: _formatDateHeader(date)),
+                    const SizedBox(height: 8),
+                    // Prescriptions for this date
+                    ...datePrescriptions.map(
+                      (prescription) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: PrescriptionCard(
+                          prescription: prescription,
+                          onEdit: () => _handleEditPrescription(context, ref, prescription),
+                          onDelete: () => _handleDeletePrescription(context, ref, prescription),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
                 );
-              },
+              }).toList(),
             );
           },
         ),
@@ -105,6 +161,18 @@ class PrescriptionsSection extends ConsumerWidget {
 
   void _handleAddPrescription(BuildContext context, WidgetRef ref) {
     showPrescriptionSheet(
+      context,
+      recordId: recordId,
+      onSave: (prescription) async {
+        return await ref
+            .read(prescriptionControllerProvider(recordId).notifier)
+            .createPrescription(prescription);
+      },
+    );
+  }
+
+  void _handleAddPrescriptionGroup(BuildContext context, WidgetRef ref) {
+    showPrescriptionGroupSheet(
       context,
       recordId: recordId,
       onSave: (prescription) async {
@@ -144,11 +212,11 @@ class PrescriptionsSection extends ConsumerWidget {
         content: Text('Are you sure you want to delete ${prescription.medication}?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => context.pop(false),
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => context.pop(true),
             child: const Text('Delete'),
           ),
         ],
@@ -215,6 +283,42 @@ class _EmptyState extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Date header for grouping prescriptions.
+class _DateHeader extends StatelessWidget {
+  const _DateHeader({required this.date});
+
+  final String date;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      children: [
+        Icon(
+          Icons.calendar_today,
+          size: 16,
+          color: theme.colorScheme.primary,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          date,
+          style: theme.textTheme.titleSmall?.copyWith(
+            color: theme.colorScheme.primary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Divider(
+            color: theme.colorScheme.outlineVariant,
+          ),
+        ),
+      ],
     );
   }
 }
