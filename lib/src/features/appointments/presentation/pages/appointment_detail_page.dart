@@ -169,38 +169,39 @@ class _AppointmentDetailContent extends ConsumerWidget {
             ],
 
             // Linked Items Section
-            _SectionCard(
-              title: 'Linked Items',
-              icon: Icons.link,
-              child: LinkedItemsSection(
-                patientRecords: appointment.patientRecordsExpanded,
-                treatmentRecords: appointment.treatmentRecordsExpanded,
-                showActions: true,
-                onAddRecordPressed: () {
-                  // TODO: Implement create record
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Create record functionality coming soon'),
-                    ),
-                  );
-                },
-                onAddTreatmentPressed: () {
-                  // TODO: Implement create treatment
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content:
-                          Text('Create treatment functionality coming soon'),
-                    ),
-                  );
-                },
-                onLinkExistingPressed: () {
-                  // TODO: Implement link existing
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Link existing functionality coming soon'),
-                    ),
-                  );
-                },
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: LinkedItemsSection(
+                  patientRecords: appointment.patientRecordsExpanded,
+                  treatmentRecords: appointment.treatmentRecordsExpanded,
+                  showActions: true,
+                  onAddRecordPressed: () {
+                    // TODO: Implement create record
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Create record functionality coming soon'),
+                      ),
+                    );
+                  },
+                  onAddTreatmentPressed: () {
+                    // TODO: Implement create treatment
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content:
+                            Text('Create treatment functionality coming soon'),
+                      ),
+                    );
+                  },
+                  onLinkExistingPressed: () {
+                    // TODO: Implement link existing
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Link existing functionality coming soon'),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 24),
