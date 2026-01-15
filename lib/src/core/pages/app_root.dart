@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../i18n/strings.g.dart';
 import '../routing/routes/appointments.routes.dart';
 import '../routing/routes/dashboard.routes.dart';
 import '../routing/routes/organization.routes.dart';
@@ -102,7 +101,6 @@ class _AppRootState extends State<AppRoot> {
   }
 
   Widget _buildMobileLayout(BuildContext context) {
-    final t = Translations.of(context);
     final selectedIndex = _getSelectedIndex(context);
 
     return Scaffold(
@@ -124,7 +122,6 @@ class _AppRootState extends State<AppRoot> {
   }
 
   Widget _buildTabletLayout(BuildContext context) {
-    final t = Translations.of(context);
     final selectedIndex = _getSelectedIndex(context);
 
     return Scaffold(

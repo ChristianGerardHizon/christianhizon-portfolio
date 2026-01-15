@@ -30,7 +30,6 @@ class MobileBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Translations.of(context);
-    final theme = Theme.of(context);
     return NavigationBar(
       selectedIndex: selectedIndex < 4 ? selectedIndex : 4,
       labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,

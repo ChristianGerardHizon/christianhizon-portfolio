@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../core/foundation/paginated_state.dart';
 import '../../../../appointments/domain/appointment_schedule.dart';
 import '../../../../appointments/presentation/controllers/patient_appointments_controller.dart';
 import '../../../domain/patient.dart';
@@ -21,7 +22,6 @@ class PatientOverviewTab extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final appointmentsAsync =
         ref.watch(patientAppointmentsControllerProvider(patient.id));
     final recordsAsync =
@@ -45,7 +45,7 @@ class PatientOverviewTab extends HookConsumerWidget {
 
   Widget _buildUpcomingAppointmentsCard(
     BuildContext context,
-    AsyncValue<List<AppointmentSchedule>> appointmentsAsync,
+    AsyncValue<PaginatedState<AppointmentSchedule>> appointmentsAsync,
   ) {
     final theme = Theme.of(context);
 
@@ -84,8 +84,8 @@ class PatientOverviewTab extends HookConsumerWidget {
                 'Error loading appointments',
                 style: TextStyle(color: theme.colorScheme.error),
               ),
-              data: (appointments) {
-                final upcoming = appointments
+              data: (paginatedState) {
+                final upcoming = paginatedState.items
                     .where((a) =>
                         a.date.isAfter(DateTime.now()) &&
                         a.status == AppointmentScheduleStatus.scheduled)

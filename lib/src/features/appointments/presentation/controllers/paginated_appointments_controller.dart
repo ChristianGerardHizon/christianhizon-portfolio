@@ -5,20 +5,17 @@ import '../../../../core/foundation/paginated_state.dart';
 import '../../data/repositories/appointment_schedule_repository.dart';
 import '../../domain/appointment_schedule.dart';
 
-part 'patient_appointments_controller.g.dart';
+part 'paginated_appointments_controller.g.dart';
 
-/// Controller for managing paginated appointments for a specific patient.
-///
-/// Uses a family provider pattern to maintain separate state per patient.
-@riverpod
-class PatientAppointmentsController extends _$PatientAppointmentsController {
+/// Controller for managing paginated appointments list.
+@Riverpod(keepAlive: true)
+class PaginatedAppointmentsController extends _$PaginatedAppointmentsController {
   AppointmentScheduleRepository get _repository =>
       ref.read(appointmentScheduleRepositoryProvider);
 
   @override
-  Future<PaginatedState<AppointmentSchedule>> build(String patientId) async {
-    final result = await _repository.fetchByPatientPaginated(
-      patientId,
+  Future<PaginatedState<AppointmentSchedule>> build() async {
+    final result = await _repository.fetchPaginated(
       page: 1,
       perPage: Pagination.defaultPageSize,
     );
@@ -44,17 +41,18 @@ class PatientAppointmentsController extends _$PatientAppointmentsController {
       return;
     }
 
+    // Set loading more state
     state = AsyncValue.data(currentState.copyWith(isLoadingMore: true));
 
     final nextPage = currentState.currentPage + 1;
-    final result = await _repository.fetchByPatientPaginated(
-      patientId,
+    final result = await _repository.fetchPaginated(
       page: nextPage,
       perPage: Pagination.defaultPageSize,
     );
 
     result.fold(
       (failure) {
+        // Reset loading state on error
         state = AsyncValue.data(currentState.copyWith(isLoadingMore: false));
       },
       (paginated) {
@@ -70,29 +68,28 @@ class PatientAppointmentsController extends _$PatientAppointmentsController {
     );
   }
 
-  /// Refreshes the appointments list for this patient.
+  /// Refreshes the list from the beginning.
   Future<void> refresh() async {
     state = const AsyncValue.loading();
-
-    final result = await _repository.fetchByPatientPaginated(
-      patientId,
-      page: 1,
-      perPage: Pagination.defaultPageSize,
-    );
-
-    state = result.fold(
-      (failure) => AsyncError(failure, StackTrace.current),
-      (paginated) => AsyncData(PaginatedState<AppointmentSchedule>(
-        items: paginated.items,
-        currentPage: paginated.page,
-        totalItems: paginated.totalItems,
-        totalPages: paginated.totalPages,
-        hasReachedEnd: !paginated.hasMore,
-      )),
-    );
+    state = await AsyncValue.guard(() async {
+      final result = await _repository.fetchPaginated(
+        page: 1,
+        perPage: Pagination.defaultPageSize,
+      );
+      return result.fold(
+        (failure) => throw failure,
+        (paginated) => PaginatedState<AppointmentSchedule>(
+          items: paginated.items,
+          currentPage: paginated.page,
+          totalItems: paginated.totalItems,
+          totalPages: paginated.totalPages,
+          hasReachedEnd: !paginated.hasMore,
+        ),
+      );
+    });
   }
 
-  /// Creates a new appointment for this patient.
+  /// Creates a new appointment and adds it to the top of the list.
   Future<bool> createAppointment(AppointmentSchedule appointment) async {
     final result = await _repository.create(appointment);
     return result.fold(
@@ -106,10 +103,7 @@ class PatientAppointmentsController extends _$PatientAppointmentsController {
     );
   }
 
-  /// Creates a new appointment for this patient and returns it.
-  ///
-  /// Returns the created appointment on success, or null on failure.
-  /// This is useful when the caller needs the created appointment's ID.
+  /// Creates appointment and returns it.
   Future<AppointmentSchedule?> createAppointmentAndReturn(
     AppointmentSchedule appointment,
   ) async {
@@ -157,7 +151,7 @@ class PatientAppointmentsController extends _$PatientAppointmentsController {
     );
   }
 
-  /// Deletes an appointment (soft delete).
+  /// Deletes an appointment.
   Future<bool> deleteAppointment(String id) async {
     final result = await _repository.delete(id);
     return result.fold(
