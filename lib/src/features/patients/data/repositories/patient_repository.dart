@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:http/http.dart' as http;
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -31,6 +32,9 @@ abstract class PatientRepository {
 
   /// Searches patients by the specified fields.
   FutureEither<List<Patient>> search(String query, {List<String>? fields});
+
+  /// Updates a patient's avatar image.
+  FutureEither<Patient> updateAvatar(String id, http.MultipartFile file);
 
   /// Invalidates the patient list cache.
   void invalidateCache();
@@ -219,6 +223,22 @@ class PatientRepositoryImpl implements PatientRepository {
         );
 
         return records.map(_toEntity).toList();
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<Patient> updateAvatar(String id, http.MultipartFile file) async {
+    return TaskEither.tryCatch(
+      () async {
+        final record = await _collection.update(
+          id,
+          files: [file],
+          expand: _expand,
+        );
+        invalidateCache();
+        return _toEntity(record);
       },
       Failure.handle,
     ).run();

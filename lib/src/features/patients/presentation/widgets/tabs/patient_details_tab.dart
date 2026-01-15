@@ -1,19 +1,27 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
+import '../../../../../core/widgets/form_feedback.dart';
+import '../../../data/repositories/patient_repository.dart';
 import '../../../domain/patient.dart';
+import '../../controllers/patient_provider.dart';
 import '../patient_avatar.dart';
 import '../sheets/edit_patient_sheet.dart';
 
 /// Details tab content showing comprehensive patient and owner information.
-class PatientDetailsTab extends StatelessWidget {
+class PatientDetailsTab extends HookConsumerWidget {
   const PatientDetailsTab({super.key, required this.patient});
 
   final Patient patient;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final isUploading = useState(false);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -21,7 +29,7 @@ class PatientDetailsTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Main patient card with avatar and key info
-          _buildPatientCard(context, theme),
+          _buildPatientCard(context, theme, ref, isUploading),
           const SizedBox(height: 16),
 
           // Patient details section
@@ -39,14 +47,19 @@ class PatientDetailsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildPatientCard(BuildContext context, ThemeData theme) {
+  Widget _buildPatientCard(
+    BuildContext context,
+    ThemeData theme,
+    WidgetRef ref,
+    ValueNotifier<bool> isUploading,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Row(
           children: [
-            // Avatar
-            _buildAvatar(context, theme, radius: 48),
+            // Avatar with camera overlay
+            _buildAvatar(context, theme, ref, isUploading, radius: 48),
             const SizedBox(width: 20),
             // Info
             Expanded(
@@ -84,14 +97,110 @@ class PatientDetailsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatar(BuildContext context, ThemeData theme,
-      {double radius = 36}) {
-    return PatientAvatar(
-      patient: patient,
-      radius: radius,
-      onTap:
-          patient.hasAvatar ? () => _showImageViewer(context, patient.avatar!) : null,
+  Widget _buildAvatar(
+    BuildContext context,
+    ThemeData theme,
+    WidgetRef ref,
+    ValueNotifier<bool> isUploading, {
+    double radius = 36,
+  }) {
+    return Stack(
+      children: [
+        PatientAvatar(
+          patient: patient,
+          radius: radius,
+          onTap: patient.hasAvatar
+              ? () => _showImageViewer(context, patient.avatar!)
+              : null,
+        ),
+        // Camera overlay button
+        Positioned(
+          right: 0,
+          bottom: 0,
+          child: GestureDetector(
+            onTap: isUploading.value
+                ? null
+                : () => _pickAndUploadImage(context, ref, isUploading),
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: theme.colorScheme.surface,
+                  width: 2,
+                ),
+              ),
+              child: isUploading.value
+                  ? SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    )
+                  : Icon(
+                      Icons.camera_alt,
+                      size: 16,
+                      color: theme.colorScheme.onPrimary,
+                    ),
+            ),
+          ),
+        ),
+      ],
     );
+  }
+
+  Future<void> _pickAndUploadImage(
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<bool> isUploading,
+  ) async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 800,
+      maxHeight: 800,
+      imageQuality: 85,
+    );
+
+    if (image == null) return;
+
+    isUploading.value = true;
+
+    try {
+      final bytes = await image.readAsBytes();
+      final file = http.MultipartFile.fromBytes(
+        'avatar',
+        bytes,
+        filename: image.name,
+      );
+
+      final repository = ref.read(patientRepositoryProvider);
+      final result = await repository.updateAvatar(patient.id, file);
+
+      result.fold(
+        (failure) {
+          if (context.mounted) {
+            showErrorSnackBar(context, message: failure.message);
+          }
+        },
+        (updatedPatient) {
+          // Invalidate the patient provider to refresh data
+          ref.invalidate(patientProvider(patient.id));
+          if (context.mounted) {
+            showSuccessSnackBar(context, message: 'Photo updated successfully');
+          }
+        },
+      );
+    } catch (e) {
+      if (context.mounted) {
+        showErrorSnackBar(context, message: 'Failed to upload photo');
+      }
+    } finally {
+      isUploading.value = false;
+    }
   }
 
   void _showImageViewer(BuildContext context, String imageUrl) {
