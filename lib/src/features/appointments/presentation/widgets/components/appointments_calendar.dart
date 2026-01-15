@@ -245,24 +245,53 @@ class AppointmentsCalendar extends HookConsumerWidget {
     );
   }
 
-  Future<void> _updateStatus(
+  void _updateStatus(
     BuildContext context,
     WidgetRef ref,
     String id,
     AppointmentScheduleStatus status,
-  ) async {
-    final success = await ref
-        .read(appointmentsControllerProvider.notifier)
-        .updateStatus(id, status);
+  ) {
+    final statusLabel = switch (status) {
+      AppointmentScheduleStatus.scheduled => 'Scheduled',
+      AppointmentScheduleStatus.completed => 'Completed',
+      AppointmentScheduleStatus.missed => 'Missed',
+      AppointmentScheduleStatus.cancelled => 'Cancelled',
+    };
 
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(success
-              ? 'Status updated to ${status.name}'
-              : 'Failed to update status'),
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Change Status'),
+        content: Text(
+          'Are you sure you want to change the status to "$statusLabel"?',
         ),
-      );
-    }
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              final success = await ref
+                  .read(appointmentsControllerProvider.notifier)
+                  .updateStatus(id, status);
+
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(success
+                        ? 'Status updated to $statusLabel'
+                        : 'Failed to update status'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            },
+            child: const Text('Confirm'),
+          ),
+        ],
+      ),
+    );
   }
 }
