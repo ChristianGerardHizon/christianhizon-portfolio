@@ -5,6 +5,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../patients/domain/patient_record.dart';
+import '../../../../patients/domain/patient_treatment_record.dart';
+import '../../../../patients/presentation/controllers/patient_records_controller.dart';
+import '../../../../patients/presentation/controllers/patient_treatment_records_controller.dart';
+import '../../../../patients/presentation/widgets/sheets/add_record_sheet.dart';
+import '../../../../patients/presentation/widgets/sheets/add_treatment_record_sheet.dart';
 import '../../../domain/appointment_schedule.dart';
 import '../components/linked_items_section.dart';
 import 'record_treatment_selector_sheet.dart';
@@ -32,6 +38,14 @@ class EditAppointmentSheet extends HookConsumerWidget {
     // Linked records and treatments (initialized from appointment)
     final linkedRecordIds = useState<List<String>>(appointment.patientRecords);
     final linkedTreatmentIds = useState<List<String>>(appointment.treatmentRecords);
+
+    // Expanded records/treatments for display (tracks newly created items)
+    final linkedRecordsExpanded = useState<List<PatientRecord>>(
+      appointment.patientRecordsExpanded,
+    );
+    final linkedTreatmentsExpanded = useState<List<PatientTreatmentRecord>>(
+      appointment.treatmentRecordsExpanded,
+    );
 
     Future<void> handleSave() async {
       if (!formKey.currentState!.saveAndValidate()) return;
@@ -204,8 +218,8 @@ class EditAppointmentSheet extends HookConsumerWidget {
 
               // Linked items section
               LinkedItemsSection(
-                patientRecords: appointment.patientRecordsExpanded,
-                treatmentRecords: appointment.treatmentRecordsExpanded,
+                patientRecords: linkedRecordsExpanded.value,
+                treatmentRecords: linkedTreatmentsExpanded.value,
                 showActions: !isSaving.value,
                 onLinkExistingPressed: appointment.patient != null
                     ? () => _showRecordTreatmentSelector(
@@ -213,6 +227,28 @@ class EditAppointmentSheet extends HookConsumerWidget {
                           patientId: appointment.patient!,
                           linkedRecordIds: linkedRecordIds,
                           linkedTreatmentIds: linkedTreatmentIds,
+                          linkedRecordsExpanded: linkedRecordsExpanded,
+                          linkedTreatmentsExpanded: linkedTreatmentsExpanded,
+                        )
+                    : null,
+                onAddRecordPressed: appointment.patient != null
+                    ? () => _showAddRecordSheet(
+                          context: context,
+                          ref: ref,
+                          patientId: appointment.patient!,
+                          appointmentId: appointment.id,
+                          linkedRecordIds: linkedRecordIds,
+                          linkedRecordsExpanded: linkedRecordsExpanded,
+                        )
+                    : null,
+                onAddTreatmentPressed: appointment.patient != null
+                    ? () => _showAddTreatmentSheet(
+                          context: context,
+                          ref: ref,
+                          patientId: appointment.patient!,
+                          appointmentId: appointment.id,
+                          linkedTreatmentIds: linkedTreatmentIds,
+                          linkedTreatmentsExpanded: linkedTreatmentsExpanded,
                         )
                     : null,
               ),
@@ -254,6 +290,8 @@ class EditAppointmentSheet extends HookConsumerWidget {
     required String patientId,
     required ValueNotifier<List<String>> linkedRecordIds,
     required ValueNotifier<List<String>> linkedTreatmentIds,
+    required ValueNotifier<List<PatientRecord>> linkedRecordsExpanded,
+    required ValueNotifier<List<PatientTreatmentRecord>> linkedTreatmentsExpanded,
   }) {
     showModalBottomSheet(
       context: context,
@@ -266,8 +304,77 @@ class EditAppointmentSheet extends HookConsumerWidget {
         onSave: (recordIds, treatmentIds) {
           linkedRecordIds.value = recordIds;
           linkedTreatmentIds.value = treatmentIds;
+          // Note: expanded data will be refreshed when appointment is saved and reloaded
         },
       ),
+    );
+  }
+
+  void _showAddRecordSheet({
+    required BuildContext context,
+    required WidgetRef ref,
+    required String patientId,
+    required String appointmentId,
+    required ValueNotifier<List<String>> linkedRecordIds,
+    required ValueNotifier<List<PatientRecord>> linkedRecordsExpanded,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      useRootNavigator: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) => AddRecordSheet(
+        patientId: patientId,
+        appointmentId: appointmentId,
+        onSave: (record) async {
+          final created = await ref
+              .read(patientRecordsControllerProvider(patientId).notifier)
+              .createRecordAndReturn(record);
+
+          if (created != null) {
+            // Add to linked IDs and expanded list
+            linkedRecordIds.value = [...linkedRecordIds.value, created.id];
+            linkedRecordsExpanded.value = [
+              ...linkedRecordsExpanded.value,
+              created,
+            ];
+          }
+          return created;
+        },
+      ),
+    );
+  }
+
+  void _showAddTreatmentSheet({
+    required BuildContext context,
+    required WidgetRef ref,
+    required String patientId,
+    required String appointmentId,
+    required ValueNotifier<List<String>> linkedTreatmentIds,
+    required ValueNotifier<List<PatientTreatmentRecord>> linkedTreatmentsExpanded,
+  }) {
+    showTreatmentRecordSheet(
+      context,
+      patientId: patientId,
+      appointmentId: appointmentId,
+      onSave: (record) async {
+        final created = await ref
+            .read(patientTreatmentRecordsControllerProvider(patientId).notifier)
+            .createTreatmentRecordAndReturn(record);
+
+        if (created != null) {
+          // Add to linked IDs and expanded list
+          linkedTreatmentIds.value = [...linkedTreatmentIds.value, created.id];
+          linkedTreatmentsExpanded.value = [
+            ...linkedTreatmentsExpanded.value,
+            created,
+          ];
+        }
+        return created;
+      },
     );
   }
 }

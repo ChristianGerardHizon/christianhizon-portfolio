@@ -61,7 +61,7 @@ final class PatientRecordsControllerProvider extends $AsyncNotifierProvider<
 }
 
 String _$patientRecordsControllerHash() =>
-    r'b296e9295a197089dcaa3dabc942f1188a1d6dbe';
+    r'5833e77c117e93d686a064d970d20a49fe63ff18';
 
 /// Controller for managing patient records for a specific patient.
 ///

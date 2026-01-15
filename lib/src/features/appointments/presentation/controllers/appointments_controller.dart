@@ -46,6 +46,24 @@ class AppointmentsController extends _$AppointmentsController {
     );
   }
 
+  /// Creates a new appointment and returns it.
+  ///
+  /// Returns the created appointment on success, or null on failure.
+  /// This is useful when the caller needs the created appointment's ID.
+  Future<AppointmentSchedule?> createAppointmentAndReturn(AppointmentSchedule appointment) async {
+    final result = await ref.read(appointmentScheduleRepositoryProvider).create(appointment);
+    return result.fold(
+      (failure) => null,
+      (created) {
+        state.whenData((appointments) {
+          // Add to beginning of list (most recent first)
+          state = AsyncValue.data([created, ...appointments]);
+        });
+        return created;
+      },
+    );
+  }
+
   /// Updates an existing appointment.
   Future<bool> updateAppointment(AppointmentSchedule appointment) async {
     final result = await ref.read(appointmentScheduleRepositoryProvider).update(appointment);

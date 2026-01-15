@@ -165,7 +165,7 @@ class TreatmentsSection extends ConsumerWidget {
       onSave: (record) async {
         return await ref
             .read(patientTreatmentRecordsControllerProvider(patientId).notifier)
-            .createTreatmentRecord(record);
+            .createTreatmentRecordAndReturn(record);
       },
     );
   }
@@ -182,7 +182,7 @@ class TreatmentsSection extends ConsumerWidget {
       onSave: (updated) async {
         return await ref
             .read(patientTreatmentRecordsControllerProvider(patientId).notifier)
-            .updateTreatmentRecord(updated);
+            .updateTreatmentRecordAndReturn(updated);
       },
     );
   }

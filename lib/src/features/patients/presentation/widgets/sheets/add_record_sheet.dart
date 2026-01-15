@@ -5,15 +5,23 @@ import '../../../../../core/i18n/strings.g.dart';
 import '../../../domain/patient_record.dart';
 
 /// Bottom sheet for adding a new patient record.
+///
+/// If [appointmentId] is provided, the record will be linked to that appointment.
 class AddRecordSheet extends HookWidget {
   const AddRecordSheet({
     super.key,
     required this.patientId,
     required this.onSave,
+    this.appointmentId,
   });
 
   final String patientId;
-  final Future<bool> Function(PatientRecord record) onSave;
+
+  /// Optional appointment ID to link the record to.
+  final String? appointmentId;
+
+  /// Callback when saving. Returns the created record on success, null on failure.
+  final Future<PatientRecord?> Function(PatientRecord record) onSave;
 
   @override
   Widget build(BuildContext context) {
@@ -44,13 +52,14 @@ class AddRecordSheet extends HookWidget {
         weight: weightController.text.isEmpty ? '' : '${weightController.text} kg',
         temperature: temperatureController.text.isEmpty ? '' : '${temperatureController.text} °C',
         notes: notesController.text.isEmpty ? null : notesController.text,
+        appointment: appointmentId,
       );
 
-      final success = await onSave(record);
+      final created = await onSave(record);
 
       if (context.mounted) {
         isSaving.value = false;
-        if (success) {
+        if (created != null) {
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Record added successfully')),

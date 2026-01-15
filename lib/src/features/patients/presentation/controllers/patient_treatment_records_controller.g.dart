@@ -65,7 +65,7 @@ final class PatientTreatmentRecordsControllerProvider
 }
 
 String _$patientTreatmentRecordsControllerHash() =>
-    r'e9e01f5901b64d1db3f5c91fcda990ff3a746b2f';
+    r'c76a5cb5b5c77e354cc07fa53d44734bca6e1b3e';
 
 /// Controller for managing treatment records for a specific patient.
 ///

@@ -261,10 +261,9 @@ class AppointmentsPage extends HookConsumerWidget {
       ),
       builder: (context) => CreateAppointmentSheet(
         onSave: (appointment) async {
-          final success = await ref
+          return await ref
               .read(appointmentsControllerProvider.notifier)
-              .createAppointment(appointment);
-          return success;
+              .createAppointmentAndReturn(appointment);
         },
       ),
     );

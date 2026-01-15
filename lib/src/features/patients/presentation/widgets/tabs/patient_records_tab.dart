@@ -126,10 +126,10 @@ class PatientRecordsTab extends HookConsumerWidget {
       builder: (context) => AddRecordSheet(
         patientId: patient.id,
         onSave: (record) async {
-          final success = await ref
+          final created = await ref
               .read(patientRecordsControllerProvider(patient.id).notifier)
-              .createRecord(record);
-          return success;
+              .createRecordAndReturn(record);
+          return created;
         },
       ),
     );

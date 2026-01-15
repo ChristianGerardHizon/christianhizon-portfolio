@@ -11,6 +11,8 @@ import '../../../domain/patient_treatment_record.dart';
 import '../../controllers/patient_treatments_controller.dart';
 
 /// Bottom sheet for adding or editing a treatment record.
+///
+/// If [appointmentId] is provided, the record will be linked to that appointment.
 class AddTreatmentRecordSheet extends HookConsumerWidget {
   const AddTreatmentRecordSheet({
     super.key,
@@ -18,12 +20,18 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
     required this.scrollController,
     this.existingRecord,
     required this.onSave,
+    this.appointmentId,
   });
 
   final String patientId;
   final ScrollController scrollController;
   final PatientTreatmentRecord? existingRecord;
-  final Future<bool> Function(PatientTreatmentRecord record) onSave;
+
+  /// Optional appointment ID to link the treatment record to.
+  final String? appointmentId;
+
+  /// Callback when saving. Returns the created/updated record on success, null on failure.
+  final Future<PatientTreatmentRecord?> Function(PatientTreatmentRecord record) onSave;
 
   static const _fieldLabels = {
     'treatment': 'Treatment Type',
@@ -64,13 +72,14 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
         patientId: patientId,
         date: values['date'] as DateTime? ?? DateTime.now(),
         notes: _nullIfEmpty(values['notes'] as String?),
+        appointment: appointmentId ?? existingRecord?.appointment,
       );
 
-      final success = await onSave(record);
+      final created = await onSave(record);
 
       if (context.mounted) {
         isSaving.value = false;
-        if (success) {
+        if (created != null) {
           context.pop();
           showSuccessSnackBar(
             context,
@@ -229,11 +238,14 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
 }
 
 /// Shows the add/edit treatment record sheet with fullscreen draggable functionality.
+///
+/// If [appointmentId] is provided, the record will be linked to that appointment.
 void showTreatmentRecordSheet(
   BuildContext context, {
   required String patientId,
   PatientTreatmentRecord? existingRecord,
-  required Future<bool> Function(PatientTreatmentRecord record) onSave,
+  required Future<PatientTreatmentRecord?> Function(PatientTreatmentRecord record) onSave,
+  String? appointmentId,
 }) {
   showModalBottomSheet(
     context: context,
@@ -251,6 +263,7 @@ void showTreatmentRecordSheet(
         scrollController: scrollController,
         existingRecord: existingRecord,
         onSave: onSave,
+        appointmentId: appointmentId,
       ),
     ),
   );

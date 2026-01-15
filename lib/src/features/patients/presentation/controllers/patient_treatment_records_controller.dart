@@ -52,6 +52,26 @@ class PatientTreatmentRecordsController
     );
   }
 
+  /// Creates a new treatment record and returns it.
+  ///
+  /// Returns the created record on success, or null on failure.
+  /// This is useful when the caller needs the created record's ID.
+  Future<PatientTreatmentRecord?> createTreatmentRecordAndReturn(
+    PatientTreatmentRecord record,
+  ) async {
+    final result = await _repository.create(record);
+
+    return result.fold(
+      (failure) => null,
+      (newRecord) {
+        // Add to current list (newest first)
+        final currentList = state.value ?? [];
+        state = AsyncData([newRecord, ...currentList]);
+        return newRecord;
+      },
+    );
+  }
+
   /// Updates an existing treatment record.
   Future<bool> updateTreatmentRecord(PatientTreatmentRecord record) async {
     final result = await _repository.update(record);
@@ -66,6 +86,28 @@ class PatientTreatmentRecordsController
         }).toList();
         state = AsyncData(updatedList);
         return true;
+      },
+    );
+  }
+
+  /// Updates an existing treatment record and returns it.
+  ///
+  /// Returns the updated record on success, or null on failure.
+  Future<PatientTreatmentRecord?> updateTreatmentRecordAndReturn(
+    PatientTreatmentRecord record,
+  ) async {
+    final result = await _repository.update(record);
+
+    return result.fold(
+      (failure) => null,
+      (updatedRecord) {
+        // Update in current list
+        final currentList = state.value ?? [];
+        final updatedList = currentList.map((r) {
+          return r.id == updatedRecord.id ? updatedRecord : r;
+        }).toList();
+        state = AsyncData(updatedList);
+        return updatedRecord;
       },
     );
   }

@@ -63,7 +63,7 @@ final class PatientAppointmentsControllerProvider
 }
 
 String _$patientAppointmentsControllerHash() =>
-    r'3176cec17e2d316aeefc4a1d651be81af1ab724f';
+    r'173dc477cb614f9b087bc3a712ee66b3f27434bb';
 
 /// Controller for managing appointments for a specific patient.
 ///

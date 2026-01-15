@@ -81,13 +81,52 @@ class TreatmentRecordCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    treatmentRecord.treatmentName.isNotEmpty
-                        ? treatmentRecord.treatmentName
-                        : 'Unknown Treatment',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          treatmentRecord.treatmentName.isNotEmpty
+                              ? treatmentRecord.treatmentName
+                              : 'Unknown Treatment',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      if (treatmentRecord.appointment != null &&
+                          treatmentRecord.appointment!.isNotEmpty) ...[
+                        const SizedBox(width: 8),
+                        Tooltip(
+                          message: 'Linked to appointment',
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primaryContainer,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.event,
+                                  size: 14,
+                                  color: theme.colorScheme.onPrimaryContainer,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Appt',
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                    color: theme.colorScheme.onPrimaryContainer,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                   if (treatmentRecord.notes != null &&
                       treatmentRecord.notes!.isNotEmpty) ...[

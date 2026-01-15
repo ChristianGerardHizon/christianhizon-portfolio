@@ -51,6 +51,24 @@ class PatientRecordsController extends _$PatientRecordsController {
     );
   }
 
+  /// Creates a new patient record and returns it.
+  ///
+  /// Returns the created record on success, or null on failure.
+  /// This is useful when the caller needs the created record's ID.
+  Future<PatientRecord?> createRecordAndReturn(PatientRecord record) async {
+    final result = await _repository.create(record);
+
+    return result.fold(
+      (failure) => null,
+      (newRecord) {
+        // Add to current list (newest first)
+        final currentList = state.value ?? [];
+        state = AsyncData([newRecord, ...currentList]);
+        return newRecord;
+      },
+    );
+  }
+
   /// Updates an existing patient record.
   Future<bool> updateRecord(PatientRecord record) async {
     final result = await _repository.update(record);
