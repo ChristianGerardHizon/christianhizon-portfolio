@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
+import '../../../appointments/presentation/widgets/tabs/patient_appointments_tab.dart';
 import '../../domain/patient.dart';
 import '../../domain/patient_tab.dart';
 import '../controllers/patient_provider.dart';
@@ -14,6 +15,7 @@ import '../widgets/tabs/patient_details_tab.dart';
 import '../widgets/tabs/patient_overview_tab.dart';
 import '../widgets/tabs/patient_placeholder_tab.dart';
 import '../widgets/tabs/patient_records_tab.dart';
+import '../widgets/tabs/patient_treatments_tab.dart';
 
 /// Patient detail page with tabbed content.
 ///
@@ -131,9 +133,8 @@ class PatientDetailPage extends HookConsumerWidget {
               PatientOverviewTab(patient: patient),
               PatientDetailsTab(patient: patient),
               PatientRecordsTab(patient: patient),
-              const PatientPlaceholderTab(title: 'Treatments', icon: Icons.healing),
-              const PatientPlaceholderTab(
-                  title: 'Appointments', icon: Icons.calendar_today),
+              PatientTreatmentsTab(patient: patient),
+              PatientAppointmentsTab(patient: patient),
               const PatientPlaceholderTab(title: 'Files', icon: Icons.folder),
             ],
           ),
