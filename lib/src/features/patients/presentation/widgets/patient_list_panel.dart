@@ -2,30 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/foundation/paginated_state.dart';
+import '../../../../core/hooks/use_infinite_scroll.dart';
 import '../../../../core/i18n/strings.g.dart';
+import '../../../../core/widgets/end_of_list_indicator.dart';
 import '../../domain/patient.dart';
+import '../controllers/paginated_patients_controller.dart';
 import '../controllers/patient_search_controller.dart';
-import '../controllers/patients_controller.dart';
 import 'patient_avatar.dart';
 import 'sheets/create_patient_sheet.dart';
 import 'sheets/search_fields_sheet.dart';
 
-/// Patient list panel with search header.
+/// Patient list panel with search header and infinite scroll.
 ///
 /// Used in both mobile list page and tablet two-pane layout.
 class PatientListPanel extends HookConsumerWidget {
   const PatientListPanel({
     super.key,
-    required this.patients,
+    required this.paginatedState,
     required this.selectedId,
     required this.onPatientTap,
-    this.onRefresh,
+    required this.onRefresh,
+    required this.onLoadMore,
   });
 
-  final List<Patient> patients;
+  final PaginatedState<Patient> paginatedState;
   final String? selectedId;
   final ValueChanged<Patient> onPatientTap;
-  final Future<void> Function()? onRefresh;
+  final Future<void> Function() onRefresh;
+  final VoidCallback onLoadMore;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,34 +40,37 @@ class PatientListPanel extends HookConsumerWidget {
     // Local state using hooks
     final searchController = useTextEditingController();
     final searchText = useState('');
-    final activeQuery = useState<String?>(null);
 
     // Watch providers
     final searchFields = ref.watch(patientSearchFieldsProvider);
     final activeFieldCount = searchFields.length;
+    final paginatedController =
+        ref.read(paginatedPatientsControllerProvider.notifier);
 
-    // Search is active if we have a query
-    final isSearchActive = activeQuery.value != null;
+    // Search is active from the controller
+    final isSearchActive = paginatedController.isSearchActive;
 
     void performSearch() {
       final query = searchController.text.trim();
       if (query.isEmpty) return;
 
       final fields = ref.read(patientSearchFieldsProvider).toList();
-      ref
-          .read(patientsControllerProvider.notifier)
-          .search(query, fields: fields);
-
-      activeQuery.value = query;
+      paginatedController.search(query, fields: fields);
     }
 
     void clearSearch() {
       searchController.clear();
       searchText.value = '';
-      activeQuery.value = null;
       ref.read(patientSearchFieldsProvider.notifier).reset();
-      ref.read(patientsControllerProvider.notifier).refresh();
+      paginatedController.clearSearch();
     }
+
+    // Infinite scroll hook
+    final scrollController = useInfiniteScroll(
+      onLoadMore: onLoadMore,
+      hasMore: !paginatedState.hasReachedEnd,
+      isLoading: paginatedState.isLoadingMore,
+    );
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -81,7 +89,7 @@ class PatientListPanel extends HookConsumerWidget {
                 Text(t.navigation.patients, style: theme.textTheme.titleLarge),
                 const Spacer(),
                 Text(
-                  '${patients.length} total',
+                  '${paginatedState.totalItems} total',
                   style: theme.textTheme.bodySmall,
                 ),
               ],
@@ -93,7 +101,7 @@ class PatientListPanel extends HookConsumerWidget {
             padding: const EdgeInsets.all(8.0),
             child: isSearchActive
                 ? _ActiveSearchChip(
-                    query: activeQuery.value!,
+                    query: searchController.text,
                     fieldCount: activeFieldCount,
                     onClear: clearSearch,
                   )
@@ -109,14 +117,22 @@ class PatientListPanel extends HookConsumerWidget {
           // Patient list
           Expanded(
             child: RefreshIndicator(
-              onRefresh: onRefresh ?? () async {},
-              notificationPredicate:
-                  onRefresh != null ? (_) => true : (_) => false,
+              onRefresh: onRefresh,
               child: ListView.builder(
+                controller: scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: patients.length,
+                // +1 for the end indicator
+                itemCount: paginatedState.items.length + 1,
                 itemBuilder: (context, index) {
-                  final patient = patients[index];
+                  // Last item is the end indicator
+                  if (index == paginatedState.items.length) {
+                    return EndOfListIndicator(
+                      isLoadingMore: paginatedState.isLoadingMore,
+                      hasReachedEnd: paginatedState.hasReachedEnd,
+                    );
+                  }
+
+                  final patient = paginatedState.items[index];
                   final isSelected = patient.id == selectedId;
 
                   return ListTile(

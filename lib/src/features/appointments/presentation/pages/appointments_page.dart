@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/foundation/paginated_state.dart';
+import '../../../../core/hooks/use_infinite_scroll.dart';
+import '../../../../core/widgets/end_of_list_indicator.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
+import '../controllers/paginated_appointments_controller.dart';
 import '../widgets/cards/appointment_card.dart';
 import '../widgets/components/appointments_calendar.dart';
 import '../widgets/sheets/create_appointment_sheet.dart';
@@ -15,6 +19,9 @@ class AppointmentsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Paginated data for list view
+    final paginatedAsync = ref.watch(paginatedAppointmentsControllerProvider);
+    // Non-paginated data for calendar view (needs all appointments)
     final appointmentsAsync = ref.watch(appointmentsControllerProvider);
 
     // View mode: 0 = list, 1 = calendar
@@ -51,7 +58,7 @@ class AppointmentsPage extends HookConsumerWidget {
         ],
       ),
       body: viewMode.value == 0
-          ? _buildListView(context, ref, appointmentsAsync)
+          ? _buildListView(context, ref, paginatedAsync)
           : _buildCalendarView(context, ref, appointmentsAsync),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showCreateAppointmentSheet(context, ref),
@@ -64,11 +71,11 @@ class AppointmentsPage extends HookConsumerWidget {
   Widget _buildListView(
     BuildContext context,
     WidgetRef ref,
-    AsyncValue<List<AppointmentSchedule>> appointmentsAsync,
+    AsyncValue<PaginatedState<AppointmentSchedule>> paginatedAsync,
   ) {
     final theme = Theme.of(context);
 
-    return appointmentsAsync.when(
+    return paginatedAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(
         child: Column(
@@ -84,16 +91,17 @@ class AppointmentsPage extends HookConsumerWidget {
             ),
             const SizedBox(height: 8),
             FilledButton.icon(
-              onPressed: () =>
-                  ref.read(appointmentsControllerProvider.notifier).refresh(),
+              onPressed: () => ref
+                  .read(paginatedAppointmentsControllerProvider.notifier)
+                  .refresh(),
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),
             ),
           ],
         ),
       ),
-      data: (appointments) {
-        if (appointments.isEmpty) {
+      data: (paginatedState) {
+        if (paginatedState.items.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -123,53 +131,24 @@ class AppointmentsPage extends HookConsumerWidget {
         }
 
         // Group appointments by date
-        final grouped = _groupAppointmentsByDate(appointments);
+        final grouped = _groupAppointmentsByDate(paginatedState.items);
+        final groupedEntries = grouped.entries.toList();
 
-        return RefreshIndicator(
-          onRefresh: () =>
-              ref.read(appointmentsControllerProvider.notifier).refresh(),
-          child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
-            itemCount: grouped.length,
-            itemBuilder: (context, index) {
-              final entry = grouped.entries.elementAt(index);
-              final dateLabel = entry.key;
-              final dayAppointments = entry.value;
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Date header
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(
-                      dateLabel,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  // Appointments for this date
-                  ...dayAppointments.map((appointment) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: AppointmentCard(
-                          appointment: appointment,
-                          onTap: () {
-                            // TODO: Navigate to detail page
-                          },
-                          onEdit: () =>
-                              _showEditAppointmentSheet(context, ref, appointment),
-                          onDelete: () =>
-                              _confirmDelete(context, ref, appointment),
-                          onStatusChange: (status) =>
-                              _updateStatus(context, ref, appointment.id, status),
-                        ),
-                      )),
-                ],
-              );
-            },
-          ),
+        return _PaginatedListView(
+          paginatedState: paginatedState,
+          groupedEntries: groupedEntries,
+          onRefresh: () => ref
+              .read(paginatedAppointmentsControllerProvider.notifier)
+              .refresh(),
+          onLoadMore: () => ref
+              .read(paginatedAppointmentsControllerProvider.notifier)
+              .loadMore(),
+          onEdit: (appointment) =>
+              _showEditAppointmentSheet(context, ref, appointment),
+          onDelete: (appointment) =>
+              _confirmDelete(context, ref, appointment),
+          onStatusChange: (id, status) =>
+              _updateStatus(context, ref, id, status),
         );
       },
     );
@@ -261,9 +240,15 @@ class AppointmentsPage extends HookConsumerWidget {
       ),
       builder: (context) => CreateAppointmentSheet(
         onSave: (appointment) async {
-          return await ref
-              .read(appointmentsControllerProvider.notifier)
+          // Create in paginated controller (for list view)
+          final created = await ref
+              .read(paginatedAppointmentsControllerProvider.notifier)
               .createAppointmentAndReturn(appointment);
+          // Also refresh the non-paginated controller (for calendar view)
+          if (created != null) {
+            ref.invalidate(appointmentsControllerProvider);
+          }
+          return created;
         },
       ),
     );
@@ -286,8 +271,11 @@ class AppointmentsPage extends HookConsumerWidget {
         appointment: appointment,
         onSave: (updated) async {
           final success = await ref
-              .read(appointmentsControllerProvider.notifier)
+              .read(paginatedAppointmentsControllerProvider.notifier)
               .updateAppointment(updated);
+          if (success) {
+            ref.invalidate(appointmentsControllerProvider);
+          }
           return success;
         },
       ),
@@ -315,8 +303,11 @@ class AppointmentsPage extends HookConsumerWidget {
             onPressed: () async {
               Navigator.pop(context);
               final success = await ref
-                  .read(appointmentsControllerProvider.notifier)
+                  .read(paginatedAppointmentsControllerProvider.notifier)
                   .deleteAppointment(appointment.id);
+              if (success) {
+                ref.invalidate(appointmentsControllerProvider);
+              }
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -366,8 +357,12 @@ class AppointmentsPage extends HookConsumerWidget {
             onPressed: () async {
               Navigator.pop(context);
               final success = await ref
-                  .read(appointmentsControllerProvider.notifier)
+                  .read(paginatedAppointmentsControllerProvider.notifier)
                   .updateStatus(id, status);
+
+              if (success) {
+                ref.invalidate(appointmentsControllerProvider);
+              }
 
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -383,6 +378,92 @@ class AppointmentsPage extends HookConsumerWidget {
             child: const Text('Confirm'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Internal widget for the paginated list view with infinite scroll.
+class _PaginatedListView extends HookWidget {
+  const _PaginatedListView({
+    required this.paginatedState,
+    required this.groupedEntries,
+    required this.onRefresh,
+    required this.onLoadMore,
+    required this.onEdit,
+    required this.onDelete,
+    required this.onStatusChange,
+  });
+
+  final PaginatedState<AppointmentSchedule> paginatedState;
+  final List<MapEntry<String, List<AppointmentSchedule>>> groupedEntries;
+  final Future<void> Function() onRefresh;
+  final VoidCallback onLoadMore;
+  final void Function(AppointmentSchedule) onEdit;
+  final void Function(AppointmentSchedule) onDelete;
+  final void Function(String id, AppointmentScheduleStatus status) onStatusChange;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final scrollController = useInfiniteScroll(
+      onLoadMore: onLoadMore,
+      hasMore: !paginatedState.hasReachedEnd,
+      isLoading: paginatedState.isLoadingMore,
+    );
+
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: ListView.builder(
+        controller: scrollController,
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+        // +1 for the end indicator
+        itemCount: groupedEntries.length + 1,
+        itemBuilder: (context, index) {
+          // Last item is the end indicator
+          if (index == groupedEntries.length) {
+            return EndOfListIndicator(
+              isLoadingMore: paginatedState.isLoadingMore,
+              hasReachedEnd: paginatedState.hasReachedEnd,
+            );
+          }
+
+          final entry = groupedEntries[index];
+          final dateLabel = entry.key;
+          final dayAppointments = entry.value;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Date header
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(
+                  dateLabel,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              // Appointments for this date
+              ...dayAppointments.map((appointment) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: AppointmentCard(
+                      appointment: appointment,
+                      onTap: () {
+                        // TODO: Navigate to detail page
+                      },
+                      onEdit: () => onEdit(appointment),
+                      onDelete: () => onDelete(appointment),
+                      onStatusChange: (status) =>
+                          onStatusChange(appointment.id, status),
+                    ),
+                  )),
+            ],
+          );
+        },
       ),
     );
   }

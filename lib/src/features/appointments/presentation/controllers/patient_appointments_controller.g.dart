@@ -8,7 +8,7 @@ part of 'patient_appointments_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Controller for managing appointments for a specific patient.
+/// Controller for managing paginated appointments for a specific patient.
 ///
 /// Uses a family provider pattern to maintain separate state per patient.
 
@@ -16,13 +16,13 @@ part of 'patient_appointments_controller.dart';
 final patientAppointmentsControllerProvider =
     PatientAppointmentsControllerFamily._();
 
-/// Controller for managing appointments for a specific patient.
+/// Controller for managing paginated appointments for a specific patient.
 ///
 /// Uses a family provider pattern to maintain separate state per patient.
 final class PatientAppointmentsControllerProvider
     extends $AsyncNotifierProvider<PatientAppointmentsController,
-        List<AppointmentSchedule>> {
-  /// Controller for managing appointments for a specific patient.
+        PaginatedState<AppointmentSchedule>> {
+  /// Controller for managing paginated appointments for a specific patient.
   ///
   /// Uses a family provider pattern to maintain separate state per patient.
   PatientAppointmentsControllerProvider._(
@@ -63,9 +63,9 @@ final class PatientAppointmentsControllerProvider
 }
 
 String _$patientAppointmentsControllerHash() =>
-    r'173dc477cb614f9b087bc3a712ee66b3f27434bb';
+    r'4366d60cf20c58c53437735d49070526979047ff';
 
-/// Controller for managing appointments for a specific patient.
+/// Controller for managing paginated appointments for a specific patient.
 ///
 /// Uses a family provider pattern to maintain separate state per patient.
 
@@ -73,9 +73,9 @@ final class PatientAppointmentsControllerFamily extends $Family
     with
         $ClassFamilyOverride<
             PatientAppointmentsController,
-            AsyncValue<List<AppointmentSchedule>>,
-            List<AppointmentSchedule>,
-            FutureOr<List<AppointmentSchedule>>,
+            AsyncValue<PaginatedState<AppointmentSchedule>>,
+            PaginatedState<AppointmentSchedule>,
+            FutureOr<PaginatedState<AppointmentSchedule>>,
             String> {
   PatientAppointmentsControllerFamily._()
       : super(
@@ -86,7 +86,7 @@ final class PatientAppointmentsControllerFamily extends $Family
           isAutoDispose: true,
         );
 
-  /// Controller for managing appointments for a specific patient.
+  /// Controller for managing paginated appointments for a specific patient.
   ///
   /// Uses a family provider pattern to maintain separate state per patient.
 
@@ -99,27 +99,28 @@ final class PatientAppointmentsControllerFamily extends $Family
   String toString() => r'patientAppointmentsControllerProvider';
 }
 
-/// Controller for managing appointments for a specific patient.
+/// Controller for managing paginated appointments for a specific patient.
 ///
 /// Uses a family provider pattern to maintain separate state per patient.
 
 abstract class _$PatientAppointmentsController
-    extends $AsyncNotifier<List<AppointmentSchedule>> {
+    extends $AsyncNotifier<PaginatedState<AppointmentSchedule>> {
   late final _$args = ref.$arg as String;
   String get patientId => _$args;
 
-  FutureOr<List<AppointmentSchedule>> build(
+  FutureOr<PaginatedState<AppointmentSchedule>> build(
     String patientId,
   );
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<List<AppointmentSchedule>>,
-        List<AppointmentSchedule>>;
+    final ref = this.ref as $Ref<
+        AsyncValue<PaginatedState<AppointmentSchedule>>,
+        PaginatedState<AppointmentSchedule>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<List<AppointmentSchedule>>,
-            List<AppointmentSchedule>>,
-        AsyncValue<List<AppointmentSchedule>>,
+        AnyNotifier<AsyncValue<PaginatedState<AppointmentSchedule>>,
+            PaginatedState<AppointmentSchedule>>,
+        AsyncValue<PaginatedState<AppointmentSchedule>>,
         Object?,
         Object?>;
     element.handleCreate(

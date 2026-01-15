@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/constants/constants.dart';
 import '../../../../core/foundation/failure.dart';
 import '../../../../core/foundation/type_defs.dart';
 import '../../../../core/packages/pocketbase/pb_filter.dart';
@@ -18,6 +19,14 @@ abstract class PatientRepository {
   /// Fetches all patients.
   FutureEither<List<Patient>> fetchAll({String? filter, String? sort});
 
+  /// Fetches patients with pagination.
+  FutureEitherPaginated<Patient> fetchPaginated({
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+    String? filter,
+    String? sort,
+  });
+
   /// Fetches a single patient by ID.
   FutureEither<Patient> fetchOne(String id);
 
@@ -32,6 +41,14 @@ abstract class PatientRepository {
 
   /// Searches patients by the specified fields.
   FutureEither<List<Patient>> search(String query, {List<String>? fields});
+
+  /// Searches patients with pagination.
+  FutureEitherPaginated<Patient> searchPaginated(
+    String query, {
+    List<String>? fields,
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+  });
 
   /// Updates a patient's avatar image.
   FutureEither<Patient> updateAvatar(String id, http.MultipartFile file);
@@ -114,6 +131,38 @@ class PatientRepositoryImpl implements PatientRepository {
         _cachedSort = sort;
 
         return patients;
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEitherPaginated<Patient> fetchPaginated({
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+    String? filter,
+    String? sort,
+  }) async {
+    return TaskEither.tryCatch(
+      () async {
+        final baseFilter = PBFilters.active.build();
+        final filterString =
+            filter != null ? '$baseFilter && $filter' : baseFilter;
+
+        final result = await _collection.getList(
+          page: page,
+          perPage: perPage,
+          expand: _expand,
+          filter: filterString,
+          sort: sort ?? '-created',
+        );
+
+        return PaginatedResult<Patient>(
+          items: result.items.map(_toEntity).toList(),
+          page: result.page,
+          totalItems: result.totalItems,
+          totalPages: result.totalPages,
+        );
       },
       Failure.handle,
     ).run();
@@ -223,6 +272,40 @@ class PatientRepositoryImpl implements PatientRepository {
         );
 
         return records.map(_toEntity).toList();
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEitherPaginated<Patient> searchPaginated(
+    String query, {
+    List<String>? fields,
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+  }) async {
+    return TaskEither.tryCatch(
+      () async {
+        final searchFields = fields ?? ['name'];
+        final filter = PBFilter()
+            .notDeleted()
+            .searchFields(query, searchFields)
+            .build();
+
+        final result = await _collection.getList(
+          page: page,
+          perPage: perPage,
+          expand: _expand,
+          filter: filter,
+          sort: 'name',
+        );
+
+        return PaginatedResult<Patient>(
+          items: result.items.map(_toEntity).toList(),
+          page: result.page,
+          totalItems: result.totalItems,
+          totalPages: result.totalPages,
+        );
       },
       Failure.handle,
     ).run();

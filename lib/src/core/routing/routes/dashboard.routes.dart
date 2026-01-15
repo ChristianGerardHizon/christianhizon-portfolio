@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../i18n/strings.g.dart';
+import '../../../features/appointments/presentation/controllers/appointments_controller.dart';
+import '../../../features/dashboard/presentation/widgets/today_appointments_section.dart';
 
 part 'dashboard.routes.g.dart';
 
@@ -22,37 +24,19 @@ class DashboardRoute extends GoRouteData with $DashboardRoute {
 ///
 /// This is rendered within the [AppRoot] shell which provides
 /// the AppBar and navigation. Only the body content is defined here.
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final t = Translations.of(context);
-    final theme = Theme.of(context);
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.dashboard,
-              size: 80,
-              color: theme.colorScheme.primary,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Welcome to ${t.common.appName}',
-              style: theme.textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Dashboard - Coming Soon',
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.outline,
-              ),
-            ),
-          ],
+      body: RefreshIndicator(
+        onRefresh: () =>
+            ref.read(appointmentsControllerProvider.notifier).refresh(),
+        child: const SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: TodayAppointmentsSection(),
         ),
       ),
     );

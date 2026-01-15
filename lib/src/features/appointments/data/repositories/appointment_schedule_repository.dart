@@ -2,6 +2,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/constants/constants.dart';
 import '../../../../core/foundation/failure.dart';
 import '../../../../core/foundation/type_defs.dart';
 import '../../../../core/packages/pocketbase/pb_expand.dart' show PBExpand;
@@ -18,8 +19,21 @@ abstract class AppointmentScheduleRepository {
   /// Fetches all appointments.
   FutureEither<List<AppointmentSchedule>> fetchAll();
 
+  /// Fetches appointments with pagination.
+  FutureEitherPaginated<AppointmentSchedule> fetchPaginated({
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+  });
+
   /// Fetches all appointments for a specific patient.
   FutureEither<List<AppointmentSchedule>> fetchByPatient(String patientId);
+
+  /// Fetches appointments for a specific patient with pagination.
+  FutureEitherPaginated<AppointmentSchedule> fetchByPatientPaginated(
+    String patientId, {
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+  });
 
   /// Fetches appointments within a date range.
   FutureEither<List<AppointmentSchedule>> fetchByDateRange(
@@ -82,6 +96,33 @@ class AppointmentScheduleRepositoryImpl implements AppointmentScheduleRepository
   }
 
   @override
+  FutureEitherPaginated<AppointmentSchedule> fetchPaginated({
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+  }) async {
+    return TaskEither.tryCatch(
+      () async {
+        final result = await _collection.getList(
+          page: page,
+          perPage: perPage,
+          filter: PBFilters.active.build(),
+          sort: '-date',
+          expand: PBExpand.appointment.toString(),
+        );
+        return PaginatedResult<AppointmentSchedule>(
+          items: result.items
+              .map((r) => AppointmentScheduleDto.fromRecord(r).toEntity())
+              .toList(),
+          page: result.page,
+          totalItems: result.totalItems,
+          totalPages: result.totalPages,
+        );
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
   FutureEither<List<AppointmentSchedule>> fetchByPatient(String patientId) async {
     return TaskEither.tryCatch(
       () async {
@@ -93,6 +134,34 @@ class AppointmentScheduleRepositoryImpl implements AppointmentScheduleRepository
         return records
             .map((r) => AppointmentScheduleDto.fromRecord(r).toEntity())
             .toList();
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEitherPaginated<AppointmentSchedule> fetchByPatientPaginated(
+    String patientId, {
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+  }) async {
+    return TaskEither.tryCatch(
+      () async {
+        final result = await _collection.getList(
+          page: page,
+          perPage: perPage,
+          filter: PBFilters.forPatient(patientId).build(),
+          sort: '-date',
+          expand: PBExpand.appointment.toString(),
+        );
+        return PaginatedResult<AppointmentSchedule>(
+          items: result.items
+              .map((r) => AppointmentScheduleDto.fromRecord(r).toEntity())
+              .toList(),
+          page: result.page,
+          totalItems: result.totalItems,
+          totalPages: result.totalPages,
+        );
       },
       Failure.handle,
     ).run();

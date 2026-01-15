@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/foundation/paginated_state.dart';
+import '../../../../../core/hooks/use_infinite_scroll.dart';
+import '../../../../../core/widgets/end_of_list_indicator.dart';
 import '../../../../patients/domain/patient.dart';
 import '../../../domain/appointment_schedule.dart';
 import '../../controllers/patient_appointments_controller.dart';
@@ -45,8 +49,8 @@ class PatientAppointmentsTab extends HookConsumerWidget {
           ],
         ),
       ),
-      data: (appointments) {
-        if (appointments.isEmpty) {
+      data: (paginatedState) {
+        if (paginatedState.items.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -74,50 +78,22 @@ class PatientAppointmentsTab extends HookConsumerWidget {
           );
         }
 
-        return Column(
-          children: [
-            // Add button
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FilledButton.icon(
-                    onPressed: () => _showAddAppointmentSheet(context, ref),
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Appointment'),
-                  ),
-                ],
-              ),
-            ),
-            // Appointments list
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () => ref
-                    .read(patientAppointmentsControllerProvider(patient.id).notifier)
-                    .refresh(),
-                child: ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: appointments.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 8),
-                  itemBuilder: (context, index) {
-                    final appointment = appointments[index];
-                    return AppointmentCard(
-                      appointment: appointment,
-                      showPatientInfo: false, // Hide patient info since we're in patient context
-                      onTap: () {
-                        // TODO: Navigate to detail
-                      },
-                      onEdit: () => _showEditAppointmentSheet(context, ref, appointment),
-                      onDelete: () => _confirmDelete(context, ref, appointment),
-                      onStatusChange: (status) =>
-                          _updateStatus(context, ref, appointment.id, status),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
+        return _PatientAppointmentsList(
+          patient: patient,
+          paginatedState: paginatedState,
+          onRefresh: () => ref
+              .read(patientAppointmentsControllerProvider(patient.id).notifier)
+              .refresh(),
+          onLoadMore: () => ref
+              .read(patientAppointmentsControllerProvider(patient.id).notifier)
+              .loadMore(),
+          onAddAppointment: () => _showAddAppointmentSheet(context, ref),
+          onEditAppointment: (appointment) =>
+              _showEditAppointmentSheet(context, ref, appointment),
+          onDeleteAppointment: (appointment) =>
+              _confirmDelete(context, ref, appointment),
+          onStatusChange: (id, status) =>
+              _updateStatus(context, ref, id, status),
         );
       },
     );
@@ -258,6 +234,98 @@ class PatientAppointmentsTab extends HookConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Internal widget for the paginated appointments list with infinite scroll.
+class _PatientAppointmentsList extends HookWidget {
+  const _PatientAppointmentsList({
+    required this.patient,
+    required this.paginatedState,
+    required this.onRefresh,
+    required this.onLoadMore,
+    required this.onAddAppointment,
+    required this.onEditAppointment,
+    required this.onDeleteAppointment,
+    required this.onStatusChange,
+  });
+
+  final Patient patient;
+  final PaginatedState<AppointmentSchedule> paginatedState;
+  final Future<void> Function() onRefresh;
+  final VoidCallback onLoadMore;
+  final VoidCallback onAddAppointment;
+  final void Function(AppointmentSchedule) onEditAppointment;
+  final void Function(AppointmentSchedule) onDeleteAppointment;
+  final void Function(String id, AppointmentScheduleStatus status) onStatusChange;
+
+  @override
+  Widget build(BuildContext context) {
+    final scrollController = useInfiniteScroll(
+      onLoadMore: onLoadMore,
+      hasMore: !paginatedState.hasReachedEnd,
+      isLoading: paginatedState.isLoadingMore,
+    );
+
+    return Column(
+      children: [
+        // Add button
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FilledButton.icon(
+                onPressed: onAddAppointment,
+                icon: const Icon(Icons.add),
+                label: const Text('Add Appointment'),
+              ),
+            ],
+          ),
+        ),
+        // Appointments list
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: onRefresh,
+            child: ListView.separated(
+              controller: scrollController,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              // +1 for the end indicator
+              itemCount: paginatedState.items.length + 1,
+              separatorBuilder: (context, index) {
+                // No separator before the end indicator
+                if (index == paginatedState.items.length - 1) {
+                  return const SizedBox.shrink();
+                }
+                return const SizedBox(height: 8);
+              },
+              itemBuilder: (context, index) {
+                // Last item is the end indicator
+                if (index == paginatedState.items.length) {
+                  return EndOfListIndicator(
+                    isLoadingMore: paginatedState.isLoadingMore,
+                    hasReachedEnd: paginatedState.hasReachedEnd,
+                  );
+                }
+
+                final appointment = paginatedState.items[index];
+                return AppointmentCard(
+                  appointment: appointment,
+                  showPatientInfo: false,
+                  onTap: () {
+                    // TODO: Navigate to detail
+                  },
+                  onEdit: () => onEditAppointment(appointment),
+                  onDelete: () => onDeleteAppointment(appointment),
+                  onStatusChange: (status) =>
+                      onStatusChange(appointment.id, status),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
