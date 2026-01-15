@@ -1,0 +1,198 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../../../core/constants/constants.dart';
+import '../../../../core/foundation/paginated_state.dart';
+import '../../data/repositories/product_repository.dart';
+import '../../domain/product.dart';
+
+part 'paginated_products_controller.g.dart';
+
+/// Controller for managing paginated products list.
+@Riverpod(keepAlive: true)
+class PaginatedProductsController extends _$PaginatedProductsController {
+  ProductRepository get _repository => ref.read(productRepositoryProvider);
+
+  // Track current search state
+  String? _currentSearchQuery;
+  List<String>? _currentSearchFields;
+
+  @override
+  Future<PaginatedState<Product>> build() async {
+    _currentSearchQuery = null;
+    _currentSearchFields = null;
+
+    final result = await _repository.fetchPaginated(
+      page: 1,
+      perPage: Pagination.defaultPageSize,
+    );
+
+    return result.fold(
+      (failure) => throw failure,
+      (paginated) => PaginatedState<Product>(
+        items: paginated.items,
+        currentPage: paginated.page,
+        totalItems: paginated.totalItems,
+        totalPages: paginated.totalPages,
+        hasReachedEnd: !paginated.hasMore,
+      ),
+    );
+  }
+
+  /// Whether search is currently active.
+  bool get isSearchActive => _currentSearchQuery != null;
+
+  /// Loads the next page.
+  Future<void> loadMore() async {
+    final currentState = state.value;
+    if (currentState == null ||
+        currentState.isLoadingMore ||
+        currentState.hasReachedEnd) {
+      return;
+    }
+
+    state = AsyncValue.data(currentState.copyWith(isLoadingMore: true));
+
+    final nextPage = currentState.currentPage + 1;
+
+    // Use search or regular fetch based on current state
+    final result = _currentSearchQuery != null
+        ? await _repository.searchPaginated(
+            _currentSearchQuery!,
+            fields: _currentSearchFields,
+            page: nextPage,
+            perPage: Pagination.defaultPageSize,
+          )
+        : await _repository.fetchPaginated(
+            page: nextPage,
+            perPage: Pagination.defaultPageSize,
+          );
+
+    result.fold(
+      (failure) {
+        state = AsyncValue.data(currentState.copyWith(isLoadingMore: false));
+      },
+      (paginated) {
+        state = AsyncValue.data(
+          currentState.appendItems(
+            paginated.items,
+            page: paginated.page,
+            totalItems: paginated.totalItems,
+            totalPages: paginated.totalPages,
+          ),
+        );
+      },
+    );
+  }
+
+  /// Refreshes the list (respects current search).
+  Future<void> refresh() async {
+    state = const AsyncValue.loading();
+
+    final result = _currentSearchQuery != null
+        ? await _repository.searchPaginated(
+            _currentSearchQuery!,
+            fields: _currentSearchFields,
+            page: 1,
+            perPage: Pagination.defaultPageSize,
+          )
+        : await _repository.fetchPaginated(
+            page: 1,
+            perPage: Pagination.defaultPageSize,
+          );
+
+    state = result.fold(
+      (failure) => AsyncError(failure, StackTrace.current),
+      (paginated) => AsyncData(PaginatedState<Product>(
+        items: paginated.items,
+        currentPage: paginated.page,
+        totalItems: paginated.totalItems,
+        totalPages: paginated.totalPages,
+        hasReachedEnd: !paginated.hasMore,
+      )),
+    );
+  }
+
+  /// Searches products (resets to page 1).
+  Future<void> search(String query, {List<String>? fields}) async {
+    if (query.isEmpty) {
+      return clearSearch();
+    }
+
+    _currentSearchQuery = query;
+    _currentSearchFields = fields;
+
+    state = const AsyncValue.loading();
+
+    final result = await _repository.searchPaginated(
+      query,
+      fields: fields,
+      page: 1,
+      perPage: Pagination.defaultPageSize,
+    );
+
+    state = result.fold(
+      (failure) => AsyncError(failure, StackTrace.current),
+      (paginated) => AsyncData(PaginatedState<Product>(
+        items: paginated.items,
+        currentPage: paginated.page,
+        totalItems: paginated.totalItems,
+        totalPages: paginated.totalPages,
+        hasReachedEnd: !paginated.hasMore,
+      )),
+    );
+  }
+
+  /// Clears search and reloads all products.
+  Future<void> clearSearch() async {
+    _currentSearchQuery = null;
+    _currentSearchFields = null;
+    return refresh();
+  }
+
+  /// Creates a new product.
+  /// Returns the created product on success, null on failure.
+  Future<Product?> createProduct(Product product) async {
+    final result = await _repository.create(product);
+    return result.fold(
+      (failure) => null,
+      (newProduct) {
+        state.whenData((currentState) {
+          state = AsyncValue.data(currentState.prependItem(newProduct));
+        });
+        return newProduct;
+      },
+    );
+  }
+
+  /// Updates an existing product.
+  Future<bool> updateProduct(Product product) async {
+    final result = await _repository.update(product);
+    return result.fold(
+      (failure) => false,
+      (updated) {
+        state.whenData((currentState) {
+          state = AsyncValue.data(
+            currentState.updateItem(updated, (p) => p.id == updated.id),
+          );
+        });
+        return true;
+      },
+    );
+  }
+
+  /// Deletes a product.
+  Future<bool> deleteProduct(String id) async {
+    final result = await _repository.delete(id);
+    return result.fold(
+      (failure) => false,
+      (_) {
+        state.whenData((currentState) {
+          state = AsyncValue.data(
+            currentState.removeItem((p) => p.id == id),
+          );
+        });
+        return true;
+      },
+    );
+  }
+}

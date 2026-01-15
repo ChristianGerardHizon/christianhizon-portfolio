@@ -1,0 +1,118 @@
+import 'package:dart_mappable/dart_mappable.dart';
+
+import 'product_status.dart';
+
+part 'product.mapper.dart';
+
+/// Product domain model.
+///
+/// Represents a product/inventory item in the system.
+@MappableClass()
+class Product with ProductMappable {
+  const Product({
+    required this.id,
+    required this.name,
+    this.description,
+    this.categoryId,
+    this.categoryName,
+    this.image,
+    this.branch,
+    this.stockThreshold,
+    this.price = 0,
+    this.forSale = true,
+    this.quantity,
+    this.expiration,
+    this.trackByLot = false,
+    this.isDeleted = false,
+    this.created,
+    this.updated,
+  });
+
+  /// PocketBase record ID.
+  final String id;
+
+  /// Product name.
+  final String name;
+
+  /// Product description.
+  final String? description;
+
+  /// Category FK ID.
+  final String? categoryId;
+
+  /// Category name (expanded from FK).
+  final String? categoryName;
+
+  /// Product image URL (full path).
+  final String? image;
+
+  /// Branch FK ID.
+  final String? branch;
+
+  /// Low stock warning threshold.
+  final num? stockThreshold;
+
+  /// Product price.
+  final num price;
+
+  /// Whether product is for sale.
+  final bool forSale;
+
+  /// Current quantity (for non-lot tracking).
+  final num? quantity;
+
+  /// Expiration date (for non-lot tracking).
+  final DateTime? expiration;
+
+  /// Whether to track inventory by lot numbers.
+  final bool trackByLot;
+
+  /// Soft delete flag.
+  final bool isDeleted;
+
+  /// Creation timestamp.
+  final DateTime? created;
+
+  /// Last update timestamp.
+  final DateTime? updated;
+
+  /// Returns true if product has an image.
+  bool get hasImage => image != null && image!.isNotEmpty;
+
+  /// Returns true if product has a category.
+  bool get hasCategory => categoryId != null && categoryId!.isNotEmpty;
+
+  /// Returns true if stock is low based on threshold.
+  bool get isLowStock {
+    if (stockThreshold == null || quantity == null) return false;
+    return quantity! <= stockThreshold!;
+  }
+
+  /// Returns true if product is expired.
+  bool get isExpired {
+    if (expiration == null) return false;
+    return expiration!.isBefore(DateTime.now());
+  }
+
+  /// Returns true if product is out of stock.
+  bool get isOutOfStock => quantity != null && quantity! <= 0;
+
+  /// Calculates the stock status.
+  ProductStatus get stockStatus {
+    if (quantity == null) return ProductStatus.noThreshold;
+    if (quantity! <= 0) return ProductStatus.outOfStock;
+    if (stockThreshold != null && quantity! <= stockThreshold!) {
+      return ProductStatus.lowStock;
+    }
+    return ProductStatus.inStock;
+  }
+
+  /// Formatted price display.
+  String get priceDisplay => '₱${price.toStringAsFixed(2)}';
+
+  /// Formatted quantity display.
+  String get quantityDisplay {
+    if (quantity == null) return 'N/A';
+    return quantity!.toStringAsFixed(0);
+  }
+}

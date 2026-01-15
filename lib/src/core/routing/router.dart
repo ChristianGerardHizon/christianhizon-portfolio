@@ -50,7 +50,7 @@ GoRouter router(Ref ref) {
           $dashboardRoute,
           $patientsShellRoute,
           $appointmentsShellRoute,
-          $productsRoute,
+          $productsShellRoute,
           $salesRoute,
           $organizationRoute,
           $systemRoute,
