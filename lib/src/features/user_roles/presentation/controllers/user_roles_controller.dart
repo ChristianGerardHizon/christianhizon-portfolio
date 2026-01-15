@@ -1,4 +1,6 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:sannjosevet/src/features/auth/presentation/controllers/auth_controller.dart';
 
 import '../../data/user_roles_repository.dart';
 import '../../domain/user_role_entity.dart';
@@ -14,32 +16,12 @@ class UserRolesController extends _$UserRolesController {
   UserRolesRepository get _repository => ref.read(userRolesRepositoryProvider);
 
   @override
-  Future<UserRoleEntity?> build() async {
-    return null;
-  }
-
-  /// Fetches the user role by ID and stores it in state.
-  ///
-  /// Returns `true` if the role was fetched successfully, `false` otherwise.
-  Future<bool> fetchRole(String? roleId) async {
-    if (roleId == null || roleId.isEmpty) {
-      state = const AsyncData(null);
-      return false;
-    }
-
-    state = const AsyncLoading();
-
-    final result = await _repository.fetchUserRole(roleId);
+  Future<UserRoleEntity?> build(String id) async {
+    final result = await _repository.fetchUserRole(id);
 
     return result.fold(
-      (failure) {
-        state = AsyncError(failure, StackTrace.current);
-        return false;
-      },
-      (role) {
-        state = AsyncData(role);
-        return true;
-      },
+      (failure) => null,
+      (role) => role,
     );
   }
 
@@ -52,7 +34,12 @@ class UserRolesController extends _$UserRolesController {
 /// Convenience provider that returns whether the current user is an admin.
 @riverpod
 bool isAdmin(Ref ref) {
-  final roleAsync = ref.watch(userRolesControllerProvider);
+  final id =
+      ref.watch(authControllerProvider.select((auth) => auth.value?.user.id));
+  if (id == null) {
+    return false;
+  }
+  final roleAsync = ref.watch(userRolesControllerProvider(id));
   return switch (roleAsync) {
     AsyncData(:final value) => value?.isAdmin ?? false,
     _ => false,

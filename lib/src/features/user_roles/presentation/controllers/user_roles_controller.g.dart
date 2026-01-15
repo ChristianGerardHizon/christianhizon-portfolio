@@ -14,7 +14,7 @@ part of 'user_roles_controller.dart';
 /// The role is cleared on logout.
 
 @ProviderFor(UserRolesController)
-final userRolesControllerProvider = UserRolesControllerProvider._();
+final userRolesControllerProvider = UserRolesControllerFamily._();
 
 /// Controller for managing the current user's role.
 ///
@@ -26,10 +26,10 @@ final class UserRolesControllerProvider
   ///
   /// Fetches and stores the user role after login.
   /// The role is cleared on logout.
-  UserRolesControllerProvider._()
+  UserRolesControllerProvider._(
+      {required UserRolesControllerFamily super.from,
+      required String super.argument})
       : super(
-          from: null,
-          argument: null,
           retry: null,
           name: r'userRolesControllerProvider',
           isAutoDispose: false,
@@ -40,13 +40,62 @@ final class UserRolesControllerProvider
   @override
   String debugGetCreateSourceHash() => _$userRolesControllerHash();
 
+  @override
+  String toString() {
+    return r'userRolesControllerProvider'
+        ''
+        '($argument)';
+  }
+
   @$internal
   @override
   UserRolesController create() => UserRolesController();
+
+  @override
+  bool operator ==(Object other) {
+    return other is UserRolesControllerProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$userRolesControllerHash() =>
-    r'59dabaf167106cc0c37937bcf6984bcf73b50c9e';
+    r'17b8be3bffa0107c416006511b83a9a92bb27239';
+
+/// Controller for managing the current user's role.
+///
+/// Fetches and stores the user role after login.
+/// The role is cleared on logout.
+
+final class UserRolesControllerFamily extends $Family
+    with
+        $ClassFamilyOverride<UserRolesController, AsyncValue<UserRoleEntity?>,
+            UserRoleEntity?, FutureOr<UserRoleEntity?>, String> {
+  UserRolesControllerFamily._()
+      : super(
+          retry: null,
+          name: r'userRolesControllerProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: false,
+        );
+
+  /// Controller for managing the current user's role.
+  ///
+  /// Fetches and stores the user role after login.
+  /// The role is cleared on logout.
+
+  UserRolesControllerProvider call(
+    String id,
+  ) =>
+      UserRolesControllerProvider._(argument: id, from: this);
+
+  @override
+  String toString() => r'userRolesControllerProvider';
+}
 
 /// Controller for managing the current user's role.
 ///
@@ -54,7 +103,12 @@ String _$userRolesControllerHash() =>
 /// The role is cleared on logout.
 
 abstract class _$UserRolesController extends $AsyncNotifier<UserRoleEntity?> {
-  FutureOr<UserRoleEntity?> build();
+  late final _$args = ref.$arg as String;
+  String get id => _$args;
+
+  FutureOr<UserRoleEntity?> build(
+    String id,
+  );
   @$mustCallSuper
   @override
   void runBuild() {
@@ -64,7 +118,11 @@ abstract class _$UserRolesController extends $AsyncNotifier<UserRoleEntity?> {
         AsyncValue<UserRoleEntity?>,
         Object?,
         Object?>;
-    element.handleCreate(ref, build);
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
   }
 }
 
@@ -111,4 +169,4 @@ final class IsAdminProvider extends $FunctionalProvider<bool, bool, bool>
   }
 }
 
-String _$isAdminHash() => r'72bc28d0c1e665b8516476a8665e4d5273574dc2';
+String _$isAdminHash() => r'd5fbda49fe95a57c99a342cafdd03f5b0a87b987';

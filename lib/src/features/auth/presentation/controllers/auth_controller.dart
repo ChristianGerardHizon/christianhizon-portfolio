@@ -56,7 +56,6 @@ class AuthController extends _$AuthController {
   Future<void> logout() async {
     await _repository.logout();
     // Clear user role on logout
-    ref.read(userRolesControllerProvider.notifier).clear();
     state = const AsyncData(null);
   }
 
@@ -95,7 +94,7 @@ class AuthController extends _$AuthController {
   /// Fetches the user role from the user_roles collection.
   void _fetchUserRole(String? userId) {
     if (userId != null && userId.isNotEmpty) {
-      ref.read(userRolesControllerProvider.notifier).fetchRole(userId);
+      ref.read(userRolesControllerProvider(userId).notifier);
     }
   }
 }
