@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/patient.dart';
 import '../../../domain/patient_record.dart';
+import 'edit_record_sheet.dart';
 
 /// Draggable bottom sheet showing record details.
 class RecordDetailSheet extends StatelessWidget {
@@ -13,6 +14,20 @@ class RecordDetailSheet extends StatelessWidget {
 
   final PatientRecord record;
   final Patient patient;
+
+  void _showEditSheet(BuildContext context) {
+    Navigator.pop(context);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      useSafeArea: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) => EditRecordSheet(record: record),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,16 +63,12 @@ class RecordDetailSheet extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Text('Record Details', style: theme.textTheme.titleLarge),
+                    child: Text('Record Details',
+                        style: theme.textTheme.titleLarge),
                   ),
                   IconButton(
                     icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Edit record coming soon')),
-                      );
-                    },
+                    onPressed: () => _showEditSheet(context),
                   ),
                   IconButton(
                     icon: const Icon(Icons.close),
@@ -79,8 +90,12 @@ class RecordDetailSheet extends StatelessWidget {
                             ? Colors.brown.shade100
                             : Colors.orange.shade100,
                         child: Icon(
-                          patient.species == 'Dog' ? Icons.pets : Icons.catching_pokemon,
-                          color: patient.species == 'Dog' ? Colors.brown : Colors.orange,
+                          patient.species == 'Dog'
+                              ? Icons.pets
+                              : Icons.catching_pokemon,
+                          color: patient.species == 'Dog'
+                              ? Colors.brown
+                              : Colors.orange,
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -90,7 +105,8 @@ class RecordDetailSheet extends StatelessWidget {
                           children: [
                             Text(
                               patient.name,
-                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                              style: theme.textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             Text('${patient.species} - ${patient.breed}'),
                           ],
@@ -132,7 +148,8 @@ class RecordDetailSheet extends StatelessWidget {
                           children: [
                             const Icon(Icons.monitor_weight, size: 32),
                             const SizedBox(height: 8),
-                            Text(record.weight, style: theme.textTheme.headlineSmall),
+                            Text(record.weight,
+                                style: theme.textTheme.headlineSmall),
                             Text('Weight', style: theme.textTheme.bodySmall),
                           ],
                         ),
@@ -148,8 +165,10 @@ class RecordDetailSheet extends StatelessWidget {
                           children: [
                             const Icon(Icons.thermostat, size: 32),
                             const SizedBox(height: 8),
-                            Text(record.temperature, style: theme.textTheme.headlineSmall),
-                            Text('Temperature', style: theme.textTheme.bodySmall),
+                            Text(record.temperature,
+                                style: theme.textTheme.headlineSmall),
+                            Text('Temperature',
+                                style: theme.textTheme.bodySmall),
                           ],
                         ),
                       ),
@@ -189,7 +208,8 @@ class RecordDetailSheet extends StatelessWidget {
                   OutlinedButton.icon(
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Print functionality coming soon')),
+                        const SnackBar(
+                            content: Text('Print functionality coming soon')),
                       );
                     },
                     icon: const Icon(Icons.print),
@@ -199,7 +219,8 @@ class RecordDetailSheet extends StatelessWidget {
                   OutlinedButton.icon(
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Share functionality coming soon')),
+                        const SnackBar(
+                            content: Text('Share functionality coming soon')),
                       );
                     },
                     icon: const Icon(Icons.share),
@@ -215,10 +236,24 @@ class RecordDetailSheet extends StatelessWidget {
   }
 
   String _formatDate(DateTime date) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
     final month = months[date.month - 1];
     final amPm = date.hour >= 12 ? 'PM' : 'AM';
-    final hour = date.hour > 12 ? date.hour - 12 : (date.hour == 0 ? 12 : date.hour);
+    final hour =
+        date.hour > 12 ? date.hour - 12 : (date.hour == 0 ? 12 : date.hour);
     final minute = date.minute.toString().padLeft(2, '0');
     return '$month ${date.day}, ${date.year} $hour:$minute $amPm';
   }

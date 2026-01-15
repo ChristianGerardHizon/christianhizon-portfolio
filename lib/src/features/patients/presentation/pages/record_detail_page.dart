@@ -6,6 +6,7 @@ import '../../domain/patient_record.dart';
 import '../controllers/patient_provider.dart';
 import '../controllers/patient_record_provider.dart';
 import '../widgets/sections/prescriptions_section.dart';
+import '../widgets/sheets/edit_record_sheet.dart';
 
 /// Full-screen page showing record details.
 class RecordDetailPage extends ConsumerWidget {
@@ -99,8 +100,14 @@ class RecordDetailPage extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Edit record coming soon')),
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                useSafeArea: true,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                builder: (context) => EditRecordSheet(record: record),
               );
             },
           ),
