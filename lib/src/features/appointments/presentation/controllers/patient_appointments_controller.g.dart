@@ -63,7 +63,7 @@ final class PatientAppointmentsControllerProvider
 }
 
 String _$patientAppointmentsControllerHash() =>
-    r'4366d60cf20c58c53437735d49070526979047ff';
+    r'e4864068b2c2c0f21b6eb40650fcd30376fa803d';
 
 /// Controller for managing paginated appointments for a specific patient.
 ///

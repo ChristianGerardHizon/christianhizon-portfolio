@@ -49,7 +49,7 @@ GoRouter router(Ref ref) {
         routes: [
           $dashboardRoute,
           $patientsShellRoute,
-          $appointmentsRoute,
+          $appointmentsShellRoute,
           $productsRoute,
           $salesRoute,
           $organizationRoute,
