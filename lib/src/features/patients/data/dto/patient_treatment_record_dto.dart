@@ -18,6 +18,7 @@ class PatientTreatmentRecordDto with PatientTreatmentRecordDtoMappable {
   final String patient;
   final String? date;
   final String? notes;
+  final String? appointment;
   final bool isDeleted;
   final String? created;
   final String? updated;
@@ -35,6 +36,7 @@ class PatientTreatmentRecordDto with PatientTreatmentRecordDtoMappable {
     required this.patient,
     this.date,
     this.notes,
+    this.appointment,
     this.isDeleted = false,
     this.created,
     this.updated,
@@ -68,6 +70,7 @@ class PatientTreatmentRecordDto with PatientTreatmentRecordDtoMappable {
       patient: json['patient'] as String? ?? '',
       date: json['date'] as String?,
       notes: json['notes'] as String?,
+      appointment: json['appointment'] as String?,
       isDeleted: json['isDeleted'] as bool? ?? false,
       created: json['created'] as String?,
       updated: json['updated'] as String?,
@@ -96,6 +99,7 @@ class PatientTreatmentRecordDto with PatientTreatmentRecordDtoMappable {
       treatment: expandedTreatment,
       date: date != null ? DateTime.tryParse(date!) : null,
       notes: notes,
+      appointment: appointment,
       isDeleted: isDeleted,
       created: created != null ? DateTime.tryParse(created!) : null,
       updated: updated != null ? DateTime.tryParse(updated!) : null,
@@ -109,6 +113,7 @@ class PatientTreatmentRecordDto with PatientTreatmentRecordDtoMappable {
       'patient': record.patientId,
       'date': record.date?.toIso8601String(),
       'notes': record.notes,
+      'appointment': record.appointment,
     };
   }
 }

@@ -68,6 +68,12 @@ class PatientRecordDtoMapper extends ClassMapperBase<PatientRecordDto> {
     _$branch,
     opt: true,
   );
+  static String? _$appointment(PatientRecordDto v) => v.appointment;
+  static const Field<PatientRecordDto, String> _f$appointment = Field(
+    'appointment',
+    _$appointment,
+    opt: true,
+  );
   static num? _$weightInKg(PatientRecordDto v) => v.weightInKg;
   static const Field<PatientRecordDto, num> _f$weightInKg = Field(
     'weightInKg',
@@ -117,6 +123,7 @@ class PatientRecordDtoMapper extends ClassMapperBase<PatientRecordDto> {
     #treatment: _f$treatment,
     #notes: _f$notes,
     #branch: _f$branch,
+    #appointment: _f$appointment,
     #weightInKg: _f$weightInKg,
     #tests: _f$tests,
     #temperature: _f$temperature,
@@ -136,6 +143,7 @@ class PatientRecordDtoMapper extends ClassMapperBase<PatientRecordDto> {
       treatment: data.dec(_f$treatment),
       notes: data.dec(_f$notes),
       branch: data.dec(_f$branch),
+      appointment: data.dec(_f$appointment),
       weightInKg: data.dec(_f$weightInKg),
       tests: data.dec(_f$tests),
       temperature: data.dec(_f$temperature),
@@ -217,6 +225,7 @@ abstract class PatientRecordDtoCopyWith<$R, $In extends PatientRecordDto, $Out>
     String? treatment,
     String? notes,
     String? branch,
+    String? appointment,
     num? weightInKg,
     String? tests,
     String? temperature,
@@ -248,6 +257,7 @@ class _PatientRecordDtoCopyWithImpl<$R, $Out>
     Object? treatment = $none,
     Object? notes = $none,
     Object? branch = $none,
+    Object? appointment = $none,
     Object? weightInKg = $none,
     Object? tests = $none,
     Object? temperature = $none,
@@ -265,6 +275,7 @@ class _PatientRecordDtoCopyWithImpl<$R, $Out>
       if (treatment != $none) #treatment: treatment,
       if (notes != $none) #notes: notes,
       if (branch != $none) #branch: branch,
+      if (appointment != $none) #appointment: appointment,
       if (weightInKg != $none) #weightInKg: weightInKg,
       if (tests != $none) #tests: tests,
       if (temperature != $none) #temperature: temperature,
@@ -284,6 +295,7 @@ class _PatientRecordDtoCopyWithImpl<$R, $Out>
     treatment: data.get(#treatment, or: $value.treatment),
     notes: data.get(#notes, or: $value.notes),
     branch: data.get(#branch, or: $value.branch),
+    appointment: data.get(#appointment, or: $value.appointment),
     weightInKg: data.get(#weightInKg, or: $value.weightInKg),
     tests: data.get(#tests, or: $value.tests),
     temperature: data.get(#temperature, or: $value.temperature),

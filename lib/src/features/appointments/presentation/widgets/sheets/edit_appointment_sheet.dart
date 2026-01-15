@@ -6,6 +6,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../domain/appointment_schedule.dart';
+import '../components/linked_items_section.dart';
+import 'record_treatment_selector_sheet.dart';
 
 /// Bottom sheet for editing an existing appointment.
 class EditAppointmentSheet extends HookConsumerWidget {
@@ -26,6 +28,10 @@ class EditAppointmentSheet extends HookConsumerWidget {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isSaving = useState(false);
     final hasTime = useState(appointment.hasTime);
+
+    // Linked records and treatments (initialized from appointment)
+    final linkedRecordIds = useState<List<String>>(appointment.patientRecords);
+    final linkedTreatmentIds = useState<List<String>>(appointment.treatmentRecords);
 
     Future<void> handleSave() async {
       if (!formKey.currentState!.saveAndValidate()) return;
@@ -59,13 +65,16 @@ class EditAppointmentSheet extends HookConsumerWidget {
         notes: values['notes'] as String?,
         status: appointment.status,
         patient: appointment.patient,
-        patientRecord: appointment.patientRecord,
+        patientRecords: linkedRecordIds.value,
+        treatmentRecords: linkedTreatmentIds.value,
         branch: appointment.branch,
         patientName: appointment.patientName,
         ownerName: appointment.ownerName,
         ownerContact: appointment.ownerContact,
         isDeleted: appointment.isDeleted,
         patientExpanded: appointment.patientExpanded,
+        patientRecordsExpanded: appointment.patientRecordsExpanded,
+        treatmentRecordsExpanded: appointment.treatmentRecordsExpanded,
         created: appointment.created,
         updated: appointment.updated,
       );
@@ -191,6 +200,22 @@ class EditAppointmentSheet extends HookConsumerWidget {
                 maxLines: 3,
                 enabled: !isSaving.value,
               ),
+              const SizedBox(height: 16),
+
+              // Linked items section
+              LinkedItemsSection(
+                patientRecords: appointment.patientRecordsExpanded,
+                treatmentRecords: appointment.treatmentRecordsExpanded,
+                showActions: !isSaving.value,
+                onLinkExistingPressed: appointment.patient != null
+                    ? () => _showRecordTreatmentSelector(
+                          context: context,
+                          patientId: appointment.patient!,
+                          linkedRecordIds: linkedRecordIds,
+                          linkedTreatmentIds: linkedTreatmentIds,
+                        )
+                    : null,
+              ),
               const SizedBox(height: 24),
 
               // Action buttons
@@ -220,6 +245,28 @@ class EditAppointmentSheet extends HookConsumerWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showRecordTreatmentSelector({
+    required BuildContext context,
+    required String patientId,
+    required ValueNotifier<List<String>> linkedRecordIds,
+    required ValueNotifier<List<String>> linkedTreatmentIds,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (context) => RecordTreatmentSelectorSheet(
+        patientId: patientId,
+        selectedRecordIds: linkedRecordIds.value,
+        selectedTreatmentIds: linkedTreatmentIds.value,
+        onSave: (recordIds, treatmentIds) {
+          linkedRecordIds.value = recordIds;
+          linkedTreatmentIds.value = treatmentIds;
+        },
       ),
     );
   }

@@ -8,6 +8,7 @@ import '../../../../../core/i18n/strings.g.dart';
 import '../../../../patients/domain/patient.dart';
 import '../../../../patients/presentation/controllers/patients_controller.dart';
 import '../../../domain/appointment_schedule.dart';
+import 'record_treatment_selector_sheet.dart';
 
 /// Bottom sheet for creating a new appointment.
 class CreateAppointmentSheet extends HookConsumerWidget {
@@ -32,6 +33,10 @@ class CreateAppointmentSheet extends HookConsumerWidget {
     final isSaving = useState(false);
     final hasTime = useState(false);
     final selectedPatient = useState<Patient?>(initialPatient);
+
+    // Linked records and treatments
+    final linkedRecordIds = useState<List<String>>([]);
+    final linkedTreatmentIds = useState<List<String>>([]);
 
     // Watch patients for dropdown
     final patientsAsync = ref.watch(patientsControllerProvider);
@@ -76,6 +81,8 @@ class CreateAppointmentSheet extends HookConsumerWidget {
         notes: values['notes'] as String?,
         status: AppointmentScheduleStatus.scheduled,
         patient: patient.id,
+        patientRecords: linkedRecordIds.value,
+        treatmentRecords: linkedTreatmentIds.value,
         patientName: patient.name,
         ownerName: patient.owner,
         ownerContact: patient.contactNumber,
@@ -279,6 +286,17 @@ class CreateAppointmentSheet extends HookConsumerWidget {
                 maxLines: 3,
                 enabled: !isSaving.value,
               ),
+              const SizedBox(height: 16),
+
+              // Link records/treatments section
+              _buildLinkSection(
+                context: context,
+                theme: theme,
+                selectedPatient: selectedPatient.value,
+                linkedRecordIds: linkedRecordIds,
+                linkedTreatmentIds: linkedTreatmentIds,
+                isSaving: isSaving.value,
+              ),
               const SizedBox(height: 24),
 
               // Action buttons
@@ -308,6 +326,110 @@ class CreateAppointmentSheet extends HookConsumerWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildLinkSection({
+    required BuildContext context,
+    required ThemeData theme,
+    required Patient? selectedPatient,
+    required ValueNotifier<List<String>> linkedRecordIds,
+    required ValueNotifier<List<String>> linkedTreatmentIds,
+    required bool isSaving,
+  }) {
+    final totalLinked = linkedRecordIds.value.length + linkedTreatmentIds.value.length;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.link,
+                  size: 18,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Link Records & Treatments',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (totalLinked > 0) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      totalLinked.toString(),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              selectedPatient == null
+                  ? 'Select a patient first to link existing records or treatments.'
+                  : 'Optionally link existing records or treatments to this appointment.',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 12),
+            FilledButton.tonal(
+              onPressed: selectedPatient == null || isSaving
+                  ? null
+                  : () => _showRecordTreatmentSelector(
+                        context: context,
+                        patientId: selectedPatient.id,
+                        linkedRecordIds: linkedRecordIds,
+                        linkedTreatmentIds: linkedTreatmentIds,
+                      ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.add_link, size: 18),
+                  const SizedBox(width: 8),
+                  Text(totalLinked > 0 ? 'Edit Links' : 'Link Existing'),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showRecordTreatmentSelector({
+    required BuildContext context,
+    required String patientId,
+    required ValueNotifier<List<String>> linkedRecordIds,
+    required ValueNotifier<List<String>> linkedTreatmentIds,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (context) => RecordTreatmentSelectorSheet(
+        patientId: patientId,
+        selectedRecordIds: linkedRecordIds.value,
+        selectedTreatmentIds: linkedTreatmentIds.value,
+        onSave: (recordIds, treatmentIds) {
+          linkedRecordIds.value = recordIds;
+          linkedTreatmentIds.value = treatmentIds;
+        },
       ),
     );
   }

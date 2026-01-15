@@ -69,6 +69,12 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
     _$branch,
     opt: true,
   );
+  static String? _$appointment(PatientRecord v) => v.appointment;
+  static const Field<PatientRecord, String> _f$appointment = Field(
+    'appointment',
+    _$appointment,
+    opt: true,
+  );
   static bool _$isDeleted(PatientRecord v) => v.isDeleted;
   static const Field<PatientRecord, bool> _f$isDeleted = Field(
     'isDeleted',
@@ -101,6 +107,7 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
     #notes: _f$notes,
     #tests: _f$tests,
     #branch: _f$branch,
+    #appointment: _f$appointment,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
@@ -118,6 +125,7 @@ class PatientRecordMapper extends ClassMapperBase<PatientRecord> {
       notes: data.dec(_f$notes),
       tests: data.dec(_f$tests),
       branch: data.dec(_f$branch),
+      appointment: data.dec(_f$appointment),
       isDeleted: data.dec(_f$isDeleted),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
@@ -197,6 +205,7 @@ abstract class PatientRecordCopyWith<$R, $In extends PatientRecord, $Out>
     String? notes,
     String? tests,
     String? branch,
+    String? appointment,
     bool? isDeleted,
     DateTime? created,
     DateTime? updated,
@@ -224,6 +233,7 @@ class _PatientRecordCopyWithImpl<$R, $Out>
     Object? notes = $none,
     Object? tests = $none,
     Object? branch = $none,
+    Object? appointment = $none,
     bool? isDeleted,
     Object? created = $none,
     Object? updated = $none,
@@ -239,6 +249,7 @@ class _PatientRecordCopyWithImpl<$R, $Out>
       if (notes != $none) #notes: notes,
       if (tests != $none) #tests: tests,
       if (branch != $none) #branch: branch,
+      if (appointment != $none) #appointment: appointment,
       if (isDeleted != null) #isDeleted: isDeleted,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
@@ -256,6 +267,7 @@ class _PatientRecordCopyWithImpl<$R, $Out>
     notes: data.get(#notes, or: $value.notes),
     tests: data.get(#tests, or: $value.tests),
     branch: data.get(#branch, or: $value.branch),
+    appointment: data.get(#appointment, or: $value.appointment),
     isDeleted: data.get(#isDeleted, or: $value.isDeleted),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),

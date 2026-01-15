@@ -16,6 +16,7 @@ class PatientRecord with PatientRecordMappable {
     this.notes,
     this.tests,
     this.branch,
+    this.appointment,
     this.isDeleted = false,
     this.created,
     this.updated,
@@ -50,6 +51,9 @@ class PatientRecord with PatientRecordMappable {
 
   /// FK to Branch.
   final String? branch;
+
+  /// FK to AppointmentSchedule (optional - for backward linking).
+  final String? appointment;
 
   /// Soft delete flag.
   final bool isDeleted;

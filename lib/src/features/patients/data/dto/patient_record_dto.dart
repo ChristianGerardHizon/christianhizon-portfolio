@@ -19,6 +19,7 @@ class PatientRecordDto with PatientRecordDtoMappable {
   final String? treatment;
   final String? notes;
   final String? branch;
+  final String? appointment;
   final num? weightInKg;
   final String? tests;
   final String? temperature;
@@ -36,6 +37,7 @@ class PatientRecordDto with PatientRecordDtoMappable {
     this.treatment,
     this.notes,
     this.branch,
+    this.appointment,
     this.weightInKg,
     this.tests,
     this.temperature,
@@ -58,6 +60,7 @@ class PatientRecordDto with PatientRecordDtoMappable {
       treatment: json['treatment'] as String?,
       notes: json['notes'] as String?,
       branch: json['branch'] as String?,
+      appointment: json['appointment'] as String?,
       weightInKg: json['weightInKg'] as num?,
       tests: json['tests'] as String?,
       temperature: json['temperature'] as String?,
@@ -80,6 +83,7 @@ class PatientRecordDto with PatientRecordDtoMappable {
       notes: notes,
       tests: tests,
       branch: branch,
+      appointment: appointment,
       isDeleted: isDeleted,
       created: created != null ? DateTime.tryParse(created!) : null,
       updated: updated != null ? DateTime.tryParse(updated!) : null,
@@ -100,6 +104,7 @@ class PatientRecordDto with PatientRecordDtoMappable {
       'treatment': record.treatment,
       'notes': record.notes,
       'branch': record.branch,
+      'appointment': record.appointment,
       'weightInKg': _parseWeight(record.weight),
       'tests': record.tests,
       'temperature': record.temperature,

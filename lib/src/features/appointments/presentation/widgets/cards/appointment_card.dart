@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/appointment_schedule.dart';
 import '../components/appointment_status_chip.dart';
+import '../components/linked_items_section.dart';
 
 /// Card widget displaying an appointment with actions.
 class AppointmentCard extends StatelessWidget {
@@ -52,6 +53,14 @@ class AppointmentCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // Linked items indicator
+                  if (appointment.hasLinkedItems) ...[
+                    LinkedItemsIndicator(
+                      recordCount: appointment.patientRecords.length,
+                      treatmentCount: appointment.treatmentRecords.length,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
                   AppointmentStatusChip(status: appointment.status),
                   if (onEdit != null || onDelete != null || onStatusChange != null)
                     _buildPopupMenu(context),

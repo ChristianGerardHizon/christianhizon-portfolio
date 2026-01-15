@@ -60,6 +60,12 @@ class PatientTreatmentRecordDtoMapper
     _$notes,
     opt: true,
   );
+  static String? _$appointment(PatientTreatmentRecordDto v) => v.appointment;
+  static const Field<PatientTreatmentRecordDto, String> _f$appointment = Field(
+    'appointment',
+    _$appointment,
+    opt: true,
+  );
   static bool _$isDeleted(PatientTreatmentRecordDto v) => v.isDeleted;
   static const Field<PatientTreatmentRecordDto, bool> _f$isDeleted = Field(
     'isDeleted',
@@ -109,6 +115,7 @@ class PatientTreatmentRecordDtoMapper
     #patient: _f$patient,
     #date: _f$date,
     #notes: _f$notes,
+    #appointment: _f$appointment,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
@@ -126,6 +133,7 @@ class PatientTreatmentRecordDtoMapper
       patient: data.dec(_f$patient),
       date: data.dec(_f$date),
       notes: data.dec(_f$notes),
+      appointment: data.dec(_f$appointment),
       isDeleted: data.dec(_f$isDeleted),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
@@ -217,6 +225,7 @@ abstract class PatientTreatmentRecordDtoCopyWith<
     String? patient,
     String? date,
     String? notes,
+    String? appointment,
     bool? isDeleted,
     String? created,
     String? updated,
@@ -247,6 +256,7 @@ class _PatientTreatmentRecordDtoCopyWithImpl<$R, $Out>
     String? patient,
     Object? date = $none,
     Object? notes = $none,
+    Object? appointment = $none,
     bool? isDeleted,
     Object? created = $none,
     Object? updated = $none,
@@ -262,6 +272,7 @@ class _PatientTreatmentRecordDtoCopyWithImpl<$R, $Out>
       if (patient != null) #patient: patient,
       if (date != $none) #date: date,
       if (notes != $none) #notes: notes,
+      if (appointment != $none) #appointment: appointment,
       if (isDeleted != null) #isDeleted: isDeleted,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
@@ -283,6 +294,7 @@ class _PatientTreatmentRecordDtoCopyWithImpl<$R, $Out>
         patient: data.get(#patient, or: $value.patient),
         date: data.get(#date, or: $value.date),
         notes: data.get(#notes, or: $value.notes),
+        appointment: data.get(#appointment, or: $value.appointment),
         isDeleted: data.get(#isDeleted, or: $value.isDeleted),
         created: data.get(#created, or: $value.created),
         updated: data.get(#updated, or: $value.updated),

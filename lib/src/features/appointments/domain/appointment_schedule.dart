@@ -2,6 +2,8 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:intl/intl.dart';
 
 import '../../patients/domain/patient.dart';
+import '../../patients/domain/patient_record.dart';
+import '../../patients/domain/patient_treatment_record.dart';
 
 part 'appointment_schedule.mapper.dart';
 
@@ -27,7 +29,8 @@ class AppointmentSchedule with AppointmentScheduleMappable {
     this.purpose,
     this.status = AppointmentScheduleStatus.scheduled,
     this.patient,
-    this.patientRecord,
+    this.patientRecords = const [],
+    this.treatmentRecords = const [],
     this.branch,
     this.patientName,
     this.ownerName,
@@ -36,6 +39,8 @@ class AppointmentSchedule with AppointmentScheduleMappable {
     this.created,
     this.updated,
     this.patientExpanded,
+    this.patientRecordsExpanded = const [],
+    this.treatmentRecordsExpanded = const [],
   });
 
   /// PocketBase record ID.
@@ -59,8 +64,11 @@ class AppointmentSchedule with AppointmentScheduleMappable {
   /// FK to Patient.
   final String? patient;
 
-  /// FK to PatientRecord.
-  final String? patientRecord;
+  /// List of linked PatientRecord IDs.
+  final List<String> patientRecords;
+
+  /// List of linked PatientTreatmentRecord IDs.
+  final List<String> treatmentRecords;
 
   /// FK to Branch.
   final String? branch;
@@ -85,6 +93,12 @@ class AppointmentSchedule with AppointmentScheduleMappable {
 
   /// Expanded patient relation (when loaded).
   final Patient? patientExpanded;
+
+  /// Expanded patient records (when loaded).
+  final List<PatientRecord> patientRecordsExpanded;
+
+  /// Expanded treatment records (when loaded).
+  final List<PatientTreatmentRecord> treatmentRecordsExpanded;
 
   /// PocketBase collection name.
   static const collectionName = 'appointment_schedules';
@@ -139,5 +153,15 @@ class AppointmentSchedule with AppointmentScheduleMappable {
   /// Returns true if appointment is upcoming.
   bool get isUpcoming {
     return date.isAfter(DateTime.now());
+  }
+
+  /// Returns true if appointment has linked records or treatments.
+  bool get hasLinkedItems {
+    return patientRecords.isNotEmpty || treatmentRecords.isNotEmpty;
+  }
+
+  /// Returns total count of linked items.
+  int get linkedItemsCount {
+    return patientRecords.length + treatmentRecords.length;
   }
 }
