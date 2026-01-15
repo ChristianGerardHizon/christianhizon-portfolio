@@ -253,4 +253,11 @@ abstract class PBFilters {
   /// Result: `branch = "id" && isDeleted = false`
   static PBFilter forBranch(String branchId) =>
       PBFilter().relation('branch', branchId).notDeleted();
+
+  /// Filter for treatment-related queries with soft delete.
+  ///
+  /// Example: `PBFilters.forTreatment(treatmentId).build()`
+  /// Result: `treatment = "id" && isDeleted = false`
+  static PBFilter forTreatment(String treatmentId) =>
+      PBFilter().relation('treatment', treatmentId).notDeleted();
 }

@@ -26,7 +26,7 @@ abstract class PocketBaseCollections {
   static const String productStocks = 'productStocks';
 
   // Appointments
-  static const String appointments = 'appointments';
+  static const String appointments = 'appointmentSchedules';
 
   // Sales
   static const String sales = 'sales';
