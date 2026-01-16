@@ -155,6 +155,7 @@ class ProductDetailPage extends HookConsumerWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (context) => EditProductSheet(productId: productId),
     );
   }
@@ -194,7 +195,8 @@ class ProductDetailPage extends HookConsumerWidget {
 
         if (context.mounted) {
           if (success) {
-            showSuccessSnackBar(context, message: 'Product deleted successfully');
+            showSuccessSnackBar(context,
+                message: 'Product deleted successfully');
             // Navigate back to products list
             const ProductsRoute().go(context);
           } else {

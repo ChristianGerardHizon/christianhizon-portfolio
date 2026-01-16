@@ -30,7 +30,8 @@ class CreateAppointmentSheet extends HookConsumerWidget {
 
   /// Callback when appointment is saved.
   /// Returns the created appointment on success, or null on failure.
-  final Future<AppointmentSchedule?> Function(AppointmentSchedule appointment) onSave;
+  final Future<AppointmentSchedule?> Function(AppointmentSchedule appointment)
+      onSave;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -54,7 +55,8 @@ class CreateAppointmentSheet extends HookConsumerWidget {
     final patientsAsync = ref.watch(patientsControllerProvider);
 
     // Helper to update records with appointment ID after creation (deferred linking)
-    Future<void> updateRecordsWithAppointmentId(String appointmentId, String patientId) async {
+    Future<void> updateRecordsWithAppointmentId(
+        String appointmentId, String patientId) async {
       // Update patient records with the appointment ID
       for (final record in linkedRecordsExpanded.value) {
         if (record.appointment == null || record.appointment!.isEmpty) {
@@ -93,7 +95,8 @@ class CreateAppointmentSheet extends HookConsumerWidget {
             updated: treatment.updated,
           );
           await ref
-              .read(patientTreatmentRecordsControllerProvider(patientId).notifier)
+              .read(
+                  patientTreatmentRecordsControllerProvider(patientId).notifier)
               .updateTreatmentRecord(updated);
         }
       }
@@ -195,7 +198,32 @@ class CreateAppointmentSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              Text('New Appointment', style: theme.textTheme.titleLarge),
+              // === HEADER WITH ACTIONS ===
+              Row(
+                children: [
+                  Expanded(
+                    child: Text('New Appointment',
+                        style: theme.textTheme.titleLarge),
+                  ),
+                  const SizedBox(width: 8),
+                  TextButton(
+                    onPressed:
+                        isSaving.value ? null : () => Navigator.pop(context),
+                    child: Text(t.common.cancel),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: isSaving.value ? null : handleSave,
+                    child: isSaving.value
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(t.common.save),
+                  ),
+                ],
+              ),
               const SizedBox(height: 24),
 
               // Patient selector
@@ -223,7 +251,8 @@ class CreateAppointmentSheet extends HookConsumerWidget {
                       final query = textEditingValue.text.toLowerCase();
                       return patients.where((patient) {
                         return patient.name.toLowerCase().contains(query) ||
-                            (patient.owner?.toLowerCase().contains(query) ?? false);
+                            (patient.owner?.toLowerCase().contains(query) ??
+                                false);
                       }).take(10);
                     },
                     onSelected: (patient) {
@@ -305,7 +334,8 @@ class CreateAppointmentSheet extends HookConsumerWidget {
               SwitchListTile(
                 title: const Text('Include specific time'),
                 value: hasTime.value,
-                onChanged: isSaving.value ? null : (value) => hasTime.value = value,
+                onChanged:
+                    isSaving.value ? null : (value) => hasTime.value = value,
                 contentPadding: EdgeInsets.zero,
               ),
 
@@ -405,32 +435,7 @@ class CreateAppointmentSheet extends HookConsumerWidget {
                   ),
                 ),
               ],
-              const SizedBox(height: 24),
-
-              // Action buttons
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: isSaving.value ? null : () => Navigator.pop(context),
-                      child: Text(t.common.cancel),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: isSaving.value ? null : handleSave,
-                      child: isSaving.value
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : Text(t.common.save),
-                    ),
-                  ),
-                ],
-              ),
+              // Bottom actions removed (moved to header)
             ],
           ),
         ),
@@ -445,12 +450,14 @@ class CreateAppointmentSheet extends HookConsumerWidget {
     required ValueNotifier<List<String>> linkedRecordIds,
     required ValueNotifier<List<String>> linkedTreatmentIds,
     required ValueNotifier<List<PatientRecord>> linkedRecordsExpanded,
-    required ValueNotifier<List<PatientTreatmentRecord>> linkedTreatmentsExpanded,
+    required ValueNotifier<List<PatientTreatmentRecord>>
+        linkedTreatmentsExpanded,
   }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (context) => RecordTreatmentSelectorSheet(
         patientId: patientId,
         selectedRecordIds: linkedRecordIds.value,
@@ -489,7 +496,10 @@ class CreateAppointmentSheet extends HookConsumerWidget {
               .createRecordAndReturn(record);
           if (created != null) {
             linkedRecordIds.value = [...linkedRecordIds.value, created.id];
-            linkedRecordsExpanded.value = [...linkedRecordsExpanded.value, created];
+            linkedRecordsExpanded.value = [
+              ...linkedRecordsExpanded.value,
+              created
+            ];
           }
           return created;
         },
@@ -502,7 +512,8 @@ class CreateAppointmentSheet extends HookConsumerWidget {
     required WidgetRef ref,
     required String patientId,
     required ValueNotifier<List<String>> linkedTreatmentIds,
-    required ValueNotifier<List<PatientTreatmentRecord>> linkedTreatmentsExpanded,
+    required ValueNotifier<List<PatientTreatmentRecord>>
+        linkedTreatmentsExpanded,
   }) {
     showTreatmentRecordSheet(
       context,
@@ -514,7 +525,10 @@ class CreateAppointmentSheet extends HookConsumerWidget {
             .createTreatmentRecordAndReturn(treatment);
         if (created != null) {
           linkedTreatmentIds.value = [...linkedTreatmentIds.value, created.id];
-          linkedTreatmentsExpanded.value = [...linkedTreatmentsExpanded.value, created];
+          linkedTreatmentsExpanded.value = [
+            ...linkedTreatmentsExpanded.value,
+            created
+          ];
         }
         return created;
       },

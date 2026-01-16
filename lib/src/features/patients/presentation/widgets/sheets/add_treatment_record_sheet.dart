@@ -31,7 +31,8 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
   final String? appointmentId;
 
   /// Callback when saving. Returns the created/updated record on success, null on failure.
-  final Future<PatientTreatmentRecord?> Function(PatientTreatmentRecord record) onSave;
+  final Future<PatientTreatmentRecord?> Function(PatientTreatmentRecord record)
+      onSave;
 
   static const _fieldLabels = {
     'treatment': 'Treatment Type',
@@ -83,8 +84,9 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
           context.pop();
           showSuccessSnackBar(
             context,
-            message:
-                isEditing ? 'Treatment record updated' : 'Treatment record added',
+            message: isEditing
+                ? 'Treatment record updated'
+                : 'Treatment record added',
           );
         } else {
           showErrorSnackBar(
@@ -130,9 +132,34 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
                 ),
                 const SizedBox(height: 16),
 
-                Text(
-                  isEditing ? 'Edit Treatment Record' : 'Add Treatment Record',
-                  style: theme.textTheme.titleLarge,
+                // === HEADER WITH ACTIONS ===
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        isEditing
+                            ? 'Edit Treatment Record'
+                            : 'Add Treatment Record',
+                        style: theme.textTheme.titleLarge,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: isSaving.value ? null : () => context.pop(),
+                      child: Text(t.common.cancel),
+                    ),
+                    const SizedBox(width: 8),
+                    FilledButton(
+                      onPressed: isSaving.value ? null : handleSave,
+                      child: isSaving.value
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(t.common.save),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 24),
 
@@ -199,29 +226,6 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
                 const SizedBox(height: 24),
 
                 // Buttons
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: isSaving.value ? null : () => context.pop(),
-                        child: Text(t.common.cancel),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: FilledButton(
-                        onPressed: isSaving.value ? null : handleSave,
-                        child: isSaving.value
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : Text(t.common.save),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
@@ -244,7 +248,9 @@ void showTreatmentRecordSheet(
   BuildContext context, {
   required String patientId,
   PatientTreatmentRecord? existingRecord,
-  required Future<PatientTreatmentRecord?> Function(PatientTreatmentRecord record) onSave,
+  required Future<PatientTreatmentRecord?> Function(
+          PatientTreatmentRecord record)
+      onSave,
   String? appointmentId,
 }) {
   showModalBottomSheet(

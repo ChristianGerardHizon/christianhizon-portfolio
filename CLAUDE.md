@@ -41,7 +41,11 @@ lib/src/
 dart pub get
 
 # Run code generation (mappers, serializers, routes)
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build --delete-conflicting-outputs --low-resources-mode
+
+or
+
+dart run build_runner watch -d --low-resources-mode
 
 # Generate localization files
 dart run slang
@@ -230,3 +234,7 @@ Detailed documentation is available in the `/docs` directory:
 - **[Entities](docs/entities.md)** - All domain models with fields, relationships, and collection names (18 collections, 5 enums)
 - **[Folder Structure](docs/folder_structure.md)** - Architecture layers, feature module structure, DTOs, repositories, and code patterns
 - **[UI Structure](docs/ui.md)** - Responsive layouts, navigation hierarchy, routing structure, and component architecture
+
+
+## Testing
+ check docs/testing.md for the testing account 

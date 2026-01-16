@@ -16,7 +16,8 @@ class _PrescriptionEntry {
     String? instructions,
   })  : medicationController = TextEditingController(text: medication ?? ''),
         dosageController = TextEditingController(text: dosage ?? ''),
-        instructionsController = TextEditingController(text: instructions ?? ''),
+        instructionsController =
+            TextEditingController(text: instructions ?? ''),
         showInstructions = ValueNotifier(instructions?.isNotEmpty ?? false);
 
   final TextEditingController medicationController;
@@ -153,7 +154,8 @@ class AddPrescriptionGroupSheet extends HookConsumerWidget {
         if (failCount == 0) {
           showSuccessSnackBar(
             context,
-            message: '$successCount prescription${successCount > 1 ? 's' : ''} added',
+            message:
+                '$successCount prescription${successCount > 1 ? 's' : ''} added',
           );
         } else {
           showErrorSnackBar(
@@ -200,12 +202,13 @@ class AddPrescriptionGroupSheet extends HookConsumerWidget {
               // Title with count badge
               Row(
                 children: [
-                  Text(
-                    'Add Prescription Group',
-                    style: theme.textTheme.titleLarge,
+                  Expanded(
+                    child: Text(
+                      'Add Prescription Group',
+                      style: theme.textTheme.titleLarge,
+                    ),
                   ),
-                  const Spacer(),
-                  if (validCount > 0)
+                  if (validCount > 0) ...[
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -222,6 +225,23 @@ class AddPrescriptionGroupSheet extends HookConsumerWidget {
                         ),
                       ),
                     ),
+                    const SizedBox(width: 8),
+                  ],
+                  TextButton(
+                    onPressed: isSaving.value ? null : () => context.pop(),
+                    child: Text(t.common.cancel),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: isSaving.value ? null : handleSave,
+                    child: isSaving.value
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(t.common.save),
+                  ),
                 ],
               ),
               const SizedBox(height: 24),
@@ -253,7 +273,8 @@ class AddPrescriptionGroupSheet extends HookConsumerWidget {
                             ),
                           ),
                           Text(
-                            DateFormat('MMMM d, yyyy').format(selectedDate.value),
+                            DateFormat('MMMM d, yyyy')
+                                .format(selectedDate.value),
                             style: theme.textTheme.bodyLarge?.copyWith(
                               fontWeight: FontWeight.w500,
                             ),
@@ -314,29 +335,6 @@ class AddPrescriptionGroupSheet extends HookConsumerWidget {
               const SizedBox(height: 24),
 
               // Buttons
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: isSaving.value ? null : () => context.pop(),
-                      child: Text(t.common.cancel),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: isSaving.value ? null : handleSave,
-                      child: isSaving.value
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : Text(validCount > 1 ? 'Save All ($validCount)' : t.common.save),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

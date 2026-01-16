@@ -104,6 +104,7 @@ class RecordDetailPage extends ConsumerWidget {
                 context: context,
                 isScrollControlled: true,
                 useSafeArea: true,
+                useRootNavigator: true,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 ),
@@ -182,7 +183,8 @@ class RecordDetailPage extends ConsumerWidget {
                 OutlinedButton.icon(
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Print functionality coming soon')),
+                      const SnackBar(
+                          content: Text('Print functionality coming soon')),
                     );
                   },
                   icon: const Icon(Icons.print),
@@ -192,7 +194,8 @@ class RecordDetailPage extends ConsumerWidget {
                 OutlinedButton.icon(
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Share functionality coming soon')),
+                      const SnackBar(
+                          content: Text('Share functionality coming soon')),
                     );
                   },
                   icon: const Icon(Icons.share),
@@ -229,7 +232,8 @@ class RecordDetailPage extends ConsumerWidget {
                 children: [
                   Text(
                     patient.name,
-                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Text('${patient.species ?? ''} - ${patient.breed ?? ''}'),
                 ],
@@ -268,7 +272,8 @@ class RecordDetailPage extends ConsumerWidget {
                 children: [
                   const Icon(Icons.thermostat, size: 32),
                   const SizedBox(height: 8),
-                  Text(record.temperature, style: theme.textTheme.headlineSmall),
+                  Text(record.temperature,
+                      style: theme.textTheme.headlineSmall),
                   Text('Temperature', style: theme.textTheme.bodySmall),
                 ],
               ),
@@ -280,10 +285,24 @@ class RecordDetailPage extends ConsumerWidget {
   }
 
   String _formatDate(DateTime date) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
     final month = months[date.month - 1];
     final amPm = date.hour >= 12 ? 'PM' : 'AM';
-    final hour = date.hour > 12 ? date.hour - 12 : (date.hour == 0 ? 12 : date.hour);
+    final hour =
+        date.hour > 12 ? date.hour - 12 : (date.hour == 0 ? 12 : date.hour);
     final minute = date.minute.toString().padLeft(2, '0');
     return '$month ${date.day}, ${date.year} $hour:$minute $amPm';
   }

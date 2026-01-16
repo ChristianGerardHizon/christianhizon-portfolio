@@ -38,13 +38,15 @@ class RecordTreatmentSelectorSheet extends HookConsumerWidget {
 
     // Local state for selections
     final selectedRecords = useState<Set<String>>(selectedRecordIds.toSet());
-    final selectedTreatments = useState<Set<String>>(selectedTreatmentIds.toSet());
+    final selectedTreatments =
+        useState<Set<String>>(selectedTreatmentIds.toSet());
     final recordsExpanded = useState(true);
     final treatmentsExpanded = useState(true);
 
     // Watch patient records and treatments
     final recordsAsync = ref.watch(patientRecordsControllerProvider(patientId));
-    final treatmentsAsync = ref.watch(patientTreatmentRecordsControllerProvider(patientId));
+    final treatmentsAsync =
+        ref.watch(patientTreatmentRecordsControllerProvider(patientId));
 
     void handleSave() {
       onSave(
@@ -78,7 +80,25 @@ class RecordTreatmentSelectorSheet extends HookConsumerWidget {
           ),
           const SizedBox(height: 16),
 
-          Text('Link Records & Treatments', style: theme.textTheme.titleLarge),
+          // === HEADER WITH ACTIONS ===
+          Row(
+            children: [
+              Expanded(
+                child: Text('Link Records & Treatments',
+                    style: theme.textTheme.titleLarge),
+              ),
+              const SizedBox(width: 8),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(t.common.cancel),
+              ),
+              const SizedBox(width: 8),
+              FilledButton(
+                onPressed: handleSave,
+                child: const Text('Link'),
+              ),
+            ],
+          ),
           const SizedBox(height: 8),
           Text(
             'Select existing records and treatments to link to this appointment.',
@@ -100,7 +120,8 @@ class RecordTreatmentSelectorSheet extends HookConsumerWidget {
                     title: 'Patient Records',
                     icon: Icons.medical_services_outlined,
                     isExpanded: recordsExpanded.value,
-                    onExpansionChanged: (expanded) => recordsExpanded.value = expanded,
+                    onExpansionChanged: (expanded) =>
+                        recordsExpanded.value = expanded,
                     selectedCount: selectedRecords.value.length,
                     child: recordsAsync.when(
                       loading: () => const Center(
@@ -129,12 +150,18 @@ class RecordTreatmentSelectorSheet extends HookConsumerWidget {
                           children: records.map((record) {
                             return _RecordCheckboxTile(
                               record: record,
-                              isSelected: selectedRecords.value.contains(record.id),
+                              isSelected:
+                                  selectedRecords.value.contains(record.id),
                               onChanged: (selected) {
                                 if (selected == true) {
-                                  selectedRecords.value = {...selectedRecords.value, record.id};
+                                  selectedRecords.value = {
+                                    ...selectedRecords.value,
+                                    record.id
+                                  };
                                 } else {
-                                  selectedRecords.value = {...selectedRecords.value}..remove(record.id);
+                                  selectedRecords.value = {
+                                    ...selectedRecords.value
+                                  }..remove(record.id);
                                 }
                               },
                             );
@@ -151,7 +178,8 @@ class RecordTreatmentSelectorSheet extends HookConsumerWidget {
                     title: 'Treatments',
                     icon: Icons.healing_outlined,
                     isExpanded: treatmentsExpanded.value,
-                    onExpansionChanged: (expanded) => treatmentsExpanded.value = expanded,
+                    onExpansionChanged: (expanded) =>
+                        treatmentsExpanded.value = expanded,
                     selectedCount: selectedTreatments.value.length,
                     child: treatmentsAsync.when(
                       loading: () => const Center(
@@ -180,12 +208,18 @@ class RecordTreatmentSelectorSheet extends HookConsumerWidget {
                           children: treatments.map((treatment) {
                             return _TreatmentCheckboxTile(
                               treatment: treatment,
-                              isSelected: selectedTreatments.value.contains(treatment.id),
+                              isSelected: selectedTreatments.value
+                                  .contains(treatment.id),
                               onChanged: (selected) {
                                 if (selected == true) {
-                                  selectedTreatments.value = {...selectedTreatments.value, treatment.id};
+                                  selectedTreatments.value = {
+                                    ...selectedTreatments.value,
+                                    treatment.id
+                                  };
                                 } else {
-                                  selectedTreatments.value = {...selectedTreatments.value}..remove(treatment.id);
+                                  selectedTreatments.value = {
+                                    ...selectedTreatments.value
+                                  }..remove(treatment.id);
                                 }
                               },
                             );
@@ -200,24 +234,7 @@ class RecordTreatmentSelectorSheet extends HookConsumerWidget {
           ),
           const SizedBox(height: 16),
 
-          // Action buttons
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(t.common.cancel),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: FilledButton(
-                  onPressed: handleSave,
-                  child: Text('Link Selected'),
-                ),
-              ),
-            ],
-          ),
+          // Bottom actions removed (moved to header)
         ],
       ),
     );
@@ -300,7 +317,8 @@ class _RecordCheckboxTile extends StatelessWidget {
       secondary: record.appointment != null
           ? Tooltip(
               message: 'Already linked to an appointment',
-              child: Icon(Icons.link, color: theme.colorScheme.primary, size: 20),
+              child:
+                  Icon(Icons.link, color: theme.colorScheme.primary, size: 20),
             )
           : null,
       controlAffinity: ListTileControlAffinity.leading,
@@ -329,7 +347,9 @@ class _TreatmentCheckboxTile extends StatelessWidget {
       value: isSelected,
       onChanged: onChanged,
       title: Text(
-        treatment.treatmentName.isNotEmpty ? treatment.treatmentName : 'Unknown treatment',
+        treatment.treatmentName.isNotEmpty
+            ? treatment.treatmentName
+            : 'Unknown treatment',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
@@ -342,7 +362,8 @@ class _TreatmentCheckboxTile extends StatelessWidget {
       secondary: treatment.appointment != null
           ? Tooltip(
               message: 'Already linked to an appointment',
-              child: Icon(Icons.link, color: theme.colorScheme.primary, size: 20),
+              child:
+                  Icon(Icons.link, color: theme.colorScheme.primary, size: 20),
             )
           : null,
       controlAffinity: ListTileControlAffinity.leading,

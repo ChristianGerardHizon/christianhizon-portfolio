@@ -77,9 +77,8 @@ class EditRecordSheet extends HookConsumerWidget {
         patientId: record.patientId,
         date: selectedDate.value,
         diagnosis: diagnosisController.text,
-        weight: weightController.text.isEmpty
-            ? ''
-            : '${weightController.text} kg',
+        weight:
+            weightController.text.isEmpty ? '' : '${weightController.text} kg',
         temperature: temperatureController.text.isEmpty
             ? ''
             : '${temperatureController.text} °C',
@@ -154,7 +153,31 @@ class EditRecordSheet extends HookConsumerWidget {
             ),
             const SizedBox(height: 16),
 
-            Text('Edit Record', style: theme.textTheme.titleLarge),
+            // === HEADER WITH ACTIONS ===
+            Row(
+              children: [
+                Expanded(
+                  child: Text('Edit Record', style: theme.textTheme.titleLarge),
+                ),
+                const SizedBox(width: 8),
+                TextButton(
+                  onPressed:
+                      isSaving.value ? null : () => Navigator.pop(context),
+                  child: Text(t.common.cancel),
+                ),
+                const SizedBox(width: 8),
+                FilledButton(
+                  onPressed: isSaving.value ? null : handleSave,
+                  child: isSaving.value
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(t.common.save),
+                ),
+              ],
+            ),
             const SizedBox(height: 24),
 
             // Date picker
@@ -225,30 +248,6 @@ class EditRecordSheet extends HookConsumerWidget {
               enabled: !isSaving.value,
             ),
             const SizedBox(height: 24),
-
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: isSaving.value ? null : () => Navigator.pop(context),
-                    child: Text(t.common.cancel),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: FilledButton(
-                    onPressed: isSaving.value ? null : handleSave,
-                    child: isSaving.value
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Text(t.common.save),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),

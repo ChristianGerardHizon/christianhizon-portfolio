@@ -37,7 +37,8 @@ class EditAppointmentSheet extends HookConsumerWidget {
 
     // Linked records and treatments (initialized from appointment)
     final linkedRecordIds = useState<List<String>>(appointment.patientRecords);
-    final linkedTreatmentIds = useState<List<String>>(appointment.treatmentRecords);
+    final linkedTreatmentIds =
+        useState<List<String>>(appointment.treatmentRecords);
 
     // Expanded records/treatments for display (tracks newly created items)
     final linkedRecordsExpanded = useState<List<PatientRecord>>(
@@ -137,7 +138,32 @@ class EditAppointmentSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              Text('Edit Appointment', style: theme.textTheme.titleLarge),
+              // === HEADER WITH ACTIONS ===
+              Row(
+                children: [
+                  Expanded(
+                    child: Text('Edit Appointment',
+                        style: theme.textTheme.titleLarge),
+                  ),
+                  const SizedBox(width: 8),
+                  TextButton(
+                    onPressed:
+                        isSaving.value ? null : () => Navigator.pop(context),
+                    child: Text(t.common.cancel),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: isSaving.value ? null : handleSave,
+                    child: isSaving.value
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(t.common.save),
+                  ),
+                ],
+              ),
               const SizedBox(height: 24),
 
               // Patient info (read-only)
@@ -169,7 +195,8 @@ class EditAppointmentSheet extends HookConsumerWidget {
               SwitchListTile(
                 title: const Text('Include specific time'),
                 value: hasTime.value,
-                onChanged: isSaving.value ? null : (value) => hasTime.value = value,
+                onChanged:
+                    isSaving.value ? null : (value) => hasTime.value = value,
                 contentPadding: EdgeInsets.zero,
               ),
 
@@ -183,7 +210,8 @@ class EditAppointmentSheet extends HookConsumerWidget {
                     prefixIcon: Icon(Icons.access_time),
                   ),
                   inputType: InputType.time,
-                  initialValue: appointment.hasTime ? appointment.date : DateTime.now(),
+                  initialValue:
+                      appointment.hasTime ? appointment.date : DateTime.now(),
                   enabled: !isSaving.value,
                 ),
                 const SizedBox(height: 16),
@@ -252,32 +280,7 @@ class EditAppointmentSheet extends HookConsumerWidget {
                         )
                     : null,
               ),
-              const SizedBox(height: 24),
-
-              // Action buttons
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: isSaving.value ? null : () => Navigator.pop(context),
-                      child: Text(t.common.cancel),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: isSaving.value ? null : handleSave,
-                      child: isSaving.value
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : Text(t.common.save),
-                    ),
-                  ),
-                ],
-              ),
+              // Bottom actions removed (moved to header)
             ],
           ),
         ),
@@ -291,12 +294,14 @@ class EditAppointmentSheet extends HookConsumerWidget {
     required ValueNotifier<List<String>> linkedRecordIds,
     required ValueNotifier<List<String>> linkedTreatmentIds,
     required ValueNotifier<List<PatientRecord>> linkedRecordsExpanded,
-    required ValueNotifier<List<PatientTreatmentRecord>> linkedTreatmentsExpanded,
+    required ValueNotifier<List<PatientTreatmentRecord>>
+        linkedTreatmentsExpanded,
   }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (context) => RecordTreatmentSelectorSheet(
         patientId: patientId,
         selectedRecordIds: linkedRecordIds.value,
@@ -354,7 +359,8 @@ class EditAppointmentSheet extends HookConsumerWidget {
     required String patientId,
     required String appointmentId,
     required ValueNotifier<List<String>> linkedTreatmentIds,
-    required ValueNotifier<List<PatientTreatmentRecord>> linkedTreatmentsExpanded,
+    required ValueNotifier<List<PatientTreatmentRecord>>
+        linkedTreatmentsExpanded,
   }) {
     showTreatmentRecordSheet(
       context,
