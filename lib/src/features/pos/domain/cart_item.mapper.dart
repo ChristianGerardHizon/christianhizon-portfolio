@@ -22,29 +22,73 @@ class CartItemMapper extends ClassMapperBase<CartItem> {
   @override
   final String id = 'CartItem';
 
-  static Product _$product(CartItem v) => v.product;
+  static String _$id(CartItem v) => v.id;
+  static const Field<CartItem, String> _f$id = Field(
+    'id',
+    _$id,
+    opt: true,
+    def: '',
+  );
+  static String _$cartId(CartItem v) => v.cartId;
+  static const Field<CartItem, String> _f$cartId = Field(
+    'cartId',
+    _$cartId,
+    opt: true,
+    def: '',
+  );
+  static String _$productId(CartItem v) => v.productId;
+  static const Field<CartItem, String> _f$productId = Field(
+    'productId',
+    _$productId,
+    opt: true,
+    def: '',
+  );
+  static Product? _$product(CartItem v) => v.product;
   static const Field<CartItem, Product> _f$product = Field(
     'product',
     _$product,
+    opt: true,
   );
-  static int _$quantity(CartItem v) => v.quantity;
-  static const Field<CartItem, int> _f$quantity = Field(
+  static num _$quantity(CartItem v) => v.quantity;
+  static const Field<CartItem, num> _f$quantity = Field(
     'quantity',
     _$quantity,
     opt: true,
     def: 1,
   );
+  static DateTime? _$created(CartItem v) => v.created;
+  static const Field<CartItem, DateTime> _f$created = Field(
+    'created',
+    _$created,
+    opt: true,
+  );
+  static DateTime? _$updated(CartItem v) => v.updated;
+  static const Field<CartItem, DateTime> _f$updated = Field(
+    'updated',
+    _$updated,
+    opt: true,
+  );
 
   @override
   final MappableFields<CartItem> fields = const {
+    #id: _f$id,
+    #cartId: _f$cartId,
+    #productId: _f$productId,
     #product: _f$product,
     #quantity: _f$quantity,
+    #created: _f$created,
+    #updated: _f$updated,
   };
 
   static CartItem _instantiate(DecodingData data) {
     return CartItem(
+      id: data.dec(_f$id),
+      cartId: data.dec(_f$cartId),
+      productId: data.dec(_f$productId),
       product: data.dec(_f$product),
       quantity: data.dec(_f$quantity),
+      created: data.dec(_f$created),
+      updated: data.dec(_f$updated),
     );
   }
 
@@ -105,8 +149,16 @@ extension CartItemValueCopy<$R, $Out> on ObjectCopyWith<$R, CartItem, $Out> {
 
 abstract class CartItemCopyWith<$R, $In extends CartItem, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  ProductCopyWith<$R, Product, Product> get product;
-  $R call({Product? product, int? quantity});
+  ProductCopyWith<$R, Product, Product>? get product;
+  $R call({
+    String? id,
+    String? cartId,
+    String? productId,
+    Product? product,
+    num? quantity,
+    DateTime? created,
+    DateTime? updated,
+  });
   CartItemCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -119,19 +171,37 @@ class _CartItemCopyWithImpl<$R, $Out>
   late final ClassMapperBase<CartItem> $mapper =
       CartItemMapper.ensureInitialized();
   @override
-  ProductCopyWith<$R, Product, Product> get product =>
-      $value.product.copyWith.$chain((v) => call(product: v));
+  ProductCopyWith<$R, Product, Product>? get product =>
+      $value.product?.copyWith.$chain((v) => call(product: v));
   @override
-  $R call({Product? product, int? quantity}) => $apply(
+  $R call({
+    String? id,
+    String? cartId,
+    String? productId,
+    Object? product = $none,
+    num? quantity,
+    Object? created = $none,
+    Object? updated = $none,
+  }) => $apply(
     FieldCopyWithData({
-      if (product != null) #product: product,
+      if (id != null) #id: id,
+      if (cartId != null) #cartId: cartId,
+      if (productId != null) #productId: productId,
+      if (product != $none) #product: product,
       if (quantity != null) #quantity: quantity,
+      if (created != $none) #created: created,
+      if (updated != $none) #updated: updated,
     }),
   );
   @override
   CartItem $make(CopyWithData data) => CartItem(
+    id: data.get(#id, or: $value.id),
+    cartId: data.get(#cartId, or: $value.cartId),
+    productId: data.get(#productId, or: $value.productId),
     product: data.get(#product, or: $value.product),
     quantity: data.get(#quantity, or: $value.quantity),
+    created: data.get(#created, or: $value.created),
+    updated: data.get(#updated, or: $value.updated),
   );
 
   @override

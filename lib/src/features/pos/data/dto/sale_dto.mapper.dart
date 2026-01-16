@@ -1,0 +1,265 @@
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
+// ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
+
+part of 'sale_dto.dart';
+
+class SaleDtoMapper extends ClassMapperBase<SaleDto> {
+  SaleDtoMapper._();
+
+  static SaleDtoMapper? _instance;
+  static SaleDtoMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = SaleDtoMapper._());
+    }
+    return _instance!;
+  }
+
+  @override
+  final String id = 'SaleDto';
+
+  static String _$id(SaleDto v) => v.id;
+  static const Field<SaleDto, String> _f$id = Field('id', _$id);
+  static String _$collectionId(SaleDto v) => v.collectionId;
+  static const Field<SaleDto, String> _f$collectionId = Field(
+    'collectionId',
+    _$collectionId,
+  );
+  static String _$collectionName(SaleDto v) => v.collectionName;
+  static const Field<SaleDto, String> _f$collectionName = Field(
+    'collectionName',
+    _$collectionName,
+  );
+  static String _$receiptNumber(SaleDto v) => v.receiptNumber;
+  static const Field<SaleDto, String> _f$receiptNumber = Field(
+    'receiptNumber',
+    _$receiptNumber,
+  );
+  static String _$branch(SaleDto v) => v.branch;
+  static const Field<SaleDto, String> _f$branch = Field('branch', _$branch);
+  static String _$cashier(SaleDto v) => v.cashier;
+  static const Field<SaleDto, String> _f$cashier = Field('cashier', _$cashier);
+  static num _$totalAmount(SaleDto v) => v.totalAmount;
+  static const Field<SaleDto, num> _f$totalAmount = Field(
+    'totalAmount',
+    _$totalAmount,
+  );
+  static String _$paymentMethod(SaleDto v) => v.paymentMethod;
+  static const Field<SaleDto, String> _f$paymentMethod = Field(
+    'paymentMethod',
+    _$paymentMethod,
+  );
+  static String _$status(SaleDto v) => v.status;
+  static const Field<SaleDto, String> _f$status = Field('status', _$status);
+  static String? _$customer(SaleDto v) => v.customer;
+  static const Field<SaleDto, String> _f$customer = Field(
+    'customer',
+    _$customer,
+    opt: true,
+  );
+  static String? _$paymentRef(SaleDto v) => v.paymentRef;
+  static const Field<SaleDto, String> _f$paymentRef = Field(
+    'paymentRef',
+    _$paymentRef,
+    opt: true,
+  );
+  static String? _$notes(SaleDto v) => v.notes;
+  static const Field<SaleDto, String> _f$notes = Field(
+    'notes',
+    _$notes,
+    opt: true,
+  );
+  static String? _$created(SaleDto v) => v.created;
+  static const Field<SaleDto, String> _f$created = Field(
+    'created',
+    _$created,
+    opt: true,
+  );
+  static String? _$updated(SaleDto v) => v.updated;
+  static const Field<SaleDto, String> _f$updated = Field(
+    'updated',
+    _$updated,
+    opt: true,
+  );
+
+  @override
+  final MappableFields<SaleDto> fields = const {
+    #id: _f$id,
+    #collectionId: _f$collectionId,
+    #collectionName: _f$collectionName,
+    #receiptNumber: _f$receiptNumber,
+    #branch: _f$branch,
+    #cashier: _f$cashier,
+    #totalAmount: _f$totalAmount,
+    #paymentMethod: _f$paymentMethod,
+    #status: _f$status,
+    #customer: _f$customer,
+    #paymentRef: _f$paymentRef,
+    #notes: _f$notes,
+    #created: _f$created,
+    #updated: _f$updated,
+  };
+
+  static SaleDto _instantiate(DecodingData data) {
+    return SaleDto(
+      id: data.dec(_f$id),
+      collectionId: data.dec(_f$collectionId),
+      collectionName: data.dec(_f$collectionName),
+      receiptNumber: data.dec(_f$receiptNumber),
+      branch: data.dec(_f$branch),
+      cashier: data.dec(_f$cashier),
+      totalAmount: data.dec(_f$totalAmount),
+      paymentMethod: data.dec(_f$paymentMethod),
+      status: data.dec(_f$status),
+      customer: data.dec(_f$customer),
+      paymentRef: data.dec(_f$paymentRef),
+      notes: data.dec(_f$notes),
+      created: data.dec(_f$created),
+      updated: data.dec(_f$updated),
+    );
+  }
+
+  @override
+  final Function instantiate = _instantiate;
+
+  static SaleDto fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<SaleDto>(map);
+  }
+
+  static SaleDto fromJson(String json) {
+    return ensureInitialized().decodeJson<SaleDto>(json);
+  }
+}
+
+mixin SaleDtoMappable {
+  String toJson() {
+    return SaleDtoMapper.ensureInitialized().encodeJson<SaleDto>(
+      this as SaleDto,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return SaleDtoMapper.ensureInitialized().encodeMap<SaleDto>(
+      this as SaleDto,
+    );
+  }
+
+  SaleDtoCopyWith<SaleDto, SaleDto, SaleDto> get copyWith =>
+      _SaleDtoCopyWithImpl<SaleDto, SaleDto>(
+        this as SaleDto,
+        $identity,
+        $identity,
+      );
+  @override
+  String toString() {
+    return SaleDtoMapper.ensureInitialized().stringifyValue(this as SaleDto);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return SaleDtoMapper.ensureInitialized().equalsValue(
+      this as SaleDto,
+      other,
+    );
+  }
+
+  @override
+  int get hashCode {
+    return SaleDtoMapper.ensureInitialized().hashValue(this as SaleDto);
+  }
+}
+
+extension SaleDtoValueCopy<$R, $Out> on ObjectCopyWith<$R, SaleDto, $Out> {
+  SaleDtoCopyWith<$R, SaleDto, $Out> get $asSaleDto =>
+      $base.as((v, t, t2) => _SaleDtoCopyWithImpl<$R, $Out>(v, t, t2));
+}
+
+abstract class SaleDtoCopyWith<$R, $In extends SaleDto, $Out>
+    implements ClassCopyWith<$R, $In, $Out> {
+  $R call({
+    String? id,
+    String? collectionId,
+    String? collectionName,
+    String? receiptNumber,
+    String? branch,
+    String? cashier,
+    num? totalAmount,
+    String? paymentMethod,
+    String? status,
+    String? customer,
+    String? paymentRef,
+    String? notes,
+    String? created,
+    String? updated,
+  });
+  SaleDtoCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+}
+
+class _SaleDtoCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, SaleDto, $Out>
+    implements SaleDtoCopyWith<$R, SaleDto, $Out> {
+  _SaleDtoCopyWithImpl(super.value, super.then, super.then2);
+
+  @override
+  late final ClassMapperBase<SaleDto> $mapper =
+      SaleDtoMapper.ensureInitialized();
+  @override
+  $R call({
+    String? id,
+    String? collectionId,
+    String? collectionName,
+    String? receiptNumber,
+    String? branch,
+    String? cashier,
+    num? totalAmount,
+    String? paymentMethod,
+    String? status,
+    Object? customer = $none,
+    Object? paymentRef = $none,
+    Object? notes = $none,
+    Object? created = $none,
+    Object? updated = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (id != null) #id: id,
+      if (collectionId != null) #collectionId: collectionId,
+      if (collectionName != null) #collectionName: collectionName,
+      if (receiptNumber != null) #receiptNumber: receiptNumber,
+      if (branch != null) #branch: branch,
+      if (cashier != null) #cashier: cashier,
+      if (totalAmount != null) #totalAmount: totalAmount,
+      if (paymentMethod != null) #paymentMethod: paymentMethod,
+      if (status != null) #status: status,
+      if (customer != $none) #customer: customer,
+      if (paymentRef != $none) #paymentRef: paymentRef,
+      if (notes != $none) #notes: notes,
+      if (created != $none) #created: created,
+      if (updated != $none) #updated: updated,
+    }),
+  );
+  @override
+  SaleDto $make(CopyWithData data) => SaleDto(
+    id: data.get(#id, or: $value.id),
+    collectionId: data.get(#collectionId, or: $value.collectionId),
+    collectionName: data.get(#collectionName, or: $value.collectionName),
+    receiptNumber: data.get(#receiptNumber, or: $value.receiptNumber),
+    branch: data.get(#branch, or: $value.branch),
+    cashier: data.get(#cashier, or: $value.cashier),
+    totalAmount: data.get(#totalAmount, or: $value.totalAmount),
+    paymentMethod: data.get(#paymentMethod, or: $value.paymentMethod),
+    status: data.get(#status, or: $value.status),
+    customer: data.get(#customer, or: $value.customer),
+    paymentRef: data.get(#paymentRef, or: $value.paymentRef),
+    notes: data.get(#notes, or: $value.notes),
+    created: data.get(#created, or: $value.created),
+    updated: data.get(#updated, or: $value.updated),
+  );
+
+  @override
+  SaleDtoCopyWith<$R2, SaleDto, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _SaleDtoCopyWithImpl<$R2, $Out2>($value, $cast, t);
+}
+

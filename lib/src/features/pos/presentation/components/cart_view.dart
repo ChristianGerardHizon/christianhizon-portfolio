@@ -20,9 +20,11 @@ class CartView extends ConsumerWidget {
                   itemCount: cartItems.length,
                   itemBuilder: (context, index) {
                     final item = cartItems[index];
+                    final product = item.product;
+                    if (product == null) return const SizedBox.shrink();
                     return ListTile(
-                      title: Text(item.product.name),
-                      subtitle: Text('${item.quantity} x ₱${item.product.price}'),
+                      title: Text(product.name),
+                      subtitle: Text('${item.quantity} x ₱${product.price}'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -30,7 +32,9 @@ class CartView extends ConsumerWidget {
                           IconButton(
                             icon: const Icon(Icons.delete),
                             onPressed: () {
-                              ref.read(cartControllerProvider.notifier).removeFromCart(item.product);
+                              ref
+                                  .read(cartControllerProvider.notifier)
+                                  .removeFromCart(product);
                             },
                           ),
                         ],
@@ -47,20 +51,27 @@ class CartView extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Total:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  Text('₱${total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const Text('Total:',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text('₱${total.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold)),
                 ],
               ),
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: cartItems.isEmpty ? null : () {
-                    // TODO: Implement Checkout
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Checkout not implemented yet')),
-                    );
-                  },
+                  onPressed: cartItems.isEmpty
+                      ? null
+                      : () {
+                          // TODO: Implement Checkout
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Checkout not implemented yet')),
+                          );
+                        },
                   child: const Text('Checkout'),
                 ),
               ),

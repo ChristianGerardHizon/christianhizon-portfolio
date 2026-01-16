@@ -15,7 +15,7 @@ class CartController extends _$CartController {
   void addToCart(Product product) {
     // Check if product already exists
     final existingIndex =
-        state.indexWhere((item) => item.product.id == product.id);
+        state.indexWhere((item) => item.productId == product.id);
 
     if (existingIndex >= 0) {
       // Update quantity
@@ -29,12 +29,18 @@ class CartController extends _$CartController {
       state = newState;
     } else {
       // Add new item
-      state = [...state, CartItem(product: product)];
+      state = [
+        ...state,
+        CartItem(
+          productId: product.id,
+          product: product,
+        ),
+      ];
     }
   }
 
   void removeFromCart(Product product) {
-    state = state.where((item) => item.product.id != product.id).toList();
+    state = state.where((item) => item.productId != product.id).toList();
   }
 
   void updateQuantity(Product product, int quantity) {
@@ -43,7 +49,7 @@ class CartController extends _$CartController {
       return;
     }
 
-    final index = state.indexWhere((item) => item.product.id == product.id);
+    final index = state.indexWhere((item) => item.productId == product.id);
     if (index >= 0) {
       final updatedItem = state[index].copyWith(quantity: quantity);
       final newState = [...state];
