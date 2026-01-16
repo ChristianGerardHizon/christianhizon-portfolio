@@ -5,11 +5,13 @@ import 'package:intl/intl.dart';
 import '../../../../core/routing/routes/appointments.routes.dart';
 import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
+import '../../../patients/presentation/widgets/sheets/add_record_sheet.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
 import '../widgets/components/linked_items_section.dart';
 import '../widgets/sheets/edit_appointment_sheet.dart';
+import '../widgets/sheets/record_treatment_selector_sheet.dart';
 
 /// Comprehensive appointment detail page.
 ///
@@ -131,8 +133,7 @@ class _AppointmentDetailContent extends ConsumerWidget {
             // Status Banner
             _StatusBanner(
               appointment: appointment,
-              onStatusChange: (status) =>
-                  _updateStatus(context, ref, status),
+              onStatusChange: (status) => _updateStatus(context, ref, status),
             ),
             const SizedBox(height: 24),
 
@@ -177,10 +178,33 @@ class _AppointmentDetailContent extends ConsumerWidget {
                   treatmentRecords: appointment.treatmentRecordsExpanded,
                   showActions: true,
                   onAddRecordPressed: () {
-                    // TODO: Implement create record
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Create record functionality coming soon'),
+                    // Show sheet to add a new patient record and link it to this appointment
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      useSafeArea: true,
+                      useRootNavigator: true,
+                      builder: (context) => AddRecordSheet(
+                        patientId: appointment.patient!,
+                        appointmentId: appointment.id,
+                        onSave: (record) async {
+                          // Record is already created by the sheet; just link its ID
+                          final updatedIds = <String>[
+                            ...appointment.patientRecords,
+                            record.id
+                          ];
+                          final updatedAppointment = appointment.copyWith(
+                            patientRecords: updatedIds,
+                          );
+                          final success = await ref
+                              .read(paginatedAppointmentsControllerProvider
+                                  .notifier)
+                              .updateAppointment(updatedAppointment);
+                          if (success) {
+                            ref.invalidate(appointmentProvider(appointment.id));
+                          }
+                          return record;
+                        },
                       ),
                     );
                   },
@@ -194,10 +218,29 @@ class _AppointmentDetailContent extends ConsumerWidget {
                     );
                   },
                   onLinkExistingPressed: () {
-                    // TODO: Implement link existing
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Link existing functionality coming soon'),
+                    // Show selector sheet to link existing records/treatments
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      useSafeArea: true,
+                      useRootNavigator: true,
+                      builder: (context) => RecordTreatmentSelectorSheet(
+                        patientId: appointment.patient!,
+                        selectedRecordIds: appointment.patientRecords,
+                        selectedTreatmentIds: appointment.treatmentRecords,
+                        onSave: (recordIds, treatmentIds) async {
+                          final updatedAppointment = appointment.copyWith(
+                            patientRecords: recordIds,
+                            treatmentRecords: treatmentIds,
+                          );
+                          final success = await ref
+                              .read(paginatedAppointmentsControllerProvider
+                                  .notifier)
+                              .updateAppointment(updatedAppointment);
+                          if (success) {
+                            ref.invalidate(appointmentProvider(appointment.id));
+                          }
+                        },
                       ),
                     );
                   },
@@ -482,7 +525,8 @@ class _StatusBanner extends StatelessWidget {
     );
   }
 
-  (Color, Color) _getStatusColors(ThemeData theme, AppointmentScheduleStatus status) {
+  (Color, Color) _getStatusColors(
+      ThemeData theme, AppointmentScheduleStatus status) {
     switch (status) {
       case AppointmentScheduleStatus.scheduled:
         return (theme.colorScheme.primary, theme.colorScheme.primaryContainer);
@@ -491,7 +535,10 @@ class _StatusBanner extends StatelessWidget {
       case AppointmentScheduleStatus.missed:
         return (Colors.orange, Colors.orange.withValues(alpha: 0.1));
       case AppointmentScheduleStatus.cancelled:
-        return (theme.colorScheme.outline, theme.colorScheme.surfaceContainerHighest);
+        return (
+          theme.colorScheme.outline,
+          theme.colorScheme.surfaceContainerHighest
+        );
     }
   }
 
