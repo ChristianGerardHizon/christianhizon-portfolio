@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/routing/routes/patients.routes.dart';
 import '../../../../../core/widgets/form_feedback.dart';
+import '../../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../domain/patient.dart';
 import '../../../domain/patient_record.dart';
 import '../../controllers/patient_records_controller.dart';
@@ -87,6 +88,10 @@ class CreatePatientSheet extends HookConsumerWidget {
 
       isSaving.value = true;
 
+      // Get current user's branch
+      final currentUser = ref.read(currentAuthProvider);
+      final userBranch = currentUser?.user.branch;
+
       // Create patient
       final patient = Patient(
         id: '',
@@ -100,6 +105,7 @@ class CreatePatientSheet extends HookConsumerWidget {
         color: _nullIfEmpty(values['color'] as String?),
         sex: values['sex'] as PatientSex?,
         dateOfBirth: values['dateOfBirth'] as DateTime?,
+        branch: userBranch,
       );
 
       final success = await ref
@@ -183,7 +189,32 @@ class CreatePatientSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              Text('Create Patient', style: theme.textTheme.titleLarge),
+              // === HEADER WITH ACTIONS ===
+              Row(
+                children: [
+                  Expanded(
+                    child: Text('Create Patient',
+                        style: theme.textTheme.titleLarge),
+                  ),
+                  const SizedBox(width: 8),
+                  TextButton(
+                    onPressed:
+                        isSaving.value ? null : () => Navigator.pop(context),
+                    child: Text(t.common.cancel),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: isSaving.value ? null : handleSave,
+                    child: isSaving.value
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(t.common.save),
+                  ),
+                ],
+              ),
               const SizedBox(height: 24),
 
               // === PATIENT INFORMATION SECTION ===
@@ -515,32 +546,6 @@ class CreatePatientSheet extends HookConsumerWidget {
                 ),
               ),
               const SizedBox(height: 24),
-
-              // === ACTION BUTTONS ===
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed:
-                          isSaving.value ? null : () => Navigator.pop(context),
-                      child: Text(t.common.cancel),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: isSaving.value ? null : handleSave,
-                      child: isSaving.value
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : Text(t.common.save),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
