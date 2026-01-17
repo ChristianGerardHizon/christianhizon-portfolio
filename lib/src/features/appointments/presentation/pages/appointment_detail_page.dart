@@ -132,6 +132,7 @@ class _AppointmentDetailContent extends ConsumerWidget {
           children: [
             // Status Banner
             _StatusBanner(
+              key: ValueKey('status-banner-${appointment.id}'),
               appointment: appointment,
               onStatusChange: (status) => _updateStatus(context, ref, status),
             ),
@@ -451,6 +452,7 @@ class _AppointmentDetailContent extends ConsumerWidget {
 /// Status banner with color coding and quick-change button.
 class _StatusBanner extends StatelessWidget {
   const _StatusBanner({
+    super.key,
     required this.appointment,
     required this.onStatusChange,
   });
