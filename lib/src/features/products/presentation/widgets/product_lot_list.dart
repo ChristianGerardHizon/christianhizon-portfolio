@@ -113,6 +113,7 @@ class _LotListContent extends ConsumerWidget {
     // Calculate totals
     final totalQuantity = lots.fold<num>(0, (sum, lot) => sum + lot.quantity);
     final expiredCount = lots.where((l) => l.isExpired).length;
+    final expiringSoonCount = lots.where((l) => l.isNearExpiration).length;
 
     return Column(
       children: [
@@ -134,6 +135,15 @@ class _LotListContent extends ConsumerWidget {
                   icon: Icons.layers,
                   label: 'Lots',
                   value: lots.length.toString(),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _SummaryCard(
+                  icon: Icons.schedule,
+                  label: 'Expiring',
+                  value: expiringSoonCount.toString(),
+                  isWarningOrange: expiringSoonCount > 0,
                 ),
               ),
               const SizedBox(width: 12),
@@ -220,17 +230,23 @@ class _SummaryCard extends StatelessWidget {
     required this.label,
     required this.value,
     this.isWarning = false,
+    this.isWarningOrange = false,
   });
 
   final IconData icon;
   final String label;
   final String value;
   final bool isWarning;
+  final bool isWarningOrange;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = isWarning ? theme.colorScheme.error : theme.colorScheme.primary;
+    final color = isWarning
+        ? theme.colorScheme.error
+        : isWarningOrange
+            ? Colors.orange
+            : theme.colorScheme.primary;
 
     return Card(
       child: Padding(
@@ -275,25 +291,33 @@ class _LotListTile extends StatelessWidget {
     final theme = Theme.of(context);
     final dateFormat = DateFormat.yMMMd();
 
+    // Determine status colors
+    Color avatarBackground;
+    Color iconColor;
+    IconData icon;
+
+    if (lot.isExpired) {
+      avatarBackground = theme.colorScheme.errorContainer;
+      iconColor = theme.colorScheme.error;
+      icon = Icons.warning;
+    } else if (lot.isNearExpiration) {
+      avatarBackground = Colors.orange.shade100;
+      iconColor = Colors.orange.shade700;
+      icon = Icons.schedule;
+    } else if (lot.isOutOfStock) {
+      avatarBackground = theme.colorScheme.surfaceContainerHighest;
+      iconColor = theme.colorScheme.outline;
+      icon = Icons.inventory_2;
+    } else {
+      avatarBackground = theme.colorScheme.primaryContainer;
+      iconColor = theme.colorScheme.primary;
+      icon = Icons.inventory;
+    }
+
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: lot.isExpired
-            ? theme.colorScheme.errorContainer
-            : lot.isOutOfStock
-                ? theme.colorScheme.surfaceContainerHighest
-                : theme.colorScheme.primaryContainer,
-        child: Icon(
-          lot.isExpired
-              ? Icons.warning
-              : lot.isOutOfStock
-                  ? Icons.inventory_2
-                  : Icons.inventory,
-          color: lot.isExpired
-              ? theme.colorScheme.error
-              : lot.isOutOfStock
-                  ? theme.colorScheme.outline
-                  : theme.colorScheme.primary,
-        ),
+        backgroundColor: avatarBackground,
+        child: Icon(icon, color: iconColor),
       ),
       title: Text(
         lot.lotNumber,
@@ -308,9 +332,18 @@ class _LotListTile extends StatelessWidget {
           Text('Qty: ${lot.quantityDisplay}'),
           if (lot.expiration != null)
             Text(
-              'Exp: ${dateFormat.format(lot.expiration!)}',
+              lot.isExpired
+                  ? 'Expired: ${dateFormat.format(lot.expiration!)}'
+                  : lot.isNearExpiration
+                      ? 'Expires in ${lot.daysUntilExpiration} days'
+                      : 'Exp: ${dateFormat.format(lot.expiration!)}',
               style: TextStyle(
-                color: lot.isExpired ? theme.colorScheme.error : null,
+                color: lot.isExpired
+                    ? theme.colorScheme.error
+                    : lot.isNearExpiration
+                        ? Colors.orange.shade700
+                        : null,
+                fontWeight: lot.isNearExpiration ? FontWeight.w500 : null,
               ),
             ),
           if (lot.notes != null && lot.notes!.isNotEmpty)
