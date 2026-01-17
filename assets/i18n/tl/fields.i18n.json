@@ -11,5 +11,9 @@
     "searchFields": "Mga Field na Hahanapin",
     "searchFieldsHint": "Piliin kung aling mga field ang isasama sa iyong paghahanap",
     "requiredField": "Kinakailangan",
-    "atLeastOneRequired": "Kailangan ng kahit isang field"
+    "atLeastOneRequired": "Kailangan ng kahit isang field",
+    "receiptNumber": "Numero ng Resibo",
+    "customerName": "Pangalan ng Customer",
+    "paymentRef": "Reference ng Bayad",
+    "notes": "Mga Tala"
 }

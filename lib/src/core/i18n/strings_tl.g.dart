@@ -155,6 +155,10 @@ class _TranslationsFieldsTl implements TranslationsFieldsEn {
 	@override String get searchFieldsHint => 'Piliin kung aling mga field ang isasama sa iyong paghahanap';
 	@override String get requiredField => 'Kinakailangan';
 	@override String get atLeastOneRequired => 'Kailangan ng kahit isang field';
+	@override String get receiptNumber => 'Numero ng Resibo';
+	@override String get customerName => 'Pangalan ng Customer';
+	@override String get paymentRef => 'Reference ng Bayad';
+	@override String get notes => 'Mga Tala';
 }
 
 // Path: navigation
@@ -284,6 +288,10 @@ extension on TranslationsTl {
 			'fields.searchFieldsHint' => 'Piliin kung aling mga field ang isasama sa iyong paghahanap',
 			'fields.requiredField' => 'Kinakailangan',
 			'fields.atLeastOneRequired' => 'Kailangan ng kahit isang field',
+			'fields.receiptNumber' => 'Numero ng Resibo',
+			'fields.customerName' => 'Pangalan ng Customer',
+			'fields.paymentRef' => 'Reference ng Bayad',
+			'fields.notes' => 'Mga Tala',
 			'navigation.dashboard' => 'Dashboard',
 			'navigation.patients' => 'Mga Pasyente',
 			'navigation.appointments' => 'Appts',

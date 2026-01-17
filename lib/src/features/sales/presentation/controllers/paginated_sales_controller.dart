@@ -14,10 +14,12 @@ class PaginatedSalesController extends _$PaginatedSalesController {
 
   // Track current search state
   String? _currentSearchQuery;
+  List<String>? _currentSearchFields;
 
   @override
   Future<PaginatedState<Sale>> build() async {
     _currentSearchQuery = null;
+    _currentSearchFields = null;
 
     final result = await _repository.fetchPaginated(
       page: 1,
@@ -56,6 +58,7 @@ class PaginatedSalesController extends _$PaginatedSalesController {
     final result = _currentSearchQuery != null
         ? await _repository.searchPaginated(
             _currentSearchQuery!,
+            fields: _currentSearchFields,
             page: nextPage,
             perPage: Pagination.defaultPageSize,
           )
@@ -88,6 +91,7 @@ class PaginatedSalesController extends _$PaginatedSalesController {
     final result = _currentSearchQuery != null
         ? await _repository.searchPaginated(
             _currentSearchQuery!,
+            fields: _currentSearchFields,
             page: 1,
             perPage: Pagination.defaultPageSize,
           )
@@ -108,18 +112,20 @@ class PaginatedSalesController extends _$PaginatedSalesController {
     );
   }
 
-  /// Searches sales by receipt number (resets to page 1).
-  Future<void> search(String query) async {
+  /// Searches sales (resets to page 1).
+  Future<void> search(String query, {List<String>? fields}) async {
     if (query.isEmpty) {
       return clearSearch();
     }
 
     _currentSearchQuery = query;
+    _currentSearchFields = fields;
 
     state = const AsyncValue.loading();
 
     final result = await _repository.searchPaginated(
       query,
+      fields: fields,
       page: 1,
       perPage: Pagination.defaultPageSize,
     );
@@ -139,6 +145,7 @@ class PaginatedSalesController extends _$PaginatedSalesController {
   /// Clears search and reloads all sales.
   Future<void> clearSearch() async {
     _currentSearchQuery = null;
+    _currentSearchFields = null;
     return refresh();
   }
 }

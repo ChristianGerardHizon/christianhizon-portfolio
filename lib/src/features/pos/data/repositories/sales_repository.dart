@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/foundation/failure.dart';
 import '../../../../core/foundation/type_defs.dart';
+import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../domain/sale.dart';
@@ -28,9 +29,10 @@ abstract class SalesRepository {
     String? sort,
   });
 
-  /// Searches sales by receipt number with pagination.
+  /// Searches sales with pagination.
   FutureEitherPaginated<Sale> searchPaginated(
     String query, {
+    List<String>? fields,
     int page = 1,
     int perPage = Pagination.defaultPageSize,
   });
@@ -187,12 +189,15 @@ class SalesRepositoryImpl implements SalesRepository {
   @override
   FutureEitherPaginated<Sale> searchPaginated(
     String query, {
+    List<String>? fields,
     int page = 1,
     int perPage = Pagination.defaultPageSize,
   }) async {
     return TaskEither.tryCatch(
       () async {
-        final filter = 'receiptNumber ~ "$query"';
+        // Use PBFilter for multi-field OR search
+        final searchFields = fields ?? ['receiptNumber'];
+        final filter = PBFilter().searchFields(query, searchFields).build();
 
         final result = await _sales.getList(
           page: page,

@@ -9,7 +9,9 @@ import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/widgets/end_of_list_indicator.dart';
 import '../../../pos/domain/sale.dart';
 import '../controllers/paginated_sales_controller.dart';
+import '../controllers/sale_search_controller.dart';
 import 'sale_status_chip.dart';
+import 'sheets/sale_search_fields_sheet.dart';
 
 /// Sale list panel with search header and infinite scroll.
 ///
@@ -39,6 +41,9 @@ class SaleListPanel extends HookConsumerWidget {
     final searchController = useTextEditingController();
     final searchText = useState('');
 
+    // Watch providers
+    final searchFields = ref.watch(saleSearchFieldsProvider);
+    final activeFieldCount = searchFields.length;
     final paginatedController =
         ref.read(paginatedSalesControllerProvider.notifier);
 
@@ -48,12 +53,15 @@ class SaleListPanel extends HookConsumerWidget {
     void performSearch() {
       final query = searchController.text.trim();
       if (query.isEmpty) return;
-      paginatedController.search(query);
+
+      final fields = ref.read(saleSearchFieldsProvider).toList();
+      paginatedController.search(query, fields: fields);
     }
 
     void clearSearch() {
       searchController.clear();
       searchText.value = '';
+      ref.read(saleSearchFieldsProvider.notifier).reset();
       paginatedController.clearSearch();
     }
 
@@ -92,10 +100,12 @@ class SaleListPanel extends HookConsumerWidget {
             child: isSearchActive
                 ? _ActiveSearchChip(
                     query: searchController.text,
+                    fieldCount: activeFieldCount,
                     onClear: clearSearch,
                   )
                 : _SearchInput(
                     controller: searchController,
+                    fieldCount: activeFieldCount,
                     onSearch: performSearch,
                     onTextChanged: (text) => searchText.value = text,
                     searchText: searchText.value,
@@ -191,10 +201,12 @@ class SaleListPanel extends HookConsumerWidget {
 class _ActiveSearchChip extends StatelessWidget {
   const _ActiveSearchChip({
     required this.query,
+    required this.fieldCount,
     required this.onClear,
   });
 
   final String query;
+  final int fieldCount;
   final VoidCallback onClear;
 
   @override
@@ -233,6 +245,25 @@ class _ActiveSearchChip extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                if (fieldCount > 1) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      '$fieldCount fields',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                ],
                 const SizedBox(width: 8),
                 InkWell(
                   onTap: onClear,
@@ -255,12 +286,14 @@ class _ActiveSearchChip extends StatelessWidget {
 class _SearchInput extends StatelessWidget {
   const _SearchInput({
     required this.controller,
+    required this.fieldCount,
     required this.onSearch,
     required this.onTextChanged,
     required this.searchText,
   });
 
   final TextEditingController controller;
+  final int fieldCount;
   final VoidCallback onSearch;
   final ValueChanged<String> onTextChanged;
   final String searchText;
@@ -269,30 +302,46 @@ class _SearchInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = Translations.of(context);
 
-    return TextField(
-      controller: controller,
-      onChanged: onTextChanged,
-      onSubmitted: (_) => onSearch(),
-      textInputAction: TextInputAction.search,
-      decoration: InputDecoration(
-        hintText: '${t.common.search} receipt number...',
-        prefixIcon: const Icon(Icons.search),
-        suffixIcon: searchText.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  controller.clear();
-                  onTextChanged('');
-                },
-                tooltip: t.common.cancel,
-              )
-            : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            controller: controller,
+            onChanged: onTextChanged,
+            onSubmitted: (_) => onSearch(),
+            textInputAction: TextInputAction.search,
+            decoration: InputDecoration(
+              hintText: '${t.common.search}...',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: searchText.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        controller.clear();
+                        onTextChanged('');
+                      },
+                      tooltip: t.common.cancel,
+                    )
+                  : null,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              isDense: true,
+              filled: true,
+            ),
+          ),
         ),
-        isDense: true,
-        filled: true,
-      ),
+        const SizedBox(width: 8),
+        Badge(
+          isLabelVisible: fieldCount > 1,
+          label: Text('$fieldCount'),
+          child: IconButton.filledTonal(
+            icon: const Icon(Icons.tune),
+            onPressed: () => showSaleSearchFieldsSheet(context),
+            tooltip: t.common.filter,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -295,6 +295,18 @@ class TranslationsFieldsEn {
 
 	/// en: 'At least one field required'
 	String get atLeastOneRequired => 'At least one field required';
+
+	/// en: 'Receipt Number'
+	String get receiptNumber => 'Receipt Number';
+
+	/// en: 'Customer Name'
+	String get customerName => 'Customer Name';
+
+	/// en: 'Payment Reference'
+	String get paymentRef => 'Payment Reference';
+
+	/// en: 'Notes'
+	String get notes => 'Notes';
 }
 
 // Path: navigation
@@ -482,6 +494,10 @@ extension on Translations {
 			'fields.searchFieldsHint' => 'Select which fields to include in your search',
 			'fields.requiredField' => 'Required',
 			'fields.atLeastOneRequired' => 'At least one field required',
+			'fields.receiptNumber' => 'Receipt Number',
+			'fields.customerName' => 'Customer Name',
+			'fields.paymentRef' => 'Payment Reference',
+			'fields.notes' => 'Notes',
 			'navigation.dashboard' => 'Dashboard',
 			'navigation.patients' => 'Patients',
 			'navigation.appointments' => 'Appts',
