@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
+import '../../../../core/utils/date_utils.dart';
 import '../../domain/prescription.dart';
 
 part 'prescription_dto.mapper.dart';
@@ -63,10 +64,10 @@ class PrescriptionDto with PrescriptionDtoMappable {
       medication: medication,
       dosage: dosage,
       instructions: instructions,
-      date: date != null ? DateTime.tryParse(date!) : null,
+      date: parseToLocal(date),
       isDeleted: isDeleted,
-      created: created != null ? DateTime.tryParse(created!) : null,
-      updated: updated != null ? DateTime.tryParse(updated!) : null,
+      created: parseToLocal(created),
+      updated: parseToLocal(updated),
     );
   }
 
@@ -77,7 +78,7 @@ class PrescriptionDto with PrescriptionDtoMappable {
       'medication': prescription.medication,
       'dosage': prescription.dosage,
       'instructions': prescription.instructions,
-      'date': prescription.date?.toIso8601String(),
+      'date': prescription.date.toUtcIso8601OrNull(),
     };
   }
 }

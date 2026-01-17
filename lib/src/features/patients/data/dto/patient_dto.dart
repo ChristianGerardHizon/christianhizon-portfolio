@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
+import '../../../../core/utils/date_utils.dart';
 import '../../domain/patient.dart';
 
 part 'patient_dto.mapper.dart';
@@ -104,12 +105,12 @@ class PatientDto with PatientDtoMappable {
       color: color,
       sex: _parseSex(sex),
       branch: branch,
-      dateOfBirth: dateOfBirth != null ? DateTime.tryParse(dateOfBirth!) : null,
+      dateOfBirth: parseToLocal(dateOfBirth),
       avatar: _buildAvatarUrl(baseUrl),
       images: images,
       isDeleted: isDeleted,
-      created: created != null ? DateTime.tryParse(created!) : null,
-      updated: updated != null ? DateTime.tryParse(updated!) : null,
+      created: parseToLocal(created),
+      updated: parseToLocal(updated),
     );
   }
 

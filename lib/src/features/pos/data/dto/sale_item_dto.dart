@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
+import '../../../../core/utils/date_utils.dart';
 import '../../../products/data/dto/product_dto.dart';
 import '../../domain/sale_item.dart';
 
@@ -62,8 +63,8 @@ class SaleItemDto with SaleItemDtoMappable {
       product: productExpanded != null
           ? ProductDto.fromRecord(productExpanded).toEntity()
           : null,
-      created: created != null ? DateTime.tryParse(created!) : null,
-      updated: updated != null ? DateTime.tryParse(updated!) : null,
+      created: parseToLocal(created),
+      updated: parseToLocal(updated),
     );
   }
 }

@@ -8,6 +8,7 @@ import '../../../../core/foundation/type_defs.dart';
 import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
+import '../../../../core/utils/date_utils.dart';
 import '../../domain/sale.dart';
 import '../../domain/sale_item.dart';
 import '../dto/sale_dto.dart';
@@ -126,7 +127,7 @@ class SalesRepositoryImpl implements SalesRepository {
           final start = DateTime(date.year, date.month, date.day);
           final end = start.add(const Duration(days: 1));
           final dateFilter =
-              'created >= "${start.toIso8601String()}" && created < "${end.toIso8601String()}"';
+              'created >= "${start.toUtcIso8601()}" && created < "${end.toUtcIso8601()}"';
 
           if (filter.isNotEmpty) {
             filter = '$filter && $dateFilter';

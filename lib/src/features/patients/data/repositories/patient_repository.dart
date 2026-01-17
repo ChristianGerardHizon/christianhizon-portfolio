@@ -9,6 +9,7 @@ import '../../../../core/foundation/type_defs.dart';
 import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
+import '../../../../core/utils/date_utils.dart';
 import '../../domain/patient.dart';
 import '../dto/patient_dto.dart';
 
@@ -202,7 +203,7 @@ class PatientRepositoryImpl implements PatientRepository {
           'color': patient.color,
           'sex': patient.sex?.name,
           'branch': patient.branch,
-          'dateOfBirth': patient.dateOfBirth?.toIso8601String(),
+          'dateOfBirth': patient.dateOfBirth.toUtcIso8601OrNull(),
           'isDeleted': false,
         };
 
@@ -229,7 +230,7 @@ class PatientRepositoryImpl implements PatientRepository {
           'color': patient.color,
           'sex': patient.sex?.name,
           'branch': patient.branch,
-          'dateOfBirth': patient.dateOfBirth?.toIso8601String(),
+          'dateOfBirth': patient.dateOfBirth.toUtcIso8601OrNull(),
         };
 
         final record =

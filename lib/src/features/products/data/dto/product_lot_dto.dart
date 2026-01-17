@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
+import '../../../../core/utils/date_utils.dart';
 import '../../domain/product_lot.dart';
 
 part 'product_lot_dto.mapper.dart';
@@ -62,11 +63,11 @@ class ProductLotDto with ProductLotDtoMappable {
       productId: product,
       lotNumber: lotNumber,
       quantity: quantity,
-      expiration: expiration != null ? DateTime.tryParse(expiration!) : null,
+      expiration: parseToLocal(expiration),
       notes: notes,
       isDeleted: isDeleted,
-      created: created != null ? DateTime.tryParse(created!) : null,
-      updated: updated != null ? DateTime.tryParse(updated!) : null,
+      created: parseToLocal(created),
+      updated: parseToLocal(updated),
     );
   }
 }

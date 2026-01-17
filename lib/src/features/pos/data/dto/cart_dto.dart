@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
+import '../../../../core/utils/date_utils.dart';
 import '../../domain/cart.dart';
 
 part 'cart_dto.mapper.dart';
@@ -50,8 +51,8 @@ class CartDto with CartDtoMappable {
       status: status,
       userId: user != null && user!.isNotEmpty ? user : null,
       totalAmount: totalAmount,
-      created: created != null ? DateTime.tryParse(created!) : null,
-      updated: updated != null ? DateTime.tryParse(updated!) : null,
+      created: parseToLocal(created),
+      updated: parseToLocal(updated),
     );
   }
 }

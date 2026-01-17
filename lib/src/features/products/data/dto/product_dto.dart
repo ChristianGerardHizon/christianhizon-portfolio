@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
+import '../../../../core/utils/date_utils.dart';
 import '../../domain/product.dart';
 
 part 'product_dto.mapper.dart';
@@ -21,6 +22,7 @@ class ProductDto with ProductDtoMappable {
   final num? stockThreshold;
   final num price;
   final bool forSale;
+  final bool requireStock;
   final num? quantity;
   final String? expiration;
   final bool trackByLot;
@@ -40,6 +42,7 @@ class ProductDto with ProductDtoMappable {
     this.stockThreshold,
     this.price = 0,
     this.forSale = true,
+    this.requireStock = false,
     this.quantity,
     this.expiration,
     this.trackByLot = false,
@@ -68,6 +71,7 @@ class ProductDto with ProductDtoMappable {
       stockThreshold: json['stockThreshold'] as num?,
       price: json['price'] as num? ?? 0,
       forSale: json['forSale'] as bool? ?? true,
+      requireStock: json['requireStock'] as bool? ?? false,
       quantity: json['quantity'] as num?,
       expiration: json['expiration'] as String?,
       trackByLot: json['trackByLot'] as bool? ?? false,
@@ -90,12 +94,13 @@ class ProductDto with ProductDtoMappable {
       stockThreshold: stockThreshold,
       price: price,
       forSale: forSale,
+      requireStock: requireStock,
       quantity: quantity,
-      expiration: expiration != null ? DateTime.tryParse(expiration!) : null,
+      expiration: parseToLocal(expiration),
       trackByLot: trackByLot,
       isDeleted: isDeleted,
-      created: created != null ? DateTime.tryParse(created!) : null,
-      updated: updated != null ? DateTime.tryParse(updated!) : null,
+      created: parseToLocal(created),
+      updated: parseToLocal(updated),
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
+import '../../../../core/utils/date_utils.dart';
 import '../../domain/sale.dart';
 
 part 'sale_dto.mapper.dart';
@@ -74,8 +75,8 @@ class SaleDto with SaleDtoMappable {
       customerName: customerName != null && customerName!.isNotEmpty ? customerName : null,
       paymentRef: paymentRef,
       notes: notes,
-      created: created != null ? DateTime.tryParse(created!) : null,
-      updated: updated != null ? DateTime.tryParse(updated!) : null,
+      created: parseToLocal(created),
+      updated: parseToLocal(updated),
     );
   }
 }

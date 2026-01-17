@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
+import '../../../../core/utils/date_utils.dart';
 import '../../domain/patient_record.dart';
 
 part 'patient_record_dto.mapper.dart';
@@ -75,7 +76,7 @@ class PatientRecordDto with PatientRecordDtoMappable {
     return PatientRecord(
       id: id,
       patientId: patient,
-      date: visitDate != null ? DateTime.tryParse(visitDate!) ?? DateTime.now() : DateTime.now(),
+      date: parseToLocalOrDefault(visitDate, DateTime.now()),
       diagnosis: diagnosis ?? '',
       weight: _formatWeight(weightInKg),
       temperature: temperature ?? '',
@@ -85,8 +86,8 @@ class PatientRecordDto with PatientRecordDtoMappable {
       branch: branch,
       appointment: appointment,
       isDeleted: isDeleted,
-      created: created != null ? DateTime.tryParse(created!) : null,
-      updated: updated != null ? DateTime.tryParse(updated!) : null,
+      created: parseToLocal(created),
+      updated: parseToLocal(updated),
     );
   }
 
@@ -99,7 +100,7 @@ class PatientRecordDto with PatientRecordDtoMappable {
   static Map<String, dynamic> toCreateJson(PatientRecord record) {
     return {
       'patient': record.patientId,
-      'visitDate': record.date.toIso8601String(),
+      'visitDate': record.date.toUtcIso8601(),
       'diagnosis': record.diagnosis,
       'treatment': record.treatment,
       'notes': record.notes,

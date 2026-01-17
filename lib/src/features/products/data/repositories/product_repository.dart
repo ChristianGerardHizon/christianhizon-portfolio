@@ -9,6 +9,7 @@ import '../../../../core/foundation/type_defs.dart';
 import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
+import '../../../../core/utils/date_utils.dart';
 import '../../domain/product.dart';
 import '../dto/product_dto.dart';
 
@@ -200,7 +201,7 @@ class ProductRepositoryImpl implements ProductRepository {
           'price': product.price,
           'forSale': product.forSale,
           'quantity': product.quantity,
-          'expiration': product.expiration?.toIso8601String(),
+          'expiration': product.expiration.toUtcIso8601OrNull(),
           'trackByLot': product.trackByLot,
           'isDeleted': false,
         };
@@ -226,7 +227,7 @@ class ProductRepositoryImpl implements ProductRepository {
           'price': product.price,
           'forSale': product.forSale,
           'quantity': product.quantity,
-          'expiration': product.expiration?.toIso8601String(),
+          'expiration': product.expiration.toUtcIso8601OrNull(),
           'trackByLot': product.trackByLot,
         };
 

@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
+import '../../../../core/utils/date_utils.dart';
 import '../../../patients/data/dto/patient_record_dto.dart';
 import '../../../patients/data/dto/patient_treatment_record_dto.dart';
 import '../../../patients/domain/patient.dart';
@@ -171,7 +172,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
 
     return AppointmentSchedule(
       id: id,
-      date: date != null ? DateTime.tryParse(date!) ?? DateTime.now() : DateTime.now(),
+      date: parseToLocalOrDefault(date, DateTime.now()),
       hasTime: hasTime,
       notes: notes,
       purpose: purpose,
@@ -184,8 +185,8 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       ownerName: ownerName,
       ownerContact: ownerContact,
       isDeleted: isDeleted,
-      created: created != null ? DateTime.tryParse(created!) : null,
-      updated: updated != null ? DateTime.tryParse(updated!) : null,
+      created: parseToLocal(created),
+      updated: parseToLocal(updated),
       patientExpanded: patientExpanded,
       patientRecordsExpanded: expandedPatientRecords,
       treatmentRecordsExpanded: expandedTreatmentRecords,

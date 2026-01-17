@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
+import '../../../../core/utils/date_utils.dart';
 import '../../domain/patient_treatment.dart';
 import '../../domain/patient_treatment_record.dart';
 
@@ -97,12 +98,12 @@ class PatientTreatmentRecordDto with PatientTreatmentRecordDtoMappable {
       treatmentId: treatment,
       patientId: patient,
       treatment: expandedTreatment,
-      date: date != null ? DateTime.tryParse(date!) : null,
+      date: parseToLocal(date),
       notes: notes,
       appointment: appointment,
       isDeleted: isDeleted,
-      created: created != null ? DateTime.tryParse(created!) : null,
-      updated: updated != null ? DateTime.tryParse(updated!) : null,
+      created: parseToLocal(created),
+      updated: parseToLocal(updated),
     );
   }
 
@@ -111,7 +112,7 @@ class PatientTreatmentRecordDto with PatientTreatmentRecordDtoMappable {
     return {
       'treatment': record.treatmentId,
       'patient': record.patientId,
-      'date': record.date?.toIso8601String(),
+      'date': record.date.toUtcIso8601OrNull(),
       'notes': record.notes,
       'appointment': record.appointment,
     };
