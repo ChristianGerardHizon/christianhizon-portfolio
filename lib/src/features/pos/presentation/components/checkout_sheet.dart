@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../domain/cart_item.dart';
 import '../../domain/payment_method.dart';
@@ -79,7 +80,7 @@ class CheckoutSheet extends HookConsumerWidget {
         if (tendered < total) {
           showFormErrorDialog(
             context,
-            errors: ['Amount tendered must be at least ₱${total.toStringAsFixed(2)}'],
+            errors: ['Amount tendered must be at least ${total.toCurrency()}'],
           );
           return;
         }
@@ -238,7 +239,7 @@ class CheckoutSheet extends HookConsumerWidget {
                                 ),
                               ),
                               Text(
-                                '₱${change.toStringAsFixed(2)}',
+                                change.toCurrency(),
                                 style: theme.textTheme.titleLarge?.copyWith(
                                   color: theme.colorScheme.onPrimaryContainer,
                                   fontWeight: FontWeight.bold,
@@ -309,7 +310,7 @@ class CheckoutSheet extends HookConsumerWidget {
                     ),
                   ),
                   Text(
-                    '₱${item.total.toStringAsFixed(2)}',
+                    item.total.toCurrency(),
                     style: theme.textTheme.bodyMedium,
                   ),
                 ],
@@ -327,7 +328,7 @@ class CheckoutSheet extends HookConsumerWidget {
                 ),
               ),
               Text(
-                '₱${total.toStringAsFixed(2)}',
+                total.toCurrency(),
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.colorScheme.primary,

@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+import '../../../core/utils/currency_format.dart';
 import 'cart_controller.dart';
 import 'components/cart_view.dart';
 import 'components/product_grid.dart';
@@ -118,9 +119,84 @@ class _MobileLayout extends ConsumerWidget {
   final TextEditingController searchController;
   final String searchQuery;
 
+  void _showCartSheet(BuildContext context) {
+    final theme = Theme.of(context);
+
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: 'Cart',
+      barrierColor: Colors.black54,
+      useRootNavigator: true, // Renders above bottom nav bar
+      transitionDuration: const Duration(milliseconds: 250),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Align(
+          alignment: Alignment.centerRight,
+          child: Material(
+            color: theme.colorScheme.surface,
+            elevation: 16,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.85,
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    // Drawer header
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primaryContainer,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.shopping_cart,
+                            color: theme.colorScheme.onPrimaryContainer,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Cart',
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                color: theme.colorScheme.onPrimaryContainer,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+                            icon: Icon(
+                              Icons.close,
+                              color: theme.colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Cart content
+                    const Expanded(child: CartView()),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1, 0), // Slide from right
+            end: Offset.zero,
+          ).animate(CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+          )),
+          child: child,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final cartState = ref.watch(cartControllerProvider);
     final itemCount = cartState.value?.items.length ?? 0;
     final total = cartState.value?.total ?? 0;
@@ -132,7 +208,7 @@ class _MobileLayout extends ConsumerWidget {
         actions: [
           // Cart button in app bar
           IconButton(
-            onPressed: () => scaffoldKey.currentState?.openEndDrawer(),
+            onPressed: () => _showCartSheet(context),
             icon: Badge(
               isLabelVisible: itemCount > 0,
               label: Text('$itemCount'),
@@ -140,48 +216,6 @@ class _MobileLayout extends ConsumerWidget {
             ),
           ),
         ],
-      ),
-      endDrawer: Drawer(
-        width: MediaQuery.of(context).size.width * 0.85,
-        child: SafeArea(
-          child: Column(
-            children: [
-              // Drawer header
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primaryContainer,
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.shopping_cart,
-                      color: theme.colorScheme.onPrimaryContainer,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'Cart',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: theme.colorScheme.onPrimaryContainer,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.close,
-                        color: theme.colorScheme.onPrimaryContainer,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Cart content
-              const Expanded(child: CartView()),
-            ],
-          ),
-        ),
       ),
       body: Column(
         children: [
@@ -211,13 +245,13 @@ class _MobileLayout extends ConsumerWidget {
       ),
       // FAB to open cart
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => scaffoldKey.currentState?.openEndDrawer(),
+        onPressed: () => _showCartSheet(context),
         icon: Badge(
           isLabelVisible: itemCount > 0,
           label: Text('$itemCount'),
           child: const Icon(Icons.shopping_cart),
         ),
-        label: Text('₱${total.toStringAsFixed(2)}'),
+        label: Text(total.toCurrency()),
       ),
     );
   }

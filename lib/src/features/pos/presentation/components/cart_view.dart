@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/utils/currency_format.dart';
 import '../cart_controller.dart';
 import 'checkout_sheet.dart';
 
@@ -95,7 +96,7 @@ class CartView extends ConsumerWidget {
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        '₱${product.price.toStringAsFixed(2)} each',
+                                        '${product.price.toCurrency()} each',
                                         style:
                                             theme.textTheme.bodySmall?.copyWith(
                                           color:
@@ -165,7 +166,7 @@ class CartView extends ConsumerWidget {
                                 SizedBox(
                                   width: 70,
                                   child: Text(
-                                    '₱${item.total.toStringAsFixed(2)}',
+                                    item.total.toCurrency(),
                                     textAlign: TextAlign.right,
                                     style: theme.textTheme.bodyMedium?.copyWith(
                                       fontWeight: FontWeight.bold,
@@ -228,7 +229,7 @@ class CartView extends ConsumerWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        '₱${total.toStringAsFixed(2)}',
+                        total.toCurrency(),
                         style: theme.textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: theme.colorScheme.primary,

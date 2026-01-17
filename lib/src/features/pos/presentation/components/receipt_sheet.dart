@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/utils/currency_format.dart';
 import '../../domain/sale.dart';
 
 /// Shows the receipt bottom sheet after successful checkout.
@@ -135,7 +136,7 @@ class ReceiptSheet extends ConsumerWidget {
                     _buildDetailRow(
                       context,
                       'Total Amount',
-                      '₱${sale.totalAmount.toStringAsFixed(2)}',
+                      sale.totalAmount.toCurrency(),
                       isTotal: true,
                     ),
                     if (sale.notes != null && sale.notes!.isNotEmpty) ...[
