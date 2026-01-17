@@ -20,6 +20,7 @@ class Product with ProductMappable {
     this.stockThreshold,
     this.price = 0,
     this.forSale = true,
+    this.requireStock = false,
     this.quantity,
     this.expiration,
     this.trackByLot = false,
@@ -57,6 +58,10 @@ class Product with ProductMappable {
 
   /// Whether product is for sale.
   final bool forSale;
+
+  /// Whether stock is required to add to cart.
+  /// If true and product is out of stock, it cannot be added to cart.
+  final bool requireStock;
 
   /// Current quantity (for non-lot tracking).
   final num? quantity;
