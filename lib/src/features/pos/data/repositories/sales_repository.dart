@@ -2,6 +2,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/constants/constants.dart';
 import '../../../../core/foundation/failure.dart';
 import '../../../../core/foundation/type_defs.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
@@ -18,6 +19,21 @@ abstract class SalesRepository {
   FutureEither<Sale> getSale(String id);
   FutureEither<List<Sale>> getSales({String? branchId, DateTime? date});
   FutureEither<List<SaleItem>> getSaleItems(String saleId);
+
+  /// Fetches sales with pagination.
+  FutureEitherPaginated<Sale> fetchPaginated({
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+    String? filter,
+    String? sort,
+  });
+
+  /// Searches sales by receipt number with pagination.
+  FutureEitherPaginated<Sale> searchPaginated(
+    String query, {
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+  });
 }
 
 @Riverpod(keepAlive: true)
@@ -56,7 +72,8 @@ class SalesRepositoryImpl implements SalesRepository {
           'totalAmount': sale.totalAmount,
           'paymentMethod': sale.paymentMethod,
           'status': sale.status,
-          'customer': sale.customerId,
+          'customer': sale.patient,
+          'customerName': sale.customerName,
           'paymentRef': sale.paymentRef,
           'notes': sale.notes,
         };
@@ -135,6 +152,61 @@ class SalesRepositoryImpl implements SalesRepository {
           expand: 'product',
         );
         return records.map(_toSaleItemEntity).toList();
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEitherPaginated<Sale> fetchPaginated({
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+    String? filter,
+    String? sort,
+  }) async {
+    return TaskEither.tryCatch(
+      () async {
+        final result = await _sales.getList(
+          page: page,
+          perPage: perPage,
+          filter: filter,
+          sort: sort ?? '-created',
+        );
+
+        return PaginatedResult<Sale>(
+          items: result.items.map(_toSaleEntity).toList(),
+          page: result.page,
+          totalItems: result.totalItems,
+          totalPages: result.totalPages,
+        );
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEitherPaginated<Sale> searchPaginated(
+    String query, {
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+  }) async {
+    return TaskEither.tryCatch(
+      () async {
+        final filter = 'receiptNumber ~ "$query"';
+
+        final result = await _sales.getList(
+          page: page,
+          perPage: perPage,
+          filter: filter,
+          sort: '-created',
+        );
+
+        return PaginatedResult<Sale>(
+          items: result.items.map(_toSaleEntity).toList(),
+          page: result.page,
+          totalItems: result.totalItems,
+          totalPages: result.totalPages,
+        );
       },
       Failure.handle,
     ).run();

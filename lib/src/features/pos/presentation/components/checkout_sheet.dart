@@ -6,6 +6,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/form_feedback.dart';
+import '../../../patients/data/repositories/patient_repository.dart';
+import '../../../patients/domain/patient.dart';
 import '../../domain/cart_item.dart';
 import '../../domain/payment_method.dart';
 import '../cart_controller.dart';
@@ -52,6 +54,14 @@ class CheckoutSheet extends HookConsumerWidget {
     final selectedPaymentMethod = useState<PaymentMethod>(PaymentMethod.cash);
     final amountTendered = useState<double>(0);
 
+    // Customer selection state
+    final selectedPatient = useState<Patient?>(null);
+    final customerNameController = useTextEditingController();
+    final patientSearchController = useTextEditingController();
+    final patientSearchResults = useState<List<Patient>>([]);
+    final isSearchingPatients = useState(false);
+    final showPatientDropdown = useState(false);
+
     // Watch cart state
     final cartState = ref.watch(cartControllerProvider);
     final cartItems = cartState.value?.items ?? [];
@@ -59,6 +69,48 @@ class CheckoutSheet extends HookConsumerWidget {
 
     // Calculate change for cash payments
     final change = amountTendered.value - total;
+
+    // Patient search function
+    Future<void> searchPatients(String query) async {
+      if (query.length < 2) {
+        patientSearchResults.value = [];
+        showPatientDropdown.value = false;
+        return;
+      }
+
+      isSearchingPatients.value = true;
+      final result = await ref.read(patientRepositoryProvider).search(
+            query,
+            fields: ['name', 'owner'],
+          );
+
+      result.fold(
+        (failure) {
+          patientSearchResults.value = [];
+        },
+        (patients) {
+          patientSearchResults.value = patients.take(5).toList();
+          showPatientDropdown.value = patients.isNotEmpty;
+        },
+      );
+      isSearchingPatients.value = false;
+    }
+
+    void selectPatient(Patient patient) {
+      selectedPatient.value = patient;
+      patientSearchController.text = patient.name;
+      customerNameController.text = patient.name;
+      showPatientDropdown.value = false;
+      patientSearchResults.value = [];
+    }
+
+    void clearPatientSelection() {
+      selectedPatient.value = null;
+      patientSearchController.clear();
+      customerNameController.clear();
+      patientSearchResults.value = [];
+      showPatientDropdown.value = false;
+    }
 
     Future<void> handleCheckout() async {
       final isValid = formKey.currentState!.saveAndValidate();
@@ -88,6 +140,12 @@ class CheckoutSheet extends HookConsumerWidget {
 
       isSaving.value = true;
 
+      // Determine customer info
+      final customerId = selectedPatient.value?.id;
+      final customerName = customerNameController.text.trim().isNotEmpty
+          ? customerNameController.text.trim()
+          : null;
+
       // Process checkout
       final result = await ref.read(checkoutControllerProvider.notifier).processCheckout(
         paymentMethod: selectedPaymentMethod.value,
@@ -96,6 +154,8 @@ class CheckoutSheet extends HookConsumerWidget {
         amountTendered: selectedPaymentMethod.value == PaymentMethod.cash
             ? double.tryParse(values['amountTendered'] ?? '')
             : null,
+        customerId: customerId,
+        customerName: customerName,
       );
 
       isSaving.value = false;
@@ -135,7 +195,7 @@ class CheckoutSheet extends HookConsumerWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.onSurfaceVariant.withOpacity(0.4),
+                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -176,6 +236,170 @@ class CheckoutSheet extends HookConsumerWidget {
                   children: [
                     // Order summary
                     _buildOrderSummary(context, cartItems, total),
+                    const SizedBox(height: 24),
+
+                    // Customer section (optional)
+                    Text('Customer (Optional)', style: theme.textTheme.titleMedium),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Link a patient or type a customer name',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Patient search with autocomplete
+                    if (selectedPatient.value == null) ...[
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          TextField(
+                            controller: patientSearchController,
+                            decoration: InputDecoration(
+                              labelText: 'Search patient...',
+                              prefixIcon: const Icon(Icons.search),
+                              suffixIcon: isSearchingPatients.value
+                                  ? const Padding(
+                                      padding: EdgeInsets.all(12),
+                                      child: SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(strokeWidth: 2),
+                                      ),
+                                    )
+                                  : null,
+                              border: const OutlineInputBorder(),
+                            ),
+                            onChanged: searchPatients,
+                          ),
+                          if (showPatientDropdown.value && patientSearchResults.value.isNotEmpty)
+                            Container(
+                              margin: const EdgeInsets.only(top: 4),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.surface,
+                                border: Border.all(color: theme.colorScheme.outline),
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.1),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: patientSearchResults.value.map((patient) {
+                                  return ListTile(
+                                    dense: true,
+                                    leading: CircleAvatar(
+                                      radius: 16,
+                                      child: Text(
+                                        patient.name.isNotEmpty ? patient.name[0].toUpperCase() : '?',
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    ),
+                                    title: Text(patient.name),
+                                    subtitle: patient.owner != null
+                                        ? Text(
+                                            'Owner: ${patient.owner}',
+                                            style: theme.textTheme.bodySmall,
+                                          )
+                                        : null,
+                                    onTap: () => selectPatient(patient),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(child: Divider(color: theme.colorScheme.outlineVariant)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              'OR',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                          Expanded(child: Divider(color: theme.colorScheme.outlineVariant)),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: customerNameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Walk-in customer name',
+                          prefixIcon: Icon(Icons.person_outline),
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (_) {
+                          // Clear patient selection if typing custom name
+                          if (selectedPatient.value != null) {
+                            selectedPatient.value = null;
+                            patientSearchController.clear();
+                          }
+                        },
+                      ),
+                    ] else ...[
+                      // Selected patient display
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.5)),
+                        ),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 20,
+                              backgroundColor: theme.colorScheme.primary,
+                              child: Text(
+                                selectedPatient.value!.name.isNotEmpty
+                                    ? selectedPatient.value!.name[0].toUpperCase()
+                                    : '?',
+                                style: TextStyle(
+                                  color: theme.colorScheme.onPrimary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    selectedPatient.value!.name,
+                                    style: theme.textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  if (selectedPatient.value!.owner != null)
+                                    Text(
+                                      'Owner: ${selectedPatient.value!.owner}',
+                                      style: theme.textTheme.bodySmall?.copyWith(
+                                        color: theme.colorScheme.onSurfaceVariant,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: clearPatientSelection,
+                              tooltip: 'Remove customer',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 24),
 
                     // Payment method selection
@@ -288,7 +512,7 @@ class CheckoutSheet extends HookConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(

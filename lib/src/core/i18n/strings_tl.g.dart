@@ -175,7 +175,8 @@ class _TranslationsNavigationTl implements TranslationsNavigationEn {
 	@override String get users => 'Mga User';
 	@override String get branches => 'Mga Sangay';
 	@override String get more => 'Iba Pa';
-	@override String get sales => 'Mga Benta';
+	@override String get sales => 'Cashier';
+	@override String get salesHistory => 'Mga Benta';
 	@override String get organization => 'Organisasyon';
 	@override String get system => 'Sistema';
 	@override String get patientConfig => 'Config ng Pasyente';
@@ -294,7 +295,8 @@ extension on TranslationsTl {
 			'navigation.users' => 'Mga User',
 			'navigation.branches' => 'Mga Sangay',
 			'navigation.more' => 'Iba Pa',
-			'navigation.sales' => 'Mga Benta',
+			'navigation.sales' => 'Cashier',
+			'navigation.salesHistory' => 'Mga Benta',
 			'navigation.organization' => 'Organisasyon',
 			'navigation.system' => 'Sistema',
 			'navigation.patientConfig' => 'Config ng Pasyente',

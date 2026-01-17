@@ -103,16 +103,22 @@ class MobileDrawer extends ConsumerWidget {
               onTap: () => _selectAndClose(context, 4),
             ),
             _DrawerItem(
-              icon: Icons.business,
-              label: t.navigation.organization,
+              icon: Icons.receipt_long,
+              label: t.navigation.salesHistory,
               selected: selectedIndex == 5,
               onTap: () => _selectAndClose(context, 5),
             ),
             _DrawerItem(
-              icon: Icons.settings,
-              label: t.navigation.system,
+              icon: Icons.business,
+              label: t.navigation.organization,
               selected: selectedIndex == 6,
               onTap: () => _selectAndClose(context, 6),
+            ),
+            _DrawerItem(
+              icon: Icons.settings,
+              label: t.navigation.system,
+              selected: selectedIndex == 7,
+              onTap: () => _selectAndClose(context, 7),
             ),
 
             const Divider(),

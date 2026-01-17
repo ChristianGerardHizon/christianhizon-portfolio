@@ -338,8 +338,11 @@ class TranslationsNavigationEn {
 	/// en: 'More'
 	String get more => 'More';
 
+	/// en: 'Cashier'
+	String get sales => 'Cashier';
+
 	/// en: 'Sales'
-	String get sales => 'Sales';
+	String get salesHistory => 'Sales';
 
 	/// en: 'Organization'
 	String get organization => 'Organization';
@@ -490,7 +493,8 @@ extension on Translations {
 			'navigation.users' => 'Users',
 			'navigation.branches' => 'Branches',
 			'navigation.more' => 'More',
-			'navigation.sales' => 'Sales',
+			'navigation.sales' => 'Cashier',
+			'navigation.salesHistory' => 'Sales',
 			'navigation.organization' => 'Organization',
 			'navigation.system' => 'System',
 			'navigation.patientConfig' => 'Patient Config',

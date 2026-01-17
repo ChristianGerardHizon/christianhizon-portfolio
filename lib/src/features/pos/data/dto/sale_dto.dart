@@ -16,7 +16,8 @@ class SaleDto with SaleDtoMappable {
   final num totalAmount;
   final String paymentMethod;
   final String status;
-  final String? customer;
+  final String? patient;
+  final String? customerName;
   final String? paymentRef;
   final String? notes;
   final String? created;
@@ -32,7 +33,8 @@ class SaleDto with SaleDtoMappable {
     required this.totalAmount,
     required this.paymentMethod,
     required this.status,
-    this.customer,
+    this.patient,
+    this.customerName,
     this.paymentRef,
     this.notes,
     this.created,
@@ -50,7 +52,8 @@ class SaleDto with SaleDtoMappable {
       totalAmount: record.getDoubleValue('totalAmount'),
       paymentMethod: record.getStringValue('paymentMethod'),
       status: record.getStringValue('status'),
-      customer: record.getStringValue('customer'),
+      patient: record.getStringValue('patient'),
+      customerName: record.getStringValue('customerName'),
       paymentRef: record.getStringValue('paymentRef'),
       notes: record.getStringValue('notes'),
       created: record.get<String>('created'),
@@ -67,7 +70,8 @@ class SaleDto with SaleDtoMappable {
       totalAmount: totalAmount,
       paymentMethod: paymentMethod,
       status: status,
-      customerId: customer != null && customer!.isNotEmpty ? customer : null,
+      patient: patient != null && patient!.isNotEmpty ? patient : null,
+      customerName: customerName != null && customerName!.isNotEmpty ? customerName : null,
       paymentRef: paymentRef,
       notes: notes,
       created: created != null ? DateTime.tryParse(created!) : null,

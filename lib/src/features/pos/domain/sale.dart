@@ -15,7 +15,8 @@ class Sale with SaleMappable {
     required this.totalAmount,
     required this.paymentMethod,
     required this.status,
-    this.customerId,
+    this.patient,
+    this.customerName,
     this.paymentRef,
     this.notes,
     this.created,
@@ -43,8 +44,11 @@ class Sale with SaleMappable {
   /// Transaction status.
   final String status;
 
-  /// Customer/Patient ID (optional).
-  final String? customerId;
+  /// Linked patient ID (optional).
+  final String? patient;
+
+  /// Customer name (for walk-ins or display name from linked patient).
+  final String? customerName;
 
   /// External payment reference.
   final String? paymentRef;
@@ -57,4 +61,7 @@ class Sale with SaleMappable {
 
   /// Last update timestamp.
   final DateTime? updated;
+
+  /// Returns display name for customer.
+  String? get customerDisplay => customerName;
 }

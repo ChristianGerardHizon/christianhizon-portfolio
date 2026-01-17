@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -24,6 +26,8 @@ class CheckoutController extends _$CheckoutController {
     String? paymentRef,
     String? notes,
     double? amountTendered,
+    String? customerId,
+    String? customerName,
   }) async {
     final cartState = ref.read(cartControllerProvider).value;
     if (cartState == null || cartState.isEmpty) {
@@ -68,6 +72,8 @@ class CheckoutController extends _$CheckoutController {
       totalAmount: cartState.total,
       paymentMethod: paymentMethod.name,
       status: 'completed',
+      patient: customerId,
+      customerName: customerName,
       paymentRef: paymentRef,
       notes: notes,
     );
@@ -89,18 +95,20 @@ class CheckoutController extends _$CheckoutController {
     );
   }
 
-  /// Generates a receipt number in format: YYYYMMDD-HHMMSS-XXXX
+  /// Generates a receipt number in format: S-YYMMDD-XXXX
+  /// Uses random alphanumeric suffix to avoid race conditions.
   String _generateReceiptNumber(String branchId) {
     final now = DateTime.now();
-    final datePart =
-        '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}';
-    final timePart =
-        '${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}${now.second.toString().padLeft(2, '0')}';
+    final year = (now.year % 100).toString().padLeft(2, '0');
+    final month = now.month.toString().padLeft(2, '0');
+    final day = now.day.toString().padLeft(2, '0');
+    final datePart = '$year$month$day';
 
-    // Use last 4 chars of branch ID as prefix
-    final branchPrefix =
-        branchId.length > 4 ? branchId.substring(branchId.length - 4) : branchId;
+    // Generate random 4-character alphanumeric suffix
+    final random = Random();
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excluded I,O,0,1 for clarity
+    final suffix = List.generate(4, (_) => chars[random.nextInt(chars.length)]).join();
 
-    return '$branchPrefix-$datePart-$timePart';
+    return 'S-$datePart-$suffix';
   }
 }

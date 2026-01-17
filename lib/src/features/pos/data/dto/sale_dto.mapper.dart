@@ -54,10 +54,16 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
   );
   static String _$status(SaleDto v) => v.status;
   static const Field<SaleDto, String> _f$status = Field('status', _$status);
-  static String? _$customer(SaleDto v) => v.customer;
-  static const Field<SaleDto, String> _f$customer = Field(
-    'customer',
-    _$customer,
+  static String? _$patient(SaleDto v) => v.patient;
+  static const Field<SaleDto, String> _f$patient = Field(
+    'patient',
+    _$patient,
+    opt: true,
+  );
+  static String? _$customerName(SaleDto v) => v.customerName;
+  static const Field<SaleDto, String> _f$customerName = Field(
+    'customerName',
+    _$customerName,
     opt: true,
   );
   static String? _$paymentRef(SaleDto v) => v.paymentRef;
@@ -96,7 +102,8 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
     #totalAmount: _f$totalAmount,
     #paymentMethod: _f$paymentMethod,
     #status: _f$status,
-    #customer: _f$customer,
+    #patient: _f$patient,
+    #customerName: _f$customerName,
     #paymentRef: _f$paymentRef,
     #notes: _f$notes,
     #created: _f$created,
@@ -114,7 +121,8 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
       totalAmount: data.dec(_f$totalAmount),
       paymentMethod: data.dec(_f$paymentMethod),
       status: data.dec(_f$status),
-      customer: data.dec(_f$customer),
+      patient: data.dec(_f$patient),
+      customerName: data.dec(_f$customerName),
       paymentRef: data.dec(_f$paymentRef),
       notes: data.dec(_f$notes),
       created: data.dec(_f$created),
@@ -189,7 +197,8 @@ abstract class SaleDtoCopyWith<$R, $In extends SaleDto, $Out>
     num? totalAmount,
     String? paymentMethod,
     String? status,
-    String? customer,
+    String? patient,
+    String? customerName,
     String? paymentRef,
     String? notes,
     String? created,
@@ -217,7 +226,8 @@ class _SaleDtoCopyWithImpl<$R, $Out>
     num? totalAmount,
     String? paymentMethod,
     String? status,
-    Object? customer = $none,
+    Object? patient = $none,
+    Object? customerName = $none,
     Object? paymentRef = $none,
     Object? notes = $none,
     Object? created = $none,
@@ -233,7 +243,8 @@ class _SaleDtoCopyWithImpl<$R, $Out>
       if (totalAmount != null) #totalAmount: totalAmount,
       if (paymentMethod != null) #paymentMethod: paymentMethod,
       if (status != null) #status: status,
-      if (customer != $none) #customer: customer,
+      if (patient != $none) #patient: patient,
+      if (customerName != $none) #customerName: customerName,
       if (paymentRef != $none) #paymentRef: paymentRef,
       if (notes != $none) #notes: notes,
       if (created != $none) #created: created,
@@ -251,7 +262,8 @@ class _SaleDtoCopyWithImpl<$R, $Out>
     totalAmount: data.get(#totalAmount, or: $value.totalAmount),
     paymentMethod: data.get(#paymentMethod, or: $value.paymentMethod),
     status: data.get(#status, or: $value.status),
-    customer: data.get(#customer, or: $value.customer),
+    patient: data.get(#patient, or: $value.patient),
+    customerName: data.get(#customerName, or: $value.customerName),
     paymentRef: data.get(#paymentRef, or: $value.paymentRef),
     notes: data.get(#notes, or: $value.notes),
     created: data.get(#created, or: $value.created),
