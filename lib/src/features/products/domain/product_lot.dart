@@ -53,6 +53,23 @@ class ProductLot with ProductLotMappable {
     return expiration!.isBefore(DateTime.now());
   }
 
+  /// Default threshold for near expiration warning (30 days).
+  static const nearExpirationDays = 30;
+
+  /// Returns true if this lot is near expiration (within 30 days).
+  bool get isNearExpiration {
+    if (expiration == null) return false;
+    if (isExpired) return false; // Already expired, not "near"
+    final daysUntilExpiration = expiration!.difference(DateTime.now()).inDays;
+    return daysUntilExpiration <= nearExpirationDays;
+  }
+
+  /// Returns the number of days until expiration (negative if expired).
+  int? get daysUntilExpiration {
+    if (expiration == null) return null;
+    return expiration!.difference(DateTime.now()).inDays;
+  }
+
   /// Returns true if this lot is out of stock.
   bool get isOutOfStock => quantity <= 0;
 
