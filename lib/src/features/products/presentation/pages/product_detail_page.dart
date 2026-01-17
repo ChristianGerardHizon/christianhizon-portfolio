@@ -151,13 +151,7 @@ class ProductDetailPage extends HookConsumerWidget {
   }
 
   void _showEditSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => EditProductSheet(productId: productId),
-    );
+    showEditProductSheet(context, productId);
   }
 
   Future<void> _handleMenuAction(

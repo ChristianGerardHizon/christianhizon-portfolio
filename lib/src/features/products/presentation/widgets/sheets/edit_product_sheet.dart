@@ -12,11 +12,39 @@ import '../../controllers/paginated_products_controller.dart';
 import '../../controllers/product_categories_provider.dart';
 import '../../controllers/product_provider.dart';
 
+/// Shows the edit product sheet as a modal bottom sheet.
+void showEditProductSheet(BuildContext context, String productId) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    useRootNavigator: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (context) => DraggableScrollableSheet(
+      initialChildSize: 0.85,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (context, scrollController) => EditProductSheet(
+        productId: productId,
+        scrollController: scrollController,
+      ),
+    ),
+  );
+}
+
 /// Bottom sheet for editing an existing product.
 class EditProductSheet extends HookConsumerWidget {
-  const EditProductSheet({super.key, required this.productId});
+  const EditProductSheet({
+    super.key,
+    required this.productId,
+    this.scrollController,
+  });
 
   final String productId;
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,7 +74,10 @@ class EditProductSheet extends HookConsumerWidget {
           );
         }
 
-        return _EditProductForm(product: product);
+        return _EditProductForm(
+          product: product,
+          scrollController: scrollController,
+        );
       },
       loading: () => const Padding(
         padding: EdgeInsets.all(48),
@@ -73,9 +104,13 @@ class EditProductSheet extends HookConsumerWidget {
 }
 
 class _EditProductForm extends HookConsumerWidget {
-  const _EditProductForm({required this.product});
+  const _EditProductForm({
+    required this.product,
+    this.scrollController,
+  });
 
   final Product product;
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -174,6 +209,7 @@ class _EditProductForm extends HookConsumerWidget {
           'trackByLot': product.trackByLot,
         },
         child: SingleChildScrollView(
+          controller: scrollController,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,

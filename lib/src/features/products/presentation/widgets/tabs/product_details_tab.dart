@@ -315,16 +315,7 @@ class ProductDetailsTab extends HookConsumerWidget {
   }
 
   void _showEditProductSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => EditProductSheet(productId: product.id),
-    );
+    showEditProductSheet(context, product.id);
   }
 }
 
