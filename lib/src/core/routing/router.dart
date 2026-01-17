@@ -24,13 +24,7 @@ final rootNavigatorKey = GlobalKey<NavigatorState>();
 /// Configured with auth redirects and error handling.
 @Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
-  // Watch auth state to trigger router refresh on auth changes
-  ref.listen(authControllerProvider, (previous, next) {
-    if (next.isLoading) return;
-
-    ref.invalidateSelf();
-  });
-  return GoRouter(
+  final router = GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: SplashRoute.path,
     debugLogDiagnostics: true,
@@ -58,4 +52,13 @@ GoRouter router(Ref ref) {
       ),
     ],
   );
+
+  // Listen to auth state changes and refresh router to re-evaluate redirects
+  ref.listen(authControllerProvider, (previous, next) {
+    // Refresh router when auth state changes (loading -> data/error)
+    // This triggers redirect logic to navigate after login success/failure
+    router.refresh();
+  });
+
+  return router;
 }

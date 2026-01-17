@@ -72,15 +72,18 @@ class CheckoutController extends _$CheckoutController {
       notes: notes,
     );
 
-    // Save to backend
+    // Get references before async operation to avoid disposed ref issues
     final salesRepo = ref.read(salesRepositoryProvider);
+    final cartNotifier = ref.read(cartControllerProvider.notifier);
+
+    // Save to backend
     final result = await salesRepo.createSale(sale, saleItems);
 
     return result.fold(
       (failure) => left(failure),
       (createdSale) async {
         // Mark cart as converted and clear it
-        await ref.read(cartControllerProvider.notifier).markAsConverted();
+        await cartNotifier.markAsConverted();
         return right(createdSale);
       },
     );

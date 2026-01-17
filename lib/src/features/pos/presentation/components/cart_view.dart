@@ -31,31 +31,37 @@ class CartView extends ConsumerWidget {
             Expanded(
               child: cartItems.isEmpty
                   ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.shopping_cart_outlined,
-                            size: 64,
-                            color: theme.colorScheme.onSurfaceVariant
-                                .withOpacity(0.5),
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.shopping_cart_outlined,
+                                size: 48,
+                                color: theme.colorScheme.onSurfaceVariant
+                                    .withOpacity(0.5),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Cart is empty',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Add products from the grid',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant
+                                      .withOpacity(0.7),
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Cart is empty',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Add products from the grid',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant
-                                  .withOpacity(0.7),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     )
                   : ListView.builder(
@@ -104,74 +110,89 @@ class CartView extends ConsumerWidget {
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.remove_circle_outline),
-                                      iconSize: 20,
-                                      onPressed: isSyncing
-                                          ? null
-                                          : () {
-                                              ref
-                                                  .read(cartControllerProvider
-                                                      .notifier)
-                                                  .updateQuantity(
-                                                    product,
-                                                    item.quantity.toInt() - 1,
-                                                  );
-                                            },
-                                    ),
                                     SizedBox(
                                       width: 32,
+                                      height: 32,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.remove_circle_outline),
+                                        iconSize: 18,
+                                        padding: EdgeInsets.zero,
+                                        onPressed: isSyncing
+                                            ? null
+                                            : () {
+                                                ref
+                                                    .read(cartControllerProvider
+                                                        .notifier)
+                                                    .updateQuantity(
+                                                      product,
+                                                      item.quantity.toInt() - 1,
+                                                    );
+                                              },
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 28,
                                       child: Text(
                                         '${item.quantity.toInt()}',
                                         textAlign: TextAlign.center,
-                                        style: theme.textTheme.titleMedium,
+                                        style: theme.textTheme.bodyMedium,
                                       ),
                                     ),
-                                    IconButton(
-                                      icon: const Icon(Icons.add_circle_outline),
-                                      iconSize: 20,
-                                      onPressed: isSyncing
-                                          ? null
-                                          : () {
-                                              ref
-                                                  .read(cartControllerProvider
-                                                      .notifier)
-                                                  .updateQuantity(
-                                                    product,
-                                                    item.quantity.toInt() + 1,
-                                                  );
-                                            },
+                                    SizedBox(
+                                      width: 32,
+                                      height: 32,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.add_circle_outline),
+                                        iconSize: 18,
+                                        padding: EdgeInsets.zero,
+                                        onPressed: isSyncing
+                                            ? null
+                                            : () {
+                                                ref
+                                                    .read(cartControllerProvider
+                                                        .notifier)
+                                                    .updateQuantity(
+                                                      product,
+                                                      item.quantity.toInt() + 1,
+                                                    );
+                                              },
+                                      ),
                                     ),
                                   ],
                                 ),
 
                                 // Item total
                                 SizedBox(
-                                  width: 80,
+                                  width: 70,
                                   child: Text(
                                     '₱${item.total.toStringAsFixed(2)}',
                                     textAlign: TextAlign.right,
-                                    style: theme.textTheme.titleSmall?.copyWith(
+                                    style: theme.textTheme.bodyMedium?.copyWith(
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
 
                                 // Delete button
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.delete_outline,
-                                    color: theme.colorScheme.error,
+                                SizedBox(
+                                  width: 32,
+                                  height: 32,
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.delete_outline,
+                                      color: theme.colorScheme.error,
+                                    ),
+                                    iconSize: 18,
+                                    padding: EdgeInsets.zero,
+                                    onPressed: isSyncing
+                                        ? null
+                                        : () {
+                                            ref
+                                                .read(
+                                                    cartControllerProvider.notifier)
+                                                .removeFromCart(product);
+                                          },
                                   ),
-                                  iconSize: 20,
-                                  onPressed: isSyncing
-                                      ? null
-                                      : () {
-                                          ref
-                                              .read(
-                                                  cartControllerProvider.notifier)
-                                              .removeFromCart(product);
-                                        },
                                 ),
                               ],
                             ),
@@ -198,10 +219,14 @@ class CartView extends ConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Total (${cartItems.length} items)',
-                        style: theme.textTheme.titleMedium,
+                      Flexible(
+                        child: Text(
+                          'Total (${cartItems.length} items)',
+                          style: theme.textTheme.titleMedium,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Text(
                         '₱${total.toStringAsFixed(2)}',
                         style: theme.textTheme.headlineSmall?.copyWith(
