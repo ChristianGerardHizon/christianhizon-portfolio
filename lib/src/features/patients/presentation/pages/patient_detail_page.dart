@@ -105,6 +105,19 @@ class PatientDetailPage extends HookConsumerWidget {
             title: Text('${patient.name} - ${patient.breed ?? "Unknown breed"}'),
             actions: [
               IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  ref.invalidate(patientProvider(patientId));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Refreshing...'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                },
+                tooltip: 'Refresh',
+              ),
+              IconButton(
                 icon: const Icon(Icons.edit),
                 onPressed: () => _showEditPatientDialog(context, patient),
                 tooltip: t.common.edit,

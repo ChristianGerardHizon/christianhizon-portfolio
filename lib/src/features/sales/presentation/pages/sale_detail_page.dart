@@ -117,13 +117,23 @@ class _SaleDetailContent extends ConsumerWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header Card
-            Card(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(saleProvider(sale.id));
+          ref.invalidate(saleItemsProvider(sale.id));
+          await Future.wait([
+            ref.read(saleProvider(sale.id).future),
+            ref.read(saleItemsProvider(sale.id).future),
+          ]);
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header Card
+              Card(
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -252,8 +262,9 @@ class _SaleDetailContent extends ConsumerWidget {
                   ],
                 ),
               ),
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );

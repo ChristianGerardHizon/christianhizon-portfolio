@@ -56,6 +56,19 @@ class ProductDetailPage extends HookConsumerWidget {
             automaticallyImplyLeading: !isTablet,
             actions: [
               IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  ref.invalidate(productProvider(productId));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Refreshing...'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                },
+                tooltip: 'Refresh',
+              ),
+              IconButton(
                 icon: const Icon(Icons.edit),
                 onPressed: () => _showEditSheet(context, ref),
               ),
