@@ -49,7 +49,7 @@ GoRouter router(Ref ref) {
           $productsShellRoute,
           $salesRoute,
           $salesShellRoute,
-          $messagesRoute,
+          $messagesShellRoute,
           $organizationRoute,
           $systemRoute,
         ],
