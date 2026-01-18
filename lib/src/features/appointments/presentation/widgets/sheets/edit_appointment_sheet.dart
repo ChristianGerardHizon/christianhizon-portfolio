@@ -3,8 +3,11 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../messages/domain/message.dart';
+import '../../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../../patients/domain/patient_record.dart';
 import '../../../../patients/domain/patient_treatment_record.dart';
 import '../../../../patients/presentation/controllers/patient_records_controller.dart';
@@ -34,6 +37,14 @@ class EditAppointmentSheet extends HookConsumerWidget {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isSaving = useState(false);
     final hasTime = useState(appointment.hasTime);
+    final sendReminder = useState(false);
+
+    // Check if appointment is in the future
+    final isFutureAppointment = appointment.date.isAfter(DateTime.now());
+
+    // Watch existing reminder messages for this appointment
+    final existingMessagesAsync =
+        ref.watch(messagesByAppointmentProvider(appointment.id));
 
     // Linked records and treatments (initialized from appointment)
     final linkedRecordIds = useState<List<String>>(appointment.patientRecords);
@@ -97,13 +108,52 @@ class EditAppointmentSheet extends HookConsumerWidget {
       final success = await onSave(updated);
 
       if (context.mounted) {
-        isSaving.value = false;
         if (success) {
+          // Create reminder message if enabled
+          if (sendReminder.value &&
+              appointment.ownerContact != null &&
+              appointment.ownerContact!.isNotEmpty) {
+            final values = formKey.currentState!.value;
+            final messageContent = values['reminderMessage'] as String?;
+
+            if (messageContent != null && messageContent.isNotEmpty) {
+              // Schedule reminder for 1 day before at 9:00 AM
+              final reminderDate = finalDate.subtract(const Duration(days: 1));
+              final sendDateTime = DateTime(
+                reminderDate.year,
+                reminderDate.month,
+                reminderDate.day,
+                9, // 9:00 AM
+                0,
+              );
+
+              final message = Message(
+                id: '',
+                phone: appointment.ownerContact!,
+                content: messageContent,
+                sendDateTime: sendDateTime,
+                patient: appointment.patient,
+                appointment: appointment.id,
+                notes: 'Appointment reminder',
+              );
+
+              await ref
+                  .read(messagesControllerProvider.notifier)
+                  .createMessage(message);
+            }
+          }
+
+          isSaving.value = false;
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Appointment updated successfully')),
+            SnackBar(
+              content: Text(sendReminder.value
+                  ? 'Appointment updated with reminder'
+                  : 'Appointment updated successfully'),
+            ),
           );
         } else {
+          isSaving.value = false;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Failed to update appointment')),
           );
@@ -244,6 +294,210 @@ class EditAppointmentSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
+              // === REMINDER MESSAGE SECTION ===
+              if (isFutureAppointment) ...[
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.notifications_active,
+                              color: theme.colorScheme.primary,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Reminder Message',
+                              style: theme.textTheme.titleMedium,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        existingMessagesAsync.when(
+                          loading: () => const Center(
+                            child: SizedBox(
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                          error: (_, __) => Text(
+                            'Could not load reminder info',
+                            style: TextStyle(color: theme.colorScheme.error),
+                          ),
+                          data: (messages) {
+                            // Check for pending reminder messages
+                            final pendingReminders = messages
+                                .where((m) => m.status == MessageStatus.pending)
+                                .toList();
+
+                            if (pendingReminders.isNotEmpty) {
+                              // Show existing reminder info
+                              final reminder = pendingReminders.first;
+                              return Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.primaryContainer,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.check_circle,
+                                          size: 18,
+                                          color: theme
+                                              .colorScheme.onPrimaryContainer,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'Reminder already scheduled',
+                                          style: theme.textTheme.labelLarge
+                                              ?.copyWith(
+                                            color: theme
+                                                .colorScheme.onPrimaryContainer,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Scheduled for: ${_formatDateTime(reminder.sendDateTime)}',
+                                      style:
+                                          theme.textTheme.bodySmall?.copyWith(
+                                        color:
+                                            theme.colorScheme.onPrimaryContainer,
+                                      ),
+                                    ),
+                                    Text(
+                                      'To: ${reminder.phone}',
+                                      style:
+                                          theme.textTheme.bodySmall?.copyWith(
+                                        color:
+                                            theme.colorScheme.onPrimaryContainer,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+
+                            // No existing reminder - allow creating one
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Send reminder 1 day before appointment',
+                                        style: theme.textTheme.bodyMedium,
+                                      ),
+                                    ),
+                                    Switch(
+                                      value: sendReminder.value,
+                                      onChanged: isSaving.value
+                                          ? null
+                                          : (value) =>
+                                              sendReminder.value = value,
+                                    ),
+                                  ],
+                                ),
+                                if (sendReminder.value) ...[
+                                  const SizedBox(height: 12),
+                                  if (appointment.ownerContact == null ||
+                                      appointment.ownerContact!.isEmpty) ...[
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme.errorContainer,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.warning,
+                                            color: theme
+                                                .colorScheme.onErrorContainer,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              'No contact number on file',
+                                              style: TextStyle(
+                                                color: theme.colorScheme
+                                                    .onErrorContainer,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ] else ...[
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: theme
+                                            .colorScheme.surfaceContainerHighest,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.phone,
+                                            size: 20,
+                                            color: theme
+                                                .colorScheme.onSurfaceVariant,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            'To: ${appointment.ownerContact}',
+                                            style: theme.textTheme.bodyMedium
+                                                ?.copyWith(
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    FormBuilderTextField(
+                                      name: 'reminderMessage',
+                                      initialValue: _getDefaultReminderMessage(
+                                          appointment.patientDisplayName),
+                                      decoration: const InputDecoration(
+                                        labelText: 'Message *',
+                                        border: OutlineInputBorder(),
+                                        prefixIcon: Icon(Icons.sms),
+                                      ),
+                                      maxLines: 3,
+                                      enabled: !isSaving.value,
+                                      validator: sendReminder.value
+                                          ? FormBuilderValidators.required(
+                                              errorText:
+                                                  'Message content is required',
+                                            )
+                                          : null,
+                                    ),
+                                  ],
+                                ],
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+
               // Linked items section
               LinkedItemsSection(
                 patientRecords: linkedRecordsExpanded.value,
@@ -382,5 +636,14 @@ class EditAppointmentSheet extends HookConsumerWidget {
         return created;
       },
     );
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    return DateFormat('MMM d, yyyy - h:mm a').format(dateTime);
+  }
+
+  String _getDefaultReminderMessage(String patientName) {
+    return 'Hello! This is a reminder about your appointment tomorrow for $patientName '
+        'at San Jose Vet Clinic. Please contact us if you need to reschedule.';
   }
 }

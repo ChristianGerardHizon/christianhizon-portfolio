@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import '../../../../core/routing/routes/appointments.routes.dart';
 import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
+import '../../../messages/domain/message.dart';
+import '../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../patients/presentation/widgets/sheets/add_record_sheet.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
@@ -90,7 +92,7 @@ class AppointmentDetailPage extends ConsumerWidget {
   }
 }
 
-class _AppointmentDetailContent extends ConsumerWidget {
+class _AppointmentDetailContent extends HookConsumerWidget {
   const _AppointmentDetailContent({
     required this.appointment,
     required this.isTablet,
@@ -102,6 +104,8 @@ class _AppointmentDetailContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final reminderMessagesAsync =
+        ref.watch(messagesByAppointmentProvider(appointment.id));
 
     return Scaffold(
       appBar: AppBar(
@@ -125,13 +129,20 @@ class _AppointmentDetailContent extends ConsumerWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Status Banner
-            _StatusBanner(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(appointmentProvider(appointment.id));
+          ref.invalidate(messagesByAppointmentProvider(appointment.id));
+          await ref.read(appointmentProvider(appointment.id).future);
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Status Banner
+              _StatusBanner(
               key: ValueKey('status-banner-${appointment.id}'),
               appointment: appointment,
               onStatusChange: (status) => _updateStatus(context, ref, status),
@@ -169,6 +180,11 @@ class _AppointmentDetailContent extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
             ],
+
+            // Reminder Message Section
+            _ReminderMessageSection(
+              messagesAsync: reminderMessagesAsync,
+            ),
 
             // Linked Items Section
             Card(
@@ -261,8 +277,9 @@ class _AppointmentDetailContent extends ConsumerWidget {
               onEdit: () => _showEditSheet(context, ref),
               onDelete: () => _confirmDelete(context, ref),
             ),
-            const SizedBox(height: 80), // Extra space for FAB
-          ],
+              const SizedBox(height: 80), // Extra space for FAB
+            ],
+          ),
         ),
       ),
     );
@@ -860,5 +877,205 @@ class _QuickActionsSection extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+/// Reminder message section showing scheduled reminder for this appointment.
+class _ReminderMessageSection extends StatelessWidget {
+  const _ReminderMessageSection({
+    required this.messagesAsync,
+  });
+
+  final AsyncValue<List<Message>> messagesAsync;
+
+  @override
+  Widget build(BuildContext context) {
+    return messagesAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (messages) {
+        // Filter for reminder messages (those with notes containing 'reminder')
+        final reminderMessages = messages
+            .where((m) =>
+                m.notes?.toLowerCase().contains('reminder') == true ||
+                m.content.toLowerCase().contains('reminder'))
+            .toList();
+
+        if (reminderMessages.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Column(
+          children: [
+            _SectionCard(
+              title: 'Reminder Message',
+              icon: Icons.notifications_active,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: reminderMessages.map((message) {
+                  return _ReminderMessageTile(message: message);
+                }).toList(),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// Individual reminder message tile.
+class _ReminderMessageTile extends StatelessWidget {
+  const _ReminderMessageTile({required this.message});
+
+  final Message message;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final dateFormat = DateFormat('MMM d, yyyy - h:mm a');
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Status and scheduled time row
+          Row(
+            children: [
+              _MessageStatusBadge(status: message.status),
+              const Spacer(),
+              Icon(
+                Icons.schedule,
+                size: 14,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                dateFormat.format(message.sendDateTime),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+
+          // Recipient phone
+          Row(
+            children: [
+              Icon(
+                Icons.phone,
+                size: 14,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                message.phone,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+
+          // Message content preview
+          Text(
+            message.content,
+            style: theme.textTheme.bodyMedium,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Message status badge widget.
+class _MessageStatusBadge extends StatelessWidget {
+  const _MessageStatusBadge({required this.status});
+
+  final MessageStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final (label, color, bgColor) = _getStatusInfo(context);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            _getStatusIcon(),
+            size: 12,
+            color: color,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  (String, Color, Color) _getStatusInfo(BuildContext context) {
+    final theme = Theme.of(context);
+    switch (status) {
+      case MessageStatus.pending:
+        return (
+          'Pending',
+          theme.colorScheme.primary,
+          theme.colorScheme.primaryContainer,
+        );
+      case MessageStatus.sent:
+        return (
+          'Sent',
+          Colors.green,
+          Colors.green.withValues(alpha: 0.1),
+        );
+      case MessageStatus.failed:
+        return (
+          'Failed',
+          theme.colorScheme.error,
+          theme.colorScheme.errorContainer,
+        );
+      case MessageStatus.cancelled:
+        return (
+          'Cancelled',
+          theme.colorScheme.outline,
+          theme.colorScheme.surfaceContainerHighest,
+        );
+    }
+  }
+
+  IconData _getStatusIcon() {
+    switch (status) {
+      case MessageStatus.pending:
+        return Icons.schedule;
+      case MessageStatus.sent:
+        return Icons.check_circle;
+      case MessageStatus.failed:
+        return Icons.error;
+      case MessageStatus.cancelled:
+        return Icons.cancel;
+    }
   }
 }

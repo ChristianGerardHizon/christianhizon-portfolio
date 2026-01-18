@@ -5,6 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../messages/domain/message.dart';
+import '../../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../../patients/domain/patient.dart';
 import '../../../../patients/domain/patient_record.dart';
 import '../../../../patients/domain/patient_treatment_record.dart';
@@ -42,6 +44,7 @@ class CreateAppointmentSheet extends HookConsumerWidget {
     final isSaving = useState(false);
     final hasTime = useState(false);
     final selectedPatient = useState<Patient?>(initialPatient);
+    final sendReminder = useState(false);
 
     // Linked records and treatments (IDs for existing items)
     final linkedRecordIds = useState<List<String>>([]);
@@ -157,10 +160,48 @@ class CreateAppointmentSheet extends HookConsumerWidget {
           // Update newly created records with the appointment ID (deferred linking)
           await updateRecordsWithAppointmentId(created.id, patient.id);
 
+          // Create reminder message if enabled
+          if (sendReminder.value &&
+              patient.contactNumber != null &&
+              patient.contactNumber!.isNotEmpty) {
+            final values = formKey.currentState!.value;
+            final messageContent = values['reminderMessage'] as String?;
+
+            if (messageContent != null && messageContent.isNotEmpty) {
+              // Schedule reminder for 1 day before at 9:00 AM
+              final reminderDate = finalDate.subtract(const Duration(days: 1));
+              final sendDateTime = DateTime(
+                reminderDate.year,
+                reminderDate.month,
+                reminderDate.day,
+                9, // 9:00 AM
+                0,
+              );
+
+              final message = Message(
+                id: '',
+                phone: patient.contactNumber!,
+                content: messageContent,
+                sendDateTime: sendDateTime,
+                patient: patient.id,
+                appointment: created.id,
+                notes: 'Appointment reminder',
+              );
+
+              await ref
+                  .read(messagesControllerProvider.notifier)
+                  .createMessage(message);
+            }
+          }
+
           isSaving.value = false;
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Appointment created successfully')),
+            SnackBar(
+              content: Text(sendReminder.value
+                  ? 'Appointment created with reminder'
+                  : 'Appointment created successfully'),
+            ),
           );
         } else {
           isSaving.value = false;
@@ -380,6 +421,155 @@ class CreateAppointmentSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
+              // === REMINDER MESSAGE SECTION ===
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.notifications_active,
+                            color: theme.colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Send Reminder Message',
+                            style: theme.textTheme.titleMedium,
+                          ),
+                          const Spacer(),
+                          Switch(
+                            value: sendReminder.value,
+                            onChanged: isSaving.value
+                                ? null
+                                : (value) => sendReminder.value = value,
+                          ),
+                        ],
+                      ),
+                      if (sendReminder.value) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          'A reminder will be sent 1 day before the appointment',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        if (selectedPatient.value == null) ...[
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.errorContainer,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.warning,
+                                  color: theme.colorScheme.onErrorContainer,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'Please select a patient first',
+                                    style: TextStyle(
+                                      color: theme.colorScheme.onErrorContainer,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ] else if (selectedPatient.value!.contactNumber == null ||
+                            selectedPatient.value!.contactNumber!.isEmpty) ...[
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.errorContainer,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.warning,
+                                  color: theme.colorScheme.onErrorContainer,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'No contact number on file for this patient',
+                                    style: TextStyle(
+                                      color: theme.colorScheme.onErrorContainer,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ] else ...[
+                          // Phone number display
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.phone,
+                                  size: 20,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'To: ${selectedPatient.value!.contactNumber}',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                if (selectedPatient.value!.owner != null &&
+                                    selectedPatient.value!.owner!.isNotEmpty)
+                                  Text(
+                                    ' (${selectedPatient.value!.owner})',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Message content
+                          FormBuilderTextField(
+                            name: 'reminderMessage',
+                            initialValue: _getDefaultReminderMessage(
+                                selectedPatient.value!.name),
+                            decoration: const InputDecoration(
+                              labelText: 'Message *',
+                              hintText: 'Enter reminder message',
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.sms),
+                            ),
+                            maxLines: 3,
+                            enabled: !isSaving.value,
+                            validator: sendReminder.value
+                                ? FormBuilderValidators.required(
+                                    errorText: 'Message content is required',
+                                  )
+                                : null,
+                          ),
+                        ],
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
               // Link records/treatments section
               if (selectedPatient.value != null) ...[
                 LinkedItemsSection(
@@ -533,5 +723,10 @@ class CreateAppointmentSheet extends HookConsumerWidget {
         return created;
       },
     );
+  }
+
+  String _getDefaultReminderMessage(String patientName) {
+    return 'Hello! This is a reminder about your appointment tomorrow for $patientName '
+        'at San Jose Vet Clinic. Please contact us if you need to reschedule.';
   }
 }
