@@ -10,7 +10,6 @@ import '../routing/routes/products.routes.dart';
 import '../routing/routes/sales.routes.dart';
 import '../routing/routes/sales_history.routes.dart';
 import '../routing/routes/system.routes.dart';
-import '../routing/routes/users.routes.dart';
 import '../utils/breakpoints.dart';
 import '../widgets/breadcrumb_nav.dart';
 import '../widgets/mobile_bottom_nav.dart';
@@ -49,9 +48,8 @@ class _AppRootState extends State<AppRoot> {
     SalesRoute.path, // 4: /cashier
     SalesHistoryRoute.path, // 5: /sales
     MessagesRoute.path, // 6: /messages
-    UsersRoute.path, // 7: /users
-    OrganizationRoute.path, // 8: /organization
-    SystemRoute.path, // 9: /system
+    OrganizationRoute.path, // 7: /organization
+    SystemRoute.path, // 8: /system
   ];
 
   /// Routes in order of navigation index.
@@ -63,9 +61,8 @@ class _AppRootState extends State<AppRoot> {
     SalesRoute(), // 4
     SalesHistoryRoute(), // 5
     MessagesRoute(), // 6
-    UsersRoute(), // 7
-    OrganizationRoute(), // 8
-    SystemRoute(), // 9
+    OrganizationRoute(), // 7
+    SystemRoute(), // 8
   ];
 
   /// Gets the selected index based on current route location.
@@ -134,35 +131,38 @@ class _AppRootState extends State<AppRoot> {
     final selectedIndex = _getSelectedIndex(context);
 
     return Scaffold(
-      body: Row(
-        children: [
-          // Navigation Rail
-          TabletNavRail(
-            selectedIndex: selectedIndex,
-            onDestinationSelected: _onDestinationSelected,
-          ),
+      body: SafeArea(
+        child: Row(
+          children: [
+            // Navigation Rail
+            TabletNavRail(
+              selectedIndex: selectedIndex,
+              onDestinationSelected: _onDestinationSelected,
+            ),
 
-          const VerticalDivider(width: 1),
+            const VerticalDivider(width: 1),
 
-          // Main content area
-          Expanded(
-            child: Scaffold(
-              body: ColoredBox(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: BreadcrumbNav(),
-                    ),
-                    Expanded(child: widget.child),
-                  ],
+            // Main content area
+            Expanded(
+              child: Scaffold(
+                body: ColoredBox(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // const Padding(
+                      //   padding:
+                      //       EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      //   child: BreadcrumbNav(),
+                      // ),
+                      Expanded(child: widget.child),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
