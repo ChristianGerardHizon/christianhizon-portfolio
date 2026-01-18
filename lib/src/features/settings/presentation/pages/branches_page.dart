@@ -1,0 +1,180 @@
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../controllers/branches_controller.dart';
+import '../widgets/sheets/branch_form_sheet.dart';
+
+/// Branches list page with CRUD operations.
+class BranchesPage extends ConsumerWidget {
+  const BranchesPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final branchesAsync = ref.watch(branchesControllerProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Branches'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showFormSheet(context),
+        child: const Icon(Icons.add),
+      ),
+      body: branchesAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error: ${error.toString()}'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () =>
+                    ref.read(branchesControllerProvider.notifier).refresh(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        data: (branches) {
+          if (branches.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.store_outlined,
+                    size: 64,
+                    color: theme.colorScheme.outline,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No branches yet',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap + to add a branch',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () =>
+                ref.read(branchesControllerProvider.notifier).refresh(),
+            child: ListView.builder(
+              itemCount: branches.length,
+              itemBuilder: (context, index) {
+                final branch = branches[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: theme.colorScheme.primaryContainer,
+                    child: Icon(
+                      Icons.store_outlined,
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                  title: Text(branch.name),
+                  subtitle: branch.address != null
+                      ? Text(
+                          branch.address!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : null,
+                  trailing: PopupMenuButton<String>(
+                    onSelected: (value) =>
+                        _handleAction(context, ref, value, branch),
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 'edit',
+                        child: ListTile(
+                          leading: Icon(Icons.edit_outlined),
+                          title: Text('Edit'),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'delete',
+                        child: ListTile(
+                          leading: Icon(Icons.delete_outlined),
+                          title: Text('Delete'),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                    ],
+                  ),
+                  onTap: () => _showFormSheet(context, branch: branch),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showFormSheet(BuildContext context, {dynamic branch}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (context) => BranchFormSheet(branch: branch),
+    );
+  }
+
+  void _handleAction(
+    BuildContext context,
+    WidgetRef ref,
+    String action,
+    dynamic branch,
+  ) {
+    switch (action) {
+      case 'edit':
+        _showFormSheet(context, branch: branch);
+        break;
+      case 'delete':
+        _showDeleteConfirmation(context, ref, branch);
+        break;
+    }
+  }
+
+  void _showDeleteConfirmation(
+    BuildContext context,
+    WidgetRef ref,
+    dynamic branch,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Branch'),
+        content: Text('Are you sure you want to delete "${branch.name}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              await ref
+                  .read(branchesControllerProvider.notifier)
+                  .deleteBranch(branch.id);
+            },
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+}

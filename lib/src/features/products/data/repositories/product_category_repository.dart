@@ -23,6 +23,15 @@ abstract class ProductCategoryRepository {
   /// Fetches a single category by ID.
   FutureEither<ProductCategory> fetchOne(String id);
 
+  /// Creates a new category.
+  FutureEither<ProductCategory> create(ProductCategory category);
+
+  /// Updates an existing category.
+  FutureEither<ProductCategory> update(ProductCategory category);
+
+  /// Soft deletes a category by ID.
+  FutureEither<void> delete(String id);
+
   /// Invalidates the category list cache.
   void invalidateCache();
 }
@@ -143,6 +152,69 @@ class ProductCategoryRepositoryImpl implements ProductCategoryRepository {
 
         final record = await _collection.getOne(id, expand: _expand);
         return _toEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<ProductCategory> create(ProductCategory category) async {
+    return TaskEither.tryCatch(
+      () async {
+        final body = <String, dynamic>{
+          'name': category.name,
+          'parent': category.parentId,
+          'isDeleted': false,
+        };
+
+        final record = await _collection.create(body: body);
+        invalidateCache();
+        return _toEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<ProductCategory> update(ProductCategory category) async {
+    return TaskEither.tryCatch(
+      () async {
+        if (category.id.isEmpty) {
+          throw const DataFailure(
+            'Category ID cannot be empty',
+            null,
+            'invalid_category_id',
+          );
+        }
+
+        final body = <String, dynamic>{
+          'name': category.name,
+          'parent': category.parentId,
+        };
+
+        final record = await _collection.update(category.id, body: body);
+        invalidateCache();
+        return _toEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<void> delete(String id) async {
+    return TaskEither.tryCatch(
+      () async {
+        if (id.isEmpty) {
+          throw const DataFailure(
+            'Category ID cannot be empty',
+            null,
+            'invalid_category_id',
+          );
+        }
+
+        // Soft delete
+        await _collection.update(id, body: {'isDeleted': true});
+        invalidateCache();
       },
       Failure.handle,
     ).run();

@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../i18n/strings.g.dart';
+import '../../../features/settings/presentation/pages/branches_page.dart';
+import '../../../features/settings/presentation/pages/breeds_page.dart';
+import '../../../features/settings/presentation/pages/product_categories_page.dart';
+import '../../../features/settings/presentation/pages/settings_page.dart';
+import '../../../features/settings/presentation/pages/species_page.dart';
 
 part 'system.routes.g.dart';
 
 /// System settings page route.
-@TypedGoRoute<SystemRoute>(path: SystemRoute.path)
+@TypedGoRoute<SystemRoute>(
+  path: SystemRoute.path,
+  routes: [
+    TypedGoRoute<BranchesRoute>(path: 'branches'),
+    TypedGoRoute<SpeciesRoute>(path: 'species'),
+    TypedGoRoute<BreedsRoute>(path: 'breeds'),
+    TypedGoRoute<ProductCategoriesRoute>(path: 'product-categories'),
+  ],
+)
 class SystemRoute extends GoRouteData with $SystemRoute {
   const SystemRoute();
 
@@ -14,47 +26,46 @@ class SystemRoute extends GoRouteData with $SystemRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const SystemPage();
+    return const SettingsPage();
   }
 }
 
-/// System page content placeholder.
-///
-/// This is rendered within the [AppRoot] shell which provides
-/// the AppBar and navigation. Only the body content is defined here.
-class SystemPage extends StatelessWidget {
-  const SystemPage({super.key});
+/// Branches management route.
+class BranchesRoute extends GoRouteData with $BranchesRoute {
+  const BranchesRoute();
 
   @override
-  Widget build(BuildContext context) {
-    final t = Translations.of(context);
-    final theme = Theme.of(context);
+  Widget build(BuildContext context, GoRouterState state) {
+    return const BranchesPage();
+  }
+}
 
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.settings,
-              size: 80,
-              color: theme.colorScheme.primary,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              t.navigation.system,
-              style: theme.textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Coming Soon',
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.outline,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+/// Species management route.
+class SpeciesRoute extends GoRouteData with $SpeciesRoute {
+  const SpeciesRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const SpeciesPage();
+  }
+}
+
+/// Breeds management route.
+class BreedsRoute extends GoRouteData with $BreedsRoute {
+  const BreedsRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const BreedsPage();
+  }
+}
+
+/// Product categories management route.
+class ProductCategoriesRoute extends GoRouteData with $ProductCategoriesRoute {
+  const ProductCategoriesRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const ProductCategoriesPage();
   }
 }

@@ -19,6 +19,15 @@ abstract class BreedRepository {
 
   /// Fetches breeds filtered by species ID.
   FutureEither<List<PatientBreed>> fetchBySpecies(String speciesId);
+
+  /// Creates a new breed.
+  FutureEither<PatientBreed> create(PatientBreed breed);
+
+  /// Updates an existing breed.
+  FutureEither<PatientBreed> update(PatientBreed breed);
+
+  /// Soft deletes a breed by ID.
+  FutureEither<void> delete(String id);
 }
 
 /// Provides the BreedRepository instance.
@@ -73,6 +82,66 @@ class BreedRepositoryImpl implements BreedRepository {
         );
 
         return records.map(_toEntity).toList();
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<PatientBreed> create(PatientBreed breed) async {
+    return TaskEither.tryCatch(
+      () async {
+        final body = <String, dynamic>{
+          'name': breed.name,
+          'species': breed.speciesId,
+          'isDeleted': false,
+        };
+
+        final record = await _collection.create(body: body);
+        return _toEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<PatientBreed> update(PatientBreed breed) async {
+    return TaskEither.tryCatch(
+      () async {
+        if (breed.id.isEmpty) {
+          throw const DataFailure(
+            'Breed ID cannot be empty',
+            null,
+            'invalid_breed_id',
+          );
+        }
+
+        final body = <String, dynamic>{
+          'name': breed.name,
+          'species': breed.speciesId,
+        };
+
+        final record = await _collection.update(breed.id, body: body);
+        return _toEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<void> delete(String id) async {
+    return TaskEither.tryCatch(
+      () async {
+        if (id.isEmpty) {
+          throw const DataFailure(
+            'Breed ID cannot be empty',
+            null,
+            'invalid_breed_id',
+          );
+        }
+
+        // Soft delete
+        await _collection.update(id, body: {'isDeleted': true});
       },
       Failure.handle,
     ).run();

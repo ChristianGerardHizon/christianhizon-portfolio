@@ -16,6 +16,15 @@ part 'species_repository.g.dart';
 abstract class SpeciesRepository {
   /// Fetches all species.
   FutureEither<List<PatientSpecies>> fetchAll();
+
+  /// Creates a new species.
+  FutureEither<PatientSpecies> create(PatientSpecies species);
+
+  /// Updates an existing species.
+  FutureEither<PatientSpecies> update(PatientSpecies species);
+
+  /// Soft deletes a species by ID.
+  FutureEither<void> delete(String id);
 }
 
 /// Provides the SpeciesRepository instance.
@@ -50,6 +59,64 @@ class SpeciesRepositoryImpl implements SpeciesRepository {
         );
 
         return records.map(_toEntity).toList();
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<PatientSpecies> create(PatientSpecies species) async {
+    return TaskEither.tryCatch(
+      () async {
+        final body = <String, dynamic>{
+          'name': species.name,
+          'isDeleted': false,
+        };
+
+        final record = await _collection.create(body: body);
+        return _toEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<PatientSpecies> update(PatientSpecies species) async {
+    return TaskEither.tryCatch(
+      () async {
+        if (species.id.isEmpty) {
+          throw const DataFailure(
+            'Species ID cannot be empty',
+            null,
+            'invalid_species_id',
+          );
+        }
+
+        final body = <String, dynamic>{
+          'name': species.name,
+        };
+
+        final record = await _collection.update(species.id, body: body);
+        return _toEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<void> delete(String id) async {
+    return TaskEither.tryCatch(
+      () async {
+        if (id.isEmpty) {
+          throw const DataFailure(
+            'Species ID cannot be empty',
+            null,
+            'invalid_species_id',
+          );
+        }
+
+        // Soft delete
+        await _collection.update(id, body: {'isDeleted': true});
       },
       Failure.handle,
     ).run();
