@@ -8,7 +8,7 @@ import '../i18n/strings.g.dart';
 ///
 /// Contains all navigation sections:
 /// - Primary: Dashboard, Patients, Appointments, Products
-/// - Secondary: Sales, Organization, System
+/// - Secondary: Sales, Messages, Users, Organization, System
 /// - Actions: Logout
 class MobileDrawer extends ConsumerWidget {
   const MobileDrawer({
@@ -115,16 +115,22 @@ class MobileDrawer extends ConsumerWidget {
               onTap: () => _selectAndClose(context, 6),
             ),
             _DrawerItem(
-              icon: Icons.business,
-              label: t.navigation.organization,
+              icon: Icons.people,
+              label: t.navigation.users,
               selected: selectedIndex == 7,
               onTap: () => _selectAndClose(context, 7),
             ),
             _DrawerItem(
-              icon: Icons.settings,
-              label: t.navigation.system,
+              icon: Icons.business,
+              label: t.navigation.organization,
               selected: selectedIndex == 8,
               onTap: () => _selectAndClose(context, 8),
+            ),
+            _DrawerItem(
+              icon: Icons.settings,
+              label: t.navigation.system,
+              selected: selectedIndex == 9,
+              onTap: () => _selectAndClose(context, 9),
             ),
 
             const Divider(),

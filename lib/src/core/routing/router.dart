@@ -15,6 +15,7 @@ import 'routes/products.routes.dart';
 import 'routes/sales.routes.dart';
 import 'routes/sales_history.routes.dart';
 import 'routes/system.routes.dart';
+import 'routes/users.routes.dart';
 
 part 'router.g.dart';
 
@@ -52,6 +53,7 @@ GoRouter router(Ref ref) {
           $messagesShellRoute,
           $organizationRoute,
           $systemRoute,
+          $usersShellRoute,
         ],
       ),
     ],

@@ -7,7 +7,7 @@ import '../utils/breakpoints.dart';
 
 /// Navigation rail for tablet and desktop layouts.
 ///
-/// Displays 9 primary navigation destinations with icons.
+/// Displays 10 primary navigation destinations with icons.
 /// On larger screens, shows labels alongside icons.
 class TabletNavRail extends ConsumerWidget {
   const TabletNavRail({
@@ -92,6 +92,11 @@ class TabletNavRail extends ConsumerWidget {
           icon: const Icon(Icons.message_outlined),
           selectedIcon: const Icon(Icons.message),
           label: Text(t.navigation.messages),
+        ),
+        NavigationRailDestination(
+          icon: const Icon(Icons.people_outlined),
+          selectedIcon: const Icon(Icons.people),
+          label: Text(t.navigation.users),
         ),
         NavigationRailDestination(
           icon: const Icon(Icons.business_outlined),
