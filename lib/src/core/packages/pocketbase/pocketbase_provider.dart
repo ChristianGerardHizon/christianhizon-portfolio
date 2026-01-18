@@ -9,7 +9,7 @@ part 'pocketbase_provider.g.dart';
 /// Environment URLs for PocketBase
 abstract class PocketBaseUrls {
   static const String dev = 'http://127.0.0.1:8090';
-  static const String prod = 'http://127.0.0.1:8090';
+  static const String prod = 'https://dev.sannjoseanimalclinic.com';
 }
 
 /// Controller for toggling between dev and production PocketBase instances.
