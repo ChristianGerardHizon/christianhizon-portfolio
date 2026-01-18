@@ -60,4 +60,7 @@ abstract class PBExpand {
 
   /// Expand for sale queries - includes items and branch.
   static final Expand sale = Expand.flat(['items', 'branch']);
+
+  /// Expand for message queries - includes patient, appointment, and branch.
+  static final Expand message = Expand.flat(['patient', 'appointment', 'branch']);
 }

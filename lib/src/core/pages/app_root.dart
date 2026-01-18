@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../routing/routes/appointments.routes.dart';
 import '../routing/routes/dashboard.routes.dart';
+import '../routing/routes/messages.routes.dart';
 import '../routing/routes/organization.routes.dart';
 import '../routing/routes/patients.routes.dart';
 import '../routing/routes/products.routes.dart';
@@ -46,8 +47,9 @@ class _AppRootState extends State<AppRoot> {
     ProductsRoute.path, // 3: /products
     SalesRoute.path, // 4: /cashier
     SalesHistoryRoute.path, // 5: /sales
-    OrganizationRoute.path, // 6: /organization
-    SystemRoute.path, // 7: /system
+    MessagesRoute.path, // 6: /messages
+    OrganizationRoute.path, // 7: /organization
+    SystemRoute.path, // 8: /system
   ];
 
   /// Routes in order of navigation index.
@@ -58,8 +60,9 @@ class _AppRootState extends State<AppRoot> {
     ProductsRoute(), // 3
     SalesRoute(), // 4
     SalesHistoryRoute(), // 5
-    OrganizationRoute(), // 6
-    SystemRoute(), // 7
+    MessagesRoute(), // 6
+    OrganizationRoute(), // 7
+    SystemRoute(), // 8
   ];
 
   /// Gets the selected index based on current route location.

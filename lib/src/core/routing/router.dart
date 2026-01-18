@@ -8,6 +8,7 @@ import 'router_utils.dart';
 import 'routes/appointments.routes.dart';
 import 'routes/auth.routes.dart';
 import 'routes/dashboard.routes.dart';
+import 'routes/messages.routes.dart';
 import 'routes/organization.routes.dart';
 import 'routes/patients.routes.dart';
 import 'routes/products.routes.dart';
@@ -48,6 +49,7 @@ GoRouter router(Ref ref) {
           $productsShellRoute,
           $salesRoute,
           $salesShellRoute,
+          $messagesRoute,
           $organizationRoute,
           $systemRoute,
         ],
