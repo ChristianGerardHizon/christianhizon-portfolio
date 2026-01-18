@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../../core/i18n/strings.g.dart';
+import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../../../core/routing/routes/auth.routes.dart';
 import '../controllers/auth_controller.dart';
 
@@ -181,6 +182,17 @@ class LoginPage extends HookConsumerWidget {
                         ? null
                         : () => const ForgotPasswordRoute().push(context),
                     child: Text(t.auth.forgotPassword),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Server URL indicator
+                  Text(
+                    ref.watch(pocketbaseProvider).baseURL,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.grey.shade500,
+                          fontSize: 10,
+                        ),
                   ),
                 ],
               ),
