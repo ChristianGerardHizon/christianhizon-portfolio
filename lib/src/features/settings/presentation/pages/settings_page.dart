@@ -31,15 +31,9 @@ class SettingsPage extends ConsumerWidget {
           ),
           _SettingsCard(
             icon: Icons.pets_outlined,
-            title: 'Species',
-            description: 'Manage patient species (Dog, Cat, etc.)',
+            title: 'Species & Breeds',
+            description: 'Manage patient species and their breeds',
             onTap: () => const SpeciesRoute().push(context),
-          ),
-          _SettingsCard(
-            icon: Icons.category_outlined,
-            title: 'Breeds',
-            description: 'Manage patient breeds by species',
-            onTap: () => const BreedsRoute().push(context),
           ),
           _SettingsCard(
             icon: Icons.inventory_2_outlined,
