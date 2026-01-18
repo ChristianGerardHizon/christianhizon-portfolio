@@ -1,0 +1,277 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../../../../core/i18n/strings.g.dart';
+import '../../../../core/routing/routes/users.routes.dart';
+import '../../../../core/utils/breakpoints.dart';
+import '../../domain/user.dart';
+import '../../domain/user_tab.dart';
+import '../controllers/paginated_users_controller.dart';
+import '../controllers/user_provider.dart';
+import '../widgets/sheets/edit_user_sheet.dart';
+import '../widgets/tabs/user_details_tab.dart';
+import '../widgets/tabs/user_overview_tab.dart';
+import '../widgets/tabs/user_permissions_tab.dart';
+
+/// User detail page with tabbed content.
+///
+/// Shows user info across 3 tabs:
+/// - Overview: Brief summary with key info
+/// - Details: Full user information
+/// - Permissions: Role and permissions display
+class UserDetailPage extends HookConsumerWidget {
+  const UserDetailPage({
+    super.key,
+    required this.userId,
+    this.initialTab = UserTab.overview,
+  });
+
+  final String userId;
+  final UserTab initialTab;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userAsync = ref.watch(userProvider(userId));
+
+    final tabController = useTabController(
+      initialLength: 3,
+      initialIndex: initialTab.index,
+    );
+    final isTablet = Breakpoints.isTabletOrLarger(context);
+    final t = Translations.of(context);
+
+    return userAsync.when(
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, stack) => Scaffold(
+        appBar: AppBar(
+          leading: isTablet
+              ? null
+              : IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () => const UsersRoute().go(context),
+                ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error loading user: ${error.toString()}'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => ref.invalidate(userProvider(userId)),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      ),
+      data: (user) {
+        if (user == null) {
+          return Scaffold(
+            appBar: AppBar(
+              leading: isTablet
+                  ? null
+                  : IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () => const UsersRoute().go(context),
+                    ),
+            ),
+            body: const Center(
+              child: Text('User not found'),
+            ),
+          );
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: !isTablet,
+            leading: isTablet
+                ? null
+                : IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => const UsersRoute().go(context),
+                  ),
+            title: Text('${user.name} - ${user.displayRole}'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  ref.invalidate(userProvider(userId));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Refreshing...'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                },
+                tooltip: 'Refresh',
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () => _showEditUserDialog(context, user),
+                tooltip: t.common.edit,
+              ),
+              IconButton(
+                icon: const Icon(Icons.more_vert),
+                onPressed: () => _showMoreOptions(context, ref, user),
+              ),
+            ],
+            bottom: TabBar(
+              controller: tabController,
+              isScrollable: true,
+              tabs: const [
+                Tab(text: 'Overview'),
+                Tab(text: 'Details'),
+                Tab(text: 'Permissions'),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            controller: tabController,
+            children: [
+              UserOverviewTab(user: user),
+              UserDetailsTab(user: user),
+              UserPermissionsTab(user: user),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showEditUserDialog(BuildContext context, User user) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      useRootNavigator: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) => EditUserSheet(user: user),
+    );
+  }
+
+  void _showMoreOptions(BuildContext context, WidgetRef ref, User user) {
+    final t = Translations.of(context);
+
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.lock_reset),
+              title: const Text('Reset Password'),
+              onTap: () {
+                Navigator.pop(context);
+                _showResetPasswordDialog(context, ref, user);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.email),
+              title: const Text('Send Verification Email'),
+              enabled: !user.verified,
+              onTap: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('Verification email functionality coming soon')),
+                );
+              },
+            ),
+            ListTile(
+              leading:
+                  Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+              title: Text(t.common.delete,
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.error)),
+              onTap: () {
+                Navigator.pop(context);
+                _showDeleteConfirmation(context, ref, user);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showResetPasswordDialog(
+      BuildContext context, WidgetRef ref, User user) {
+    final t = Translations.of(context);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Reset Password'),
+        content: Text('Are you sure you want to reset the password for ${user.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(t.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Password reset functionality coming soon')),
+              );
+            },
+            child: const Text('Reset'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteConfirmation(
+      BuildContext context, WidgetRef ref, User user) {
+    final t = Translations.of(context);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(t.common.delete),
+        content: Text('Are you sure you want to delete ${user.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(t.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              final success = await ref
+                  .read(paginatedUsersControllerProvider.notifier)
+                  .deleteUser(user.id);
+              if (context.mounted) {
+                if (success) {
+                  const UsersRoute().go(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('User deleted')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Failed to delete user')),
+                  );
+                }
+              }
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: Text(t.common.delete),
+          ),
+        ],
+      ),
+    );
+  }
+}
