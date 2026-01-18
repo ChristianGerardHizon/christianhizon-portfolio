@@ -60,6 +60,7 @@
 	<true/>
 	<key>UIFileSharingEnabled</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
 	<array>
 	<dict>
 		<key>CFBundleTypeRole</key>
