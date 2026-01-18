@@ -4,6 +4,12 @@ import 'package:intl/intl.dart';
 import '../../domain/message.dart';
 
 /// Card widget displaying a message with status and actions.
+///
+/// Follows the design pattern from TreatmentRecordCard with:
+/// - Icon box on the left
+/// - Main content in the middle
+/// - Menu button on the right
+/// - Status and metadata in a linked items section
 class MessageCard extends StatelessWidget {
   const MessageCard({
     super.key,
@@ -20,9 +26,36 @@ class MessageCard extends StatelessWidget {
   final VoidCallback? onCancel;
   final VoidCallback? onDelete;
 
+  IconData _getStatusIcon() {
+    switch (message.status) {
+      case MessageStatus.pending:
+        return Icons.schedule;
+      case MessageStatus.sent:
+        return Icons.check_circle;
+      case MessageStatus.failed:
+        return Icons.error;
+      case MessageStatus.cancelled:
+        return Icons.cancel;
+    }
+  }
+
+  (Color, Color) _getStatusColors(ThemeData theme) {
+    switch (message.status) {
+      case MessageStatus.pending:
+        return (theme.colorScheme.primaryContainer, theme.colorScheme.primary);
+      case MessageStatus.sent:
+        return (Colors.green.withValues(alpha: 0.15), Colors.green);
+      case MessageStatus.failed:
+        return (theme.colorScheme.errorContainer, theme.colorScheme.error);
+      case MessageStatus.cancelled:
+        return (theme.colorScheme.surfaceContainerHighest, theme.colorScheme.outline);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final (containerColor, iconColor) = _getStatusColors(theme);
 
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -34,137 +67,130 @@ class MessageCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header row with phone and status
+              // Main row with icon, content, and menu
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.phone,
-                    size: 16,
-                    color: theme.colorScheme.primary,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      message.phone,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  // Status icon box
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: containerColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      _getStatusIcon(),
+                      color: iconColor,
                     ),
                   ),
-                  _MessageStatusChip(status: message.status),
+                  const SizedBox(width: 16),
+
+                  // Content
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          message.phone,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          message.content,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Menu
                   if ((onCancel != null && message.canCancel) || onDelete != null)
                     _buildPopupMenu(context),
                 ],
               ),
 
+              // Metadata section
+              const SizedBox(height: 12),
+              Divider(color: theme.colorScheme.outlineVariant, height: 1),
               const SizedBox(height: 12),
 
-              // Message content
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              // Status and metadata chips
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
                 children: [
-                  Icon(
-                    Icons.message_outlined,
-                    size: 16,
-                    color: theme.colorScheme.outline,
+                  // Status chip
+                  _MetadataChip(
+                    icon: _getStatusIcon(),
+                    label: _getStatusLabel(),
+                    color: containerColor,
+                    textColor: iconColor,
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      message.content,
-                      style: theme.textTheme.bodyMedium,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
+
+                  // Scheduled time chip
+                  _MetadataChip(
+                    icon: Icons.event,
+                    label: _formatDateTime(message.sendDateTime),
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    textColor: theme.colorScheme.onSurfaceVariant,
+                  ),
+
+                  // Patient chip (if linked)
+                  if (message.patientDisplayName != null)
+                    _MetadataChip(
+                      icon: Icons.pets,
+                      label: message.patientDisplayName!,
+                      color: theme.colorScheme.secondaryContainer,
+                      textColor: theme.colorScheme.onSecondaryContainer,
                     ),
-                  ),
+
+                  // Sent time (if sent)
+                  if (message.sentAt != null)
+                    _MetadataChip(
+                      icon: Icons.send,
+                      label: 'Sent ${_formatDateTime(message.sentAt!)}',
+                      color: Colors.green.withValues(alpha: 0.15),
+                      textColor: Colors.green,
+                    ),
                 ],
               ),
-
-              const SizedBox(height: 8),
-
-              // Scheduled send time
-              Row(
-                children: [
-                  Icon(
-                    Icons.schedule,
-                    size: 16,
-                    color: theme.colorScheme.outline,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Scheduled: ${_formatDateTime(message.sendDateTime)}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-
-              // Patient info (if linked)
-              if (message.patientDisplayName != null) ...[
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.pets,
-                      size: 16,
-                      color: theme.colorScheme.outline,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      message.patientDisplayName!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-
-              // Sent time (if sent)
-              if (message.sentAt != null) ...[
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.check_circle,
-                      size: 16,
-                      color: Colors.green,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Sent: ${_formatDateTime(message.sentAt!)}',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
 
               // Error message (if failed)
               if (message.isFailed && message.errorMessage != null) ...[
-                const SizedBox(height: 4),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: 16,
-                      color: theme.colorScheme.error,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        message.errorMessage!,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.error,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.errorContainer.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 16,
+                        color: theme.colorScheme.error,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          message.errorMessage!,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.error,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ],
@@ -174,33 +200,47 @@ class MessageCard extends StatelessWidget {
     );
   }
 
+  String _getStatusLabel() {
+    switch (message.status) {
+      case MessageStatus.pending:
+        return 'Pending';
+      case MessageStatus.sent:
+        return 'Sent';
+      case MessageStatus.failed:
+        return 'Failed';
+      case MessageStatus.cancelled:
+        return 'Cancelled';
+    }
+  }
+
   String _formatDateTime(DateTime dateTime) {
-    return DateFormat('MMM d, yyyy h:mm a').format(dateTime);
+    return DateFormat('MMM d, h:mm a').format(dateTime);
   }
 
   Widget _buildPopupMenu(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: const Icon(Icons.more_vert),
       itemBuilder: (context) => [
         if (onCancel != null && message.canCancel)
           const PopupMenuItem(
             value: 'cancel',
-            child: ListTile(
-              leading: Icon(Icons.cancel, color: Colors.orange),
-              title: Text('Cancel'),
-              contentPadding: EdgeInsets.zero,
-              dense: true,
+            child: Row(
+              children: [
+                Icon(Icons.cancel, size: 20, color: Colors.orange),
+                SizedBox(width: 8),
+                Text('Cancel'),
+              ],
             ),
           ),
         if (onDelete != null) ...[
           if (onCancel != null && message.canCancel) const PopupMenuDivider(),
           const PopupMenuItem(
             value: 'delete',
-            child: ListTile(
-              leading: Icon(Icons.delete, color: Colors.red),
-              title: Text('Delete', style: TextStyle(color: Colors.red)),
-              contentPadding: EdgeInsets.zero,
-              dense: true,
+            child: Row(
+              children: [
+                Icon(Icons.delete, size: 20, color: Colors.red),
+                SizedBox(width: 8),
+                Text('Delete', style: TextStyle(color: Colors.red)),
+              ],
             ),
           ),
         ],
@@ -216,52 +256,44 @@ class MessageCard extends StatelessWidget {
   }
 }
 
-/// Chip displaying message status.
-class _MessageStatusChip extends StatelessWidget {
-  const _MessageStatusChip({required this.status});
+/// A chip displaying metadata (status, time, patient, etc.).
+class _MetadataChip extends StatelessWidget {
+  const _MetadataChip({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.textColor,
+  });
 
-  final MessageStatus status;
+  final IconData icon;
+  final String label;
+  final Color color;
+  final Color textColor;
 
   @override
   Widget build(BuildContext context) {
-    final (color, label, icon) = _getStatusInfo(context);
+    final theme = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+        color: color,
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: color),
-          const SizedBox(width: 4),
+          Icon(icon, size: 14, color: textColor),
+          const SizedBox(width: 6),
           Text(
             label,
-            style: TextStyle(
-              color: color,
-              fontSize: 12,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: textColor,
               fontWeight: FontWeight.w500,
             ),
           ),
         ],
       ),
     );
-  }
-
-  (Color, String, IconData) _getStatusInfo(BuildContext context) {
-    final theme = Theme.of(context);
-
-    switch (status) {
-      case MessageStatus.pending:
-        return (theme.colorScheme.primary, 'Pending', Icons.schedule);
-      case MessageStatus.sent:
-        return (Colors.green, 'Sent', Icons.check_circle);
-      case MessageStatus.failed:
-        return (theme.colorScheme.error, 'Failed', Icons.error);
-      case MessageStatus.cancelled:
-        return (theme.colorScheme.outline, 'Cancelled', Icons.cancel);
-    }
   }
 }

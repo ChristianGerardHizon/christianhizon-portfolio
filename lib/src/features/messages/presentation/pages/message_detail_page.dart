@@ -7,6 +7,7 @@ import '../../../../core/routing/routes/messages.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../domain/message.dart';
 import '../controllers/messages_controller.dart';
+import '../widgets/sheets/edit_message_sheet.dart';
 
 /// Message detail page showing full message information.
 ///
@@ -108,123 +109,241 @@ class _MessageDetailContent extends ConsumerWidget {
               ),
         title: Text('Message to ${message.phone}'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              ref.invalidate(messageProvider(message.id));
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Refreshing...'),
-                  duration: Duration(seconds: 1),
-                ),
-              );
-            },
-            tooltip: 'Refresh',
-          ),
+          if (message.canCancel)
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () => _showEditSheet(context, ref),
+              tooltip: 'Edit',
+            ),
           IconButton(
             icon: const Icon(Icons.more_vert),
             onPressed: () => _showMoreOptions(context, ref),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(messageProvider(message.id));
+          await ref.read(messageProvider(message.id).future);
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Status Card
+              _buildStatusCard(context),
+              const SizedBox(height: 16),
+
+              // Message Content Card
+              _buildMessageCard(context, theme),
+              const SizedBox(height: 16),
+
+              // Schedule & Delivery Card
+              _buildScheduleCard(context, theme),
+
+              // Error Card (if failed)
+              if (message.isFailed && message.errorMessage != null) ...[
+                const SizedBox(height: 16),
+                _buildErrorCard(context, theme),
+              ],
+
+              // Notes Card (if present)
+              if (message.notes != null && message.notes!.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                _buildNotesCard(context, theme),
+              ],
+
+              // Quick Actions Card
+              if (message.canCancel) ...[
+                const SizedBox(height: 16),
+                _buildActionsCard(context, ref, theme),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusCard(BuildContext context) {
+    final theme = Theme.of(context);
+    final (color, label, icon) = switch (message.status) {
+      MessageStatus.pending => (
+          theme.colorScheme.primary,
+          'Pending',
+          Icons.schedule
+        ),
+      MessageStatus.sent => (Colors.green, 'Sent', Icons.check_circle),
+      MessageStatus.failed => (
+          theme.colorScheme.error,
+          'Failed',
+          Icons.error
+        ),
+      MessageStatus.cancelled => (
+          theme.colorScheme.outline,
+          'Cancelled',
+          Icons.cancel
+        ),
+    };
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: color, size: 24),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Status',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    label,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMessageCard(BuildContext context, ThemeData theme) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Status badge
-            _buildStatusChip(context),
-            const SizedBox(height: 24),
+            Row(
+              children: [
+                Icon(
+                  Icons.message,
+                  size: 20,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Message Details',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
 
-            // Phone
+            // Recipient
             _DetailRow(
               icon: Icons.phone,
-              label: 'Phone',
+              label: 'Recipient',
               value: message.phone,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
-            // Content
-            _DetailRow(
-              icon: Icons.message,
-              label: 'Message',
-              value: message.content,
-            ),
-            const SizedBox(height: 16),
-
-            // Scheduled time
-            _DetailRow(
-              icon: Icons.schedule,
-              label: 'Scheduled',
-              value: _formatDateTime(message.sendDateTime),
-            ),
-
-            // Patient
+            // Patient (if linked)
             if (message.patientDisplayName != null) ...[
-              const SizedBox(height: 16),
               _DetailRow(
                 icon: Icons.pets,
                 label: 'Patient',
                 value: message.patientDisplayName!,
               ),
-            ],
-
-            // Sent time
-            if (message.sentAt != null) ...[
-              const SizedBox(height: 16),
-              _DetailRow(
-                icon: Icons.check_circle,
-                label: 'Sent',
-                value: _formatDateTime(message.sentAt!),
-                valueColor: Colors.green,
-              ),
-            ],
-
-            // Error message
-            if (message.isFailed && message.errorMessage != null) ...[
-              const SizedBox(height: 16),
-              _DetailRow(
-                icon: Icons.error,
-                label: 'Error',
-                value: message.errorMessage!,
-                valueColor: theme.colorScheme.error,
-              ),
-            ],
-
-            // Notes
-            if (message.notes != null && message.notes!.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              _DetailRow(
-                icon: Icons.notes,
-                label: 'Notes',
-                value: message.notes!,
-              ),
-            ],
-
-            const SizedBox(height: 32),
-
-            // Quick actions
-            if (message.canCancel) ...[
-              const Divider(),
-              const SizedBox(height: 16),
-              Text(
-                'Actions',
-                style: theme.textTheme.titleMedium,
-              ),
               const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
+            ],
+
+            // Message content
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  OutlinedButton.icon(
-                    onPressed: () => _confirmCancel(context, ref),
-                    icon: const Icon(Icons.cancel, color: Colors.orange),
-                    label: const Text('Cancel Message'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.orange,
+                  Text(
+                    'Content',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.outline,
                     ),
                   ),
+                  const SizedBox(height: 4),
+                  Text(
+                    message.content,
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildScheduleCard(BuildContext context, ThemeData theme) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.schedule,
+                  size: 20,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Schedule & Delivery',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // Scheduled time
+            _DetailRow(
+              icon: Icons.event,
+              label: 'Scheduled For',
+              value: _formatDateTime(message.sendDateTime),
+            ),
+
+            // Sent time (if sent)
+            if (message.sentAt != null) ...[
+              const SizedBox(height: 12),
+              _DetailRow(
+                icon: Icons.check_circle,
+                label: 'Sent At',
+                value: _formatDateTime(message.sentAt!),
+                valueColor: Colors.green,
               ),
             ],
           ],
@@ -233,45 +352,126 @@ class _MessageDetailContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatusChip(BuildContext context) {
-    final (color, label, icon) = switch (message.status) {
-      MessageStatus.pending => (
-          Theme.of(context).colorScheme.primary,
-          'Pending',
-          Icons.schedule
-        ),
-      MessageStatus.sent => (Colors.green, 'Sent', Icons.check_circle),
-      MessageStatus.failed => (
-          Theme.of(context).colorScheme.error,
-          'Failed',
-          Icons.error
-        ),
-      MessageStatus.cancelled => (
-          Theme.of(context).colorScheme.outline,
-          'Cancelled',
-          Icons.cancel
-        ),
-    };
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: color),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontWeight: FontWeight.w600,
+  Widget _buildErrorCard(BuildContext context, ThemeData theme) {
+    return Card(
+      color: theme.colorScheme.errorContainer.withValues(alpha: 0.3),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.error,
+                  size: 20,
+                  color: theme.colorScheme.error,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Error Details',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.error,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            Text(
+              message.errorMessage!,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNotesCard(BuildContext context, ThemeData theme) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.notes,
+                  size: 20,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Notes',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              message.notes!,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionsCard(BuildContext context, WidgetRef ref, ThemeData theme) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.touch_app,
+                  size: 20,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Quick Actions',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                FilledButton.icon(
+                  onPressed: () => _showEditSheet(context, ref),
+                  icon: const Icon(Icons.edit, size: 18),
+                  label: const Text('Edit Message'),
+                ),
+                OutlinedButton.icon(
+                  onPressed: () => _confirmCancel(context, ref),
+                  icon: const Icon(Icons.cancel, size: 18, color: Colors.orange),
+                  label: const Text('Cancel Message'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.orange,
+                    side: const BorderSide(color: Colors.orange),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -280,23 +480,54 @@ class _MessageDetailContent extends ConsumerWidget {
     return DateFormat('MMM d, yyyy h:mm a').format(dateTime);
   }
 
+  void _showEditSheet(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      builder: (context) => EditMessageSheet(
+        message: message,
+        onSave: (updatedMessage) async {
+          final success = await ref
+              .read(messagesControllerProvider.notifier)
+              .updateMessage(updatedMessage);
+
+          if (success) {
+            ref.invalidate(messageProvider(message.id));
+            return updatedMessage;
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
   void _showMoreOptions(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
-      builder: (context) => SafeArea(
+      builder: (sheetContext) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (message.canCancel)
+            if (message.canCancel) ...[
+              ListTile(
+                leading: Icon(Icons.edit, color: Theme.of(context).colorScheme.primary),
+                title: const Text('Edit Message'),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  _showEditSheet(context, ref);
+                },
+              ),
               ListTile(
                 leading: const Icon(Icons.cancel, color: Colors.orange),
                 title: const Text('Cancel Message'),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pop(sheetContext);
                   _confirmCancel(context, ref);
                 },
               ),
+            ],
             ListTile(
               leading:
                   Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
