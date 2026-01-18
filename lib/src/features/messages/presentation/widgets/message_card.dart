@@ -8,12 +8,14 @@ class MessageCard extends StatelessWidget {
   const MessageCard({
     super.key,
     required this.message,
+    this.isSelected = false,
     this.onTap,
     this.onCancel,
     this.onDelete,
   });
 
   final Message message;
+  final bool isSelected;
   final VoidCallback? onTap;
   final VoidCallback? onCancel;
   final VoidCallback? onDelete;
@@ -24,6 +26,7 @@ class MessageCard extends StatelessWidget {
 
     return Card(
       clipBehavior: Clip.antiAlias,
+      color: isSelected ? theme.colorScheme.primaryContainer : null,
       child: InkWell(
         onTap: onTap,
         child: Padding(
