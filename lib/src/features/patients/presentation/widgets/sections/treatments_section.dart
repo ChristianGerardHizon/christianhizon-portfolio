@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../core/routing/routes/appointments.routes.dart';
+import '../../../../../core/routing/routes/messages.routes.dart';
 import '../../../domain/patient_treatment_record.dart';
 import '../../controllers/patient_treatment_records_controller.dart';
 import '../cards/treatment_record_card.dart';
@@ -144,6 +146,14 @@ class TreatmentsSection extends ConsumerWidget {
                               _handleEditTreatment(context, ref, record),
                           onDelete: () =>
                               _handleDeleteTreatment(context, ref, record),
+                          onViewAppointment: record.appointment != null &&
+                                  record.appointment!.isNotEmpty
+                              ? () => AppointmentDetailRoute(
+                                      id: record.appointment!)
+                                  .go(context)
+                              : null,
+                          onViewMessages: () =>
+                              const MessagesRoute().go(context),
                         ),
                       ),
                     ),

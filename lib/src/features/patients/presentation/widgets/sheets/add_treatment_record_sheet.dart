@@ -7,7 +7,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/widgets/form_feedback.dart';
+import '../../../../messages/domain/message.dart';
+import '../../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../domain/patient_treatment_record.dart';
+import '../../controllers/patient_provider.dart';
 import '../../controllers/patient_treatments_controller.dart';
 
 /// Bottom sheet for adding or editing a treatment record.
@@ -38,6 +41,8 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
     'treatment': 'Treatment Type',
     'date': 'Date',
     'notes': 'Notes',
+    'reminderMessage': 'Reminder Message',
+    'reminderDateTime': 'Send Date/Time',
   };
 
   @override
@@ -48,9 +53,13 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
 
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isSaving = useState(false);
+    final sendReminder = useState(false);
 
     // Watch treatment catalog
     final treatmentsAsync = ref.watch(patientTreatmentsControllerProvider);
+
+    // Watch patient data for phone number
+    final patientAsync = ref.watch(patientProvider(patientId));
 
     Future<void> handleSave() async {
       final isValid = formKey.currentState!.saveAndValidate();
@@ -78,6 +87,34 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
 
       final created = await onSave(record);
 
+      // Create reminder message if enabled
+      if (created != null && sendReminder.value) {
+        final patient = patientAsync.value;
+        final messageContent = values['reminderMessage'] as String?;
+        final reminderDateTime = values['reminderDateTime'] as DateTime?;
+
+        if (patient != null &&
+            patient.contactNumber != null &&
+            patient.contactNumber!.isNotEmpty &&
+            messageContent != null &&
+            messageContent.isNotEmpty &&
+            reminderDateTime != null) {
+          final message = Message(
+            id: '',
+            phone: patient.contactNumber!,
+            content: messageContent,
+            sendDateTime: reminderDateTime,
+            patient: patientId,
+            appointment: appointmentId ?? existingRecord?.appointment,
+            notes: 'Treatment reminder for ${created.treatmentName}',
+          );
+
+          await ref
+              .read(messagesControllerProvider.notifier)
+              .createMessage(message);
+        }
+      }
+
       if (context.mounted) {
         isSaving.value = false;
         if (created != null) {
@@ -86,7 +123,9 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
             context,
             message: isEditing
                 ? 'Treatment record updated'
-                : 'Treatment record added',
+                : sendReminder.value
+                    ? 'Treatment record added with reminder'
+                    : 'Treatment record added',
           );
         } else {
           showErrorSnackBar(
@@ -225,6 +264,188 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
                 ),
                 const SizedBox(height: 24),
 
+                // === REMINDER MESSAGE SECTION ===
+                if (!isEditing) ...[
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.message,
+                                color: theme.colorScheme.primary,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Send Reminder Message',
+                                style: theme.textTheme.titleMedium,
+                              ),
+                              const Spacer(),
+                              Switch(
+                                value: sendReminder.value,
+                                onChanged: isSaving.value
+                                    ? null
+                                    : (value) => sendReminder.value = value,
+                              ),
+                            ],
+                          ),
+                          if (sendReminder.value) ...[
+                            const SizedBox(height: 16),
+                            // Show patient phone info
+                            patientAsync.when(
+                              loading: () =>
+                                  const LinearProgressIndicator(),
+                              error: (_, __) => Text(
+                                'Could not load patient info',
+                                style: TextStyle(
+                                  color: theme.colorScheme.error,
+                                ),
+                              ),
+                              data: (patient) {
+                                if (patient == null) {
+                                  return Text(
+                                    'Patient not found',
+                                    style: TextStyle(
+                                      color: theme.colorScheme.error,
+                                    ),
+                                  );
+                                }
+                                if (patient.contactNumber == null ||
+                                    patient.contactNumber!.isEmpty) {
+                                  return Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: theme
+                                          .colorScheme.errorContainer,
+                                      borderRadius:
+                                          BorderRadius.circular(8),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.warning,
+                                          color: theme
+                                              .colorScheme.onErrorContainer,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            'No contact number on file for this patient',
+                                            style: TextStyle(
+                                              color: theme.colorScheme
+                                                  .onErrorContainer,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                                return Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    // Phone number display
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme
+                                            .surfaceContainerHighest,
+                                        borderRadius:
+                                            BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.phone,
+                                            size: 20,
+                                            color: theme.colorScheme
+                                                .onSurfaceVariant,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            'To: ${patient.contactNumber}',
+                                            style: theme
+                                                .textTheme.bodyMedium
+                                                ?.copyWith(
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          if (patient.owner != null &&
+                                              patient.owner!.isNotEmpty)
+                                            Text(
+                                              ' (${patient.owner})',
+                                              style: theme
+                                                  .textTheme.bodyMedium
+                                                  ?.copyWith(
+                                                color: theme.colorScheme
+                                                    .onSurfaceVariant,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+
+                                    // Reminder date/time
+                                    FormBuilderDateTimePicker(
+                                      name: 'reminderDateTime',
+                                      initialValue: DateTime.now()
+                                          .add(const Duration(days: 1)),
+                                      decoration: const InputDecoration(
+                                        labelText: 'Send Date & Time *',
+                                        border: OutlineInputBorder(),
+                                        prefixIcon:
+                                            Icon(Icons.schedule),
+                                      ),
+                                      enabled: !isSaving.value,
+                                      inputType: InputType.both,
+                                      firstDate: DateTime.now(),
+                                      lastDate: DateTime.now()
+                                          .add(const Duration(days: 365)),
+                                      validator:
+                                          FormBuilderValidators.required(
+                                        errorText:
+                                            'Send date/time is required',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+
+                                    // Message content
+                                    FormBuilderTextField(
+                                      name: 'reminderMessage',
+                                      initialValue: _getDefaultReminderMessage(
+                                          patient.name),
+                                      decoration: const InputDecoration(
+                                        labelText: 'Message *',
+                                        hintText:
+                                            'Enter reminder message',
+                                        border: OutlineInputBorder(),
+                                        prefixIcon: Icon(Icons.sms),
+                                      ),
+                                      maxLines: 3,
+                                      enabled: !isSaving.value,
+                                      validator:
+                                          FormBuilderValidators.required(
+                                        errorText:
+                                            'Message content is required',
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+
                 // Buttons
               ],
             ),
@@ -238,6 +459,11 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
     if (text == null) return null;
     final trimmed = text.trim();
     return trimmed.isEmpty ? null : trimmed;
+  }
+
+  String _getDefaultReminderMessage(String patientName) {
+    return 'Hello! This is a reminder about the treatment for $patientName. '
+        'Please contact us if you have any questions.';
   }
 }
 

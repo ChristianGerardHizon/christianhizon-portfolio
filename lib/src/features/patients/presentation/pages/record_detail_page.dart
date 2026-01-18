@@ -82,11 +82,12 @@ class RecordDetailPage extends ConsumerWidget {
       );
     }
 
-    return _buildContent(context, theme, patient, record);
+    return _buildContent(context, ref, theme, patient, record);
   }
 
   Widget _buildContent(
     BuildContext context,
+    WidgetRef ref,
     ThemeData theme,
     Patient patient,
     PatientRecord record,
@@ -114,8 +115,18 @@ class RecordDetailPage extends ConsumerWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(patientProvider(patientId));
+          ref.invalidate(patientRecordProvider(recordId));
+          await Future.wait([
+            ref.read(patientProvider(patientId).future),
+            ref.read(patientRecordProvider(recordId).future),
+          ]);
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -204,6 +215,7 @@ class RecordDetailPage extends ConsumerWidget {
               ],
             ),
           ],
+        ),
         ),
       ),
     );
