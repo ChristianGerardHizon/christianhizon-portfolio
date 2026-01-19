@@ -6,6 +6,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../patients/domain/patient.dart';
 import '../../../../patients/presentation/controllers/patients_controller.dart';
+import '../../../../appointments/presentation/controllers/appointments_controller.dart';
+import '../../../../settings/presentation/controllers/message_templates_controller.dart';
 import '../../../domain/message.dart';
 
 /// Bottom sheet for creating a new message.
@@ -37,6 +39,49 @@ class CreateMessageSheet extends HookConsumerWidget {
 
     // Watch patients for dropdown
     final patientsAsync = ref.watch(patientsControllerProvider);
+
+    // Watch templates for dropdown
+    final templatesAsync = ref.watch(messageTemplatesControllerProvider);
+
+    // Watch appointment if linked
+    final appointmentAsync = initialAppointmentId != null
+        ? ref.watch(appointmentProvider(initialAppointmentId!))
+        : const AsyncValue.data(null);
+
+    String replacePlaceholders(String content, Patient? patient) {
+      if (content.isEmpty) return content;
+
+      var replaced = content;
+
+      // Replace patient data
+      if (patient != null) {
+        replaced = replaced.replaceAll('{patientName}', patient.name);
+        replaced =
+            replaced.replaceAll('{patientPhone}', patient.contactNumber ?? '');
+        replaced = replaced.replaceAll('{ownerName}', patient.owner ?? '');
+        replaced = replaced.replaceAll('{species}', patient.species ?? '');
+        replaced = replaced.replaceAll('{breed}', patient.breed ?? '');
+        replaced = replaced.replaceAll('{email}', patient.email ?? '');
+        replaced = replaced.replaceAll('{address}', patient.address ?? '');
+      }
+
+      // Replace treatment/appointment data
+      final appointment = appointmentAsync.value;
+      if (appointment != null) {
+        // Find the first treatment record if available
+        final treatmentName = appointment.treatmentRecordsExpanded.isNotEmpty
+            ? appointment.treatmentRecordsExpanded.first.treatmentName
+            : (appointment.purpose ?? '');
+
+        replaced = replaced.replaceAll('{treatmentName}', treatmentName);
+        replaced =
+            replaced.replaceAll('{treatmentDate}', appointment.displayDate);
+        replaced =
+            replaced.replaceAll('{treatmentNotes}', appointment.notes ?? '');
+      }
+
+      return replaced;
+    }
 
     Future<void> handleSave() async {
       if (!formKey.currentState!.saveAndValidate()) return;
@@ -261,6 +306,47 @@ class CreateMessageSheet extends HookConsumerWidget {
                 ),
               ],
               const SizedBox(height: 16),
+
+              // Template selector
+              templatesAsync.when(
+                loading: () => const LinearProgressIndicator(),
+                error: (_, __) => const SizedBox.shrink(),
+                data: (templates) {
+                  if (templates.isEmpty) return const SizedBox.shrink();
+                  return Column(
+                    children: [
+                      FormBuilderDropdown<String>(
+                        name: 'template',
+                        decoration: const InputDecoration(
+                          labelText: 'Use Template',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.description_outlined),
+                          helperText: 'Select a template to auto-fill content',
+                        ),
+                        onChanged: (value) {
+                          if (value != null) {
+                            final template =
+                                templates.firstWhere((t) => t.id == value);
+                            final finalContent = replacePlaceholders(
+                              template.content,
+                              selectedPatient.value,
+                            );
+                            formKey.currentState?.fields['content']
+                                ?.didChange(finalContent);
+                          }
+                        },
+                        items: templates
+                            .map((t) => DropdownMenuItem(
+                                  value: t.id,
+                                  child: Text(t.name),
+                                ))
+                            .toList(),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  );
+                },
+              ),
 
               // Message content
               FormBuilderTextField(

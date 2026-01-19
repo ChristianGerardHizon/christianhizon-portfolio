@@ -4,6 +4,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../patients/domain/patient.dart';
+import '../../../../patients/presentation/controllers/patient_provider.dart';
+import '../../../../appointments/presentation/controllers/appointments_controller.dart';
+import '../../../../settings/presentation/controllers/message_templates_controller.dart';
 import '../../../domain/message.dart';
 
 /// Bottom sheet for editing a pending message.
@@ -30,6 +34,48 @@ class EditMessageSheet extends HookConsumerWidget {
 
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isSaving = useState(false);
+
+    // Watch templates
+    final templatesAsync = ref.watch(messageTemplatesControllerProvider);
+
+    // Watch patient if linked
+    final patientAsync = message.patient != null
+        ? ref.watch(patientProvider(message.patient!))
+        : const AsyncValue.data(null);
+
+    // Watch appointment if linked
+    final appointmentAsync = message.appointment != null
+        ? ref.watch(appointmentProvider(message.appointment!))
+        : const AsyncValue.data(null);
+
+    String replacePlaceholders(String content, Patient? patient) {
+      if (content.isEmpty) return content;
+      var replaced = content;
+
+      if (patient != null) {
+        replaced = replaced.replaceAll('{patientName}', patient.name);
+        replaced =
+            replaced.replaceAll('{patientPhone}', patient.contactNumber ?? '');
+        replaced = replaced.replaceAll('{ownerName}', patient.owner ?? '');
+        replaced = replaced.replaceAll('{species}', patient.species ?? '');
+        replaced = replaced.replaceAll('{breed}', patient.breed ?? '');
+        replaced = replaced.replaceAll('{email}', patient.email ?? '');
+        replaced = replaced.replaceAll('{address}', patient.address ?? '');
+      }
+
+      final appointment = appointmentAsync.value;
+      if (appointment != null) {
+        final treatmentName = appointment.treatmentRecordsExpanded.isNotEmpty
+            ? appointment.treatmentRecordsExpanded.first.treatmentName
+            : (appointment.purpose ?? '');
+        replaced = replaced.replaceAll('{treatmentName}', treatmentName);
+        replaced =
+            replaced.replaceAll('{treatmentDate}', appointment.displayDate);
+        replaced =
+            replaced.replaceAll('{treatmentNotes}', appointment.notes ?? '');
+      }
+      return replaced;
+    }
 
     Future<void> handleSave() async {
       if (!formKey.currentState!.saveAndValidate()) return;
@@ -160,6 +206,47 @@ class EditMessageSheet extends HookConsumerWidget {
                 ),
                 const SizedBox(height: 16),
               ],
+
+              // Template selector
+              templatesAsync.when(
+                loading: () => const LinearProgressIndicator(),
+                error: (_, __) => const SizedBox.shrink(),
+                data: (templates) {
+                  if (templates.isEmpty) return const SizedBox.shrink();
+                  return Column(
+                    children: [
+                      FormBuilderDropdown<String>(
+                        name: 'template',
+                        decoration: const InputDecoration(
+                          labelText: 'Use Template',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.description_outlined),
+                          helperText: 'Select a template to swap content',
+                        ),
+                        onChanged: (value) {
+                          if (value != null) {
+                            final template =
+                                templates.firstWhere((t) => t.id == value);
+                            final finalContent = replacePlaceholders(
+                              template.content,
+                              patientAsync.value,
+                            );
+                            formKey.currentState?.fields['content']
+                                ?.didChange(finalContent);
+                          }
+                        },
+                        items: templates
+                            .map((t) => DropdownMenuItem(
+                                  value: t.id,
+                                  child: Text(t.name),
+                                ))
+                            .toList(),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  );
+                },
+              ),
 
               // Message content (editable)
               FormBuilderTextField(

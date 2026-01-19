@@ -1,0 +1,80 @@
+import 'package:dart_mappable/dart_mappable.dart';
+
+part 'message_template.mapper.dart';
+
+/// Message template domain model.
+///
+/// Represents a reusable SMS template with placeholders for dynamic data.
+/// Placeholders like {patientName}, {treatmentName}, etc. are replaced
+/// with actual values when sending messages.
+@MappableClass()
+class MessageTemplate with MessageTemplateMappable {
+  const MessageTemplate({
+    required this.id,
+    required this.name,
+    required this.content,
+    this.category,
+    this.branch,
+    this.isDeleted = false,
+    this.created,
+    this.updated,
+  });
+
+  /// PocketBase record ID.
+  final String id;
+
+  /// Template name (e.g., "Appointment Reminder", "Vaccination Follow-up").
+  final String name;
+
+  /// Message content with placeholders.
+  ///
+  /// Supported placeholders:
+  /// Patient: {patientName}, {patientPhone}, {ownerName}, {species}, {breed}, {email}, {address}
+  /// Treatment: {treatmentName}, {treatmentDate}, {treatmentNotes}
+  final String content;
+
+  /// Template category for organization (e.g., "Reminders", "Follow-up", "Billing").
+  final String? category;
+
+  /// FK to Branch.
+  final String? branch;
+
+  /// Soft delete flag.
+  final bool isDeleted;
+
+  /// Creation timestamp.
+  final DateTime? created;
+
+  /// Last update timestamp.
+  final DateTime? updated;
+
+  /// List of all supported placeholder tokens.
+  static const List<String> supportedPlaceholders = [
+    // Patient data
+    '{patientName}',
+    '{patientPhone}',
+    '{ownerName}',
+    '{species}',
+    '{breed}',
+    '{email}',
+    '{address}',
+    // Treatment data
+    '{treatmentName}',
+    '{treatmentDate}',
+    '{treatmentNotes}',
+  ];
+
+  /// Returns a list of placeholders used in this template's content.
+  List<String> get usedPlaceholders {
+    return supportedPlaceholders
+        .where((placeholder) => content.contains(placeholder))
+        .toList();
+  }
+
+  /// Returns true if this template uses any treatment-related placeholders.
+  bool get usesTreatmentData {
+    return content.contains('{treatmentName}') ||
+        content.contains('{treatmentDate}') ||
+        content.contains('{treatmentNotes}');
+  }
+}

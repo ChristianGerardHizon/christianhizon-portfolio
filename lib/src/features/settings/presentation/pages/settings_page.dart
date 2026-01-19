@@ -41,6 +41,12 @@ class SettingsPage extends ConsumerWidget {
             description: 'Manage product category hierarchy',
             onTap: () => const ProductCategoriesRoute().push(context),
           ),
+          _SettingsCard(
+            icon: Icons.chat_bubble_outline,
+            title: 'Message Templates',
+            description: 'Manage SMS message templates with placeholders',
+            onTap: () => const MessageTemplatesRoute().push(context),
+          ),
         ],
       ),
     );

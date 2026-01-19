@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../features/settings/presentation/pages/branches_page.dart';
+import '../../../features/settings/presentation/pages/message_templates_page.dart';
 import '../../../features/settings/presentation/pages/product_categories_page.dart';
 import '../../../features/settings/presentation/pages/settings_page.dart';
 import '../../../features/settings/presentation/pages/species_page.dart';
 import '../../../features/settings/presentation/pages/system_shell.dart';
 import '../../../features/settings/presentation/widgets/branch_detail_panel.dart';
+import '../../../features/settings/presentation/widgets/message_template_detail_panel.dart';
 import '../../../features/settings/presentation/widgets/product_category_detail_panel.dart';
 import '../../../features/settings/presentation/widgets/species_detail_panel.dart';
 import '../../utils/breakpoints.dart';
@@ -41,6 +43,13 @@ part 'system.routes.g.dart';
           path: 'product-categories',
           routes: [
             TypedGoRoute<ProductCategoryDetailRoute>(path: ':id'),
+          ],
+        ),
+        // Message templates with detail
+        TypedGoRoute<MessageTemplatesRoute>(
+          path: 'message-templates',
+          routes: [
+            TypedGoRoute<MessageTemplateDetailRoute>(path: ':id'),
           ],
         ),
       ],
@@ -147,5 +156,33 @@ class ProductCategoryDetailRoute extends GoRouteData
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ProductCategoryDetailPanel(categoryId: id);
+  }
+}
+
+/// Message templates management route.
+class MessageTemplatesRoute extends GoRouteData with $MessageTemplatesRoute {
+  const MessageTemplatesRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    // On tablet, this is handled by the shell - return empty container
+    // On mobile, this shows the list page
+    if (Breakpoints.isTabletOrLarger(context)) {
+      return const SizedBox.shrink();
+    }
+    return const MessageTemplatesPage();
+  }
+}
+
+/// Message template detail route.
+class MessageTemplateDetailRoute extends GoRouteData
+    with $MessageTemplateDetailRoute {
+  const MessageTemplateDetailRoute({required this.id});
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return MessageTemplateDetailPanel(templateId: id);
   }
 }

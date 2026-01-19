@@ -39,4 +39,5 @@ abstract class PocketBaseCollections {
 
   // Messages
   static const String messages = 'messages';
+  static const String messageTemplates = 'messageTemplates';
 }

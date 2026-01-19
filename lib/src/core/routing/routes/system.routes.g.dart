@@ -47,6 +47,16 @@ RouteBase get $systemShellRoute => ShellRouteData.$route(
                 ),
               ],
             ),
+            GoRouteData.$route(
+              path: 'message-templates',
+              factory: $MessageTemplatesRoute._fromState,
+              routes: [
+                GoRouteData.$route(
+                  path: ':id',
+                  factory: $MessageTemplateDetailRoute._fromState,
+                ),
+              ],
+            ),
           ],
         ),
       ],
@@ -210,6 +220,56 @@ mixin $ProductCategoryDetailRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
         '/system/product-categories/${Uri.encodeComponent(_self.id)}',
+      );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $MessageTemplatesRoute on GoRouteData {
+  static MessageTemplatesRoute _fromState(GoRouterState state) =>
+      const MessageTemplatesRoute();
+
+  @override
+  String get location => GoRouteData.$location(
+        '/system/message-templates',
+      );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $MessageTemplateDetailRoute on GoRouteData {
+  static MessageTemplateDetailRoute _fromState(GoRouterState state) =>
+      MessageTemplateDetailRoute(
+        id: state.pathParameters['id']!,
+      );
+
+  MessageTemplateDetailRoute get _self => this as MessageTemplateDetailRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+        '/system/message-templates/${Uri.encodeComponent(_self.id)}',
       );
 
   @override
