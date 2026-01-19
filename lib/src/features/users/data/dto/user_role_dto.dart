@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
@@ -9,6 +11,7 @@ part 'user_role_dto.mapper.dart';
 /// Data Transfer Object for UserRole from PocketBase.
 ///
 /// Handles conversion between PocketBase RecordModel and domain UserRole.
+/// Permissions are stored as a JSON array in PocketBase.
 @MappableClass()
 class UserRoleDto with UserRoleDtoMappable {
   final String id;
@@ -35,6 +38,36 @@ class UserRoleDto with UserRoleDtoMappable {
     this.updated,
   });
 
+  /// Parses permissions from various formats.
+  ///
+  /// Handles:
+  /// - List<dynamic> (from PocketBase JSON field)
+  /// - String (JSON-encoded array, fallback)
+  /// - null (returns empty list)
+  static List<String> _parsePermissions(dynamic value) {
+    if (value == null) return [];
+
+    // Handle List (most common case from PocketBase JSON field)
+    if (value is List) {
+      return value.map((e) => e.toString()).toList();
+    }
+
+    // Handle String (JSON-encoded, fallback for edge cases)
+    if (value is String) {
+      if (value.isEmpty) return [];
+      try {
+        final decoded = jsonDecode(value);
+        if (decoded is List) {
+          return decoded.map((e) => e.toString()).toList();
+        }
+      } catch (_) {
+        // Not valid JSON, return empty
+      }
+    }
+
+    return [];
+  }
+
   /// Creates a DTO from a PocketBase RecordModel.
   factory UserRoleDto.fromRecord(RecordModel record) {
     final json = record.toJson();
@@ -45,8 +78,7 @@ class UserRoleDto with UserRoleDtoMappable {
       collectionName: json['collectionName'] as String? ?? '',
       name: json['name'] as String? ?? '',
       description: json['description'] as String?,
-      permissions:
-          (json['permissions'] as List<dynamic>?)?.cast<String>() ?? [],
+      permissions: _parsePermissions(json['permissions']),
       isSystem: json['isSystem'] as bool? ?? false,
       isDeleted: json['isDeleted'] as bool? ?? false,
       created: json['created'] as String?,

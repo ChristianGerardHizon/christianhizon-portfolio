@@ -1,10 +1,14 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:flutter/material.dart';
+
+import 'permission.dart';
 
 part 'user_role.mapper.dart';
 
 /// UserRole domain model.
 ///
 /// Role definitions with permissions for access control.
+/// Permissions are stored as a JSON array of permission keys in PocketBase.
 @MappableClass()
 class UserRole with UserRoleMappable {
   const UserRole({
@@ -27,7 +31,7 @@ class UserRole with UserRoleMappable {
   /// Role description.
   final String? description;
 
-  /// List of permission keys.
+  /// List of permission keys (stored as JSON array in PocketBase).
   final List<String> permissions;
 
   /// Whether this is a system-defined role (cannot be deleted).
@@ -51,6 +55,31 @@ class UserRole with UserRoleMappable {
   /// Get permission count display.
   String get permissionCountDisplay =>
       '${permissions.length} permission${permissions.length == 1 ? '' : 's'}';
+
+  /// Get the Permission objects for this role's permissions.
+  List<Permission> get permissionObjects =>
+      Permissions.getPermissions(permissions);
+
+  /// Get permissions grouped by category.
+  Map<String, List<Permission>> get permissionsByCategory {
+    final map = <String, List<Permission>>{};
+    for (final perm in permissionObjects) {
+      map.putIfAbsent(perm.category, () => []).add(perm);
+    }
+    return map;
+  }
+
+  /// Check if role has all permissions in a category.
+  bool hasAllInCategory(String category) {
+    final categoryPerms = Permissions.allByCategory[category] ?? [];
+    return categoryPerms.every((p) => permissions.contains(p));
+  }
+
+  /// Get the count of permissions in a specific category.
+  int permissionCountInCategory(String category) {
+    final categoryPerms = Permissions.allByCategory[category] ?? [];
+    return categoryPerms.where((p) => permissions.contains(p)).length;
+  }
 }
 
 /// Permission keys used in the system.
@@ -118,7 +147,7 @@ abstract class Permissions {
   // System permissions
   static const systemAdmin = 'system.admin';
 
-  /// All permissions grouped by category.
+  /// All permissions grouped by category (keys only).
   static const Map<String, List<String>> allByCategory = {
     'Patients': [patientsView, patientsCreate, patientsEdit, patientsDelete],
     'Records': [recordsView, recordsCreate, recordsEdit, recordsDelete],
@@ -144,11 +173,337 @@ abstract class Permissions {
     'System': [systemAdmin],
   };
 
+  /// All permissions with full metadata.
+  static final List<Permission> all = _buildPermissionList();
+
+  /// Permissions grouped by category as Permission objects.
+  static final Map<String, List<Permission>> allPermissionsByCategory =
+      _buildPermissionsByCategory();
+
+  /// Get a Permission by its key.
+  static Permission? getByKey(String key) {
+    try {
+      return all.firstWhere((p) => p.key == key);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Get all Permission objects for a list of keys.
+  static List<Permission> getPermissions(List<String> keys) {
+    return keys.map(getByKey).whereType<Permission>().toList();
+  }
+
   /// Get display name for a permission key.
   static String displayName(String permission) {
+    // First try to get from Permission object
+    final perm = getByKey(permission);
+    if (perm != null) return perm.name;
+
+    // Fallback to computed display name
     final parts = permission.split('.');
     if (parts.length != 2) return permission;
     final action = parts[1];
     return action[0].toUpperCase() + action.substring(1);
+  }
+
+  /// Private: Build the full permission list with metadata.
+  static List<Permission> _buildPermissionList() {
+    return [
+      // Patients
+      const Permission(
+        key: patientsView,
+        name: 'View Patients',
+        category: 'Patients',
+        description: 'View patient profiles and basic information',
+        icon: Icons.visibility,
+      ),
+      const Permission(
+        key: patientsCreate,
+        name: 'Create Patients',
+        category: 'Patients',
+        description: 'Register new patient records',
+        icon: Icons.add,
+      ),
+      const Permission(
+        key: patientsEdit,
+        name: 'Edit Patients',
+        category: 'Patients',
+        description: 'Modify existing patient information',
+        icon: Icons.edit,
+      ),
+      const Permission(
+        key: patientsDelete,
+        name: 'Delete Patients',
+        category: 'Patients',
+        description: 'Remove patient records (soft delete)',
+        icon: Icons.delete,
+      ),
+      // Records
+      const Permission(
+        key: recordsView,
+        name: 'View Records',
+        category: 'Records',
+        description: 'View medical records and history',
+        icon: Icons.visibility,
+      ),
+      const Permission(
+        key: recordsCreate,
+        name: 'Create Records',
+        category: 'Records',
+        description: 'Create new medical records',
+        icon: Icons.add,
+      ),
+      const Permission(
+        key: recordsEdit,
+        name: 'Edit Records',
+        category: 'Records',
+        description: 'Modify existing medical records',
+        icon: Icons.edit,
+      ),
+      const Permission(
+        key: recordsDelete,
+        name: 'Delete Records',
+        category: 'Records',
+        description: 'Remove medical records (soft delete)',
+        icon: Icons.delete,
+      ),
+      // Prescriptions
+      const Permission(
+        key: prescriptionsView,
+        name: 'View Prescriptions',
+        category: 'Prescriptions',
+        description: 'View prescription information',
+        icon: Icons.visibility,
+      ),
+      const Permission(
+        key: prescriptionsCreate,
+        name: 'Create Prescriptions',
+        category: 'Prescriptions',
+        description: 'Create new prescriptions',
+        icon: Icons.add,
+      ),
+      const Permission(
+        key: prescriptionsEdit,
+        name: 'Edit Prescriptions',
+        category: 'Prescriptions',
+        description: 'Modify existing prescriptions',
+        icon: Icons.edit,
+      ),
+      const Permission(
+        key: prescriptionsDelete,
+        name: 'Delete Prescriptions',
+        category: 'Prescriptions',
+        description: 'Remove prescriptions (soft delete)',
+        icon: Icons.delete,
+      ),
+      // Appointments
+      const Permission(
+        key: appointmentsView,
+        name: 'View Appointments',
+        category: 'Appointments',
+        description: 'View appointment schedules',
+        icon: Icons.visibility,
+      ),
+      const Permission(
+        key: appointmentsCreate,
+        name: 'Create Appointments',
+        category: 'Appointments',
+        description: 'Schedule new appointments',
+        icon: Icons.add,
+      ),
+      const Permission(
+        key: appointmentsEdit,
+        name: 'Edit Appointments',
+        category: 'Appointments',
+        description: 'Modify appointment details',
+        icon: Icons.edit,
+      ),
+      const Permission(
+        key: appointmentsDelete,
+        name: 'Delete Appointments',
+        category: 'Appointments',
+        description: 'Cancel or remove appointments',
+        icon: Icons.delete,
+      ),
+      // Products
+      const Permission(
+        key: productsView,
+        name: 'View Products',
+        category: 'Products',
+        description: 'View product catalog',
+        icon: Icons.visibility,
+      ),
+      const Permission(
+        key: productsCreate,
+        name: 'Create Products',
+        category: 'Products',
+        description: 'Add new products to catalog',
+        icon: Icons.add,
+      ),
+      const Permission(
+        key: productsEdit,
+        name: 'Edit Products',
+        category: 'Products',
+        description: 'Modify product information',
+        icon: Icons.edit,
+      ),
+      const Permission(
+        key: productsDelete,
+        name: 'Delete Products',
+        category: 'Products',
+        description: 'Remove products from catalog',
+        icon: Icons.delete,
+      ),
+      // Inventory
+      const Permission(
+        key: inventoryView,
+        name: 'View Inventory',
+        category: 'Inventory',
+        description: 'View inventory levels and stock',
+        icon: Icons.visibility,
+      ),
+      const Permission(
+        key: inventoryAdjust,
+        name: 'Adjust Inventory',
+        category: 'Inventory',
+        description: 'Make inventory adjustments',
+        icon: Icons.tune,
+      ),
+      // Sales
+      const Permission(
+        key: salesView,
+        name: 'View Sales',
+        category: 'Sales',
+        description: 'View sales history and reports',
+        icon: Icons.visibility,
+      ),
+      const Permission(
+        key: salesCreate,
+        name: 'Create Sales',
+        category: 'Sales',
+        description: 'Process sales transactions',
+        icon: Icons.add,
+      ),
+      // Users
+      const Permission(
+        key: usersView,
+        name: 'View Users',
+        category: 'Users',
+        description: 'View user accounts',
+        icon: Icons.visibility,
+      ),
+      const Permission(
+        key: usersCreate,
+        name: 'Create Users',
+        category: 'Users',
+        description: 'Create new user accounts',
+        icon: Icons.person_add,
+      ),
+      const Permission(
+        key: usersEdit,
+        name: 'Edit Users',
+        category: 'Users',
+        description: 'Modify user account details',
+        icon: Icons.edit,
+      ),
+      const Permission(
+        key: usersDelete,
+        name: 'Delete Users',
+        category: 'Users',
+        description: 'Deactivate user accounts',
+        icon: Icons.person_remove,
+      ),
+      // Roles
+      const Permission(
+        key: rolesView,
+        name: 'View Roles',
+        category: 'Roles',
+        description: 'View role definitions',
+        icon: Icons.visibility,
+      ),
+      const Permission(
+        key: rolesCreate,
+        name: 'Create Roles',
+        category: 'Roles',
+        description: 'Create new roles',
+        icon: Icons.add,
+      ),
+      const Permission(
+        key: rolesEdit,
+        name: 'Edit Roles',
+        category: 'Roles',
+        description: 'Modify role permissions',
+        icon: Icons.edit,
+      ),
+      const Permission(
+        key: rolesDelete,
+        name: 'Delete Roles',
+        category: 'Roles',
+        description: 'Remove roles (non-system only)',
+        icon: Icons.delete,
+      ),
+      // Branches
+      const Permission(
+        key: branchesView,
+        name: 'View Branches',
+        category: 'Branches',
+        description: 'View branch locations',
+        icon: Icons.visibility,
+      ),
+      const Permission(
+        key: branchesCreate,
+        name: 'Create Branches',
+        category: 'Branches',
+        description: 'Add new branch locations',
+        icon: Icons.add,
+      ),
+      const Permission(
+        key: branchesEdit,
+        name: 'Edit Branches',
+        category: 'Branches',
+        description: 'Modify branch information',
+        icon: Icons.edit,
+      ),
+      const Permission(
+        key: branchesDelete,
+        name: 'Delete Branches',
+        category: 'Branches',
+        description: 'Remove branch locations',
+        icon: Icons.delete,
+      ),
+      // Settings
+      const Permission(
+        key: settingsView,
+        name: 'View Settings',
+        category: 'Settings',
+        description: 'View system settings',
+        icon: Icons.visibility,
+      ),
+      const Permission(
+        key: settingsEdit,
+        name: 'Edit Settings',
+        category: 'Settings',
+        description: 'Modify system settings',
+        icon: Icons.edit,
+      ),
+      // System
+      const Permission(
+        key: systemAdmin,
+        name: 'System Admin',
+        category: 'System',
+        description: 'Full administrative access to all system features',
+        icon: Icons.admin_panel_settings,
+      ),
+    ];
+  }
+
+  /// Private: Build permissions grouped by category.
+  static Map<String, List<Permission>> _buildPermissionsByCategory() {
+    final map = <String, List<Permission>>{};
+    for (final permission in all) {
+      map.putIfAbsent(permission.category, () => []).add(permission);
+    }
+    return map;
   }
 }

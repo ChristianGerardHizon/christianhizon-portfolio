@@ -9,6 +9,7 @@ import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/user_role.dart';
 import '../../controllers/user_roles_controller.dart';
+import '../permission_category_widget.dart';
 
 /// Bottom sheet for editing a user role.
 class EditRoleSheet extends HookConsumerWidget {
@@ -258,8 +259,8 @@ class EditRoleSheet extends HookConsumerWidget {
               const SizedBox(height: 16),
 
               // Permission categories
-              ...Permissions.allByCategory.entries.map((entry) {
-                return _PermissionCategory(
+              ...Permissions.allPermissionsByCategory.entries.map((entry) {
+                return PermissionCategoryWidget(
                   category: entry.key,
                   permissions: entry.value,
                   selectedPermissions: selectedPermissions.value,
@@ -328,139 +329,6 @@ class _SectionHeader extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-class _PermissionCategory extends StatelessWidget {
-  const _PermissionCategory({
-    required this.category,
-    required this.permissions,
-    required this.selectedPermissions,
-    required this.enabled,
-    required this.onChanged,
-    required this.onSelectAll,
-  });
-
-  final String category;
-  final List<String> permissions;
-  final Set<String> selectedPermissions;
-  final bool enabled;
-  final void Function(String permission, bool selected) onChanged;
-  final void Function(List<String> permissions, bool selectAll) onSelectAll;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final selectedCount = permissions.where(
-      (p) => selectedPermissions.contains(p),
-    ).length;
-    final allSelected = selectedCount == permissions.length;
-    final someSelected = selectedCount > 0 && !allSelected;
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ExpansionTile(
-        leading: Icon(_getCategoryIcon(category), color: theme.colorScheme.primary),
-        title: Row(
-          children: [
-            Text(
-              category,
-              style: theme.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(width: 8),
-            if (selectedCount > 0)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  '$selectedCount',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-          ],
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Checkbox(
-              value: allSelected ? true : (someSelected ? null : false),
-              tristate: true,
-              onChanged: enabled
-                  ? (value) => onSelectAll(permissions, value == true)
-                  : null,
-            ),
-          ],
-        ),
-        children: permissions.map((permission) {
-          final isSelected = selectedPermissions.contains(permission);
-          return CheckboxListTile(
-            value: isSelected,
-            onChanged: enabled
-                ? (value) => onChanged(permission, value ?? false)
-                : null,
-            title: Text(
-              Permissions.displayName(permission),
-              style: theme.textTheme.bodyMedium,
-            ),
-            subtitle: Text(
-              permission,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.outline,
-                fontFamily: 'monospace',
-              ),
-            ),
-            secondary: Icon(
-              isSelected ? Icons.check_circle : Icons.circle_outlined,
-              size: 20,
-              color: isSelected
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.outline,
-            ),
-            dense: true,
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  IconData _getCategoryIcon(String category) {
-    switch (category) {
-      case 'System':
-        return Icons.settings;
-      case 'Users':
-        return Icons.people;
-      case 'Patients':
-        return Icons.pets;
-      case 'Records':
-        return Icons.medical_services;
-      case 'Prescriptions':
-        return Icons.medication;
-      case 'Appointments':
-        return Icons.calendar_today;
-      case 'Products':
-        return Icons.inventory;
-      case 'Inventory':
-        return Icons.warehouse;
-      case 'Sales':
-        return Icons.point_of_sale;
-      case 'Roles':
-        return Icons.admin_panel_settings;
-      case 'Branches':
-        return Icons.business;
-      case 'Settings':
-        return Icons.tune;
-      default:
-        return Icons.key;
-    }
   }
 }
 
