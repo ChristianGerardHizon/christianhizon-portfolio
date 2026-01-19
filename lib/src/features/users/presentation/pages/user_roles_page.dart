@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/i18n/strings.g.dart';
-import '../../../../core/routing/routes/users.routes.dart';
-import '../../../../core/utils/breakpoints.dart';
 import '../../domain/user_role.dart';
 import '../controllers/user_roles_controller.dart';
 import '../widgets/sheets/create_role_sheet.dart';
@@ -20,18 +18,10 @@ class UserRolesPage extends ConsumerWidget {
     final rolesAsync = ref.watch(userRolesControllerProvider);
     final theme = Theme.of(context);
     final t = Translations.of(context);
-    final isTablet = Breakpoints.isTabletOrLarger(context);
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: !isTablet,
-        leading: isTablet
-            ? null
-            : IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => const UsersRoute().go(context),
-              ),
-        title: const Text('User Roles'),
+        title: Text(t.navigation.roles),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),

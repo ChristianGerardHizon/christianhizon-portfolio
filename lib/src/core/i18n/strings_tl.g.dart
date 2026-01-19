@@ -177,6 +177,7 @@ class _TranslationsNavigationTl implements TranslationsNavigationEn {
 	@override String get profile => 'Profile';
 	@override String get reports => 'Mga Ulat';
 	@override String get users => 'Mga User';
+	@override String get roles => 'Mga Tungkulin';
 	@override String get branches => 'Mga Sangay';
 	@override String get more => 'Iba Pa';
 	@override String get sales => 'Cashier';
@@ -302,6 +303,7 @@ extension on TranslationsTl {
 			'navigation.profile' => 'Profile',
 			'navigation.reports' => 'Mga Ulat',
 			'navigation.users' => 'Mga User',
+			'navigation.roles' => 'Mga Tungkulin',
 			'navigation.branches' => 'Mga Sangay',
 			'navigation.more' => 'Iba Pa',
 			'navigation.sales' => 'Cashier',

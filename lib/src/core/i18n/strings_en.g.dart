@@ -344,6 +344,9 @@ class TranslationsNavigationEn {
 	/// en: 'Users'
 	String get users => 'Users';
 
+	/// en: 'Roles'
+	String get roles => 'Roles';
+
 	/// en: 'Branches'
 	String get branches => 'Branches';
 
@@ -510,6 +513,7 @@ extension on Translations {
 			'navigation.profile' => 'Profile',
 			'navigation.reports' => 'Reports',
 			'navigation.users' => 'Users',
+			'navigation.roles' => 'Roles',
 			'navigation.branches' => 'Branches',
 			'navigation.more' => 'More',
 			'navigation.sales' => 'Cashier',
