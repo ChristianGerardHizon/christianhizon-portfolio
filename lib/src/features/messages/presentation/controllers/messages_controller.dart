@@ -83,7 +83,8 @@ class MessagesController extends _$MessagesController {
 
   /// Updates a message's status.
   Future<bool> updateStatus(String id, MessageStatus status) async {
-    final result = await ref.read(messageRepositoryProvider).updateStatus(id, status);
+    final result =
+        await ref.read(messageRepositoryProvider).updateStatus(id, status);
     return result.fold(
       (failure) => false,
       (updated) {
@@ -103,6 +104,25 @@ class MessagesController extends _$MessagesController {
   /// Cancels a pending message.
   Future<bool> cancelMessage(String id) async {
     return updateStatus(id, MessageStatus.cancelled);
+  }
+
+  /// Retries a failed or cancelled message.
+  Future<bool> retryMessage(String id) async {
+    final result = await ref.read(messageRepositoryProvider).retry(id);
+    return result.fold(
+      (failure) => false,
+      (updated) {
+        state.whenData((messages) {
+          final index = messages.indexWhere((m) => m.id == updated.id);
+          if (index != -1) {
+            final newList = [...messages];
+            newList[index] = updated;
+            state = AsyncValue.data(newList);
+          }
+        });
+        return true;
+      },
+    );
   }
 
   /// Deletes a message (soft delete).
@@ -135,7 +155,8 @@ Future<Message?> message(Ref ref, String id) async {
 /// Provider for fetching messages by patient.
 @riverpod
 Future<List<Message>> messagesByPatient(Ref ref, String patientId) async {
-  final result = await ref.read(messageRepositoryProvider).fetchByPatient(patientId);
+  final result =
+      await ref.read(messageRepositoryProvider).fetchByPatient(patientId);
   return result.fold(
     (failure) => [],
     (messages) => messages,
@@ -144,8 +165,11 @@ Future<List<Message>> messagesByPatient(Ref ref, String patientId) async {
 
 /// Provider for fetching messages by appointment.
 @riverpod
-Future<List<Message>> messagesByAppointment(Ref ref, String appointmentId) async {
-  final result = await ref.read(messageRepositoryProvider).fetchByAppointment(appointmentId);
+Future<List<Message>> messagesByAppointment(
+    Ref ref, String appointmentId) async {
+  final result = await ref
+      .read(messageRepositoryProvider)
+      .fetchByAppointment(appointmentId);
   return result.fold(
     (failure) => [],
     (messages) => messages,

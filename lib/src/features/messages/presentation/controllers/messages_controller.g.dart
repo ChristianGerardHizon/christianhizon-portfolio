@@ -43,7 +43,7 @@ final class MessagesControllerProvider
 }
 
 String _$messagesControllerHash() =>
-    r'40a9b083aa4338802ebbf1e6021ef88bc4c48eee';
+    r'bd526250e15c208b7390abaf8297217b3fd83542';
 
 /// Controller for managing the main messages list.
 ///

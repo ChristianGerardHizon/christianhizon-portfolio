@@ -65,7 +65,8 @@ class MessageDto with MessageDtoMappable {
     if (expand != null) {
       final patientData = expand['patient'] as Map<String, dynamic>?;
       if (patientData != null) {
-        patientExpanded = PatientDto.fromRecord(RecordModel.fromJson(patientData));
+        patientExpanded =
+            PatientDto.fromRecord(RecordModel.fromJson(patientData));
       }
     }
 
@@ -74,8 +75,8 @@ class MessageDto with MessageDtoMappable {
     if (expand != null) {
       final appointmentData = expand['appointment'] as Map<String, dynamic>?;
       if (appointmentData != null) {
-        appointmentExpanded =
-            AppointmentScheduleDto.fromRecord(RecordModel.fromJson(appointmentData));
+        appointmentExpanded = AppointmentScheduleDto.fromRecord(
+            RecordModel.fromJson(appointmentData));
       }
     }
 
@@ -146,5 +147,16 @@ class MessageDto with MessageDtoMappable {
   /// Converts status update to JSON.
   static Map<String, dynamic> toStatusJson(MessageStatus status) {
     return {'status': status.name};
+  }
+
+  /// Converts retry operation to JSON.
+  /// Resets status to pending, updates send time, and clears error fields.
+  static Map<String, dynamic> toRetryJson(DateTime newSendDateTime) {
+    return {
+      'status': MessageStatus.pending.name,
+      'sendDateTime': newSendDateTime.toUtc().toIso8601String(),
+      'errorMessage': '',
+      'sentAt': '',
+    };
   }
 }

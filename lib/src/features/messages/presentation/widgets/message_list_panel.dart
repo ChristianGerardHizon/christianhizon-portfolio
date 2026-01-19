@@ -18,6 +18,7 @@ class MessageListPanel extends HookConsumerWidget {
     required this.onMessageTap,
     required this.onRefresh,
     required this.onCancel,
+    required this.onRetry,
     required this.onDelete,
   });
 
@@ -26,6 +27,7 @@ class MessageListPanel extends HookConsumerWidget {
   final ValueChanged<Message> onMessageTap;
   final Future<void> Function() onRefresh;
   final Future<void> Function(Message message) onCancel;
+  final Future<void> Function(Message message) onRetry;
   final Future<void> Function(Message message) onDelete;
 
   @override
@@ -152,8 +154,12 @@ class MessageListPanel extends HookConsumerWidget {
                             message: message,
                             isSelected: isSelected,
                             onTap: () => onMessageTap(message),
-                            onCancel:
-                                message.canCancel ? () => onCancel(message) : null,
+                            onCancel: message.canCancel
+                                ? () => onCancel(message)
+                                : null,
+                            onRetry: message.canRetry
+                                ? () => onRetry(message)
+                                : null,
                             onDelete: () => onDelete(message),
                           ),
                         );

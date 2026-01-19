@@ -28,92 +28,101 @@ class TabletNavRail extends ConsumerWidget {
     final theme = Theme.of(context);
     final isLargeTablet = Breakpoints.isTabletLargeOrLarger(context);
 
-    return NavigationRail(
-      selectedIndex: selectedIndex,
-      onDestinationSelected: onDestinationSelected,
-      labelType: isLargeTablet
-          ? NavigationRailLabelType.all
-          : NavigationRailLabelType.selected,
-      leading: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: CircleAvatar(
-          backgroundColor: theme.colorScheme.primaryContainer,
-          child: Icon(
-            Icons.local_hospital,
-            color: theme.colorScheme.primary,
-          ),
+    return SingleChildScrollView(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: MediaQuery.of(context).size.height,
         ),
-      ),
-      trailing: Expanded(
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: IconButton(
-              icon: const Icon(Icons.logout),
-              tooltip: t.auth.logoutButton,
-              onPressed: () => _confirmLogout(context, ref, t),
+        child: IntrinsicHeight(
+          child: NavigationRail(
+            selectedIndex: selectedIndex,
+            onDestinationSelected: onDestinationSelected,
+            labelType: isLargeTablet
+                ? NavigationRailLabelType.all
+                : NavigationRailLabelType.selected,
+            leading: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: CircleAvatar(
+                backgroundColor: theme.colorScheme.primaryContainer,
+                child: Icon(
+                  Icons.local_hospital,
+                  color: theme.colorScheme.primary,
+                ),
+              ),
             ),
+            trailing: Expanded(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: IconButton(
+                    icon: const Icon(Icons.logout),
+                    tooltip: t.auth.logoutButton,
+                    onPressed: () => _confirmLogout(context, ref, t),
+                  ),
+                ),
+              ),
+            ),
+            destinations: [
+              NavigationRailDestination(
+                icon: const Icon(Icons.dashboard_outlined),
+                selectedIcon: const Icon(Icons.dashboard),
+                label: Text(t.navigation.dashboard),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.pets_outlined),
+                selectedIcon: const Icon(Icons.pets),
+                label: Text(t.navigation.patients),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.calendar_today_outlined),
+                selectedIcon: const Icon(Icons.calendar_today),
+                label: Text(t.navigation.appointments),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.inventory_2_outlined),
+                selectedIcon: const Icon(Icons.inventory_2),
+                label: Text(t.navigation.products),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.point_of_sale_outlined),
+                selectedIcon: const Icon(Icons.point_of_sale),
+                label: Text(t.navigation.sales),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.receipt_long_outlined),
+                selectedIcon: const Icon(Icons.receipt_long),
+                label: Text(t.navigation.salesHistory),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.message_outlined),
+                selectedIcon: const Icon(Icons.message),
+                label: Text(t.navigation.messages),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.people_outlined),
+                selectedIcon: const Icon(Icons.people),
+                label: Text(t.navigation.users),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.admin_panel_settings_outlined),
+                selectedIcon: const Icon(Icons.admin_panel_settings),
+                label: Text(t.navigation.roles),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.business_outlined),
+                selectedIcon: const Icon(Icons.business),
+                label: Text(t.navigation.organization),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.settings_outlined),
+                selectedIcon: const Icon(Icons.settings),
+                label: Text(t.navigation.system),
+              ),
+            ],
           ),
         ),
       ),
-      destinations: [
-        NavigationRailDestination(
-          icon: const Icon(Icons.dashboard_outlined),
-          selectedIcon: const Icon(Icons.dashboard),
-          label: Text(t.navigation.dashboard),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.pets_outlined),
-          selectedIcon: const Icon(Icons.pets),
-          label: Text(t.navigation.patients),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.calendar_today_outlined),
-          selectedIcon: const Icon(Icons.calendar_today),
-          label: Text(t.navigation.appointments),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.inventory_2_outlined),
-          selectedIcon: const Icon(Icons.inventory_2),
-          label: Text(t.navigation.products),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.point_of_sale_outlined),
-          selectedIcon: const Icon(Icons.point_of_sale),
-          label: Text(t.navigation.sales),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.receipt_long_outlined),
-          selectedIcon: const Icon(Icons.receipt_long),
-          label: Text(t.navigation.salesHistory),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.message_outlined),
-          selectedIcon: const Icon(Icons.message),
-          label: Text(t.navigation.messages),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.people_outlined),
-          selectedIcon: const Icon(Icons.people),
-          label: Text(t.navigation.users),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.admin_panel_settings_outlined),
-          selectedIcon: const Icon(Icons.admin_panel_settings),
-          label: Text(t.navigation.roles),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.business_outlined),
-          selectedIcon: const Icon(Icons.business),
-          label: Text(t.navigation.organization),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.settings_outlined),
-          selectedIcon: const Icon(Icons.settings),
-          label: Text(t.navigation.system),
-        ),
-      ],
     );
   }
 

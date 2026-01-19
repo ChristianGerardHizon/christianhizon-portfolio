@@ -121,9 +121,11 @@ class _AppRootState extends State<AppRoot> {
         selectedIndex: selectedIndex,
         onDestinationSelected: _onDestinationSelected,
       ),
-      body: ColoredBox(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: widget.child,
+      body: SafeArea(
+        child: ColoredBox(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: widget.child,
+        ),
       ),
       bottomNavigationBar: MobileBottomNav(
         selectedIndex: selectedIndex,

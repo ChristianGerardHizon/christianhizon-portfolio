@@ -46,6 +46,7 @@ class MessagesListPage extends ConsumerWidget {
         onRefresh: () =>
             ref.read(messagesControllerProvider.notifier).refresh(),
         onCancel: (message) => _confirmCancel(context, ref, message),
+        onRetry: (message) => _confirmRetry(context, ref, message),
         onDelete: (message) => _confirmDelete(context, ref, message),
       ),
     );
@@ -86,6 +87,45 @@ class MessagesListPage extends ConsumerWidget {
           SnackBar(
             content: Text(
               success ? 'Message cancelled' : 'Failed to cancel message',
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _confirmRetry(
+      BuildContext context, WidgetRef ref, dynamic message) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Retry Message'),
+        content: const Text(
+          'Are you sure you want to retry sending this message? It will be queued for sending again.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      final success = await ref
+          .read(messagesControllerProvider.notifier)
+          .retryMessage(message.id);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              success ? 'Message queued for retry' : 'Failed to retry message',
             ),
           ),
         );

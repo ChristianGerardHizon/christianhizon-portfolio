@@ -17,6 +17,7 @@ class MessageCard extends StatelessWidget {
     this.isSelected = false,
     this.onTap,
     this.onCancel,
+    this.onRetry,
     this.onDelete,
   });
 
@@ -24,6 +25,7 @@ class MessageCard extends StatelessWidget {
   final bool isSelected;
   final VoidCallback? onTap;
   final VoidCallback? onCancel;
+  final VoidCallback? onRetry;
   final VoidCallback? onDelete;
 
   IconData _getStatusIcon() {
@@ -48,7 +50,10 @@ class MessageCard extends StatelessWidget {
       case MessageStatus.failed:
         return (theme.colorScheme.errorContainer, theme.colorScheme.error);
       case MessageStatus.cancelled:
-        return (theme.colorScheme.surfaceContainerHighest, theme.colorScheme.outline);
+        return (
+          theme.colorScheme.surfaceContainerHighest,
+          theme.colorScheme.outline
+        );
     }
   }
 
@@ -111,7 +116,9 @@ class MessageCard extends StatelessWidget {
                   ),
 
                   // Menu
-                  if ((onCancel != null && message.canCancel) || onDelete != null)
+                  if ((onCancel != null && message.canCancel) ||
+                      (onRetry != null && message.canRetry) ||
+                      onDelete != null)
                     _buildPopupMenu(context),
                 ],
               ),
@@ -168,7 +175,8 @@ class MessageCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.errorContainer.withValues(alpha: 0.5),
+                    color:
+                        theme.colorScheme.errorContainer.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -231,8 +239,21 @@ class MessageCard extends StatelessWidget {
               ],
             ),
           ),
+        if (onRetry != null && message.canRetry)
+          const PopupMenuItem(
+            value: 'retry',
+            child: Row(
+              children: [
+                Icon(Icons.refresh, size: 20, color: Colors.blue),
+                SizedBox(width: 8),
+                Text('Retry'),
+              ],
+            ),
+          ),
         if (onDelete != null) ...[
-          if (onCancel != null && message.canCancel) const PopupMenuDivider(),
+          if ((onCancel != null && message.canCancel) ||
+              (onRetry != null && message.canRetry))
+            const PopupMenuDivider(),
           const PopupMenuItem(
             value: 'delete',
             child: Row(
@@ -248,6 +269,8 @@ class MessageCard extends StatelessWidget {
       onSelected: (value) {
         if (value == 'cancel') {
           onCancel?.call();
+        } else if (value == 'retry') {
+          onRetry?.call();
         } else if (value == 'delete') {
           onDelete?.call();
         }

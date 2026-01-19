@@ -116,4 +116,4 @@ final class PocketbaseProvider
   }
 }
 
-String _$pocketbaseHash() => r'1d9b576500f62919733fe699ece1edbc20d60500';
+String _$pocketbaseHash() => r'b40baa1009743a375e0a7ad66e220260be3bb143';

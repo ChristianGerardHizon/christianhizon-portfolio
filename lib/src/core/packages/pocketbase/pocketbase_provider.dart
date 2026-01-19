@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -47,5 +48,5 @@ class PbDebugController extends _$PbDebugController {
 /// the [PbDebugController] state.
 @Riverpod(keepAlive: true)
 PocketBase pocketbase(Ref ref) {
-  return PocketBase(PocketBaseUrls.prod);
+  return PocketBase(kDebugMode ? PocketBaseUrls.dev : PocketBaseUrls.prod);
 }

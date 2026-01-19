@@ -112,6 +112,10 @@ class Message with MessageMappable {
   /// Whether the message can be cancelled (only pending messages).
   bool get canCancel => status == MessageStatus.pending;
 
+  /// Whether the message can be retried (failed or cancelled messages).
+  bool get canRetry =>
+      status == MessageStatus.failed || status == MessageStatus.cancelled;
+
   /// Display name for the patient (from expanded or context).
   String? get patientDisplayName => patientExpanded?.name;
 }

@@ -146,7 +146,7 @@ class _MessageDetailContent extends ConsumerWidget {
               // Error Card (if failed)
               if (message.isFailed && message.errorMessage != null) ...[
                 const SizedBox(height: 16),
-                _buildErrorCard(context, theme),
+                _buildErrorCard(context, ref, theme),
               ],
 
               // Notes Card (if present)
@@ -156,7 +156,7 @@ class _MessageDetailContent extends ConsumerWidget {
               ],
 
               // Quick Actions Card
-              if (message.canCancel) ...[
+              if (message.canCancel || message.canRetry) ...[
                 const SizedBox(height: 16),
                 _buildActionsCard(context, ref, theme),
               ],
@@ -176,11 +176,7 @@ class _MessageDetailContent extends ConsumerWidget {
           Icons.schedule
         ),
       MessageStatus.sent => (Colors.green, 'Sent', Icons.check_circle),
-      MessageStatus.failed => (
-          theme.colorScheme.error,
-          'Failed',
-          Icons.error
-        ),
+      MessageStatus.failed => (theme.colorScheme.error, 'Failed', Icons.error),
       MessageStatus.cancelled => (
           theme.colorScheme.outline,
           'Cancelled',
@@ -352,7 +348,7 @@ class _MessageDetailContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildErrorCard(BuildContext context, ThemeData theme) {
+  Widget _buildErrorCard(BuildContext context, WidgetRef ref, ThemeData theme) {
     return Card(
       color: theme.colorScheme.errorContainer.withValues(alpha: 0.3),
       child: Padding(
@@ -384,6 +380,17 @@ class _MessageDetailContent extends ConsumerWidget {
                 color: theme.colorScheme.error,
               ),
             ),
+            if (message.canRetry) ...[
+              const SizedBox(height: 12),
+              FilledButton.icon(
+                onPressed: () => _confirmRetry(context, ref),
+                icon: const Icon(Icons.refresh, size: 18),
+                label: const Text('Retry Message'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primary,
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -426,7 +433,8 @@ class _MessageDetailContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildActionsCard(BuildContext context, WidgetRef ref, ThemeData theme) {
+  Widget _buildActionsCard(
+      BuildContext context, WidgetRef ref, ThemeData theme) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -461,7 +469,8 @@ class _MessageDetailContent extends ConsumerWidget {
                 ),
                 OutlinedButton.icon(
                   onPressed: () => _confirmCancel(context, ref),
-                  icon: const Icon(Icons.cancel, size: 18, color: Colors.orange),
+                  icon:
+                      const Icon(Icons.cancel, size: 18, color: Colors.orange),
                   label: const Text('Cancel Message'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.orange,
@@ -512,7 +521,8 @@ class _MessageDetailContent extends ConsumerWidget {
           children: [
             if (message.canCancel) ...[
               ListTile(
-                leading: Icon(Icons.edit, color: Theme.of(context).colorScheme.primary),
+                leading: Icon(Icons.edit,
+                    color: Theme.of(context).colorScheme.primary),
                 title: const Text('Edit Message'),
                 onTap: () {
                   Navigator.pop(sheetContext);
@@ -528,12 +538,21 @@ class _MessageDetailContent extends ConsumerWidget {
                 },
               ),
             ],
+            if (message.canRetry)
+              ListTile(
+                leading: Icon(Icons.refresh,
+                    color: Theme.of(context).colorScheme.primary),
+                title: const Text('Retry Message'),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  _confirmRetry(context, ref);
+                },
+              ),
             ListTile(
-              leading:
-                  Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+              leading: Icon(Icons.delete,
+                  color: Theme.of(context).colorScheme.error),
               title: Text(t.common.delete,
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.error)),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error)),
               onTap: () {
                 Navigator.pop(context);
                 _confirmDelete(context, ref);
@@ -584,6 +603,48 @@ class _MessageDetailContent extends ConsumerWidget {
               backgroundColor: Colors.orange,
             ),
             child: const Text('Yes, Cancel'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _confirmRetry(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Retry Message'),
+        content: const Text(
+          'Are you sure you want to retry sending this message? It will be queued for sending again.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              final success = await ref
+                  .read(messagesControllerProvider.notifier)
+                  .retryMessage(message.id);
+
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      success
+                          ? 'Message queued for retry'
+                          : 'Failed to retry message',
+                    ),
+                  ),
+                );
+                if (success) {
+                  ref.invalidate(messageProvider(message.id));
+                }
+              }
+            },
+            child: const Text('Retry'),
           ),
         ],
       ),

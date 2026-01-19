@@ -51,6 +51,10 @@ abstract class MessageRepository {
   /// Cancels a pending message.
   FutureEither<Message> cancel(String id);
 
+  /// Retries a failed or cancelled message.
+  /// Resets status to pending and updates send time to now.
+  FutureEither<Message> retry(String id);
+
   /// Soft deletes a message (sets isDeleted = true).
   FutureEither<void> delete(String id);
 }
@@ -151,10 +155,8 @@ class MessageRepositoryImpl implements MessageRepository {
   FutureEither<List<Message>> fetchByPatient(String patientId) async {
     return TaskEither.tryCatch(
       () async {
-        final filter = PBFilter()
-            .relation('patient', patientId)
-            .notDeleted()
-            .build();
+        final filter =
+            PBFilter().relation('patient', patientId).notDeleted().build();
 
         final records = await _collection.getFullList(
           expand: _expand,
@@ -193,10 +195,8 @@ class MessageRepositoryImpl implements MessageRepository {
   FutureEither<List<Message>> fetchPending() async {
     return TaskEither.tryCatch(
       () async {
-        final filter = PBFilter()
-            .equals('status', 'pending')
-            .notDeleted()
-            .build();
+        final filter =
+            PBFilter().equals('status', 'pending').notDeleted().build();
 
         final records = await _collection.getFullList(
           expand: _expand,
@@ -240,7 +240,8 @@ class MessageRepositoryImpl implements MessageRepository {
     return TaskEither.tryCatch(
       () async {
         final body = MessageDto.toStatusJson(status);
-        final record = await _collection.update(id, body: body, expand: _expand);
+        final record =
+            await _collection.update(id, body: body, expand: _expand);
         return _toEntity(record);
       },
       Failure.handle,
@@ -250,6 +251,19 @@ class MessageRepositoryImpl implements MessageRepository {
   @override
   FutureEither<Message> cancel(String id) async {
     return updateStatus(id, MessageStatus.cancelled);
+  }
+
+  @override
+  FutureEither<Message> retry(String id) async {
+    return TaskEither.tryCatch(
+      () async {
+        final body = MessageDto.toRetryJson(DateTime.now());
+        final record =
+            await _collection.update(id, body: body, expand: _expand);
+        return _toEntity(record);
+      },
+      Failure.handle,
+    ).run();
   }
 
   @override
