@@ -23,8 +23,7 @@ class TabletUsersLayout extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final usersAsync = ref.watch(paginatedUsersControllerProvider);
-    final usersController =
-        ref.read(paginatedUsersControllerProvider.notifier);
+    final usersController = ref.read(paginatedUsersControllerProvider.notifier);
 
     // Get selected user ID from current route
     final routerState = GoRouterState.of(context);
@@ -32,6 +31,10 @@ class TabletUsersLayout extends ConsumerWidget {
 
     // Check if we're on the roles page
     final isRolesPage = routerState.uri.path.endsWith('/roles');
+
+    if (isRolesPage) {
+      return detailChild;
+    }
 
     return usersAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),

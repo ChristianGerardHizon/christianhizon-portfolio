@@ -1,44 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../core/i18n/strings.g.dart';
+import '../../../../core/utils/breakpoints.dart';
 import '../../domain/user_role.dart';
 import '../controllers/user_roles_controller.dart';
-import '../widgets/sheets/create_role_sheet.dart';
+import '../widgets/empty_role_detail_state.dart';
 import '../widgets/sheets/edit_role_sheet.dart';
+import '../widgets/user_role_detail_panel.dart';
+import '../widgets/user_role_list_panel.dart';
 
 /// User roles management page.
 ///
-/// Shows a list of all roles with their permissions count and allows CRUD operations.
-class UserRolesPage extends ConsumerWidget {
+/// Uses a two-pane layout on tablet and a single list on mobile.
+class UserRolesPage extends HookConsumerWidget {
   const UserRolesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rolesAsync = ref.watch(userRolesControllerProvider);
-    final theme = Theme.of(context);
-    final t = Translations.of(context);
+    final isTablet = Breakpoints.isTabletOrLarger(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(t.navigation.roles),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                ref.read(userRolesControllerProvider.notifier).refresh(),
-            tooltip: 'Refresh',
-          ),
-        ],
+    return rolesAsync.when(
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => showCreateRoleSheet(context),
-        tooltip: 'Add Role',
-        child: const Icon(Icons.add),
-      ),
-      body: rolesAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
+      error: (error, stack) => Scaffold(
+        body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -54,57 +42,56 @@ class UserRolesPage extends ConsumerWidget {
             ],
           ),
         ),
-        data: (roles) {
-          if (roles.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.admin_panel_settings_outlined,
-                    size: 80,
-                    color: theme.colorScheme.outlineVariant,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No roles found',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: theme.colorScheme.outline,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Create a role to get started',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.outline,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.only(bottom: 80),
-            itemCount: roles.length,
-            itemBuilder: (context, index) {
-              final role = roles[index];
-              return _RoleListTile(
-                role: role,
-                onEdit: () => showEditRoleSheet(context, role),
-                onDelete: () => _showDeleteConfirmation(context, ref, role),
-              );
-            },
-          );
-        },
       ),
+      data: (roles) {
+        final selectedRoleId = useState<String?>(null);
+
+        useEffect(() {
+          if (selectedRoleId.value != null &&
+              !roles.any((role) => role.id == selectedRoleId.value)) {
+            selectedRoleId.value = null;
+          }
+          return null;
+        }, [roles]);
+
+        final selectedRole = selectedRoleId.value == null
+            ? null
+            : roles.cast<UserRole?>().firstWhere(
+                  (role) => role?.id == selectedRoleId.value,
+                  orElse: () => null,
+                );
+
+        final listPanel = UserRoleListPanel(
+          roles: roles,
+          selectedId: selectedRoleId.value,
+          onRefresh: () =>
+              ref.read(userRolesControllerProvider.notifier).refresh(),
+          onEdit: (role) => showEditRoleSheet(context, role),
+          onDelete: (role) => _showDeleteConfirmation(context, ref, role),
+          onRoleTap: isTablet ? (role) => selectedRoleId.value = role.id : null,
+        );
+
+        if (!isTablet) {
+          return listPanel;
+        }
+
+        return Row(
+          children: [
+            SizedBox(width: 320, child: listPanel),
+            const VerticalDivider(width: 1),
+            Expanded(
+              child: selectedRole != null
+                  ? UserRoleDetailPanel(role: selectedRole)
+                  : const EmptyRoleDetailState(),
+            ),
+          ],
+        );
+      },
     );
   }
 
   void _showDeleteConfirmation(
       BuildContext context, WidgetRef ref, UserRole role) {
-    final t = Translations.of(context);
-
     if (role.isSystem) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('System roles cannot be deleted')),
@@ -115,12 +102,13 @@ class UserRolesPage extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(t.common.delete),
-        content: Text('Are you sure you want to delete the "${role.name}" role?'),
+        title: const Text('Delete'),
+        content:
+            Text('Are you sure you want to delete the "${role.name}" role?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(t.common.cancel),
+            child: const Text('Cancel'),
           ),
           FilledButton(
             onPressed: () async {
@@ -143,103 +131,9 @@ class UserRolesPage extends ConsumerWidget {
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: Text(t.common.delete),
+            child: const Text('Delete'),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _RoleListTile extends StatelessWidget {
-  const _RoleListTile({
-    required this.role,
-    required this.onEdit,
-    required this.onDelete,
-  });
-
-  final UserRole role;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final permissionCount = role.permissions.length;
-
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: role.isAdmin
-              ? theme.colorScheme.primaryContainer
-              : theme.colorScheme.secondaryContainer,
-          child: Icon(
-            role.isAdmin ? Icons.admin_panel_settings : Icons.person,
-            color: role.isAdmin
-                ? theme.colorScheme.onPrimaryContainer
-                : theme.colorScheme.onSecondaryContainer,
-          ),
-        ),
-        title: Row(
-          children: [
-            Text(role.name),
-            if (role.isSystem) ...[
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.tertiaryContainer,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  'System',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.onTertiaryContainer,
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-        subtitle: Text(
-          role.description ?? '$permissionCount permission${permissionCount == 1 ? '' : 's'}',
-        ),
-        trailing: PopupMenuButton<String>(
-          onSelected: (value) {
-            switch (value) {
-              case 'edit':
-                onEdit();
-                break;
-              case 'delete':
-                onDelete();
-                break;
-            }
-          },
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'edit',
-              child: Row(
-                children: [
-                  Icon(Icons.edit),
-                  SizedBox(width: 8),
-                  Text('Edit'),
-                ],
-              ),
-            ),
-            if (!role.isSystem)
-              PopupMenuItem(
-                value: 'delete',
-                child: Row(
-                  children: [
-                    Icon(Icons.delete, color: theme.colorScheme.error),
-                    const SizedBox(width: 8),
-                    Text('Delete', style: TextStyle(color: theme.colorScheme.error)),
-                  ],
-                ),
-              ),
-          ],
-        ),
       ),
     );
   }
