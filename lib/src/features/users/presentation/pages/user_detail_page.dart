@@ -12,14 +12,12 @@ import '../controllers/user_provider.dart';
 import '../widgets/sheets/edit_user_sheet.dart';
 import '../widgets/tabs/user_details_tab.dart';
 import '../widgets/tabs/user_overview_tab.dart';
-import '../widgets/tabs/user_permissions_tab.dart';
 
 /// User detail page with tabbed content.
 ///
-/// Shows user info across 3 tabs:
+/// Shows user info across 2 tabs:
 /// - Overview: Brief summary with key info
 /// - Details: Full user information
-/// - Permissions: Role and permissions display
 class UserDetailPage extends HookConsumerWidget {
   const UserDetailPage({
     super.key,
@@ -35,7 +33,7 @@ class UserDetailPage extends HookConsumerWidget {
     final userAsync = ref.watch(userProvider(userId));
 
     final tabController = useTabController(
-      initialLength: 3,
+      initialLength: 2,
       initialIndex: initialTab.index,
     );
     final isTablet = Breakpoints.isTabletOrLarger(context);
@@ -127,7 +125,6 @@ class UserDetailPage extends HookConsumerWidget {
               tabs: const [
                 Tab(text: 'Overview'),
                 Tab(text: 'Details'),
-                Tab(text: 'Permissions'),
               ],
             ),
           ),
@@ -136,7 +133,6 @@ class UserDetailPage extends HookConsumerWidget {
             children: [
               UserOverviewTab(user: user),
               UserDetailsTab(user: user),
-              UserPermissionsTab(user: user),
             ],
           ),
         );

@@ -1,8 +1,7 @@
 /// Enum for user detail page tabs.
 enum UserTab {
   overview,
-  details,
-  permissions;
+  details;
 
   /// Parse a tab name string to UserTab, defaults to overview.
   static UserTab fromString(String? name) {
