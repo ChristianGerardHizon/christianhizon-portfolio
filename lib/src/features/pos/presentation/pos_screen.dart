@@ -60,7 +60,7 @@ class _DesktopLayout extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('POS System'),
+        title: const Text('Cashier'),
       ),
       body: Row(
         children: [
@@ -162,7 +162,9 @@ class _MobileLayout extends ConsumerWidget {
                             ),
                           ),
                           IconButton(
-                            onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+                            onPressed: () =>
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop(),
                             icon: Icon(
                               Icons.close,
                               color: theme.colorScheme.onPrimaryContainer,
@@ -204,7 +206,7 @@ class _MobileLayout extends ConsumerWidget {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: const Text('POS System'),
+        title: const Text('Cashier'),
         actions: [
           // Cart button in app bar
           IconButton(
