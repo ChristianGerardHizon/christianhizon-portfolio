@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/assets/assets.gen.dart';
 import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../../../core/routing/routes/auth.routes.dart';
@@ -64,10 +65,9 @@ class LoginPage extends HookConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Logo
-                  Icon(
-                    Icons.pets,
-                    size: 80,
-                    color: Theme.of(context).colorScheme.primary,
+                  Assets.icons.appIcon.image(
+                    width: 150,
+                    height: 150,
                   ),
                   const SizedBox(height: 16),
                   Text(

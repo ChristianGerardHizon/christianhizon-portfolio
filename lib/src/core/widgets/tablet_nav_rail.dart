@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../features/auth/presentation/controllers/auth_controller.dart';
+import '../assets/assets.gen.dart';
 import '../i18n/strings.g.dart';
 import '../utils/breakpoints.dart';
 
@@ -41,8 +42,7 @@ class TabletNavRail extends ConsumerWidget {
                 : NavigationRailLabelType.selected,
             leading: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Image.asset(
-                'assets/icons/app_icon.png',
+              child: Assets.icons.appIcon.image(
                 width: 40,
                 height: 40,
               ),
