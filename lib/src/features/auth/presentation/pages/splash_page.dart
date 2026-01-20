@@ -1,35 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/i18n/strings.g.dart';
-import '../../../../core/routing/routes/dashboard.routes.dart';
+import '../controllers/auth_controller.dart';
 
 /// Splash page shown while the app is initializing.
 ///
 /// Displayed during auth state initialization on app startup.
-/// Redirects to the dashboard after 3 seconds.
-class SplashPage extends StatefulWidget {
+/// The router handles navigation based on auth state - this page
+/// simply watches auth state and displays a loading indicator.
+class SplashPage extends HookConsumerWidget {
   const SplashPage({super.key});
 
   @override
-  State<SplashPage> createState() => _SplashPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch auth state - router will redirect when auth completes
+    ref.watch(authControllerProvider);
 
-class _SplashPageState extends State<SplashPage> {
-  @override
-  void initState() {
-    super.initState();
-    _navigateToHome();
-  }
-
-  Future<void> _navigateToHome() async {
-    await Future.delayed(const Duration(seconds: 3));
-    if (mounted) {
-      const DashboardRoute().go(context);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Column(

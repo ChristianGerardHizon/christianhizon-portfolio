@@ -36,34 +36,29 @@ abstract class RouterUtils {
 
     final authAsync = ref.read(authControllerProvider);
 
-    // Auth is loading during login attempt - show auth loading page
-    if (authAsync.isLoading && currentPath == LoginRoute.path) {
-      return AuthLoadingRoute.path;
-    }
-
-    // Still loading auth state on app start - stay on splash
-    if (authAsync.isLoading) {
-      return SplashRoute.path;
-    }
-
     final isAuthenticated = authAsync.value != null;
     final isOnLoginPage = currentPath == LoginRoute.path;
     final isOnSplashPage = currentPath == SplashRoute.path;
-    final isOnAuthLoadingPage = currentPath == AuthLoadingRoute.path;
 
-    // On auth loading page but auth completed (success or error) - redirect appropriately
-    if (isOnAuthLoadingPage && !authAsync.isLoading) {
+    // Still loading auth state on app start (splash) - stay on splash
+    if (authAsync.isLoading && isOnSplashPage) {
+      return SplashRoute.path;
+    }
+
+    // Splash page and auth completed - redirect based on auth state
+    if (isOnSplashPage && !authAsync.isLoading) {
       return isAuthenticated ? '/' : LoginRoute.path;
     }
 
-    // Not authenticated and not on login page - redirect to login
-    if (!isAuthenticated && !isOnLoginPage && !isIgnored) {
-      return LoginRoute.path;
+    // Login page - stay on login (handles its own loading/error states)
+    // Only redirect to home if authenticated
+    if (isOnLoginPage) {
+      return isAuthenticated ? '/' : null;
     }
 
-    // Authenticated but on login or splash - redirect to home
-    if (isAuthenticated && (isOnLoginPage || isOnSplashPage)) {
-      return '/';
+    // Not authenticated and not on an ignored route - redirect to login
+    if (!isAuthenticated && !isIgnored) {
+      return LoginRoute.path;
     }
 
     // No redirect needed

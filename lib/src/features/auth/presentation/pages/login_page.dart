@@ -4,6 +4,8 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import 'package:go_router/go_router.dart';
+
 import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../../../core/routing/routes/auth.routes.dart';
@@ -22,10 +24,18 @@ class LoginPage extends HookConsumerWidget {
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
 
-    // Listen for auth errors to show error message
+    // Listen for auth state changes
     ref.listen(authControllerProvider, (prev, next) {
-      if (next.hasError && context.mounted) {
+      if (!context.mounted) return;
+
+      // On error, show error message
+      if (next.hasError) {
         errorMessage.value = t.failures.invalidCredentials;
+      }
+
+      // On success, navigate to home
+      if (next.hasValue && next.value != null) {
+        context.go('/');
       }
     });
 
@@ -38,7 +48,6 @@ class LoginPage extends HookConsumerWidget {
               values['email'] as String,
               values['password'] as String,
             );
-        // Router will redirect to auth loading page when isLoading becomes true
       }
     }
 
