@@ -5,6 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../settings/presentation/controllers/message_templates_controller.dart';
+import '../../../../patients/domain/patient.dart';
+
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../messages/domain/message.dart';
 import '../../../../messages/presentation/controllers/messages_controller.dart';
@@ -45,6 +48,46 @@ class EditAppointmentSheet extends HookConsumerWidget {
     // Watch existing reminder messages for this appointment
     final existingMessagesAsync =
         ref.watch(messagesByAppointmentProvider(appointment.id));
+
+    // Watch templates for dropdown
+    final templatesAsync = ref.watch(messageTemplatesControllerProvider);
+
+    String replacePlaceholders(String content, Patient? patient) {
+      if (content.isEmpty) return content;
+
+      var replaced = content;
+
+      // Replace patient data
+      if (patient != null) {
+        replaced = replaced.replaceAll('{patientName}', patient.name);
+        replaced =
+            replaced.replaceAll('{patientPhone}', patient.contactNumber ?? '');
+        replaced = replaced.replaceAll('{ownerName}', patient.owner ?? '');
+        replaced = replaced.replaceAll('{species}', patient.species ?? '');
+        replaced = replaced.replaceAll('{breed}', patient.breed ?? '');
+        replaced = replaced.replaceAll('{email}', patient.email ?? '');
+        replaced = replaced.replaceAll('{address}', patient.address ?? '');
+      }
+
+      // Replace appointment info
+      final date = formKey.currentState?.fields['date']?.value as DateTime?;
+      if (date != null) {
+        replaced = replaced.replaceAll(
+            '{treatmentDate}', DateFormat('MMM d, yyyy').format(date));
+      }
+
+      final purpose = formKey.currentState?.fields['purpose']?.value as String?;
+      if (purpose != null && purpose.isNotEmpty) {
+        replaced = replaced.replaceAll('{treatmentName}', purpose);
+      }
+
+      final notes = formKey.currentState?.fields['notes']?.value as String?;
+      if (notes != null && notes.isNotEmpty) {
+        replaced = replaced.replaceAll('{treatmentNotes}', notes);
+      }
+
+      return replaced;
+    }
 
     // Linked records and treatments (initialized from appointment)
     final linkedRecordIds = useState<List<String>>(appointment.patientRecords);
@@ -249,6 +292,7 @@ class EditAppointmentSheet extends HookConsumerWidget {
                     isSaving.value ? null : (value) => hasTime.value = value,
                 contentPadding: EdgeInsets.zero,
               ),
+              if (hasTime.value) const SizedBox(height: 16),
 
               // Time picker (conditional)
               if (hasTime.value) ...[
@@ -371,16 +415,16 @@ class EditAppointmentSheet extends HookConsumerWidget {
                                       'Scheduled for: ${_formatDateTime(reminder.sendDateTime)}',
                                       style:
                                           theme.textTheme.bodySmall?.copyWith(
-                                        color:
-                                            theme.colorScheme.onPrimaryContainer,
+                                        color: theme
+                                            .colorScheme.onPrimaryContainer,
                                       ),
                                     ),
                                     Text(
                                       'To: ${reminder.phone}',
                                       style:
                                           theme.textTheme.bodySmall?.copyWith(
-                                        color:
-                                            theme.colorScheme.onPrimaryContainer,
+                                        color: theme
+                                            .colorScheme.onPrimaryContainer,
                                       ),
                                     ),
                                   ],
@@ -443,8 +487,8 @@ class EditAppointmentSheet extends HookConsumerWidget {
                                     Container(
                                       padding: const EdgeInsets.all(12),
                                       decoration: BoxDecoration(
-                                        color: theme
-                                            .colorScheme.surfaceContainerHighest,
+                                        color: theme.colorScheme
+                                            .surfaceContainerHighest,
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Row(
@@ -467,6 +511,57 @@ class EditAppointmentSheet extends HookConsumerWidget {
                                       ),
                                     ),
                                     const SizedBox(height: 12),
+
+                                    // Template selector
+                                    templatesAsync.when(
+                                      loading: () =>
+                                          const LinearProgressIndicator(),
+                                      error: (_, __) => const SizedBox.shrink(),
+                                      data: (templates) {
+                                        if (templates.isEmpty)
+                                          return const SizedBox.shrink();
+                                        return Column(
+                                          children: [
+                                            FormBuilderDropdown<String>(
+                                              name: 'template',
+                                              decoration: const InputDecoration(
+                                                labelText: 'Use Template',
+                                                border: OutlineInputBorder(),
+                                                prefixIcon: Icon(
+                                                    Icons.description_outlined),
+                                                helperText:
+                                                    'Select a template to auto-fill reminder',
+                                              ),
+                                              onChanged: (value) {
+                                                if (value != null) {
+                                                  final template =
+                                                      templates.firstWhere(
+                                                          (t) => t.id == value);
+                                                  final finalContent =
+                                                      replacePlaceholders(
+                                                    template.content,
+                                                    appointment.patientExpanded,
+                                                  );
+                                                  formKey
+                                                      .currentState
+                                                      ?.fields[
+                                                          'reminderMessage']
+                                                      ?.didChange(finalContent);
+                                                }
+                                              },
+                                              items: templates
+                                                  .map((t) => DropdownMenuItem(
+                                                        value: t.id,
+                                                        child: Text(t.name),
+                                                      ))
+                                                  .toList(),
+                                            ),
+                                            const SizedBox(height: 16),
+                                          ],
+                                        );
+                                      },
+                                    ),
+
                                     FormBuilderTextField(
                                       name: 'reminderMessage',
                                       initialValue: _getDefaultReminderMessage(
