@@ -35,10 +35,10 @@ class _SplashPageState extends State<SplashPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.pets,
-              size: 80,
-              color: Theme.of(context).colorScheme.primary,
+            Image.asset(
+              'assets/icons/app_icon.png',
+              width: 150,
+              height: 150,
             ),
             const SizedBox(height: 24),
             Text(

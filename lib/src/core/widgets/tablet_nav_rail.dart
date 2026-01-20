@@ -25,7 +25,6 @@ class TabletNavRail extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = Translations.of(context);
-    final theme = Theme.of(context);
     final isLargeTablet = Breakpoints.isTabletLargeOrLarger(context);
 
     return SingleChildScrollView(
@@ -42,12 +41,10 @@ class TabletNavRail extends ConsumerWidget {
                 : NavigationRailLabelType.selected,
             leading: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: CircleAvatar(
-                backgroundColor: theme.colorScheme.primaryContainer,
-                child: Icon(
-                  Icons.local_hospital,
-                  color: theme.colorScheme.primary,
-                ),
+              child: Image.asset(
+                'assets/icons/app_icon.png',
+                width: 40,
+                height: 40,
               ),
             ),
             trailing: Expanded(
