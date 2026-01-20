@@ -8,6 +8,7 @@ import '../../../patients/presentation/controllers/patient_provider.dart';
 import '../../../pos/domain/sale.dart';
 import '../controllers/sale_items_provider.dart';
 import '../controllers/sale_provider.dart';
+import '../widgets/sale_status_card.dart';
 import '../widgets/sale_status_chip.dart';
 
 /// Sale detail page showing sale information and items.
@@ -194,6 +195,10 @@ class _SaleDetailContent extends ConsumerWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+
+            // Status Card
+            SaleStatusCard(status: sale.status),
             const SizedBox(height: 16),
 
             // Items Section

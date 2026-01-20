@@ -13,16 +13,16 @@ class SaleStatusChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final (color, icon) = _getStatusStyle(status);
 
-    return Chip(
-      avatar: Icon(icon, size: 16, color: color),
-      label: Text(
-        _formatStatus(status),
-        style: TextStyle(color: color, fontWeight: FontWeight.w500),
+    return Tooltip(
+      message: _formatStatus(status),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: color, size: 18),
       ),
-      backgroundColor: color.withValues(alpha: 0.1),
-      side: BorderSide.none,
-      padding: const EdgeInsets.symmetric(horizontal: 2),
-      visualDensity: VisualDensity.compact,
     );
   }
 

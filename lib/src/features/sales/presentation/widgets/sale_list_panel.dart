@@ -155,9 +155,8 @@ class SaleListPanel extends HookConsumerWidget {
                     subtitle: Text(
                       '${sale.created != null ? dateFormat.format(sale.created!) : "Unknown"} • ${_formatPaymentMethod(sale.paymentMethod)}',
                     ),
-                    trailing: Column(
+                    trailing: Row(
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           currencyFormat.format(sale.totalAmount),
@@ -165,7 +164,7 @@ class SaleListPanel extends HookConsumerWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(width: 8),
                         SaleStatusChip(status: sale.status),
                       ],
                     ),
