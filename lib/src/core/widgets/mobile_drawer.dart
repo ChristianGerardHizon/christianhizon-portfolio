@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../features/auth/presentation/controllers/auth_controller.dart';
+import '../assets/assets.gen.dart';
 import '../i18n/strings.g.dart';
 
 /// Mobile drawer with full navigation menu.
@@ -41,14 +42,9 @@ class MobileDrawer extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: theme.colorScheme.primary,
-                    child: Icon(
-                      Icons.local_hospital,
-                      size: 30,
-                      color: theme.colorScheme.onPrimary,
-                    ),
+                  Assets.icons.appIconTransparent.image(
+                    width: 60,
+                    height: 60,
                   ),
                   const SizedBox(height: 16),
                   Text(

@@ -23,7 +23,7 @@ class SplashPage extends HookConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Assets.icons.appIcon.image(
+            Assets.icons.appIconTransparent.image(
               width: 150,
               height: 150,
             ),

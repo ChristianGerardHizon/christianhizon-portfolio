@@ -42,7 +42,7 @@ class TabletNavRail extends ConsumerWidget {
                 : NavigationRailLabelType.selected,
             leading: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Assets.icons.appIcon.image(
+              child: Assets.icons.appIconTransparent.image(
                 width: 40,
                 height: 40,
               ),
