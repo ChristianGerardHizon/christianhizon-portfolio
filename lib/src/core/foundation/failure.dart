@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 part 'failure.mapper.dart';
@@ -51,6 +52,9 @@ sealed class Failure with FailureMappable {
   static const fromJson = FailureMapper.fromJson;
 
   static Failure handle(Object error, StackTrace stackTrace) {
+    debugPrint(error.toString());
+    debugPrint(stackTrace.toString());
+
     if (error is Failure) {
       return error;
     }

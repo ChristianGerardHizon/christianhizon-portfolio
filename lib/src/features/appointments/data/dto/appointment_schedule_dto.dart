@@ -27,6 +27,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
   final String? patient;
   final List<String> patientRecords;
   final List<String> treatmentRecords;
+  final String? treatmentPlanItem;
   final String? branch;
   final String? patientName;
   final String? ownerName;
@@ -58,6 +59,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
     this.patient,
     this.patientRecords = const [],
     this.treatmentRecords = const [],
+    this.treatmentPlanItem,
     this.branch,
     this.patientName,
     this.ownerName,
@@ -138,6 +140,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       patient: json['patient'] as String?,
       patientRecords: patientRecords,
       treatmentRecords: treatmentRecords,
+      treatmentPlanItem: json['treatmentPlanItem'] as String?,
       branch: json['branch'] as String?,
       patientName: json['patientName'] as String?,
       ownerName: json['ownerName'] as String?,
@@ -180,6 +183,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       patient: patient,
       patientRecords: patientRecords,
       treatmentRecords: treatmentRecords,
+      treatmentPlanItem: treatmentPlanItem,
       branch: branch,
       patientName: patientName,
       ownerName: ownerName,
@@ -211,7 +215,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
   /// Converts entity to JSON for create/update operations.
   static Map<String, dynamic> toCreateJson(AppointmentSchedule appointment) {
     return {
-      'date': appointment.date.toUtc().toIso8601String(),
+      'date': appointment.date.toUtcIso8601(),
       'hasTime': appointment.hasTime,
       'notes': appointment.notes,
       'purpose': appointment.purpose,
@@ -219,6 +223,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       'patient': appointment.patient,
       'patientRecords': appointment.patientRecords,
       'treatmentRecords': appointment.treatmentRecords,
+      'treatmentPlanItem': appointment.treatmentPlanItem,
       'branch': appointment.branch,
       'patientName': appointment.patientName,
       'ownerName': appointment.ownerName,

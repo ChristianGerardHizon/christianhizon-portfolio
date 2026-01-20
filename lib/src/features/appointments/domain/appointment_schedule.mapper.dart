@@ -132,6 +132,13 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
       v.treatmentRecords;
   static const Field<AppointmentSchedule, List<String>> _f$treatmentRecords =
       Field('treatmentRecords', _$treatmentRecords, opt: true, def: const []);
+  static String? _$treatmentPlanItem(AppointmentSchedule v) =>
+      v.treatmentPlanItem;
+  static const Field<AppointmentSchedule, String> _f$treatmentPlanItem = Field(
+    'treatmentPlanItem',
+    _$treatmentPlanItem,
+    opt: true,
+  );
   static String? _$branch(AppointmentSchedule v) => v.branch;
   static const Field<AppointmentSchedule, String> _f$branch = Field(
     'branch',
@@ -212,6 +219,7 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
     #patient: _f$patient,
     #patientRecords: _f$patientRecords,
     #treatmentRecords: _f$treatmentRecords,
+    #treatmentPlanItem: _f$treatmentPlanItem,
     #branch: _f$branch,
     #patientName: _f$patientName,
     #ownerName: _f$ownerName,
@@ -235,6 +243,7 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
       patient: data.dec(_f$patient),
       patientRecords: data.dec(_f$patientRecords),
       treatmentRecords: data.dec(_f$treatmentRecords),
+      treatmentPlanItem: data.dec(_f$treatmentPlanItem),
       branch: data.dec(_f$branch),
       patientName: data.dec(_f$patientName),
       ownerName: data.dec(_f$ownerName),
@@ -349,6 +358,7 @@ abstract class AppointmentScheduleCopyWith<
     String? patient,
     List<String>? patientRecords,
     List<String>? treatmentRecords,
+    String? treatmentPlanItem,
     String? branch,
     String? patientName,
     String? ownerName,
@@ -427,6 +437,7 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
     Object? patient = $none,
     List<String>? patientRecords,
     List<String>? treatmentRecords,
+    Object? treatmentPlanItem = $none,
     Object? branch = $none,
     Object? patientName = $none,
     Object? ownerName = $none,
@@ -448,6 +459,7 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
       if (patient != $none) #patient: patient,
       if (patientRecords != null) #patientRecords: patientRecords,
       if (treatmentRecords != null) #treatmentRecords: treatmentRecords,
+      if (treatmentPlanItem != $none) #treatmentPlanItem: treatmentPlanItem,
       if (branch != $none) #branch: branch,
       if (patientName != $none) #patientName: patientName,
       if (ownerName != $none) #ownerName: ownerName,
@@ -473,6 +485,10 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
     patient: data.get(#patient, or: $value.patient),
     patientRecords: data.get(#patientRecords, or: $value.patientRecords),
     treatmentRecords: data.get(#treatmentRecords, or: $value.treatmentRecords),
+    treatmentPlanItem: data.get(
+      #treatmentPlanItem,
+      or: $value.treatmentPlanItem,
+    ),
     branch: data.get(#branch, or: $value.branch),
     patientName: data.get(#patientName, or: $value.patientName),
     ownerName: data.get(#ownerName, or: $value.ownerName),

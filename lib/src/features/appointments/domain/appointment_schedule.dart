@@ -31,6 +31,7 @@ class AppointmentSchedule with AppointmentScheduleMappable {
     this.patient,
     this.patientRecords = const [],
     this.treatmentRecords = const [],
+    this.treatmentPlanItem,
     this.branch,
     this.patientName,
     this.ownerName,
@@ -69,6 +70,9 @@ class AppointmentSchedule with AppointmentScheduleMappable {
 
   /// List of linked PatientTreatmentRecord IDs.
   final List<String> treatmentRecords;
+
+  /// FK to TreatmentPlanItem (nullable, for appointment linked to a treatment plan).
+  final String? treatmentPlanItem;
 
   /// FK to Branch.
   final String? branch;
@@ -163,5 +167,10 @@ class AppointmentSchedule with AppointmentScheduleMappable {
   /// Returns total count of linked items.
   int get linkedItemsCount {
     return patientRecords.length + treatmentRecords.length;
+  }
+
+  /// Returns true if appointment is linked to a treatment plan item.
+  bool get isLinkedToTreatmentPlan {
+    return treatmentPlanItem != null && treatmentPlanItem!.isNotEmpty;
   }
 }

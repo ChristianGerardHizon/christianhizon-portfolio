@@ -17,6 +17,7 @@ import '../../../../patients/presentation/controllers/patients_controller.dart';
 import '../../../../settings/presentation/controllers/message_templates_controller.dart';
 import '../../../../patients/presentation/widgets/sheets/add_record_sheet.dart';
 import '../../../../patients/presentation/widgets/sheets/add_treatment_record_sheet.dart';
+import '../../../../treatment_plans/domain/treatment_plan_item.dart';
 import '../../../domain/appointment_schedule.dart';
 import '../components/linked_items_section.dart';
 import 'record_treatment_selector_sheet.dart';
@@ -26,11 +27,15 @@ class CreateAppointmentSheet extends HookConsumerWidget {
   const CreateAppointmentSheet({
     super.key,
     this.initialPatient,
+    this.treatmentPlanItem,
     required this.onSave,
   });
 
   /// Pre-selected patient (when creating from patient context).
   final Patient? initialPatient;
+
+  /// Treatment plan item to link (when booking from a treatment plan).
+  final TreatmentPlanItem? treatmentPlanItem;
 
   /// Callback when appointment is saved.
   /// Returns the created appointment on success, or null on failure.
@@ -189,6 +194,7 @@ class CreateAppointmentSheet extends HookConsumerWidget {
         patient: patient.id,
         patientRecords: linkedRecordIds.value,
         treatmentRecords: linkedTreatmentIds.value,
+        treatmentPlanItem: treatmentPlanItem?.id,
         patientName: patient.name,
         ownerName: patient.owner,
         ownerContact: patient.contactNumber,
@@ -285,8 +291,32 @@ class CreateAppointmentSheet extends HookConsumerWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Text('New Appointment',
-                        style: theme.textTheme.titleLarge),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('New Appointment',
+                            style: theme.textTheme.titleLarge),
+                        if (treatmentPlanItem != null) ...[
+                          const SizedBox(height: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.tertiaryContainer,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              'Session ${treatmentPlanItem!.sequence} of Treatment Plan',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onTertiaryContainer,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                   const SizedBox(width: 8),
                   TextButton(
@@ -401,13 +431,16 @@ class CreateAppointmentSheet extends HookConsumerWidget {
               // Date picker
               FormBuilderDateTimePicker(
                 name: 'date',
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Date *',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.calendar_today),
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.calendar_today),
+                  helperText: treatmentPlanItem != null
+                      ? 'Pre-filled from treatment plan'
+                      : null,
                 ),
                 inputType: InputType.date,
-                initialValue: DateTime.now(),
+                initialValue: treatmentPlanItem?.expectedDate ?? DateTime.now(),
                 validator: FormBuilderValidators.required(),
                 enabled: !isSaving.value,
               ),

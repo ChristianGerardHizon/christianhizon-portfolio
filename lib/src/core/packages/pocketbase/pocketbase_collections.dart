@@ -40,4 +40,9 @@ abstract class PocketBaseCollections {
   // Messages
   static const String messages = 'messages';
   static const String messageTemplates = 'messageTemplates';
+
+  // Treatment Plans
+  static const String treatmentTemplates = 'treatmentTemplates';
+  static const String treatmentPlans = 'treatmentPlans';
+  static const String treatmentPlanItems = 'treatmentPlanItems';
 }
