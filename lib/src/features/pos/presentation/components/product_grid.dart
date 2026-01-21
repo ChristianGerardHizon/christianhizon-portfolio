@@ -50,7 +50,8 @@ class ProductGrid extends ConsumerWidget {
                     Icon(
                       Icons.search_off,
                       size: 64,
-                      color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                      color: theme.colorScheme.onSurfaceVariant
+                          .withValues(alpha: 0.5),
                     ),
                     const SizedBox(height: 16),
                     Text(
