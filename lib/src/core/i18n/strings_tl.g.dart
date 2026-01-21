@@ -74,6 +74,7 @@ class _TranslationsAuthTl implements TranslationsAuthEn {
 	@override String resetLinkSent({required Object email}) => 'Naipadala na ang password reset link sa ${email}';
 	@override String get signInToContinue => 'Mag-sign in upang magpatuloy';
 	@override String get signingIn => 'Nagsa-sign in...';
+	@override String get verificationEmailSent => 'Naipadala na ang verification email sa iyong email address';
 }
 
 // Path: common
@@ -236,6 +237,7 @@ extension on TranslationsTl {
 			'auth.resetLinkSent' => ({required Object email}) => 'Naipadala na ang password reset link sa ${email}',
 			'auth.signInToContinue' => 'Mag-sign in upang magpatuloy',
 			'auth.signingIn' => 'Nagsa-sign in...',
+			'auth.verificationEmailSent' => 'Naipadala na ang verification email sa iyong email address',
 			'common.appName' => 'SannJoseVet',
 			'common.placeholderText' => 'N/A',
 			'common.save' => 'I-save',

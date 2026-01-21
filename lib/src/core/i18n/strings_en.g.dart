@@ -106,6 +106,9 @@ class TranslationsAuthEn {
 
 	/// en: 'Signing in...'
 	String get signingIn => 'Signing in...';
+
+	/// en: 'A verification email has been sent to your email address'
+	String get verificationEmailSent => 'A verification email has been sent to your email address';
 }
 
 // Path: common
@@ -446,6 +449,7 @@ extension on Translations {
 			'auth.resetLinkSent' => ({required Object email}) => 'Password reset link has been sent to ${email}',
 			'auth.signInToContinue' => 'Sign in to continue',
 			'auth.signingIn' => 'Signing in...',
+			'auth.verificationEmailSent' => 'A verification email has been sent to your email address',
 			'common.appName' => 'SannJoseVet',
 			'common.placeholderText' => 'N/A',
 			'common.save' => 'Save',

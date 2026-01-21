@@ -5,6 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/routing/routes/users.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
+import '../../../../core/widgets/form_feedback.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../domain/user.dart';
 import '../../domain/user_tab.dart';
 import '../controllers/paginated_users_controller.dart';
@@ -172,15 +174,29 @@ class UserDetailPage extends HookConsumerWidget {
               },
             ),
             ListTile(
+              leading: Icon(
+                user.verified ? Icons.verified : Icons.verified_outlined,
+                color: user.verified ? Colors.green : null,
+              ),
+              title: Text(user.verified ? 'Mark as Unverified' : 'Mark as Verified'),
+              subtitle: Text(user.verified
+                  ? 'Remove email verification status'
+                  : 'Manually verify this user\'s email'),
+              onTap: () {
+                Navigator.pop(context);
+                _showToggleVerificationDialog(context, ref, user);
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.email),
               title: const Text('Send Verification Email'),
+              subtitle: user.verified
+                  ? const Text('User is already verified')
+                  : null,
               enabled: !user.verified,
               onTap: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Verification email functionality coming soon')),
-                );
+                _sendVerificationEmail(context, ref, user);
               },
             ),
             ListTile(
@@ -226,6 +242,78 @@ class UserDetailPage extends HookConsumerWidget {
         ],
       ),
     );
+  }
+
+  void _showToggleVerificationDialog(
+      BuildContext context, WidgetRef ref, User user) {
+    final t = Translations.of(context);
+    final newStatus = !user.verified;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(newStatus ? 'Verify User' : 'Unverify User'),
+        content: Text(newStatus
+            ? 'Are you sure you want to mark ${user.name} as verified?'
+            : 'Are you sure you want to remove verification status from ${user.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(t.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(context);
+
+              final updatedUser = user.copyWith(verified: newStatus);
+              final success = await ref
+                  .read(paginatedUsersControllerProvider.notifier)
+                  .updateUser(updatedUser);
+
+              if (context.mounted) {
+                if (success) {
+                  // Refresh user detail page
+                  ref.invalidate(userProvider(userId));
+                  showSuccessSnackBar(
+                    context,
+                    message: newStatus
+                        ? '${user.name} has been marked as verified'
+                        : '${user.name} has been marked as unverified',
+                  );
+                } else {
+                  showErrorSnackBar(
+                    context,
+                    message: 'Failed to update verification status',
+                  );
+                }
+              }
+            },
+            child: Text(newStatus ? 'Verify' : 'Unverify'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _sendVerificationEmail(
+      BuildContext context, WidgetRef ref, User user) async {
+    final success = await ref
+        .read(authControllerProvider.notifier)
+        .requestVerification(user.email);
+
+    if (context.mounted) {
+      if (success) {
+        showSuccessSnackBar(
+          context,
+          message: 'Verification email sent to ${user.email}',
+        );
+      } else {
+        showErrorSnackBar(
+          context,
+          message: 'Failed to send verification email',
+        );
+      }
+    }
   }
 
   void _showDeleteConfirmation(

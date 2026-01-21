@@ -20,5 +20,6 @@
     "checkEmail": "Tingnan ang Iyong Email",
     "resetLinkSent(email)": "Naipadala na ang password reset link sa $email",
     "signInToContinue": "Mag-sign in upang magpatuloy",
-    "signingIn": "Nagsa-sign in..."
+    "signingIn": "Nagsa-sign in...",
+    "verificationEmailSent": "Naipadala na ang verification email sa iyong email address"
 }
