@@ -18,6 +18,8 @@ class SaleItem with SaleItemMappable {
     required this.unitPrice,
     required this.subtotal,
     this.product,
+    this.productLotId,
+    this.lotNumber,
     this.created,
     this.updated,
   });
@@ -46,9 +48,18 @@ class SaleItem with SaleItemMappable {
   /// Expanded Product (optional).
   final Product? product;
 
+  /// Product Lot ID (for lot-tracked products).
+  final String? productLotId;
+
+  /// Lot number snapshot at time of sale.
+  final String? lotNumber;
+
   /// Creation timestamp.
   final DateTime? created;
 
   /// Last update timestamp.
   final DateTime? updated;
+
+  /// Whether this item was sold from a specific lot.
+  bool get hasLot => productLotId != null && productLotId!.isNotEmpty;
 }

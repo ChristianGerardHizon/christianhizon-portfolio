@@ -18,6 +18,8 @@ class SaleItemDto with SaleItemDtoMappable {
   final num quantity;
   final num unitPrice;
   final num subtotal;
+  final String? productLot;
+  final String? lotNumber;
   final String? created;
   final String? updated;
 
@@ -31,6 +33,8 @@ class SaleItemDto with SaleItemDtoMappable {
     required this.quantity,
     required this.unitPrice,
     required this.subtotal,
+    this.productLot,
+    this.lotNumber,
     this.created,
     this.updated,
   });
@@ -46,6 +50,8 @@ class SaleItemDto with SaleItemDtoMappable {
       quantity: record.getDoubleValue('quantity'),
       unitPrice: record.getDoubleValue('unitPrice'),
       subtotal: record.getDoubleValue('subtotal'),
+      productLot: record.getStringValue('productLot'),
+      lotNumber: record.getStringValue('lotNumber'),
       created: record.get<String>('created'),
       updated: record.get<String>('updated'),
     );
@@ -60,6 +66,8 @@ class SaleItemDto with SaleItemDtoMappable {
       quantity: quantity,
       unitPrice: unitPrice,
       subtotal: subtotal,
+      productLotId: productLot,
+      lotNumber: lotNumber,
       product: productExpanded != null
           ? ProductDto.fromRecord(productExpanded).toEntity()
           : null,

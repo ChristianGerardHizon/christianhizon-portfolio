@@ -56,6 +56,18 @@ class CartItemMapper extends ClassMapperBase<CartItem> {
     opt: true,
     def: 1,
   );
+  static String? _$productLotId(CartItem v) => v.productLotId;
+  static const Field<CartItem, String> _f$productLotId = Field(
+    'productLotId',
+    _$productLotId,
+    opt: true,
+  );
+  static String? _$lotNumber(CartItem v) => v.lotNumber;
+  static const Field<CartItem, String> _f$lotNumber = Field(
+    'lotNumber',
+    _$lotNumber,
+    opt: true,
+  );
   static DateTime? _$created(CartItem v) => v.created;
   static const Field<CartItem, DateTime> _f$created = Field(
     'created',
@@ -76,6 +88,8 @@ class CartItemMapper extends ClassMapperBase<CartItem> {
     #productId: _f$productId,
     #product: _f$product,
     #quantity: _f$quantity,
+    #productLotId: _f$productLotId,
+    #lotNumber: _f$lotNumber,
     #created: _f$created,
     #updated: _f$updated,
   };
@@ -87,6 +101,8 @@ class CartItemMapper extends ClassMapperBase<CartItem> {
       productId: data.dec(_f$productId),
       product: data.dec(_f$product),
       quantity: data.dec(_f$quantity),
+      productLotId: data.dec(_f$productLotId),
+      lotNumber: data.dec(_f$lotNumber),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
     );
@@ -156,6 +172,8 @@ abstract class CartItemCopyWith<$R, $In extends CartItem, $Out>
     String? productId,
     Product? product,
     num? quantity,
+    String? productLotId,
+    String? lotNumber,
     DateTime? created,
     DateTime? updated,
   });
@@ -180,6 +198,8 @@ class _CartItemCopyWithImpl<$R, $Out>
     String? productId,
     Object? product = $none,
     num? quantity,
+    Object? productLotId = $none,
+    Object? lotNumber = $none,
     Object? created = $none,
     Object? updated = $none,
   }) => $apply(
@@ -189,6 +209,8 @@ class _CartItemCopyWithImpl<$R, $Out>
       if (productId != null) #productId: productId,
       if (product != $none) #product: product,
       if (quantity != null) #quantity: quantity,
+      if (productLotId != $none) #productLotId: productLotId,
+      if (lotNumber != $none) #lotNumber: lotNumber,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
     }),
@@ -200,6 +222,8 @@ class _CartItemCopyWithImpl<$R, $Out>
     productId: data.get(#productId, or: $value.productId),
     product: data.get(#product, or: $value.product),
     quantity: data.get(#quantity, or: $value.quantity),
+    productLotId: data.get(#productLotId, or: $value.productLotId),
+    lotNumber: data.get(#lotNumber, or: $value.lotNumber),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),
   );

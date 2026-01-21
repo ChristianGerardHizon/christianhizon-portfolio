@@ -15,6 +15,8 @@ class CartItem with CartItemMappable {
     this.productId = '',
     this.product,
     this.quantity = 1,
+    this.productLotId,
+    this.lotNumber,
     this.created,
     this.updated,
   });
@@ -34,6 +36,12 @@ class CartItem with CartItemMappable {
   /// Quantity.
   final num quantity;
 
+  /// Product Lot ID (for lot-tracked products).
+  final String? productLotId;
+
+  /// Lot number snapshot for display.
+  final String? lotNumber;
+
   /// Creation timestamp.
   final DateTime? created;
 
@@ -42,4 +50,7 @@ class CartItem with CartItemMappable {
 
   /// Total price of this item (quantity * product price).
   num get total => (product?.price ?? 0) * quantity;
+
+  /// Whether this item is from a specific lot.
+  bool get hasLot => productLotId != null && productLotId!.isNotEmpty;
 }

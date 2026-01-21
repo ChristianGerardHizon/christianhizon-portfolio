@@ -94,6 +94,27 @@ class CartView extends ConsumerWidget {
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
+                                      // Show lot number if item is from a specific lot
+                                      if (item.hasLot && item.lotNumber != null) ...[
+                                        const SizedBox(height: 2),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.inventory_2_outlined,
+                                              size: 12,
+                                              color: theme.colorScheme.primary,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              'Lot: ${item.lotNumber}',
+                                              style: theme.textTheme.labelSmall?.copyWith(
+                                                color: theme.colorScheme.primary,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                       const SizedBox(height: 4),
                                       Text(
                                         '${product.price.toCurrency()} each',

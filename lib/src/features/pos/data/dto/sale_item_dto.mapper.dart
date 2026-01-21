@@ -60,6 +60,18 @@ class SaleItemDtoMapper extends ClassMapperBase<SaleItemDto> {
     'subtotal',
     _$subtotal,
   );
+  static String? _$productLot(SaleItemDto v) => v.productLot;
+  static const Field<SaleItemDto, String> _f$productLot = Field(
+    'productLot',
+    _$productLot,
+    opt: true,
+  );
+  static String? _$lotNumber(SaleItemDto v) => v.lotNumber;
+  static const Field<SaleItemDto, String> _f$lotNumber = Field(
+    'lotNumber',
+    _$lotNumber,
+    opt: true,
+  );
   static String? _$created(SaleItemDto v) => v.created;
   static const Field<SaleItemDto, String> _f$created = Field(
     'created',
@@ -84,6 +96,8 @@ class SaleItemDtoMapper extends ClassMapperBase<SaleItemDto> {
     #quantity: _f$quantity,
     #unitPrice: _f$unitPrice,
     #subtotal: _f$subtotal,
+    #productLot: _f$productLot,
+    #lotNumber: _f$lotNumber,
     #created: _f$created,
     #updated: _f$updated,
   };
@@ -99,6 +113,8 @@ class SaleItemDtoMapper extends ClassMapperBase<SaleItemDto> {
       quantity: data.dec(_f$quantity),
       unitPrice: data.dec(_f$unitPrice),
       subtotal: data.dec(_f$subtotal),
+      productLot: data.dec(_f$productLot),
+      lotNumber: data.dec(_f$lotNumber),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
     );
@@ -174,6 +190,8 @@ abstract class SaleItemDtoCopyWith<$R, $In extends SaleItemDto, $Out>
     num? quantity,
     num? unitPrice,
     num? subtotal,
+    String? productLot,
+    String? lotNumber,
     String? created,
     String? updated,
   });
@@ -199,6 +217,8 @@ class _SaleItemDtoCopyWithImpl<$R, $Out>
     num? quantity,
     num? unitPrice,
     num? subtotal,
+    Object? productLot = $none,
+    Object? lotNumber = $none,
     Object? created = $none,
     Object? updated = $none,
   }) => $apply(
@@ -212,6 +232,8 @@ class _SaleItemDtoCopyWithImpl<$R, $Out>
       if (quantity != null) #quantity: quantity,
       if (unitPrice != null) #unitPrice: unitPrice,
       if (subtotal != null) #subtotal: subtotal,
+      if (productLot != $none) #productLot: productLot,
+      if (lotNumber != $none) #lotNumber: lotNumber,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
     }),
@@ -227,6 +249,8 @@ class _SaleItemDtoCopyWithImpl<$R, $Out>
     quantity: data.get(#quantity, or: $value.quantity),
     unitPrice: data.get(#unitPrice, or: $value.unitPrice),
     subtotal: data.get(#subtotal, or: $value.subtotal),
+    productLot: data.get(#productLot, or: $value.productLot),
+    lotNumber: data.get(#lotNumber, or: $value.lotNumber),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),
   );

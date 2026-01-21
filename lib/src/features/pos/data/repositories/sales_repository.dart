@@ -85,7 +85,7 @@ class SalesRepositoryImpl implements SalesRepository {
         // 2. Create Sale Items
         // Ideally we should do this in batch or have backend logic, but for now loop
         for (final item in items) {
-          final itemBody = {
+          final itemBody = <String, dynamic>{
             'sale': saleRecord.id, // Link to created sale
             'product': item.productId,
             'productName': item.productName,
@@ -93,6 +93,11 @@ class SalesRepositoryImpl implements SalesRepository {
             'unitPrice': item.unitPrice,
             'subtotal': item.subtotal,
           };
+          // Add lot fields if present (for lot-tracked products)
+          if (item.productLotId != null && item.productLotId!.isNotEmpty) {
+            itemBody['productLot'] = item.productLotId;
+            itemBody['lotNumber'] = item.lotNumber;
+          }
           await _saleItems.create(body: itemBody);
         }
 

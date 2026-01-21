@@ -139,11 +139,16 @@ class CartRepositoryImpl implements CartRepository {
   FutureEither<CartItem> addCartItem(CartItem item) async {
     return TaskEither.tryCatch(
       () async {
-        final body = {
+        final body = <String, dynamic>{
           'cart': item.cartId,
           'product': item.productId,
           'quantity': item.quantity,
         };
+        // Add lot fields if present (for lot-tracked products)
+        if (item.productLotId != null && item.productLotId!.isNotEmpty) {
+          body['productLot'] = item.productLotId;
+          body['lotNumber'] = item.lotNumber;
+        }
         final record = await _cartItems.create(body: body, expand: 'product');
         return _toCartItemEntity(record);
       },
@@ -155,9 +160,14 @@ class CartRepositoryImpl implements CartRepository {
   FutureEither<CartItem> updateCartItem(CartItem item) async {
     return TaskEither.tryCatch(
       () async {
-        final body = {
+        final body = <String, dynamic>{
           'quantity': item.quantity,
         };
+        // Update lot fields if present
+        if (item.productLotId != null) {
+          body['productLot'] = item.productLotId;
+          body['lotNumber'] = item.lotNumber;
+        }
         final record =
             await _cartItems.update(item.id, body: body, expand: 'product');
         return _toCartItemEntity(record);

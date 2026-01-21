@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../products/domain/product.dart';
+import '../../products/domain/product_lot.dart';
 import '../data/repositories/cart_repository.dart';
 import '../domain/cart.dart';
 import '../domain/cart_item.dart';
@@ -105,14 +106,15 @@ class CartController extends _$CartController {
     );
   }
 
-  /// Adds a product to the cart.
+  /// Adds a product to the cart (for non-lot-tracked products).
   Future<void> addToCart(Product product) async {
     final currentState = state.value;
     if (currentState == null) return;
 
-    // Check if product already exists
+    // Check if product already exists (by productId only, no lot)
     final existingIndex =
-        currentState.items.indexWhere((item) => item.productId == product.id);
+        currentState.items.indexWhere((item) =>
+            item.productId == product.id && !item.hasLot);
 
     if (existingIndex >= 0) {
       // Update quantity of existing item
@@ -154,6 +156,150 @@ class CartController extends _$CartController {
         },
       );
     }
+  }
+
+  /// Adds a product with a specific lot to the cart.
+  ///
+  /// For lot-tracked products, items are identified by both productId AND lotId.
+  /// This means the same product from different lots creates separate cart items.
+  Future<void> addToCartWithLot(
+    Product product,
+    ProductLot lot,
+    int quantity,
+  ) async {
+    final currentState = state.value;
+    if (currentState == null) return;
+
+    // Check if same product+lot combination exists in cart
+    final existingIndex = currentState.items.indexWhere(
+      (item) => item.productId == product.id && item.productLotId == lot.id,
+    );
+
+    if (existingIndex >= 0) {
+      // Update quantity of existing item (respecting lot stock limits)
+      final existingItem = currentState.items[existingIndex];
+      final newQuantity = existingItem.quantity + quantity;
+
+      // Validate against lot stock
+      if (newQuantity > lot.quantity) {
+        // Can't add more than available in lot
+        return;
+      }
+
+      await updateQuantityWithLot(
+        product,
+        lot,
+        newQuantity.toInt(),
+      );
+    } else {
+      // Add new item with lot info
+      state = AsyncData(currentState.copyWith(isSyncing: true));
+
+      // Ensure cart exists in backend
+      final cartId = await _ensureCart();
+      if (cartId == null) {
+        state = AsyncData(currentState.copyWith(isSyncing: false));
+        return;
+      }
+
+      // Create cart item with lot info
+      final cartItem = CartItem(
+        cartId: cartId,
+        productId: product.id,
+        product: product,
+        quantity: quantity,
+        productLotId: lot.id,
+        lotNumber: lot.lotNumber,
+      );
+
+      final result = await _cartRepo.addCartItem(cartItem);
+      result.fold(
+        (failure) {
+          state = AsyncData(currentState.copyWith(isSyncing: false));
+        },
+        (createdItem) {
+          final newItems = <CartItem>[...currentState.items, createdItem];
+          state = AsyncData(CartState(
+            cartId: cartId,
+            items: newItems,
+            isSyncing: false,
+          ));
+        },
+      );
+    }
+  }
+
+  /// Updates the quantity of a lot-tracked item in the cart.
+  Future<void> updateQuantityWithLot(
+    Product product,
+    ProductLot lot,
+    int quantity,
+  ) async {
+    if (quantity <= 0) {
+      await removeFromCartWithLot(product, lot);
+      return;
+    }
+
+    final currentState = state.value;
+    if (currentState == null) return;
+
+    final index = currentState.items.indexWhere(
+      (item) => item.productId == product.id && item.productLotId == lot.id,
+    );
+    if (index < 0) return;
+
+    final item = currentState.items[index];
+    state = AsyncData(currentState.copyWith(isSyncing: true));
+
+    // Update in backend
+    final updatedItem = item.copyWith(quantity: quantity);
+    final result = await _cartRepo.updateCartItem(updatedItem);
+
+    result.fold(
+      (failure) {
+        state = AsyncData(currentState.copyWith(isSyncing: false));
+      },
+      (syncedItem) {
+        final newItems = [...currentState.items];
+        newItems[index] = syncedItem;
+        state = AsyncData(currentState.copyWith(
+          items: newItems,
+          isSyncing: false,
+        ));
+      },
+    );
+  }
+
+  /// Removes a lot-tracked product from the cart.
+  Future<void> removeFromCartWithLot(Product product, ProductLot lot) async {
+    final currentState = state.value;
+    if (currentState == null) return;
+
+    final item = currentState.items.firstWhere(
+      (item) => item.productId == product.id && item.productLotId == lot.id,
+      orElse: () => const CartItem(),
+    );
+
+    if (item.id.isEmpty) return;
+
+    state = AsyncData(currentState.copyWith(isSyncing: true));
+
+    // Delete from backend
+    final result = await _cartRepo.deleteCartItem(item.id);
+    result.fold(
+      (failure) {
+        state = AsyncData(currentState.copyWith(isSyncing: false));
+      },
+      (_) {
+        final newItems = currentState.items
+            .where((i) => !(i.productId == product.id && i.productLotId == lot.id))
+            .toList();
+        state = AsyncData(currentState.copyWith(
+          items: newItems,
+          isSyncing: false,
+        ));
+      },
+    );
   }
 
   /// Removes a product from the cart.

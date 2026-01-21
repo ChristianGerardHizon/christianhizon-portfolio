@@ -9,6 +9,7 @@ import '../../../products/domain/product.dart';
 import '../../../products/domain/product_status.dart';
 import '../cart_controller.dart';
 import '../providers/pos_product_stock_provider.dart';
+import 'lot_selection_sheet.dart';
 
 class ProductGrid extends ConsumerWidget {
   const ProductGrid({
@@ -154,7 +155,7 @@ class _ProductCard extends ConsumerWidget {
       child: InkWell(
         onTap: isDisabled
             ? () => _showOutOfStockMessage(context)
-            : () => ref.read(cartControllerProvider.notifier).addToCart(product),
+            : () => _handleProductTap(context, ref),
         child: Stack(
           children: [
             // Main content
@@ -240,6 +241,29 @@ class _ProductCard extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _handleProductTap(BuildContext context, WidgetRef ref) {
+    // Capture notifier before async operation to avoid using ref after widget unmount
+    final cartNotifier = ref.read(cartControllerProvider.notifier);
+
+    if (product.trackByLot) {
+      // Show lot selection sheet for lot-tracked products
+      showLotSelectionSheet(
+        context,
+        product: product,
+        onLotSelected: (lot, quantity) {
+          cartNotifier.addToCartWithLot(
+            product,
+            lot,
+            quantity,
+          );
+        },
+      );
+    } else {
+      // Regular add to cart for non-lot products
+      cartNotifier.addToCart(product);
+    }
   }
 
   void _showOutOfStockMessage(BuildContext context) {

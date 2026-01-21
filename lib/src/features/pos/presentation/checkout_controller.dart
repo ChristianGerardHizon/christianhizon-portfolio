@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/foundation/failure.dart';
 import '../../auth/presentation/controllers/auth_controller.dart';
+import '../../products/data/repositories/product_lot_repository.dart';
 import '../data/repositories/sales_repository.dart';
 import '../domain/payment_method.dart';
 import '../domain/sale.dart';
@@ -49,7 +50,7 @@ class CheckoutController extends _$CheckoutController {
     // Generate receipt number: BRANCH-YYYYMMDD-RANDOM
     final receiptNumber = _generateReceiptNumber(branchId);
 
-    // Convert cart items to sale items
+    // Convert cart items to sale items (including lot info if present)
     final saleItems = cartState.items.map((cartItem) {
       final product = cartItem.product;
       return SaleItem(
@@ -60,6 +61,8 @@ class CheckoutController extends _$CheckoutController {
         quantity: cartItem.quantity,
         unitPrice: product?.price ?? 0,
         subtotal: cartItem.total,
+        productLotId: cartItem.productLotId,
+        lotNumber: cartItem.lotNumber,
       );
     }).toList();
 
@@ -81,6 +84,7 @@ class CheckoutController extends _$CheckoutController {
     // Get references before async operation to avoid disposed ref issues
     final salesRepo = ref.read(salesRepositoryProvider);
     final cartNotifier = ref.read(cartControllerProvider.notifier);
+    final lotRepo = ref.read(productLotRepositoryProvider);
 
     // Save to backend
     final result = await salesRepo.createSale(sale, saleItems);
@@ -88,6 +92,13 @@ class CheckoutController extends _$CheckoutController {
     return result.fold(
       (failure) => left(failure),
       (createdSale) async {
+        // Decrement lot quantities for lot-tracked items
+        for (final item in saleItems) {
+          if (item.productLotId != null && item.productLotId!.isNotEmpty) {
+            await lotRepo.decrementQuantity(item.productLotId!, item.quantity);
+          }
+        }
+
         // Mark cart as converted and clear it
         await cartNotifier.markAsConverted();
         return right(createdSale);

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../features/pos/presentation/cart_controller.dart';
 import '../routing/routes/appointments.routes.dart';
 import '../routing/routes/dashboard.routes.dart';
 import '../routing/routes/messages.routes.dart';
@@ -24,7 +26,7 @@ import '../widgets/tablet_nav_rail.dart';
 /// - Mobile (< 600px): Bottom navigation + drawer
 /// - Tablet (600-1200px): Navigation rail
 /// - Desktop (>= 1200px): Expanded navigation rail
-class AppRoot extends StatefulWidget {
+class AppRoot extends ConsumerStatefulWidget {
   const AppRoot({
     super.key,
     required this.child,
@@ -34,10 +36,10 @@ class AppRoot extends StatefulWidget {
   final Widget child;
 
   @override
-  State<AppRoot> createState() => _AppRootState();
+  ConsumerState<AppRoot> createState() => _AppRootState();
 }
 
-class _AppRootState extends State<AppRoot> {
+class _AppRootState extends ConsumerState<AppRoot> {
   /// Key for the scaffold to control drawer.
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -103,6 +105,9 @@ class _AppRootState extends State<AppRoot> {
 
   @override
   Widget build(BuildContext context) {
+    // Initialize cart controller early to load any active cart
+    ref.watch(cartControllerProvider);
+
     final isMobile = Breakpoints.isMobile(context);
 
     if (isMobile) {
