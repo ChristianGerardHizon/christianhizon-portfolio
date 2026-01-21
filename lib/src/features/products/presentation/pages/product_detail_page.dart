@@ -9,6 +9,7 @@ import '../../domain/product_tab.dart';
 import '../controllers/paginated_products_controller.dart';
 import '../controllers/product_provider.dart';
 import '../widgets/sheets/edit_product_sheet.dart';
+import '../widgets/tabs/product_adjustments_tab.dart';
 import '../widgets/tabs/product_details_tab.dart';
 import '../widgets/tabs/product_overview_tab.dart';
 import '../widgets/tabs/product_stock_tab.dart';
@@ -27,7 +28,6 @@ class ProductDetailPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productAsync = ref.watch(productProvider(productId));
-    final theme = Theme.of(context);
     final isTablet = Breakpoints.isTabletOrLarger(context);
 
     // Tab controller
@@ -103,31 +103,7 @@ class ProductDetailPage extends HookConsumerWidget {
               ProductOverviewTab(product: product),
               ProductDetailsTab(product: product),
               ProductStockTab(product: product),
-              // Adjustments tab - placeholder for now
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.history_outlined,
-                      size: 64,
-                      color: theme.colorScheme.outline,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Stock Adjustments',
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Coming Soon',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.outline,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              ProductAdjustmentsTab(product: product),
             ],
           ),
         );

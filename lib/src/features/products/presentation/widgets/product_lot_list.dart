@@ -6,6 +6,7 @@ import '../../domain/product_lot.dart';
 import '../controllers/product_lots_controller.dart';
 import 'sheets/create_lot_sheet.dart';
 import 'sheets/edit_lot_sheet.dart';
+import 'sheets/stock_adjustment_sheet.dart';
 
 /// Widget for displaying a list of product lots.
 class ProductLotList extends ConsumerWidget {
@@ -170,6 +171,7 @@ class _LotListContent extends ConsumerWidget {
               final lot = lots[index];
               return _LotListTile(
                 lot: lot,
+                onAdjust: () => showLotStockAdjustmentSheet(context, lot),
                 onEdit: () => showEditLotSheet(context, lot),
                 onDelete: () => _confirmDelete(context, ref, lot),
               );
@@ -278,11 +280,13 @@ class _SummaryCard extends StatelessWidget {
 class _LotListTile extends StatelessWidget {
   const _LotListTile({
     required this.lot,
+    required this.onAdjust,
     required this.onEdit,
     required this.onDelete,
   });
 
   final ProductLot lot;
+  final VoidCallback onAdjust;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
@@ -362,6 +366,9 @@ class _LotListTile extends StatelessWidget {
       trailing: PopupMenuButton<String>(
         onSelected: (value) {
           switch (value) {
+            case 'adjust':
+              onAdjust();
+              break;
             case 'edit':
               onEdit();
               break;
@@ -371,6 +378,16 @@ class _LotListTile extends StatelessWidget {
           }
         },
         itemBuilder: (context) => [
+          const PopupMenuItem(
+            value: 'adjust',
+            child: Row(
+              children: [
+                Icon(Icons.tune),
+                SizedBox(width: 8),
+                Text('Adjust Stock'),
+              ],
+            ),
+          ),
           const PopupMenuItem(
             value: 'edit',
             child: Row(

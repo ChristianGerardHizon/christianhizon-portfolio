@@ -47,6 +47,12 @@ class ProductDtoMapper extends ClassMapperBase<ProductDto> {
     _$category,
     opt: true,
   );
+  static String? _$categoryName(ProductDto v) => v.categoryName;
+  static const Field<ProductDto, String> _f$categoryName = Field(
+    'categoryName',
+    _$categoryName,
+    opt: true,
+  );
   static String? _$image(ProductDto v) => v.image;
   static const Field<ProductDto, String> _f$image = Field(
     'image',
@@ -133,6 +139,7 @@ class ProductDtoMapper extends ClassMapperBase<ProductDto> {
     #name: _f$name,
     #description: _f$description,
     #category: _f$category,
+    #categoryName: _f$categoryName,
     #image: _f$image,
     #branch: _f$branch,
     #stockThreshold: _f$stockThreshold,
@@ -155,6 +162,7 @@ class ProductDtoMapper extends ClassMapperBase<ProductDto> {
       name: data.dec(_f$name),
       description: data.dec(_f$description),
       category: data.dec(_f$category),
+      categoryName: data.dec(_f$categoryName),
       image: data.dec(_f$image),
       branch: data.dec(_f$branch),
       stockThreshold: data.dec(_f$stockThreshold),
@@ -237,6 +245,7 @@ abstract class ProductDtoCopyWith<$R, $In extends ProductDto, $Out>
     String? name,
     String? description,
     String? category,
+    String? categoryName,
     String? image,
     String? branch,
     num? stockThreshold,
@@ -269,6 +278,7 @@ class _ProductDtoCopyWithImpl<$R, $Out>
     String? name,
     Object? description = $none,
     Object? category = $none,
+    Object? categoryName = $none,
     Object? image = $none,
     Object? branch = $none,
     Object? stockThreshold = $none,
@@ -289,6 +299,7 @@ class _ProductDtoCopyWithImpl<$R, $Out>
       if (name != null) #name: name,
       if (description != $none) #description: description,
       if (category != $none) #category: category,
+      if (categoryName != $none) #categoryName: categoryName,
       if (image != $none) #image: image,
       if (branch != $none) #branch: branch,
       if (stockThreshold != $none) #stockThreshold: stockThreshold,
@@ -311,6 +322,7 @@ class _ProductDtoCopyWithImpl<$R, $Out>
     name: data.get(#name, or: $value.name),
     description: data.get(#description, or: $value.description),
     category: data.get(#category, or: $value.category),
+    categoryName: data.get(#categoryName, or: $value.categoryName),
     image: data.get(#image, or: $value.image),
     branch: data.get(#branch, or: $value.branch),
     stockThreshold: data.get(#stockThreshold, or: $value.stockThreshold),

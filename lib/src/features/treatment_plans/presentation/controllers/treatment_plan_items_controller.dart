@@ -14,8 +14,12 @@ class TreatmentPlanItemsController extends _$TreatmentPlanItemsController {
   TreatmentPlanItemRepository get _repository =>
       ref.read(treatmentPlanItemRepositoryProvider);
 
+  bool _isDisposed = false;
+
   @override
   Future<List<TreatmentPlanItem>> build(String planId) async {
+    ref.onDispose(() => _isDisposed = true);
+
     final result = await _repository.fetchByPlan(planId);
 
     return result.fold(
@@ -31,6 +35,9 @@ class TreatmentPlanItemsController extends _$TreatmentPlanItemsController {
 
     final result = await _repository.fetchByPlan(planId);
 
+    // Check if provider is still mounted before updating state
+    if (_isDisposed) return;
+
     state = result.fold(
       (failure) => AsyncError(failure, StackTrace.current),
       (items) => AsyncData(items),
@@ -44,6 +51,8 @@ class TreatmentPlanItemsController extends _$TreatmentPlanItemsController {
       TreatmentPlanItemStatus.completed,
       completedDate: DateTime.now(),
     );
+
+    if (_isDisposed) return false;
 
     return result.fold(
       (failure) => false,
@@ -61,6 +70,8 @@ class TreatmentPlanItemsController extends _$TreatmentPlanItemsController {
       TreatmentPlanItemStatus.skipped,
     );
 
+    if (_isDisposed) return false;
+
     return result.fold(
       (failure) => false,
       (updatedItem) {
@@ -77,6 +88,8 @@ class TreatmentPlanItemsController extends _$TreatmentPlanItemsController {
       TreatmentPlanItemStatus.missed,
     );
 
+    if (_isDisposed) return false;
+
     return result.fold(
       (failure) => false,
       (updatedItem) {
@@ -89,6 +102,8 @@ class TreatmentPlanItemsController extends _$TreatmentPlanItemsController {
   /// Reschedules an item to a new date.
   Future<bool> reschedule(String itemId, DateTime newDate) async {
     final result = await _repository.reschedule(itemId, newDate);
+
+    if (_isDisposed) return false;
 
     return result.fold(
       (failure) => false,
@@ -103,6 +118,8 @@ class TreatmentPlanItemsController extends _$TreatmentPlanItemsController {
   Future<bool> linkAppointment(String itemId, String appointmentId) async {
     final result = await _repository.linkAppointment(itemId, appointmentId);
 
+    if (_isDisposed) return false;
+
     return result.fold(
       (failure) => false,
       (updatedItem) {
@@ -115,6 +132,8 @@ class TreatmentPlanItemsController extends _$TreatmentPlanItemsController {
   /// Unlinks an appointment from this item.
   Future<bool> unlinkAppointment(String itemId) async {
     final result = await _repository.unlinkAppointment(itemId);
+
+    if (_isDisposed) return false;
 
     return result.fold(
       (failure) => false,
@@ -135,6 +154,8 @@ class TreatmentPlanItemsController extends _$TreatmentPlanItemsController {
 
     final updatedItem = item.copyWith(notes: notes);
     final result = await _repository.update(updatedItem);
+
+    if (_isDisposed) return false;
 
     return result.fold(
       (failure) => false,

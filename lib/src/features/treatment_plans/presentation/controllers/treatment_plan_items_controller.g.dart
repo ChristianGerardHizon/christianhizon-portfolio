@@ -62,7 +62,7 @@ final class TreatmentPlanItemsControllerProvider extends $AsyncNotifierProvider<
 }
 
 String _$treatmentPlanItemsControllerHash() =>
-    r'd74f1a284e27b32784a8c3d5adf8dd2c3ca74d9d';
+    r'ce44b418913dd0a84f469c58620770bce69446bb';
 
 /// Controller for managing treatment plan items for a specific plan.
 ///

@@ -67,6 +67,8 @@ sealed class Failure with FailureMappable {
 
     // Handle known auth-related errors
     if (error is ClientException) {
+      debugPrint(error.response.toString());
+
       final code = error.statusCode;
       if (code == 401 || code == 403) {
         return AuthFailure(error, stackTrace, 'auth_error');

@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/widgets/form_feedback.dart';
+import '../../../../settings/presentation/controllers/branches_controller.dart';
 import '../../../domain/product.dart';
 import '../../controllers/paginated_products_controller.dart';
 import '../../controllers/product_categories_provider.dart';
@@ -122,9 +123,11 @@ class _EditProductForm extends HookConsumerWidget {
 
     // UI state
     final isSaving = useState(false);
+    final trackByLot = useState(product.trackByLot);
 
-    // Watch categories
+    // Watch categories and branches
     final categoriesAsync = ref.watch(productCategoriesProvider);
+    final branchesAsync = ref.watch(branchesControllerProvider);
 
     Future<void> handleSave() async {
       final isValid = formKey.currentState!.saveAndValidate();
@@ -156,7 +159,7 @@ class _EditProductForm extends HookConsumerWidget {
         trackByLot: values['trackByLot'] as bool? ?? false,
         expiration: values['expiration'] as DateTime?,
         image: product.image,
-        branch: product.branch,
+        branch: values['branch'] as String?,
         isDeleted: product.isDeleted,
         created: product.created,
         updated: product.updated,
@@ -201,6 +204,7 @@ class _EditProductForm extends HookConsumerWidget {
           'name': product.name,
           'description': product.description ?? '',
           'category': product.categoryId,
+          'branch': product.branch,
           'price': product.price.toString(),
           'quantity': product.quantity?.toString() ?? '',
           'stockThreshold': product.stockThreshold?.toString() ?? '',
@@ -327,6 +331,51 @@ class _EditProductForm extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
+              // Branch dropdown
+              branchesAsync.when(
+                data: (branches) => FormBuilderDropdown<String>(
+                  name: 'branch',
+                  decoration: const InputDecoration(
+                    labelText: 'Branch',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.business),
+                  ),
+                  enabled: !isSaving.value,
+                  items: branches.map((branch) {
+                    return DropdownMenuItem(
+                      value: branch.id,
+                      child: Text(branch.name),
+                    );
+                  }).toList(),
+                ),
+                loading: () => const TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Branch',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.business),
+                    suffixIcon: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                  ),
+                  enabled: false,
+                ),
+                error: (_, __) => const TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Branch',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.business),
+                    errorText: 'Failed to load',
+                  ),
+                  enabled: false,
+                ),
+              ),
+              const SizedBox(height: 16),
+
               // Price & Quantity
               Row(
                 children: [
@@ -385,20 +434,22 @@ class _EditProductForm extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Expiration date
-              FormBuilderDateTimePicker(
-                name: 'expiration',
-                decoration: const InputDecoration(
-                  labelText: 'Expiration Date',
-                  border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.calendar_today),
+              // Expiration date (hidden when tracking by lot)
+              if (!trackByLot.value) ...[
+                FormBuilderDateTimePicker(
+                  name: 'expiration',
+                  decoration: const InputDecoration(
+                    labelText: 'Expiration Date',
+                    border: OutlineInputBorder(),
+                    suffixIcon: Icon(Icons.calendar_today),
+                  ),
+                  enabled: !isSaving.value,
+                  inputType: InputType.date,
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
                 ),
-                enabled: !isSaving.value,
-                inputType: InputType.date,
-                firstDate: DateTime(2000),
-                lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
+              ],
 
               // Switches
               Row(
@@ -421,6 +472,7 @@ class _EditProductForm extends HookConsumerWidget {
                       ),
                       title: const Text('Track by Lot'),
                       enabled: !isSaving.value,
+                      onChanged: (value) => trackByLot.value = value ?? false,
                     ),
                   ),
                 ],
@@ -450,6 +502,7 @@ class _EditProductForm extends HookConsumerWidget {
     'name': 'Product Name',
     'description': 'Description',
     'category': 'Category',
+    'branch': 'Branch',
     'price': 'Price',
     'quantity': 'Quantity',
     'stockThreshold': 'Stock Threshold',

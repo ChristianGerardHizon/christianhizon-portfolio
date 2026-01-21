@@ -124,6 +124,10 @@ dart format lib/
 - Extend `PBObject` for PocketBase models
 - Include `collectionName` static constant
 
+### Database Field Naming
+- **Use camelCase** for PocketBase collection field names (e.g., `oldValue`, `newValue`, `productStock`)
+- Avoid snake_case in database fields
+
 ### Forms (flutter_form_builder)
 - **Always use flutter_form_builder** for forms instead of raw TextField/DropdownMenu widgets
 - Wrap forms in `FormBuilder` widget with a `GlobalKey<FormBuilderState>`

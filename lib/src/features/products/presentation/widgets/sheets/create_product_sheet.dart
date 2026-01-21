@@ -8,6 +8,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/routing/routes/products.routes.dart';
 import '../../../../../core/widgets/form_feedback.dart';
+import '../../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../../settings/presentation/controllers/branches_controller.dart';
 import '../../../domain/product.dart';
 import '../../controllers/paginated_products_controller.dart';
 import '../../controllers/product_categories_provider.dart';
@@ -28,9 +30,13 @@ class CreateProductSheet extends HookConsumerWidget {
 
     // UI state
     final isSaving = useState(false);
+    final trackByLot = useState(false);
 
-    // Watch categories
+    // Watch categories and branches
     final categoriesAsync = ref.watch(productCategoriesProvider);
+    final branchesAsync = ref.watch(branchesControllerProvider);
+    final currentAuth = ref.watch(currentAuthProvider);
+    final userBranchId = currentAuth?.user.branch;
 
     Future<void> handleSave() async {
       final isValid = formKey.currentState!.saveAndValidate();
@@ -61,6 +67,7 @@ class CreateProductSheet extends HookConsumerWidget {
         forSale: values['forSale'] as bool? ?? true,
         trackByLot: values['trackByLot'] as bool? ?? false,
         expiration: values['expiration'] as DateTime?,
+        branch: values['branch'] as String?,
       );
 
       final createdProduct = await ref
@@ -222,6 +229,52 @@ class CreateProductSheet extends HookConsumerWidget {
                   enabled: false,
                 ),
               ),
+              const SizedBox(height: 16),
+
+              // Branch dropdown
+              branchesAsync.when(
+                data: (branches) => FormBuilderDropdown<String>(
+                  name: 'branch',
+                  initialValue: userBranchId,
+                  decoration: const InputDecoration(
+                    labelText: 'Branch',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.business),
+                  ),
+                  enabled: !isSaving.value,
+                  items: branches.map((branch) {
+                    return DropdownMenuItem(
+                      value: branch.id,
+                      child: Text(branch.name),
+                    );
+                  }).toList(),
+                ),
+                loading: () => const TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Branch',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.business),
+                    suffixIcon: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                  ),
+                  enabled: false,
+                ),
+                error: (_, __) => const TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Branch',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.business),
+                    errorText: 'Failed to load',
+                  ),
+                  enabled: false,
+                ),
+              ),
               const SizedBox(height: 24),
 
               // === PRICING & STOCK ===
@@ -289,20 +342,22 @@ class CreateProductSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Expiration date
-              FormBuilderDateTimePicker(
-                name: 'expiration',
-                decoration: const InputDecoration(
-                  labelText: 'Expiration Date',
-                  border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.calendar_today),
+              // Expiration date (hidden when tracking by lot)
+              if (!trackByLot.value) ...[
+                FormBuilderDateTimePicker(
+                  name: 'expiration',
+                  decoration: const InputDecoration(
+                    labelText: 'Expiration Date',
+                    border: OutlineInputBorder(),
+                    suffixIcon: Icon(Icons.calendar_today),
+                  ),
+                  enabled: !isSaving.value,
+                  inputType: InputType.date,
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
                 ),
-                enabled: !isSaving.value,
-                inputType: InputType.date,
-                firstDate: DateTime.now(),
-                lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
+              ],
 
               // Switches
               Row(
@@ -327,6 +382,7 @@ class CreateProductSheet extends HookConsumerWidget {
                       ),
                       title: const Text('Track by Lot'),
                       enabled: !isSaving.value,
+                      onChanged: (value) => trackByLot.value = value ?? false,
                     ),
                   ),
                 ],
@@ -356,6 +412,7 @@ class CreateProductSheet extends HookConsumerWidget {
     'name': 'Product Name',
     'description': 'Description',
     'category': 'Category',
+    'branch': 'Branch',
     'price': 'Price',
     'quantity': 'Quantity',
     'stockThreshold': 'Stock Threshold',

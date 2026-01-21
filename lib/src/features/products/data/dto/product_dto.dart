@@ -17,6 +17,7 @@ class ProductDto with ProductDtoMappable {
   final String name;
   final String? description;
   final String? category;
+  final String? categoryName;
   final String? image;
   final String? branch;
   final num? stockThreshold;
@@ -37,6 +38,7 @@ class ProductDto with ProductDtoMappable {
     required this.name,
     this.description,
     this.category,
+    this.categoryName,
     this.image,
     this.branch,
     this.stockThreshold,
@@ -65,7 +67,8 @@ class ProductDto with ProductDtoMappable {
       collectionName: json['collectionName'] as String? ?? '',
       name: json['name'] as String? ?? '',
       description: json['description'] as String?,
-      category: categoryName ?? json['category'] as String?,
+      category: json['category'] as String?,
+      categoryName: categoryName,
       image: json['image'] as String?,
       branch: json['branch'] as String?,
       stockThreshold: json['stockThreshold'] as num?,
@@ -88,7 +91,7 @@ class ProductDto with ProductDtoMappable {
       name: name,
       description: description,
       categoryId: category,
-      categoryName: category,
+      categoryName: categoryName,
       image: _buildImageUrl(baseUrl),
       branch: branch,
       stockThreshold: stockThreshold,
