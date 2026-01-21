@@ -61,3 +61,4 @@ app.*.map.json
 !/server/mac/pocketbase
 !/server/windows/pocketbase
 !/server/linux/pocketbase
+.grepai/

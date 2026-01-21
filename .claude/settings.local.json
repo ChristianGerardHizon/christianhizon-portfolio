@@ -15,7 +15,10 @@
       "Bash(log show:*)",
       "Bash(xargs:*)",
       "Bash(grep:*)",
-      "mcp__filesystem__read_multiple_files"
+      "mcp__filesystem__read_multiple_files",
+      "Bash(grepai search:*)",
+      "Bash(grepai init --help:*)",
+      "Bash(grepai status:*)"
     ],
     "deny": [
       "Bash(rm:*)",
