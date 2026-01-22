@@ -7,6 +7,7 @@ import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/routing/routes/products.routes.dart';
 import '../../../../core/routing/routes/sales_history.routes.dart';
 import '../controllers/dashboard_kpi_provider.dart';
+import '../controllers/todays_sales_controller.dart';
 import 'kpi_card.dart';
 
 /// Section displaying KPI summary cards on the dashboard.

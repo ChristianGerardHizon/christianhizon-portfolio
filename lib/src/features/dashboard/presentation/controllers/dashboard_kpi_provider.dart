@@ -2,8 +2,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../patients/data/repositories/patient_repository.dart';
-import '../../../pos/data/repositories/sales_repository.dart';
-import '../../../pos/domain/sale.dart';
 import 'inventory_alerts_controller.dart';
 
 part 'dashboard_kpi_provider.g.dart';
@@ -22,39 +20,6 @@ Future<int> productsNearExpirationCount(Ref ref) async {
 @riverpod
 Future<int> productsExpiredCount(Ref ref) async {
   return ref.watch(expiredAlertsCountProvider.future);
-}
-
-/// Today's sales data.
-@riverpod
-Future<List<Sale>> todaySales(Ref ref) async {
-  final result = await ref.read(salesRepositoryProvider).getSales(
-    date: DateTime.now(),
-  );
-  return result.fold(
-    (failure) => [],
-    (sales) => sales,
-  );
-}
-
-/// Record class for today's sales summary.
-class TodaySalesSummary {
-  const TodaySalesSummary({
-    required this.count,
-    required this.total,
-  });
-
-  final int count;
-  final num total;
-}
-
-/// Today's sales summary (count and total amount).
-@riverpod
-Future<TodaySalesSummary> todaySalesSummary(Ref ref) async {
-  final sales = await ref.watch(todaySalesProvider.future);
-  return TodaySalesSummary(
-    count: sales.length,
-    total: sales.fold<num>(0, (sum, sale) => sum + sale.totalAmount),
-  );
 }
 
 /// Count of active patients.

@@ -1,3 +1,5 @@
+import '../../utils/date_utils.dart';
+
 /// Builder class for constructing PocketBase filter strings.
 ///
 /// Provides a fluent API for building type-safe filter queries.
@@ -104,25 +106,25 @@ class PBFilter {
 
   // --- Date/Time ---
 
-  /// Date after: field >= 'ISO8601'
+  /// Date after: field >= 'PocketBase UTC format'
   PBFilter after(String field, DateTime date) {
-    final iso = date.toUtc().toIso8601String();
-    _conditions.add("$field >= '$iso'");
+    final utcStr = date.toPocketBaseUtc();
+    _conditions.add("$field >= '$utcStr'");
     return this;
   }
 
-  /// Date before: field <= 'ISO8601'
+  /// Date before: field <= 'PocketBase UTC format'
   PBFilter before(String field, DateTime date) {
-    final iso = date.toUtc().toIso8601String();
-    _conditions.add("$field <= '$iso'");
+    final utcStr = date.toPocketBaseUtc();
+    _conditions.add("$field <= '$utcStr'");
     return this;
   }
 
   /// Date range: field >= 'start' && field <= 'end'
   PBFilter between(String field, DateTime start, DateTime end) {
-    final startIso = start.toUtc().toIso8601String();
-    final endIso = end.toUtc().toIso8601String();
-    _conditions.add("($field >= '$startIso' && $field <= '$endIso')");
+    final startUtc = start.toPocketBaseUtc();
+    final endUtc = end.toPocketBaseUtc();
+    _conditions.add("($field >= '$startUtc' && $field <= '$endUtc')");
     return this;
   }
 
@@ -215,7 +217,7 @@ class PBFilter {
     if (value is String) {
       return "'${escape(value)}'";
     } else if (value is DateTime) {
-      return "'${value.toUtc().toIso8601String()}'";
+      return "'${value.toPocketBaseUtc()}'";
     } else {
       return value.toString();
     }

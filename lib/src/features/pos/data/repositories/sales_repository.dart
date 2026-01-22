@@ -3,12 +3,12 @@ import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/constants/constants.dart';
+import '../../../../core/utils/date_utils.dart';
 import '../../../../core/foundation/failure.dart';
 import '../../../../core/foundation/type_defs.dart';
 import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
-import '../../../../core/utils/date_utils.dart';
 import '../../domain/sale.dart';
 import '../../domain/sale_item.dart';
 import '../dto/sale_dto.dart';
@@ -128,11 +128,11 @@ class SalesRepositoryImpl implements SalesRepository {
         }
 
         if (date != null) {
-          // Assuming we want sales for that specific day
-          final start = DateTime(date.year, date.month, date.day);
-          final end = start.add(const Duration(days: 1));
+          // Get start and end of day in local time, then convert to UTC for filter
+          final localStart = DateTime(date.year, date.month, date.day);
+          final localEnd = localStart.add(const Duration(days: 1));
           final dateFilter =
-              'created >= "${start.toUtcIso8601()}" && created < "${end.toUtcIso8601()}"';
+              'created >= "${localStart.toPocketBaseUtc()}" && created < "${localEnd.toPocketBaseUtc()}"';
 
           if (filter.isNotEmpty) {
             filter = '$filter && $dateFilter';

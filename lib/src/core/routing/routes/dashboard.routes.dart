@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../features/appointments/presentation/controllers/appointments_controller.dart';
 import '../../../features/dashboard/presentation/controllers/dashboard_kpi_provider.dart';
 import '../../../features/dashboard/presentation/controllers/inventory_alerts_controller.dart';
+import '../../../features/dashboard/presentation/controllers/todays_sales_controller.dart';
 import '../../../features/dashboard/presentation/widgets/inventory_alerts_section.dart';
 import '../../../features/dashboard/presentation/widgets/kpi_summary_section.dart';
 import '../../../features/dashboard/presentation/widgets/quick_actions_section.dart';

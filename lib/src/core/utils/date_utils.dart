@@ -10,6 +10,21 @@ extension PocketBaseDateExtensions on DateTime {
   /// Use this when sending dates to the server in create/update operations.
   /// Example: `patient.dateOfBirth.toUtcIso8601()`
   String toUtcIso8601() => toUtc().toIso8601String();
+
+  /// Converts to UTC and returns string in PocketBase filter format: 'Y-m-d H:i:s.uZ'
+  ///
+  /// PocketBase server requires this specific format for date filters.
+  /// Example output: '2024-01-23 00:00:00.000Z'
+  String toPocketBaseUtc() {
+    final utc = toUtc();
+    return '${utc.year.toString().padLeft(4, '0')}-'
+        '${utc.month.toString().padLeft(2, '0')}-'
+        '${utc.day.toString().padLeft(2, '0')} '
+        '${utc.hour.toString().padLeft(2, '0')}:'
+        '${utc.minute.toString().padLeft(2, '0')}:'
+        '${utc.second.toString().padLeft(2, '0')}.'
+        '${utc.millisecond.toString().padLeft(3, '0')}Z';
+  }
 }
 
 /// Extension methods for nullable DateTime.
@@ -19,6 +34,12 @@ extension PocketBaseDateExtensionsNullable on DateTime? {
   /// Safe to use with optional date fields.
   /// Example: `product.expiration.toUtcIso8601OrNull()`
   String? toUtcIso8601OrNull() => this?.toUtc().toIso8601String();
+
+  /// Converts to PocketBase UTC format, or returns null if DateTime is null.
+  ///
+  /// Safe to use with optional date fields in filter queries.
+  /// Example: `appointment.date.toPocketBaseUtcOrNull()`
+  String? toPocketBaseUtcOrNull() => this?.toPocketBaseUtc();
 }
 
 /// Parses a date string from PocketBase and converts to local time.
