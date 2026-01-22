@@ -84,6 +84,18 @@ class TreatmentPlanItemMapper extends ClassMapperBase<TreatmentPlanItem> {
     _$updated,
     opt: true,
   );
+  static String? _$patientName(TreatmentPlanItem v) => v.patientName;
+  static const Field<TreatmentPlanItem, String> _f$patientName = Field(
+    'patientName',
+    _$patientName,
+    opt: true,
+  );
+  static String? _$treatmentName(TreatmentPlanItem v) => v.treatmentName;
+  static const Field<TreatmentPlanItem, String> _f$treatmentName = Field(
+    'treatmentName',
+    _$treatmentName,
+    opt: true,
+  );
 
   @override
   final MappableFields<TreatmentPlanItem> fields = const {
@@ -99,6 +111,8 @@ class TreatmentPlanItemMapper extends ClassMapperBase<TreatmentPlanItem> {
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
+    #patientName: _f$patientName,
+    #treatmentName: _f$treatmentName,
   };
 
   static TreatmentPlanItem _instantiate(DecodingData data) {
@@ -115,6 +129,8 @@ class TreatmentPlanItemMapper extends ClassMapperBase<TreatmentPlanItem> {
       isDeleted: data.dec(_f$isDeleted),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
+      patientName: data.dec(_f$patientName),
+      treatmentName: data.dec(_f$treatmentName),
     );
   }
 
@@ -204,6 +220,8 @@ abstract class TreatmentPlanItemCopyWith<
     bool? isDeleted,
     DateTime? created,
     DateTime? updated,
+    String? patientName,
+    String? treatmentName,
   });
   TreatmentPlanItemCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
     Then<$Out2, $R2> t,
@@ -236,6 +254,8 @@ class _TreatmentPlanItemCopyWithImpl<$R, $Out>
     bool? isDeleted,
     Object? created = $none,
     Object? updated = $none,
+    Object? patientName = $none,
+    Object? treatmentName = $none,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
@@ -250,6 +270,8 @@ class _TreatmentPlanItemCopyWithImpl<$R, $Out>
       if (isDeleted != null) #isDeleted: isDeleted,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
+      if (patientName != $none) #patientName: patientName,
+      if (treatmentName != $none) #treatmentName: treatmentName,
     }),
   );
   @override
@@ -266,6 +288,8 @@ class _TreatmentPlanItemCopyWithImpl<$R, $Out>
     isDeleted: data.get(#isDeleted, or: $value.isDeleted),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),
+    patientName: data.get(#patientName, or: $value.patientName),
+    treatmentName: data.get(#treatmentName, or: $value.treatmentName),
   );
 
   @override

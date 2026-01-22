@@ -99,6 +99,18 @@ class TreatmentPlanItemDtoMapper extends ClassMapperBase<TreatmentPlanItemDto> {
     _$expandedAppointment,
     opt: true,
   );
+  static String? _$patientName(TreatmentPlanItemDto v) => v.patientName;
+  static const Field<TreatmentPlanItemDto, String> _f$patientName = Field(
+    'patientName',
+    _$patientName,
+    opt: true,
+  );
+  static String? _$treatmentName(TreatmentPlanItemDto v) => v.treatmentName;
+  static const Field<TreatmentPlanItemDto, String> _f$treatmentName = Field(
+    'treatmentName',
+    _$treatmentName,
+    opt: true,
+  );
 
   @override
   final MappableFields<TreatmentPlanItemDto> fields = const {
@@ -116,6 +128,8 @@ class TreatmentPlanItemDtoMapper extends ClassMapperBase<TreatmentPlanItemDto> {
     #created: _f$created,
     #updated: _f$updated,
     #expandedAppointment: _f$expandedAppointment,
+    #patientName: _f$patientName,
+    #treatmentName: _f$treatmentName,
   };
 
   static TreatmentPlanItemDto _instantiate(DecodingData data) {
@@ -134,6 +148,8 @@ class TreatmentPlanItemDtoMapper extends ClassMapperBase<TreatmentPlanItemDto> {
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
       expandedAppointment: data.dec(_f$expandedAppointment),
+      patientName: data.dec(_f$patientName),
+      treatmentName: data.dec(_f$treatmentName),
     );
   }
 
@@ -224,6 +240,8 @@ abstract class TreatmentPlanItemDtoCopyWith<
     String? created,
     String? updated,
     AppointmentSchedule? expandedAppointment,
+    String? patientName,
+    String? treatmentName,
   });
   TreatmentPlanItemDtoCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
     Then<$Out2, $R2> t,
@@ -259,6 +277,8 @@ class _TreatmentPlanItemDtoCopyWithImpl<$R, $Out>
     Object? created = $none,
     Object? updated = $none,
     Object? expandedAppointment = $none,
+    Object? patientName = $none,
+    Object? treatmentName = $none,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
@@ -276,6 +296,8 @@ class _TreatmentPlanItemDtoCopyWithImpl<$R, $Out>
       if (updated != $none) #updated: updated,
       if (expandedAppointment != $none)
         #expandedAppointment: expandedAppointment,
+      if (patientName != $none) #patientName: patientName,
+      if (treatmentName != $none) #treatmentName: treatmentName,
     }),
   );
   @override
@@ -297,6 +319,8 @@ class _TreatmentPlanItemDtoCopyWithImpl<$R, $Out>
       #expandedAppointment,
       or: $value.expandedAppointment,
     ),
+    patientName: data.get(#patientName, or: $value.patientName),
+    treatmentName: data.get(#treatmentName, or: $value.treatmentName),
   );
 
   @override

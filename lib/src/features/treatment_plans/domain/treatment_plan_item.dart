@@ -23,6 +23,9 @@ class TreatmentPlanItem with TreatmentPlanItemMappable {
     this.isDeleted = false,
     this.created,
     this.updated,
+    // Expanded plan info (when available)
+    this.patientName,
+    this.treatmentName,
   });
 
   /// PocketBase record ID.
@@ -60,6 +63,12 @@ class TreatmentPlanItem with TreatmentPlanItemMappable {
 
   /// Last update timestamp.
   final DateTime? updated;
+
+  /// Patient name from expanded plan (optional).
+  final String? patientName;
+
+  /// Treatment name from expanded plan (optional).
+  final String? treatmentName;
 
   /// Whether this item is overdue (past expected date and still scheduled).
   bool get isOverdue {

@@ -31,6 +31,10 @@ class TreatmentPlanItemDto with TreatmentPlanItemDtoMappable {
   // Expanded appointment data
   final AppointmentSchedule? expandedAppointment;
 
+  // Expanded plan data (patient and treatment names)
+  final String? patientName;
+  final String? treatmentName;
+
   const TreatmentPlanItemDto({
     required this.id,
     required this.collectionId,
@@ -46,6 +50,8 @@ class TreatmentPlanItemDto with TreatmentPlanItemDtoMappable {
     this.created,
     this.updated,
     this.expandedAppointment,
+    this.patientName,
+    this.treatmentName,
   });
 
   /// Creates a DTO from a PocketBase RecordModel.
@@ -54,13 +60,40 @@ class TreatmentPlanItemDto with TreatmentPlanItemDtoMappable {
 
     // Handle expanded appointment relation
     AppointmentSchedule? expandedAppointment;
+    String? patientName;
+    String? treatmentName;
 
     final expand = json['expand'] as Map<String, dynamic>?;
-    if (expand != null && expand['appointment'] != null) {
-      final appointmentExpand = expand['appointment'] as Map<String, dynamic>;
-      final appointmentRecord = RecordModel.fromJson(appointmentExpand);
-      expandedAppointment =
-          AppointmentScheduleDto.fromRecord(appointmentRecord).toEntity();
+    if (expand != null) {
+      // Parse expanded appointment
+      if (expand['appointment'] != null) {
+        final appointmentExpand = expand['appointment'] as Map<String, dynamic>;
+        final appointmentRecord = RecordModel.fromJson(appointmentExpand);
+        expandedAppointment =
+            AppointmentScheduleDto.fromRecord(appointmentRecord).toEntity();
+      }
+
+      // Parse expanded plan with patient and treatment
+      if (expand['plan'] != null) {
+        final planExpand = expand['plan'] as Map<String, dynamic>;
+        final planExpandNested = planExpand['expand'] as Map<String, dynamic>?;
+
+        if (planExpandNested != null) {
+          // Get patient name
+          if (planExpandNested['patient'] != null) {
+            final patientExpand =
+                planExpandNested['patient'] as Map<String, dynamic>;
+            patientName = patientExpand['name'] as String?;
+          }
+
+          // Get treatment name
+          if (planExpandNested['treatment'] != null) {
+            final treatmentExpand =
+                planExpandNested['treatment'] as Map<String, dynamic>;
+            treatmentName = treatmentExpand['name'] as String?;
+          }
+        }
+      }
     }
 
     return TreatmentPlanItemDto(
@@ -78,6 +111,8 @@ class TreatmentPlanItemDto with TreatmentPlanItemDtoMappable {
       created: json['created'] as String?,
       updated: json['updated'] as String?,
       expandedAppointment: expandedAppointment,
+      patientName: patientName,
+      treatmentName: treatmentName,
     );
   }
 
@@ -96,6 +131,8 @@ class TreatmentPlanItemDto with TreatmentPlanItemDtoMappable {
       isDeleted: isDeleted,
       created: parseToLocal(created),
       updated: parseToLocal(updated),
+      patientName: patientName,
+      treatmentName: treatmentName,
     );
   }
 
