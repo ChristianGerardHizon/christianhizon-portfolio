@@ -15,5 +15,7 @@
     "receiptNumber": "Receipt Number",
     "customerName": "Customer Name",
     "paymentRef": "Payment Reference",
-    "notes": "Notes"
+    "notes": "Notes",
+    "description": "Description",
+    "category": "Category"
 }

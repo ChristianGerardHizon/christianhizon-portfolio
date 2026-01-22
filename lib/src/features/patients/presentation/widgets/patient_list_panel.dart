@@ -101,7 +101,7 @@ class PatientListPanel extends HookConsumerWidget {
             padding: const EdgeInsets.all(8.0),
             child: isSearchActive
                 ? _ActiveSearchChip(
-                    query: searchController.text,
+                    query: paginatedController.currentSearchQuery ?? '',
                     fieldCount: activeFieldCount,
                     onClear: clearSearch,
                   )

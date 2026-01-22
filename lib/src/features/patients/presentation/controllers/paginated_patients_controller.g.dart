@@ -38,7 +38,7 @@ final class PaginatedPatientsControllerProvider extends $AsyncNotifierProvider<
 }
 
 String _$paginatedPatientsControllerHash() =>
-    r'a4e7bf4ce7209c44dafa074cc9a96faa76160109';
+    r'ba4fb7f9e0df09fbf1f591038b83134eb2535848';
 
 /// Controller for managing paginated patients list.
 

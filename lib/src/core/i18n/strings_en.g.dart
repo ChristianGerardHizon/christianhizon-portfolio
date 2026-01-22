@@ -310,6 +310,12 @@ class TranslationsFieldsEn {
 
 	/// en: 'Notes'
 	String get notes => 'Notes';
+
+	/// en: 'Description'
+	String get description => 'Description';
+
+	/// en: 'Category'
+	String get category => 'Category';
 }
 
 // Path: navigation
@@ -508,6 +514,8 @@ extension on Translations {
 			'fields.customerName' => 'Customer Name',
 			'fields.paymentRef' => 'Payment Reference',
 			'fields.notes' => 'Notes',
+			'fields.description' => 'Description',
+			'fields.category' => 'Category',
 			'navigation.dashboard' => 'Dashboard',
 			'navigation.patients' => 'Patients',
 			'navigation.appointments' => 'Appts',

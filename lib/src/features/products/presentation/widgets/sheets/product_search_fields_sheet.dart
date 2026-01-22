@@ -112,9 +112,9 @@ class ProductSearchFieldsSheet extends ConsumerWidget {
       case 'name':
         return t.fields.name;
       case 'description':
-        return 'Description';
+        return t.fields.description;
       case 'category':
-        return 'Category';
+        return t.fields.category;
       default:
         return field;
     }

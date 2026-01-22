@@ -160,6 +160,8 @@ class _TranslationsFieldsTl implements TranslationsFieldsEn {
 	@override String get customerName => 'Pangalan ng Customer';
 	@override String get paymentRef => 'Reference ng Bayad';
 	@override String get notes => 'Mga Tala';
+	@override String get description => 'Paglalarawan';
+	@override String get category => 'Kategorya';
 }
 
 // Path: navigation
@@ -296,6 +298,8 @@ extension on TranslationsTl {
 			'fields.customerName' => 'Pangalan ng Customer',
 			'fields.paymentRef' => 'Reference ng Bayad',
 			'fields.notes' => 'Mga Tala',
+			'fields.description' => 'Paglalarawan',
+			'fields.category' => 'Kategorya',
 			'navigation.dashboard' => 'Dashboard',
 			'navigation.patients' => 'Mga Pasyente',
 			'navigation.appointments' => 'Appts',

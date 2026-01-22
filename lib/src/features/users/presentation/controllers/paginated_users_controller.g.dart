@@ -37,7 +37,7 @@ final class PaginatedUsersControllerProvider extends $AsyncNotifierProvider<
 }
 
 String _$paginatedUsersControllerHash() =>
-    r'306f33df9664219b52f43bdf787e56ac04e7ae64';
+    r'9ceaec347d09cfad659bf8f14fb88f28ae85f2aa';
 
 /// Controller for managing paginated users list.
 

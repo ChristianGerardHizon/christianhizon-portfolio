@@ -41,6 +41,9 @@ class PaginatedProductsController extends _$PaginatedProductsController {
   /// Whether search is currently active.
   bool get isSearchActive => _currentSearchQuery != null;
 
+  /// The current search query, if any.
+  String? get currentSearchQuery => _currentSearchQuery;
+
   /// Loads the next page.
   Future<void> loadMore() async {
     final currentState = state.value;

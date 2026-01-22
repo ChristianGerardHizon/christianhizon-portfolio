@@ -86,7 +86,7 @@ class UserListPanel extends HookConsumerWidget {
             color: theme.colorScheme.surfaceContainerHighest,
             child: Row(
               children: [
-                Text('Users', style: theme.textTheme.titleLarge),
+                Text(t.navigation.users, style: theme.textTheme.titleLarge),
                 const Spacer(),
                 Text(
                   '${paginatedState.totalItems} total',
@@ -101,7 +101,7 @@ class UserListPanel extends HookConsumerWidget {
             padding: const EdgeInsets.all(8.0),
             child: isSearchActive
                 ? _ActiveSearchChip(
-                    query: searchController.text,
+                    query: paginatedController.currentSearchQuery ?? '',
                     fieldCount: activeFieldCount,
                     onClear: clearSearch,
                   )

@@ -15,5 +15,7 @@
     "receiptNumber": "Numero ng Resibo",
     "customerName": "Pangalan ng Customer",
     "paymentRef": "Reference ng Bayad",
-    "notes": "Mga Tala"
+    "notes": "Mga Tala",
+    "description": "Paglalarawan",
+    "category": "Kategorya"
 }
