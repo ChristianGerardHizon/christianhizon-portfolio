@@ -25,6 +25,7 @@ class TreatmentPlanItem with TreatmentPlanItemMappable {
     this.updated,
     // Expanded plan info (when available)
     this.patientName,
+    this.patientId,
     this.treatmentName,
   });
 
@@ -66,6 +67,9 @@ class TreatmentPlanItem with TreatmentPlanItemMappable {
 
   /// Patient name from expanded plan (optional).
   final String? patientName;
+
+  /// Patient ID from expanded plan (optional).
+  final String? patientId;
 
   /// Treatment name from expanded plan (optional).
   final String? treatmentName;

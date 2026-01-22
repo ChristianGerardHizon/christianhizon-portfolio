@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../appointments/presentation/controllers/appointments_controller.dart';
+import '../../../appointments/presentation/widgets/sheets/create_appointment_sheet.dart';
+import '../../../patients/presentation/controllers/patient_provider.dart';
+import '../../../treatment_plans/data/repositories/treatment_plan_item_repository.dart';
 import '../../../treatment_plans/domain/treatment_plan_item.dart';
 import '../../../treatment_plans/domain/treatment_plan_item_status.dart';
 import '../../../treatment_plans/presentation/controllers/treatment_plan_items_controller.dart';
+import '../../../treatment_plans/presentation/widgets/sheets/reschedule_item_sheet.dart';
 
 /// Section displaying upcoming treatment plan items on the dashboard.
 ///
-/// Shows treatment sessions scheduled for the next 7 days.
+/// Shows treatment sessions scheduled for the next 7 days with action options.
 class UpcomingTreatmentPlansSection extends ConsumerWidget {
   const UpcomingTreatmentPlansSection({super.key});
 
@@ -62,7 +67,19 @@ class UpcomingTreatmentPlansSection extends ConsumerWidget {
               return _buildEmptyState(context);
             }
             return Column(
-              children: items.map((item) => _UpcomingTreatmentTile(item: item)).toList(),
+              children: items.map((item) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: _DashboardTreatmentCard(
+                  item: item,
+                  onMarkCompleted: () => _handleMarkCompleted(context, ref, item),
+                  onMarkSkipped: () => _handleMarkSkipped(context, ref, item),
+                  onReschedule: () => _handleReschedule(context, ref, item),
+                  onBookAppointment: () => _handleBookAppointment(context, ref, item),
+                  onViewAppointment: item.appointmentId != null && item.appointmentId!.isNotEmpty
+                      ? () => _handleViewAppointment(context, item)
+                      : null,
+                ),
+              )).toList(),
             );
           },
           loading: () => const Center(
@@ -75,6 +92,166 @@ class UpcomingTreatmentPlansSection extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _handleMarkCompleted(
+    BuildContext context,
+    WidgetRef ref,
+    TreatmentPlanItem item,
+  ) async {
+    final repository = ref.read(treatmentPlanItemRepositoryProvider);
+    final result = await repository.updateStatus(
+      item.id,
+      TreatmentPlanItemStatus.completed,
+      completedDate: DateTime.now(),
+    );
+
+    if (context.mounted) {
+      result.fold(
+        (failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to update session')),
+          );
+        },
+        (updatedItem) {
+          ref.invalidate(upcomingTreatmentPlanItemsProvider(_daysAhead));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Session marked as completed')),
+          );
+        },
+      );
+    }
+  }
+
+  Future<void> _handleMarkSkipped(
+    BuildContext context,
+    WidgetRef ref,
+    TreatmentPlanItem item,
+  ) async {
+    final repository = ref.read(treatmentPlanItemRepositoryProvider);
+    final result = await repository.updateStatus(
+      item.id,
+      TreatmentPlanItemStatus.skipped,
+    );
+
+    if (context.mounted) {
+      result.fold(
+        (failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to update session')),
+          );
+        },
+        (updatedItem) {
+          ref.invalidate(upcomingTreatmentPlanItemsProvider(_daysAhead));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Session skipped')),
+          );
+        },
+      );
+    }
+  }
+
+  void _handleReschedule(
+    BuildContext context,
+    WidgetRef ref,
+    TreatmentPlanItem item,
+  ) {
+    showRescheduleItemSheet(
+      context,
+      item: item,
+      onSave: (newDate) async {
+        final repository = ref.read(treatmentPlanItemRepositoryProvider);
+        final result = await repository.reschedule(item.id, newDate);
+
+        return result.fold(
+          (failure) => false,
+          (updatedItem) {
+            if (context.mounted) {
+              ref.invalidate(upcomingTreatmentPlanItemsProvider(_daysAhead));
+            }
+            return true;
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _handleBookAppointment(
+    BuildContext context,
+    WidgetRef ref,
+    TreatmentPlanItem item,
+  ) async {
+    // Treatment plan items have patientId from expanded plan data
+    if (item.patientId == null) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to load patient information')),
+        );
+      }
+      return;
+    }
+
+    final patient = await ref.read(patientProvider(item.patientId!).future);
+
+    if (patient == null) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to load patient information')),
+        );
+      }
+      return;
+    }
+
+    if (!context.mounted) return;
+
+    // Construct purpose with treatment name and session info
+    final treatmentName = item.treatmentName ?? 'Treatment';
+    final purpose = '$treatmentName - Session ${item.sequence}';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      useRootNavigator: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (sheetContext) => CreateAppointmentSheet(
+        initialPatient: patient,
+        treatmentPlanItem: item,
+        initialPurpose: purpose,
+        onSave: (appointment) async {
+          final created = await ref
+              .read(appointmentsControllerProvider.notifier)
+              .createAppointmentAndReturn(appointment);
+
+          if (created != null && context.mounted) {
+            final repository = ref.read(treatmentPlanItemRepositoryProvider);
+            final result = await repository.linkAppointment(item.id, created.id);
+
+            result.fold(
+              (failure) {
+                // Log failure but don't block appointment creation
+              },
+              (updatedItem) {
+                ref.invalidate(upcomingTreatmentPlanItemsProvider(_daysAhead));
+              },
+            );
+          }
+
+          return created;
+        },
+      ),
+    );
+  }
+
+  void _handleViewAppointment(BuildContext context, TreatmentPlanItem item) {
+    if (item.appointmentId != null && item.appointmentId!.isNotEmpty) {
+      // TODO: Navigate to appointment detail when route is available
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('View appointment coming soon')),
+      );
+    }
   }
 
   Widget _buildEmptyState(BuildContext context) {
@@ -140,184 +317,313 @@ class UpcomingTreatmentPlansSection extends ConsumerWidget {
   }
 }
 
-/// A compact tile for displaying an upcoming treatment plan item.
-class _UpcomingTreatmentTile extends StatelessWidget {
-  const _UpcomingTreatmentTile({required this.item});
+/// Card widget for displaying a treatment session on the dashboard.
+class _DashboardTreatmentCard extends StatelessWidget {
+  const _DashboardTreatmentCard({
+    required this.item,
+    this.onMarkCompleted,
+    this.onMarkSkipped,
+    this.onReschedule,
+    this.onBookAppointment,
+    this.onViewAppointment,
+  });
 
   final TreatmentPlanItem item;
+  final VoidCallback? onMarkCompleted;
+  final VoidCallback? onMarkSkipped;
+  final VoidCallback? onReschedule;
+  final VoidCallback? onBookAppointment;
+  final VoidCallback? onViewAppointment;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final dateFormat = DateFormat('EEE, MMM d');
-
-    // Determine if this is today
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final itemDate = DateTime(
-      item.expectedDate.year,
-      item.expectedDate.month,
-      item.expectedDate.day,
-    );
-    final isToday = itemDate == today;
-    final isTomorrow = itemDate == today.add(const Duration(days: 1));
-    final isOverdue = item.isOverdue;
     final isBooked = item.status == TreatmentPlanItemStatus.booked;
-
-    String dateDisplay;
-    if (isToday) {
-      dateDisplay = 'Today';
-    } else if (isTomorrow) {
-      dateDisplay = 'Tomorrow';
-    } else {
-      dateDisplay = dateFormat.format(item.expectedDate);
-    }
+    final isOverdue = item.isOverdue;
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: isOverdue
-            ? BorderSide(color: theme.colorScheme.error, width: 1.5)
-            : BorderSide.none,
+        side: BorderSide(
+          color: isOverdue
+              ? theme.colorScheme.error.withValues(alpha: 0.5)
+              : theme.colorScheme.outlineVariant,
+        ),
       ),
-      child: InkWell(
-        onTap: () {
-          // TODO: Navigate to treatment plan detail
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              // Date column
-              Container(
-                width: 80,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: isOverdue
-                      ? theme.colorScheme.errorContainer
-                      : isToday
-                          ? theme.colorScheme.primaryContainer
-                          : theme.colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      isOverdue ? 'Overdue' : dateDisplay,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: isOverdue
-                            ? theme.colorScheme.onErrorContainer
-                            : isToday
-                                ? theme.colorScheme.onPrimaryContainer
-                                : theme.colorScheme.onSurfaceVariant,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    if (isOverdue) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        dateDisplay,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onErrorContainer
-                              .withValues(alpha: 0.7),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
+      color: isOverdue
+          ? theme.colorScheme.errorContainer.withValues(alpha: 0.3)
+          : theme.colorScheme.surface,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Session badge
+            _buildSessionBadge(context),
+            const SizedBox(width: 12),
 
-              // Patient and treatment info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (item.patientName != null) ...[
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.pets,
-                            size: 14,
-                            color: theme.colorScheme.outline,
+            // Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Patient name and treatment
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          item.patientName ?? 'Unknown Patient',
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
                           ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              item.patientName!,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      // Booked badge
+                      if (isBooked) ...[
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.secondaryContainer,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.event,
+                                size: 14,
+                                color: theme.colorScheme.onSecondaryContainer,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                    if (item.treatmentName != null) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        item.treatmentName!,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.outline,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                    if (item.patientName == null && item.treatmentName == null)
-                      Text(
-                        'Session ${item.sequence}',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    // Booking status indicator
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          isBooked ? Icons.event_available : Icons.event_busy,
-                          size: 12,
-                          color: isBooked ? Colors.green : theme.colorScheme.outline,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          isBooked ? 'Booked' : 'Not booked',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: isBooked ? Colors.green : theme.colorScheme.outline,
+                              const SizedBox(width: 4),
+                              Text(
+                                'Booked',
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.colorScheme.onSecondaryContainer,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
-                    ),
-                  ],
-                ),
-              ),
-
-              // Session badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.secondaryContainer,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '#${item.sequence}',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.onSecondaryContainer,
+                    ],
                   ),
-                ),
+                  const SizedBox(height: 4),
+
+                  // Treatment name
+                  Text(
+                    item.treatmentName ?? 'Treatment',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Date and status row
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        size: 14,
+                        color: isOverdue
+                            ? theme.colorScheme.error
+                            : theme.colorScheme.outline,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        dateFormat.format(item.expectedDate),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: isOverdue
+                              ? theme.colorScheme.error
+                              : theme.colorScheme.outline,
+                          fontWeight: isOverdue ? FontWeight.w500 : null,
+                        ),
+                      ),
+                      if (isOverdue) ...[
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.errorContainer,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            'OVERDUE',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onErrorContainer,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
               ),
-            ],
+            ),
+
+            // Actions menu
+            _buildActionsMenu(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSessionBadge(BuildContext context) {
+    final theme = Theme.of(context);
+    final isBooked = item.status == TreatmentPlanItemStatus.booked;
+    final isOverdue = item.isOverdue;
+
+    Color backgroundColor;
+    Color foregroundColor;
+
+    if (isOverdue) {
+      backgroundColor = theme.colorScheme.errorContainer;
+      foregroundColor = theme.colorScheme.onErrorContainer;
+    } else if (isBooked) {
+      backgroundColor = theme.colorScheme.secondaryContainer;
+      foregroundColor = theme.colorScheme.onSecondaryContainer;
+    } else {
+      backgroundColor = theme.colorScheme.primaryContainer;
+      foregroundColor = theme.colorScheme.onPrimaryContainer;
+    }
+
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Center(
+        child: Text(
+          '${item.sequence}',
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: foregroundColor,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildActionsMenu(BuildContext context) {
+    return PopupMenuButton<String>(
+      icon: const Icon(Icons.more_vert),
+      onSelected: (value) {
+        switch (value) {
+          case 'complete':
+            onMarkCompleted?.call();
+          case 'skip':
+            onMarkSkipped?.call();
+          case 'reschedule':
+            onReschedule?.call();
+          case 'book':
+            onBookAppointment?.call();
+          case 'view_appointment':
+            onViewAppointment?.call();
+        }
+      },
+      itemBuilder: (context) => [
+        if (item.status == TreatmentPlanItemStatus.scheduled) ...[
+          const PopupMenuItem(
+            value: 'complete',
+            child: Row(
+              children: [
+                Icon(Icons.check_circle, size: 20),
+                SizedBox(width: 8),
+                Text('Mark Completed'),
+              ],
+            ),
+          ),
+          const PopupMenuItem(
+            value: 'book',
+            child: Row(
+              children: [
+                Icon(Icons.event, size: 20),
+                SizedBox(width: 8),
+                Text('Book Appointment'),
+              ],
+            ),
+          ),
+          const PopupMenuItem(
+            value: 'reschedule',
+            child: Row(
+              children: [
+                Icon(Icons.schedule, size: 20),
+                SizedBox(width: 8),
+                Text('Reschedule'),
+              ],
+            ),
+          ),
+          const PopupMenuItem(
+            value: 'skip',
+            child: Row(
+              children: [
+                Icon(Icons.skip_next, size: 20),
+                SizedBox(width: 8),
+                Text('Skip'),
+              ],
+            ),
+          ),
+        ],
+        if (item.status == TreatmentPlanItemStatus.booked) ...[
+          const PopupMenuItem(
+            value: 'complete',
+            child: Row(
+              children: [
+                Icon(Icons.check_circle, size: 20),
+                SizedBox(width: 8),
+                Text('Mark Completed'),
+              ],
+            ),
+          ),
+          if (item.appointmentId != null && item.appointmentId!.isNotEmpty)
+            const PopupMenuItem(
+              value: 'view_appointment',
+              child: Row(
+                children: [
+                  Icon(Icons.event, size: 20),
+                  SizedBox(width: 8),
+                  Text('View Appointment'),
+                ],
+              ),
+            ),
+          const PopupMenuItem(
+            value: 'reschedule',
+            child: Row(
+              children: [
+                Icon(Icons.schedule, size: 20),
+                SizedBox(width: 8),
+                Text('Reschedule'),
+              ],
+            ),
+          ),
+          const PopupMenuItem(
+            value: 'skip',
+            child: Row(
+              children: [
+                Icon(Icons.skip_next, size: 20),
+                SizedBox(width: 8),
+                Text('Skip'),
+              ],
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

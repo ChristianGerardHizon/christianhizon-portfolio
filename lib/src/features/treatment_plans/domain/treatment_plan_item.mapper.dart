@@ -90,6 +90,12 @@ class TreatmentPlanItemMapper extends ClassMapperBase<TreatmentPlanItem> {
     _$patientName,
     opt: true,
   );
+  static String? _$patientId(TreatmentPlanItem v) => v.patientId;
+  static const Field<TreatmentPlanItem, String> _f$patientId = Field(
+    'patientId',
+    _$patientId,
+    opt: true,
+  );
   static String? _$treatmentName(TreatmentPlanItem v) => v.treatmentName;
   static const Field<TreatmentPlanItem, String> _f$treatmentName = Field(
     'treatmentName',
@@ -112,6 +118,7 @@ class TreatmentPlanItemMapper extends ClassMapperBase<TreatmentPlanItem> {
     #created: _f$created,
     #updated: _f$updated,
     #patientName: _f$patientName,
+    #patientId: _f$patientId,
     #treatmentName: _f$treatmentName,
   };
 
@@ -130,6 +137,7 @@ class TreatmentPlanItemMapper extends ClassMapperBase<TreatmentPlanItem> {
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
       patientName: data.dec(_f$patientName),
+      patientId: data.dec(_f$patientId),
       treatmentName: data.dec(_f$treatmentName),
     );
   }
@@ -221,6 +229,7 @@ abstract class TreatmentPlanItemCopyWith<
     DateTime? created,
     DateTime? updated,
     String? patientName,
+    String? patientId,
     String? treatmentName,
   });
   TreatmentPlanItemCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
@@ -255,6 +264,7 @@ class _TreatmentPlanItemCopyWithImpl<$R, $Out>
     Object? created = $none,
     Object? updated = $none,
     Object? patientName = $none,
+    Object? patientId = $none,
     Object? treatmentName = $none,
   }) => $apply(
     FieldCopyWithData({
@@ -271,6 +281,7 @@ class _TreatmentPlanItemCopyWithImpl<$R, $Out>
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
       if (patientName != $none) #patientName: patientName,
+      if (patientId != $none) #patientId: patientId,
       if (treatmentName != $none) #treatmentName: treatmentName,
     }),
   );
@@ -289,6 +300,7 @@ class _TreatmentPlanItemCopyWithImpl<$R, $Out>
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),
     patientName: data.get(#patientName, or: $value.patientName),
+    patientId: data.get(#patientId, or: $value.patientId),
     treatmentName: data.get(#treatmentName, or: $value.treatmentName),
   );
 

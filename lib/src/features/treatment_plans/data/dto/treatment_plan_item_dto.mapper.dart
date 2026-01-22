@@ -105,6 +105,12 @@ class TreatmentPlanItemDtoMapper extends ClassMapperBase<TreatmentPlanItemDto> {
     _$patientName,
     opt: true,
   );
+  static String? _$patientId(TreatmentPlanItemDto v) => v.patientId;
+  static const Field<TreatmentPlanItemDto, String> _f$patientId = Field(
+    'patientId',
+    _$patientId,
+    opt: true,
+  );
   static String? _$treatmentName(TreatmentPlanItemDto v) => v.treatmentName;
   static const Field<TreatmentPlanItemDto, String> _f$treatmentName = Field(
     'treatmentName',
@@ -129,6 +135,7 @@ class TreatmentPlanItemDtoMapper extends ClassMapperBase<TreatmentPlanItemDto> {
     #updated: _f$updated,
     #expandedAppointment: _f$expandedAppointment,
     #patientName: _f$patientName,
+    #patientId: _f$patientId,
     #treatmentName: _f$treatmentName,
   };
 
@@ -149,6 +156,7 @@ class TreatmentPlanItemDtoMapper extends ClassMapperBase<TreatmentPlanItemDto> {
       updated: data.dec(_f$updated),
       expandedAppointment: data.dec(_f$expandedAppointment),
       patientName: data.dec(_f$patientName),
+      patientId: data.dec(_f$patientId),
       treatmentName: data.dec(_f$treatmentName),
     );
   }
@@ -241,6 +249,7 @@ abstract class TreatmentPlanItemDtoCopyWith<
     String? updated,
     AppointmentSchedule? expandedAppointment,
     String? patientName,
+    String? patientId,
     String? treatmentName,
   });
   TreatmentPlanItemDtoCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
@@ -278,6 +287,7 @@ class _TreatmentPlanItemDtoCopyWithImpl<$R, $Out>
     Object? updated = $none,
     Object? expandedAppointment = $none,
     Object? patientName = $none,
+    Object? patientId = $none,
     Object? treatmentName = $none,
   }) => $apply(
     FieldCopyWithData({
@@ -297,6 +307,7 @@ class _TreatmentPlanItemDtoCopyWithImpl<$R, $Out>
       if (expandedAppointment != $none)
         #expandedAppointment: expandedAppointment,
       if (patientName != $none) #patientName: patientName,
+      if (patientId != $none) #patientId: patientId,
       if (treatmentName != $none) #treatmentName: treatmentName,
     }),
   );
@@ -320,6 +331,7 @@ class _TreatmentPlanItemDtoCopyWithImpl<$R, $Out>
       or: $value.expandedAppointment,
     ),
     patientName: data.get(#patientName, or: $value.patientName),
+    patientId: data.get(#patientId, or: $value.patientId),
     treatmentName: data.get(#treatmentName, or: $value.treatmentName),
   );
 

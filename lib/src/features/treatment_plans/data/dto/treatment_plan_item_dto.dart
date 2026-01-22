@@ -31,8 +31,9 @@ class TreatmentPlanItemDto with TreatmentPlanItemDtoMappable {
   // Expanded appointment data
   final AppointmentSchedule? expandedAppointment;
 
-  // Expanded plan data (patient and treatment names)
+  // Expanded plan data (patient and treatment info)
   final String? patientName;
+  final String? patientId;
   final String? treatmentName;
 
   const TreatmentPlanItemDto({
@@ -51,6 +52,7 @@ class TreatmentPlanItemDto with TreatmentPlanItemDtoMappable {
     this.updated,
     this.expandedAppointment,
     this.patientName,
+    this.patientId,
     this.treatmentName,
   });
 
@@ -61,6 +63,7 @@ class TreatmentPlanItemDto with TreatmentPlanItemDtoMappable {
     // Handle expanded appointment relation
     AppointmentSchedule? expandedAppointment;
     String? patientName;
+    String? patientId;
     String? treatmentName;
 
     final expand = json['expand'] as Map<String, dynamic>?;
@@ -79,11 +82,12 @@ class TreatmentPlanItemDto with TreatmentPlanItemDtoMappable {
         final planExpandNested = planExpand['expand'] as Map<String, dynamic>?;
 
         if (planExpandNested != null) {
-          // Get patient name
+          // Get patient name and ID
           if (planExpandNested['patient'] != null) {
             final patientExpand =
                 planExpandNested['patient'] as Map<String, dynamic>;
             patientName = patientExpand['name'] as String?;
+            patientId = patientExpand['id'] as String?;
           }
 
           // Get treatment name
@@ -112,6 +116,7 @@ class TreatmentPlanItemDto with TreatmentPlanItemDtoMappable {
       updated: json['updated'] as String?,
       expandedAppointment: expandedAppointment,
       patientName: patientName,
+      patientId: patientId,
       treatmentName: treatmentName,
     );
   }
@@ -132,6 +137,7 @@ class TreatmentPlanItemDto with TreatmentPlanItemDtoMappable {
       created: parseToLocal(created),
       updated: parseToLocal(updated),
       patientName: patientName,
+      patientId: patientId,
       treatmentName: treatmentName,
     );
   }
