@@ -128,6 +128,24 @@ dart format lib/
 - **Use camelCase** for PocketBase collection field names (e.g., `oldValue`, `newValue`, `productStock`)
 - Avoid snake_case in database fields
 
+### Currency Formatting
+- **Use Philippine Peso (₱)** as the currency symbol throughout the application
+- Use `NumberFormat.currency(symbol: '₱', decimalDigits: 2)` from intl package
+- Example: `₱1,234.56`
+
+### DateTime Handling
+- **To server:** Always use `.toUtc()` when sending DateTime to PocketBase
+- **From server:** Always use `.toLocal()` when parsing DateTime from PocketBase responses
+- Example:
+  ```dart
+  // Sending to server
+  final json = {'date': dateTime.toUtc().toIso8601String()};
+
+  // Receiving from server (use helper if available)
+  final localDate = DateTime.parse(json['date']).toLocal();
+  ```
+- Use `parseToLocal()` helper from DTOs when available for consistent parsing
+
 ### Forms (flutter_form_builder)
 - **Always use flutter_form_builder** for forms instead of raw TextField/DropdownMenu widgets
 - Wrap forms in `FormBuilder` widget with a `GlobalKey<FormBuilderState>`
