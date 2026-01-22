@@ -305,9 +305,19 @@ class _TodayAppointmentTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final urgencyInfo = _getUrgencyInfo(context);
+    final isUrgent = urgencyInfo != null &&
+        appointment.status == AppointmentScheduleStatus.scheduled;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      color: isUrgent ? urgencyInfo.color.withValues(alpha: 0.05) : null,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: isUrgent
+            ? BorderSide(color: urgencyInfo.color.withValues(alpha: 0.3), width: 1)
+            : BorderSide.none,
+      ),
       child: InkWell(
         onTap: onEdit,
         borderRadius: BorderRadius.circular(12),
@@ -315,9 +325,9 @@ class _TodayAppointmentTile extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              // Time column
+              // Time column with urgency indicator
               SizedBox(
-                width: 60,
+                width: 70,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -327,13 +337,38 @@ class _TodayAppointmentTile extends StatelessWidget {
                           : 'All day',
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.primary,
+                        color: isUrgent
+                            ? urgencyInfo.color
+                            : theme.colorScheme.primary,
                       ),
                     ),
+                    if (urgencyInfo != null &&
+                        appointment.status ==
+                            AppointmentScheduleStatus.scheduled) ...[
+                      const SizedBox(height: 2),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: urgencyInfo.color.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          urgencyInfo.label,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: urgencyInfo.color,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
 
               // Patient info
               Expanded(
@@ -387,6 +422,67 @@ class _TodayAppointmentTile extends StatelessWidget {
       ),
     );
   }
+
+  /// Returns urgency information based on appointment time.
+  _UrgencyInfo? _getUrgencyInfo(BuildContext context) {
+    if (!appointment.hasTime) return null;
+
+    final now = DateTime.now();
+    final appointmentTime = appointment.date;
+    final difference = appointmentTime.difference(now);
+    final minutes = difference.inMinutes;
+
+    if (minutes < -30) {
+      // More than 30 minutes overdue
+      return _UrgencyInfo(
+        label: 'Overdue',
+        color: Colors.red,
+      );
+    } else if (minutes < 0) {
+      // Just started or slightly overdue
+      return _UrgencyInfo(
+        label: 'Started',
+        color: Colors.orange,
+      );
+    } else if (minutes <= 5) {
+      // Starting now (within 5 minutes)
+      return _UrgencyInfo(
+        label: 'Now',
+        color: Colors.red,
+      );
+    } else if (minutes <= 15) {
+      // Starting soon (within 15 minutes)
+      return _UrgencyInfo(
+        label: 'In ${minutes}m',
+        color: Colors.orange,
+      );
+    } else if (minutes <= 30) {
+      // Coming up (within 30 minutes)
+      return _UrgencyInfo(
+        label: 'In ${minutes}m',
+        color: Colors.amber.shade700,
+      );
+    } else if (minutes <= 60) {
+      // Within an hour
+      return _UrgencyInfo(
+        label: 'In ${minutes}m',
+        color: Theme.of(context).colorScheme.primary,
+      );
+    }
+
+    return null;
+  }
+}
+
+/// Helper class for urgency display information.
+class _UrgencyInfo {
+  const _UrgencyInfo({
+    required this.label,
+    required this.color,
+  });
+
+  final String label;
+  final Color color;
 }
 
 /// Quick status change button with dropdown menu.
