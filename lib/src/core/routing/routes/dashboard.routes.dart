@@ -3,8 +3,15 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../features/appointments/presentation/controllers/appointments_controller.dart';
+import '../../../features/dashboard/presentation/controllers/dashboard_kpi_provider.dart';
+import '../../../features/dashboard/presentation/controllers/inventory_alerts_controller.dart';
+import '../../../features/dashboard/presentation/widgets/inventory_alerts_section.dart';
+import '../../../features/dashboard/presentation/widgets/kpi_summary_section.dart';
+import '../../../features/dashboard/presentation/widgets/quick_actions_section.dart';
 import '../../../features/dashboard/presentation/widgets/tablet_dashboard_layout.dart';
 import '../../../features/dashboard/presentation/widgets/today_appointments_section.dart';
+import '../../../features/dashboard/presentation/widgets/upcoming_treatment_plans_section.dart';
+import '../../../features/treatment_plans/presentation/controllers/treatment_plan_items_controller.dart';
 import '../../utils/breakpoints.dart';
 
 part 'dashboard.routes.g.dart';
@@ -42,15 +49,44 @@ class DashboardPage extends ConsumerWidget {
       );
     }
 
-    // Mobile: Single column layout
+    // Mobile: Single column layout with all sections
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: () =>
-            ref.read(appointmentsControllerProvider.notifier).refresh(),
+        onRefresh: () async {
+          // Refresh all dashboard data
+          ref.invalidate(appointmentsControllerProvider);
+          ref.invalidate(activePatientsCountProvider);
+          ref.invalidate(inventoryAlertsSummaryProvider);
+          ref.invalidate(todaySalesSummaryProvider);
+          ref.invalidate(upcomingTreatmentPlanItemsProvider(7));
+        },
         child: const SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
           padding: EdgeInsets.symmetric(vertical: 16),
-          child: TodayAppointmentsSection(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // KPI Summary Section
+              KpiSummarySection(),
+              SizedBox(height: 20),
+
+              // Quick Actions Section
+              QuickActionsSection(),
+              SizedBox(height: 24),
+
+              // Today's Appointments Section
+              TodayAppointmentsSection(),
+              SizedBox(height: 24),
+
+              // Inventory Alerts Section
+              InventoryAlertsSection(),
+              SizedBox(height: 24),
+
+              // Upcoming Treatment Plans Section
+              UpcomingTreatmentPlansSection(),
+              SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );

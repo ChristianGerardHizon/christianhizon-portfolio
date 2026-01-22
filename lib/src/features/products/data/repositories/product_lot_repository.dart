@@ -15,6 +15,9 @@ part 'product_lot_repository.g.dart';
 
 /// Repository interface for product lot operations.
 abstract class ProductLotRepository {
+  /// Fetches all active product lots.
+  FutureEither<List<ProductLot>> fetchAll({String? filter});
+
   /// Fetches all lots for a product.
   FutureEither<List<ProductLot>> fetchByProduct(String productId);
 
@@ -58,6 +61,25 @@ class ProductLotRepositoryImpl implements ProductLotRepository {
   ProductLot _toEntity(RecordModel record) {
     final dto = ProductLotDto.fromRecord(record);
     return dto.toEntity();
+  }
+
+  @override
+  FutureEither<List<ProductLot>> fetchAll({String? filter}) async {
+    return TaskEither.tryCatch(
+      () async {
+        final baseFilter = PBFilter().notDeleted().build();
+        final filterString =
+            filter != null ? '$baseFilter && $filter' : baseFilter;
+
+        final records = await _collection.getFullList(
+          filter: filterString,
+          sort: '-created',
+        );
+
+        return records.map(_toEntity).toList();
+      },
+      Failure.handle,
+    ).run();
   }
 
   @override
