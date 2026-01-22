@@ -1,6 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../user_roles/presentation/controllers/user_roles_controller.dart';
 import '../../data/auth_repository.dart';
 import '../../domain/auth_state.dart';
 
@@ -21,12 +20,7 @@ class AuthController extends _$AuthController {
 
     return result.fold(
       (failure) => null, // No valid auth, return null
-      (authState) {
-        // Fetch user role after restoring session
-        _fetchUserRole(authState.user.id);
-
-        return authState;
-      },
+      (authState) => authState,
     );
   }
 
@@ -45,8 +39,6 @@ class AuthController extends _$AuthController {
         return false;
       },
       (authState) async {
-        // Fetch user role after successful login
-        _fetchUserRole(authState.user.id);
         state = AsyncData(authState);
 
         // Auto-send verification email if user is not verified
@@ -62,7 +54,6 @@ class AuthController extends _$AuthController {
   /// Logs out the current user.
   Future<void> logout() async {
     await _repository.logout();
-    // Clear user role on logout
     state = const AsyncData(null);
   }
 
@@ -78,8 +69,6 @@ class AuthController extends _$AuthController {
         return false;
       },
       (authState) {
-        // Refresh user role
-        _fetchUserRole(authState.user.id);
         state = AsyncData(authState);
         return true;
       },
@@ -98,12 +87,6 @@ class AuthController extends _$AuthController {
     return result.isRight();
   }
 
-  /// Fetches the user role from the user_roles collection.
-  void _fetchUserRole(String? userId) {
-    if (userId != null && userId.isNotEmpty) {
-      ref.read(userRolesControllerProvider(userId).notifier);
-    }
-  }
 }
 
 /// Convenience provider to check if user is authenticated.
