@@ -85,4 +85,16 @@ class TreatmentPlanItem with TreatmentPlanItemMappable {
 
   /// Whether this item has been finalized (completed, missed, or skipped).
   bool get isFinalized => status.isFinalized;
+
+  /// Whether this item's expected date is in the past.
+  bool get isPast {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final expected = DateTime(
+      expectedDate.year,
+      expectedDate.month,
+      expectedDate.day,
+    );
+    return expected.isBefore(today);
+  }
 }

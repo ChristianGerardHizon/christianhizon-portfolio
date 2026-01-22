@@ -164,8 +164,8 @@ class TreatmentPlanItemTile extends StatelessWidget {
   }
 
   Widget? _buildTrailing(BuildContext context) {
-    // If item is finalized, don't show actions
-    if (item.isFinalized) return null;
+    // If item is finalized or in the past, don't show actions
+    if (item.isFinalized || item.isPast) return null;
 
     return PopupMenuButton<String>(
       icon: const Icon(Icons.more_vert),
