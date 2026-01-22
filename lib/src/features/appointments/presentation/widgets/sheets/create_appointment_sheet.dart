@@ -28,6 +28,7 @@ class CreateAppointmentSheet extends HookConsumerWidget {
     super.key,
     this.initialPatient,
     this.treatmentPlanItem,
+    this.initialPurpose,
     required this.onSave,
   });
 
@@ -36,6 +37,9 @@ class CreateAppointmentSheet extends HookConsumerWidget {
 
   /// Treatment plan item to link (when booking from a treatment plan).
   final TreatmentPlanItem? treatmentPlanItem;
+
+  /// Pre-filled purpose (when booking from a treatment plan).
+  final String? initialPurpose;
 
   /// Callback when appointment is saved.
   /// Returns the created appointment on success, or null on failure.
@@ -475,6 +479,7 @@ class CreateAppointmentSheet extends HookConsumerWidget {
               // Purpose
               FormBuilderTextField(
                 name: 'purpose',
+                initialValue: initialPurpose,
                 decoration: const InputDecoration(
                   labelText: 'Purpose',
                   border: OutlineInputBorder(),

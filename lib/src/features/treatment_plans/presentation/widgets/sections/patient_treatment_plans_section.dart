@@ -6,11 +6,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../../appointments/presentation/widgets/sheets/create_appointment_sheet.dart';
 import '../../../../patients/presentation/controllers/patient_provider.dart';
+import '../../../data/repositories/treatment_plan_item_repository.dart';
 import '../../../domain/treatment_plan.dart';
 import '../../../domain/treatment_plan_item.dart';
+import '../../../domain/treatment_plan_item_status.dart';
 import '../../../domain/treatment_plan_status.dart';
 import '../../controllers/patient_treatment_plans_controller.dart';
-import '../../controllers/treatment_plan_items_controller.dart';
 import '../cards/treatment_plan_card.dart';
 import '../sheets/create_treatment_plan_sheet.dart';
 import '../sheets/edit_treatment_plan_sheet.dart';
@@ -160,6 +161,9 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
     bool isExpanded,
     VoidCallback toggleExpand,
   ) {
+    // Disable session actions for inactive plans
+    final canEditSessions = plan.isActive;
+
     return GestureDetector(
       onTap: toggleExpand,
       child: TreatmentPlanCard(
@@ -170,14 +174,18 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
         onComplete: () => _handleCompletePlan(context, ref, plan),
         onPutOnHold: () => _handlePutOnHold(context, ref, plan),
         onReactivate: () => _handleReactivate(context, ref, plan),
-        onMarkItemCompleted: (item) =>
-            _handleMarkItemCompleted(context, ref, plan, item),
-        onMarkItemSkipped: (item) =>
-            _handleMarkItemSkipped(context, ref, plan, item),
-        onRescheduleItem: (item) =>
-            _handleRescheduleItem(context, ref, plan, item),
-        onBookAppointment: (item) =>
-            _handleBookAppointment(context, ref, plan, item),
+        onMarkItemCompleted: canEditSessions
+            ? (item) => _handleMarkItemCompleted(context, ref, plan, item)
+            : null,
+        onMarkItemSkipped: canEditSessions
+            ? (item) => _handleMarkItemSkipped(context, ref, plan, item)
+            : null,
+        onRescheduleItem: canEditSessions
+            ? (item) => _handleRescheduleItem(context, ref, plan, item)
+            : null,
+        onBookAppointment: canEditSessions
+            ? (item) => _handleBookAppointment(context, ref, plan, item)
+            : null,
         onViewAppointment: (item) =>
             _handleViewAppointment(context, ref, plan, item),
       ),
@@ -345,23 +353,30 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
     TreatmentPlan plan,
     TreatmentPlanItem item,
   ) async {
-    final success = await ref
-        .read(treatmentPlanItemsControllerProvider(plan.id).notifier)
-        .markCompleted(item.id);
+    // Use repository directly to avoid _isDisposed issues with family provider
+    final repository = ref.read(treatmentPlanItemRepositoryProvider);
+    final result = await repository.updateStatus(
+      item.id,
+      TreatmentPlanItemStatus.completed,
+      completedDate: DateTime.now(),
+    );
 
     if (context.mounted) {
-      if (success) {
-        // Refresh the plans list to get updated progress
-        ref
-            .read(patientTreatmentPlansControllerProvider(patientId).notifier)
-            .refresh();
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success ? 'Session marked as completed' : 'Failed to update session',
-          ),
-        ),
+      result.fold(
+        (failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to update session')),
+          );
+        },
+        (updatedItem) {
+          // Refresh the plans list to get updated progress
+          ref
+              .read(patientTreatmentPlansControllerProvider(patientId).notifier)
+              .refresh();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Session marked as completed')),
+          );
+        },
       );
     }
   }
@@ -372,23 +387,29 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
     TreatmentPlan plan,
     TreatmentPlanItem item,
   ) async {
-    final success = await ref
-        .read(treatmentPlanItemsControllerProvider(plan.id).notifier)
-        .markSkipped(item.id);
+    // Use repository directly to avoid _isDisposed issues with family provider
+    final repository = ref.read(treatmentPlanItemRepositoryProvider);
+    final result = await repository.updateStatus(
+      item.id,
+      TreatmentPlanItemStatus.skipped,
+    );
 
     if (context.mounted) {
-      if (success) {
-        // Refresh the plans list to get updated progress
-        ref
-            .read(patientTreatmentPlansControllerProvider(patientId).notifier)
-            .refresh();
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success ? 'Session skipped' : 'Failed to update session',
-          ),
-        ),
+      result.fold(
+        (failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to update session')),
+          );
+        },
+        (updatedItem) {
+          // Refresh the plans list to get updated progress
+          ref
+              .read(patientTreatmentPlansControllerProvider(patientId).notifier)
+              .refresh();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Session skipped')),
+          );
+        },
       );
     }
   }
@@ -403,18 +424,23 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
       context,
       item: item,
       onSave: (newDate) async {
-        final success = await ref
-            .read(treatmentPlanItemsControllerProvider(plan.id).notifier)
-            .reschedule(item.id, newDate);
+        // Use repository directly to avoid _isDisposed issues with family provider
+        final repository = ref.read(treatmentPlanItemRepositoryProvider);
+        final result = await repository.reschedule(item.id, newDate);
 
-        if (context.mounted && success) {
-          // Refresh the plans list
-          ref
-              .read(patientTreatmentPlansControllerProvider(patientId).notifier)
-              .refresh();
-        }
-
-        return success;
+        return result.fold(
+          (failure) => false,
+          (updatedItem) {
+            if (context.mounted) {
+              // Refresh the plans list
+              ref
+                  .read(patientTreatmentPlansControllerProvider(patientId)
+                      .notifier)
+                  .refresh();
+            }
+            return true;
+          },
+        );
       },
     );
   }
@@ -439,6 +465,10 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
 
     if (!context.mounted) return;
 
+    // Construct purpose with plan name and session info
+    final purpose =
+        '${plan.treatmentName} - Session ${item.sequence}/${plan.totalCount}';
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -450,6 +480,7 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
       builder: (context) => CreateAppointmentSheet(
         initialPatient: patient,
         treatmentPlanItem: item,
+        initialPurpose: purpose,
         onSave: (appointment) async {
           // Create the appointment and return it
           final created = await ref
@@ -457,18 +488,23 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
               .createAppointmentAndReturn(appointment);
 
           if (created != null && context.mounted) {
-            // Link the appointment to the plan item
-            final linkSuccess = await ref
-                .read(treatmentPlanItemsControllerProvider(plan.id).notifier)
-                .linkAppointment(item.id, created.id);
+            // Use repository directly to avoid _isDisposed issues
+            final repository = ref.read(treatmentPlanItemRepositoryProvider);
+            final result =
+                await repository.linkAppointment(item.id, created.id);
 
-            if (linkSuccess) {
-              // Refresh plans to show updated status
-              ref
-                  .read(patientTreatmentPlansControllerProvider(patientId)
-                      .notifier)
-                  .refresh();
-            }
+            result.fold(
+              (failure) {
+                // Log failure but don't block appointment creation
+              },
+              (updatedItem) {
+                // Refresh plans to show updated status
+                ref
+                    .read(patientTreatmentPlansControllerProvider(patientId)
+                        .notifier)
+                    .refresh();
+              },
+            );
           }
 
           return created;

@@ -197,6 +197,12 @@ class TreatmentPlanCard extends HookConsumerWidget {
   }
 
   Widget _buildMenu(BuildContext context) {
+    // Don't show menu for completed/cancelled plans (past plans)
+    if (plan.status == TreatmentPlanStatus.completed ||
+        plan.status == TreatmentPlanStatus.cancelled) {
+      return const SizedBox.shrink();
+    }
+
     return PopupMenuButton<String>(
       onSelected: (value) {
         switch (value) {
