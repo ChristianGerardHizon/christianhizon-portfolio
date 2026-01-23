@@ -12,8 +12,8 @@ import '../controllers/patient_provider.dart';
 import '../controllers/patients_controller.dart';
 import '../widgets/sheets/edit_patient_sheet.dart';
 import '../widgets/tabs/patient_details_tab.dart';
+import '../widgets/tabs/patient_files_tab.dart';
 import '../widgets/tabs/patient_overview_tab.dart';
-import '../widgets/tabs/patient_placeholder_tab.dart';
 import '../widgets/tabs/patient_records_tab.dart';
 import '../widgets/tabs/patient_treatments_tab.dart';
 
@@ -25,7 +25,7 @@ import '../widgets/tabs/patient_treatments_tab.dart';
 /// - Records: Medical records/visits
 /// - Treatments: Prescribed treatments (placeholder)
 /// - Appointments: Scheduled appointments (placeholder)
-/// - Files: Attached documents (placeholder)
+/// - Files: Attached documents (images, videos, PDFs)
 class PatientDetailPage extends HookConsumerWidget {
   const PatientDetailPage({
     super.key,
@@ -148,7 +148,7 @@ class PatientDetailPage extends HookConsumerWidget {
               PatientRecordsTab(patient: patient),
               PatientTreatmentsTab(patient: patient),
               PatientAppointmentsTab(patient: patient),
-              const PatientPlaceholderTab(title: 'Files', icon: Icons.folder),
+              PatientFilesTab(patient: patient),
             ],
           ),
         );
