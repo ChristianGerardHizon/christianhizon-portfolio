@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../core/routing/routes/system.routes.dart';
+import '../../../../core/routing/routes/organization.routes.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../domain/branch.dart';
 import '../controllers/branches_controller.dart';
@@ -98,7 +98,7 @@ class BranchDetailPanel extends HookConsumerWidget {
 
         if (isCreating) {
           // Navigate back to branches list
-          const BranchesRoute().go(context);
+          const OrganizationBranchesRoute().go(context);
         }
       }
     }
@@ -133,7 +133,7 @@ class BranchDetailPanel extends HookConsumerWidget {
         isDeleting.value = false;
         if (success) {
           showSuccessSnackBar(context, message: 'Branch deleted successfully');
-          const BranchesRoute().go(context);
+          const OrganizationBranchesRoute().go(context);
         } else {
           showFormErrorDialog(
             context,
@@ -174,7 +174,7 @@ class BranchDetailPanel extends HookConsumerWidget {
         title: Text(isCreating ? 'New Branch' : 'Edit Branch'),
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => const BranchesRoute().go(context),
+          onPressed: () => const OrganizationBranchesRoute().go(context),
         ),
         actions: [
           if (!isCreating)

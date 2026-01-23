@@ -18,16 +18,6 @@ RouteBase get $systemShellRoute => ShellRouteData.$route(
           factory: $SystemRoute._fromState,
           routes: [
             GoRouteData.$route(
-              path: 'branches',
-              factory: $BranchesRoute._fromState,
-              routes: [
-                GoRouteData.$route(
-                  path: ':id',
-                  factory: $BranchDetailRoute._fromState,
-                ),
-              ],
-            ),
-            GoRouteData.$route(
               path: 'species',
               factory: $SpeciesRoute._fromState,
               routes: [
@@ -73,54 +63,6 @@ mixin $SystemRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
         '/system',
-      );
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-mixin $BranchesRoute on GoRouteData {
-  static BranchesRoute _fromState(GoRouterState state) => const BranchesRoute();
-
-  @override
-  String get location => GoRouteData.$location(
-        '/system/branches',
-      );
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-mixin $BranchDetailRoute on GoRouteData {
-  static BranchDetailRoute _fromState(GoRouterState state) => BranchDetailRoute(
-        id: state.pathParameters['id']!,
-      );
-
-  BranchDetailRoute get _self => this as BranchDetailRoute;
-
-  @override
-  String get location => GoRouteData.$location(
-        '/system/branches/${Uri.encodeComponent(_self.id)}',
       );
 
   @override
