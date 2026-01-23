@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/routing/pending_redirect_provider.dart';
 import '../../data/auth_repository.dart';
 import '../../domain/auth_state.dart';
 
@@ -53,6 +54,8 @@ class AuthController extends _$AuthController {
 
   /// Logs out the current user.
   Future<void> logout() async {
+    // Clear pending redirect to prevent unexpected navigation on next login
+    ref.read(pendingRedirectProvider.notifier).consume();
     await _repository.logout();
     state = const AsyncData(null);
   }

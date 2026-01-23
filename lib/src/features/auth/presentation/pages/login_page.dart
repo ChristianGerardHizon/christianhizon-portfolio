@@ -4,8 +4,6 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import 'package:go_router/go_router.dart';
-
 import '../../../../core/assets/assets.gen.dart';
 import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
@@ -34,7 +32,8 @@ class LoginPage extends HookConsumerWidget {
         errorMessage.value = t.failures.invalidCredentials;
       }
 
-      // On success, navigate to home
+      // On success, show verification notification if needed
+      // Navigation is handled by router redirect (with pending URL support)
       if (next.hasValue && next.value != null) {
         // Check if user is unverified and show notification
         if (!next.value!.isVerified) {
@@ -59,7 +58,7 @@ class LoginPage extends HookConsumerWidget {
             ),
           );
         }
-        context.go('/');
+        // Router redirect handles navigation to pending URL or '/'
       }
     });
 

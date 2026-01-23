@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../features/auth/presentation/controllers/auth_controller.dart';
+import 'pending_redirect_provider.dart';
 import 'routes/auth.routes.dart';
 import 'routes/dashboard.routes.dart';
 
@@ -22,12 +23,14 @@ abstract class RouterUtils {
   ///
   /// Redirects unauthenticated users to login and
   /// authenticated users away from login pages.
+  /// Preserves deep link URLs on web by storing them during auth loading.
   static FutureOr<String?> redirect(
     BuildContext context,
     GoRouterState state,
     Ref ref,
   ) {
     final currentPath = state.matchedLocation;
+    final fullUri = state.uri.toString();
 
     // Check if this route should skip auth check
     final isIgnored = ignoredRoutes.any(
@@ -35,28 +38,57 @@ abstract class RouterUtils {
     );
 
     final authAsync = ref.read(authControllerProvider);
-
     final isAuthenticated = authAsync.value != null;
+    final isAuthLoading = authAsync.isLoading;
     final isOnLoginPage = currentPath == LoginRoute.path;
     final isOnSplashPage = currentPath == SplashRoute.path;
 
-    // Still loading auth state on app start (splash) - stay on splash
-    if (authAsync.isLoading && isOnSplashPage) {
+    // 1. Still loading auth on splash - stay on splash
+    if (isAuthLoading && isOnSplashPage) {
       return SplashRoute.path;
     }
 
-    // Splash page and auth completed - redirect based on auth state
-    if (isOnSplashPage && !authAsync.isLoading) {
-      return isAuthenticated ? '/' : LoginRoute.path;
+    // 2. Auth loading + protected route - save URL, go to splash
+    // This prevents login flash and preserves deep links on web
+    if (isAuthLoading && !isIgnored) {
+      // Delay state modification to avoid modifying provider during build
+      Future(() {
+        ref.read(pendingRedirectProvider.notifier).set(fullUri);
+      });
+      return SplashRoute.path;
     }
 
-    // Login page - stay on login (handles its own loading/error states)
-    // Only redirect to home if authenticated
+    // 3. Splash complete - redirect based on auth result
+    if (isOnSplashPage && !isAuthLoading) {
+      if (isAuthenticated) {
+        // Read pending URL, then clear it after redirect
+        final pendingUrl = ref.read(pendingRedirectProvider);
+        if (pendingUrl != null) {
+          Future(() {
+            ref.read(pendingRedirectProvider.notifier).clear();
+          });
+        }
+        return pendingUrl ?? '/';
+      }
+      return LoginRoute.path;
+    }
+
+    // 4. Login page - redirect if authenticated
     if (isOnLoginPage) {
-      return isAuthenticated ? '/' : null;
+      if (isAuthenticated) {
+        // Read pending URL, then clear it after redirect
+        final pendingUrl = ref.read(pendingRedirectProvider);
+        if (pendingUrl != null) {
+          Future(() {
+            ref.read(pendingRedirectProvider.notifier).clear();
+          });
+        }
+        return pendingUrl ?? '/';
+      }
+      return null;
     }
 
-    // Not authenticated and not on an ignored route - redirect to login
+    // 5. Not authenticated + protected route - redirect to login
     if (!isAuthenticated && !isIgnored) {
       return LoginRoute.path;
     }
