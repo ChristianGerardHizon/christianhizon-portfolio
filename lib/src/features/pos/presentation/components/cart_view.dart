@@ -80,92 +80,74 @@ class CartView extends ConsumerWidget {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(12),
-                            child: Row(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                // Product info
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        product.name,
-                                        style: theme.textTheme.titleSmall,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      // Show lot number if item is from a specific lot
-                                      if (item.hasLot && item.lotNumber != null) ...[
-                                        const SizedBox(height: 2),
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.inventory_2_outlined,
-                                              size: 12,
-                                              color: theme.colorScheme.primary,
+                                // Row 1: Product name + delete button
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            product.name,
+                                            style: theme.textTheme.titleSmall
+                                                ?.copyWith(
+                                              fontWeight: FontWeight.w500,
                                             ),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              'Lot: ${item.lotNumber}',
-                                              style: theme.textTheme.labelSmall?.copyWith(
-                                                color: theme.colorScheme.primary,
-                                                fontWeight: FontWeight.w500,
-                                              ),
+                                            maxLines: 3,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          // Show lot number if item is from a specific lot
+                                          if (item.hasLot &&
+                                              item.lotNumber != null) ...[
+                                            const SizedBox(height: 4),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  Icons.inventory_2_outlined,
+                                                  size: 12,
+                                                  color:
+                                                      theme.colorScheme.primary,
+                                                ),
+                                                const SizedBox(width: 4),
+                                                Flexible(
+                                                  child: Text(
+                                                    'Lot: ${item.lotNumber}',
+                                                    style: theme
+                                                        .textTheme.labelSmall
+                                                        ?.copyWith(
+                                                      color: theme
+                                                          .colorScheme.primary,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
-                                        ),
-                                      ],
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        '${product.price.toCurrency()} each',
-                                        style:
-                                            theme.textTheme.bodySmall?.copyWith(
-                                          color:
-                                              theme.colorScheme.onSurfaceVariant,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-                                // Quantity controls
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(
-                                      width: 32,
-                                      height: 32,
-                                      child: IconButton(
-                                        icon: const Icon(Icons.remove_circle_outline),
-                                        iconSize: 18,
-                                        padding: EdgeInsets.zero,
-                                        onPressed: isSyncing
-                                            ? null
-                                            : () {
-                                                ref
-                                                    .read(cartControllerProvider
-                                                        .notifier)
-                                                    .updateQuantity(
-                                                      product,
-                                                      item.quantity.toInt() - 1,
-                                                    );
-                                              },
+                                        ],
                                       ),
                                     ),
+                                    // Delete button - aligned to top right
                                     SizedBox(
                                       width: 28,
-                                      child: Text(
-                                        '${item.quantity.toInt()}',
-                                        textAlign: TextAlign.center,
-                                        style: theme.textTheme.bodyMedium,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 32,
-                                      height: 32,
+                                      height: 28,
                                       child: IconButton(
-                                        icon: const Icon(Icons.add_circle_outline),
-                                        iconSize: 18,
+                                        icon: Icon(
+                                          Icons.close,
+                                          color: theme
+                                              .colorScheme.onSurfaceVariant,
+                                          size: 16,
+                                        ),
                                         padding: EdgeInsets.zero,
                                         onPressed: isSyncing
                                             ? null
@@ -173,48 +155,143 @@ class CartView extends ConsumerWidget {
                                                 ref
                                                     .read(cartControllerProvider
                                                         .notifier)
-                                                    .updateQuantity(
-                                                      product,
-                                                      item.quantity.toInt() + 1,
-                                                    );
+                                                    .removeFromCart(product);
                                               },
+                                        tooltip: 'Remove item',
                                       ),
                                     ),
                                   ],
                                 ),
 
-                                // Item total
-                                SizedBox(
-                                  width: 70,
-                                  child: Text(
-                                    item.total.toCurrency(),
-                                    textAlign: TextAlign.right,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
+                                const SizedBox(height: 8),
 
-                                // Delete button
-                                SizedBox(
-                                  width: 32,
-                                  height: 32,
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.delete_outline,
-                                      color: theme.colorScheme.error,
+                                // Row 2: Unit price, quantity controls, and total
+                                Row(
+                                  children: [
+                                    // Unit price
+                                    Text(
+                                      '${product.price.toCurrency()} each',
+                                      style:
+                                          theme.textTheme.bodySmall?.copyWith(
+                                        color:
+                                            theme.colorScheme.onSurfaceVariant,
+                                      ),
                                     ),
-                                    iconSize: 18,
-                                    padding: EdgeInsets.zero,
-                                    onPressed: isSyncing
-                                        ? null
-                                        : () {
-                                            ref
-                                                .read(
-                                                    cartControllerProvider.notifier)
-                                                .removeFromCart(product);
-                                          },
-                                  ),
+
+                                    const Spacer(),
+
+                                    // Quantity controls - styled stepper
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color:
+                                              theme.colorScheme.outlineVariant,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          // Minus button
+                                          InkWell(
+                                            onTap: isSyncing
+                                                ? null
+                                                : () {
+                                                    ref
+                                                        .read(
+                                                            cartControllerProvider
+                                                                .notifier)
+                                                        .updateQuantity(
+                                                          product,
+                                                          item.quantity
+                                                                  .toInt() -
+                                                              1,
+                                                        );
+                                                  },
+                                            borderRadius:
+                                                const BorderRadius.horizontal(
+                                              left: Radius.circular(7),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(6),
+                                              child: Icon(
+                                                Icons.remove,
+                                                size: 16,
+                                                color: isSyncing
+                                                    ? theme.colorScheme
+                                                        .onSurfaceVariant
+                                                        .withValues(alpha: 0.5)
+                                                    : theme.colorScheme
+                                                        .onSurfaceVariant,
+                                              ),
+                                            ),
+                                          ),
+
+                                          // Quantity display
+                                          Container(
+                                            constraints: const BoxConstraints(
+                                                minWidth: 32),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8),
+                                            child: Text(
+                                              '${item.quantity.toInt()}',
+                                              textAlign: TextAlign.center,
+                                              style: theme.textTheme.bodyMedium
+                                                  ?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+
+                                          // Plus button
+                                          InkWell(
+                                            onTap: isSyncing
+                                                ? null
+                                                : () {
+                                                    ref
+                                                        .read(
+                                                            cartControllerProvider
+                                                                .notifier)
+                                                        .updateQuantity(
+                                                          product,
+                                                          item.quantity
+                                                                  .toInt() +
+                                                              1,
+                                                        );
+                                                  },
+                                            borderRadius:
+                                                const BorderRadius.horizontal(
+                                              right: Radius.circular(7),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(6),
+                                              child: Icon(
+                                                Icons.add,
+                                                size: 16,
+                                                color: isSyncing
+                                                    ? theme.colorScheme
+                                                        .onSurfaceVariant
+                                                        .withValues(alpha: 0.5)
+                                                    : theme.colorScheme.primary,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    const SizedBox(width: 12),
+
+                                    // Item total - right aligned
+                                    Text(
+                                      item.total.toCurrency(),
+                                      style:
+                                          theme.textTheme.titleSmall?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: theme.colorScheme.primary,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
