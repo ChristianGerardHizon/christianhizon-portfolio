@@ -39,6 +39,21 @@ String get currentEnvironment {
   return kDebugMode ? 'dev' : 'prod';
 }
 
+/// Returns the app title based on environment.
+/// - Dev: "SannJoseAC [Dev]"
+/// - Staging: "SannJoseAC [Stg]"
+/// - Production: "SannJoseAC"
+String get appTitle {
+  switch (currentEnvironment) {
+    case 'dev':
+      return 'SannJoseAC [Dev]';
+    case 'staging':
+      return 'SannJoseAC [Stg]';
+    default:
+      return 'SannJoseAC';
+  }
+}
+
 /// Controller for toggling between dev and production PocketBase instances.
 ///
 /// Stores the preference in secure storage and provides methods to toggle.

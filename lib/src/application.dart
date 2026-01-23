@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'core/i18n/strings.g.dart';
+import 'core/packages/pocketbase/pocketbase_provider.dart';
 import 'core/routing/router.dart';
 
 /// Main application widget.
@@ -16,7 +17,7 @@ class Application extends HookConsumerWidget {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
-      title: 'SanJoseVet',
+      title: appTitle,
       debugShowCheckedModeBanner: false,
       locale: TranslationProvider.of(context).flutterLocale,
       supportedLocales: AppLocaleUtils.supportedLocales,
