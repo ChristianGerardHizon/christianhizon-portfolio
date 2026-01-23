@@ -144,6 +144,7 @@ class PatientFilesTab extends HookConsumerWidget {
                     file: file,
                     onTap: () => _viewFile(context, file),
                     onLongPress: () => _showFileOptions(context, ref, file),
+                    onMenuTap: () => _showFileOptions(context, ref, file),
                   );
                 },
                 childCount: files.length + 1, // +1 for add button
