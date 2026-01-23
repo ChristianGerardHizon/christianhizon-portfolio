@@ -123,6 +123,7 @@ class SpeciesPage extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (context) => SpeciesFormSheet(species: species),
     );
   }

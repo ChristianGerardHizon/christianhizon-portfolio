@@ -165,6 +165,7 @@ class PatientFilesTab extends HookConsumerWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (context) => AddFileSheet(
         patientId: patient.id,
         onUpload: ({
@@ -190,6 +191,7 @@ class PatientFilesTab extends HookConsumerWidget {
   void _showFileOptions(BuildContext context, WidgetRef ref, PatientFile file) {
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       builder: (context) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -386,6 +388,7 @@ class AddFileFab extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (context) => AddFileSheet(
         patientId: patientId,
         onUpload: ({

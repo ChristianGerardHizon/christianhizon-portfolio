@@ -126,6 +126,7 @@ class ProductCategoriesPage extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (context) => ProductCategoryFormSheet(category: category),
     );
   }

@@ -129,6 +129,7 @@ class BranchesPage extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (context) => BranchFormSheet(branch: branch),
     );
   }

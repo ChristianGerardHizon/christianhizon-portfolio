@@ -473,6 +473,7 @@ class _MessageTemplateListWrapper extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (context) => const MessageTemplateFormSheet(),
     );
   }

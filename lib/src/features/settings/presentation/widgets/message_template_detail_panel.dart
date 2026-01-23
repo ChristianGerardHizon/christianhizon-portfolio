@@ -212,6 +212,7 @@ class _TemplateDetailContent extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (context) => MessageTemplateFormSheet(template: template),
     );
   }
