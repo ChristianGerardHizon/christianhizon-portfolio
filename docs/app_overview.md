@@ -115,22 +115,31 @@ Plan and track multi-visit treatment courses.
 
 ### Organization/Admin Features
 
-#### Users (`/organization/users`)
-- User CRUD operations
-- Role assignment
-- Branch association
+#### Organization (`/organization`)
+3-panel tablet layout for managing organizational settings.
 
-#### User Roles (`/organization/roles`)
-- Role and permission management
-- Pre-defined roles: Admin, Veterinarian, Staff, Cashier
+**Layout** (tablet):
+- Panel 1 (80px): Navigation rail with icon + text labels
+- Panel 2 (320px): List panel (users, roles, or branches)
+- Panel 3 (expanded): Detail panel or empty state
 
-#### Settings (`/system`)
-- **Species Management**: Pet species catalog
-- **Breeds Management**: Breed catalog linked to species
-- **Product Categories**: Hierarchical categories
-- **Branches**: Multi-location support
-- **Message Templates**: Pre-defined messages
-- **Change Logs**: Audit trail
+**Modes:**
+- **Users** (`/organization/users`) - User CRUD, role assignment, branch association
+- **Roles** (`/organization/roles`) - Role and permission management (Admin, Veterinarian, Staff, Cashier)
+- **Branches** (`/organization/branches`) - Multi-location support with address and contact info
+
+#### System Settings (`/system`)
+3-panel tablet layout for system configuration.
+
+**Layout** (tablet):
+- Panel 1 (80px): Navigation rail with icon + text labels
+- Panel 2 (320px): List panel (species, categories, or templates)
+- Panel 3 (expanded): Detail panel or empty state
+
+**Modes:**
+- **Species & Breeds** (`/system/species`) - Pet species catalog with breeds linked to species
+- **Product Categories** (`/system/product-categories`) - Hierarchical product categories
+- **Message Templates** (`/system/message-templates`) - Pre-defined messages for appointments
 
 ---
 
@@ -260,13 +269,15 @@ Located in `/lib/src/core/`
 - **Sales List**: Transaction history
 - **Sale Detail**: Receipt view
 
-### Settings & Admin
-- Species/Breeds Management
-- Product Categories
-- Branches Management
-- Message Templates
-- Users & Roles
-- Change Logs (Audit Trail)
+### Organization (3-panel layout)
+- Users Management (list/detail)
+- Roles Management (list/detail)
+- Branches Management (list/detail)
+
+### System Settings (3-panel layout)
+- Species/Breeds Management (list/detail)
+- Product Categories (list/detail)
+- Message Templates (list/detail)
 
 ### Responsive Behavior
 | Breakpoint | Layout |
@@ -345,13 +356,20 @@ App Root (Shell)
     │   ├── /sales (List)
     │   └── /sales/:id (Detail)
     ├── /messages
-    ├── /organization
+    ├── /organization (3-panel layout)
     │   ├── /organization/users
-    │   └── /organization/roles
-    └── /system
-        ├── /system/settings
-        ├── /system/change-logs
-        └── /system/account
+    │   │   └── /organization/users/:id
+    │   ├── /organization/roles
+    │   │   └── /organization/roles/:id
+    │   └── /organization/branches
+    │       └── /organization/branches/:id
+    └── /system (3-panel layout)
+        ├── /system/species
+        │   └── /system/species/:id
+        ├── /system/product-categories
+        │   └── /system/product-categories/:id
+        └── /system/message-templates
+            └── /system/message-templates/:id
 ```
 
 ### Navigation Components
@@ -363,6 +381,18 @@ App Root (Shell)
 | Tablet | Navigation Rail | Icons only (72px) |
 | Tablet Large | Expanded Rail | Icons + labels (160px) |
 | Desktop | Side Menu | Full collapsible menu |
+
+#### 3-Panel Master-Detail Layouts (Tablet)
+Organization and System sections use a 3-panel layout:
+
+| Panel | Width | Content |
+|-------|-------|---------|
+| Panel 1 | 80px | Mode navigation rail (icon + text label) |
+| Panel 2 | 320px | List panel with AppBar title and FAB |
+| Panel 3 | Expanded | Detail panel or empty state |
+
+- **Organization modes**: Users, Roles, Branches
+- **System modes**: Species & Breeds, Product Categories, Message Templates
 
 ### Primary Navigation
 1. 🏠 Dashboard - `/`
@@ -441,7 +471,8 @@ lib/src/
     ├── sales/             # Sales history
     ├── messages/          # Messaging
     ├── treatment_plans/   # Treatment planning
-    ├── settings/          # Configuration
+    ├── settings/          # System settings (species, categories, templates)
+    ├── organization/      # Organization settings (3-panel layout)
     ├── users/             # User management
     └── user_roles/        # Roles/permissions
         │
@@ -479,6 +510,9 @@ lib/src/
 
 | Date | Feature | Description |
 |------|---------|-------------|
+| Jan 24 | 3-Panel Layouts | Organization and System now use 3-panel tablet layouts with nav rail, list, and detail panels |
+| Jan 24 | Branches Moved | Branches management moved from System to Organization section |
+| Jan 24 | Nav Panel Labels | Navigation panels now show icon + text labels for better clarity |
 | Jan 23 | Patient Files | Upload/view images, videos, PDFs with 10MB limit |
 | Jan 21 | Lot Tracking | FEFO ordering in cashier |
 | Jan 21 | Treatment Plans | Multi-visit treatment with edit |
