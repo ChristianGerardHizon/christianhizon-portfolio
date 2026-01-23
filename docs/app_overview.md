@@ -41,9 +41,16 @@ Core feature for managing animal patients and medical records.
   - Medical Records (diagnosis, treatment, tests)
   - Treatments tracking
   - Prescriptions per visit
-  - Patient Files (documents, images)
-- **UI**: 5-tab interface (Details, Records, Treatments, Appointments, Files)
-- **Key Models**: `Patient`, `PatientRecord`, `PatientTreatment`, `PatientPrescriptionItem`
+  - Patient Files (documents, images, videos)
+- **UI**: 6-tab interface (Overview, Details, Records, Treatments, Appointments, Files)
+- **Key Models**: `Patient`, `PatientRecord`, `PatientTreatment`, `PatientPrescriptionItem`, `PatientFile`
+- **Patient Files**:
+  - Upload images (JPG, PNG, GIF, WEBP, HEIC), videos (MP4, MOV, AVI, WEBM), and PDFs
+  - 10MB file size limit with client-side validation
+  - Full-screen image viewer with zoom/pan (PhotoView)
+  - Video player with playback controls
+  - PDF viewer with external app launch
+  - File management: upload, view, edit notes, delete
 
 #### Products (`/products`)
 Inventory and product management with lot tracking.
@@ -223,6 +230,7 @@ Located in `/lib/src/core/`
 
 ### Enums
 - `PatientSex` - male, female
+- `PatientFileType` - image, video, document, unknown
 - `ProductStatus` - inStock, outOfStock, lowStock, noThreshold
 - `ProductAdjustmentType` - product, productStock
 - `AppointmentScheduleStatus` - scheduled, completed, missed, cancelled
@@ -471,6 +479,7 @@ lib/src/
 
 | Date | Feature | Description |
 |------|---------|-------------|
+| Jan 23 | Patient Files | Upload/view images, videos, PDFs with 10MB limit |
 | Jan 21 | Lot Tracking | FEFO ordering in cashier |
 | Jan 21 | Treatment Plans | Multi-visit treatment with edit |
 | Jan 19 | Stock Adjustments | Audit trail for inventory |

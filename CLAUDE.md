@@ -41,10 +41,10 @@ lib/src/
 dart pub get
 
 # Run code generation (mappers, serializers, routes)
+# IMPORTANT: Always use --low-resources-mode to prevent memory issues
 dart run build_runner build --delete-conflicting-outputs --low-resources-mode
 
-or
-
+# Or use watch mode for continuous rebuilds
 dart run build_runner watch -d --low-resources-mode
 
 # Generate localization files
