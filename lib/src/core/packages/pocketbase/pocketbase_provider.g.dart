@@ -65,24 +65,24 @@ abstract class _$PbDebugController extends $AsyncNotifier<bool> {
 
 /// Provides a singleton PocketBase instance.
 ///
-/// The instance switches between dev and production URLs based on
-/// the [PbDebugController] state.
+/// The instance uses the URL resolved from --dart-define=ENV or falls back
+/// to kDebugMode-based selection.
 
 @ProviderFor(pocketbase)
 final pocketbaseProvider = PocketbaseProvider._();
 
 /// Provides a singleton PocketBase instance.
 ///
-/// The instance switches between dev and production URLs based on
-/// the [PbDebugController] state.
+/// The instance uses the URL resolved from --dart-define=ENV or falls back
+/// to kDebugMode-based selection.
 
 final class PocketbaseProvider
     extends $FunctionalProvider<PocketBase, PocketBase, PocketBase>
     with $Provider<PocketBase> {
   /// Provides a singleton PocketBase instance.
   ///
-  /// The instance switches between dev and production URLs based on
-  /// the [PbDebugController] state.
+  /// The instance uses the URL resolved from --dart-define=ENV or falls back
+  /// to kDebugMode-based selection.
   PocketbaseProvider._()
       : super(
           from: null,
@@ -116,4 +116,4 @@ final class PocketbaseProvider
   }
 }
 
-String _$pocketbaseHash() => r'b40baa1009743a375e0a7ad66e220260be3bb143';
+String _$pocketbaseHash() => r'504c7dfbfae9874cc12c1a0bbf23d94b01a9e525';
