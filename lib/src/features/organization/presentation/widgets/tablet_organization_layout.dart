@@ -95,31 +95,43 @@ class _UsersListWrapper extends ConsumerWidget {
     final usersAsync = ref.watch(paginatedUsersControllerProvider);
     final usersController = ref.read(paginatedUsersControllerProvider.notifier);
 
-    return usersAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 48),
-            const SizedBox(height: 16),
-            Text('Error: ${error.toString()}'),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => usersController.refresh(),
-              child: const Text('Retry'),
-            ),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Users'),
+        automaticallyImplyLeading: false,
       ),
-      data: (paginatedState) => UserListPanel(
-        paginatedState: paginatedState,
-        selectedId: selectedId,
-        onUserTap: (user) {
-          OrganizationUserDetailRoute(id: user.id).go(context);
-        },
-        onRefresh: () => usersController.refresh(),
-        onLoadMore: () => usersController.loadMore(),
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'user_fab',
+        onPressed: () =>
+            const OrganizationUserDetailRoute(id: 'new').go(context),
+        child: const Icon(Icons.add),
+      ),
+      body: usersAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error: ${error.toString()}'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => usersController.refresh(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        data: (paginatedState) => UserListPanel(
+          paginatedState: paginatedState,
+          selectedId: selectedId,
+          onUserTap: (user) {
+            OrganizationUserDetailRoute(id: user.id).go(context);
+          },
+          onRefresh: () => usersController.refresh(),
+          onLoadMore: () => usersController.loadMore(),
+        ),
       ),
     );
   }
@@ -136,32 +148,44 @@ class _RolesListWrapper extends ConsumerWidget {
     final rolesAsync = ref.watch(userRolesControllerProvider);
     final rolesController = ref.read(userRolesControllerProvider.notifier);
 
-    return rolesAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 48),
-            const SizedBox(height: 16),
-            Text('Error: ${error.toString()}'),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => rolesController.refresh(),
-              child: const Text('Retry'),
-            ),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Roles'),
+        automaticallyImplyLeading: false,
       ),
-      data: (roles) => UserRoleListPanel(
-        roles: roles,
-        selectedId: selectedId,
-        onRefresh: () => rolesController.refresh(),
-        onEdit: (role) => showEditRoleSheet(context, role),
-        onDelete: (role) => _confirmDeleteRole(context, ref, role),
-        onRoleTap: (role) {
-          OrganizationRoleDetailRoute(id: role.id).go(context);
-        },
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'role_fab',
+        onPressed: () =>
+            const OrganizationRoleDetailRoute(id: 'new').go(context),
+        child: const Icon(Icons.add),
+      ),
+      body: rolesAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error: ${error.toString()}'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => rolesController.refresh(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        data: (roles) => UserRoleListPanel(
+          roles: roles,
+          selectedId: selectedId,
+          onRefresh: () => rolesController.refresh(),
+          onEdit: (role) => showEditRoleSheet(context, role),
+          onDelete: (role) => _confirmDeleteRole(context, ref, role),
+          onRoleTap: (role) {
+            OrganizationRoleDetailRoute(id: role.id).go(context);
+          },
+        ),
       ),
     );
   }
