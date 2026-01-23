@@ -243,22 +243,28 @@ class EditPatientSheet extends HookConsumerWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: breedsAsync.when(
-                      data: (breedsList) => FormBuilderDropdown<String>(
-                        name: 'breed',
-                        decoration: const InputDecoration(
-                          labelText: 'Breed',
-                          border: OutlineInputBorder(),
-                        ),
-                        enabled:
-                            !isSaving.value && selectedSpeciesId.value != null,
-                        initialValue: patient.breedId,
-                        items: breedsList.map((b) {
-                          return DropdownMenuItem(
-                            value: b.id,
-                            child: Text(b.name),
-                          );
-                        }).toList(),
-                      ),
+                      data: (breedsList) {
+                        // Only use patient's breedId if it exists in the list
+                        final breedExists = breedsList.any(
+                          (b) => b.id == patient.breedId,
+                        );
+                        return FormBuilderDropdown<String>(
+                          name: 'breed',
+                          decoration: const InputDecoration(
+                            labelText: 'Breed',
+                            border: OutlineInputBorder(),
+                          ),
+                          enabled:
+                              !isSaving.value && selectedSpeciesId.value != null,
+                          initialValue: breedExists ? patient.breedId : null,
+                          items: breedsList.map((b) {
+                            return DropdownMenuItem(
+                              value: b.id,
+                              child: Text(b.name),
+                            );
+                          }).toList(),
+                        );
+                      },
                       loading: () => const TextField(
                         decoration: InputDecoration(
                           labelText: 'Breed',
