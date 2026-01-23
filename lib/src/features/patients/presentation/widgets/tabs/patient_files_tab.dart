@@ -120,7 +120,7 @@ class PatientFilesTab extends HookConsumerWidget {
           ref.read(patientFilesControllerProvider(patient.id).notifier).refresh(),
       child: CustomScrollView(
         slivers: [
-          // File grid
+          // File grid with add button as first item
           SliverPadding(
             padding: const EdgeInsets.all(16),
             sliver: SliverGrid(
@@ -132,20 +132,27 @@ class PatientFilesTab extends HookConsumerWidget {
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  final file = files[index];
+                  // First item is the add button
+                  if (index == 0) {
+                    return _AddFileCard(
+                      onTap: () => _showAddFileSheet(context, ref),
+                    );
+                  }
+                  // Adjust index for actual files
+                  final file = files[index - 1];
                   return FileCard(
                     file: file,
                     onTap: () => _viewFile(context, file),
                     onLongPress: () => _showFileOptions(context, ref, file),
                   );
                 },
-                childCount: files.length,
+                childCount: files.length + 1, // +1 for add button
               ),
             ),
           ),
-          // Bottom padding for FAB
+          // Bottom padding
           const SliverToBoxAdapter(
-            child: SizedBox(height: 80),
+            child: SizedBox(height: 24),
           ),
         ],
       ),
@@ -300,6 +307,60 @@ class PatientFilesTab extends HookConsumerWidget {
     );
   }
 
+}
+
+/// Card widget for adding a new file.
+class _AddFileCard extends StatelessWidget {
+  const _AddFileCard({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: theme.colorScheme.outline.withValues(alpha: 0.5),
+              width: 2,
+              strokeAlign: BorderSide.strokeAlignInside,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.add,
+                  size: 32,
+                  color: theme.colorScheme.onPrimaryContainer,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Add File',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// FAB for adding files, to be used in the patient detail page.
