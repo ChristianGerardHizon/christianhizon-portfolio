@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/routing/routes/organization.routes.dart';
 import '../../../settings/domain/branch.dart';
 import '../../../settings/presentation/controllers/branches_controller.dart';
@@ -96,10 +98,6 @@ class _UsersListWrapper extends ConsumerWidget {
     final usersController = ref.read(paginatedUsersControllerProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Users'),
-        automaticallyImplyLeading: false,
-      ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'user_fab',
         onPressed: () =>
@@ -148,44 +146,32 @@ class _RolesListWrapper extends ConsumerWidget {
     final rolesAsync = ref.watch(userRolesControllerProvider);
     final rolesController = ref.read(userRolesControllerProvider.notifier);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Roles'),
-        automaticallyImplyLeading: false,
-      ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'role_fab',
-        onPressed: () =>
-            const OrganizationRoleDetailRoute(id: 'new').go(context),
-        child: const Icon(Icons.add),
-      ),
-      body: rolesAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 48),
-              const SizedBox(height: 16),
-              Text('Error: ${error.toString()}'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => rolesController.refresh(),
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
+    return rolesAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 48),
+            const SizedBox(height: 16),
+            Text('Error: ${error.toString()}'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => rolesController.refresh(),
+              child: const Text('Retry'),
+            ),
+          ],
         ),
-        data: (roles) => UserRoleListPanel(
-          roles: roles,
-          selectedId: selectedId,
-          onRefresh: () => rolesController.refresh(),
-          onEdit: (role) => showEditRoleSheet(context, role),
-          onDelete: (role) => _confirmDeleteRole(context, ref, role),
-          onRoleTap: (role) {
-            OrganizationRoleDetailRoute(id: role.id).go(context);
-          },
-        ),
+      ),
+      data: (roles) => UserRoleListPanel(
+        roles: roles,
+        selectedId: selectedId,
+        onRefresh: () => rolesController.refresh(),
+        onEdit: (role) => showEditRoleSheet(context, role),
+        onDelete: (role) => _confirmDeleteRole(context, ref, role),
+        onRoleTap: (role) {
+          OrganizationRoleDetailRoute(id: role.id).go(context);
+        },
       ),
     );
   }
@@ -230,7 +216,7 @@ class _RolesListWrapper extends ConsumerWidget {
 }
 
 /// Wrapper for BranchListPanel with organization-specific navigation.
-class _BranchesListWrapper extends ConsumerWidget {
+class _BranchesListWrapper extends HookConsumerWidget {
   const _BranchesListWrapper({required this.selectedId});
 
   final String? selectedId;
@@ -238,14 +224,30 @@ class _BranchesListWrapper extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final t = Translations.of(context);
     final branchesAsync = ref.watch(branchesControllerProvider);
     final controller = ref.read(branchesControllerProvider.notifier);
 
+    // Search state
+    final searchController = useTextEditingController();
+    final searchText = useState('');
+    final appliedQuery = useState('');
+
+    final isSearchActive = appliedQuery.value.isNotEmpty;
+
+    void performSearch() {
+      final query = searchController.text.trim();
+      if (query.isEmpty) return;
+      appliedQuery.value = query;
+    }
+
+    void clearSearch() {
+      searchController.clear();
+      searchText.value = '';
+      appliedQuery.value = '';
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Branches'),
-        automaticallyImplyLeading: false,
-      ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'branch_fab',
         onPressed: () =>
@@ -270,51 +272,101 @@ class _BranchesListWrapper extends ConsumerWidget {
           ),
         ),
         data: (branches) {
-          if (branches.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.store_outlined,
-                    size: 64,
-                    color: theme.colorScheme.outline,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No branches yet',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: theme.colorScheme.outline,
+          final filteredBranches = isSearchActive
+              ? _filterBranches(branches, appliedQuery.value)
+              : branches;
+          final totalCount = filteredBranches.length;
+
+          return Column(
+            children: [
+              // Header
+              Container(
+                padding: const EdgeInsets.all(16),
+                color: theme.colorScheme.surfaceContainerHighest,
+                child: Row(
+                  children: [
+                    Text('Branches', style: theme.textTheme.titleLarge),
+                    const Spacer(),
+                    Text(
+                      '$totalCount total',
+                      style: theme.textTheme.bodySmall,
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Tap + to add a branch',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.outline,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            );
-          }
 
-          return RefreshIndicator(
-            onRefresh: () => controller.refresh(),
-            child: ListView.builder(
-              itemCount: branches.length,
-              itemBuilder: (context, index) {
-                final branch = branches[index];
-                final isSelected = branch.id == selectedId;
+              // Search
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: isSearchActive
+                    ? _BranchActiveSearchChip(
+                        query: appliedQuery.value,
+                        onClear: clearSearch,
+                      )
+                    : _BranchSearchInput(
+                        controller: searchController,
+                        onSearch: performSearch,
+                        onTextChanged: (text) => searchText.value = text,
+                        searchText: searchText.value,
+                        hintText: '${t.common.search}...',
+                      ),
+              ),
 
-                return _BranchListTile(
-                  branch: branch,
-                  isSelected: isSelected,
-                  onTap: () =>
-                      OrganizationBranchDetailRoute(id: branch.id).go(context),
-                );
-              },
-            ),
+              // List
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () => controller.refresh(),
+                  child: filteredBranches.isEmpty
+                      ? ListView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: [
+                            const SizedBox(height: 80),
+                            Icon(
+                              Icons.store_outlined,
+                              size: 80,
+                              color: theme.colorScheme.outlineVariant,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              isSearchActive
+                                  ? 'No branches match "${appliedQuery.value}"'
+                                  : 'No branches yet',
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                color: theme.colorScheme.outline,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              isSearchActive
+                                  ? 'Try a different search term'
+                                  : 'Tap + to add a branch',
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.outline,
+                              ),
+                            ),
+                          ],
+                        )
+                      : ListView.builder(
+                          padding: const EdgeInsets.only(bottom: 80),
+                          itemCount: filteredBranches.length,
+                          itemBuilder: (context, index) {
+                            final branch = filteredBranches[index];
+                            final isSelected = branch.id == selectedId;
+
+                            return _BranchListTile(
+                              branch: branch,
+                              isSelected: isSelected,
+                              onTap: () =>
+                                  OrganizationBranchDetailRoute(id: branch.id)
+                                      .go(context),
+                            );
+                          },
+                        ),
+                ),
+              ),
+            ],
           );
         },
       ),
@@ -365,4 +417,132 @@ class _BranchListTile extends StatelessWidget {
       onTap: onTap,
     );
   }
+}
+
+class _BranchActiveSearchChip extends StatelessWidget {
+  const _BranchActiveSearchChip({
+    required this.query,
+    required this.onClear,
+  });
+
+  final String query;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      children: [
+        Expanded(
+          child: InputDecorator(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              isDense: true,
+              filled: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.search,
+                  size: 20,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '"$query"',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                InkWell(
+                  onTap: onClear,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Icon(
+                    Icons.close,
+                    size: 20,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BranchSearchInput extends StatelessWidget {
+  const _BranchSearchInput({
+    required this.controller,
+    required this.onSearch,
+    required this.onTextChanged,
+    required this.searchText,
+    required this.hintText,
+  });
+
+  final TextEditingController controller;
+  final VoidCallback onSearch;
+  final ValueChanged<String> onTextChanged;
+  final String searchText;
+  final String hintText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            controller: controller,
+            onChanged: onTextChanged,
+            onSubmitted: (_) => onSearch(),
+            textInputAction: TextInputAction.search,
+            decoration: InputDecoration(
+              hintText: hintText,
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: searchText.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        controller.clear();
+                        onTextChanged('');
+                      },
+                    )
+                  : null,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              isDense: true,
+              filled: true,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+List<Branch> _filterBranches(List<Branch> branches, String query) {
+  final normalizedQuery = query.trim().toLowerCase();
+  if (normalizedQuery.isEmpty) {
+    return branches;
+  }
+
+  return branches.where((b) {
+    final nameMatch = b.name.toLowerCase().contains(normalizedQuery);
+    final addressMatch =
+        b.address?.toLowerCase().contains(normalizedQuery) ?? false;
+    return nameMatch || addressMatch;
+  }).toList();
 }
