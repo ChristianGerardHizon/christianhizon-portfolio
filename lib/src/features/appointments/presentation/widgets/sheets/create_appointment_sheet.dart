@@ -451,12 +451,15 @@ class CreateAppointmentSheet extends HookConsumerWidget {
               const SizedBox(height: 16),
 
               // Time toggle
-              SwitchListTile(
-                title: const Text('Include specific time'),
-                value: hasTime.value,
-                onChanged:
-                    isSaving.value ? null : (value) => hasTime.value = value,
-                contentPadding: EdgeInsets.zero,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: SwitchListTile(
+                  title: const Text('Include specific time'),
+                  value: hasTime.value,
+                  onChanged:
+                      isSaving.value ? null : (value) => hasTime.value = value,
+                  contentPadding: EdgeInsets.zero,
+                ),
               ),
               if (hasTime.value) const SizedBox(height: 16),
 
