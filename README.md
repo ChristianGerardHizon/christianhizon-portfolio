@@ -479,6 +479,51 @@ pocketbase admin create admin@test.com password101
 pocketbase serve --dir .
 ```
 
+## Environment Configuration
+
+The app supports multiple deployment environments via `--dart-define`:
+
+| Environment | URL | Usage |
+|-------------|-----|-------|
+| `dev` | `http://127.0.0.1:8090` | Local development |
+| `staging` | `https://staging.sannjoseanimalclinic.com` | Staging/QA |
+| `prod` | `https://www.sannjoseanimalclinic.com` | Production |
+
+### VS Code Launch Configs
+
+Use the VS Code Run and Debug dropdown to select environment:
+- **dev** - Connects to local PocketBase
+- **staging** - Connects to staging server
+- **prod (local test)** - Connects to production server
+
+### Build Commands
+
+```bash
+# Development build
+flutter build web --dart-define=ENV=dev
+
+# Staging build
+flutter build web --dart-define=ENV=staging
+
+# Production build
+flutter build web --dart-define=ENV=prod --release
+```
+
+### CI/CD
+
+Pass the `--dart-define=ENV=<env>` flag in your build pipeline:
+
+```yaml
+# GitHub Actions example
+- run: flutter build web --dart-define=ENV=staging
+```
+
+### Fallback Behavior
+
+If `ENV` is not specified:
+- **Debug mode** (`flutter run`): Uses `dev` URL
+- **Release mode** (`flutter build --release`): Uses `prod` URL
+
 ## License
 
 This project is proprietary software.
