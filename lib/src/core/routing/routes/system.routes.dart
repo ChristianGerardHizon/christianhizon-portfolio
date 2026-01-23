@@ -6,12 +6,15 @@ import '../../../features/products/domain/product_category.dart';
 import '../../../features/settings/domain/message_template.dart';
 import '../../../features/settings/presentation/controllers/message_templates_controller.dart';
 import '../../../features/settings/presentation/controllers/product_categories_controller.dart';
+import '../../../features/patients/domain/patient_treatment.dart';
+import '../../../features/patients/presentation/controllers/patient_treatments_controller.dart';
 import '../../../features/settings/presentation/controllers/species_controller.dart';
 import '../../../features/settings/presentation/pages/system_shell.dart';
 import '../../../features/settings/presentation/widgets/message_template_detail_panel.dart';
 import '../../../features/settings/presentation/widgets/product_category_detail_panel.dart';
 import '../../../features/settings/presentation/widgets/sheets/message_template_form_sheet.dart';
 import '../../../features/settings/presentation/widgets/species_detail_panel.dart';
+import '../../../features/settings/presentation/widgets/treatment_type_detail_panel.dart';
 import '../../utils/breakpoints.dart';
 
 part 'system.routes.g.dart';
@@ -44,6 +47,13 @@ part 'system.routes.g.dart';
           path: 'message-templates',
           routes: [
             TypedGoRoute<MessageTemplateDetailRoute>(path: ':id'),
+          ],
+        ),
+        // Treatment types with detail
+        TypedGoRoute<TreatmentTypesRoute>(
+          path: 'treatment-types',
+          routes: [
+            TypedGoRoute<TreatmentTypeDetailRoute>(path: ':id'),
           ],
         ),
       ],
@@ -167,6 +177,34 @@ class MessageTemplateDetailRoute extends GoRouteData
   }
 }
 
+/// Treatment types management route.
+class TreatmentTypesRoute extends GoRouteData with $TreatmentTypesRoute {
+  const TreatmentTypesRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    // On tablet, handled by shell - return empty
+    if (Breakpoints.isTabletOrLarger(context)) {
+      return const SizedBox.shrink();
+    }
+    // Mobile: Show treatment types list
+    return const _MobileTreatmentTypesListPage();
+  }
+}
+
+/// Treatment type detail route.
+class TreatmentTypeDetailRoute extends GoRouteData
+    with $TreatmentTypeDetailRoute {
+  const TreatmentTypeDetailRoute({required this.id});
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return TreatmentTypeDetailPanel(treatmentId: id);
+  }
+}
+
 // ============================================================================
 // Mobile Pages
 // ============================================================================
@@ -215,6 +253,16 @@ class _MobileSystemLandingPage extends StatelessWidget {
                 description: 'Manage SMS message templates',
                 color: theme.colorScheme.tertiary,
                 onTap: () => const MessageTemplatesRoute().go(context),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: _SystemOptionCard(
+                icon: Icons.medical_services,
+                title: 'Treatment Types',
+                description: 'Manage patient treatment categories',
+                color: Colors.teal,
+                onTap: () => const TreatmentTypesRoute().go(context),
               ),
             ),
           ],
@@ -696,6 +744,100 @@ class _MobileTemplateListTile extends StatelessWidget {
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
+      ),
+    );
+  }
+}
+
+/// Mobile treatment types list page.
+class _MobileTreatmentTypesListPage extends ConsumerWidget {
+  const _MobileTreatmentTypesListPage();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final treatmentsAsync = ref.watch(patientTreatmentsControllerProvider);
+    final controller = ref.read(patientTreatmentsControllerProvider.notifier);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Treatment Types'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'treatment_type_fab',
+        onPressed: () => const TreatmentTypeDetailRoute(id: 'new').push(context),
+        child: const Icon(Icons.add),
+      ),
+      body: treatmentsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error: ${error.toString()}'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => controller.refresh(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        data: (treatments) {
+          if (treatments.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.medical_services_outlined,
+                    size: 64,
+                    color: theme.colorScheme.outline,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No treatment types yet',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap + to add a treatment type',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () => controller.refresh(),
+            child: ListView.builder(
+              itemCount: treatments.length,
+              itemBuilder: (context, index) {
+                final treatment = treatments[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: theme.colorScheme.primaryContainer,
+                    child: Icon(
+                      Icons.medical_services_outlined,
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                  title: Text(treatment.name),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () =>
+                      TreatmentTypeDetailRoute(id: treatment.id).push(context),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

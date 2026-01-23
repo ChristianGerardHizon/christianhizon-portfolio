@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/routing/routes/system.routes.dart';
+import '../../../patients/domain/patient_treatment.dart';
+import '../../../patients/presentation/controllers/patient_treatments_controller.dart';
 import '../../../products/domain/product_category.dart';
 import '../../domain/message_template.dart';
 import '../controllers/message_templates_controller.dart';
@@ -38,6 +40,8 @@ class TabletSystemLayout extends ConsumerWidget {
       currentMode = SystemMode.productCategories;
     } else if (path.contains('/message-templates')) {
       currentMode = SystemMode.messageTemplates;
+    } else if (path.contains('/treatment-types')) {
+      currentMode = SystemMode.treatmentTypes;
     } else {
       currentMode = SystemMode.speciesBreeds;
     }
@@ -55,6 +59,8 @@ class TabletSystemLayout extends ConsumerWidget {
                 const ProductCategoriesRoute().go(context);
               case SystemMode.messageTemplates:
                 const MessageTemplatesRoute().go(context);
+              case SystemMode.treatmentTypes:
+                const TreatmentTypesRoute().go(context);
             }
           },
         ),
@@ -70,6 +76,8 @@ class TabletSystemLayout extends ConsumerWidget {
               _ProductCategoryListWrapper(selectedId: selectedId),
             SystemMode.messageTemplates =>
               _MessageTemplateListWrapper(selectedId: selectedId),
+            SystemMode.treatmentTypes =>
+              _TreatmentTypeListWrapper(selectedId: selectedId),
           },
         ),
         const VerticalDivider(width: 1),
@@ -521,6 +529,112 @@ class _MessageTemplateListTile extends StatelessWidget {
           ),
         ),
         onTap: onTap,
+      ),
+    );
+  }
+}
+
+/// Wrapper for TreatmentTypeListPanel with system-specific navigation.
+class _TreatmentTypeListWrapper extends ConsumerWidget {
+  const _TreatmentTypeListWrapper({required this.selectedId});
+
+  final String? selectedId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final treatmentsAsync = ref.watch(patientTreatmentsControllerProvider);
+    final controller = ref.read(patientTreatmentsControllerProvider.notifier);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Treatment Types'),
+        automaticallyImplyLeading: false,
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'treatment_type_fab',
+        onPressed: () => const TreatmentTypeDetailRoute(id: 'new').go(context),
+        child: const Icon(Icons.add),
+      ),
+      body: treatmentsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error: ${error.toString()}'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => controller.refresh(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        data: (treatments) {
+          if (treatments.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.medical_services_outlined,
+                    size: 64,
+                    color: theme.colorScheme.outline,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No treatment types yet',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap + to add a treatment type',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () => controller.refresh(),
+            child: ListView.builder(
+              itemCount: treatments.length,
+              itemBuilder: (context, index) {
+                final treatment = treatments[index];
+                final isSelected = treatment.id == selectedId;
+
+                return ListTile(
+                  selected: isSelected,
+                  selectedTileColor:
+                      theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  leading: CircleAvatar(
+                    backgroundColor: isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.primaryContainer,
+                    child: Icon(
+                      Icons.medical_services_outlined,
+                      color: isSelected
+                          ? theme.colorScheme.onPrimary
+                          : theme.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                  title: Text(treatment.name),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () =>
+                      TreatmentTypeDetailRoute(id: treatment.id).go(context),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

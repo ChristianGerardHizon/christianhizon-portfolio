@@ -47,6 +47,16 @@ RouteBase get $systemShellRoute => ShellRouteData.$route(
                 ),
               ],
             ),
+            GoRouteData.$route(
+              path: 'treatment-types',
+              factory: $TreatmentTypesRoute._fromState,
+              routes: [
+                GoRouteData.$route(
+                  path: ':id',
+                  factory: $TreatmentTypeDetailRoute._fromState,
+                ),
+              ],
+            ),
           ],
         ),
       ],
@@ -212,6 +222,56 @@ mixin $MessageTemplateDetailRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
         '/system/message-templates/${Uri.encodeComponent(_self.id)}',
+      );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $TreatmentTypesRoute on GoRouteData {
+  static TreatmentTypesRoute _fromState(GoRouterState state) =>
+      const TreatmentTypesRoute();
+
+  @override
+  String get location => GoRouteData.$location(
+        '/system/treatment-types',
+      );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $TreatmentTypeDetailRoute on GoRouteData {
+  static TreatmentTypeDetailRoute _fromState(GoRouterState state) =>
+      TreatmentTypeDetailRoute(
+        id: state.pathParameters['id']!,
+      );
+
+  TreatmentTypeDetailRoute get _self => this as TreatmentTypeDetailRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+        '/system/treatment-types/${Uri.encodeComponent(_self.id)}',
       );
 
   @override

@@ -32,6 +32,11 @@ class EmptySystemState extends StatelessWidget {
           'Select a template',
           'Choose a template from the list to view and edit',
         ),
+      SystemMode.treatmentTypes => (
+          Icons.medical_services_outlined,
+          'Select a treatment type',
+          'Choose a treatment type from the list to view and edit',
+        ),
     };
 
     return Center(
