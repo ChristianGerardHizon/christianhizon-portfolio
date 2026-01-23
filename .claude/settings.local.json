@@ -18,7 +18,8 @@
       "mcp__filesystem__read_multiple_files",
       "Bash(grepai search:*)",
       "Bash(grepai init --help:*)",
-      "Bash(grepai status:*)"
+      "Bash(grepai status:*)",
+      "Bash(xargs cat:*)"
     ],
     "deny": [
       "Bash(rm:*)",
