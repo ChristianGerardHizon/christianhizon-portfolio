@@ -1,11 +1,14 @@
 import 'dart:typed_data';
 
 import 'package:file_saver/file_saver.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+import '../../../settings/domain/branch.dart';
 import '../../domain/patient.dart';
 import '../../domain/patient_record.dart';
 import '../../domain/prescription.dart';
@@ -18,6 +21,7 @@ class PrescriptionPdfData {
     required this.record,
     required this.prescriptionDate,
     this.prescriptionNumber,
+    this.branch,
   });
 
   final List<Prescription> prescriptions;
@@ -25,6 +29,7 @@ class PrescriptionPdfData {
   final PatientRecord record;
   final DateTime prescriptionDate;
   final String? prescriptionNumber;
+  final Branch? branch;
 }
 
 /// Generates A4 prescription PDF documents.
@@ -56,6 +61,16 @@ class PrescriptionPdfGenerator {
     final pdfBytes = await _generatePdf();
     final filename = 'Prescription_${_formatFilename()}';
 
+    // On web, use sharePdf which triggers a download
+    if (kIsWeb) {
+      await Printing.sharePdf(
+        bytes: pdfBytes,
+        filename: '$filename.pdf',
+      );
+      return filename;
+    }
+
+    // On other platforms, use save dialog
     final result = await FileSaver.instance.saveAs(
       name: filename,
       bytes: pdfBytes,
@@ -69,6 +84,10 @@ class PrescriptionPdfGenerator {
   Future<Uint8List> _generatePdf() async {
     final pdf = pw.Document();
 
+    // Load logo image from assets
+    final logoData = await rootBundle.load('assets/icons/app_icon_transparent.png');
+    final logoImage = pw.MemoryImage(logoData.buffer.asUint8List());
+
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
@@ -76,7 +95,7 @@ class PrescriptionPdfGenerator {
         build: (context) => pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            _buildHeader(),
+            _buildHeader(logoImage),
             pw.SizedBox(height: 20),
             _buildPrescriptionInfo(),
             pw.SizedBox(height: 20),
@@ -95,28 +114,66 @@ class PrescriptionPdfGenerator {
     return pdf.save();
   }
 
-  pw.Widget _buildHeader() {
+  pw.Widget _buildHeader(pw.MemoryImage logo) {
+    final branch = data.branch;
+    final clinicName = branch?.displayName ?? branch?.name ?? 'Veterinary Clinic';
+
     return pw.Column(
       children: [
+        // Logo and clinic info row
+        pw.Row(
+          crossAxisAlignment: pw.CrossAxisAlignment.center,
+          children: [
+            pw.Image(logo, width: 60, height: 60),
+            pw.SizedBox(width: 16),
+            pw.Expanded(
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text(
+                    clinicName,
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                  ),
+                  if (branch?.address != null && branch!.address!.isNotEmpty)
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.only(top: 2),
+                      child: pw.Text(
+                        branch.address!,
+                        style: const pw.TextStyle(fontSize: 9),
+                      ),
+                    ),
+                  if (branch?.contactNumber != null &&
+                      branch!.contactNumber!.isNotEmpty)
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.only(top: 2),
+                      child: pw.Text(
+                        'Tel: ${branch.contactNumber}',
+                        style: const pw.TextStyle(fontSize: 9),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        pw.SizedBox(height: 12),
+        pw.Divider(thickness: 1.5, color: PdfColors.grey600),
+        pw.SizedBox(height: 8),
         pw.Center(
           child: pw.Text(
             'VETERINARY PRESCRIPTION',
             style: pw.TextStyle(
-              fontSize: 18,
+              fontSize: 14,
               fontWeight: pw.FontWeight.bold,
+              letterSpacing: 1,
             ),
           ),
         ),
-        pw.SizedBox(height: 4),
-        pw.Center(
-          child: pw.Text(
-            // TODO: Fetch clinic name from Branch/Settings
-            'San Jose Veterinary Clinic',
-            style: const pw.TextStyle(fontSize: 12),
-          ),
-        ),
         pw.SizedBox(height: 8),
-        pw.Divider(thickness: 1),
+        pw.Divider(thickness: 0.5, color: PdfColors.grey400),
       ],
     );
   }

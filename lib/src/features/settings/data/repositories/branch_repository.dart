@@ -92,6 +92,7 @@ class BranchRepositoryImpl implements BranchRepository {
       () async {
         final body = <String, dynamic>{
           'name': branch.name,
+          'displayName': branch.displayName,
           'address': branch.address,
           'contactNumber': branch.contactNumber,
           'isDeleted': false,
@@ -118,6 +119,7 @@ class BranchRepositoryImpl implements BranchRepository {
 
         final body = <String, dynamic>{
           'name': branch.name,
+          'displayName': branch.displayName,
           'address': branch.address,
           'contactNumber': branch.contactNumber,
         };

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../settings/presentation/controllers/branch_provider.dart';
 import '../../domain/patient.dart';
 import '../../domain/patient_record.dart';
 import '../../domain/prescription.dart';
@@ -408,11 +409,19 @@ class RecordDetailPage extends ConsumerWidget {
             formatDateHeader: _formatDateHeader,
             onSelect: (date, prescriptions) async {
               Navigator.pop(context);
+
+              // Fetch branch data for PDF header
+              final branchId = record.branch;
+              final branch = branchId != null && branchId.isNotEmpty
+                  ? await ref.read(branchProvider(branchId).future)
+                  : null;
+
               final pdfData = PrescriptionPdfData(
                 prescriptions: prescriptions,
                 patient: patient,
                 record: record,
                 prescriptionDate: date,
+                branch: branch,
               );
               final generator = PrescriptionPdfGenerator(pdfData);
               switch (action) {

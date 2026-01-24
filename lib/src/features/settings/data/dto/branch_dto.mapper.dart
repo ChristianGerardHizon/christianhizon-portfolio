@@ -35,6 +35,12 @@ class BranchDtoMapper extends ClassMapperBase<BranchDto> {
   );
   static String _$name(BranchDto v) => v.name;
   static const Field<BranchDto, String> _f$name = Field('name', _$name);
+  static String? _$displayName(BranchDto v) => v.displayName;
+  static const Field<BranchDto, String> _f$displayName = Field(
+    'displayName',
+    _$displayName,
+    opt: true,
+  );
   static String? _$address(BranchDto v) => v.address;
   static const Field<BranchDto, String> _f$address = Field(
     'address',
@@ -73,6 +79,7 @@ class BranchDtoMapper extends ClassMapperBase<BranchDto> {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
     #name: _f$name,
+    #displayName: _f$displayName,
     #address: _f$address,
     #contactNumber: _f$contactNumber,
     #isDeleted: _f$isDeleted,
@@ -86,6 +93,7 @@ class BranchDtoMapper extends ClassMapperBase<BranchDto> {
       collectionId: data.dec(_f$collectionId),
       collectionName: data.dec(_f$collectionName),
       name: data.dec(_f$name),
+      displayName: data.dec(_f$displayName),
       address: data.dec(_f$address),
       contactNumber: data.dec(_f$contactNumber),
       isDeleted: data.dec(_f$isDeleted),
@@ -158,6 +166,7 @@ abstract class BranchDtoCopyWith<$R, $In extends BranchDto, $Out>
     String? collectionId,
     String? collectionName,
     String? name,
+    String? displayName,
     String? address,
     String? contactNumber,
     bool? isDeleted,
@@ -181,6 +190,7 @@ class _BranchDtoCopyWithImpl<$R, $Out>
     String? collectionId,
     String? collectionName,
     String? name,
+    Object? displayName = $none,
     Object? address = $none,
     Object? contactNumber = $none,
     bool? isDeleted,
@@ -192,6 +202,7 @@ class _BranchDtoCopyWithImpl<$R, $Out>
       if (collectionId != null) #collectionId: collectionId,
       if (collectionName != null) #collectionName: collectionName,
       if (name != null) #name: name,
+      if (displayName != $none) #displayName: displayName,
       if (address != $none) #address: address,
       if (contactNumber != $none) #contactNumber: contactNumber,
       if (isDeleted != null) #isDeleted: isDeleted,
@@ -205,6 +216,7 @@ class _BranchDtoCopyWithImpl<$R, $Out>
     collectionId: data.get(#collectionId, or: $value.collectionId),
     collectionName: data.get(#collectionName, or: $value.collectionName),
     name: data.get(#name, or: $value.name),
+    displayName: data.get(#displayName, or: $value.displayName),
     address: data.get(#address, or: $value.address),
     contactNumber: data.get(#contactNumber, or: $value.contactNumber),
     isDeleted: data.get(#isDeleted, or: $value.isDeleted),

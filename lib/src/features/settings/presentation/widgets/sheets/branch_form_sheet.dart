@@ -46,6 +46,7 @@ class BranchFormSheet extends HookConsumerWidget {
       final branchData = Branch(
         id: branch?.id ?? '',
         name: (values['name'] as String).trim(),
+        displayName: _nullIfEmpty(values['displayName'] as String?),
         address: _nullIfEmpty(values['address'] as String?),
         contactNumber: _nullIfEmpty(values['contactNumber'] as String?),
       );
@@ -147,9 +148,21 @@ class BranchFormSheet extends HookConsumerWidget {
                 initialValue: branch?.name,
                 decoration: const InputDecoration(
                   labelText: 'Name *',
-                  hintText: 'Enter branch name',
+                  hintText: 'Enter branch name (internal)',
                 ),
                 validator: FormBuilderValidators.required(),
+                textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 16),
+
+              // Display Name field
+              FormBuilderTextField(
+                name: 'displayName',
+                initialValue: branch?.displayName,
+                decoration: const InputDecoration(
+                  labelText: 'Display Name',
+                  hintText: 'Enter formal business name for documents',
+                ),
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 16),
