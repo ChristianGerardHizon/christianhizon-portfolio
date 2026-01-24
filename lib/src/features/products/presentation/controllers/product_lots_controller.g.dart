@@ -222,7 +222,7 @@ final class ProductLotsControllerProvider
 }
 
 String _$productLotsControllerHash() =>
-    r'd3c199197d590497b0aad3e57194ac97c4c691c9';
+    r'854a3ce5637125ad9de3e5f9c3140cfd7eb3130c';
 
 /// Controller for managing product lots.
 

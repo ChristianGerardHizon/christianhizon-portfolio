@@ -46,7 +46,7 @@ final class StockAdjustmentControllerProvider
 }
 
 String _$stockAdjustmentControllerHash() =>
-    r'a90bdc7ba9e3f99cf22c87fca494ef1630b4d2c7';
+    r'c86506be124463db0d75143767df8696efe23273';
 
 /// Controller for handling stock adjustment operations.
 ///

@@ -6,6 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/foundation/failure.dart';
 import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../products/data/repositories/product_lot_repository.dart';
+import '../../products/data/repositories/product_repository.dart';
 import '../data/repositories/sales_repository.dart';
 import '../domain/payment_method.dart';
 import '../domain/sale.dart';
@@ -85,6 +86,7 @@ class CheckoutController extends _$CheckoutController {
     final salesRepo = ref.read(salesRepositoryProvider);
     final cartNotifier = ref.read(cartControllerProvider.notifier);
     final lotRepo = ref.read(productLotRepositoryProvider);
+    final productRepo = ref.read(productRepositoryProvider);
 
     // Save to backend
     final result = await salesRepo.createSale(sale, saleItems);
@@ -92,11 +94,26 @@ class CheckoutController extends _$CheckoutController {
     return result.fold(
       (failure) => left(failure),
       (createdSale) async {
+        // Track products that need quantity sync
+        final productIdsToSync = <String>{};
+
         // Decrement lot quantities for lot-tracked items
         for (final item in saleItems) {
           if (item.productLotId != null && item.productLotId!.isNotEmpty) {
             await lotRepo.decrementQuantity(item.productLotId!, item.quantity);
+            productIdsToSync.add(item.productId);
           }
+        }
+
+        // Sync product quantities with their lot totals
+        for (final productId in productIdsToSync) {
+          final totalResult = await lotRepo.calculateTotalQuantity(productId);
+          await totalResult.fold(
+            (failure) async {},
+            (total) async {
+              await productRepo.updateQuantity(productId, total);
+            },
+          );
         }
 
         // Mark cart as converted and clear it

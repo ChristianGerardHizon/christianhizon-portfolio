@@ -1,7 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/repositories/product_lot_repository.dart';
+import '../../data/repositories/product_repository.dart';
 import '../../domain/product_lot.dart';
+import 'product_provider.dart';
 
 part 'product_lots_controller.g.dart';
 
@@ -62,12 +64,12 @@ class ProductLotsController extends _$ProductLotsController {
 
     return result.fold(
       (failure) => false,
-      (newLot) {
+      (newLot) async {
         // Prepend new lot to list
         final currentLots = state.value ?? [];
         state = AsyncData([newLot, ...currentLots]);
-        // Invalidate total quantity
-        ref.invalidate(productLotsTotalProvider(productId));
+        // Sync product quantity with total of all lots
+        await _syncProductQuantity();
         return true;
       },
     );
@@ -80,15 +82,15 @@ class ProductLotsController extends _$ProductLotsController {
 
     return result.fold(
       (failure) => false,
-      (updatedLot) {
+      (updatedLot) async {
         // Update lot in list
         final currentLots = state.value ?? [];
         final updatedLots = currentLots.map((l) {
           return l.id == updatedLot.id ? updatedLot : l;
         }).toList();
         state = AsyncData(updatedLots);
-        // Invalidate total quantity
-        ref.invalidate(productLotsTotalProvider(productId));
+        // Sync product quantity with total of all lots
+        await _syncProductQuantity();
         return true;
       },
     );
@@ -101,13 +103,13 @@ class ProductLotsController extends _$ProductLotsController {
 
     return result.fold(
       (failure) => false,
-      (_) {
+      (_) async {
         // Remove lot from list
         final currentLots = state.value ?? [];
         final filteredLots = currentLots.where((l) => l.id != lotId).toList();
         state = AsyncData(filteredLots);
-        // Invalidate total quantity
-        ref.invalidate(productLotsTotalProvider(productId));
+        // Sync product quantity with total of all lots
+        await _syncProductQuantity();
         return true;
       },
     );
@@ -120,17 +122,35 @@ class ProductLotsController extends _$ProductLotsController {
 
     return result.fold(
       (failure) => false,
-      (updatedLot) {
+      (updatedLot) async {
         // Update lot in list
         final currentLots = state.value ?? [];
         final updatedLots = currentLots.map((l) {
           return l.id == updatedLot.id ? updatedLot : l;
         }).toList();
         state = AsyncData(updatedLots);
-        // Invalidate total quantity
-        ref.invalidate(productLotsTotalProvider(productId));
+        // Sync product quantity with total of all lots
+        await _syncProductQuantity();
         return true;
       },
     );
+  }
+
+  /// Syncs the parent product's quantity field with the total of all lots.
+  Future<void> _syncProductQuantity() async {
+    final lotRepo = ref.read(productLotRepositoryProvider);
+    final productRepo = ref.read(productRepositoryProvider);
+
+    final totalResult = await lotRepo.calculateTotalQuantity(productId);
+    await totalResult.fold(
+      (failure) async {},
+      (total) async {
+        await productRepo.updateQuantity(productId, total);
+      },
+    );
+
+    // Invalidate providers to refresh UI
+    ref.invalidate(productLotsTotalProvider(productId));
+    ref.invalidate(productProvider(productId));
   }
 }

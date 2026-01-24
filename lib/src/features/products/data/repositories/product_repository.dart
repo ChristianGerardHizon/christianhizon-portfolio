@@ -56,6 +56,10 @@ abstract class ProductRepository {
 
   /// Invalidates the product list cache.
   void invalidateCache();
+
+  /// Updates only the quantity field for a product.
+  /// Used for syncing product quantity from lots.
+  FutureEither<Product> updateQuantity(String productId, num quantity);
 }
 
 /// Provides the ProductRepository instance.
@@ -317,6 +321,22 @@ class ProductRepositoryImpl implements ProductRepository {
         final record = await _collection.update(
           id,
           files: [file],
+          expand: _expand,
+        );
+        invalidateCache();
+        return _toEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<Product> updateQuantity(String productId, num quantity) async {
+    return TaskEither.tryCatch(
+      () async {
+        final record = await _collection.update(
+          productId,
+          body: {'quantity': quantity},
           expand: _expand,
         );
         invalidateCache();

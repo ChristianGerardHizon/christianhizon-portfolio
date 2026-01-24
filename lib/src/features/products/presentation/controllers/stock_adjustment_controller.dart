@@ -66,6 +66,7 @@ class StockAdjustmentController extends _$StockAdjustmentController {
   /// Adjusts stock for a product lot.
   ///
   /// Updates the lot quantity and creates an adjustment record.
+  /// Also syncs the parent product's quantity with the total of all lots.
   /// Returns the created adjustment on success, null on failure.
   Future<ProductAdjustment?> adjustLotStock({
     required ProductLot lot,
@@ -73,12 +74,16 @@ class StockAdjustmentController extends _$StockAdjustmentController {
     String? reason,
   }) async {
     final lotRepo = ref.read(productLotRepositoryProvider);
+    final productRepo = ref.read(productRepositoryProvider);
     final adjustmentRepo = ref.read(productAdjustmentRepositoryProvider);
 
     // Update lot quantity
     final updateResult = await lotRepo.updateQuantity(lot.id, newQuantity);
 
     if (updateResult.isLeft()) return null;
+
+    // Sync product quantity with total of all lots
+    await _syncProductQuantityFromLots(lot.productId, lotRepo, productRepo);
 
     // Create adjustment record
     final adjustmentResult = await adjustmentRepo.create(
@@ -95,11 +100,27 @@ class StockAdjustmentController extends _$StockAdjustmentController {
       ref.invalidate(productLotsControllerProvider(lot.productId));
       ref.invalidate(productLotsTotalProvider(lot.productId));
       ref.invalidate(productAdjustmentsControllerProvider(lot.productId));
+      ref.invalidate(productProvider(lot.productId));
     }
 
     return adjustmentResult.fold(
       (failure) => null,
       (adjustment) => adjustment,
+    );
+  }
+
+  /// Syncs a product's quantity field with the total of all its lots.
+  Future<void> _syncProductQuantityFromLots(
+    String productId,
+    ProductLotRepository lotRepo,
+    ProductRepository productRepo,
+  ) async {
+    final totalResult = await lotRepo.calculateTotalQuantity(productId);
+    await totalResult.fold(
+      (failure) async {},
+      (total) async {
+        await productRepo.updateQuantity(productId, total);
+      },
     );
   }
 }
