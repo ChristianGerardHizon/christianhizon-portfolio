@@ -89,8 +89,11 @@ class Product with ProductMappable {
 
   /// Returns true if stock is low based on threshold.
   bool get isLowStock {
-    if (stockThreshold == null || quantity == null) return false;
-    return quantity! <= stockThreshold!;
+    if (stockThreshold == null) return false;
+    // For lot-tracked products, treat null quantity as 0
+    final qty = trackByLot ? (quantity ?? 0) : quantity;
+    if (qty == null) return false;
+    return qty <= stockThreshold!;
   }
 
   /// Returns true if product is expired.
@@ -117,10 +120,28 @@ class Product with ProductMappable {
   }
 
   /// Returns true if product is out of stock.
-  bool get isOutOfStock => quantity != null && quantity! <= 0;
+  bool get isOutOfStock {
+    // For lot-tracked products, treat null quantity as 0
+    if (trackByLot) {
+      return (quantity ?? 0) <= 0;
+    }
+    return quantity != null && quantity! <= 0;
+  }
 
   /// Calculates the stock status.
   ProductStatus get stockStatus {
+    // For lot-tracked products, treat null quantity as 0 (out of stock)
+    // since quantity is synced from lots
+    if (trackByLot) {
+      final qty = quantity ?? 0;
+      if (qty <= 0) return ProductStatus.outOfStock;
+      if (stockThreshold != null && qty <= stockThreshold!) {
+        return ProductStatus.lowStock;
+      }
+      return ProductStatus.inStock;
+    }
+
+    // For non-lot products, null quantity means no threshold set
     if (quantity == null) return ProductStatus.noThreshold;
     if (quantity! <= 0) return ProductStatus.outOfStock;
     if (stockThreshold != null && quantity! <= stockThreshold!) {
