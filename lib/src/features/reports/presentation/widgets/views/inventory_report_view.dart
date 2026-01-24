@@ -54,7 +54,7 @@ class InventoryReportView extends ConsumerWidget {
                       height: 220,
                       colors: const [
                         Color(0xFF4CAF50), // In Stock - Green
-                        Color(0xFFFFC107), // Low Stock - Amber
+                        Color(0xFFFBC02D), // Low Stock - Yellow
                         Color(0xFFF44336), // Out of Stock - Red
                       ],
                     ),
@@ -112,7 +112,7 @@ class InventoryReportView extends ConsumerWidget {
           title: 'Low Stock',
           value: report.lowStockCount.toString(),
           icon: Icons.warning,
-          color: Colors.orange,
+          color: Colors.yellow.shade700,
           compact: true,
         ),
         KpiCard(
