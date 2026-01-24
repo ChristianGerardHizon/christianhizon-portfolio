@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/currency_format.dart';
+import '../../../products/domain/product_lot.dart';
 import '../cart_controller.dart';
 import 'checkout_sheet.dart';
 
@@ -227,18 +230,67 @@ class CartView extends ConsumerWidget {
                                             ),
                                           ),
 
-                                          // Quantity display
-                                          Container(
-                                            constraints: const BoxConstraints(
-                                                minWidth: 32),
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8),
-                                            child: Text(
-                                              '${item.quantity.toInt()}',
-                                              textAlign: TextAlign.center,
-                                              style: theme.textTheme.bodyMedium
-                                                  ?.copyWith(
-                                                fontWeight: FontWeight.w600,
+                                          // Quantity display (tappable to edit)
+                                          InkWell(
+                                            onTap: isSyncing
+                                                ? null
+                                                : () async {
+                                                    final newQuantity =
+                                                        await _showQuantityDialog(
+                                                      context,
+                                                      item.quantity.toInt(),
+                                                    );
+                                                    if (newQuantity != null &&
+                                                        newQuantity !=
+                                                            item.quantity
+                                                                .toInt()) {
+                                                      if (item.hasLot) {
+                                                        // Create minimal ProductLot for lookup
+                                                        final lot = ProductLot(
+                                                          id: item.productLotId!,
+                                                          productId:
+                                                              item.productId,
+                                                          lotNumber:
+                                                              item.lotNumber ??
+                                                                  '',
+                                                        );
+                                                        ref
+                                                            .read(
+                                                                cartControllerProvider
+                                                                    .notifier)
+                                                            .updateQuantityWithLot(
+                                                              product,
+                                                              lot,
+                                                              newQuantity,
+                                                            );
+                                                      } else {
+                                                        ref
+                                                            .read(
+                                                                cartControllerProvider
+                                                                    .notifier)
+                                                            .updateQuantity(
+                                                              product,
+                                                              newQuantity,
+                                                            );
+                                                      }
+                                                    }
+                                                  },
+                                            child: Container(
+                                              constraints: const BoxConstraints(
+                                                  minWidth: 32),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8),
+                                              child: Text(
+                                                '${item.quantity.toInt()}',
+                                                textAlign: TextAlign.center,
+                                                style: theme
+                                                    .textTheme.bodyMedium
+                                                    ?.copyWith(
+                                                  fontWeight: FontWeight.w600,
+                                                  color:
+                                                      theme.colorScheme.primary,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -400,4 +452,51 @@ class CartView extends ConsumerWidget {
       },
     );
   }
+}
+
+/// Shows a dialog to edit the quantity of a cart item.
+Future<int?> _showQuantityDialog(BuildContext context, int currentQuantity) async {
+  final formKey = GlobalKey<FormBuilderState>();
+
+  return showDialog<int>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Edit Quantity'),
+      content: FormBuilder(
+        key: formKey,
+        child: FormBuilderTextField(
+          name: 'quantity',
+          initialValue: currentQuantity.toString(),
+          decoration: const InputDecoration(
+            labelText: 'Quantity',
+            hintText: 'Enter quantity',
+          ),
+          keyboardType: TextInputType.number,
+          autofocus: true,
+          validator: FormBuilderValidators.compose([
+            FormBuilderValidators.required(),
+            FormBuilderValidators.numeric(),
+            FormBuilderValidators.min(0),
+          ]),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () {
+            if (formKey.currentState?.saveAndValidate() ?? false) {
+              final quantity = int.tryParse(
+                formKey.currentState?.fields['quantity']?.value ?? '',
+              );
+              Navigator.pop(context, quantity);
+            }
+          },
+          child: const Text('Update'),
+        ),
+      ],
+    ),
+  );
 }
