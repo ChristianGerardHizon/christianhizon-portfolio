@@ -88,11 +88,14 @@ class Product with ProductMappable {
   bool get hasCategory => categoryId != null && categoryId!.isNotEmpty;
 
   /// Returns true if stock is low based on threshold.
+  /// Returns false if out of stock (qty <= 0) since that's a different status.
   bool get isLowStock {
     if (stockThreshold == null) return false;
     // For lot-tracked products, treat null quantity as 0
     final qty = trackByLot ? (quantity ?? 0) : quantity;
     if (qty == null) return false;
+    // Out of stock is not the same as low stock
+    if (qty <= 0) return false;
     return qty <= stockThreshold!;
   }
 
