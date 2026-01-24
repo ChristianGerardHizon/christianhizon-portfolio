@@ -9,6 +9,7 @@ import '../routing/routes/messages.routes.dart';
 import '../routing/routes/organization.routes.dart';
 import '../routing/routes/patients.routes.dart';
 import '../routing/routes/products.routes.dart';
+import '../routing/routes/reports.routes.dart';
 import '../routing/routes/sales.routes.dart';
 import '../routing/routes/sales_history.routes.dart';
 import '../routing/routes/system.routes.dart';
@@ -50,8 +51,9 @@ class _AppRootState extends ConsumerState<AppRoot> {
     SalesRoute.path, // 4: /cashier
     SalesHistoryRoute.path, // 5: /sales
     MessagesRoute.path, // 6: /messages
-    OrganizationRoute.path, // 7: /organization
-    SystemRoute.path, // 8: /system
+    ReportsRoute.path, // 7: /reports
+    OrganizationRoute.path, // 8: /organization
+    SystemRoute.path, // 9: /system
   ];
 
   /// Routes in order of navigation index.
@@ -63,8 +65,9 @@ class _AppRootState extends ConsumerState<AppRoot> {
     SalesRoute(), // 4
     SalesHistoryRoute(), // 5
     MessagesRoute(), // 6
-    OrganizationRoute(), // 7
-    SystemRoute(), // 8
+    ReportsRoute(), // 7
+    OrganizationRoute(), // 8
+    SystemRoute(), // 9
   ];
 
   /// Gets the selected index based on current route location.
