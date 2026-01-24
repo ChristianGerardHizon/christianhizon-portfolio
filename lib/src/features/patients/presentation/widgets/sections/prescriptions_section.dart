@@ -57,25 +57,55 @@ class PrescriptionsSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header
-        Row(
-          children: [
-            Icon(Icons.medication, color: theme.colorScheme.primary),
-            const SizedBox(width: 8),
-            Text('Prescriptions', style: theme.textTheme.titleMedium),
-            const Spacer(),
-            OutlinedButton.icon(
-              onPressed: () => _handleAddPrescriptionGroup(context, ref),
-              icon: const Icon(Icons.playlist_add, size: 18),
-              label: const Text('Add Group'),
-            ),
-            const SizedBox(width: 8),
-            FilledButton.icon(
-              onPressed: () => _handleAddPrescription(context, ref),
-              icon: const Icon(Icons.add, size: 18),
-              label: const Text('Add'),
-            ),
-          ],
+        // Header - responsive layout
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final isTablet = constraints.maxWidth >= 600;
+            final actionButtons = [
+              OutlinedButton.icon(
+                onPressed: () => _handleAddPrescriptionGroup(context, ref),
+                icon: const Icon(Icons.playlist_add, size: 18),
+                label: const Text('Add Group'),
+              ),
+              const SizedBox(width: 8),
+              FilledButton.icon(
+                onPressed: () => _handleAddPrescription(context, ref),
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text('Add'),
+              ),
+            ];
+
+            if (isTablet) {
+              return Row(
+                children: [
+                  Icon(Icons.medication, color: theme.colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Text('Prescriptions', style: theme.textTheme.titleMedium),
+                  const Spacer(),
+                  ...actionButtons,
+                ],
+              );
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.medication, color: theme.colorScheme.primary),
+                    const SizedBox(width: 8),
+                    Text('Prescriptions', style: theme.textTheme.titleMedium),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: actionButtons,
+                ),
+              ],
+            );
+          },
         ),
         const SizedBox(height: 16),
 
