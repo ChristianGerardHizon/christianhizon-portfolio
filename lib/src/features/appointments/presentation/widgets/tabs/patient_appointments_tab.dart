@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/foundation/paginated_state.dart';
 import '../../../../../core/hooks/use_infinite_scroll.dart';
+import '../../../../../core/routing/routes/appointments.routes.dart';
 import '../../../../../core/widgets/end_of_list_indicator.dart';
 import '../../../../patients/domain/patient.dart';
 import '../../../domain/appointment_schedule.dart';
@@ -314,7 +315,7 @@ class _PatientAppointmentsList extends HookWidget {
                   appointment: appointment,
                   showPatientInfo: false,
                   onTap: () {
-                    // TODO: Navigate to detail
+                    AppointmentDetailRoute(id: appointment.id).go(context);
                   },
                   onEdit: () => onEditAppointment(appointment),
                   onDelete: () => onDeleteAppointment(appointment),

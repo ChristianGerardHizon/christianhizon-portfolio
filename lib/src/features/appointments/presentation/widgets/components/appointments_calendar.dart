@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../../../core/routing/routes/appointments.routes.dart';
 import '../../../domain/appointment_schedule.dart';
 import '../../controllers/appointments_controller.dart';
 import '../cards/appointment_card.dart';
@@ -150,7 +151,7 @@ class AppointmentsCalendar extends HookConsumerWidget {
                       child: AppointmentCard(
                         appointment: appointment,
                         onTap: () {
-                          // TODO: Navigate to detail
+                          AppointmentDetailRoute(id: appointment.id).go(context);
                         },
                         onEdit: () => _showEditAppointmentSheet(
                           context,

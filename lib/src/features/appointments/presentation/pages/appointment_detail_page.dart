@@ -8,6 +8,7 @@ import '../../../../core/utils/breakpoints.dart';
 import '../../../messages/domain/message.dart';
 import '../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../patients/presentation/widgets/sheets/add_record_sheet.dart';
+import '../../../patients/presentation/widgets/sheets/add_treatment_record_sheet.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
@@ -226,11 +227,40 @@ class _AppointmentDetailContent extends HookConsumerWidget {
                     );
                   },
                   onAddTreatmentPressed: () {
-                    // TODO: Implement create treatment
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content:
-                            Text('Create treatment functionality coming soon'),
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      useSafeArea: true,
+                      useRootNavigator: true,
+                      builder: (context) => DraggableScrollableSheet(
+                        initialChildSize: 0.7,
+                        minChildSize: 0.5,
+                        maxChildSize: 0.95,
+                        expand: false,
+                        builder: (context, scrollController) =>
+                            AddTreatmentRecordSheet(
+                          patientId: appointment.patient!,
+                          scrollController: scrollController,
+                          appointmentId: appointment.id,
+                          onSave: (record) async {
+                            final updatedIds = <String>[
+                              ...appointment.treatmentRecords,
+                              record.id
+                            ];
+                            final updatedAppointment = appointment.copyWith(
+                              treatmentRecords: updatedIds,
+                            );
+                            final success = await ref
+                                .read(paginatedAppointmentsControllerProvider
+                                    .notifier)
+                                .updateAppointment(updatedAppointment);
+                            if (success) {
+                              ref.invalidate(
+                                  appointmentProvider(appointment.id));
+                            }
+                            return record;
+                          },
+                        ),
                       ),
                     );
                   },

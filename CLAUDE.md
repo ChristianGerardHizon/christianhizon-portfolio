@@ -228,6 +228,21 @@ FormBuilderTextField(
 - Use `Failure` class from `core/foundation/failure.dart`
 - Return `Either<Failure, T>` for operations that can fail (using fpdart)
 
+### Unimplemented Features
+- **IMPORTANT:** Always add a `// TODO:` comment when a feature is not yet implemented
+- Use descriptive TODO comments that explain what needs to be done
+- Format: `// TODO: <description of what needs to be implemented>`
+- Example:
+  ```dart
+  onPressed: () {
+    // TODO: Implement print functionality
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Feature coming soon')),
+    );
+  },
+  ```
+- This helps track incomplete work and makes it easy to find and complete later
+
 ## File Naming Conventions
 
 - Feature directories: `snake_case`

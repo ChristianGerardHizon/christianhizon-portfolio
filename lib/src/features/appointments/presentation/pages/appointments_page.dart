@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/foundation/paginated_state.dart';
 import '../../../../core/hooks/use_infinite_scroll.dart';
+import '../../../../core/routing/routes/appointments.routes.dart';
 import '../../../../core/widgets/end_of_list_indicator.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
@@ -453,7 +454,7 @@ class _PaginatedListView extends HookWidget {
                     child: AppointmentCard(
                       appointment: appointment,
                       onTap: () {
-                        // TODO: Navigate to detail page
+                        AppointmentDetailRoute(id: appointment.id).go(context);
                       },
                       onEdit: () => onEdit(appointment),
                       onDelete: () => onDelete(appointment),

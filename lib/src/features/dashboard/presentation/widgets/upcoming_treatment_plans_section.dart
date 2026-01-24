@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/routing/routes/appointments.routes.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../appointments/presentation/widgets/sheets/create_appointment_sheet.dart';
 import '../../../patients/presentation/controllers/patient_provider.dart';
@@ -247,10 +248,7 @@ class UpcomingTreatmentPlansSection extends ConsumerWidget {
 
   void _handleViewAppointment(BuildContext context, TreatmentPlanItem item) {
     if (item.appointmentId != null && item.appointmentId!.isNotEmpty) {
-      // TODO: Navigate to appointment detail when route is available
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('View appointment coming soon')),
-      );
+      AppointmentDetailRoute(id: item.appointmentId!).go(context);
     }
   }
 
