@@ -1,142 +1,103 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../products/data/repositories/product_lot_repository.dart';
-import '../../../products/data/repositories/product_repository.dart';
-import '../../../products/domain/product.dart';
-import '../../../products/domain/product_lot.dart';
+import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
+import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../domain/inventory_alert.dart';
 
 part 'inventory_alerts_controller.g.dart';
 
-/// Provides comprehensive inventory alerts considering both
-/// lot-tracked and non-lot-tracked products.
+/// Provides comprehensive inventory alerts using optimized SQL views.
 ///
-/// This provider:
-/// 1. Fetches all products and all lots in parallel (2 queries total)
-/// 2. Groups lots by product ID for efficient lookup
-/// 3. Computes alerts for each product type correctly
+/// This provider queries 4 separate views in parallel:
+/// - vw_low_stock_products (non-lot-tracked)
+/// - vw_low_stock_lot_products (lot-tracked)
+/// - vw_expired_lots
+/// - vw_near_expiration_lots
 @riverpod
 Future<InventoryAlertsSummary> inventoryAlertsSummary(Ref ref) async {
-  // Fetch products and lots
-  final productsResult = await ref.read(productRepositoryProvider).fetchAll();
-  final lotsResult = await ref.read(productLotRepositoryProvider).fetchAll();
+  final pb = ref.read(pocketbaseProvider);
 
-  // Handle errors gracefully
-  final products = productsResult.fold(
-    (failure) => <Product>[],
-    (data) => data,
-  );
-  final allLots = lotsResult.fold(
-    (failure) => <ProductLot>[],
-    (data) => data,
-  );
+  // Query all 4 views in parallel for best performance
+  final results = await Future.wait([
+    pb.collection(PocketBaseCollections.vwLowStockProducts).getFullList(),
+    pb.collection(PocketBaseCollections.vwLowStockLotProducts).getFullList(),
+    pb.collection(PocketBaseCollections.vwExpiredLots).getFullList(),
+    pb.collection(PocketBaseCollections.vwNearExpirationLots).getFullList(),
+  ]);
 
-  // Group lots by product ID for O(1) lookup
-  final lotsByProductId = <String, List<ProductLot>>{};
-  for (final lot in allLots) {
-    lotsByProductId.putIfAbsent(lot.productId, () => []).add(lot);
-  }
+  final lowStockRecords = results[0];
+  final lowStockLotRecords = results[1];
+  final expiredLotRecords = results[2];
+  final nearExpirationLotRecords = results[3];
 
   final lowStockAlerts = <InventoryAlert>[];
   final nearExpirationAlerts = <InventoryAlert>[];
   final expiredAlerts = <InventoryAlert>[];
 
-  final now = DateTime.now();
+  // Process non-lot-tracked low stock products
+  for (final record in lowStockRecords) {
+    lowStockAlerts.add(InventoryAlert(
+      productId: record.id,
+      productName: record.getStringValue('name'),
+      alertType: InventoryAlertType.lowStock,
+      isLotTracked: false,
+      currentQuantity: record.getDoubleValue('quantity'),
+      threshold: record.getDoubleValue('stockThreshold'),
+    ));
+  }
 
-  for (final product in products) {
-    if (product.trackByLot) {
-      // Handle lot-tracked products
-      final productLots = lotsByProductId[product.id] ?? [];
+  // Process lot-tracked low stock products
+  for (final record in lowStockLotRecords) {
+    lowStockAlerts.add(InventoryAlert(
+      productId: record.id,
+      productName: record.getStringValue('name'),
+      alertType: InventoryAlertType.lowStock,
+      isLotTracked: true,
+      currentQuantity: record.getDoubleValue('total_quantity'),
+      threshold: record.getDoubleValue('stockThreshold'),
+    ));
+  }
 
-      // Low stock: sum all lot quantities
-      final totalQuantity = productLots.fold<num>(
-        0,
-        (sum, lot) => sum + lot.quantity,
-      );
+  // Process expired lots
+  for (final record in expiredLotRecords) {
+    final expirationStr = record.getStringValue('expiration');
+    final expiration = DateTime.tryParse(expirationStr);
+    final daysUntil = expiration != null
+        ? expiration.difference(DateTime.now()).inDays
+        : null;
 
-      if (product.stockThreshold != null &&
-          totalQuantity <= product.stockThreshold!) {
-        lowStockAlerts.add(InventoryAlert(
-          productId: product.id,
-          productName: product.name,
-          alertType: InventoryAlertType.lowStock,
-          isLotTracked: true,
-          currentQuantity: totalQuantity,
-          threshold: product.stockThreshold,
-        ));
-      }
+    expiredAlerts.add(InventoryAlert(
+      productId: record.getStringValue('product_id'),
+      productName: record.getStringValue('product_name'),
+      alertType: InventoryAlertType.expired,
+      isLotTracked: true,
+      lotId: record.id,
+      lotNumber: record.getStringValue('lotNumber'),
+      currentQuantity: record.getDoubleValue('quantity'),
+      expirationDate: expiration,
+      daysUntilExpiration: daysUntil,
+    ));
+  }
 
-      // Expiration: check each lot individually
-      for (final lot in productLots) {
-        if (lot.expiration == null) continue;
+  // Process near expiration lots
+  for (final record in nearExpirationLotRecords) {
+    final expirationStr = record.getStringValue('expiration');
+    final expiration = DateTime.tryParse(expirationStr);
+    final daysUntil = expiration != null
+        ? expiration.difference(DateTime.now()).inDays
+        : null;
 
-        final daysUntil = lot.expiration!.difference(now).inDays;
-
-        if (lot.isExpired) {
-          expiredAlerts.add(InventoryAlert(
-            productId: product.id,
-            productName: product.name,
-            alertType: InventoryAlertType.expired,
-            isLotTracked: true,
-            lotId: lot.id,
-            lotNumber: lot.lotNumber,
-            currentQuantity: lot.quantity,
-            expirationDate: lot.expiration,
-            daysUntilExpiration: daysUntil,
-          ));
-        } else if (lot.isNearExpiration) {
-          nearExpirationAlerts.add(InventoryAlert(
-            productId: product.id,
-            productName: product.name,
-            alertType: InventoryAlertType.nearExpiration,
-            isLotTracked: true,
-            lotId: lot.id,
-            lotNumber: lot.lotNumber,
-            currentQuantity: lot.quantity,
-            expirationDate: lot.expiration,
-            daysUntilExpiration: daysUntil,
-          ));
-        }
-      }
-    } else {
-      // Handle non-lot-tracked products (existing logic)
-
-      // Low stock
-      if (product.isLowStock) {
-        lowStockAlerts.add(InventoryAlert(
-          productId: product.id,
-          productName: product.name,
-          alertType: InventoryAlertType.lowStock,
-          isLotTracked: false,
-          currentQuantity: product.quantity,
-          threshold: product.stockThreshold,
-        ));
-      }
-
-      // Near expiration
-      if (product.isNearExpiration) {
-        nearExpirationAlerts.add(InventoryAlert(
-          productId: product.id,
-          productName: product.name,
-          alertType: InventoryAlertType.nearExpiration,
-          isLotTracked: false,
-          expirationDate: product.expiration,
-          daysUntilExpiration: product.daysUntilExpiration,
-        ));
-      }
-
-      // Expired
-      if (product.isExpired) {
-        expiredAlerts.add(InventoryAlert(
-          productId: product.id,
-          productName: product.name,
-          alertType: InventoryAlertType.expired,
-          isLotTracked: false,
-          expirationDate: product.expiration,
-          daysUntilExpiration: product.daysUntilExpiration,
-        ));
-      }
-    }
+    nearExpirationAlerts.add(InventoryAlert(
+      productId: record.getStringValue('product_id'),
+      productName: record.getStringValue('product_name'),
+      alertType: InventoryAlertType.nearExpiration,
+      isLotTracked: true,
+      lotId: record.id,
+      lotNumber: record.getStringValue('lotNumber'),
+      currentQuantity: record.getDoubleValue('quantity'),
+      expirationDate: expiration,
+      daysUntilExpiration: daysUntil,
+    ));
   }
 
   // Sort alerts by severity/urgency

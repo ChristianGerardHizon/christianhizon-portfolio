@@ -8,24 +8,24 @@ part of 'inventory_alerts_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Provides comprehensive inventory alerts considering both
-/// lot-tracked and non-lot-tracked products.
+/// Provides comprehensive inventory alerts using optimized SQL views.
 ///
-/// This provider:
-/// 1. Fetches all products and all lots in parallel (2 queries total)
-/// 2. Groups lots by product ID for efficient lookup
-/// 3. Computes alerts for each product type correctly
+/// This provider queries 4 separate views in parallel:
+/// - vw_low_stock_products (non-lot-tracked)
+/// - vw_low_stock_lot_products (lot-tracked)
+/// - vw_expired_lots
+/// - vw_near_expiration_lots
 
 @ProviderFor(inventoryAlertsSummary)
 final inventoryAlertsSummaryProvider = InventoryAlertsSummaryProvider._();
 
-/// Provides comprehensive inventory alerts considering both
-/// lot-tracked and non-lot-tracked products.
+/// Provides comprehensive inventory alerts using optimized SQL views.
 ///
-/// This provider:
-/// 1. Fetches all products and all lots in parallel (2 queries total)
-/// 2. Groups lots by product ID for efficient lookup
-/// 3. Computes alerts for each product type correctly
+/// This provider queries 4 separate views in parallel:
+/// - vw_low_stock_products (non-lot-tracked)
+/// - vw_low_stock_lot_products (lot-tracked)
+/// - vw_expired_lots
+/// - vw_near_expiration_lots
 
 final class InventoryAlertsSummaryProvider extends $FunctionalProvider<
         AsyncValue<InventoryAlertsSummary>,
@@ -34,13 +34,13 @@ final class InventoryAlertsSummaryProvider extends $FunctionalProvider<
     with
         $FutureModifier<InventoryAlertsSummary>,
         $FutureProvider<InventoryAlertsSummary> {
-  /// Provides comprehensive inventory alerts considering both
-  /// lot-tracked and non-lot-tracked products.
+  /// Provides comprehensive inventory alerts using optimized SQL views.
   ///
-  /// This provider:
-  /// 1. Fetches all products and all lots in parallel (2 queries total)
-  /// 2. Groups lots by product ID for efficient lookup
-  /// 3. Computes alerts for each product type correctly
+  /// This provider queries 4 separate views in parallel:
+  /// - vw_low_stock_products (non-lot-tracked)
+  /// - vw_low_stock_lot_products (lot-tracked)
+  /// - vw_expired_lots
+  /// - vw_near_expiration_lots
   InventoryAlertsSummaryProvider._()
       : super(
           from: null,
@@ -68,7 +68,7 @@ final class InventoryAlertsSummaryProvider extends $FunctionalProvider<
 }
 
 String _$inventoryAlertsSummaryHash() =>
-    r'd8718cf57a2dfbf9d10fc862b323580c76f6795a';
+    r'7ed4948f3877b87c3bce9ab1ac800767067852d1';
 
 /// Count of low stock products (including lot-tracked).
 

@@ -47,11 +47,13 @@ final class TodaySalesProvider extends $FunctionalProvider<
 String _$todaySalesHash() => r'7f97ca36e73d06fc0f07be545dcd6ed803bcb480';
 
 /// Today's sales summary (count and total amount).
+/// Uses vw_todays_sales view for optimized query.
 
 @ProviderFor(todaySalesSummary)
 final todaySalesSummaryProvider = TodaySalesSummaryProvider._();
 
 /// Today's sales summary (count and total amount).
+/// Uses vw_todays_sales view for optimized query.
 
 final class TodaySalesSummaryProvider extends $FunctionalProvider<
         AsyncValue<TodaySalesSummary>,
@@ -61,6 +63,7 @@ final class TodaySalesSummaryProvider extends $FunctionalProvider<
         $FutureModifier<TodaySalesSummary>,
         $FutureProvider<TodaySalesSummary> {
   /// Today's sales summary (count and total amount).
+  /// Uses vw_todays_sales view for optimized query.
   TodaySalesSummaryProvider._()
       : super(
           from: null,
@@ -87,4 +90,4 @@ final class TodaySalesSummaryProvider extends $FunctionalProvider<
   }
 }
 
-String _$todaySalesSummaryHash() => r'5cbfe5774ae395f2a437fd0343ebd09e02de7a21';
+String _$todaySalesSummaryHash() => r'b229ecf360868363bd58eed42145404199756a5e';

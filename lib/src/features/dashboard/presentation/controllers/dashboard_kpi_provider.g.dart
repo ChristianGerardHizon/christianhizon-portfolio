@@ -100,16 +100,19 @@ String _$productsExpiredCountHash() =>
     r'9ba10f936908802e3f98d8a8f5440349f071783f';
 
 /// Count of active patients.
+/// Uses vw_active_patients_count view for optimized query.
 
 @ProviderFor(activePatientsCount)
 final activePatientsCountProvider = ActivePatientsCountProvider._();
 
 /// Count of active patients.
+/// Uses vw_active_patients_count view for optimized query.
 
 final class ActivePatientsCountProvider
     extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int> {
   /// Count of active patients.
+  /// Uses vw_active_patients_count view for optimized query.
   ActivePatientsCountProvider._()
       : super(
           from: null,
@@ -136,7 +139,7 @@ final class ActivePatientsCountProvider
 }
 
 String _$activePatientsCountHash() =>
-    r'74dd69127df2f6010efb40c0a1b41fe44d756ad5';
+    r'f8b8d7595f12c264dbe12945700f7e6e55cd2fb8';
 
 /// Count of products with low stock.
 /// Delegates to the unified inventory alerts controller for both lot-tracked
@@ -184,18 +187,24 @@ String _$lowStockProductsCountHash() =>
     r'ab8d76053c11fe2fe42d1cab369a1ccaae8a4c3b';
 
 /// Today's appointments breakdown by status.
+/// Uses vw_todays_appointments view for optimized query.
 
 @ProviderFor(todayAppointmentsBreakdown)
 final todayAppointmentsBreakdownProvider =
     TodayAppointmentsBreakdownProvider._();
 
 /// Today's appointments breakdown by status.
+/// Uses vw_todays_appointments view for optimized query.
 
 final class TodayAppointmentsBreakdownProvider extends $FunctionalProvider<
-    TodayAppointmentsBreakdown,
-    TodayAppointmentsBreakdown,
-    TodayAppointmentsBreakdown> with $Provider<TodayAppointmentsBreakdown> {
+        AsyncValue<TodayAppointmentsBreakdown>,
+        TodayAppointmentsBreakdown,
+        FutureOr<TodayAppointmentsBreakdown>>
+    with
+        $FutureModifier<TodayAppointmentsBreakdown>,
+        $FutureProvider<TodayAppointmentsBreakdown> {
   /// Today's appointments breakdown by status.
+  /// Uses vw_todays_appointments view for optimized query.
   TodayAppointmentsBreakdownProvider._()
       : super(
           from: null,
@@ -212,23 +221,15 @@ final class TodayAppointmentsBreakdownProvider extends $FunctionalProvider<
 
   @$internal
   @override
-  $ProviderElement<TodayAppointmentsBreakdown> $createElement(
+  $FutureProviderElement<TodayAppointmentsBreakdown> $createElement(
           $ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+      $FutureProviderElement(pointer);
 
   @override
-  TodayAppointmentsBreakdown create(Ref ref) {
+  FutureOr<TodayAppointmentsBreakdown> create(Ref ref) {
     return todayAppointmentsBreakdown(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(TodayAppointmentsBreakdown value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<TodayAppointmentsBreakdown>(value),
-    );
   }
 }
 
 String _$todayAppointmentsBreakdownHash() =>
-    r'2500bbc23d61e0d4a96e02584f4442651b392227';
+    r'ab90b11b4c4c1e40e8fb9bf3da12e0b026a247ec';

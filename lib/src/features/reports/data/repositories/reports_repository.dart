@@ -6,7 +6,6 @@ import '../../../../core/foundation/failure.dart';
 import '../../../../core/foundation/type_defs.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
-import '../../../../core/utils/date_utils.dart';
 import '../../domain/appointment_report.dart';
 import '../../domain/inventory_report.dart';
 import '../../domain/patient_report.dart';
@@ -14,6 +13,14 @@ import '../../domain/sales_report.dart';
 import '../../domain/treatment_plan_report.dart';
 
 part 'reports_repository.g.dart';
+
+/// Helper extension for date filtering on view records.
+extension _DateFilter on DateTime {
+  /// Returns true if this date is within [start, end) range.
+  bool isInRange(DateTime start, DateTime end) {
+    return !isBefore(start) && isBefore(end);
+  }
+}
 
 /// Repository for fetching and aggregating report data.
 abstract class ReportsRepository {
@@ -50,21 +57,7 @@ class ReportsRepositoryImpl implements ReportsRepository {
 
   ReportsRepositoryImpl(this._pb);
 
-  RecordService get _sales => _pb.collection(PocketBaseCollections.sales);
-  RecordService get _saleItems =>
-      _pb.collection(PocketBaseCollections.saleItems);
-  RecordService get _patients => _pb.collection(PocketBaseCollections.patients);
-  RecordService get _appointments =>
-      _pb.collection(PocketBaseCollections.appointments);
   RecordService get _products => _pb.collection(PocketBaseCollections.products);
-  RecordService get _treatmentPlans =>
-      _pb.collection(PocketBaseCollections.treatmentPlans);
-  RecordService get _treatmentPlanItems =>
-      _pb.collection(PocketBaseCollections.treatmentPlanItems);
-
-  String _dateRangeFilter(DateTime startDate, DateTime endDate) {
-    return 'created >= "${startDate.toPocketBaseUtc()}" && created < "${endDate.toPocketBaseUtc()}"';
-  }
 
   @override
   FutureEither<SalesReport> getSalesReport({
@@ -73,104 +66,103 @@ class ReportsRepositoryImpl implements ReportsRepository {
   }) async {
     return TaskEither.tryCatch(
       () async {
-        final filter = _dateRangeFilter(startDate, endDate);
+        // Query views in parallel for best performance
+        final results = await Future.wait([
+          _pb.collection(PocketBaseCollections.vwSalesDailySummary).getFullList(),
+          _pb.collection(PocketBaseCollections.vwTopSellingProducts).getFullList(),
+        ]);
 
-        // Fetch sales within date range
-        final sales = await _sales.getFullList(
-          filter: filter,
-          sort: 'created',
-        );
+        final dailySummaryRecords = results[0];
+        final topProductsRecords = results[1];
 
-        if (sales.isEmpty) {
+        // Filter records by date range
+        final filteredSummary = dailySummaryRecords.where((r) {
+          final dateStr = r.getStringValue('sale_date');
+          final date = DateTime.tryParse(dateStr)?.toLocal();
+          return date != null && date.isInRange(startDate, endDate);
+        }).toList();
+
+        if (filteredSummary.isEmpty) {
           return SalesReport.empty;
         }
 
-        // Fetch all sale items for these sales
-        final saleIds = sales.map((s) => s.id).toList();
-        final saleItemsFilter =
-            saleIds.map((id) => 'sale = "$id"').join(' || ');
-        final saleItems = await _saleItems.getFullList(
-          filter: saleItemsFilter,
-        );
+        // Calculate totals from daily summary
+        num totalRevenue = 0;
+        int transactionCount = 0;
+        final revenueByDay = <DateTime, num>{};
+        final revenueByPaymentMethod = <String, num>{};
 
-        return _aggregateSalesReport(sales, saleItems);
+        for (final record in filteredSummary) {
+          final dateStr = record.getStringValue('sale_date');
+          final date = DateTime.tryParse(dateStr)?.toLocal();
+          final revenue = record.getDoubleValue('total_revenue');
+          final count = record.getIntValue('transaction_count');
+          final paymentMethod = record.getStringValue('paymentMethod');
+
+          totalRevenue += revenue;
+          transactionCount += count;
+
+          if (date != null) {
+            final day = DateTime(date.year, date.month, date.day);
+            revenueByDay[day] = (revenueByDay[day] ?? 0) + revenue;
+          }
+
+          if (paymentMethod.isNotEmpty) {
+            revenueByPaymentMethod[paymentMethod] =
+                (revenueByPaymentMethod[paymentMethod] ?? 0) + revenue;
+          }
+        }
+
+        final avgValue =
+            transactionCount > 0 ? totalRevenue / transactionCount : 0;
+
+        // Filter and aggregate top products by date range
+        final filteredProducts = topProductsRecords.where((r) {
+          final dateStr = r.getStringValue('sale_date');
+          final date = DateTime.tryParse(dateStr)?.toLocal();
+          return date != null && date.isInRange(startDate, endDate);
+        }).toList();
+
+        final productSales = <String, ({num quantity, num revenue})>{};
+        for (final record in filteredProducts) {
+          final name = record.getStringValue('productName');
+          if (name.isEmpty) continue;
+          final qty = record.getDoubleValue('total_quantity_sold');
+          final revenue = record.getDoubleValue('total_revenue');
+          final existing = productSales[name];
+          if (existing != null) {
+            productSales[name] = (
+              quantity: existing.quantity + qty,
+              revenue: existing.revenue + revenue,
+            );
+          } else {
+            productSales[name] = (quantity: qty, revenue: revenue);
+          }
+        }
+
+        final topProducts = productSales.entries
+            .map((e) => ProductSalesSummary(
+                  productName: e.key,
+                  quantity: e.value.quantity,
+                  revenue: e.value.revenue,
+                ))
+            .toList()
+          ..sort((a, b) => b.revenue.compareTo(a.revenue));
+
+        return SalesReport(
+          totalRevenue: totalRevenue,
+          transactionCount: transactionCount,
+          averageTransactionValue: avgValue,
+          revenueByDay: revenueByDay.entries
+              .map((e) => DailyRevenue(date: e.key, amount: e.value))
+              .toList()
+            ..sort((a, b) => a.date.compareTo(b.date)),
+          revenueByPaymentMethod: revenueByPaymentMethod,
+          topSellingProducts: topProducts.take(10).toList(),
+        );
       },
       Failure.handle,
     ).run();
-  }
-
-  SalesReport _aggregateSalesReport(
-    List<RecordModel> sales,
-    List<RecordModel> saleItems,
-  ) {
-    // Calculate totals
-    final totalRevenue = sales.fold<num>(
-      0,
-      (sum, s) => sum + (s.getDoubleValue('totalAmount')),
-    );
-    final transactionCount = sales.length;
-    final avgValue = transactionCount > 0 ? totalRevenue / transactionCount : 0;
-
-    // Group by day
-    final revenueByDay = <DateTime, num>{};
-    for (final sale in sales) {
-      final createdStr = sale.getStringValue('created');
-      final created = DateTime.tryParse(createdStr)?.toLocal();
-      if (created != null) {
-        final day = DateTime(created.year, created.month, created.day);
-        revenueByDay[day] =
-            (revenueByDay[day] ?? 0) + sale.getDoubleValue('totalAmount');
-      }
-    }
-
-    // Group by payment method
-    final revenueByPaymentMethod = <String, num>{};
-    for (final sale in sales) {
-      final method = sale.getStringValue('paymentMethod');
-      if (method.isNotEmpty) {
-        revenueByPaymentMethod[method] = (revenueByPaymentMethod[method] ?? 0) +
-            sale.getDoubleValue('totalAmount');
-      }
-    }
-
-    // Top selling products
-    final productSales = <String, ({num quantity, num revenue})>{};
-    for (final item in saleItems) {
-      final name = item.getStringValue('productName');
-      if (name.isEmpty) continue;
-      final qty = item.getDoubleValue('quantity');
-      final subtotal = item.getDoubleValue('subtotal');
-      final existing = productSales[name];
-      if (existing != null) {
-        productSales[name] = (
-          quantity: existing.quantity + qty,
-          revenue: existing.revenue + subtotal,
-        );
-      } else {
-        productSales[name] = (quantity: qty, revenue: subtotal);
-      }
-    }
-
-    final topProducts = productSales.entries
-        .map((e) => ProductSalesSummary(
-              productName: e.key,
-              quantity: e.value.quantity,
-              revenue: e.value.revenue,
-            ))
-        .toList()
-      ..sort((a, b) => b.revenue.compareTo(a.revenue));
-
-    return SalesReport(
-      totalRevenue: totalRevenue,
-      transactionCount: transactionCount,
-      averageTransactionValue: avgValue,
-      revenueByDay: revenueByDay.entries
-          .map((e) => DailyRevenue(date: e.key, amount: e.value))
-          .toList()
-        ..sort((a, b) => a.date.compareTo(b.date)),
-      revenueByPaymentMethod: revenueByPaymentMethod,
-      topSellingProducts: topProducts.take(10).toList(),
-    );
   }
 
   @override
@@ -180,67 +172,68 @@ class ReportsRepositoryImpl implements ReportsRepository {
   }) async {
     return TaskEither.tryCatch(
       () async {
-        // Fetch all active patients
-        final allPatients = await _patients.getFullList(
-          filter: 'isDeleted = false',
-          expand: 'species',
-        );
+        // Query views in parallel for best performance
+        final results = await Future.wait([
+          _pb.collection(PocketBaseCollections.vwPatientStatistics).getFullList(),
+          _pb.collection(PocketBaseCollections.vwNewPatientsByDate).getFullList(),
+          _pb.collection(PocketBaseCollections.vwActivePatientsCount).getFullList(),
+        ]);
 
-        // Filter new patients in period
-        final newPatientsFilter = _dateRangeFilter(startDate, endDate);
-        final newPatients = await _patients.getFullList(
-          filter: '$newPatientsFilter && isDeleted = false',
-          expand: 'species',
-        );
+        final statisticsRecords = results[0];
+        final newPatientRecords = results[1];
+        final activePatientsRecords = results[2];
 
-        return _aggregatePatientReport(allPatients, newPatients);
+        // Get total patients count
+        final totalPatients = activePatientsRecords.isNotEmpty
+            ? activePatientsRecords.first.getIntValue('active_count')
+            : 0;
+
+        // Aggregate by species and sex from statistics view
+        final bySpecies = <String, int>{};
+        final bySex = <String, int>{};
+
+        for (final record in statisticsRecords) {
+          final speciesName = record.getStringValue('species_name');
+          final sex = record.getStringValue('sex');
+          final count = record.getIntValue('patient_count');
+
+          // Aggregate by species
+          final speciesLabel = speciesName.isEmpty ? 'Unknown' : speciesName;
+          bySpecies[speciesLabel] = (bySpecies[speciesLabel] ?? 0) + count;
+
+          // Aggregate by sex
+          final sexLabel = sex.isEmpty ? 'Unknown' : sex;
+          bySex[sexLabel] = (bySex[sexLabel] ?? 0) + count;
+        }
+
+        // Filter new patients by date range and aggregate
+        final registrationsByDay = <DateTime, int>{};
+        var newPatientsInPeriod = 0;
+
+        for (final record in newPatientRecords) {
+          final dateStr = record.getStringValue('registration_date');
+          final date = DateTime.tryParse(dateStr)?.toLocal();
+          if (date != null && date.isInRange(startDate, endDate)) {
+            final count = record.getIntValue('patient_count');
+            newPatientsInPeriod += count;
+            final day = DateTime(date.year, date.month, date.day);
+            registrationsByDay[day] = (registrationsByDay[day] ?? 0) + count;
+          }
+        }
+
+        return PatientReport(
+          totalPatients: totalPatients,
+          newPatientsInPeriod: newPatientsInPeriod,
+          patientsBySpecies: bySpecies,
+          patientsBySex: bySex,
+          registrationsByDay: registrationsByDay.entries
+              .map((e) => DailyCount(date: e.key, count: e.value))
+              .toList()
+            ..sort((a, b) => a.date.compareTo(b.date)),
+        );
       },
       Failure.handle,
     ).run();
-  }
-
-  PatientReport _aggregatePatientReport(
-    List<RecordModel> allPatients,
-    List<RecordModel> newPatients,
-  ) {
-    // By species
-    final bySpecies = <String, int>{};
-    for (final patient in allPatients) {
-      final speciesExpanded = patient.get<RecordModel?>('expand.species');
-      final speciesName =
-          speciesExpanded?.getStringValue('name') ?? 'Unknown';
-      bySpecies[speciesName] = (bySpecies[speciesName] ?? 0) + 1;
-    }
-
-    // By sex
-    final bySex = <String, int>{};
-    for (final patient in allPatients) {
-      final sex = patient.getStringValue('sex');
-      final sexLabel = sex.isEmpty ? 'Unknown' : sex;
-      bySex[sexLabel] = (bySex[sexLabel] ?? 0) + 1;
-    }
-
-    // Registrations by day
-    final registrationsByDay = <DateTime, int>{};
-    for (final patient in newPatients) {
-      final createdStr = patient.getStringValue('created');
-      final created = DateTime.tryParse(createdStr)?.toLocal();
-      if (created != null) {
-        final day = DateTime(created.year, created.month, created.day);
-        registrationsByDay[day] = (registrationsByDay[day] ?? 0) + 1;
-      }
-    }
-
-    return PatientReport(
-      totalPatients: allPatients.length,
-      newPatientsInPeriod: newPatients.length,
-      patientsBySpecies: bySpecies,
-      patientsBySex: bySex,
-      registrationsByDay: registrationsByDay.entries
-          .map((e) => DailyCount(date: e.key, count: e.value))
-          .toList()
-        ..sort((a, b) => a.date.compareTo(b.date)),
-    );
   }
 
   @override
@@ -250,83 +243,86 @@ class ReportsRepositoryImpl implements ReportsRepository {
   }) async {
     return TaskEither.tryCatch(
       () async {
-        // Filter appointments by date field, not created
-        final filter =
-            'date >= "${startDate.toPocketBaseUtc()}" && date < "${endDate.toPocketBaseUtc()}"';
+        // Query the appointment summary view
+        final records = await _pb
+            .collection(PocketBaseCollections.vwAppointmentSummary)
+            .getFullList();
 
-        final appointments = await _appointments.getFullList(
-          filter: filter,
-          sort: 'date',
+        // Filter by date range
+        final filteredRecords = records.where((r) {
+          final dateStr = r.getStringValue('appointment_date');
+          final date = DateTime.tryParse(dateStr)?.toLocal();
+          return date != null && date.isInRange(startDate, endDate);
+        }).toList();
+
+        if (filteredRecords.isEmpty) {
+          return AppointmentReport.empty;
+        }
+
+        var totalAppointments = 0;
+        var completedCount = 0;
+        var scheduledCount = 0;
+        var missedCount = 0;
+        var cancelledCount = 0;
+
+        final byStatus = <String, int>{};
+        final byDay = <DateTime, int>{};
+        final byPurpose = <String, int>{};
+
+        for (final record in filteredRecords) {
+          final status = record.getStringValue('status');
+          final purpose = record.getStringValue('purpose');
+          final dateStr = record.getStringValue('appointment_date');
+          final date = DateTime.tryParse(dateStr)?.toLocal();
+          final count = record.getIntValue('appointment_count');
+
+          totalAppointments += count;
+
+          // Count by status
+          switch (status.toLowerCase()) {
+            case 'completed':
+              completedCount += count;
+            case 'scheduled':
+              scheduledCount += count;
+            case 'missed':
+              missedCount += count;
+            case 'cancelled':
+              cancelledCount += count;
+          }
+
+          // By status for pie chart
+          if (status.isNotEmpty) {
+            byStatus[status] = (byStatus[status] ?? 0) + count;
+          }
+
+          // By day
+          if (date != null) {
+            final day = DateTime(date.year, date.month, date.day);
+            byDay[day] = (byDay[day] ?? 0) + count;
+          }
+
+          // By purpose
+          if (purpose.isNotEmpty) {
+            byPurpose[purpose] = (byPurpose[purpose] ?? 0) + count;
+          }
+        }
+
+        return AppointmentReport(
+          totalAppointments: totalAppointments,
+          completedCount: completedCount,
+          scheduledCount: scheduledCount,
+          missedCount: missedCount,
+          cancelledCount: cancelledCount,
+          appointmentsByStatus: byStatus,
+          appointmentsByDay: byDay.entries
+              .map((e) => DailyCount(date: e.key, count: e.value))
+              .toList()
+            ..sort((a, b) => a.date.compareTo(b.date)),
+          appointmentsByPurpose: byPurpose,
         );
-
-        return _aggregateAppointmentReport(appointments);
       },
       Failure.handle,
     ).run();
-  }
-
-  AppointmentReport _aggregateAppointmentReport(List<RecordModel> appointments) {
-    var completedCount = 0;
-    var scheduledCount = 0;
-    var missedCount = 0;
-    var cancelledCount = 0;
-
-    final byStatus = <String, int>{};
-    final byDay = <DateTime, int>{};
-    final byPurpose = <String, int>{};
-
-    for (final apt in appointments) {
-      final status = apt.getStringValue('status');
-
-      // Count by status
-      switch (status.toLowerCase()) {
-        case 'completed':
-          completedCount++;
-          break;
-        case 'scheduled':
-          scheduledCount++;
-          break;
-        case 'missed':
-          missedCount++;
-          break;
-        case 'cancelled':
-          cancelledCount++;
-          break;
-      }
-
-      // By status for pie chart
-      if (status.isNotEmpty) {
-        byStatus[status] = (byStatus[status] ?? 0) + 1;
-      }
-
-      // By day
-      final dateStr = apt.getStringValue('date');
-      final date = DateTime.tryParse(dateStr)?.toLocal();
-      if (date != null) {
-        final day = DateTime(date.year, date.month, date.day);
-        byDay[day] = (byDay[day] ?? 0) + 1;
-      }
-
-      // By purpose
-      final purpose = apt.getStringValue('purpose');
-      if (purpose.isNotEmpty) {
-        byPurpose[purpose] = (byPurpose[purpose] ?? 0) + 1;
-      }
-    }
-
-    return AppointmentReport(
-      totalAppointments: appointments.length,
-      completedCount: completedCount,
-      scheduledCount: scheduledCount,
-      missedCount: missedCount,
-      cancelledCount: cancelledCount,
-      appointmentsByStatus: byStatus,
-      appointmentsByDay: byDay.entries
-          .map((e) => DailyCount(date: e.key, count: e.value))
-          .toList()
-        ..sort((a, b) => a.date.compareTo(b.date)),
-      appointmentsByPurpose: byPurpose,
-    );
   }
 
   @override
@@ -428,93 +424,78 @@ class ReportsRepositoryImpl implements ReportsRepository {
   }) async {
     return TaskEither.tryCatch(
       () async {
-        final filter = _dateRangeFilter(startDate, endDate);
+        // Query views in parallel for best performance
+        final results = await Future.wait([
+          _pb
+              .collection(PocketBaseCollections.vwTreatmentPlanSummary)
+              .getFullList(),
+          _pb
+              .collection(PocketBaseCollections.vwOverdueTreatmentItems)
+              .getFullList(),
+        ]);
 
-        final plans = await _treatmentPlans.getFullList(
-          filter: filter,
-          expand: 'treatment',
+        final summaryRecords = results[0];
+        final overdueRecords = results[1];
+
+        if (summaryRecords.isEmpty) {
+          return TreatmentPlanReport.empty.copyWith(
+            overdueItemsCount: overdueRecords.length,
+          );
+        }
+
+        var totalPlans = 0;
+        var activePlans = 0;
+        var completedPlans = 0;
+        var abandonedPlans = 0;
+
+        final byStatus = <String, int>{};
+        final byTreatmentType = <String, int>{};
+
+        for (final record in summaryRecords) {
+          final status = record.getStringValue('status');
+          final treatmentName = record.getStringValue('treatment_name');
+          final count = record.getIntValue('plan_count');
+
+          totalPlans += count;
+
+          // Count by status
+          switch (status.toLowerCase()) {
+            case 'active':
+              activePlans += count;
+            case 'completed':
+              completedPlans += count;
+            case 'abandoned':
+              abandonedPlans += count;
+          }
+
+          // By status for pie chart
+          if (status.isNotEmpty) {
+            byStatus[status] = (byStatus[status] ?? 0) + count;
+          }
+
+          // By treatment type
+          final treatmentLabel =
+              treatmentName.isEmpty ? 'Unknown' : treatmentName;
+          byTreatmentType[treatmentLabel] =
+              (byTreatmentType[treatmentLabel] ?? 0) + count;
+        }
+
+        // Calculate average progress (simplified)
+        final totalProgress =
+            totalPlans > 0 ? (completedPlans / totalPlans) * 100 : 0.0;
+
+        return TreatmentPlanReport(
+          totalPlans: totalPlans,
+          activePlans: activePlans,
+          completedPlans: completedPlans,
+          abandonedPlans: abandonedPlans,
+          averageProgressPercentage: totalProgress,
+          plansByStatus: byStatus,
+          plansByTreatmentType: byTreatmentType,
+          overdueItemsCount: overdueRecords.length,
         );
-
-        // Get items for overdue count
-        final planItems = await _treatmentPlanItems.getFullList();
-
-        return _aggregateTreatmentPlanReport(plans, planItems);
       },
       Failure.handle,
     ).run();
-  }
-
-  TreatmentPlanReport _aggregateTreatmentPlanReport(
-    List<RecordModel> plans,
-    List<RecordModel> planItems,
-  ) {
-    var activePlans = 0;
-    var completedPlans = 0;
-    var abandonedPlans = 0;
-    double totalProgress = 0;
-
-    final byStatus = <String, int>{};
-    final byTreatmentType = <String, int>{};
-
-    for (final plan in plans) {
-      final status = plan.getStringValue('status');
-
-      switch (status.toLowerCase()) {
-        case 'active':
-          activePlans++;
-          break;
-        case 'completed':
-          completedPlans++;
-          break;
-        case 'abandoned':
-          abandonedPlans++;
-          break;
-      }
-
-      // By status
-      if (status.isNotEmpty) {
-        byStatus[status] = (byStatus[status] ?? 0) + 1;
-      }
-
-      // By treatment type
-      final treatmentExpanded = plan.get<RecordModel?>('expand.treatment');
-      final treatmentName =
-          treatmentExpanded?.getStringValue('name') ?? 'Unknown';
-      byTreatmentType[treatmentName] =
-          (byTreatmentType[treatmentName] ?? 0) + 1;
-    }
-
-    // Calculate average progress for active plans
-    if (activePlans > 0) {
-      // This is a simplified calculation - ideally we'd calculate from items
-      totalProgress = (completedPlans / plans.length) * 100;
-    }
-
-    // Count overdue items
-    final now = DateTime.now();
-    var overdueCount = 0;
-    for (final item in planItems) {
-      final status = item.getStringValue('status');
-      final expectedDateStr = item.getStringValue('expectedDate');
-      final expectedDate = DateTime.tryParse(expectedDateStr);
-
-      if (expectedDate != null &&
-          expectedDate.isBefore(now) &&
-          (status.toLowerCase() == 'scheduled' ||
-              status.toLowerCase() == 'booked')) {
-        overdueCount++;
-      }
-    }
-
-    return TreatmentPlanReport(
-      totalPlans: plans.length,
-      activePlans: activePlans,
-      completedPlans: completedPlans,
-      abandonedPlans: abandonedPlans,
-      averageProgressPercentage: totalProgress,
-      plansByStatus: byStatus,
-      plansByTreatmentType: byTreatmentType,
-      overdueItemsCount: overdueCount,
-    );
   }
 }

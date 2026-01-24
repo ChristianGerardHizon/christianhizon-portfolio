@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../appointments/presentation/controllers/appointments_controller.dart';
-import '../../../patients/data/repositories/patient_repository.dart';
+import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
+import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import 'inventory_alerts_controller.dart';
 
 part 'dashboard_kpi_provider.g.dart';
@@ -23,13 +23,15 @@ Future<int> productsExpiredCount(Ref ref) async {
 }
 
 /// Count of active patients.
+/// Uses vw_active_patients_count view for optimized query.
 @riverpod
 Future<int> activePatientsCount(Ref ref) async {
-  final result = await ref.read(patientRepositoryProvider).fetchAll();
-  return result.fold(
-    (failure) => 0,
-    (patients) => patients.length,
-  );
+  final pb = ref.read(pocketbaseProvider);
+  final records = await pb
+      .collection(PocketBaseCollections.vwActivePatientsCount)
+      .getFullList();
+  if (records.isEmpty) return 0;
+  return records.first.getIntValue('active_count');
 }
 
 /// Count of products with low stock.
@@ -58,42 +60,38 @@ class TodayAppointmentsBreakdown {
 }
 
 /// Today's appointments breakdown by status.
+/// Uses vw_todays_appointments view for optimized query.
 @riverpod
-TodayAppointmentsBreakdown todayAppointmentsBreakdown(Ref ref) {
-  final appointmentsAsync = ref.watch(appointmentsControllerProvider);
+Future<TodayAppointmentsBreakdown> todayAppointmentsBreakdown(Ref ref) async {
+  final pb = ref.read(pocketbaseProvider);
+  final records = await pb
+      .collection(PocketBaseCollections.vwTodaysAppointments)
+      .getFullList();
 
-  return appointmentsAsync.when(
-    data: (appointments) {
-      final today = DateTime.now();
-      final todayAppointments = appointments.where((a) {
-        final apptDate = a.date;
-        return apptDate.year == today.year &&
-            apptDate.month == today.month &&
-            apptDate.day == today.day;
-      }).toList();
+  var scheduled = 0;
+  var completed = 0;
+  var missed = 0;
+  var cancelled = 0;
 
-      return TodayAppointmentsBreakdown(
-        scheduled:
-            todayAppointments.where((a) => a.status.name == 'scheduled').length,
-        completed:
-            todayAppointments.where((a) => a.status.name == 'completed').length,
-        missed:
-            todayAppointments.where((a) => a.status.name == 'missed').length,
-        cancelled:
-            todayAppointments.where((a) => a.status.name == 'cancelled').length,
-      );
-    },
-    loading: () => const TodayAppointmentsBreakdown(
-      scheduled: 0,
-      completed: 0,
-      missed: 0,
-      cancelled: 0,
-    ),
-    error: (_, __) => const TodayAppointmentsBreakdown(
-      scheduled: 0,
-      completed: 0,
-      missed: 0,
-      cancelled: 0,
-    ),
+  for (final record in records) {
+    final status = record.getStringValue('status');
+    final count = record.getIntValue('count');
+    switch (status) {
+      case 'scheduled':
+        scheduled = count;
+      case 'completed':
+        completed = count;
+      case 'missed':
+        missed = count;
+      case 'cancelled':
+        cancelled = count;
+    }
+  }
+
+  return TodayAppointmentsBreakdown(
+    scheduled: scheduled,
+    completed: completed,
+    missed: missed,
+    cancelled: cancelled,
   );
 }

@@ -57,16 +57,24 @@ class KpiSummarySection extends ConsumerWidget {
       const SizedBox(width: spacing),
       // Today's appointments
       Expanded(
-        child: KpiCard(
-          title: "Today's Appts",
-          value: appointmentsBreakdown.total.toString(),
-          icon: Icons.calendar_today,
-          subtitle: '${appointmentsBreakdown.scheduled} pending',
-          compact: true,
-          color: appointmentsBreakdown.scheduled > 0
-              ? Theme.of(context).colorScheme.primary
-              : null,
-          onTap: () => const AppointmentsRoute().go(context),
+        child: appointmentsBreakdown.when(
+          data: (breakdown) => KpiCard(
+            title: "Today's Appts",
+            value: breakdown.total.toString(),
+            icon: Icons.calendar_today,
+            subtitle: '${breakdown.scheduled} pending',
+            compact: true,
+            color: breakdown.scheduled > 0
+                ? Theme.of(context).colorScheme.primary
+                : null,
+            onTap: () => const AppointmentsRoute().go(context),
+          ),
+          loading: () => _buildLoadingCard(),
+          error: (_, __) => _buildErrorCard(
+            context,
+            "Today's Appts",
+            Icons.calendar_today,
+          ),
         ),
       ),
       const SizedBox(width: spacing),

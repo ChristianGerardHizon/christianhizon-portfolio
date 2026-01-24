@@ -209,15 +209,20 @@ class ProductLotRepositoryImpl implements ProductLotRepository {
   FutureEither<num> calculateTotalQuantity(String productId) async {
     return TaskEither.tryCatch(
       () async {
-        final filter = PBFilter()
-            .notDeleted()
-            .equals('product', productId)
-            .build();
-
-        final records = await _collection.getFullList(filter: filter);
-        final lots = records.map(_toEntity).toList();
-
-        return lots.fold<num>(0, (sum, lot) => sum + lot.quantity);
+        // Query the pre-aggregated view for lot totals
+        // The view uses product ID as the record ID
+        try {
+          final record = await _pb
+              .collection(PocketBaseCollections.vwLotQuantityTotals)
+              .getOne(productId);
+          return record.getDoubleValue('total_quantity');
+        } on ClientException catch (e) {
+          // If no record found (product has no lots), return 0
+          if (e.statusCode == 404) {
+            return 0;
+          }
+          rethrow;
+        }
       },
       Failure.handle,
     ).run();
