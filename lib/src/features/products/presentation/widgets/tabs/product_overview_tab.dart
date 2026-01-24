@@ -122,28 +122,32 @@ class ProductOverviewTab extends HookConsumerWidget {
               ],
             ),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildInfoItem(
-                    context,
-                    icon: Icons.numbers,
-                    label: 'Quantity',
-                    value: product.quantityDisplay,
-                    large: true,
+            // Hide quantity for lot-tracked products (managed at lot level)
+            if (!product.trackByLot) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildInfoItem(
+                      context,
+                      icon: Icons.numbers,
+                      label: 'Quantity',
+                      value: product.quantityDisplay,
+                      large: true,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _buildInfoItem(
-                    context,
-                    icon: Icons.warning_amber_outlined,
-                    label: 'Threshold',
-                    value: product.stockThreshold?.toStringAsFixed(0) ?? 'N/A',
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildInfoItem(
+                      context,
+                      icon: Icons.warning_amber_outlined,
+                      label: 'Threshold',
+                      value:
+                          product.stockThreshold?.toStringAsFixed(0) ?? 'N/A',
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
             if (product.trackByLot) ...[
               const SizedBox(height: 12),
               Container(
