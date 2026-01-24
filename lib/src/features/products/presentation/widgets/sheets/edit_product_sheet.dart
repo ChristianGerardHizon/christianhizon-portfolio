@@ -376,46 +376,67 @@ class _EditProductForm extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Price & Quantity
-              Row(
-                children: [
-                  Expanded(
-                    child: FormBuilderTextField(
-                      name: 'price',
-                      decoration: const InputDecoration(
-                        labelText: 'Price *',
-                        border: OutlineInputBorder(),
-                        prefixText: '₱ ',
-                      ),
-                      enabled: !isSaving.value,
-                      keyboardType: TextInputType.number,
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(
-                          errorText: 'Price is required',
+              // Price & Quantity (quantity hidden when tracking by lot)
+              if (trackByLot.value) ...[
+                FormBuilderTextField(
+                  name: 'price',
+                  decoration: const InputDecoration(
+                    labelText: 'Price *',
+                    border: OutlineInputBorder(),
+                    prefixText: '₱ ',
+                  ),
+                  enabled: !isSaving.value,
+                  keyboardType: TextInputType.number,
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(
+                      errorText: 'Price is required',
+                    ),
+                    FormBuilderValidators.numeric(
+                      errorText: 'Must be a number',
+                    ),
+                  ]),
+                ),
+              ] else ...[
+                Row(
+                  children: [
+                    Expanded(
+                      child: FormBuilderTextField(
+                        name: 'price',
+                        decoration: const InputDecoration(
+                          labelText: 'Price *',
+                          border: OutlineInputBorder(),
+                          prefixText: '₱ ',
                         ),
-                        FormBuilderValidators.numeric(
+                        enabled: !isSaving.value,
+                        keyboardType: TextInputType.number,
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(
+                            errorText: 'Price is required',
+                          ),
+                          FormBuilderValidators.numeric(
+                            errorText: 'Must be a number',
+                          ),
+                        ]),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: FormBuilderTextField(
+                        name: 'quantity',
+                        decoration: const InputDecoration(
+                          labelText: 'Quantity',
+                          border: OutlineInputBorder(),
+                        ),
+                        enabled: !isSaving.value,
+                        keyboardType: TextInputType.number,
+                        validator: FormBuilderValidators.numeric(
                           errorText: 'Must be a number',
                         ),
-                      ]),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: FormBuilderTextField(
-                      name: 'quantity',
-                      decoration: const InputDecoration(
-                        labelText: 'Quantity',
-                        border: OutlineInputBorder(),
-                      ),
-                      enabled: !isSaving.value,
-                      keyboardType: TextInputType.number,
-                      validator: FormBuilderValidators.numeric(
-                        errorText: 'Must be a number',
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
               const SizedBox(height: 16),
 
               // Stock threshold
