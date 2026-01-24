@@ -9,16 +9,25 @@ part of 'product_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 /// Provider for a single product by ID.
+///
+/// For lot-tracked products, this will automatically sync the product's
+/// quantity from its lots to ensure the stock status is accurate.
 
 @ProviderFor(product)
 final productProvider = ProductFamily._();
 
 /// Provider for a single product by ID.
+///
+/// For lot-tracked products, this will automatically sync the product's
+/// quantity from its lots to ensure the stock status is accurate.
 
 final class ProductProvider extends $FunctionalProvider<AsyncValue<Product?>,
         Product?, FutureOr<Product?>>
     with $FutureModifier<Product?>, $FutureProvider<Product?> {
   /// Provider for a single product by ID.
+  ///
+  /// For lot-tracked products, this will automatically sync the product's
+  /// quantity from its lots to ensure the stock status is accurate.
   ProductProvider._(
       {required ProductFamily super.from, required String super.argument})
       : super(
@@ -64,9 +73,12 @@ final class ProductProvider extends $FunctionalProvider<AsyncValue<Product?>,
   }
 }
 
-String _$productHash() => r'eb56e7ac87de53969478dce80bf91cfc4a8eb9ad';
+String _$productHash() => r'b33bb1473e9d7e53a753e1cff719d1fd48f1d038';
 
 /// Provider for a single product by ID.
+///
+/// For lot-tracked products, this will automatically sync the product's
+/// quantity from its lots to ensure the stock status is accurate.
 
 final class ProductFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<Product?>, String> {
@@ -80,6 +92,9 @@ final class ProductFamily extends $Family
         );
 
   /// Provider for a single product by ID.
+  ///
+  /// For lot-tracked products, this will automatically sync the product's
+  /// quantity from its lots to ensure the stock status is accurate.
 
   ProductProvider call(
     String id,

@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/constants/constants.dart';
 import '../../../../core/foundation/paginated_state.dart';
+import '../../data/repositories/product_lot_repository.dart';
 import '../../data/repositories/product_repository.dart';
 import '../../domain/product.dart';
 
@@ -11,6 +12,8 @@ part 'paginated_products_controller.g.dart';
 @Riverpod(keepAlive: true)
 class PaginatedProductsController extends _$PaginatedProductsController {
   ProductRepository get _repository => ref.read(productRepositoryProvider);
+  ProductLotRepository get _lotRepository =>
+      ref.read(productLotRepositoryProvider);
 
   // Track current search state
   String? _currentSearchQuery;
@@ -26,16 +29,52 @@ class PaginatedProductsController extends _$PaginatedProductsController {
       perPage: Pagination.defaultPageSize,
     );
 
-    return result.fold(
+    final paginated = result.fold(
       (failure) => throw failure,
-      (paginated) => PaginatedState<Product>(
-        items: paginated.items,
-        currentPage: paginated.page,
-        totalItems: paginated.totalItems,
-        totalPages: paginated.totalPages,
-        hasReachedEnd: !paginated.hasMore,
-      ),
+      (paginated) => paginated,
     );
+
+    // Sync lot-tracked products' quantities
+    final syncedItems = await _syncLotTrackedProducts(paginated.items);
+    return PaginatedState<Product>(
+      items: syncedItems,
+      currentPage: paginated.page,
+      totalItems: paginated.totalItems,
+      totalPages: paginated.totalPages,
+      hasReachedEnd: !paginated.hasMore,
+    );
+  }
+
+  /// Syncs quantity for lot-tracked products from their lots.
+  Future<List<Product>> _syncLotTrackedProducts(List<Product> products) async {
+    final synced = <Product>[];
+
+    for (final product in products) {
+      if (product.trackByLot) {
+        final totalResult =
+            await _lotRepository.calculateTotalQuantity(product.id);
+        final total = totalResult.fold(
+          (failure) => null,
+          (total) => total,
+        );
+
+        if (total != null && product.quantity != total) {
+          // Update the product's quantity in the database
+          final updateResult =
+              await _repository.updateQuantity(product.id, total);
+          synced.add(updateResult.fold(
+            (failure) => product.copyWith(quantity: total),
+            (updated) => updated,
+          ));
+        } else {
+          synced.add(product);
+        }
+      } else {
+        synced.add(product);
+      }
+    }
+
+    return synced;
   }
 
   /// Whether search is currently active.
@@ -70,14 +109,16 @@ class PaginatedProductsController extends _$PaginatedProductsController {
             perPage: Pagination.defaultPageSize,
           );
 
-    result.fold(
-      (failure) {
+    await result.fold(
+      (failure) async {
         state = AsyncValue.data(currentState.copyWith(isLoadingMore: false));
       },
-      (paginated) {
+      (paginated) async {
+        // Sync lot-tracked products' quantities
+        final syncedItems = await _syncLotTrackedProducts(paginated.items);
         state = AsyncValue.data(
           currentState.appendItems(
-            paginated.items,
+            syncedItems,
             page: paginated.page,
             totalItems: paginated.totalItems,
             totalPages: paginated.totalPages,
@@ -103,15 +144,21 @@ class PaginatedProductsController extends _$PaginatedProductsController {
             perPage: Pagination.defaultPageSize,
           );
 
-    state = result.fold(
-      (failure) => AsyncError(failure, StackTrace.current),
-      (paginated) => AsyncData(PaginatedState<Product>(
-        items: paginated.items,
-        currentPage: paginated.page,
-        totalItems: paginated.totalItems,
-        totalPages: paginated.totalPages,
-        hasReachedEnd: !paginated.hasMore,
-      )),
+    await result.fold(
+      (failure) async {
+        state = AsyncError(failure, StackTrace.current);
+      },
+      (paginated) async {
+        // Sync lot-tracked products' quantities
+        final syncedItems = await _syncLotTrackedProducts(paginated.items);
+        state = AsyncData(PaginatedState<Product>(
+          items: syncedItems,
+          currentPage: paginated.page,
+          totalItems: paginated.totalItems,
+          totalPages: paginated.totalPages,
+          hasReachedEnd: !paginated.hasMore,
+        ));
+      },
     );
   }
 
@@ -133,15 +180,21 @@ class PaginatedProductsController extends _$PaginatedProductsController {
       perPage: Pagination.defaultPageSize,
     );
 
-    state = result.fold(
-      (failure) => AsyncError(failure, StackTrace.current),
-      (paginated) => AsyncData(PaginatedState<Product>(
-        items: paginated.items,
-        currentPage: paginated.page,
-        totalItems: paginated.totalItems,
-        totalPages: paginated.totalPages,
-        hasReachedEnd: !paginated.hasMore,
-      )),
+    await result.fold(
+      (failure) async {
+        state = AsyncError(failure, StackTrace.current);
+      },
+      (paginated) async {
+        // Sync lot-tracked products' quantities
+        final syncedItems = await _syncLotTrackedProducts(paginated.items);
+        state = AsyncData(PaginatedState<Product>(
+          items: syncedItems,
+          currentPage: paginated.page,
+          totalItems: paginated.totalItems,
+          totalPages: paginated.totalPages,
+          hasReachedEnd: !paginated.hasMore,
+        ));
+      },
     );
   }
 
