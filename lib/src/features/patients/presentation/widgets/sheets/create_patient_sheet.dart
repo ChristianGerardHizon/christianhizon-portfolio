@@ -337,6 +337,7 @@ class CreatePatientSheet extends HookConsumerWidget {
                 ),
                 enabled: !isSaving.value,
                 spacing: 8,
+                showCheckmark: true,
                 options: const [
                   FormBuilderChipOption(
                     value: PatientSex.male,
