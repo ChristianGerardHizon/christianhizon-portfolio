@@ -73,17 +73,22 @@ class PatientDetailRoute extends GoRouteData with $PatientDetailRoute {
 }
 
 /// Record detail page route.
+///
+/// Use recordId='new' to create a new record.
 class RecordDetailRoute extends GoRouteData with $RecordDetailRoute {
   const RecordDetailRoute({required this.id, required this.recordId});
 
   final String id;
   final String recordId;
 
+  /// Check if this is a new record creation route.
+  bool get isNewRecord => recordId == 'new';
+
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return RecordDetailPage(
       patientId: id,
-      recordId: recordId,
+      recordId: isNewRecord ? null : recordId,
     );
   }
 }

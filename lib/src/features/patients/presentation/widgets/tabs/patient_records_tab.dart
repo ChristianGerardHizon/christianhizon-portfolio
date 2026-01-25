@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/routing/routes/patients.routes.dart';
 import '../../../domain/patient.dart';
 import '../../controllers/patient_records_controller.dart';
 import '../cards/record_card.dart';
-import '../sheets/add_record_sheet.dart';
 
 /// Records tab showing patient medical records/visits.
 class PatientRecordsTab extends HookConsumerWidget {
@@ -61,11 +61,11 @@ class PatientRecordsTab extends HookConsumerWidget {
                     color: theme.colorScheme.outline,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 16),
                 FilledButton.icon(
-                  onPressed: () => _showAddRecordSheet(context, ref),
+                  onPressed: () => _navigateToNewRecord(context),
                   icon: const Icon(Icons.add),
-                  label: const Text('Add First Record'),
+                  label: const Text('Add Record'),
                 ),
               ],
             ),
@@ -81,7 +81,7 @@ class PatientRecordsTab extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   FilledButton.icon(
-                    onPressed: () => _showAddRecordSheet(context, ref),
+                    onPressed: () => _navigateToNewRecord(context),
                     icon: const Icon(Icons.add),
                     label: const Text('Add Record'),
                   ),
@@ -114,24 +114,8 @@ class PatientRecordsTab extends HookConsumerWidget {
     );
   }
 
-  void _showAddRecordSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => AddRecordSheet(
-        patientId: patient.id,
-        onSave: (record) async {
-          final created = await ref
-              .read(patientRecordsControllerProvider(patient.id).notifier)
-              .createRecordAndReturn(record);
-          return created;
-        },
-      ),
-    );
+  /// Navigate to the new record creation page.
+  void _navigateToNewRecord(BuildContext context) {
+    RecordDetailRoute(id: patient.id, recordId: 'new').go(context);
   }
 }

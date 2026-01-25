@@ -1,8 +1,13 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../settings/presentation/controllers/branch_provider.dart';
 import '../../domain/patient.dart';
@@ -10,30 +15,51 @@ import '../../domain/patient_record.dart';
 import '../../domain/prescription.dart';
 import '../controllers/patient_provider.dart';
 import '../controllers/patient_record_provider.dart';
+import '../controllers/patient_records_controller.dart';
 import '../controllers/prescription_controller.dart';
 import '../pdf/prescription_pdf_generator.dart';
 import '../widgets/sections/prescriptions_section.dart';
-import '../widgets/sheets/edit_record_sheet.dart';
 
-/// Full-screen page showing record details.
-class RecordDetailPage extends ConsumerWidget {
+/// Full-screen page for viewing/editing/creating a patient record.
+///
+/// Pass [recordId] as null to create a new record.
+class RecordDetailPage extends HookConsumerWidget {
   const RecordDetailPage({
     super.key,
     required this.patientId,
-    required this.recordId,
+    this.recordId,
   });
 
   final String patientId;
-  final String recordId;
+  final String? recordId;
+
+  /// Whether this is a new record being created.
+  bool get isNewRecord => recordId == null;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final patientAsync = ref.watch(patientProvider(patientId));
-    final recordAsync = ref.watch(patientRecordProvider(recordId));
 
-    // Handle loading state for both patient and record
-    if (patientAsync.isLoading || recordAsync.isLoading) {
+    // Only fetch record if we have a recordId
+    final recordAsync = recordId != null
+        ? ref.watch(patientRecordProvider(recordId!))
+        : const AsyncValue<PatientRecord?>.data(null);
+
+    // Track if we're in edit mode (always true for new records)
+    final isEditing = useState(isNewRecord);
+
+    // Track if save is in progress
+    final isSaving = useState(false);
+
+    // Form key for the record form
+    final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+
+    // Created record ID (for new records, set after first save)
+    final createdRecordId = useState<String?>(recordId);
+
+    // Handle loading state for patient (and record if not new)
+    if (patientAsync.isLoading || (!isNewRecord && recordAsync.isLoading)) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
@@ -56,7 +82,7 @@ class RecordDetailPage extends ConsumerWidget {
       );
     }
 
-    if (recordAsync.hasError) {
+    if (!isNewRecord && recordAsync.hasError) {
       return Scaffold(
         appBar: AppBar(title: const Text('Record Details')),
         body: Center(
@@ -82,164 +108,218 @@ class RecordDetailPage extends ConsumerWidget {
       );
     }
 
-    if (record == null) {
+    if (!isNewRecord && record == null) {
       return Scaffold(
         appBar: AppBar(title: const Text('Record Details')),
         body: const Center(child: Text('Record not found')),
       );
     }
 
-    return _buildContent(context, ref, theme, patient, record);
-  }
-
-  Widget _buildContent(
-    BuildContext context,
-    WidgetRef ref,
-    ThemeData theme,
-    Patient patient,
-    PatientRecord record,
-  ) {
-    final dateStr = _formatDate(record.date);
+    // Check if diagnosis exists (for enabling prescriptions)
+    final hasDiagnosis = record?.diagnosis.isNotEmpty ?? false;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Record Details'),
+        title: Text(isNewRecord ? 'New Record' : 'Record Details'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                useSafeArea: true,
-                useRootNavigator: true,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                ),
-                builder: (context) => EditRecordSheet(record: record),
-              );
-            },
-          ),
+          if (!isNewRecord && !isEditing.value)
+            IconButton(
+              icon: const Icon(Icons.edit),
+              tooltip: 'Edit',
+              onPressed: () => isEditing.value = true,
+            ),
+          if (isEditing.value) ...[
+            TextButton(
+              onPressed: isSaving.value
+                  ? null
+                  : () {
+                      if (isNewRecord) {
+                        // For new unsaved records, just go back
+                        context.pop();
+                      } else {
+                        // For existing records, cancel edit mode
+                        isEditing.value = false;
+                      }
+                    },
+              child: const Text('Cancel'),
+            ),
+            const SizedBox(width: 8),
+            FilledButton(
+              onPressed: isSaving.value
+                  ? null
+                  : () => _handleSave(
+                        context,
+                        ref,
+                        formKey,
+                        patient,
+                        record,
+                        isSaving,
+                        isEditing,
+                        createdRecordId,
+                      ),
+              child: isSaving.value
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Save'),
+            ),
+            const SizedBox(width: 8),
+          ],
         ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(patientProvider(patientId));
-          ref.invalidate(patientRecordProvider(recordId));
-          await Future.wait([
-            ref.read(patientProvider(patientId).future),
-            ref.read(patientRecordProvider(recordId).future),
-          ]);
+          if (createdRecordId.value != null) {
+            ref.invalidate(patientRecordProvider(createdRecordId.value!));
+          }
+          await ref.read(patientProvider(patientId).future);
+          if (createdRecordId.value != null) {
+            await ref.read(patientRecordProvider(createdRecordId.value!).future);
+          }
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Patient info
-            _buildPatientCard(theme, patient),
-            const SizedBox(height: 24),
-
-            // Visit date
-            Text('Visit Date', style: theme.textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    const Icon(Icons.calendar_today, size: 20),
-                    const SizedBox(width: 12),
-                    Text(dateStr),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Vitals
-            Text('Vitals', style: theme.textTheme.titleMedium),
-            const SizedBox(height: 8),
-            _buildVitalsRow(theme, record),
-            const SizedBox(height: 24),
-
-            // Diagnosis
-            Text('Diagnosis', style: theme.textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(record.diagnosis),
-              ),
-            ),
-
-            if (record.notes != null) ...[
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Patient info
+              _buildPatientCard(theme, patient),
               const SizedBox(height: 24),
-              Text('Notes', style: theme.textTheme.titleMedium),
-              const SizedBox(height: 8),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(record.notes!),
-                ),
+
+              // Record form (editable) or display (read-only)
+              if (isEditing.value)
+                _RecordForm(
+                  formKey: formKey,
+                  record: record,
+                  enabled: !isSaving.value,
+                )
+              else if (record != null)
+                _RecordDisplay(record: record, theme: theme),
+
+              const SizedBox(height: 32),
+              const Divider(),
+              const SizedBox(height: 16),
+
+              // Prescriptions section (greyed out if no diagnosis)
+              _PrescriptionsSectionWrapper(
+                recordId: createdRecordId.value,
+                hasDiagnosis: hasDiagnosis,
+                theme: theme,
               ),
-            ],
 
-            const SizedBox(height: 32),
-            const Divider(),
-            const SizedBox(height: 16),
-
-            // Prescriptions
-            PrescriptionsSection(recordId: recordId),
-
-            const SizedBox(height: 32),
-
-            // Actions
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                OutlinedButton.icon(
-                  onPressed: () => _showPrescriptionGroupSelector(
-                    context,
-                    ref,
-                    patient,
-                    record,
-                    action: _PdfAction.print,
-                  ),
-                  icon: const Icon(Icons.print),
-                  label: const Text('Print'),
-                ),
-                OutlinedButton.icon(
-                  onPressed: () => _showPrescriptionGroupSelector(
-                    context,
-                    ref,
-                    patient,
-                    record,
-                    action: _PdfAction.share,
-                  ),
-                  icon: const Icon(Icons.share),
-                  label: const Text('Share'),
-                ),
-                OutlinedButton.icon(
-                  onPressed: () => _showPrescriptionGroupSelector(
-                    context,
-                    ref,
-                    patient,
-                    record,
-                    action: _PdfAction.save,
-                  ),
-                  icon: const Icon(Icons.download),
-                  label: const Text('Save'),
+              // Actions (only show if record exists with diagnosis)
+              if (hasDiagnosis && createdRecordId.value != null) ...[
+                const SizedBox(height: 32),
+                _RecordActions(
+                  patient: patient,
+                  record: record!,
+                  recordId: createdRecordId.value!,
+                  ref: ref,
                 ),
               ],
-            ),
-          ],
-        ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Future<void> _handleSave(
+    BuildContext context,
+    WidgetRef ref,
+    GlobalKey<FormBuilderState> formKey,
+    Patient patient,
+    PatientRecord? existingRecord,
+    ValueNotifier<bool> isSaving,
+    ValueNotifier<bool> isEditing,
+    ValueNotifier<String?> createdRecordId,
+  ) async {
+    final isValid = formKey.currentState!.saveAndValidate();
+    if (!isValid) {
+      final errors = formKey.currentState?.errors ?? {};
+      final errorMessages = formatFormErrors(errors, _fieldLabels);
+      if (errorMessages.isNotEmpty) {
+        showFormErrorDialog(context, errors: errorMessages);
+      }
+      return;
+    }
+
+    isSaving.value = true;
+
+    final values = formKey.currentState!.value;
+    final weight = values['weight'] as String?;
+    final temperature = values['temperature'] as String?;
+
+    final record = PatientRecord(
+      id: existingRecord?.id ?? '',
+      patientId: patientId,
+      date: values['recordDate'] as DateTime? ?? DateTime.now(),
+      diagnosis: (values['diagnosis'] as String? ?? '').trim(),
+      weight: weight?.isEmpty ?? true ? '' : '$weight kg',
+      temperature: temperature?.isEmpty ?? true ? '' : '$temperature °C',
+      treatment: _nullIfEmpty(values['treatment'] as String?),
+      notes: _nullIfEmpty(values['notes'] as String?),
+      appointment: existingRecord?.appointment,
+      branch: existingRecord?.branch,
+      tests: existingRecord?.tests,
+      isDeleted: existingRecord?.isDeleted ?? false,
+      created: existingRecord?.created,
+      updated: existingRecord?.updated,
+    );
+
+    try {
+      if (existingRecord == null) {
+        // Create new record
+        final created = await ref
+            .read(patientRecordsControllerProvider(patientId).notifier)
+            .createRecordAndReturn(record);
+
+        if (created != null && context.mounted) {
+          createdRecordId.value = created.id;
+          isEditing.value = false;
+          isSaving.value = false;
+
+          // Navigate to the created record's page (replace current route)
+          RecordDetailRoute(id: patientId, recordId: created.id).go(context);
+
+          showSuccessSnackBar(context, message: 'Record created successfully');
+        } else if (context.mounted) {
+          isSaving.value = false;
+          showErrorSnackBar(context, message: 'Failed to create record');
+        }
+      } else {
+        // Update existing record
+        final success = await ref
+            .read(patientRecordsControllerProvider(patientId).notifier)
+            .updateRecord(record);
+
+        if (context.mounted) {
+          isSaving.value = false;
+          if (success) {
+            isEditing.value = false;
+            // Refresh the record
+            ref.invalidate(patientRecordProvider(existingRecord.id));
+            showSuccessSnackBar(context, message: 'Record updated successfully');
+          } else {
+            showErrorSnackBar(context, message: 'Failed to update record');
+          }
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        isSaving.value = false;
+        showErrorSnackBar(context, message: 'An error occurred');
+      }
+    }
+  }
+
+  String? _nullIfEmpty(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    return value.trim();
   }
 
   Widget _buildPatientCard(ThemeData theme, Patient patient) {
@@ -277,67 +357,395 @@ class RecordDetailPage extends ConsumerWidget {
       ),
     );
   }
+}
 
-  Widget _buildVitalsRow(ThemeData theme, PatientRecord record) {
-    return Row(
-      children: [
-        Expanded(
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  const Icon(Icons.monitor_weight, size: 32),
-                  const SizedBox(height: 8),
-                  Text(record.weight, style: theme.textTheme.headlineSmall),
-                  Text('Weight', style: theme.textTheme.bodySmall),
-                ],
-              ),
+/// Field labels for form error messages.
+const _fieldLabels = {
+  'recordDate': 'Visit Date',
+  'diagnosis': 'Diagnosis',
+  'weight': 'Weight',
+  'temperature': 'Temperature',
+  'treatment': 'Treatment',
+  'notes': 'Notes',
+};
+
+/// Editable record form.
+class _RecordForm extends StatelessWidget {
+  const _RecordForm({
+    required this.formKey,
+    required this.record,
+    required this.enabled,
+  });
+
+  final GlobalKey<FormBuilderState> formKey;
+  final PatientRecord? record;
+  final bool enabled;
+
+  /// Parses a value with unit suffix (e.g., "5.2 kg" -> "5.2").
+  static String _parseValueWithUnit(String value, String unit) {
+    if (value.isEmpty) return '';
+    return value.replaceAll(unit, '').trim();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final initialDate = record?.date ?? DateTime.now();
+    final initialWeight = _parseValueWithUnit(record?.weight ?? '', 'kg');
+    final initialTemp = _parseValueWithUnit(record?.temperature ?? '', '°C');
+
+    return FormBuilder(
+      key: formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Visit date
+          FormBuilderDateTimePicker(
+            name: 'recordDate',
+            initialValue: initialDate,
+            inputType: InputType.date,
+            decoration: const InputDecoration(
+              labelText: 'Visit Date',
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.calendar_today),
+            ),
+            firstDate: DateTime(2000),
+            lastDate: DateTime.now().add(const Duration(days: 1)),
+            enabled: enabled,
+          ),
+          const SizedBox(height: 16),
+
+          // Diagnosis (required)
+          FormBuilderTextField(
+            name: 'diagnosis',
+            initialValue: record?.diagnosis ?? '',
+            decoration: const InputDecoration(
+              labelText: 'Diagnosis *',
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.medical_services),
+            ),
+            maxLines: 2,
+            enabled: enabled,
+            validator: FormBuilderValidators.required(
+              errorText: 'Diagnosis is required',
             ),
           ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  const Icon(Icons.thermostat, size: 32),
-                  const SizedBox(height: 8),
-                  Text(record.temperature,
-                      style: theme.textTheme.headlineSmall),
-                  Text('Temperature', style: theme.textTheme.bodySmall),
-                ],
+          const SizedBox(height: 16),
+
+          // Vitals row
+          Row(
+            children: [
+              Expanded(
+                child: FormBuilderTextField(
+                  name: 'weight',
+                  initialValue: initialWeight,
+                  decoration: const InputDecoration(
+                    labelText: 'Weight',
+                    border: OutlineInputBorder(),
+                    suffixText: 'kg',
+                  ),
+                  keyboardType: TextInputType.number,
+                  enabled: enabled,
+                ),
               ),
-            ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: FormBuilderTextField(
+                  name: 'temperature',
+                  initialValue: initialTemp,
+                  decoration: const InputDecoration(
+                    labelText: 'Temperature',
+                    border: OutlineInputBorder(),
+                    suffixText: '°C',
+                  ),
+                  keyboardType: TextInputType.number,
+                  enabled: enabled,
+                ),
+              ),
+            ],
           ),
-        ),
-      ],
+          const SizedBox(height: 16),
+
+          // Treatment
+          FormBuilderTextField(
+            name: 'treatment',
+            initialValue: record?.treatment ?? '',
+            decoration: const InputDecoration(
+              labelText: 'Treatment',
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.healing),
+            ),
+            maxLines: 2,
+            enabled: enabled,
+          ),
+          const SizedBox(height: 16),
+
+          // Notes
+          FormBuilderTextField(
+            name: 'notes',
+            initialValue: record?.notes ?? '',
+            decoration: const InputDecoration(
+              labelText: 'Notes',
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.notes),
+            ),
+            maxLines: 3,
+            enabled: enabled,
+          ),
+        ],
+      ),
     );
   }
+}
+
+/// Read-only record display.
+class _RecordDisplay extends StatelessWidget {
+  const _RecordDisplay({
+    required this.record,
+    required this.theme,
+  });
+
+  final PatientRecord record;
+  final ThemeData theme;
 
   String _formatDate(DateTime date) {
     const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
     final month = months[date.month - 1];
     final amPm = date.hour >= 12 ? 'PM' : 'AM';
-    final hour =
-        date.hour > 12 ? date.hour - 12 : (date.hour == 0 ? 12 : date.hour);
+    final hour = date.hour > 12 ? date.hour - 12 : (date.hour == 0 ? 12 : date.hour);
     final minute = date.minute.toString().padLeft(2, '0');
     return '$month ${date.day}, ${date.year} $hour:$minute $amPm';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Visit date
+        Text('Visit Date', style: theme.textTheme.titleMedium),
+        const SizedBox(height: 8),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                const Icon(Icons.calendar_today, size: 20),
+                const SizedBox(width: 12),
+                Text(_formatDate(record.date)),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Vitals
+        Text('Vitals', style: theme.textTheme.titleMedium),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      const Icon(Icons.monitor_weight, size: 32),
+                      const SizedBox(height: 8),
+                      Text(
+                        record.weight.isNotEmpty ? record.weight : '-',
+                        style: theme.textTheme.headlineSmall,
+                      ),
+                      Text('Weight', style: theme.textTheme.bodySmall),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      const Icon(Icons.thermostat, size: 32),
+                      const SizedBox(height: 8),
+                      Text(
+                        record.temperature.isNotEmpty ? record.temperature : '-',
+                        style: theme.textTheme.headlineSmall,
+                      ),
+                      Text('Temperature', style: theme.textTheme.bodySmall),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+
+        // Diagnosis
+        Text('Diagnosis', style: theme.textTheme.titleMedium),
+        const SizedBox(height: 8),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(record.diagnosis.isNotEmpty ? record.diagnosis : '-'),
+          ),
+        ),
+
+        // Treatment
+        if (record.treatment != null && record.treatment!.isNotEmpty) ...[
+          const SizedBox(height: 24),
+          Text('Treatment', style: theme.textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(record.treatment!),
+            ),
+          ),
+        ],
+
+        // Notes
+        if (record.notes != null && record.notes!.isNotEmpty) ...[
+          const SizedBox(height: 24),
+          Text('Notes', style: theme.textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(record.notes!),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Wrapper for prescriptions section that handles disabled state.
+class _PrescriptionsSectionWrapper extends StatelessWidget {
+  const _PrescriptionsSectionWrapper({
+    required this.recordId,
+    required this.hasDiagnosis,
+    required this.theme,
+  });
+
+  final String? recordId;
+  final bool hasDiagnosis;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    if (recordId == null || !hasDiagnosis) {
+      // Show disabled state
+      return Opacity(
+        opacity: 0.5,
+        child: IgnorePointer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.medication, color: theme.colorScheme.outline),
+                  const SizedBox(width: 8),
+                  Text('Prescriptions', style: theme.textTheme.titleMedium),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.medication_outlined,
+                        size: 48,
+                        color: theme.colorScheme.outline,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        recordId == null
+                            ? 'Save the record first to add prescriptions'
+                            : 'Add a diagnosis to enable prescriptions',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return PrescriptionsSection(recordId: recordId!);
+  }
+}
+
+/// Record action buttons (print, share, save).
+class _RecordActions extends ConsumerWidget {
+  const _RecordActions({
+    required this.patient,
+    required this.record,
+    required this.recordId,
+    required this.ref,
+  });
+
+  final Patient patient;
+  final PatientRecord record;
+  final String recordId;
+  final WidgetRef ref;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        OutlinedButton.icon(
+          onPressed: () => _showPrescriptionGroupSelector(
+            context,
+            ref,
+            patient,
+            record,
+            action: _PdfAction.print,
+          ),
+          icon: const Icon(Icons.print),
+          label: const Text('Print'),
+        ),
+        OutlinedButton.icon(
+          onPressed: () => _showPrescriptionGroupSelector(
+            context,
+            ref,
+            patient,
+            record,
+            action: _PdfAction.share,
+          ),
+          icon: const Icon(Icons.share),
+          label: const Text('Share'),
+        ),
+        OutlinedButton.icon(
+          onPressed: () => _showPrescriptionGroupSelector(
+            context,
+            ref,
+            patient,
+            record,
+            action: _PdfAction.save,
+          ),
+          icon: const Icon(Icons.download),
+          label: const Text('Save'),
+        ),
+      ],
+    );
   }
 
   /// Groups prescriptions by date and returns a sorted map (newest first).
