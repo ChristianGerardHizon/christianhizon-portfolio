@@ -398,23 +398,29 @@ class CreatePatientSheet extends HookConsumerWidget {
                     FormBuilderTextField(
                       name: 'owner',
                       decoration: const InputDecoration(
-                        labelText: 'Owner Name',
+                        labelText: 'Owner Name *',
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.person),
                       ),
                       enabled: !isSaving.value,
                       textCapitalization: TextCapitalization.words,
+                      validator: FormBuilderValidators.required(
+                        errorText: 'Owner name is required',
+                      ),
                     ),
                     const SizedBox(height: 16),
                     FormBuilderTextField(
                       name: 'contactNumber',
                       decoration: const InputDecoration(
-                        labelText: 'Phone',
+                        labelText: 'Phone *',
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.phone),
                       ),
                       enabled: !isSaving.value,
                       keyboardType: TextInputType.phone,
+                      validator: FormBuilderValidators.required(
+                        errorText: 'Phone number is required',
+                      ),
                     ),
                     const SizedBox(height: 16),
                     FormBuilderTextField(
