@@ -1,22 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:window_manager/window_manager.dart';
 
+import 'window_storage_service.dart';
+
 class WindowUtils {
+  /// Default sizes.
+  static const _mobileSize = Size(380, 700);
+  static const _defaultDesktopSize = Size(1000, 800);
+
+  /// Minimum window size.
+  static const _minimumSize = Size(380, 700);
+
+  /// Register the WindowManager for desktop platforms.
   ///
-  /// Register the WindowManager for Windows
-  ///
-  /// This function is used to register the window manager for windows
-  /// It is used to set the window title and size
-  ///
+  /// Sets window title and size, restoring last used size if available.
   static Future<void> register() async {
-    ///
-    /// If the app is running on the web or not on Windows
-    /// just incase so when the the platform is set to other than windows
-    /// the WindowManager will not be initialized
-    /// not applicable since app is just a mobile app
-    ///
+    // Skip on web and non-desktop platforms
     if (kIsWeb ||
         ![
           TargetPlatform.linux,
@@ -24,28 +24,25 @@ class WindowUtils {
           TargetPlatform.windows,
         ].contains(defaultTargetPlatform)) return;
 
-    // * Initialize the WindowManager
     await windowManager.ensureInitialized();
 
-    const mobileSize = Size(380, 700);
-    const desktopSize = Size(1000, 800);
+    // Try to load saved window size
+    final savedSize = await WindowStorageService.loadWindowSize();
 
-    // * Set the window options
-    WindowOptions windowOptions = WindowOptions(
-      minimumSize: mobileSize, // Set the minimum size of the window
-      size: kDebugMode ? mobileSize : desktopSize, // Set the initial size of the window
-      backgroundColor:
-          Colors.transparent, // Set the background color of the window
-      skipTaskbar: false, // Set if the window should be shown in the taskbar
-      titleBarStyle: TitleBarStyle.normal, // Set the title bar style
+    // Use saved size if available, otherwise fall back to defaults
+    final initialSize =
+        savedSize ?? (kDebugMode ? _mobileSize : _defaultDesktopSize);
+
+    final windowOptions = WindowOptions(
+      minimumSize: _minimumSize,
+      size: initialSize,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.normal,
     );
 
-    // * Wait until the window is ready be shown
     windowManager.waitUntilReadyToShow(windowOptions, () async {
-      // * Show the window
       await windowManager.show();
-
-      // * Focus the window
       await windowManager.focus();
     });
   }
