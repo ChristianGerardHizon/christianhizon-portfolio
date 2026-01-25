@@ -67,6 +67,10 @@ class DashboardPage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Dashboard Header
+              _MobileDashboardHeader(),
+              SizedBox(height: 16),
+
               // KPI Summary Section
               KpiSummarySection(),
               SizedBox(height: 20),
@@ -89,6 +93,35 @@ class DashboardPage extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Mobile dashboard header widget.
+class _MobileDashboardHeader extends StatelessWidget {
+  const _MobileDashboardHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          Icon(
+            Icons.dashboard,
+            color: theme.colorScheme.primary,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'Dashboard Overview',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
