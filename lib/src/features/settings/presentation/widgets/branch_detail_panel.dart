@@ -44,6 +44,7 @@ class BranchDetailPanel extends HookConsumerWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         formKey.currentState?.patchValue({
           'name': branch?.name ?? '',
+          'displayName': branch?.displayName ?? '',
           'address': branch?.address ?? '',
           'contactNumber': branch?.contactNumber ?? '',
         });
@@ -61,6 +62,7 @@ class BranchDetailPanel extends HookConsumerWidget {
       final branchData = Branch(
         id: isCreating ? '' : branchId,
         name: (values['name'] as String).trim(),
+        displayName: _nullIfEmpty(values['displayName'] as String?),
         address: (values['address'] as String).trim(),
         contactNumber: (values['contactNumber'] as String).trim(),
       );
@@ -215,9 +217,21 @@ class BranchDetailPanel extends HookConsumerWidget {
                 initialValue: isCreating ? '' : branch?.name,
                 decoration: const InputDecoration(
                   labelText: 'Name *',
-                  hintText: 'Enter branch name',
+                  hintText: 'Enter branch name (internal)',
                 ),
                 validator: FormBuilderValidators.required(),
+                textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 16),
+
+              // Display Name field
+              FormBuilderTextField(
+                name: 'displayName',
+                initialValue: isCreating ? '' : branch?.displayName,
+                decoration: const InputDecoration(
+                  labelText: 'Display Name',
+                  hintText: 'Enter formal business name for documents',
+                ),
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 16),
@@ -251,5 +265,10 @@ class BranchDetailPanel extends HookConsumerWidget {
         ),
       ),
     );
+  }
+
+  String? _nullIfEmpty(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    return value.trim();
   }
 }

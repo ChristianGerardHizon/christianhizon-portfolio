@@ -116,7 +116,17 @@ class PrescriptionPdfGenerator {
 
   pw.Widget _buildHeader(pw.MemoryImage logo) {
     final branch = data.branch;
-    final clinicName = branch?.displayName ?? branch?.name ?? 'Veterinary Clinic';
+    // Primary name: displayName or fallback
+    final clinicName = branch?.displayName ?? 'Veterinary Clinic';
+    // Secondary name: branch name (only if different from displayName)
+    final branchName = branch?.name;
+    final showBranchName = branchName != null &&
+        branchName.isNotEmpty &&
+        branchName != clinicName;
+
+    // Check for non-empty address and contact
+    final hasAddress = branch != null && branch.address.isNotEmpty;
+    final hasContact = branch != null && branch.contactNumber.isNotEmpty;
 
     return pw.Column(
       children: [
@@ -130,6 +140,7 @@ class PrescriptionPdfGenerator {
               child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
+                  // 1. Main clinic name (always shown)
                   pw.Text(
                     clinicName,
                     style: pw.TextStyle(
@@ -137,16 +148,26 @@ class PrescriptionPdfGenerator {
                       fontWeight: pw.FontWeight.bold,
                     ),
                   ),
-                  if (branch?.address != null && branch!.address!.isNotEmpty)
+                  // 2. Branch name (if different and not empty)
+                  if (showBranchName)
                     pw.Padding(
                       padding: const pw.EdgeInsets.only(top: 2),
                       child: pw.Text(
-                        branch.address!,
+                        branchName,
+                        style: const pw.TextStyle(fontSize: 10),
+                      ),
+                    ),
+                  // 3. Address (if not empty)
+                  if (hasAddress)
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.only(top: 2),
+                      child: pw.Text(
+                        branch.address,
                         style: const pw.TextStyle(fontSize: 9),
                       ),
                     ),
-                  if (branch?.contactNumber != null &&
-                      branch!.contactNumber!.isNotEmpty)
+                  // 4. Contact number (if not empty)
+                  if (hasContact)
                     pw.Padding(
                       padding: const pw.EdgeInsets.only(top: 2),
                       child: pw.Text(
