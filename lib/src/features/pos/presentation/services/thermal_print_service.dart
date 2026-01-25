@@ -9,7 +9,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../settings/domain/printer_config.dart';
 import '../../../settings/domain/printer_paper_width.dart';
-import '../../../settings/presentation/controllers/printer_config_provider.dart';
 import '../../domain/sale.dart';
 import '../../domain/sale_item.dart';
 
@@ -37,8 +36,12 @@ class ThermalPrintService extends _$ThermalPrintService {
   @override
   FutureOr<void> build() {}
 
-  /// Prints a sale receipt to the default configured printer.
+  /// Prints a sale receipt to the specified printer.
+  ///
+  /// The [printer] config must be passed from the caller to avoid
+  /// async ref access issues.
   Future<PrintResult> printReceipt({
+    required PrinterConfig printer,
     required Sale sale,
     required List<SaleItem> items,
     String? businessName,
@@ -46,14 +49,7 @@ class ThermalPrintService extends _$ThermalPrintService {
     String? contactNumber,
     String? cashierName,
   }) async {
-    // Get default printer
-    final defaultPrinter = await ref.read(defaultPrinterProvider.future);
-
-    if (defaultPrinter == null) {
-      return const PrintFailure('No default printer configured');
-    }
-
-    if (!defaultPrinter.hasAddress) {
+    if (!printer.hasAddress) {
       return const PrintFailure('Printer address not configured');
     }
 
@@ -61,7 +57,7 @@ class ThermalPrintService extends _$ThermalPrintService {
     final bytes = await _generateReceiptBytes(
       sale: sale,
       items: items,
-      paperWidth: defaultPrinter.paperWidth,
+      paperWidth: printer.paperWidth,
       businessName: businessName ?? '',
       branchAddress: branchAddress ?? '',
       contactNumber: contactNumber ?? '',
@@ -69,7 +65,7 @@ class ThermalPrintService extends _$ThermalPrintService {
     );
 
     // Print based on connection type
-    return _printBytes(defaultPrinter, bytes);
+    return _printBytes(printer, bytes);
   }
 
   /// Prints a test page to verify printer connection.

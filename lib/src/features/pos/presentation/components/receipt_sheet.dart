@@ -65,29 +65,69 @@ class ReceiptSheet extends HookConsumerWidget {
     final dateFormat = DateFormat('MMM dd, yyyy hh:mm a');
     final isPrinting = useState(false);
     final hasAutoPrinted = useState(false);
+    final printCashierCopy = useState(true);
     final defaultPrinterAsync = ref.watch(defaultPrinterProvider);
     final currentAuth = ref.watch(currentAuthProvider);
 
     Future<void> handleThermalPrint({bool showSuccessMessage = true}) async {
+      // Get printer before async operations to avoid ref disposal issues
+      final printer = defaultPrinterAsync.value;
+      if (printer == null) {
+        showErrorSnackBar(context, message: 'No default printer configured');
+        return;
+      }
+
       isPrinting.value = true;
 
       final printService = ref.read(thermalPrintServiceProvider.notifier);
+
+      // Print customer copy
       final result = await printService.printReceipt(
+        printer: printer,
         sale: sale,
         items: saleItems,
         cashierName: currentAuth?.user.name,
       );
 
+      if (result is PrintFailure) {
+        isPrinting.value = false;
+        if (context.mounted) {
+          showErrorSnackBar(context, message: result.message);
+        }
+        return;
+      }
+
+      // Print cashier copy if enabled
+      if (printCashierCopy.value) {
+        // Small delay between prints to ensure printer is ready
+        await Future.delayed(const Duration(milliseconds: 500));
+
+        final cashierResult = await printService.printReceipt(
+          printer: printer,
+          sale: sale,
+          items: saleItems,
+          cashierName: currentAuth?.user.name,
+        );
+
+        if (cashierResult is PrintFailure) {
+          isPrinting.value = false;
+          if (context.mounted) {
+            showErrorSnackBar(
+              context,
+              message: 'Customer copy printed, but cashier copy failed',
+            );
+          }
+          return;
+        }
+      }
+
       isPrinting.value = false;
 
       if (!context.mounted) return;
 
-      if (result is PrintSuccess) {
-        if (showSuccessMessage) {
-          showSuccessSnackBar(context, message: 'Receipt printed successfully');
-        }
-      } else if (result is PrintFailure) {
-        showErrorSnackBar(context, message: result.message);
+      if (showSuccessMessage) {
+        final copies = printCashierCopy.value ? '2 copies' : '1 copy';
+        showSuccessSnackBar(context, message: 'Receipt printed ($copies)');
       }
     }
 
@@ -317,7 +357,20 @@ class ReceiptSheet extends HookConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
+
+          // Cashier copy option (only show if printer configured)
+          if (hasDefaultPrinter)
+            CheckboxListTile(
+              value: printCashierCopy.value,
+              onChanged: (value) => printCashierCopy.value = value ?? true,
+              title: const Text('Print cashier copy'),
+              subtitle: const Text('Prints 2 copies: customer + business'),
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+          const SizedBox(height: 16),
 
           // Actions
           Row(

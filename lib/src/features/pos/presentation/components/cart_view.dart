@@ -171,17 +171,20 @@ class CartView extends ConsumerWidget {
                                 // Row 2: Unit price, quantity controls, and total
                                 Row(
                                   children: [
-                                    // Unit price
-                                    Text(
-                                      '${product.price.toCurrency()} each',
-                                      style:
-                                          theme.textTheme.bodySmall?.copyWith(
-                                        color:
-                                            theme.colorScheme.onSurfaceVariant,
+                                    // Unit price (flexible to allow shrinking)
+                                    Expanded(
+                                      child: Text(
+                                        '${product.price.toCurrency()} each',
+                                        style:
+                                            theme.textTheme.bodySmall?.copyWith(
+                                          color:
+                                              theme.colorScheme.onSurfaceVariant,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
 
-                                    const Spacer(),
+                                    const SizedBox(width: 8),
 
                                     // Quantity controls - styled stepper
                                     Container(
@@ -332,15 +335,21 @@ class CartView extends ConsumerWidget {
                                       ),
                                     ),
 
-                                    const SizedBox(width: 12),
+                                    const SizedBox(width: 8),
 
-                                    // Item total - right aligned
-                                    Text(
-                                      item.total.toCurrency(),
-                                      style:
-                                          theme.textTheme.titleSmall?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: theme.colorScheme.primary,
+                                    // Item total - right aligned with min width
+                                    ConstrainedBox(
+                                      constraints: const BoxConstraints(
+                                        minWidth: 80,
+                                      ),
+                                      child: Text(
+                                        item.total.toCurrency(),
+                                        style:
+                                            theme.textTheme.titleSmall?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: theme.colorScheme.primary,
+                                        ),
+                                        textAlign: TextAlign.right,
                                       ),
                                     ),
                                   ],

@@ -66,7 +66,7 @@ class _DesktopLayout extends StatelessWidget {
         children: [
           // Product Grid Area
           Expanded(
-            flex: 7,
+            flex: 6,
             child: Column(
               children: [
                 // Search Bar
@@ -96,7 +96,7 @@ class _DesktopLayout extends StatelessWidget {
           const VerticalDivider(width: 1),
           // Cart Area
           Expanded(
-            flex: 3,
+            flex: 4,
             child: Container(
               color: theme.colorScheme.surfaceContainerLowest,
               child: const CartView(),
