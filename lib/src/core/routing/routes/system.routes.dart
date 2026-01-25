@@ -15,6 +15,9 @@ import '../../../features/settings/presentation/widgets/product_category_detail_
 import '../../../features/settings/presentation/widgets/sheets/message_template_form_sheet.dart';
 import '../../../features/settings/presentation/widgets/species_detail_panel.dart';
 import '../../../features/settings/presentation/widgets/treatment_type_detail_panel.dart';
+import '../../../features/settings/presentation/widgets/printer_config_detail_panel.dart';
+import '../../../features/settings/presentation/controllers/printer_configs_controller.dart';
+import '../../../features/settings/presentation/widgets/sheets/printer_config_form_sheet.dart';
 import '../../utils/breakpoints.dart';
 
 part 'system.routes.g.dart';
@@ -54,6 +57,13 @@ part 'system.routes.g.dart';
           path: 'treatment-types',
           routes: [
             TypedGoRoute<TreatmentTypeDetailRoute>(path: ':id'),
+          ],
+        ),
+        // Printer settings with detail
+        TypedGoRoute<PrinterSettingsRoute>(
+          path: 'printers',
+          routes: [
+            TypedGoRoute<PrinterDetailRoute>(path: ':id'),
           ],
         ),
       ],
@@ -205,6 +215,33 @@ class TreatmentTypeDetailRoute extends GoRouteData
   }
 }
 
+/// Printer settings management route.
+class PrinterSettingsRoute extends GoRouteData with $PrinterSettingsRoute {
+  const PrinterSettingsRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    // On tablet, handled by shell - return empty
+    if (Breakpoints.isTabletOrLarger(context)) {
+      return const SizedBox.shrink();
+    }
+    // Mobile: Show printers list
+    return const _MobilePrinterListPage();
+  }
+}
+
+/// Printer detail route.
+class PrinterDetailRoute extends GoRouteData with $PrinterDetailRoute {
+  const PrinterDetailRoute({required this.id});
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return PrinterConfigDetailPanel(printerId: id);
+  }
+}
+
 // ============================================================================
 // Mobile Pages
 // ============================================================================
@@ -263,6 +300,16 @@ class _MobileSystemLandingPage extends StatelessWidget {
                 description: 'Manage patient treatment categories',
                 color: Colors.teal,
                 onTap: () => const TreatmentTypesRoute().go(context),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: _SystemOptionCard(
+                icon: Icons.print,
+                title: 'Printers',
+                description: 'Configure thermal receipt printers',
+                color: Colors.orange,
+                onTap: () => const PrinterSettingsRoute().go(context),
               ),
             ),
           ],
@@ -838,6 +885,143 @@ class _MobileTreatmentTypesListPage extends ConsumerWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+/// Mobile printer list page.
+class _MobilePrinterListPage extends ConsumerWidget {
+  const _MobilePrinterListPage();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final printersAsync = ref.watch(printerConfigsControllerProvider);
+    final controller = ref.read(printerConfigsControllerProvider.notifier);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Printers'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'printer_fab',
+        onPressed: () => _showCreateSheet(context),
+        child: const Icon(Icons.add),
+      ),
+      body: printersAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error: ${error.toString()}'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => controller.refresh(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        data: (printers) {
+          if (printers.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.print_outlined,
+                    size: 64,
+                    color: theme.colorScheme.outline,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No printers configured',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap + to add a printer',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () => controller.refresh(),
+            child: ListView.builder(
+              itemCount: printers.length,
+              itemBuilder: (context, index) {
+                final printer = printers[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: theme.colorScheme.primaryContainer,
+                    child: Icon(
+                      printer.connectionType.icon,
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                  title: Row(
+                    children: [
+                      Expanded(child: Text(printer.name)),
+                      if (printer.isDefault)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            'Default',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onPrimary,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  subtitle: Text(
+                    '${printer.connectionType.displayName} • ${printer.paperWidth.displayName}',
+                  ),
+                  trailing: printer.isEnabled
+                      ? const Icon(Icons.chevron_right)
+                      : Icon(Icons.block, color: theme.colorScheme.error),
+                  onTap: () => PrinterDetailRoute(id: printer.id).push(context),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showCreateSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      useRootNavigator: true,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.8,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => PrinterConfigFormSheet(
+          scrollController: scrollController,
+        ),
       ),
     );
   }

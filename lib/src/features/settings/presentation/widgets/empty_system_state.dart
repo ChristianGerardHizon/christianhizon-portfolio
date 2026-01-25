@@ -37,6 +37,11 @@ class EmptySystemState extends StatelessWidget {
           'Select a treatment type',
           'Choose a treatment type from the list to view and edit',
         ),
+      SystemMode.printers => (
+          Icons.print_outlined,
+          'Select a printer',
+          'Choose a printer from the list to view and configure',
+        ),
     };
 
     return Center(

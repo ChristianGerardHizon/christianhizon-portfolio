@@ -10,9 +10,9 @@ class Branch with BranchMappable {
   const Branch({
     required this.id,
     required this.name,
+    required this.address,
+    required this.contactNumber,
     this.displayName,
-    this.address,
-    this.contactNumber,
     this.isDeleted = false,
     this.created,
     this.updated,
@@ -24,14 +24,14 @@ class Branch with BranchMappable {
   /// Branch name (short internal identifier, e.g., "Main Branch").
   final String name;
 
-  /// Display name for formal/external use (e.g., "San Jose Veterinary Clinic").
-  final String? displayName;
-
   /// Branch address.
-  final String? address;
+  final String address;
 
   /// Branch contact number.
-  final String? contactNumber;
+  final String contactNumber;
+
+  /// Display name for formal/external use (e.g., "San Jose Veterinary Clinic").
+  final String? displayName;
 
   /// Soft delete flag.
   final bool isDeleted;

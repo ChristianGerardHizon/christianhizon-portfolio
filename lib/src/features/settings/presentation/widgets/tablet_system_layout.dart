@@ -10,8 +10,10 @@ import '../../domain/message_template.dart';
 import '../controllers/message_templates_controller.dart';
 import '../controllers/product_categories_controller.dart';
 import '../controllers/species_controller.dart';
+import '../controllers/printer_configs_controller.dart';
 import 'empty_system_state.dart';
 import 'sheets/message_template_form_sheet.dart';
+import 'sheets/printer_config_form_sheet.dart';
 import 'system_nav_panel.dart';
 
 /// Three-panel tablet layout for system settings.
@@ -42,6 +44,8 @@ class TabletSystemLayout extends ConsumerWidget {
       currentMode = SystemMode.messageTemplates;
     } else if (path.contains('/treatment-types')) {
       currentMode = SystemMode.treatmentTypes;
+    } else if (path.contains('/printers')) {
+      currentMode = SystemMode.printers;
     } else {
       currentMode = SystemMode.speciesBreeds;
     }
@@ -61,6 +65,8 @@ class TabletSystemLayout extends ConsumerWidget {
                 const MessageTemplatesRoute().go(context);
               case SystemMode.treatmentTypes:
                 const TreatmentTypesRoute().go(context);
+              case SystemMode.printers:
+                const PrinterSettingsRoute().go(context);
             }
           },
         ),
@@ -78,6 +84,8 @@ class TabletSystemLayout extends ConsumerWidget {
               _MessageTemplateListWrapper(selectedId: selectedId),
             SystemMode.treatmentTypes =>
               _TreatmentTypeListWrapper(selectedId: selectedId),
+            SystemMode.printers =>
+              _PrinterListWrapper(selectedId: selectedId),
           },
         ),
         const VerticalDivider(width: 1),
@@ -635,6 +643,155 @@ class _TreatmentTypeListWrapper extends ConsumerWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+/// Wrapper for PrinterListPanel with system-specific navigation.
+class _PrinterListWrapper extends ConsumerWidget {
+  const _PrinterListWrapper({required this.selectedId});
+
+  final String? selectedId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final printersAsync = ref.watch(printerConfigsControllerProvider);
+    final controller = ref.read(printerConfigsControllerProvider.notifier);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Printers'),
+        automaticallyImplyLeading: false,
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'printer_fab',
+        onPressed: () => _showCreateSheet(context),
+        child: const Icon(Icons.add),
+      ),
+      body: printersAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error: ${error.toString()}'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => controller.refresh(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        data: (printers) {
+          if (printers.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.print_outlined,
+                    size: 64,
+                    color: theme.colorScheme.outline,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No printers configured',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap + to add a printer',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () => controller.refresh(),
+            child: ListView.builder(
+              itemCount: printers.length,
+              itemBuilder: (context, index) {
+                final printer = printers[index];
+                final isSelected = printer.id == selectedId;
+
+                return ListTile(
+                  selected: isSelected,
+                  selectedTileColor:
+                      theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  leading: CircleAvatar(
+                    backgroundColor: isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.primaryContainer,
+                    child: Icon(
+                      printer.connectionType.icon,
+                      color: isSelected
+                          ? theme.colorScheme.onPrimary
+                          : theme.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                  title: Row(
+                    children: [
+                      Expanded(child: Text(printer.name)),
+                      if (printer.isDefault)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            'Default',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onPrimary,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  subtitle: Text(
+                    '${printer.connectionType.displayName} • ${printer.paperWidth.displayName}',
+                  ),
+                  trailing: printer.isEnabled
+                      ? const Icon(Icons.chevron_right)
+                      : Icon(Icons.block, color: theme.colorScheme.error),
+                  onTap: () => PrinterDetailRoute(id: printer.id).go(context),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showCreateSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      useRootNavigator: true,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.8,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => PrinterConfigFormSheet(
+          scrollController: scrollController,
+        ),
       ),
     );
   }

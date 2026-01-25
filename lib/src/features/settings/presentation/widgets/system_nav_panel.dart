@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// System management modes.
-enum SystemMode { speciesBreeds, productCategories, messageTemplates, treatmentTypes }
+enum SystemMode { speciesBreeds, productCategories, messageTemplates, treatmentTypes, printers }
 
 /// Vertical navigation panel for selecting system mode.
 ///
@@ -74,6 +74,15 @@ class SystemNavPanel extends StatelessWidget {
             label: 'Treatments',
             isSelected: currentMode == SystemMode.treatmentTypes,
             onTap: () => onModeChanged(SystemMode.treatmentTypes),
+          ),
+          const SizedBox(height: 4),
+          // Printers button
+          _NavButton(
+            icon: Icons.print_outlined,
+            selectedIcon: Icons.print,
+            label: 'Printers',
+            isSelected: currentMode == SystemMode.printers,
+            onTap: () => onModeChanged(SystemMode.printers),
           ),
           const Spacer(),
         ],

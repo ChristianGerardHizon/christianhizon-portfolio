@@ -10,6 +10,7 @@ import '../../../patients/data/repositories/patient_repository.dart';
 import '../../../patients/domain/patient.dart';
 import '../../domain/cart_item.dart';
 import '../../domain/payment_method.dart';
+import '../../domain/sale_item.dart';
 import '../cart_controller.dart';
 import '../checkout_controller.dart';
 import 'receipt_sheet.dart';
@@ -167,11 +168,27 @@ class CheckoutSheet extends HookConsumerWidget {
           showErrorSnackBar(context, message: failure.message);
         },
         (sale) {
+          // Convert cart items to sale items for receipt
+          final saleItems = cartItems
+              .where((item) => item.product != null)
+              .map((item) => SaleItem(
+                    id: '',
+                    saleId: sale.id,
+                    productId: item.productId,
+                    productName: item.product!.name,
+                    quantity: item.quantity,
+                    unitPrice: item.product!.price,
+                    subtotal: item.total,
+                    productLotId: item.productLotId,
+                    lotNumber: item.lotNumber,
+                  ))
+              .toList();
+
           // Close checkout sheet
           Navigator.of(context).pop();
 
-          // Show receipt
-          showReceiptSheet(context, sale: sale);
+          // Show receipt with items
+          showReceiptSheet(context, sale: sale, saleItems: saleItems);
         },
       );
     }

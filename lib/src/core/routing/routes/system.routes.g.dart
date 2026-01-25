@@ -57,6 +57,16 @@ RouteBase get $systemShellRoute => ShellRouteData.$route(
                 ),
               ],
             ),
+            GoRouteData.$route(
+              path: 'printers',
+              factory: $PrinterSettingsRoute._fromState,
+              routes: [
+                GoRouteData.$route(
+                  path: ':id',
+                  factory: $PrinterDetailRoute._fromState,
+                ),
+              ],
+            ),
           ],
         ),
       ],
@@ -272,6 +282,56 @@ mixin $TreatmentTypeDetailRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
         '/system/treatment-types/${Uri.encodeComponent(_self.id)}',
+      );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $PrinterSettingsRoute on GoRouteData {
+  static PrinterSettingsRoute _fromState(GoRouterState state) =>
+      const PrinterSettingsRoute();
+
+  @override
+  String get location => GoRouteData.$location(
+        '/system/printers',
+      );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $PrinterDetailRoute on GoRouteData {
+  static PrinterDetailRoute _fromState(GoRouterState state) =>
+      PrinterDetailRoute(
+        id: state.pathParameters['id']!,
+      );
+
+  PrinterDetailRoute get _self => this as PrinterDetailRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+        '/system/printers/${Uri.encodeComponent(_self.id)}',
       );
 
   @override

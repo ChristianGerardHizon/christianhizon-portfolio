@@ -35,22 +35,20 @@ class BranchDtoMapper extends ClassMapperBase<BranchDto> {
   );
   static String _$name(BranchDto v) => v.name;
   static const Field<BranchDto, String> _f$name = Field('name', _$name);
+  static String _$address(BranchDto v) => v.address;
+  static const Field<BranchDto, String> _f$address = Field(
+    'address',
+    _$address,
+  );
+  static String _$contactNumber(BranchDto v) => v.contactNumber;
+  static const Field<BranchDto, String> _f$contactNumber = Field(
+    'contactNumber',
+    _$contactNumber,
+  );
   static String? _$displayName(BranchDto v) => v.displayName;
   static const Field<BranchDto, String> _f$displayName = Field(
     'displayName',
     _$displayName,
-    opt: true,
-  );
-  static String? _$address(BranchDto v) => v.address;
-  static const Field<BranchDto, String> _f$address = Field(
-    'address',
-    _$address,
-    opt: true,
-  );
-  static String? _$contactNumber(BranchDto v) => v.contactNumber;
-  static const Field<BranchDto, String> _f$contactNumber = Field(
-    'contactNumber',
-    _$contactNumber,
     opt: true,
   );
   static bool _$isDeleted(BranchDto v) => v.isDeleted;
@@ -79,9 +77,9 @@ class BranchDtoMapper extends ClassMapperBase<BranchDto> {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
     #name: _f$name,
-    #displayName: _f$displayName,
     #address: _f$address,
     #contactNumber: _f$contactNumber,
+    #displayName: _f$displayName,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
@@ -93,9 +91,9 @@ class BranchDtoMapper extends ClassMapperBase<BranchDto> {
       collectionId: data.dec(_f$collectionId),
       collectionName: data.dec(_f$collectionName),
       name: data.dec(_f$name),
-      displayName: data.dec(_f$displayName),
       address: data.dec(_f$address),
       contactNumber: data.dec(_f$contactNumber),
+      displayName: data.dec(_f$displayName),
       isDeleted: data.dec(_f$isDeleted),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
@@ -166,9 +164,9 @@ abstract class BranchDtoCopyWith<$R, $In extends BranchDto, $Out>
     String? collectionId,
     String? collectionName,
     String? name,
-    String? displayName,
     String? address,
     String? contactNumber,
+    String? displayName,
     bool? isDeleted,
     String? created,
     String? updated,
@@ -190,9 +188,9 @@ class _BranchDtoCopyWithImpl<$R, $Out>
     String? collectionId,
     String? collectionName,
     String? name,
+    String? address,
+    String? contactNumber,
     Object? displayName = $none,
-    Object? address = $none,
-    Object? contactNumber = $none,
     bool? isDeleted,
     Object? created = $none,
     Object? updated = $none,
@@ -202,9 +200,9 @@ class _BranchDtoCopyWithImpl<$R, $Out>
       if (collectionId != null) #collectionId: collectionId,
       if (collectionName != null) #collectionName: collectionName,
       if (name != null) #name: name,
+      if (address != null) #address: address,
+      if (contactNumber != null) #contactNumber: contactNumber,
       if (displayName != $none) #displayName: displayName,
-      if (address != $none) #address: address,
-      if (contactNumber != $none) #contactNumber: contactNumber,
       if (isDeleted != null) #isDeleted: isDeleted,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
@@ -216,9 +214,9 @@ class _BranchDtoCopyWithImpl<$R, $Out>
     collectionId: data.get(#collectionId, or: $value.collectionId),
     collectionName: data.get(#collectionName, or: $value.collectionName),
     name: data.get(#name, or: $value.name),
-    displayName: data.get(#displayName, or: $value.displayName),
     address: data.get(#address, or: $value.address),
     contactNumber: data.get(#contactNumber, or: $value.contactNumber),
+    displayName: data.get(#displayName, or: $value.displayName),
     isDeleted: data.get(#isDeleted, or: $value.isDeleted),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),

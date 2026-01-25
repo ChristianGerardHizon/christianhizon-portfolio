@@ -720,8 +720,8 @@ class _OrganizationBranchDetailPage extends HookConsumerWidget {
       final branchData = Branch(
         id: isCreating ? '' : branch!.id,
         name: (values['name'] as String).trim(),
-        address: _nullIfEmpty(values['address'] as String?),
-        contactNumber: _nullIfEmpty(values['contactNumber'] as String?),
+        address: (values['address'] as String).trim(),
+        contactNumber: (values['contactNumber'] as String).trim(),
       );
 
       bool success;
@@ -879,10 +879,5 @@ class _OrganizationBranchDetailPage extends HookConsumerWidget {
         ),
       ),
     );
-  }
-
-  String? _nullIfEmpty(String? value) {
-    if (value == null || value.trim().isEmpty) return null;
-    return value.trim();
   }
 }
