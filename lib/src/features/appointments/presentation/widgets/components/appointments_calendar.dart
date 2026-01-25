@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../../core/routing/routes/appointments.routes.dart';
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/appointment_schedule.dart';
 import '../../controllers/appointments_controller.dart';
 import '../cards/appointment_card.dart';
@@ -227,13 +228,11 @@ class AppointmentsCalendar extends HookConsumerWidget {
                   .read(appointmentsControllerProvider.notifier)
                   .deleteAppointment(appointment.id);
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success
-                        ? 'Appointment deleted'
-                        : 'Failed to delete appointment'),
-                  ),
-                );
+                if (success) {
+                  showSuccessSnackBar(context, message: 'Appointment deleted');
+                } else {
+                  showErrorSnackBar(context, message: 'Failed to delete appointment');
+                }
               }
             },
             style: FilledButton.styleFrom(
@@ -279,14 +278,11 @@ class AppointmentsCalendar extends HookConsumerWidget {
                   .updateStatus(id, status);
 
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success
-                        ? 'Status updated to $statusLabel'
-                        : 'Failed to update status'),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
+                if (success) {
+                  showSuccessSnackBar(context, message: 'Status updated to $statusLabel');
+                } else {
+                  showErrorSnackBar(context, message: 'Failed to update status');
+                }
               }
             },
             child: const Text('Confirm'),

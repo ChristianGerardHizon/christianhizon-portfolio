@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../patients/domain/patient.dart';
 import '../../../../patients/presentation/controllers/patient_provider.dart';
 import '../../../../appointments/presentation/controllers/appointments_controller.dart';
@@ -113,14 +114,10 @@ class EditMessageSheet extends HookConsumerWidget {
         if (updated != null) {
           isSaving.value = false;
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Message updated successfully')),
-          );
+          showSuccessSnackBar(context, message: 'Message updated successfully');
         } else {
           isSaving.value = false;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to update message')),
-          );
+          showErrorSnackBar(context, message: 'Failed to update message');
         }
       }
     }

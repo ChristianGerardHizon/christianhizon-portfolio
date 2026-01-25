@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/product.dart';
 import '../product_image.dart';
 import '../sheets/edit_product_sheet.dart';
@@ -299,11 +300,7 @@ class ProductDetailsTab extends HookConsumerWidget {
             ),
             FilledButton.tonalIcon(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Stock adjustment coming soon'),
-                  ),
-                );
+                showWarningSnackBar(context, message: 'Stock adjustment coming soon');
               },
               icon: const Icon(Icons.inventory),
               label: const Text('Adjust Stock'),

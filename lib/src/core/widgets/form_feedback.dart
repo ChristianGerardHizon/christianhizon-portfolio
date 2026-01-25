@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../routing/router.dart';
+
+/// Gets the root ScaffoldMessenger, falling back to context if unavailable.
+ScaffoldMessengerState _getRootMessenger(BuildContext context) {
+  return rootScaffoldMessengerKey.currentState ?? ScaffoldMessenger.of(context);
+}
+
 /// Shows an error dialog with a list of validation errors.
 ///
 /// Used for displaying form validation errors in a user-friendly popup.
@@ -71,7 +78,7 @@ void showSuccessSnackBar(
   required String message,
   Duration duration = const Duration(seconds: 3),
 }) {
-  ScaffoldMessenger.of(context).showSnackBar(
+  _getRootMessenger(context).showSnackBar(
     SnackBar(
       content: Row(
         children: [
@@ -105,9 +112,7 @@ void showErrorSnackBar(
   required String message,
   Duration duration = const Duration(seconds: 4),
 }) {
-  final theme = Theme.of(context);
-
-  ScaffoldMessenger.of(context).showSnackBar(
+  _getRootMessenger(context).showSnackBar(
     SnackBar(
       content: Row(
         children: [
@@ -117,7 +122,73 @@ void showErrorSnackBar(
         ],
       ),
       behavior: SnackBarBehavior.floating,
-      backgroundColor: theme.colorScheme.error,
+      backgroundColor: Colors.red,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      margin: const EdgeInsets.all(16),
+      duration: duration,
+    ),
+  );
+}
+
+/// Shows a floating info snackbar with an info icon.
+///
+/// Used for displaying informational messages (e.g., "Refreshing...").
+///
+/// Example:
+/// ```dart
+/// showInfoSnackBar(context, message: 'Refreshing data...');
+/// ```
+void showInfoSnackBar(
+  BuildContext context, {
+  required String message,
+  Duration duration = const Duration(seconds: 3),
+}) {
+  _getRootMessenger(context).showSnackBar(
+    SnackBar(
+      content: Row(
+        children: [
+          const Icon(Icons.info_outline, color: Colors.white),
+          const SizedBox(width: 8),
+          Expanded(child: Text(message)),
+        ],
+      ),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.blue,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      margin: const EdgeInsets.all(16),
+      duration: duration,
+    ),
+  );
+}
+
+/// Shows a floating warning snackbar with a warning icon.
+///
+/// Used for displaying warning messages (e.g., "Feature coming soon").
+///
+/// Example:
+/// ```dart
+/// showWarningSnackBar(context, message: 'Feature coming soon');
+/// ```
+void showWarningSnackBar(
+  BuildContext context, {
+  required String message,
+  Duration duration = const Duration(seconds: 4),
+}) {
+  _getRootMessenger(context).showSnackBar(
+    SnackBar(
+      content: Row(
+        children: [
+          const Icon(Icons.warning_amber, color: Colors.white),
+          const SizedBox(width: 8),
+          Expanded(child: Text(message)),
+        ],
+      ),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.orange,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),

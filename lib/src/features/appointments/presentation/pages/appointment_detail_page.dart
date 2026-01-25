@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/routing/routes/appointments.routes.dart';
+import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../../messages/domain/message.dart';
@@ -361,11 +362,7 @@ class _AppointmentDetailContent extends HookConsumerWidget {
               title: const Text('Print'),
               onTap: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Print functionality coming soon'),
-                  ),
-                );
+                showWarningSnackBar(context, message: 'Print functionality coming soon');
               },
             ),
             ListTile(
@@ -425,14 +422,11 @@ class _AppointmentDetailContent extends HookConsumerWidget {
               }
 
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success
-                        ? 'Status updated to $statusLabel'
-                        : 'Failed to update status'),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
+                if (success) {
+                  showSuccessSnackBar(context, message: 'Status updated to $statusLabel');
+                } else {
+                  showErrorSnackBar(context, message: 'Failed to update status');
+                }
               }
             },
             child: const Text('Confirm'),
@@ -469,13 +463,11 @@ class _AppointmentDetailContent extends HookConsumerWidget {
                 }
               }
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success
-                        ? 'Appointment deleted'
-                        : 'Failed to delete appointment'),
-                  ),
-                );
+                if (success) {
+                  showSuccessSnackBar(context, message: 'Appointment deleted');
+                } else {
+                  showErrorSnackBar(context, message: 'Failed to delete appointment');
+                }
               }
             },
             style: FilledButton.styleFrom(

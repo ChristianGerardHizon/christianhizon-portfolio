@@ -22,6 +22,9 @@ part 'router.g.dart';
 /// Global navigator key for root navigation.
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
+/// Global ScaffoldMessenger key for showing snackbars on root scaffold.
+final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 /// Provides the GoRouter instance for the application.
 ///
 /// Configured with auth redirects and error handling.

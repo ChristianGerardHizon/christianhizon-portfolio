@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/i18n/strings.g.dart';
+import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/routing/routes/organization.routes.dart';
 import '../../../settings/domain/branch.dart';
 import '../../../settings/presentation/controllers/branches_controller.dart';
@@ -195,13 +196,11 @@ class _RolesListWrapper extends ConsumerWidget {
                   .read(userRolesControllerProvider.notifier)
                   .deleteRole(role.id);
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      success ? 'Role deleted' : 'Failed to delete role',
-                    ),
-                  ),
-                );
+                if (success) {
+                  showSuccessSnackBar(context, message: 'Role deleted');
+                } else {
+                  showErrorSnackBar(context, message: 'Failed to delete role');
+                }
               }
             },
             style: FilledButton.styleFrom(

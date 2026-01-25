@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/widgets/form_feedback.dart';
 import '../../domain/user_role.dart';
 import '../controllers/user_roles_controller.dart';
 import 'permission_category_widget.dart';
@@ -138,13 +139,9 @@ class UserRoleDetailPanel extends ConsumerWidget {
                   .deleteRole(role.id);
               if (context.mounted) {
                 if (success) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Role deleted')),
-                  );
+                  showSuccessSnackBar(context, message: 'Role deleted');
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to delete role')),
-                  );
+                  showErrorSnackBar(context, message: 'Failed to delete role');
                 }
               }
             },

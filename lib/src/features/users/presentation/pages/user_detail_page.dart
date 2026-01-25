@@ -102,11 +102,10 @@ class UserDetailPage extends HookConsumerWidget {
                 icon: const Icon(Icons.refresh),
                 onPressed: () {
                   ref.invalidate(userProvider(userId));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Refreshing...'),
-                      duration: Duration(seconds: 1),
-                    ),
+                  showInfoSnackBar(
+                    context,
+                    message: 'Refreshing...',
+                    duration: const Duration(seconds: 1),
                   );
                 },
                 tooltip: 'Refresh',
@@ -233,9 +232,7 @@ class UserDetailPage extends HookConsumerWidget {
           FilledButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Password reset functionality coming soon')),
-              );
+              showWarningSnackBar(context, message: 'Password reset functionality coming soon');
             },
             child: const Text('Reset'),
           ),
@@ -339,13 +336,9 @@ class UserDetailPage extends HookConsumerWidget {
               if (context.mounted) {
                 if (success) {
                   const UsersRoute().go(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('User deleted')),
-                  );
+                  showSuccessSnackBar(context, message: 'User deleted');
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to delete user')),
-                  );
+                  showErrorSnackBar(context, message: 'Failed to delete user');
                 }
               }
             },

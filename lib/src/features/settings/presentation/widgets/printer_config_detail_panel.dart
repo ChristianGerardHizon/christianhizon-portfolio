@@ -368,9 +368,7 @@ class _PrinterDetailContent extends HookConsumerWidget {
           .deleteConfig(config.id);
 
       if (success && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Printer deleted')),
-        );
+        showSuccessSnackBar(context, message: 'Printer deleted');
         context.pop();
       }
     }

@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/foundation/paginated_state.dart';
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../../core/hooks/use_infinite_scroll.dart';
 import '../../../../../core/routing/routes/appointments.routes.dart';
 import '../../../../../core/widgets/end_of_list_indicator.dart';
@@ -169,13 +170,11 @@ class PatientAppointmentsTab extends HookConsumerWidget {
                   .read(patientAppointmentsControllerProvider(patient.id).notifier)
                   .deleteAppointment(appointment.id);
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success
-                        ? 'Appointment deleted'
-                        : 'Failed to delete appointment'),
-                  ),
-                );
+                if (success) {
+                  showSuccessSnackBar(context, message: 'Appointment deleted');
+                } else {
+                  showErrorSnackBar(context, message: 'Failed to delete appointment');
+                }
               }
             },
             style: FilledButton.styleFrom(
@@ -221,14 +220,11 @@ class PatientAppointmentsTab extends HookConsumerWidget {
                   .updateStatus(id, status);
 
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success
-                        ? 'Status updated to $statusLabel'
-                        : 'Failed to update status'),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
+                if (success) {
+                  showSuccessSnackBar(context, message: 'Status updated to $statusLabel');
+                } else {
+                  showErrorSnackBar(context, message: 'Failed to update status');
+                }
               }
             },
             child: const Text('Confirm'),

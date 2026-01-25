@@ -317,9 +317,7 @@ class UserDetailsTab extends HookConsumerWidget {
             ),
             FilledButton.tonalIcon(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Reset password coming soon')),
-                );
+                showWarningSnackBar(context, message: 'Reset password coming soon');
               },
               icon: const Icon(Icons.lock_reset),
               label: const Text('Reset Password'),
@@ -327,10 +325,7 @@ class UserDetailsTab extends HookConsumerWidget {
             if (!user.verified)
               OutlinedButton.icon(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Send verification email coming soon')),
-                  );
+                  showWarningSnackBar(context, message: 'Send verification email coming soon');
                 },
                 icon: const Icon(Icons.email),
                 label: const Text('Send Verification'),

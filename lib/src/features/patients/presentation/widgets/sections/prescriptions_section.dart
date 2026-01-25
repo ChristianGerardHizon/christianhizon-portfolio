@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/prescription.dart';
 import '../../controllers/prescription_controller.dart';
 import '../cards/prescription_card.dart';
@@ -259,13 +260,11 @@ class PrescriptionsSection extends ConsumerWidget {
           .deletePrescription(prescription.id);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              success ? 'Prescription deleted' : 'Failed to delete prescription',
-            ),
-          ),
-        );
+        if (success) {
+          showSuccessSnackBar(context, message: 'Prescription deleted');
+        } else {
+          showErrorSnackBar(context, message: 'Failed to delete prescription');
+        }
       }
     }
   }

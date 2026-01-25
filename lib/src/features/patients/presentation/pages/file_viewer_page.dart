@@ -4,6 +4,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../../core/widgets/form_feedback.dart';
 import '../../domain/patient_file.dart';
 
 /// Full-screen file viewer for images, videos, and documents.
@@ -56,9 +57,7 @@ class FileViewerPage extends StatelessWidget {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open file')),
-      );
+      showErrorSnackBar(context, message: 'Could not open file');
     }
   }
 }
@@ -212,9 +211,7 @@ class _VideoViewerState extends State<_VideoViewer> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open file')),
-      );
+      showErrorSnackBar(context, message: 'Could not open file');
     }
   }
 }
@@ -405,9 +402,7 @@ class _DocumentViewer extends StatelessWidget {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open document')),
-      );
+      showErrorSnackBar(context, message: 'Could not open document');
     }
   }
 }
@@ -474,9 +469,7 @@ class _UnknownFileViewer extends StatelessWidget {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open file')),
-      );
+      showErrorSnackBar(context, message: 'Could not open file');
     }
   }
 }

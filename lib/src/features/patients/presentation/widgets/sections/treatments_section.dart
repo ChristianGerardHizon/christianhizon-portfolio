@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/routing/routes/appointments.routes.dart';
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../../core/routing/routes/messages.routes.dart';
 import '../../../domain/patient_treatment_record.dart';
 import '../../controllers/patient_treatment_records_controller.dart';
@@ -228,15 +229,11 @@ class TreatmentsSection extends ConsumerWidget {
           .deleteTreatmentRecord(record.id);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              success
-                  ? 'Treatment record deleted'
-                  : 'Failed to delete treatment record',
-            ),
-          ),
-        );
+        if (success) {
+          showSuccessSnackBar(context, message: 'Treatment record deleted');
+        } else {
+          showErrorSnackBar(context, message: 'Failed to delete treatment record');
+        }
       }
     }
   }

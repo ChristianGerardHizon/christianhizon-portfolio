@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/widgets/form_feedback.dart';
 import '../../../appointments/domain/appointment_schedule.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../appointments/presentation/widgets/components/appointment_status_chip.dart';
@@ -258,15 +259,11 @@ class TodayAppointmentsSection extends ConsumerWidget {
         .updateStatus(id, status);
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? 'Status updated to ${status.name}'
-                : 'Failed to update status',
-          ),
-        ),
-      );
+      if (success) {
+        showSuccessSnackBar(context, message: 'Status updated to ${status.name}');
+      } else {
+        showErrorSnackBar(context, message: 'Failed to update status');
+      }
     }
   }
 

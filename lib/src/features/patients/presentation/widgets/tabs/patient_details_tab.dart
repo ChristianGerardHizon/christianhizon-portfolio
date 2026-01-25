@@ -503,9 +503,7 @@ class PatientDetailsTab extends HookConsumerWidget {
             ),
             FilledButton.tonalIcon(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Book appointment coming soon')),
-                );
+                showWarningSnackBar(context, message: 'Book appointment coming soon');
               },
               icon: const Icon(Icons.calendar_today),
               label: const Text('Book Appointment'),
@@ -514,9 +512,7 @@ class PatientDetailsTab extends HookConsumerWidget {
                 patient.contactNumber!.isNotEmpty)
               OutlinedButton.icon(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Call feature coming soon')),
-                  );
+                  showWarningSnackBar(context, message: 'Call feature coming soon');
                 },
                 icon: const Icon(Icons.phone),
                 label: const Text('Call Owner'),

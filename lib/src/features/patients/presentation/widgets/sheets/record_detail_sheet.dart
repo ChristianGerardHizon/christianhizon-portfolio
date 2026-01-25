@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/patient.dart';
 import '../../../domain/patient_record.dart';
 import 'edit_record_sheet.dart';
@@ -207,10 +208,7 @@ class RecordDetailSheet extends StatelessWidget {
                 children: [
                   OutlinedButton.icon(
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Print functionality coming soon')),
-                      );
+                      showWarningSnackBar(context, message: 'Print functionality coming soon');
                     },
                     icon: const Icon(Icons.print),
                     label: const Text('Print'),
@@ -218,10 +216,7 @@ class RecordDetailSheet extends StatelessWidget {
                   const SizedBox(width: 8),
                   OutlinedButton.icon(
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Share functionality coming soon')),
-                      );
+                      showWarningSnackBar(context, message: 'Share functionality coming soon');
                     },
                     icon: const Icon(Icons.share),
                     label: const Text('Share'),

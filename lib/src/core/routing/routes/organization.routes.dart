@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../widgets/form_feedback.dart';
 import '../../../features/organization/presentation/pages/organization_shell.dart';
 import '../../../features/settings/domain/branch.dart';
 import '../../../features/settings/presentation/controllers/branches_controller.dart';
@@ -401,9 +402,7 @@ class _OrganizationRolesListPage extends ConsumerWidget {
 
   void _confirmDeleteRole(BuildContext context, WidgetRef ref, role) {
     if (role.isSystem) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('System roles cannot be deleted')),
-      );
+      showErrorSnackBar(context, message: 'System roles cannot be deleted');
       return;
     }
 
@@ -425,13 +424,11 @@ class _OrganizationRolesListPage extends ConsumerWidget {
                   .read(userRolesControllerProvider.notifier)
                   .deleteRole(role.id);
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      success ? 'Role deleted' : 'Failed to delete role',
-                    ),
-                  ),
-                );
+                if (success) {
+                  showSuccessSnackBar(context, message: 'Role deleted');
+                } else {
+                  showErrorSnackBar(context, message: 'Failed to delete role');
+                }
               }
             },
             style: FilledButton.styleFrom(
@@ -738,23 +735,18 @@ class _OrganizationBranchDetailPage extends HookConsumerWidget {
       if (!success) {
         if (context.mounted) {
           isSaving.value = false;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Failed to save branch. Please try again.'),
-            ),
-          );
+          showErrorSnackBar(context, message: 'Failed to save branch. Please try again.');
         }
         return;
       }
 
       if (context.mounted) {
         isSaving.value = false;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(isCreating
-                ? 'Branch created successfully'
-                : 'Branch updated successfully'),
-          ),
+        showSuccessSnackBar(
+          context,
+          message: isCreating
+              ? 'Branch created successfully'
+              : 'Branch updated successfully',
         );
 
         if (isCreating) {
@@ -792,16 +784,10 @@ class _OrganizationBranchDetailPage extends HookConsumerWidget {
       if (context.mounted) {
         isDeleting.value = false;
         if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Branch deleted successfully')),
-          );
+          showSuccessSnackBar(context, message: 'Branch deleted successfully');
           context.pop();
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Failed to delete branch. Please try again.'),
-            ),
-          );
+          showErrorSnackBar(context, message: 'Failed to delete branch. Please try again.');
         }
       }
     }

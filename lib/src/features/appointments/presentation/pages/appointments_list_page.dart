@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/routing/routes/appointments.routes.dart';
+import '../../../../core/widgets/form_feedback.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
@@ -138,13 +139,11 @@ class AppointmentsListPage extends ConsumerWidget {
                 ref.invalidate(appointmentsControllerProvider);
               }
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success
-                        ? 'Appointment deleted'
-                        : 'Failed to delete appointment'),
-                  ),
-                );
+                if (success) {
+                  showSuccessSnackBar(context, message: 'Appointment deleted');
+                } else {
+                  showErrorSnackBar(context, message: 'Failed to delete appointment');
+                }
               }
             },
             style: FilledButton.styleFrom(
@@ -194,14 +193,11 @@ class AppointmentsListPage extends ConsumerWidget {
               }
 
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success
-                        ? 'Status updated to $statusLabel'
-                        : 'Failed to update status'),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
+                if (success) {
+                  showSuccessSnackBar(context, message: 'Status updated to $statusLabel');
+                } else {
+                  showErrorSnackBar(context, message: 'Failed to update status');
+                }
               }
             },
             child: const Text('Confirm'),

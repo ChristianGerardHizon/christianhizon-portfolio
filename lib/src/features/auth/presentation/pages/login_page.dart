@@ -8,6 +8,7 @@ import '../../../../core/assets/assets.gen.dart';
 import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../../../core/routing/routes/auth.routes.dart';
+import '../../../../core/widgets/form_feedback.dart';
 import '../controllers/auth_controller.dart';
 
 /// Login page for user authentication.
@@ -37,25 +38,10 @@ class LoginPage extends HookConsumerWidget {
       if (next.hasValue && next.value != null) {
         // Check if user is unverified and show notification
         if (!next.value!.isVerified) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const Icon(Icons.email_outlined, color: Colors.white),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(t.auth.verificationEmailSent),
-                  ),
-                ],
-              ),
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: Colors.orange,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              margin: const EdgeInsets.all(16),
-              duration: const Duration(seconds: 5),
-            ),
+          showWarningSnackBar(
+            context,
+            message: t.auth.verificationEmailSent,
+            duration: const Duration(seconds: 5),
           );
         }
         // Router redirect handles navigation to pending URL or '/'

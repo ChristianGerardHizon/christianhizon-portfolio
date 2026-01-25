@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../messages/domain/message.dart';
 import '../../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../../patients/domain/patient.dart';
@@ -163,9 +164,7 @@ class CreateAppointmentSheet extends HookConsumerWidget {
       final patient = selectedPatient.value;
 
       if (patient == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a patient')),
-        );
+        showErrorSnackBar(context, message: 'Please select a patient');
         return;
       }
 
@@ -248,18 +247,15 @@ class CreateAppointmentSheet extends HookConsumerWidget {
 
           isSaving.value = false;
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(sendReminder.value
-                  ? 'Appointment created with reminder'
-                  : 'Appointment created successfully'),
-            ),
+          showSuccessSnackBar(
+            context,
+            message: sendReminder.value
+                ? 'Appointment created with reminder'
+                : 'Appointment created successfully',
           );
         } else {
           isSaving.value = false;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to create appointment')),
-          );
+          showErrorSnackBar(context, message: 'Failed to create appointment');
         }
       }
     }

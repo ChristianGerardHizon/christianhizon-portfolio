@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/patient_record.dart';
 
 /// Bottom sheet for adding a new patient record.
@@ -36,9 +37,7 @@ class AddRecordSheet extends HookWidget {
 
     Future<void> handleSave() async {
       if (diagnosisController.text.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Diagnosis is required')),
-        );
+        showErrorSnackBar(context, message: 'Diagnosis is required');
         return;
       }
 
@@ -64,13 +63,9 @@ class AddRecordSheet extends HookWidget {
         isSaving.value = false;
         if (created != null) {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Record added successfully')),
-          );
+          showSuccessSnackBar(context, message: 'Record added successfully');
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to add record')),
-          );
+          showErrorSnackBar(context, message: 'Failed to add record');
         }
       }
     }

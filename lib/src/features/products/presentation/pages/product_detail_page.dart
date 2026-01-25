@@ -59,11 +59,10 @@ class ProductDetailPage extends HookConsumerWidget {
                 icon: const Icon(Icons.refresh),
                 onPressed: () {
                   ref.invalidate(productProvider(productId));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Refreshing...'),
-                      duration: Duration(seconds: 1),
-                    ),
+                  showInfoSnackBar(
+                    context,
+                    message: 'Refreshing...',
+                    duration: const Duration(seconds: 1),
                   );
                 },
                 tooltip: 'Refresh',

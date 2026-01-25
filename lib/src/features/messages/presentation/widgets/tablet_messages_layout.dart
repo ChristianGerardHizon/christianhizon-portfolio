@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/routing/routes/messages.routes.dart';
+import '../../../../core/widgets/form_feedback.dart';
 import '../controllers/messages_controller.dart';
 import 'empty_detail_state.dart';
 import 'message_list_panel.dart';
@@ -107,13 +108,11 @@ class TabletMessagesLayout extends ConsumerWidget {
           .cancelMessage(message.id);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              success ? 'Message cancelled' : 'Failed to cancel message',
-            ),
-          ),
-        );
+        if (success) {
+          showSuccessSnackBar(context, message: 'Message cancelled');
+        } else {
+          showErrorSnackBar(context, message: 'Failed to cancel message');
+        }
       }
     }
   }
@@ -146,13 +145,11 @@ class TabletMessagesLayout extends ConsumerWidget {
           .retryMessage(message.id);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              success ? 'Message queued for retry' : 'Failed to retry message',
-            ),
-          ),
-        );
+        if (success) {
+          showSuccessSnackBar(context, message: 'Message queued for retry');
+        } else {
+          showErrorSnackBar(context, message: 'Failed to retry message');
+        }
       }
     }
   }
@@ -188,13 +185,11 @@ class TabletMessagesLayout extends ConsumerWidget {
           .deleteMessage(message.id);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              success ? 'Message deleted' : 'Failed to delete message',
-            ),
-          ),
-        );
+        if (success) {
+          showSuccessSnackBar(context, message: 'Message deleted');
+        } else {
+          showErrorSnackBar(context, message: 'Failed to delete message');
+        }
       }
     }
   }

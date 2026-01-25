@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/i18n/strings.g.dart';
+import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/routing/routes/messages.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../domain/message.dart';
@@ -585,17 +586,11 @@ class _MessageDetailContent extends ConsumerWidget {
                   .cancelMessage(message.id);
 
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      success
-                          ? 'Message cancelled'
-                          : 'Failed to cancel message',
-                    ),
-                  ),
-                );
                 if (success) {
+                  showSuccessSnackBar(context, message: 'Message cancelled');
                   ref.invalidate(messageProvider(message.id));
+                } else {
+                  showErrorSnackBar(context, message: 'Failed to cancel message');
                 }
               }
             },
@@ -630,17 +625,11 @@ class _MessageDetailContent extends ConsumerWidget {
                   .retryMessage(message.id);
 
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      success
-                          ? 'Message queued for retry'
-                          : 'Failed to retry message',
-                    ),
-                  ),
-                );
                 if (success) {
+                  showSuccessSnackBar(context, message: 'Message queued for retry');
                   ref.invalidate(messageProvider(message.id));
+                } else {
+                  showErrorSnackBar(context, message: 'Failed to retry message');
                 }
               }
             },
@@ -674,13 +663,9 @@ class _MessageDetailContent extends ConsumerWidget {
               if (context.mounted) {
                 if (success) {
                   const MessagesRoute().go(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Message deleted')),
-                  );
+                  showSuccessSnackBar(context, message: 'Message deleted');
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to delete message')),
-                  );
+                  showErrorSnackBar(context, message: 'Failed to delete message');
                 }
               }
             },

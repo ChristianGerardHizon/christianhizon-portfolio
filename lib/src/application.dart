@@ -19,6 +19,7 @@ class Application extends HookConsumerWidget {
 
     return WindowSizeListener(
       child: MaterialApp.router(
+        scaffoldMessengerKey: rootScaffoldMessengerKey,
         title: appTitle,
         debugShowCheckedModeBanner: false,
         locale: TranslationProvider.of(context).flutterLocale,

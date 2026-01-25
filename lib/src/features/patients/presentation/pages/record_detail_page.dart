@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/widgets/form_feedback.dart';
 import '../../../settings/presentation/controllers/branch_provider.dart';
 import '../../domain/patient.dart';
 import '../../domain/patient_record.dart';
@@ -379,20 +380,14 @@ class RecordDetailPage extends ConsumerWidget {
 
     prescriptionsAsync.when(
       loading: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Loading prescriptions...')),
-        );
+        showInfoSnackBar(context, message: 'Loading prescriptions...');
       },
       error: (error, stack) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to load prescriptions')),
-        );
+        showErrorSnackBar(context, message: 'Failed to load prescriptions');
       },
       data: (prescriptions) {
         if (prescriptions.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No prescriptions available')),
-          );
+          showInfoSnackBar(context, message: 'No prescriptions available');
           return;
         }
 
@@ -432,9 +427,7 @@ class RecordDetailPage extends ConsumerWidget {
                 case _PdfAction.save:
                   final path = await generator.savePrescription();
                   if (context.mounted && path != null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Prescription saved')),
-                    );
+                    showSuccessSnackBar(context, message: 'Prescription saved');
                   }
               }
             },

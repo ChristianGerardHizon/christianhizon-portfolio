@@ -3,6 +3,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/foundation/failure.dart';
+import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/utils/currency_format.dart';
 import '../../../products/data/repositories/product_repository.dart';
 import '../../../products/domain/product.dart';
@@ -262,13 +263,10 @@ class _ProductCard extends ConsumerWidget {
   }
 
   void _showOutOfStockMessage(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${product.name} is out of stock'),
-        backgroundColor: Theme.of(context).colorScheme.error,
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
-      ),
+    showErrorSnackBar(
+      context,
+      message: '${product.name} is out of stock',
+      duration: const Duration(seconds: 2),
     );
   }
 }

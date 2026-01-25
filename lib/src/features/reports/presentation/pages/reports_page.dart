@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/widgets/form_feedback.dart';
 import '../controllers/appointment_report_controller.dart';
 import '../controllers/inventory_report_controller.dart';
 import '../controllers/patient_report_controller.dart';
@@ -140,17 +141,13 @@ class ReportsPage extends HookConsumerWidget {
         case 'save':
           final result = await generator.saveReport();
           if (context.mounted && result != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Report saved: $result.pdf')),
-            );
+            showSuccessSnackBar(context, message: 'Report saved: $result.pdf');
           }
           break;
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error exporting report: $e')),
-        );
+        showErrorSnackBar(context, message: 'Error exporting report: $e');
       }
     }
   }

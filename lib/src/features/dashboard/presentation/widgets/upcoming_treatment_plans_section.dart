@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/routing/routes/appointments.routes.dart';
+import '../../../../core/widgets/form_feedback.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../appointments/presentation/widgets/sheets/create_appointment_sheet.dart';
 import '../../../patients/presentation/controllers/patient_provider.dart';
@@ -110,15 +111,11 @@ class UpcomingTreatmentPlansSection extends ConsumerWidget {
     if (context.mounted) {
       result.fold(
         (failure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to update session')),
-          );
+          showErrorSnackBar(context, message: 'Failed to update session');
         },
         (updatedItem) {
           ref.invalidate(upcomingTreatmentPlanItemsProvider(_daysAhead));
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Session marked as completed')),
-          );
+          showSuccessSnackBar(context, message: 'Session marked as completed');
         },
       );
     }
@@ -138,15 +135,11 @@ class UpcomingTreatmentPlansSection extends ConsumerWidget {
     if (context.mounted) {
       result.fold(
         (failure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to update session')),
-          );
+          showErrorSnackBar(context, message: 'Failed to update session');
         },
         (updatedItem) {
           ref.invalidate(upcomingTreatmentPlanItemsProvider(_daysAhead));
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Session skipped')),
-          );
+          showSuccessSnackBar(context, message: 'Session skipped');
         },
       );
     }
@@ -185,9 +178,7 @@ class UpcomingTreatmentPlansSection extends ConsumerWidget {
     // Treatment plan items have patientId from expanded plan data
     if (item.patientId == null) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to load patient information')),
-        );
+        showErrorSnackBar(context, message: 'Failed to load patient information');
       }
       return;
     }
@@ -196,9 +187,7 @@ class UpcomingTreatmentPlansSection extends ConsumerWidget {
 
     if (patient == null) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to load patient information')),
-        );
+        showErrorSnackBar(context, message: 'Failed to load patient information');
       }
       return;
     }

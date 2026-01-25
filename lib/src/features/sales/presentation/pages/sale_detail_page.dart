@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/routing/routes/sales_history.routes.dart';
+import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../../patients/presentation/controllers/patient_provider.dart';
 import '../../../pos/domain/sale.dart';
@@ -110,9 +111,7 @@ class _SaleDetailContent extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.print),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Print functionality coming soon')),
-              );
+              showWarningSnackBar(context, message: 'Print functionality coming soon');
             },
             tooltip: 'Print Receipt',
           ),

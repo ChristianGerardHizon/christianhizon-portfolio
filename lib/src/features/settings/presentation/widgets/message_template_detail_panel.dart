@@ -3,6 +3,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/foundation/failure.dart';
+import '../../../../core/widgets/form_feedback.dart';
 import '../../data/repositories/message_template_repository.dart';
 import '../../domain/message_template.dart';
 import '../controllers/message_templates_controller.dart';
@@ -245,9 +246,7 @@ class _TemplateDetailContent extends ConsumerWidget {
           .deleteTemplate(template.id);
 
       if (success && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Template deleted')),
-        );
+        showSuccessSnackBar(context, message: 'Template deleted');
         Navigator.of(context).pop();
       }
     }

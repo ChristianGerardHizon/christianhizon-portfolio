@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../../appointments/presentation/widgets/sheets/create_appointment_sheet.dart';
 import '../../../../patients/presentation/controllers/patient_provider.dart';
@@ -253,13 +254,11 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
           .updatePlanStatus(plan.id, TreatmentPlanStatus.cancelled);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              success ? 'Plan cancelled' : 'Failed to cancel plan',
-            ),
-          ),
-        );
+        if (success) {
+          showSuccessSnackBar(context, message: 'Plan cancelled');
+        } else {
+          showErrorSnackBar(context, message: 'Failed to cancel plan');
+        }
       }
     }
   }
@@ -296,13 +295,11 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
           .updatePlanStatus(plan.id, TreatmentPlanStatus.completed);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              success ? 'Plan completed' : 'Failed to complete plan',
-            ),
-          ),
-        );
+        if (success) {
+          showSuccessSnackBar(context, message: 'Plan completed');
+        } else {
+          showErrorSnackBar(context, message: 'Failed to complete plan');
+        }
       }
     }
   }
@@ -317,13 +314,11 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
         .updatePlanStatus(plan.id, TreatmentPlanStatus.onHold);
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success ? 'Plan put on hold' : 'Failed to put plan on hold',
-          ),
-        ),
-      );
+      if (success) {
+        showSuccessSnackBar(context, message: 'Plan put on hold');
+      } else {
+        showErrorSnackBar(context, message: 'Failed to put plan on hold');
+      }
     }
   }
 
@@ -337,13 +332,11 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
         .updatePlanStatus(plan.id, TreatmentPlanStatus.active);
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success ? 'Plan reactivated' : 'Failed to reactivate plan',
-          ),
-        ),
-      );
+      if (success) {
+        showSuccessSnackBar(context, message: 'Plan reactivated');
+      } else {
+        showErrorSnackBar(context, message: 'Failed to reactivate plan');
+      }
     }
   }
 
@@ -364,18 +357,14 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
     if (context.mounted) {
       result.fold(
         (failure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to update session')),
-          );
+          showErrorSnackBar(context, message: 'Failed to update session');
         },
         (updatedItem) {
           // Refresh the plans list to get updated progress
           ref
               .read(patientTreatmentPlansControllerProvider(patientId).notifier)
               .refresh();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Session marked as completed')),
-          );
+          showSuccessSnackBar(context, message: 'Session marked as completed');
         },
       );
     }
@@ -397,18 +386,14 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
     if (context.mounted) {
       result.fold(
         (failure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to update session')),
-          );
+          showErrorSnackBar(context, message: 'Failed to update session');
         },
         (updatedItem) {
           // Refresh the plans list to get updated progress
           ref
               .read(patientTreatmentPlansControllerProvider(patientId).notifier)
               .refresh();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Session skipped')),
-          );
+          showSuccessSnackBar(context, message: 'Session skipped');
         },
       );
     }
@@ -456,9 +441,7 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
 
     if (patient == null) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to load patient information')),
-        );
+        showErrorSnackBar(context, message: 'Failed to load patient information');
       }
       return;
     }
@@ -522,9 +505,7 @@ class PatientTreatmentPlansSection extends HookConsumerWidget {
     if (item.appointmentId != null && item.appointmentId!.isNotEmpty) {
       // Navigate to appointment detail
       // AppointmentDetailRoute(id: item.appointmentId!).go(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('View appointment coming soon')),
-      );
+      showWarningSnackBar(context, message: 'View appointment coming soon');
     }
   }
 }

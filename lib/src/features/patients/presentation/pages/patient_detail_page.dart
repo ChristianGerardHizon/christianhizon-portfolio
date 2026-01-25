@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/i18n/strings.g.dart';
+import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../../appointments/presentation/widgets/tabs/patient_appointments_tab.dart';
@@ -108,11 +109,10 @@ class PatientDetailPage extends HookConsumerWidget {
                 icon: const Icon(Icons.refresh),
                 onPressed: () {
                   ref.invalidate(patientProvider(patientId));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Refreshing...'),
-                      duration: Duration(seconds: 1),
-                    ),
+                  showInfoSnackBar(
+                    context,
+                    message: 'Refreshing...',
+                    duration: const Duration(seconds: 1),
                   );
                 },
                 tooltip: 'Refresh',
@@ -184,10 +184,7 @@ class PatientDetailPage extends HookConsumerWidget {
               title: const Text('Print Record'),
               onTap: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Print functionality coming soon')),
-                );
+                showWarningSnackBar(context, message: 'Print functionality coming soon');
               },
             ),
             ListTile(
@@ -195,10 +192,7 @@ class PatientDetailPage extends HookConsumerWidget {
               title: const Text('Share'),
               onTap: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Share functionality coming soon')),
-                );
+                showWarningSnackBar(context, message: 'Share functionality coming soon');
               },
             ),
             ListTile(
@@ -241,13 +235,9 @@ class PatientDetailPage extends HookConsumerWidget {
               if (context.mounted) {
                 if (success) {
                   const PatientsRoute().go(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Patient deleted')),
-                  );
+                  showSuccessSnackBar(context, message: 'Patient deleted');
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to delete patient')),
-                  );
+                  showErrorSnackBar(context, message: 'Failed to delete patient');
                 }
               }
             },

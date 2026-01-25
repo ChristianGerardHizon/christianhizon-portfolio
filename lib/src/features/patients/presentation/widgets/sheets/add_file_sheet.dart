@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../../core/utils/file_validation.dart';
 import '../../../domain/patient_file.dart';
 
@@ -57,9 +58,7 @@ class AddFileSheet extends HookWidget {
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to pick file: $e')),
-          );
+          showErrorSnackBar(context, message: 'Failed to pick file: $e');
         }
       }
     }
@@ -67,16 +66,11 @@ class AddFileSheet extends HookWidget {
     Future<void> handleUpload() async {
       final file = selectedFile.value;
       if (file == null || file.bytes == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a file')),
-        );
+        showWarningSnackBar(context, message: 'Please select a file');
         return;
       }
 
       isUploading.value = true;
-
-      // Capture root ScaffoldMessenger before any async operation
-      final rootMessenger = ScaffoldMessenger.of(context);
 
       final (success, error) = await onUpload(
         fileName: file.name,
@@ -88,13 +82,9 @@ class AddFileSheet extends HookWidget {
         isUploading.value = false;
         if (success) {
           Navigator.pop(context);
-          rootMessenger.showSnackBar(
-            const SnackBar(content: Text('File uploaded successfully')),
-          );
+          showSuccessSnackBar(context, message: 'File uploaded successfully');
         } else {
-          rootMessenger.showSnackBar(
-            SnackBar(content: Text(error ?? 'Failed to upload file')),
-          );
+          showErrorSnackBar(context, message: error ?? 'Failed to upload file');
         }
       }
     }

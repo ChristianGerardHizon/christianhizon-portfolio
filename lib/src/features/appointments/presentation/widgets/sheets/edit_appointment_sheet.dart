@@ -9,6 +9,7 @@ import '../../../../settings/presentation/controllers/message_templates_controll
 import '../../../../patients/domain/patient.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../messages/domain/message.dart';
 import '../../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../../patients/domain/patient_record.dart';
@@ -188,18 +189,15 @@ class EditAppointmentSheet extends HookConsumerWidget {
 
           isSaving.value = false;
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(sendReminder.value
-                  ? 'Appointment updated with reminder'
-                  : 'Appointment updated successfully'),
-            ),
+          showSuccessSnackBar(
+            context,
+            message: sendReminder.value
+                ? 'Appointment updated with reminder'
+                : 'Appointment updated successfully',
           );
         } else {
           isSaving.value = false;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to update appointment')),
-          );
+          showErrorSnackBar(context, message: 'Failed to update appointment');
         }
       }
     }

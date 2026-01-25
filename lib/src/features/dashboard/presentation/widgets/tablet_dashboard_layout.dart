@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/widgets/form_feedback.dart';
 import '../../../appointments/domain/appointment_schedule.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
 import 'appointment_quick_summary.dart';
@@ -100,16 +101,11 @@ class TabletDashboardLayout extends HookConsumerWidget {
         .updateStatus(id, status);
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? 'Status updated to ${status.name}'
-                : 'Failed to update status',
-          ),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      if (success) {
+        showSuccessSnackBar(context, message: 'Status updated to ${status.name}');
+      } else {
+        showErrorSnackBar(context, message: 'Failed to update status');
+      }
     }
   }
 }

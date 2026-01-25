@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../patients/domain/patient.dart';
 import '../../../../patients/presentation/controllers/patients_controller.dart';
 import '../../../../appointments/presentation/controllers/appointments_controller.dart';
@@ -124,14 +125,10 @@ class CreateMessageSheet extends HookConsumerWidget {
         if (created != null) {
           isSaving.value = false;
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Message scheduled successfully')),
-          );
+          showSuccessSnackBar(context, message: 'Message scheduled successfully');
         } else {
           isSaving.value = false;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to schedule message')),
-          );
+          showErrorSnackBar(context, message: 'Failed to schedule message');
         }
       }
     }

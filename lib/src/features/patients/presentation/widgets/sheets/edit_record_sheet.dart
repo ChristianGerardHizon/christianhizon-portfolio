@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/patient_record.dart';
 import '../../controllers/patient_records_controller.dart';
 
@@ -64,9 +65,7 @@ class EditRecordSheet extends HookConsumerWidget {
 
     Future<void> handleSave() async {
       if (diagnosisController.text.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Diagnosis is required')),
-        );
+        showErrorSnackBar(context, message: 'Diagnosis is required');
         return;
       }
 
@@ -99,13 +98,9 @@ class EditRecordSheet extends HookConsumerWidget {
         isSaving.value = false;
         if (success) {
           Navigator.pop(context, true);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Record updated successfully')),
-          );
+          showSuccessSnackBar(context, message: 'Record updated successfully');
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to update record')),
-          );
+          showErrorSnackBar(context, message: 'Failed to update record');
         }
       }
     }
