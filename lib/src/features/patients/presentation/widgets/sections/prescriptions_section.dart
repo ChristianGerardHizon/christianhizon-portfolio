@@ -1,5 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -7,12 +9,52 @@ import 'package:intl/intl.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/prescription.dart';
 import '../../controllers/prescription_controller.dart';
-import '../cards/prescription_card.dart';
-import '../sheets/add_prescription_group_sheet.dart';
-import '../sheets/add_prescription_sheet.dart';
+
+/// Entry data for a single prescription in a group.
+class _PrescriptionEntry {
+  _PrescriptionEntry({
+    String? medication,
+    String? dosage,
+    String? instructions,
+  })  : medicationController = TextEditingController(text: medication ?? ''),
+        dosageController = TextEditingController(text: dosage ?? ''),
+        instructionsController =
+            TextEditingController(text: instructions ?? ''),
+        showInstructions = ValueNotifier(instructions?.isNotEmpty ?? false);
+
+  final TextEditingController medicationController;
+  final TextEditingController dosageController;
+  final TextEditingController instructionsController;
+  final ValueNotifier<bool> showInstructions;
+
+  void dispose() {
+    medicationController.dispose();
+    dosageController.dispose();
+    instructionsController.dispose();
+    showInstructions.dispose();
+  }
+
+  bool get isValid => medicationController.text.trim().isNotEmpty;
+
+  Prescription toPrescription(String recordId, DateTime date) {
+    return Prescription(
+      id: '',
+      recordId: recordId,
+      medication: medicationController.text.trim(),
+      dosage: dosageController.text.trim().isEmpty
+          ? null
+          : dosageController.text.trim(),
+      instructions: instructionsController.text.trim().isEmpty
+          ? null
+          : instructionsController.text.trim(),
+      date: date,
+    );
+  }
+}
 
 /// Section displaying prescriptions for a record, grouped by date.
-class PrescriptionsSection extends ConsumerWidget {
+/// Supports inline adding and editing of prescriptions.
+class PrescriptionsSection extends HookConsumerWidget {
   const PrescriptionsSection({
     super.key,
     required this.recordId,
@@ -55,6 +97,17 @@ class PrescriptionsSection extends ConsumerWidget {
     final prescriptionsAsync = ref.watch(prescriptionControllerProvider(recordId));
     final theme = Theme.of(context);
 
+    // State for inline forms
+    final showAddSingle = useState(false);
+    final showAddGroup = useState(false);
+    final editingPrescriptionId = useState<String?>(null);
+
+    void closeAllForms() {
+      showAddSingle.value = false;
+      showAddGroup.value = false;
+      editingPrescriptionId.value = null;
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -62,19 +115,31 @@ class PrescriptionsSection extends ConsumerWidget {
         LayoutBuilder(
           builder: (context, constraints) {
             final isTablet = constraints.maxWidth >= 600;
-            final actionButtons = [
-              OutlinedButton.icon(
-                onPressed: () => _handleAddPrescriptionGroup(context, ref),
-                icon: const Icon(Icons.playlist_add, size: 18),
-                label: const Text('Add Group'),
-              ),
-              const SizedBox(width: 8),
-              FilledButton.icon(
-                onPressed: () => _handleAddPrescription(context, ref),
-                icon: const Icon(Icons.add, size: 18),
-                label: const Text('Add'),
-              ),
-            ];
+            final isAddingOrEditing = showAddSingle.value ||
+                showAddGroup.value ||
+                editingPrescriptionId.value != null;
+
+            final actionButtons = isAddingOrEditing
+                ? <Widget>[]
+                : [
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        closeAllForms();
+                        showAddGroup.value = true;
+                      },
+                      icon: const Icon(Icons.playlist_add, size: 18),
+                      label: const Text('Add Group'),
+                    ),
+                    const SizedBox(width: 8),
+                    FilledButton.icon(
+                      onPressed: () {
+                        closeAllForms();
+                        showAddSingle.value = true;
+                      },
+                      icon: const Icon(Icons.add, size: 18),
+                      label: const Text('Add'),
+                    ),
+                  ];
 
             if (isTablet) {
               return Row(
@@ -98,17 +163,35 @@ class PrescriptionsSection extends ConsumerWidget {
                     Text('Prescriptions', style: theme.textTheme.titleMedium),
                   ],
                 ),
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: actionButtons,
-                ),
+                if (actionButtons.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: actionButtons,
+                  ),
+                ],
               ],
             );
           },
         ),
         const SizedBox(height: 16),
+
+        // Inline Add Single Prescription Form
+        if (showAddSingle.value)
+          _InlineAddPrescriptionForm(
+            recordId: recordId,
+            onCancel: () => showAddSingle.value = false,
+            onSaved: () => showAddSingle.value = false,
+          ),
+
+        // Inline Add Prescription Group Form
+        if (showAddGroup.value)
+          _InlineAddPrescriptionGroupForm(
+            recordId: recordId,
+            onCancel: () => showAddGroup.value = false,
+            onSaved: () => showAddGroup.value = false,
+          ),
 
         // Content
         prescriptionsAsync.when(
@@ -148,9 +231,10 @@ class PrescriptionsSection extends ConsumerWidget {
             ),
           ),
           data: (prescriptions) {
-            if (prescriptions.isEmpty) {
+            if (prescriptions.isEmpty && !showAddSingle.value && !showAddGroup.value) {
               return _EmptyState(
-                onAdd: () => _handleAddPrescription(context, ref),
+                onAddSingle: () => showAddSingle.value = true,
+                onAddGroup: () => showAddGroup.value = true,
               );
             }
 
@@ -172,11 +256,24 @@ class PrescriptionsSection extends ConsumerWidget {
                     ...datePrescriptions.map(
                       (prescription) => Padding(
                         padding: const EdgeInsets.only(bottom: 8),
-                        child: PrescriptionCard(
-                          prescription: prescription,
-                          onEdit: () => _handleEditPrescription(context, ref, prescription),
-                          onDelete: () => _handleDeletePrescription(context, ref, prescription),
-                        ),
+                        child: editingPrescriptionId.value == prescription.id
+                            ? _InlineEditPrescriptionForm(
+                                prescription: prescription,
+                                onCancel: () => editingPrescriptionId.value = null,
+                                onSaved: () => editingPrescriptionId.value = null,
+                              )
+                            : _PrescriptionCard(
+                                prescription: prescription,
+                                onEdit: () {
+                                  closeAllForms();
+                                  editingPrescriptionId.value = prescription.id;
+                                },
+                                onDelete: () => _handleDeletePrescription(
+                                  context,
+                                  ref,
+                                  prescription,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -187,47 +284,6 @@ class PrescriptionsSection extends ConsumerWidget {
           },
         ),
       ],
-    );
-  }
-
-  void _handleAddPrescription(BuildContext context, WidgetRef ref) {
-    showPrescriptionSheet(
-      context,
-      recordId: recordId,
-      onSave: (prescription) async {
-        return await ref
-            .read(prescriptionControllerProvider(recordId).notifier)
-            .createPrescription(prescription);
-      },
-    );
-  }
-
-  void _handleAddPrescriptionGroup(BuildContext context, WidgetRef ref) {
-    showPrescriptionGroupSheet(
-      context,
-      recordId: recordId,
-      onSave: (prescription) async {
-        return await ref
-            .read(prescriptionControllerProvider(recordId).notifier)
-            .createPrescription(prescription);
-      },
-    );
-  }
-
-  void _handleEditPrescription(
-    BuildContext context,
-    WidgetRef ref,
-    Prescription prescription,
-  ) {
-    showPrescriptionSheet(
-      context,
-      recordId: recordId,
-      existingPrescription: prescription,
-      onSave: (updated) async {
-        return await ref
-            .read(prescriptionControllerProvider(recordId).notifier)
-            .updatePrescription(updated);
-      },
     );
   }
 
@@ -270,10 +326,1012 @@ class PrescriptionsSection extends ConsumerWidget {
   }
 }
 
-class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.onAdd});
+/// Inline form for adding a single prescription.
+class _InlineAddPrescriptionForm extends HookConsumerWidget {
+  const _InlineAddPrescriptionForm({
+    required this.recordId,
+    required this.onCancel,
+    required this.onSaved,
+  });
 
-  final VoidCallback onAdd;
+  final String recordId;
+  final VoidCallback onCancel;
+  final VoidCallback onSaved;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final isSaving = useState(false);
+
+    Future<void> handleSave() async {
+      if (!formKey.currentState!.saveAndValidate()) return;
+
+      final values = formKey.currentState!.value;
+      isSaving.value = true;
+
+      final prescription = Prescription(
+        id: '',
+        recordId: recordId,
+        medication: (values['medication'] as String).trim(),
+        dosage: _nullIfEmpty(values['dosage'] as String?),
+        instructions: _nullIfEmpty(values['instructions'] as String?),
+        date: values['date'] as DateTime? ?? DateTime.now(),
+      );
+
+      final success = await ref
+          .read(prescriptionControllerProvider(recordId).notifier)
+          .createPrescription(prescription);
+
+      if (context.mounted) {
+        isSaving.value = false;
+        if (success) {
+          showSuccessSnackBar(context, message: 'Prescription added');
+          onSaved();
+        } else {
+          showErrorSnackBar(context, message: 'Failed to add prescription');
+        }
+      }
+    }
+
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: FormBuilder(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                children: [
+                  Icon(Icons.add, color: theme.colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Add Prescription',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: isSaving.value ? null : onCancel,
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: isSaving.value ? null : handleSave,
+                    child: isSaving.value
+                        ? const SizedBox(
+                            height: 16,
+                            width: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Save'),
+                  ),
+                ],
+              ),
+              const Divider(height: 24),
+
+              // Form fields - Responsive layout
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final isWide = constraints.maxWidth >= 500;
+
+                  if (isWide) {
+                    return Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: FormBuilderTextField(
+                                name: 'medication',
+                                decoration: const InputDecoration(
+                                  labelText: 'Medication *',
+                                  hintText: 'e.g., Amoxicillin',
+                                  border: OutlineInputBorder(),
+                                  isDense: true,
+                                  prefixIcon: Icon(Icons.medication),
+                                ),
+                                textCapitalization: TextCapitalization.words,
+                                enabled: !isSaving.value,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Required';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: FormBuilderTextField(
+                                name: 'dosage',
+                                decoration: const InputDecoration(
+                                  labelText: 'Dosage',
+                                  hintText: '250mg',
+                                  border: OutlineInputBorder(),
+                                  isDense: true,
+                                ),
+                                enabled: !isSaving.value,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: FormBuilderDateTimePicker(
+                                name: 'date',
+                                initialValue: DateTime.now(),
+                                decoration: const InputDecoration(
+                                  labelText: 'Date',
+                                  border: OutlineInputBorder(),
+                                  isDense: true,
+                                  prefixIcon: Icon(Icons.calendar_today),
+                                ),
+                                enabled: !isSaving.value,
+                                inputType: InputType.date,
+                                firstDate: DateTime(2020),
+                                lastDate: DateTime.now().add(const Duration(days: 365)),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        FormBuilderTextField(
+                          name: 'instructions',
+                          decoration: const InputDecoration(
+                            labelText: 'Instructions',
+                            hintText: 'e.g., Take with food for 7 days',
+                            border: OutlineInputBorder(),
+                            isDense: true,
+                            prefixIcon: Icon(Icons.notes),
+                          ),
+                          maxLines: 2,
+                          enabled: !isSaving.value,
+                        ),
+                      ],
+                    );
+                  }
+
+                  // Mobile layout - stacked
+                  return Column(
+                    children: [
+                      FormBuilderTextField(
+                        name: 'medication',
+                        decoration: const InputDecoration(
+                          labelText: 'Medication *',
+                          hintText: 'e.g., Amoxicillin',
+                          border: OutlineInputBorder(),
+                          isDense: true,
+                          prefixIcon: Icon(Icons.medication),
+                        ),
+                        textCapitalization: TextCapitalization.words,
+                        enabled: !isSaving.value,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Required';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: FormBuilderTextField(
+                              name: 'dosage',
+                              decoration: const InputDecoration(
+                                labelText: 'Dosage',
+                                hintText: '250mg',
+                                border: OutlineInputBorder(),
+                                isDense: true,
+                              ),
+                              enabled: !isSaving.value,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: FormBuilderDateTimePicker(
+                              name: 'date',
+                              initialValue: DateTime.now(),
+                              decoration: const InputDecoration(
+                                labelText: 'Date',
+                                border: OutlineInputBorder(),
+                                isDense: true,
+                              ),
+                              enabled: !isSaving.value,
+                              inputType: InputType.date,
+                              firstDate: DateTime(2020),
+                              lastDate: DateTime.now().add(const Duration(days: 365)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      FormBuilderTextField(
+                        name: 'instructions',
+                        decoration: const InputDecoration(
+                          labelText: 'Instructions',
+                          hintText: 'e.g., Take with food for 7 days',
+                          border: OutlineInputBorder(),
+                          isDense: true,
+                          prefixIcon: Icon(Icons.notes),
+                        ),
+                        maxLines: 2,
+                        enabled: !isSaving.value,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String? _nullIfEmpty(String? text) {
+    if (text == null) return null;
+    final trimmed = text.trim();
+    return trimmed.isEmpty ? null : trimmed;
+  }
+}
+
+/// Inline form for editing an existing prescription.
+class _InlineEditPrescriptionForm extends HookConsumerWidget {
+  const _InlineEditPrescriptionForm({
+    required this.prescription,
+    required this.onCancel,
+    required this.onSaved,
+  });
+
+  final Prescription prescription;
+  final VoidCallback onCancel;
+  final VoidCallback onSaved;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final isSaving = useState(false);
+
+    Future<void> handleSave() async {
+      if (!formKey.currentState!.saveAndValidate()) return;
+
+      final values = formKey.currentState!.value;
+      isSaving.value = true;
+
+      final updated = Prescription(
+        id: prescription.id,
+        recordId: prescription.recordId,
+        medication: (values['medication'] as String).trim(),
+        dosage: _nullIfEmpty(values['dosage'] as String?),
+        instructions: _nullIfEmpty(values['instructions'] as String?),
+        date: values['date'] as DateTime? ?? prescription.date,
+      );
+
+      final success = await ref
+          .read(prescriptionControllerProvider(prescription.recordId).notifier)
+          .updatePrescription(updated);
+
+      if (context.mounted) {
+        isSaving.value = false;
+        if (success) {
+          showSuccessSnackBar(context, message: 'Prescription updated');
+          onSaved();
+        } else {
+          showErrorSnackBar(context, message: 'Failed to update prescription');
+        }
+      }
+    }
+
+    return Card(
+      elevation: 2,
+      color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: FormBuilder(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                children: [
+                  Icon(Icons.edit, color: theme.colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Edit Prescription',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: isSaving.value ? null : onCancel,
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: isSaving.value ? null : handleSave,
+                    child: isSaving.value
+                        ? const SizedBox(
+                            height: 16,
+                            width: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Save'),
+                  ),
+                ],
+              ),
+              const Divider(height: 24),
+
+              // Form fields - Responsive layout
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final isWide = constraints.maxWidth >= 500;
+
+                  if (isWide) {
+                    return Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: FormBuilderTextField(
+                                name: 'medication',
+                                initialValue: prescription.medication,
+                                decoration: const InputDecoration(
+                                  labelText: 'Medication *',
+                                  hintText: 'e.g., Amoxicillin',
+                                  border: OutlineInputBorder(),
+                                  isDense: true,
+                                  prefixIcon: Icon(Icons.medication),
+                                ),
+                                textCapitalization: TextCapitalization.words,
+                                enabled: !isSaving.value,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Required';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: FormBuilderTextField(
+                                name: 'dosage',
+                                initialValue: prescription.dosage ?? '',
+                                decoration: const InputDecoration(
+                                  labelText: 'Dosage',
+                                  hintText: '250mg',
+                                  border: OutlineInputBorder(),
+                                  isDense: true,
+                                ),
+                                enabled: !isSaving.value,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: FormBuilderDateTimePicker(
+                                name: 'date',
+                                initialValue: prescription.date ?? DateTime.now(),
+                                decoration: const InputDecoration(
+                                  labelText: 'Date',
+                                  border: OutlineInputBorder(),
+                                  isDense: true,
+                                  prefixIcon: Icon(Icons.calendar_today),
+                                ),
+                                enabled: !isSaving.value,
+                                inputType: InputType.date,
+                                firstDate: DateTime(2020),
+                                lastDate: DateTime.now().add(const Duration(days: 365)),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        FormBuilderTextField(
+                          name: 'instructions',
+                          initialValue: prescription.instructions ?? '',
+                          decoration: const InputDecoration(
+                            labelText: 'Instructions',
+                            hintText: 'e.g., Take with food for 7 days',
+                            border: OutlineInputBorder(),
+                            isDense: true,
+                            prefixIcon: Icon(Icons.notes),
+                          ),
+                          maxLines: 2,
+                          enabled: !isSaving.value,
+                        ),
+                      ],
+                    );
+                  }
+
+                  // Mobile layout - stacked
+                  return Column(
+                    children: [
+                      FormBuilderTextField(
+                        name: 'medication',
+                        initialValue: prescription.medication,
+                        decoration: const InputDecoration(
+                          labelText: 'Medication *',
+                          hintText: 'e.g., Amoxicillin',
+                          border: OutlineInputBorder(),
+                          isDense: true,
+                          prefixIcon: Icon(Icons.medication),
+                        ),
+                        textCapitalization: TextCapitalization.words,
+                        enabled: !isSaving.value,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Required';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: FormBuilderTextField(
+                              name: 'dosage',
+                              initialValue: prescription.dosage ?? '',
+                              decoration: const InputDecoration(
+                                labelText: 'Dosage',
+                                hintText: '250mg',
+                                border: OutlineInputBorder(),
+                                isDense: true,
+                              ),
+                              enabled: !isSaving.value,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: FormBuilderDateTimePicker(
+                              name: 'date',
+                              initialValue: prescription.date ?? DateTime.now(),
+                              decoration: const InputDecoration(
+                                labelText: 'Date',
+                                border: OutlineInputBorder(),
+                                isDense: true,
+                              ),
+                              enabled: !isSaving.value,
+                              inputType: InputType.date,
+                              firstDate: DateTime(2020),
+                              lastDate: DateTime.now().add(const Duration(days: 365)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      FormBuilderTextField(
+                        name: 'instructions',
+                        initialValue: prescription.instructions ?? '',
+                        decoration: const InputDecoration(
+                          labelText: 'Instructions',
+                          hintText: 'e.g., Take with food for 7 days',
+                          border: OutlineInputBorder(),
+                          isDense: true,
+                          prefixIcon: Icon(Icons.notes),
+                        ),
+                        maxLines: 2,
+                        enabled: !isSaving.value,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String? _nullIfEmpty(String? text) {
+    if (text == null) return null;
+    final trimmed = text.trim();
+    return trimmed.isEmpty ? null : trimmed;
+  }
+}
+
+/// Inline form for adding a prescription group (multiple medications with shared date).
+class _InlineAddPrescriptionGroupForm extends HookConsumerWidget {
+  const _InlineAddPrescriptionGroupForm({
+    required this.recordId,
+    required this.onCancel,
+    required this.onSaved,
+  });
+
+  final String recordId;
+  final VoidCallback onCancel;
+  final VoidCallback onSaved;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final selectedDate = useState(DateTime.now());
+    final entries = useState<List<_PrescriptionEntry>>([_PrescriptionEntry()]);
+    final isSaving = useState(false);
+
+    // Dispose controllers when widget is disposed
+    useEffect(() {
+      return () {
+        for (final entry in entries.value) {
+          entry.dispose();
+        }
+      };
+    }, []);
+
+    void addEntry() {
+      entries.value = [...entries.value, _PrescriptionEntry()];
+    }
+
+    void removeEntry(int index) {
+      if (entries.value.length <= 1) return;
+      final entry = entries.value[index];
+      final newList = [...entries.value]..removeAt(index);
+      entry.dispose();
+      entries.value = newList;
+    }
+
+    Future<void> selectDate() async {
+      final picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate.value,
+        firstDate: DateTime(2020),
+        lastDate: DateTime.now().add(const Duration(days: 365)),
+      );
+      if (picked != null) {
+        selectedDate.value = picked;
+      }
+    }
+
+    Future<void> handleSave() async {
+      // Validate at least one valid entry
+      final validEntries = entries.value.where((e) => e.isValid).toList();
+      if (validEntries.isEmpty) {
+        showFormErrorDialog(
+          context,
+          errors: ['Add at least one medication'],
+        );
+        return;
+      }
+
+      isSaving.value = true;
+
+      int successCount = 0;
+      int failCount = 0;
+
+      for (final entry in validEntries) {
+        final prescription = entry.toPrescription(recordId, selectedDate.value);
+        final success = await ref
+            .read(prescriptionControllerProvider(recordId).notifier)
+            .createPrescription(prescription);
+        if (success) {
+          successCount++;
+        } else {
+          failCount++;
+        }
+      }
+
+      if (context.mounted) {
+        isSaving.value = false;
+
+        if (failCount == 0) {
+          showSuccessSnackBar(
+            context,
+            message: '$successCount prescription${successCount > 1 ? 's' : ''} added',
+          );
+          onSaved();
+        } else {
+          showErrorSnackBar(
+            context,
+            message: '$successCount added, $failCount failed',
+          );
+        }
+      }
+    }
+
+    final validCount = entries.value.where((e) => e.isValid).length;
+
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Row(
+              children: [
+                Icon(Icons.playlist_add, color: theme.colorScheme.primary),
+                const SizedBox(width: 8),
+                Text(
+                  'Add Prescription Group',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                if (validCount > 0)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      '$validCount',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                const Spacer(),
+                TextButton(
+                  onPressed: isSaving.value ? null : onCancel,
+                  child: const Text('Cancel'),
+                ),
+                const SizedBox(width: 8),
+                FilledButton(
+                  onPressed: isSaving.value ? null : handleSave,
+                  child: isSaving.value
+                      ? const SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Save All'),
+                ),
+              ],
+            ),
+            const Divider(height: 24),
+
+            // Date picker
+            InkWell(
+              onTap: isSaving.value ? null : selectDate,
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: theme.colorScheme.outline),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_today,
+                      size: 20,
+                      color: theme.colorScheme.primary,
+                    ),
+                    const SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Date (shared)',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        Text(
+                          DateFormat('MMMM d, yyyy').format(selectedDate.value),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Icon(
+                      Icons.arrow_drop_down,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Medication entries
+            ...entries.value.asMap().entries.map((mapEntry) {
+              final index = mapEntry.key;
+              final entry = mapEntry.value;
+              return _CompactPrescriptionEntry(
+                key: ValueKey(entry),
+                index: index,
+                entry: entry,
+                canRemove: entries.value.length > 1,
+                onRemove: () => removeEntry(index),
+                enabled: !isSaving.value,
+              );
+            }),
+
+            // Add medication button
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: isSaving.value ? null : addEntry,
+              icon: const Icon(Icons.add, size: 18),
+              label: const Text('Add another medication'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Compact prescription entry for group form.
+class _CompactPrescriptionEntry extends HookWidget {
+  const _CompactPrescriptionEntry({
+    super.key,
+    required this.index,
+    required this.entry,
+    required this.canRemove,
+    required this.onRemove,
+    required this.enabled,
+  });
+
+  final int index;
+  final _PrescriptionEntry entry;
+  final bool canRemove;
+  final VoidCallback onRemove;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final showInstructions = useValueListenable(entry.showInstructions);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        children: [
+          // Main row: Medication | Dosage | Remove
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 8, 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Medication field (flex: 2)
+                Expanded(
+                  flex: 2,
+                  child: TextField(
+                    controller: entry.medicationController,
+                    decoration: InputDecoration(
+                      labelText: 'Medication *',
+                      hintText: 'e.g., Amoxicillin',
+                      border: const OutlineInputBorder(),
+                      isDense: true,
+                      prefixIcon: Icon(
+                        Icons.medication,
+                        size: 20,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                    textCapitalization: TextCapitalization.words,
+                    enabled: enabled,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Dosage field (flex: 1)
+                Expanded(
+                  child: TextField(
+                    controller: entry.dosageController,
+                    decoration: const InputDecoration(
+                      labelText: 'Dosage',
+                      hintText: '250mg',
+                      border: OutlineInputBorder(),
+                      isDense: true,
+                    ),
+                    enabled: enabled,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                // Remove button
+                if (canRemove)
+                  IconButton(
+                    icon: Icon(
+                      Icons.close,
+                      size: 20,
+                      color: theme.colorScheme.error,
+                    ),
+                    onPressed: enabled ? onRemove : null,
+                    tooltip: 'Remove',
+                    padding: const EdgeInsets.all(8),
+                    constraints: const BoxConstraints(),
+                  )
+                else
+                  const SizedBox(width: 36),
+              ],
+            ),
+          ),
+
+          // Instructions toggle
+          InkWell(
+            onTap: enabled
+                ? () => entry.showInstructions.value = !showInstructions
+                : null,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.notes,
+                    size: 16,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    showInstructions ? 'Hide instructions' : 'Add instructions',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    showInstructions ? Icons.expand_less : Icons.expand_more,
+                    size: 20,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Collapsible instructions field
+          if (showInstructions)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: TextField(
+                controller: entry.instructionsController,
+                decoration: const InputDecoration(
+                  labelText: 'Instructions',
+                  hintText: 'e.g., Take with food for 7 days',
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
+                maxLines: 2,
+                enabled: enabled,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Card displaying a prescription with edit/delete actions.
+class _PrescriptionCard extends StatelessWidget {
+  const _PrescriptionCard({
+    required this.prescription,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  final Prescription prescription;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Medication icon
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.medication,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+            const SizedBox(width: 16),
+
+            // Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    prescription.medication,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (prescription.dosage != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      prescription.dosage!,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                  if (prescription.instructions != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      prescription.instructions!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontStyle: FontStyle.italic,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+
+            // Action buttons
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.edit_outlined,
+                    size: 20,
+                    color: theme.colorScheme.primary,
+                  ),
+                  onPressed: onEdit,
+                  tooltip: 'Edit',
+                  padding: const EdgeInsets.all(8),
+                  constraints: const BoxConstraints(),
+                ),
+                const SizedBox(width: 4),
+                IconButton(
+                  icon: Icon(
+                    Icons.delete_outline,
+                    size: 20,
+                    color: theme.colorScheme.error,
+                  ),
+                  onPressed: onDelete,
+                  tooltip: 'Delete',
+                  padding: const EdgeInsets.all(8),
+                  constraints: const BoxConstraints(),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState({
+    required this.onAddSingle,
+    required this.onAddGroup,
+  });
+
+  final VoidCallback onAddSingle;
+  final VoidCallback onAddGroup;
 
   @override
   Widget build(BuildContext context) {
@@ -304,10 +1362,22 @@ class _EmptyState extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            OutlinedButton.icon(
-              onPressed: onAdd,
-              icon: const Icon(Icons.add),
-              label: const Text('Add Prescription'),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.center,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: onAddGroup,
+                  icon: const Icon(Icons.playlist_add, size: 18),
+                  label: const Text('Add Group'),
+                ),
+                FilledButton.icon(
+                  onPressed: onAddSingle,
+                  icon: const Icon(Icons.add, size: 18),
+                  label: const Text('Add Prescription'),
+                ),
+              ],
             ),
           ],
         ),
