@@ -11,6 +11,7 @@ import '../../../../core/routing/routes/system.routes.dart';
 import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../settings/presentation/controllers/branch_provider.dart';
 import '../../../settings/presentation/controllers/printer_config_provider.dart';
 import '../../domain/sale.dart';
 import '../../domain/sale_item.dart';
@@ -33,8 +34,8 @@ Future<void> showReceiptSheet(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),
     builder: (context) => DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.5,
+      initialChildSize: 0.9,
+      minChildSize: 0.9,
       maxChildSize: 0.95,
       expand: false,
       builder: (context, scrollController) => ReceiptSheet(
@@ -69,6 +70,10 @@ class ReceiptSheet extends HookConsumerWidget {
     final defaultPrinterAsync = ref.watch(defaultPrinterProvider);
     final currentAuth = ref.watch(currentAuthProvider);
 
+    // Watch branch for business info on receipts
+    final branchId = currentAuth?.user.branch;
+    final branchAsync = ref.watch(branchProvider(branchId ?? ''));
+
     Future<void> handleThermalPrint({bool showSuccessMessage = true}) async {
       // Get printer before async operations to avoid ref disposal issues
       final printer = defaultPrinterAsync.value;
@@ -81,11 +86,17 @@ class ReceiptSheet extends HookConsumerWidget {
 
       final printService = ref.read(thermalPrintServiceProvider.notifier);
 
+      // Get branch info for receipt header
+      final currentBranch = branchAsync.value;
+
       // Print customer copy
       final result = await printService.printReceipt(
         printer: printer,
         sale: sale,
         items: saleItems,
+        businessName: currentBranch?.displayName ?? currentBranch?.name,
+        branchAddress: currentBranch?.address,
+        contactNumber: currentBranch?.contactNumber,
         cashierName: currentAuth?.user.name,
       );
 
@@ -106,6 +117,9 @@ class ReceiptSheet extends HookConsumerWidget {
           printer: printer,
           sale: sale,
           items: saleItems,
+          businessName: currentBranch?.displayName ?? currentBranch?.name,
+          branchAddress: currentBranch?.address,
+          contactNumber: currentBranch?.contactNumber,
           cashierName: currentAuth?.user.name,
         );
 
@@ -331,12 +345,33 @@ class ReceiptSheet extends HookConsumerWidget {
                         sale.paymentRef!,
                       ),
                     ],
-                    const Divider(height: 32),
-                    _buildDetailRow(
-                      context,
-                      'Total Amount',
-                      sale.totalAmount.toCurrency(),
-                      isTotal: true,
+                    const SizedBox(height: 16),
+                    // Prominent total display
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Total Amount',
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: theme.colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            sale.totalAmount.toCurrency(),
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              color: theme.colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     if (sale.notes != null && sale.notes!.isNotEmpty) ...[
                       const SizedBox(height: 16),

@@ -270,7 +270,7 @@ class ThermalPrintService extends _$ThermalPrintService {
       bytes += generator.row([
         PosColumn(text: productName, width: 6),
         PosColumn(
-          text: '${item.quantity}',
+          text: '${item.quantity.toInt()}',
           width: 2,
           styles: const PosStyles(align: PosAlign.center),
         ),

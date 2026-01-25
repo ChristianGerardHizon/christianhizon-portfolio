@@ -67,18 +67,33 @@ class ProductGrid extends ConsumerWidget {
               );
             }
 
-            return GridView.builder(
-              padding: const EdgeInsets.all(12),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 1.0,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-              ),
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                final product = products[index];
-                return _ProductCard(product: product);
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                // Responsive columns based on available width
+                // Mobile: 3 columns, Tablet: 4-5 columns, Large: 6+ columns
+                final width = constraints.maxWidth;
+                final crossAxisCount = width < 400
+                    ? 3
+                    : width < 600
+                        ? 4
+                        : width < 900
+                            ? 5
+                            : 6;
+
+                return GridView.builder(
+                  padding: const EdgeInsets.all(8),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    childAspectRatio: 1.3, // Wider cards to fit more vertically
+                    crossAxisSpacing: 6,
+                    mainAxisSpacing: 6,
+                  ),
+                  itemCount: products.length,
+                  itemBuilder: (context, index) {
+                    final product = products[index];
+                    return _ProductCard(product: product);
+                  },
+                );
               },
             );
           },
@@ -159,11 +174,11 @@ class _ProductCard extends ConsumerWidget {
             : () => _handleProductTap(context, ref),
         child: Stack(
           children: [
-            // Main content - text-centric layout without image
+            // Main content - compact layout with name and price only
             Opacity(
               opacity: isDisabled ? 0.5 : 1.0,
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -171,18 +186,18 @@ class _ProductCard extends ConsumerWidget {
                     Expanded(
                       child: Text(
                         product.name,
-                        style: theme.textTheme.titleSmall?.copyWith(
+                        style: theme.textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
-                        maxLines: 4,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    // Price - prominent display at bottom
+                    const SizedBox(height: 4),
+                    // Price - compact display at bottom
                     Text(
                       product.price.toCurrency(),
-                      style: theme.textTheme.titleMedium?.copyWith(
+                      style: theme.textTheme.labelLarge?.copyWith(
                         color: theme.colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
@@ -192,25 +207,25 @@ class _ProductCard extends ConsumerWidget {
               ),
             ),
 
-            // Stock status badge
+            // Stock status badge - compact
             if (!isLoading && (isOutOfStock || isLowStock))
               Positioned(
-                top: 8,
-                right: 8,
+                top: 4,
+                right: 4,
                 child: _StockBadge(
                   isOutOfStock: isOutOfStock,
                   isLowStock: isLowStock,
                 ),
               ),
 
-            // Loading indicator
+            // Loading indicator - compact
             if (isLoading)
               Positioned(
-                top: 8,
-                right: 8,
+                top: 4,
+                right: 4,
                 child: SizedBox(
-                  width: 16,
-                  height: 16,
+                  width: 12,
+                  height: 12,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
                     color: theme.colorScheme.primary,
@@ -285,7 +300,7 @@ class _StockBadge extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(4),
@@ -293,7 +308,7 @@ class _StockBadge extends StatelessWidget {
       child: Icon(
         icon,
         color: Colors.white,
-        size: 16,
+        size: 12,
       ),
     );
   }
