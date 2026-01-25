@@ -104,8 +104,8 @@ class CreateMessageSheet extends HookConsumerWidget {
           time.minute,
         );
       } else {
-        // Default to start of day if no time provided
-        sendDateTime = DateTime(date.year, date.month, date.day, 9, 0);
+        // Default to 8 AM if no time provided
+        sendDateTime = DateTime(date.year, date.month, date.day, 8, 0);
       }
 
       final message = Message(
@@ -384,13 +384,13 @@ class CreateMessageSheet extends HookConsumerWidget {
               FormBuilderDateTimePicker(
                 name: 'time',
                 decoration: const InputDecoration(
-                  labelText: 'Send Time',
+                  labelText: 'Send Time *',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.access_time),
-                  helperText: 'Defaults to 9:00 AM if not specified',
+                  helperText: 'Defaults to 8:00 AM if not specified',
                 ),
                 inputType: InputType.time,
-                initialValue: DateTime.now().copyWith(hour: 9, minute: 0),
+                initialValue: DateTime.now().copyWith(hour: 8, minute: 0),
                 enabled: !isSaving.value,
               ),
               const SizedBox(height: 16),
