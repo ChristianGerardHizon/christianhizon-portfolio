@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../assets/assets.gen.dart';
 import '../i18n/strings.g.dart';
+import '../packages/pocketbase/pocketbase_provider.dart';
 
 /// Mobile drawer with full navigation menu.
 ///
@@ -48,7 +49,7 @@ class MobileDrawer extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    t.common.appName,
+                    'Sann Jose Animal Clinic',
                     style: theme.textTheme.titleLarge,
                   ),
                   Text(
@@ -57,6 +58,17 @@ class MobileDrawer extends ConsumerWidget {
                       color: theme.colorScheme.onPrimaryContainer.withValues(
                         alpha: 0.7,
                       ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    pocketbaseUrl,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onPrimaryContainer.withValues(
+                        alpha: 0.5,
+                      ),
+                      fontFamily: 'monospace',
+                      fontSize: 10,
                     ),
                   ),
                 ],
