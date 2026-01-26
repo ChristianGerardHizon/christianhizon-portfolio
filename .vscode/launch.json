@@ -24,10 +24,32 @@
                 "--dart-define=ENV=staging"
             ]
         },
+                {
+            "name": "staging | release",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "lib/main.dart",
+            "args": [
+                "--web-port=8000",
+                "--dart-define=ENV=staging"
+            ]
+        },
         {
             "name": "prod (local test)",
             "request": "launch",
             "type": "dart",
+            "program": "lib/main.dart",
+            "args": [
+                "--web-port=8000",
+                "--dart-define=ENV=prod"
+            ]
+        },
+               {
+            "name": "prod | release",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
             "program": "lib/main.dart",
             "args": [
                 "--web-port=8000",
