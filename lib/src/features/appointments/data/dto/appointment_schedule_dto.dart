@@ -23,8 +23,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
   final String? purpose;
   final String? status;
   final String? patient;
-  final String? treatmentType;
-  final String? treatmentTypeName;
+  final String? patientTreatment;
   final List<String> patientRecords;
   final String? branch;
   final String? patientName;
@@ -41,6 +40,9 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
   final String? expandedPatientSpecies;
   final String? expandedPatientBreed;
 
+  // Expanded treatment type fields
+  final String? expandedPatientTreatmentName;
+
   // Expanded relation arrays
   final List<PatientRecord> expandedPatientRecords;
 
@@ -54,8 +56,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
     this.purpose,
     this.status,
     this.patient,
-    this.treatmentType,
-    this.treatmentTypeName,
+    this.patientTreatment,
     this.patientRecords = const [],
     this.branch,
     this.patientName,
@@ -69,6 +70,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
     this.expandedPatientContact,
     this.expandedPatientSpecies,
     this.expandedPatientBreed,
+    this.expandedPatientTreatmentName,
     this.expandedPatientRecords = const [],
   });
 
@@ -82,6 +84,9 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
     final expandedPatientContact = record.get<String>('expand.patient.contactNumber');
     final expandedPatientSpecies = record.get<String>('expand.patient.species');
     final expandedPatientBreed = record.get<String>('expand.patient.breed');
+
+    // Extract expanded treatment type data
+    final expandedPatientTreatmentName = record.get<String>('expand.patientTreatment.name');
 
     // Parse patientRecords array (relation array field)
     final patientRecordsRaw = json['patientRecords'];
@@ -114,8 +119,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       purpose: json['purpose'] as String?,
       status: json['status'] as String?,
       patient: json['patient'] as String?,
-      treatmentType: json['treatmentType'] as String?,
-      treatmentTypeName: json['treatmentTypeName'] as String?,
+      patientTreatment: json['patientTreatment'] as String?,
       patientRecords: patientRecords,
       branch: json['branch'] as String?,
       patientName: json['patientName'] as String?,
@@ -129,6 +133,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       expandedPatientContact: expandedPatientContact.isNotEmpty ? expandedPatientContact : null,
       expandedPatientSpecies: expandedPatientSpecies.isNotEmpty ? expandedPatientSpecies : null,
       expandedPatientBreed: expandedPatientBreed.isNotEmpty ? expandedPatientBreed : null,
+      expandedPatientTreatmentName: expandedPatientTreatmentName.isNotEmpty ? expandedPatientTreatmentName : null,
       expandedPatientRecords: expandedPatientRecords,
     );
   }
@@ -156,8 +161,8 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       purpose: purpose,
       status: _parseStatus(status),
       patient: patient,
-      treatmentType: treatmentType,
-      treatmentTypeName: treatmentTypeName,
+      patientTreatment: patientTreatment,
+      patientTreatmentName: expandedPatientTreatmentName,
       patientRecords: patientRecords,
       branch: branch,
       patientName: patientName,
@@ -195,8 +200,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       'purpose': appointment.purpose,
       'status': appointment.status.name,
       'patient': appointment.patient,
-      'treatmentType': appointment.treatmentType,
-      'treatmentTypeName': appointment.treatmentTypeName,
+      'patientTreatment': appointment.patientTreatment,
       'patientRecords': appointment.patientRecords,
       'branch': appointment.branch,
       'patientName': appointment.patientName,

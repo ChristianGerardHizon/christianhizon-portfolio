@@ -41,8 +41,8 @@ class CreateAppointmentSheet extends HookConsumerWidget {
     final hasTime = useState(false);
     final selectedPatient = useState<Patient?>(initialPatient);
     final sendReminder = useState(false);
-    final selectedTreatmentTypeId = useState<String?>(null);
-    final selectedTreatmentTypeName = useState<String?>(null);
+    final selectedPatientTreatmentId = useState<String?>(null);
+    final reminderDateTime = useState<DateTime?>(null);
 
     // Watch patients for dropdown
     final patientsAsync = ref.watch(patientsControllerProvider);
@@ -128,8 +128,7 @@ class CreateAppointmentSheet extends HookConsumerWidget {
         notes: values['notes'] as String?,
         status: AppointmentScheduleStatus.scheduled,
         patient: patient.id,
-        treatmentType: selectedTreatmentTypeId.value,
-        treatmentTypeName: selectedTreatmentTypeName.value,
+        patientTreatment: selectedPatientTreatmentId.value,
         patientName: patient.name,
         ownerName: patient.owner,
         ownerContact: patient.contactNumber,
@@ -148,15 +147,15 @@ class CreateAppointmentSheet extends HookConsumerWidget {
             final messageContent = values['reminderMessage'] as String?;
 
             if (messageContent != null && messageContent.isNotEmpty) {
-              // Schedule reminder for 1 day before at 9:00 AM
-              final reminderDate = finalDate.subtract(const Duration(days: 1));
-              final sendDateTime = DateTime(
-                reminderDate.year,
-                reminderDate.month,
-                reminderDate.day,
-                9, // 9:00 AM
-                0,
-              );
+              // Use custom reminder date/time or default to 1 day before at 9 AM
+              final sendDateTime = reminderDateTime.value ??
+                  DateTime(
+                    finalDate.year,
+                    finalDate.month,
+                    finalDate.day - 1,
+                    9,
+                    0,
+                  );
 
               final message = Message(
                 id: '',
@@ -382,33 +381,24 @@ class CreateAppointmentSheet extends HookConsumerWidget {
                 loading: () => const LinearProgressIndicator(),
                 error: (_, __) => const Text('Error loading treatment types'),
                 data: (treatmentTypes) => FormBuilderDropdown<String>(
-                  name: 'treatmentType',
+                  name: 'patientTreatment',
                   decoration: InputDecoration(
-                    labelText: 'Treatment Type',
+                    labelText: 'Treatment Type (Optional)',
                     border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.medical_services_outlined),
-                    suffixIcon: selectedTreatmentTypeId.value != null
+                    suffixIcon: selectedPatientTreatmentId.value != null
                         ? IconButton(
                             icon: const Icon(Icons.clear),
                             onPressed: () {
-                              formKey.currentState?.fields['treatmentType']
+                              formKey.currentState?.fields['patientTreatment']
                                   ?.didChange(null);
-                              selectedTreatmentTypeId.value = null;
-                              selectedTreatmentTypeName.value = null;
+                              selectedPatientTreatmentId.value = null;
                             },
                           )
                         : null,
                   ),
                   onChanged: (value) {
-                    if (value != null) {
-                      final treatment =
-                          treatmentTypes.firstWhere((t) => t.id == value);
-                      selectedTreatmentTypeId.value = treatment.id;
-                      selectedTreatmentTypeName.value = treatment.name;
-                    } else {
-                      selectedTreatmentTypeId.value = null;
-                      selectedTreatmentTypeName.value = null;
-                    }
+                    selectedPatientTreatmentId.value = value;
                   },
                   items: treatmentTypes
                       .map((t) => DropdownMenuItem(
@@ -421,18 +411,20 @@ class CreateAppointmentSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Purpose
-              FormBuilderTextField(
-                name: 'purpose',
-                decoration: const InputDecoration(
-                  labelText: 'Purpose',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.description_outlined),
-                  hintText: 'e.g., Check-up, Vaccination, Surgery',
+              // Purpose (hidden when treatment type is selected)
+              if (selectedPatientTreatmentId.value == null) ...[
+                FormBuilderTextField(
+                  name: 'purpose',
+                  decoration: const InputDecoration(
+                    labelText: 'Purpose',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.description_outlined),
+                    hintText: 'e.g., Check-up, Vaccination, Surgery',
+                  ),
+                  enabled: !isSaving.value,
                 ),
-                enabled: !isSaving.value,
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
+              ],
 
               // Notes
               FormBuilderTextField(
@@ -474,13 +466,6 @@ class CreateAppointmentSheet extends HookConsumerWidget {
                         ],
                       ),
                       if (sendReminder.value) ...[
-                        const SizedBox(height: 8),
-                        Text(
-                          'A reminder will be sent 1 day before the appointment',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
                         const SizedBox(height: 16),
                         if (selectedPatient.value == null) ...[
                           Container(
@@ -566,6 +551,123 @@ class CreateAppointmentSheet extends HookConsumerWidget {
                                   ),
                               ],
                             ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Send date/time picker
+                          Builder(
+                            builder: (context) {
+                              // Calculate default reminder time (1 day before at 9 AM)
+                              final now = DateTime.now();
+                              final appointmentDate = formKey.currentState
+                                      ?.fields['date']?.value as DateTime? ??
+                                  now;
+                              final defaultReminderDate = DateTime(
+                                appointmentDate.year,
+                                appointmentDate.month,
+                                appointmentDate.day - 1,
+                                9,
+                                0,
+                              );
+                              // Ensure display date is not before now
+                              final displayDateTime =
+                                  reminderDateTime.value ?? defaultReminderDate;
+
+                              // Calculate valid date range for picker
+                              final today = DateTime(now.year, now.month, now.day);
+                              final appointmentDay = DateTime(
+                                appointmentDate.year,
+                                appointmentDate.month,
+                                appointmentDate.day,
+                              );
+                              // Ensure initialDate is within valid range
+                              final validInitialDate = displayDateTime.isBefore(today)
+                                  ? today
+                                  : (displayDateTime.isAfter(appointmentDay)
+                                      ? appointmentDay
+                                      : displayDateTime);
+
+                              return InkWell(
+                                onTap: isSaving.value
+                                    ? null
+                                    : () async {
+                                        // Show date picker
+                                        final pickedDate = await showDatePicker(
+                                          context: context,
+                                          initialDate: validInitialDate,
+                                          firstDate: today,
+                                          lastDate: appointmentDay,
+                                        );
+                                        if (pickedDate != null && context.mounted) {
+                                          // Show time picker
+                                          final pickedTime = await showTimePicker(
+                                            context: context,
+                                            initialTime: TimeOfDay.fromDateTime(
+                                                displayDateTime),
+                                          );
+                                          if (pickedTime != null) {
+                                            reminderDateTime.value = DateTime(
+                                              pickedDate.year,
+                                              pickedDate.month,
+                                              pickedDate.day,
+                                              pickedTime.hour,
+                                              pickedTime.minute,
+                                            );
+                                          }
+                                        }
+                                      },
+                                borderRadius: BorderRadius.circular(8),
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: theme.colorScheme.outline,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.schedule_send,
+                                        size: 20,
+                                        color: theme.colorScheme.primary,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Send Date & Time',
+                                              style: theme.textTheme.bodySmall
+                                                  ?.copyWith(
+                                                color: theme
+                                                    .colorScheme.onSurfaceVariant,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              DateFormat('MMM d, yyyy - h:mm a')
+                                                  .format(displayDateTime),
+                                              style: theme.textTheme.bodyMedium
+                                                  ?.copyWith(
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.edit,
+                                        size: 18,
+                                        color: theme.colorScheme.onSurfaceVariant,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                           const SizedBox(height: 16),
 

@@ -28,8 +28,8 @@ class AppointmentSchedule with AppointmentScheduleMappable {
     this.purpose,
     this.status = AppointmentScheduleStatus.scheduled,
     this.patient,
-    this.treatmentType,
-    this.treatmentTypeName,
+    this.patientTreatment,
+    this.patientTreatmentName,
     this.patientRecords = const [],
     this.branch,
     this.patientName,
@@ -63,11 +63,11 @@ class AppointmentSchedule with AppointmentScheduleMappable {
   /// FK to Patient.
   final String? patient;
 
-  /// FK to TreatmentType (PatientTreatment - the catalog of treatment types).
-  final String? treatmentType;
+  /// FK to PatientTreatment (treatment type catalog).
+  final String? patientTreatment;
 
-  /// Cached treatment type name for display.
-  final String? treatmentTypeName;
+  /// Expanded patient treatment name (when loaded).
+  final String? patientTreatmentName;
 
   /// List of linked PatientRecord IDs.
   final List<String> patientRecords;

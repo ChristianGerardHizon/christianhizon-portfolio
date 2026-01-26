@@ -54,6 +54,7 @@ abstract class PBExpand {
     'patient',
     'branch',
     'patientRecords',
+    'patientTreatment',
     'treatmentRecords',
     'treatmentRecords.treatment',
   ]);

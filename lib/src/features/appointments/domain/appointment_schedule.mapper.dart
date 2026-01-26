@@ -123,19 +123,17 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
     _$patient,
     opt: true,
   );
-  static String? _$treatmentType(AppointmentSchedule v) => v.treatmentType;
-  static const Field<AppointmentSchedule, String> _f$treatmentType = Field(
-    'treatmentType',
-    _$treatmentType,
+  static String? _$patientTreatment(AppointmentSchedule v) =>
+      v.patientTreatment;
+  static const Field<AppointmentSchedule, String> _f$patientTreatment = Field(
+    'patientTreatment',
+    _$patientTreatment,
     opt: true,
   );
-  static String? _$treatmentTypeName(AppointmentSchedule v) =>
-      v.treatmentTypeName;
-  static const Field<AppointmentSchedule, String> _f$treatmentTypeName = Field(
-    'treatmentTypeName',
-    _$treatmentTypeName,
-    opt: true,
-  );
+  static String? _$patientTreatmentName(AppointmentSchedule v) =>
+      v.patientTreatmentName;
+  static const Field<AppointmentSchedule, String> _f$patientTreatmentName =
+      Field('patientTreatmentName', _$patientTreatmentName, opt: true);
   static List<String> _$patientRecords(AppointmentSchedule v) =>
       v.patientRecords;
   static const Field<AppointmentSchedule, List<String>> _f$patientRecords =
@@ -208,8 +206,8 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
     #purpose: _f$purpose,
     #status: _f$status,
     #patient: _f$patient,
-    #treatmentType: _f$treatmentType,
-    #treatmentTypeName: _f$treatmentTypeName,
+    #patientTreatment: _f$patientTreatment,
+    #patientTreatmentName: _f$patientTreatmentName,
     #patientRecords: _f$patientRecords,
     #branch: _f$branch,
     #patientName: _f$patientName,
@@ -231,8 +229,8 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
       purpose: data.dec(_f$purpose),
       status: data.dec(_f$status),
       patient: data.dec(_f$patient),
-      treatmentType: data.dec(_f$treatmentType),
-      treatmentTypeName: data.dec(_f$treatmentTypeName),
+      patientTreatment: data.dec(_f$patientTreatment),
+      patientTreatmentName: data.dec(_f$patientTreatmentName),
       patientRecords: data.dec(_f$patientRecords),
       branch: data.dec(_f$branch),
       patientName: data.dec(_f$patientName),
@@ -333,8 +331,8 @@ abstract class AppointmentScheduleCopyWith<
     String? purpose,
     AppointmentScheduleStatus? status,
     String? patient,
-    String? treatmentType,
-    String? treatmentTypeName,
+    String? patientTreatment,
+    String? patientTreatmentName,
     List<String>? patientRecords,
     String? branch,
     String? patientName,
@@ -389,8 +387,8 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
     Object? purpose = $none,
     AppointmentScheduleStatus? status,
     Object? patient = $none,
-    Object? treatmentType = $none,
-    Object? treatmentTypeName = $none,
+    Object? patientTreatment = $none,
+    Object? patientTreatmentName = $none,
     List<String>? patientRecords,
     Object? branch = $none,
     Object? patientName = $none,
@@ -410,8 +408,9 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
       if (purpose != $none) #purpose: purpose,
       if (status != null) #status: status,
       if (patient != $none) #patient: patient,
-      if (treatmentType != $none) #treatmentType: treatmentType,
-      if (treatmentTypeName != $none) #treatmentTypeName: treatmentTypeName,
+      if (patientTreatment != $none) #patientTreatment: patientTreatment,
+      if (patientTreatmentName != $none)
+        #patientTreatmentName: patientTreatmentName,
       if (patientRecords != null) #patientRecords: patientRecords,
       if (branch != $none) #branch: branch,
       if (patientName != $none) #patientName: patientName,
@@ -434,10 +433,10 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
     purpose: data.get(#purpose, or: $value.purpose),
     status: data.get(#status, or: $value.status),
     patient: data.get(#patient, or: $value.patient),
-    treatmentType: data.get(#treatmentType, or: $value.treatmentType),
-    treatmentTypeName: data.get(
-      #treatmentTypeName,
-      or: $value.treatmentTypeName,
+    patientTreatment: data.get(#patientTreatment, or: $value.patientTreatment),
+    patientTreatmentName: data.get(
+      #patientTreatmentName,
+      or: $value.patientTreatmentName,
     ),
     patientRecords: data.get(#patientRecords, or: $value.patientRecords),
     branch: data.get(#branch, or: $value.branch),

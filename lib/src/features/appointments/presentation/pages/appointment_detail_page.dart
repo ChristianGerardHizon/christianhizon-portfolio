@@ -390,7 +390,7 @@ class _AppointmentDetailContent extends HookConsumerWidget {
             const Text(
               'Would you like to create a treatment record for this appointment?',
             ),
-            if (appointment.treatmentTypeName != null) ...[
+            if (appointment.patientTreatmentName != null) ...[
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.all(12),
@@ -408,7 +408,7 @@ class _AppointmentDetailContent extends HookConsumerWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        appointment.treatmentTypeName!,
+                        appointment.patientTreatmentName!,
                         style: Theme.of(dialogContext).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w500,
                         ),
@@ -475,7 +475,7 @@ class _AppointmentDetailContent extends HookConsumerWidget {
         diagnosis: appointment.purpose ?? '',
         weight: '',
         temperature: '',
-        treatment: appointment.treatmentTypeName,
+        treatment: appointment.patientTreatmentName,
         notes: appointment.notes,
         appointment: appointment.id,
       );

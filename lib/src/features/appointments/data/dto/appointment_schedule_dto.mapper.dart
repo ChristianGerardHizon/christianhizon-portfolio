@@ -72,16 +72,10 @@ class AppointmentScheduleDtoMapper
     _$patient,
     opt: true,
   );
-  static String? _$treatmentType(AppointmentScheduleDto v) => v.treatmentType;
-  static const Field<AppointmentScheduleDto, String> _f$treatmentType = Field(
-    'treatmentType',
-    _$treatmentType,
-    opt: true,
-  );
-  static String? _$treatmentTypeName(AppointmentScheduleDto v) =>
-      v.treatmentTypeName;
-  static const Field<AppointmentScheduleDto, String> _f$treatmentTypeName =
-      Field('treatmentTypeName', _$treatmentTypeName, opt: true);
+  static String? _$patientTreatment(AppointmentScheduleDto v) =>
+      v.patientTreatment;
+  static const Field<AppointmentScheduleDto, String> _f$patientTreatment =
+      Field('patientTreatment', _$patientTreatment, opt: true);
   static List<String> _$patientRecords(AppointmentScheduleDto v) =>
       v.patientRecords;
   static const Field<AppointmentScheduleDto, List<String>> _f$patientRecords =
@@ -149,6 +143,14 @@ class AppointmentScheduleDtoMapper
       v.expandedPatientBreed;
   static const Field<AppointmentScheduleDto, String> _f$expandedPatientBreed =
       Field('expandedPatientBreed', _$expandedPatientBreed, opt: true);
+  static String? _$expandedPatientTreatmentName(AppointmentScheduleDto v) =>
+      v.expandedPatientTreatmentName;
+  static const Field<AppointmentScheduleDto, String>
+  _f$expandedPatientTreatmentName = Field(
+    'expandedPatientTreatmentName',
+    _$expandedPatientTreatmentName,
+    opt: true,
+  );
   static List<PatientRecord> _$expandedPatientRecords(
     AppointmentScheduleDto v,
   ) => v.expandedPatientRecords;
@@ -171,8 +173,7 @@ class AppointmentScheduleDtoMapper
     #purpose: _f$purpose,
     #status: _f$status,
     #patient: _f$patient,
-    #treatmentType: _f$treatmentType,
-    #treatmentTypeName: _f$treatmentTypeName,
+    #patientTreatment: _f$patientTreatment,
     #patientRecords: _f$patientRecords,
     #branch: _f$branch,
     #patientName: _f$patientName,
@@ -186,6 +187,7 @@ class AppointmentScheduleDtoMapper
     #expandedPatientContact: _f$expandedPatientContact,
     #expandedPatientSpecies: _f$expandedPatientSpecies,
     #expandedPatientBreed: _f$expandedPatientBreed,
+    #expandedPatientTreatmentName: _f$expandedPatientTreatmentName,
     #expandedPatientRecords: _f$expandedPatientRecords,
   };
 
@@ -200,8 +202,7 @@ class AppointmentScheduleDtoMapper
       purpose: data.dec(_f$purpose),
       status: data.dec(_f$status),
       patient: data.dec(_f$patient),
-      treatmentType: data.dec(_f$treatmentType),
-      treatmentTypeName: data.dec(_f$treatmentTypeName),
+      patientTreatment: data.dec(_f$patientTreatment),
       patientRecords: data.dec(_f$patientRecords),
       branch: data.dec(_f$branch),
       patientName: data.dec(_f$patientName),
@@ -215,6 +216,7 @@ class AppointmentScheduleDtoMapper
       expandedPatientContact: data.dec(_f$expandedPatientContact),
       expandedPatientSpecies: data.dec(_f$expandedPatientSpecies),
       expandedPatientBreed: data.dec(_f$expandedPatientBreed),
+      expandedPatientTreatmentName: data.dec(_f$expandedPatientTreatmentName),
       expandedPatientRecords: data.dec(_f$expandedPatientRecords),
     );
   }
@@ -307,8 +309,7 @@ abstract class AppointmentScheduleDtoCopyWith<
     String? purpose,
     String? status,
     String? patient,
-    String? treatmentType,
-    String? treatmentTypeName,
+    String? patientTreatment,
     List<String>? patientRecords,
     String? branch,
     String? patientName,
@@ -322,6 +323,7 @@ abstract class AppointmentScheduleDtoCopyWith<
     String? expandedPatientContact,
     String? expandedPatientSpecies,
     String? expandedPatientBreed,
+    String? expandedPatientTreatmentName,
     List<PatientRecord>? expandedPatientRecords,
   });
   AppointmentScheduleDtoCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
@@ -367,8 +369,7 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
     Object? purpose = $none,
     Object? status = $none,
     Object? patient = $none,
-    Object? treatmentType = $none,
-    Object? treatmentTypeName = $none,
+    Object? patientTreatment = $none,
     List<String>? patientRecords,
     Object? branch = $none,
     Object? patientName = $none,
@@ -382,6 +383,7 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
     Object? expandedPatientContact = $none,
     Object? expandedPatientSpecies = $none,
     Object? expandedPatientBreed = $none,
+    Object? expandedPatientTreatmentName = $none,
     List<PatientRecord>? expandedPatientRecords,
   }) => $apply(
     FieldCopyWithData({
@@ -394,8 +396,7 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
       if (purpose != $none) #purpose: purpose,
       if (status != $none) #status: status,
       if (patient != $none) #patient: patient,
-      if (treatmentType != $none) #treatmentType: treatmentType,
-      if (treatmentTypeName != $none) #treatmentTypeName: treatmentTypeName,
+      if (patientTreatment != $none) #patientTreatment: patientTreatment,
       if (patientRecords != null) #patientRecords: patientRecords,
       if (branch != $none) #branch: branch,
       if (patientName != $none) #patientName: patientName,
@@ -414,6 +415,8 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
         #expandedPatientSpecies: expandedPatientSpecies,
       if (expandedPatientBreed != $none)
         #expandedPatientBreed: expandedPatientBreed,
+      if (expandedPatientTreatmentName != $none)
+        #expandedPatientTreatmentName: expandedPatientTreatmentName,
       if (expandedPatientRecords != null)
         #expandedPatientRecords: expandedPatientRecords,
     }),
@@ -429,11 +432,7 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
     purpose: data.get(#purpose, or: $value.purpose),
     status: data.get(#status, or: $value.status),
     patient: data.get(#patient, or: $value.patient),
-    treatmentType: data.get(#treatmentType, or: $value.treatmentType),
-    treatmentTypeName: data.get(
-      #treatmentTypeName,
-      or: $value.treatmentTypeName,
-    ),
+    patientTreatment: data.get(#patientTreatment, or: $value.patientTreatment),
     patientRecords: data.get(#patientRecords, or: $value.patientRecords),
     branch: data.get(#branch, or: $value.branch),
     patientName: data.get(#patientName, or: $value.patientName),
@@ -461,6 +460,10 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
     expandedPatientBreed: data.get(
       #expandedPatientBreed,
       or: $value.expandedPatientBreed,
+    ),
+    expandedPatientTreatmentName: data.get(
+      #expandedPatientTreatmentName,
+      or: $value.expandedPatientTreatmentName,
     ),
     expandedPatientRecords: data.get(
       #expandedPatientRecords,
