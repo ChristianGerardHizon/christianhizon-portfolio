@@ -10,7 +10,6 @@ import 'inventory_alerts_section.dart';
 import 'kpi_summary_section.dart';
 import 'quick_actions_section.dart';
 import 'today_appointment_list_panel.dart';
-import 'upcoming_treatment_plans_section.dart';
 
 /// Two-pane tablet layout for the dashboard.
 ///
@@ -156,10 +155,6 @@ class _DashboardOverviewPane extends StatelessWidget {
 
           // Inventory Alerts Section
           const InventoryAlertsSection(),
-          const SizedBox(height: 24),
-
-          // Upcoming Treatment Plans Section
-          const UpcomingTreatmentPlansSection(),
         ],
       ),
     );

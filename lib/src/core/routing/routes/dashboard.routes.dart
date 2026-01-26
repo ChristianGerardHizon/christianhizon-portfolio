@@ -11,8 +11,6 @@ import '../../../features/dashboard/presentation/widgets/kpi_summary_section.dar
 import '../../../features/dashboard/presentation/widgets/quick_actions_section.dart';
 import '../../../features/dashboard/presentation/widgets/tablet_dashboard_layout.dart';
 import '../../../features/dashboard/presentation/widgets/today_appointments_section.dart';
-import '../../../features/dashboard/presentation/widgets/upcoming_treatment_plans_section.dart';
-import '../../../features/treatment_plans/presentation/controllers/treatment_plan_items_controller.dart';
 import '../../utils/breakpoints.dart';
 
 part 'dashboard.routes.g.dart';
@@ -59,7 +57,6 @@ class DashboardPage extends ConsumerWidget {
           ref.invalidate(activePatientsCountProvider);
           ref.invalidate(inventoryAlertsSummaryProvider);
           ref.invalidate(todaySalesSummaryProvider);
-          ref.invalidate(upcomingTreatmentPlanItemsProvider(7));
         },
         child: const SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
@@ -85,10 +82,6 @@ class DashboardPage extends ConsumerWidget {
 
               // Inventory Alerts Section
               InventoryAlertsSection(),
-              SizedBox(height: 24),
-
-              // Upcoming Treatment Plans Section
-              UpcomingTreatmentPlansSection(),
               SizedBox(height: 16),
             ],
           ),

@@ -6,7 +6,6 @@ import '../../../features/products/domain/product_category.dart';
 import '../../../features/settings/domain/message_template.dart';
 import '../../../features/settings/presentation/controllers/message_templates_controller.dart';
 import '../../../features/settings/presentation/controllers/product_categories_controller.dart';
-import '../../../features/patients/domain/patient_treatment.dart';
 import '../../../features/patients/presentation/controllers/patient_treatments_controller.dart';
 import '../../../features/settings/presentation/controllers/species_controller.dart';
 import '../../../features/settings/presentation/pages/system_shell.dart';
