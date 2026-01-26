@@ -850,6 +850,14 @@ class _AppointmentDetailsSection extends StatelessWidget {
             value: appointment.purpose!,
           ),
         ],
+        if (appointment.patientTreatmentName?.isNotEmpty == true) ...[
+          const SizedBox(height: 8),
+          _DetailRow(
+            icon: Icons.medical_services_outlined,
+            label: 'Treatment',
+            value: appointment.patientTreatmentName!,
+          ),
+        ],
       ],
     );
   }
