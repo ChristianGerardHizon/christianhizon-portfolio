@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 
 import '../../patients/domain/patient.dart';
 import '../../patients/domain/patient_record.dart';
-import '../../patients/domain/patient_treatment_record.dart';
 
 part 'appointment_schedule.mapper.dart';
 
@@ -29,9 +28,9 @@ class AppointmentSchedule with AppointmentScheduleMappable {
     this.purpose,
     this.status = AppointmentScheduleStatus.scheduled,
     this.patient,
+    this.treatmentType,
+    this.treatmentTypeName,
     this.patientRecords = const [],
-    this.treatmentRecords = const [],
-    this.treatmentPlanItem,
     this.branch,
     this.patientName,
     this.ownerName,
@@ -41,7 +40,6 @@ class AppointmentSchedule with AppointmentScheduleMappable {
     this.updated,
     this.patientExpanded,
     this.patientRecordsExpanded = const [],
-    this.treatmentRecordsExpanded = const [],
   });
 
   /// PocketBase record ID.
@@ -65,14 +63,14 @@ class AppointmentSchedule with AppointmentScheduleMappable {
   /// FK to Patient.
   final String? patient;
 
+  /// FK to TreatmentType (PatientTreatment - the catalog of treatment types).
+  final String? treatmentType;
+
+  /// Cached treatment type name for display.
+  final String? treatmentTypeName;
+
   /// List of linked PatientRecord IDs.
   final List<String> patientRecords;
-
-  /// List of linked PatientTreatmentRecord IDs.
-  final List<String> treatmentRecords;
-
-  /// FK to TreatmentPlanItem (nullable, for appointment linked to a treatment plan).
-  final String? treatmentPlanItem;
 
   /// FK to Branch.
   final String? branch;
@@ -100,9 +98,6 @@ class AppointmentSchedule with AppointmentScheduleMappable {
 
   /// Expanded patient records (when loaded).
   final List<PatientRecord> patientRecordsExpanded;
-
-  /// Expanded treatment records (when loaded).
-  final List<PatientTreatmentRecord> treatmentRecordsExpanded;
 
   /// PocketBase collection name.
   static const collectionName = 'appointment_schedules';
@@ -159,18 +154,13 @@ class AppointmentSchedule with AppointmentScheduleMappable {
     return date.isAfter(DateTime.now());
   }
 
-  /// Returns true if appointment has linked records or treatments.
+  /// Returns true if appointment has linked records.
   bool get hasLinkedItems {
-    return patientRecords.isNotEmpty || treatmentRecords.isNotEmpty;
+    return patientRecords.isNotEmpty;
   }
 
   /// Returns total count of linked items.
   int get linkedItemsCount {
-    return patientRecords.length + treatmentRecords.length;
-  }
-
-  /// Returns true if appointment is linked to a treatment plan item.
-  bool get isLinkedToTreatmentPlan {
-    return treatmentPlanItem != null && treatmentPlanItem!.isNotEmpty;
+    return patientRecords.length;
   }
 }

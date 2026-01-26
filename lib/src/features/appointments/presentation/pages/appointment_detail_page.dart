@@ -8,14 +8,14 @@ import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../../messages/domain/message.dart';
 import '../../../messages/presentation/controllers/messages_controller.dart';
+import '../../../patients/domain/patient_record.dart';
+import '../../../patients/presentation/controllers/patient_records_controller.dart';
 import '../../../patients/presentation/widgets/sheets/add_record_sheet.dart';
-import '../../../patients/presentation/widgets/sheets/add_treatment_record_sheet.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
 import '../widgets/components/linked_items_section.dart';
 import '../widgets/sheets/edit_appointment_sheet.dart';
-import '../widgets/sheets/record_treatment_selector_sheet.dart';
 
 /// Comprehensive appointment detail page.
 ///
@@ -194,7 +194,6 @@ class _AppointmentDetailContent extends HookConsumerWidget {
                 padding: const EdgeInsets.all(16),
                 child: LinkedItemsSection(
                   patientRecords: appointment.patientRecordsExpanded,
-                  treatmentRecords: appointment.treatmentRecordsExpanded,
                   showActions: true,
                   onAddRecordPressed: () {
                     // Show sheet to add a new patient record and link it to this appointment
@@ -223,71 +222,6 @@ class _AppointmentDetailContent extends HookConsumerWidget {
                             ref.invalidate(appointmentProvider(appointment.id));
                           }
                           return record;
-                        },
-                      ),
-                    );
-                  },
-                  onAddTreatmentPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      useSafeArea: true,
-                      useRootNavigator: true,
-                      builder: (context) => DraggableScrollableSheet(
-                        initialChildSize: 0.7,
-                        minChildSize: 0.5,
-                        maxChildSize: 0.95,
-                        expand: false,
-                        builder: (context, scrollController) =>
-                            AddTreatmentRecordSheet(
-                          patientId: appointment.patient!,
-                          scrollController: scrollController,
-                          appointmentId: appointment.id,
-                          onSave: (record) async {
-                            final updatedIds = <String>[
-                              ...appointment.treatmentRecords,
-                              record.id
-                            ];
-                            final updatedAppointment = appointment.copyWith(
-                              treatmentRecords: updatedIds,
-                            );
-                            final success = await ref
-                                .read(paginatedAppointmentsControllerProvider
-                                    .notifier)
-                                .updateAppointment(updatedAppointment);
-                            if (success) {
-                              ref.invalidate(
-                                  appointmentProvider(appointment.id));
-                            }
-                            return record;
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                  onLinkExistingPressed: () {
-                    // Show selector sheet to link existing records/treatments
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      useSafeArea: true,
-                      useRootNavigator: true,
-                      builder: (context) => RecordTreatmentSelectorSheet(
-                        patientId: appointment.patient!,
-                        selectedRecordIds: appointment.patientRecords,
-                        selectedTreatmentIds: appointment.treatmentRecords,
-                        onSave: (recordIds, treatmentIds) async {
-                          final updatedAppointment = appointment.copyWith(
-                            patientRecords: recordIds,
-                            treatmentRecords: treatmentIds,
-                          );
-                          final success = await ref
-                              .read(paginatedAppointmentsControllerProvider
-                                  .notifier)
-                              .updateAppointment(updatedAppointment);
-                          if (success) {
-                            ref.invalidate(appointmentProvider(appointment.id));
-                          }
                         },
                       ),
                     );
@@ -390,6 +324,12 @@ class _AppointmentDetailContent extends HookConsumerWidget {
     WidgetRef ref,
     AppointmentScheduleStatus status,
   ) {
+    // Special handling for completing an appointment
+    if (status == AppointmentScheduleStatus.completed) {
+      _showCompletionDialog(context, ref);
+      return;
+    }
+
     final statusLabel = switch (status) {
       AppointmentScheduleStatus.scheduled => 'Scheduled',
       AppointmentScheduleStatus.completed => 'Completed',
@@ -434,6 +374,134 @@ class _AppointmentDetailContent extends HookConsumerWidget {
         ],
       ),
     );
+  }
+
+  /// Shows a dialog when completing an appointment, asking if user wants to
+  /// create a treatment record.
+  void _showCompletionDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Complete Appointment'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Would you like to create a treatment record for this appointment?',
+            ),
+            if (appointment.treatmentTypeName != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Theme.of(dialogContext).colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.medical_services_outlined,
+                      size: 20,
+                      color: Theme.of(dialogContext).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        appointment.treatmentTypeName!,
+                        style: Theme.of(dialogContext).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          OutlinedButton(
+            onPressed: () async {
+              Navigator.pop(dialogContext);
+              await _completeAppointment(context, ref, createRecord: false);
+            },
+            child: const Text('Complete Only'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(dialogContext);
+              await _completeAppointment(context, ref, createRecord: true);
+            },
+            child: const Text('Create Record'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Completes the appointment and optionally creates a treatment record.
+  Future<void> _completeAppointment(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool createRecord,
+  }) async {
+    // Update appointment status first
+    final success = await ref
+        .read(paginatedAppointmentsControllerProvider.notifier)
+        .updateStatus(appointment.id, AppointmentScheduleStatus.completed);
+
+    if (!success) {
+      if (context.mounted) {
+        showErrorSnackBar(context, message: 'Failed to complete appointment');
+      }
+      return;
+    }
+
+    // Invalidate to refresh the appointment
+    ref.invalidate(appointmentsControllerProvider);
+    ref.invalidate(appointmentProvider(appointment.id));
+
+    // Create treatment record if requested
+    if (createRecord && appointment.patient != null) {
+      final patientRecord = PatientRecord(
+        id: '', // Will be assigned by PocketBase
+        patientId: appointment.patient!,
+        date: DateTime.now(),
+        diagnosis: appointment.purpose ?? '',
+        weight: '',
+        temperature: '',
+        treatment: appointment.treatmentTypeName,
+        notes: appointment.notes,
+        appointment: appointment.id,
+      );
+
+      final recordCreated = await ref
+          .read(patientRecordsControllerProvider(appointment.patient!).notifier)
+          .createRecord(patientRecord);
+
+      if (context.mounted) {
+        if (recordCreated) {
+          showSuccessSnackBar(
+            context,
+            message: 'Appointment completed and treatment record created',
+          );
+        } else {
+          showWarningSnackBar(
+            context,
+            message: 'Appointment completed, but failed to create treatment record',
+          );
+        }
+      }
+    } else {
+      if (context.mounted) {
+        showSuccessSnackBar(context, message: 'Appointment marked as completed');
+      }
+    }
   }
 
   void _confirmDelete(BuildContext context, WidgetRef ref) {
@@ -705,15 +773,6 @@ class _PatientInfoSection extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  if (appointment.patientExpanded != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      '${appointment.patientExpanded!.species ?? "Unknown"} - ${appointment.patientExpanded!.breed ?? "Unknown breed"}',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
                   const SizedBox(height: 4),
                   Row(
                     children: [

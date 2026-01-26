@@ -10,37 +10,21 @@ import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../messages/domain/message.dart';
 import '../../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../../patients/domain/patient.dart';
-import '../../../../patients/domain/patient_record.dart';
-import '../../../../patients/domain/patient_treatment_record.dart';
-import '../../../../patients/presentation/controllers/patient_records_controller.dart';
-import '../../../../patients/presentation/controllers/patient_treatment_records_controller.dart';
+import '../../../../patients/presentation/controllers/patient_treatments_controller.dart';
 import '../../../../patients/presentation/controllers/patients_controller.dart';
 import '../../../../settings/presentation/controllers/message_templates_controller.dart';
-import '../../../../patients/presentation/widgets/sheets/add_record_sheet.dart';
-import '../../../../patients/presentation/widgets/sheets/add_treatment_record_sheet.dart';
-import '../../../../treatment_plans/domain/treatment_plan_item.dart';
 import '../../../domain/appointment_schedule.dart';
-import '../components/linked_items_section.dart';
-import 'record_treatment_selector_sheet.dart';
 
 /// Bottom sheet for creating a new appointment.
 class CreateAppointmentSheet extends HookConsumerWidget {
   const CreateAppointmentSheet({
     super.key,
     this.initialPatient,
-    this.treatmentPlanItem,
-    this.initialPurpose,
     required this.onSave,
   });
 
   /// Pre-selected patient (when creating from patient context).
   final Patient? initialPatient;
-
-  /// Treatment plan item to link (when booking from a treatment plan).
-  final TreatmentPlanItem? treatmentPlanItem;
-
-  /// Pre-filled purpose (when booking from a treatment plan).
-  final String? initialPurpose;
 
   /// Callback when appointment is saved.
   /// Returns the created appointment on success, or null on failure.
@@ -57,17 +41,14 @@ class CreateAppointmentSheet extends HookConsumerWidget {
     final hasTime = useState(false);
     final selectedPatient = useState<Patient?>(initialPatient);
     final sendReminder = useState(false);
-
-    // Linked records and treatments (IDs for existing items)
-    final linkedRecordIds = useState<List<String>>([]);
-    final linkedTreatmentIds = useState<List<String>>([]);
-
-    // Expanded records/treatments for display (tracks newly created items)
-    final linkedRecordsExpanded = useState<List<PatientRecord>>([]);
-    final linkedTreatmentsExpanded = useState<List<PatientTreatmentRecord>>([]);
+    final selectedTreatmentTypeId = useState<String?>(null);
+    final selectedTreatmentTypeName = useState<String?>(null);
 
     // Watch patients for dropdown
     final patientsAsync = ref.watch(patientsControllerProvider);
+
+    // Watch treatment types for dropdown
+    final treatmentTypesAsync = ref.watch(patientTreatmentsControllerProvider);
 
     // Watch templates for dropdown
     final templatesAsync = ref.watch(messageTemplatesControllerProvider);
@@ -93,68 +74,20 @@ class CreateAppointmentSheet extends HookConsumerWidget {
       final date = formKey.currentState?.fields['date']?.value as DateTime?;
       if (date != null) {
         replaced = replaced.replaceAll(
-            '{treatmentDate}', DateFormat('MMM d, yyyy').format(date));
+            '{appointmentDate}', DateFormat('MMM d, yyyy').format(date));
       }
 
       final purpose = formKey.currentState?.fields['purpose']?.value as String?;
       if (purpose != null && purpose.isNotEmpty) {
-        replaced = replaced.replaceAll('{treatmentName}', purpose);
+        replaced = replaced.replaceAll('{purpose}', purpose);
       }
 
       final notes = formKey.currentState?.fields['notes']?.value as String?;
       if (notes != null && notes.isNotEmpty) {
-        replaced = replaced.replaceAll('{treatmentNotes}', notes);
+        replaced = replaced.replaceAll('{notes}', notes);
       }
 
       return replaced;
-    }
-
-    // Helper to update records with appointment ID after creation (deferred linking)
-    Future<void> updateRecordsWithAppointmentId(
-        String appointmentId, String patientId) async {
-      // Update patient records with the appointment ID
-      for (final record in linkedRecordsExpanded.value) {
-        if (record.appointment == null || record.appointment!.isEmpty) {
-          final updated = PatientRecord(
-            id: record.id,
-            patientId: record.patientId,
-            date: record.date,
-            diagnosis: record.diagnosis,
-            weight: record.weight,
-            temperature: record.temperature,
-            notes: record.notes,
-            appointment: appointmentId,
-            isDeleted: record.isDeleted,
-            created: record.created,
-            updated: record.updated,
-          );
-          await ref
-              .read(patientRecordsControllerProvider(patientId).notifier)
-              .updateRecord(updated);
-        }
-      }
-
-      // Update treatment records with the appointment ID
-      for (final treatment in linkedTreatmentsExpanded.value) {
-        if (treatment.appointment == null || treatment.appointment!.isEmpty) {
-          final updated = PatientTreatmentRecord(
-            id: treatment.id,
-            treatmentId: treatment.treatmentId,
-            patientId: treatment.patientId,
-            treatment: treatment.treatment,
-            date: treatment.date,
-            notes: treatment.notes,
-            appointment: appointmentId,
-            isDeleted: treatment.isDeleted,
-            created: treatment.created,
-            updated: treatment.updated,
-          );
-          await ref
-              .read(
-                  patientTreatmentRecordsControllerProvider(patientId).notifier)
-              .updateTreatmentRecord(updated);
-        }
-      }
     }
 
     Future<void> handleSave() async {
@@ -195,9 +128,8 @@ class CreateAppointmentSheet extends HookConsumerWidget {
         notes: values['notes'] as String?,
         status: AppointmentScheduleStatus.scheduled,
         patient: patient.id,
-        patientRecords: linkedRecordIds.value,
-        treatmentRecords: linkedTreatmentIds.value,
-        treatmentPlanItem: treatmentPlanItem?.id,
+        treatmentType: selectedTreatmentTypeId.value,
+        treatmentTypeName: selectedTreatmentTypeName.value,
         patientName: patient.name,
         ownerName: patient.owner,
         ownerContact: patient.contactNumber,
@@ -208,9 +140,6 @@ class CreateAppointmentSheet extends HookConsumerWidget {
 
       if (context.mounted) {
         if (created != null) {
-          // Update newly created records with the appointment ID (deferred linking)
-          await updateRecordsWithAppointmentId(created.id, patient.id);
-
           // Create reminder message if enabled
           if (sendReminder.value &&
               patient.contactNumber != null &&
@@ -291,32 +220,8 @@ class CreateAppointmentSheet extends HookConsumerWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('New Appointment',
-                            style: theme.textTheme.titleLarge),
-                        if (treatmentPlanItem != null) ...[
-                          const SizedBox(height: 4),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.tertiaryContainer,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              'Session ${treatmentPlanItem!.sequence} of Treatment Plan',
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: theme.colorScheme.onTertiaryContainer,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
+                    child: Text('New Appointment',
+                        style: theme.textTheme.titleLarge),
                   ),
                   const SizedBox(width: 8),
                   TextButton(
@@ -431,16 +336,13 @@ class CreateAppointmentSheet extends HookConsumerWidget {
               // Date picker
               FormBuilderDateTimePicker(
                 name: 'date',
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Date *',
-                  border: const OutlineInputBorder(),
-                  prefixIcon: const Icon(Icons.calendar_today),
-                  helperText: treatmentPlanItem != null
-                      ? 'Pre-filled from treatment plan'
-                      : null,
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.calendar_today),
                 ),
                 inputType: InputType.date,
-                initialValue: treatmentPlanItem?.expectedDate ?? DateTime.now(),
+                initialValue: DateTime.now(),
                 validator: FormBuilderValidators.required(),
                 enabled: !isSaving.value,
               ),
@@ -475,10 +377,53 @@ class CreateAppointmentSheet extends HookConsumerWidget {
                 const SizedBox(height: 16),
               ],
 
+              // Treatment Type
+              treatmentTypesAsync.when(
+                loading: () => const LinearProgressIndicator(),
+                error: (_, __) => const Text('Error loading treatment types'),
+                data: (treatmentTypes) => FormBuilderDropdown<String>(
+                  name: 'treatmentType',
+                  decoration: InputDecoration(
+                    labelText: 'Treatment Type',
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.medical_services_outlined),
+                    suffixIcon: selectedTreatmentTypeId.value != null
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              formKey.currentState?.fields['treatmentType']
+                                  ?.didChange(null);
+                              selectedTreatmentTypeId.value = null;
+                              selectedTreatmentTypeName.value = null;
+                            },
+                          )
+                        : null,
+                  ),
+                  onChanged: (value) {
+                    if (value != null) {
+                      final treatment =
+                          treatmentTypes.firstWhere((t) => t.id == value);
+                      selectedTreatmentTypeId.value = treatment.id;
+                      selectedTreatmentTypeName.value = treatment.name;
+                    } else {
+                      selectedTreatmentTypeId.value = null;
+                      selectedTreatmentTypeName.value = null;
+                    }
+                  },
+                  items: treatmentTypes
+                      .map((t) => DropdownMenuItem(
+                            value: t.id,
+                            child: Text(t.name),
+                          ))
+                      .toList(),
+                  enabled: !isSaving.value,
+                ),
+              ),
+              const SizedBox(height: 16),
+
               // Purpose
               FormBuilderTextField(
                 name: 'purpose',
-                initialValue: initialPurpose,
                 decoration: const InputDecoration(
                   labelText: 'Purpose',
                   border: OutlineInputBorder(),
@@ -695,160 +640,10 @@ class CreateAppointmentSheet extends HookConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-
-              // Link records/treatments section
-              if (selectedPatient.value != null) ...[
-                LinkedItemsSection(
-                  patientRecords: linkedRecordsExpanded.value,
-                  treatmentRecords: linkedTreatmentsExpanded.value,
-                  showActions: !isSaving.value,
-                  onLinkExistingPressed: () => _showRecordTreatmentSelector(
-                    context: context,
-                    ref: ref,
-                    patientId: selectedPatient.value!.id,
-                    linkedRecordIds: linkedRecordIds,
-                    linkedTreatmentIds: linkedTreatmentIds,
-                    linkedRecordsExpanded: linkedRecordsExpanded,
-                    linkedTreatmentsExpanded: linkedTreatmentsExpanded,
-                  ),
-                  onAddRecordPressed: () => _showAddRecordSheet(
-                    context: context,
-                    ref: ref,
-                    patientId: selectedPatient.value!.id,
-                    linkedRecordIds: linkedRecordIds,
-                    linkedRecordsExpanded: linkedRecordsExpanded,
-                  ),
-                  onAddTreatmentPressed: () => _showAddTreatmentSheet(
-                    context: context,
-                    ref: ref,
-                    patientId: selectedPatient.value!.id,
-                    linkedTreatmentIds: linkedTreatmentIds,
-                    linkedTreatmentsExpanded: linkedTreatmentsExpanded,
-                  ),
-                ),
-              ] else ...[
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          size: 20,
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            'Select a patient first to link records or treatments.',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-              // Bottom actions removed (moved to header)
             ],
           ),
         ),
       ),
-    );
-  }
-
-  void _showRecordTreatmentSelector({
-    required BuildContext context,
-    required WidgetRef ref,
-    required String patientId,
-    required ValueNotifier<List<String>> linkedRecordIds,
-    required ValueNotifier<List<String>> linkedTreatmentIds,
-    required ValueNotifier<List<PatientRecord>> linkedRecordsExpanded,
-    required ValueNotifier<List<PatientTreatmentRecord>>
-        linkedTreatmentsExpanded,
-  }) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => RecordTreatmentSelectorSheet(
-        patientId: patientId,
-        selectedRecordIds: linkedRecordIds.value,
-        selectedTreatmentIds: linkedTreatmentIds.value,
-        onSave: (recordIds, treatmentIds) {
-          linkedRecordIds.value = recordIds;
-          linkedTreatmentIds.value = treatmentIds;
-          // Note: For existing items selected here, we don't track expanded data
-          // since they already exist and will be linked via IDs when appointment is saved
-        },
-      ),
-    );
-  }
-
-  void _showAddRecordSheet({
-    required BuildContext context,
-    required WidgetRef ref,
-    required String patientId,
-    required ValueNotifier<List<String>> linkedRecordIds,
-    required ValueNotifier<List<PatientRecord>> linkedRecordsExpanded,
-  }) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => AddRecordSheet(
-        patientId: patientId,
-        // No appointmentId since appointment doesn't exist yet
-        onSave: (record) async {
-          final created = await ref
-              .read(patientRecordsControllerProvider(patientId).notifier)
-              .createRecordAndReturn(record);
-          if (created != null) {
-            linkedRecordIds.value = [...linkedRecordIds.value, created.id];
-            linkedRecordsExpanded.value = [
-              ...linkedRecordsExpanded.value,
-              created
-            ];
-          }
-          return created;
-        },
-      ),
-    );
-  }
-
-  void _showAddTreatmentSheet({
-    required BuildContext context,
-    required WidgetRef ref,
-    required String patientId,
-    required ValueNotifier<List<String>> linkedTreatmentIds,
-    required ValueNotifier<List<PatientTreatmentRecord>>
-        linkedTreatmentsExpanded,
-  }) {
-    showTreatmentRecordSheet(
-      context,
-      patientId: patientId,
-      // No appointmentId since appointment doesn't exist yet
-      onSave: (treatment) async {
-        final created = await ref
-            .read(patientTreatmentRecordsControllerProvider(patientId).notifier)
-            .createTreatmentRecordAndReturn(treatment);
-        if (created != null) {
-          linkedTreatmentIds.value = [...linkedTreatmentIds.value, created.id];
-          linkedTreatmentsExpanded.value = [
-            ...linkedTreatmentsExpanded.value,
-            created
-          ];
-        }
-        return created;
-      },
     );
   }
 

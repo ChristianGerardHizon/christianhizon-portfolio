@@ -57,7 +57,6 @@ class AppointmentCard extends StatelessWidget {
                   if (appointment.hasLinkedItems) ...[
                     LinkedItemsIndicator(
                       recordCount: appointment.patientRecords.length,
-                      treatmentCount: appointment.treatmentRecords.length,
                     ),
                     const SizedBox(width: 8),
                   ],

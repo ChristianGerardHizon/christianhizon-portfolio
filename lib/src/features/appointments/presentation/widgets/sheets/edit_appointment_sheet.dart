@@ -13,14 +13,10 @@ import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../messages/domain/message.dart';
 import '../../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../../patients/domain/patient_record.dart';
-import '../../../../patients/domain/patient_treatment_record.dart';
 import '../../../../patients/presentation/controllers/patient_records_controller.dart';
-import '../../../../patients/presentation/controllers/patient_treatment_records_controller.dart';
 import '../../../../patients/presentation/widgets/sheets/add_record_sheet.dart';
-import '../../../../patients/presentation/widgets/sheets/add_treatment_record_sheet.dart';
 import '../../../domain/appointment_schedule.dart';
 import '../components/linked_items_section.dart';
-import 'record_treatment_selector_sheet.dart';
 
 /// Bottom sheet for editing an existing appointment.
 class EditAppointmentSheet extends HookConsumerWidget {
@@ -74,33 +70,28 @@ class EditAppointmentSheet extends HookConsumerWidget {
       final date = formKey.currentState?.fields['date']?.value as DateTime?;
       if (date != null) {
         replaced = replaced.replaceAll(
-            '{treatmentDate}', DateFormat('MMM d, yyyy').format(date));
+            '{appointmentDate}', DateFormat('MMM d, yyyy').format(date));
       }
 
       final purpose = formKey.currentState?.fields['purpose']?.value as String?;
       if (purpose != null && purpose.isNotEmpty) {
-        replaced = replaced.replaceAll('{treatmentName}', purpose);
+        replaced = replaced.replaceAll('{purpose}', purpose);
       }
 
       final notes = formKey.currentState?.fields['notes']?.value as String?;
       if (notes != null && notes.isNotEmpty) {
-        replaced = replaced.replaceAll('{treatmentNotes}', notes);
+        replaced = replaced.replaceAll('{notes}', notes);
       }
 
       return replaced;
     }
 
-    // Linked records and treatments (initialized from appointment)
+    // Linked records (initialized from appointment)
     final linkedRecordIds = useState<List<String>>(appointment.patientRecords);
-    final linkedTreatmentIds =
-        useState<List<String>>(appointment.treatmentRecords);
 
-    // Expanded records/treatments for display (tracks newly created items)
+    // Expanded records for display (tracks newly created items)
     final linkedRecordsExpanded = useState<List<PatientRecord>>(
       appointment.patientRecordsExpanded,
-    );
-    final linkedTreatmentsExpanded = useState<List<PatientTreatmentRecord>>(
-      appointment.treatmentRecordsExpanded,
     );
 
     Future<void> handleSave() async {
@@ -136,7 +127,6 @@ class EditAppointmentSheet extends HookConsumerWidget {
         status: appointment.status,
         patient: appointment.patient,
         patientRecords: linkedRecordIds.value,
-        treatmentRecords: linkedTreatmentIds.value,
         branch: appointment.branch,
         patientName: appointment.patientName,
         ownerName: appointment.ownerName,
@@ -144,7 +134,6 @@ class EditAppointmentSheet extends HookConsumerWidget {
         isDeleted: appointment.isDeleted,
         patientExpanded: appointment.patientExpanded,
         patientRecordsExpanded: appointment.patientRecordsExpanded,
-        treatmentRecordsExpanded: appointment.treatmentRecordsExpanded,
         created: appointment.created,
         updated: appointment.updated,
       );
@@ -597,18 +586,7 @@ class EditAppointmentSheet extends HookConsumerWidget {
               // Linked items section
               LinkedItemsSection(
                 patientRecords: linkedRecordsExpanded.value,
-                treatmentRecords: linkedTreatmentsExpanded.value,
                 showActions: !isSaving.value,
-                onLinkExistingPressed: appointment.patient != null
-                    ? () => _showRecordTreatmentSelector(
-                          context: context,
-                          patientId: appointment.patient!,
-                          linkedRecordIds: linkedRecordIds,
-                          linkedTreatmentIds: linkedTreatmentIds,
-                          linkedRecordsExpanded: linkedRecordsExpanded,
-                          linkedTreatmentsExpanded: linkedTreatmentsExpanded,
-                        )
-                    : null,
                 onAddRecordPressed: appointment.patient != null
                     ? () => _showAddRecordSheet(
                           context: context,
@@ -619,48 +597,11 @@ class EditAppointmentSheet extends HookConsumerWidget {
                           linkedRecordsExpanded: linkedRecordsExpanded,
                         )
                     : null,
-                onAddTreatmentPressed: appointment.patient != null
-                    ? () => _showAddTreatmentSheet(
-                          context: context,
-                          ref: ref,
-                          patientId: appointment.patient!,
-                          appointmentId: appointment.id,
-                          linkedTreatmentIds: linkedTreatmentIds,
-                          linkedTreatmentsExpanded: linkedTreatmentsExpanded,
-                        )
-                    : null,
               ),
               // Bottom actions removed (moved to header)
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _showRecordTreatmentSelector({
-    required BuildContext context,
-    required String patientId,
-    required ValueNotifier<List<String>> linkedRecordIds,
-    required ValueNotifier<List<String>> linkedTreatmentIds,
-    required ValueNotifier<List<PatientRecord>> linkedRecordsExpanded,
-    required ValueNotifier<List<PatientTreatmentRecord>>
-        linkedTreatmentsExpanded,
-  }) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => RecordTreatmentSelectorSheet(
-        patientId: patientId,
-        selectedRecordIds: linkedRecordIds.value,
-        selectedTreatmentIds: linkedTreatmentIds.value,
-        onSave: (recordIds, treatmentIds) {
-          linkedRecordIds.value = recordIds;
-          linkedTreatmentIds.value = treatmentIds;
-          // Note: expanded data will be refreshed when appointment is saved and reloaded
-        },
       ),
     );
   }
@@ -700,37 +641,6 @@ class EditAppointmentSheet extends HookConsumerWidget {
           return created;
         },
       ),
-    );
-  }
-
-  void _showAddTreatmentSheet({
-    required BuildContext context,
-    required WidgetRef ref,
-    required String patientId,
-    required String appointmentId,
-    required ValueNotifier<List<String>> linkedTreatmentIds,
-    required ValueNotifier<List<PatientTreatmentRecord>>
-        linkedTreatmentsExpanded,
-  }) {
-    showTreatmentRecordSheet(
-      context,
-      patientId: patientId,
-      appointmentId: appointmentId,
-      onSave: (record) async {
-        final created = await ref
-            .read(patientTreatmentRecordsControllerProvider(patientId).notifier)
-            .createTreatmentRecordAndReturn(record);
-
-        if (created != null) {
-          // Add to linked IDs and expanded list
-          linkedTreatmentIds.value = [...linkedTreatmentIds.value, created.id];
-          linkedTreatmentsExpanded.value = [
-            ...linkedTreatmentsExpanded.value,
-            created,
-          ];
-        }
-        return created;
-      },
     );
   }
 

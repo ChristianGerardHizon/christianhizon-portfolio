@@ -3,10 +3,8 @@ import 'package:pocketbase/pocketbase.dart';
 
 import '../../../../core/utils/date_utils.dart';
 import '../../../patients/data/dto/patient_record_dto.dart';
-import '../../../patients/data/dto/patient_treatment_record_dto.dart';
 import '../../../patients/domain/patient.dart';
 import '../../../patients/domain/patient_record.dart';
-import '../../../patients/domain/patient_treatment_record.dart';
 import '../../domain/appointment_schedule.dart';
 
 part 'appointment_schedule_dto.mapper.dart';
@@ -25,9 +23,9 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
   final String? purpose;
   final String? status;
   final String? patient;
+  final String? treatmentType;
+  final String? treatmentTypeName;
   final List<String> patientRecords;
-  final List<String> treatmentRecords;
-  final String? treatmentPlanItem;
   final String? branch;
   final String? patientName;
   final String? ownerName;
@@ -45,7 +43,6 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
 
   // Expanded relation arrays
   final List<PatientRecord> expandedPatientRecords;
-  final List<PatientTreatmentRecord> expandedTreatmentRecords;
 
   const AppointmentScheduleDto({
     required this.id,
@@ -57,9 +54,9 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
     this.purpose,
     this.status,
     this.patient,
+    this.treatmentType,
+    this.treatmentTypeName,
     this.patientRecords = const [],
-    this.treatmentRecords = const [],
-    this.treatmentPlanItem,
     this.branch,
     this.patientName,
     this.ownerName,
@@ -73,7 +70,6 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
     this.expandedPatientSpecies,
     this.expandedPatientBreed,
     this.expandedPatientRecords = const [],
-    this.expandedTreatmentRecords = const [],
   });
 
   /// Creates a DTO from a PocketBase RecordModel.
@@ -93,12 +89,6 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
         ? patientRecordsRaw.cast<String>()
         : <String>[];
 
-    // Parse treatmentRecords array (relation array field)
-    final treatmentRecordsRaw = json['treatmentRecords'];
-    final treatmentRecords = treatmentRecordsRaw is List
-        ? treatmentRecordsRaw.cast<String>()
-        : <String>[];
-
     // Parse expanded patient records
     final expandedPatientRecords = <PatientRecord>[];
     final expand = json['expand'] as Map<String, dynamic>?;
@@ -114,20 +104,6 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       }
     }
 
-    // Parse expanded treatment records
-    final expandedTreatmentRecords = <PatientTreatmentRecord>[];
-    if (expand != null) {
-      final treatmentRecordsExpand = expand['treatmentRecords'];
-      if (treatmentRecordsExpand is List) {
-        for (final item in treatmentRecordsExpand) {
-          if (item is Map<String, dynamic>) {
-            final recordModel = RecordModel.fromJson(item);
-            expandedTreatmentRecords.add(PatientTreatmentRecordDto.fromRecord(recordModel).toEntity());
-          }
-        }
-      }
-    }
-
     return AppointmentScheduleDto(
       id: json['id'] as String? ?? '',
       collectionId: json['collectionId'] as String? ?? '',
@@ -138,9 +114,9 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       purpose: json['purpose'] as String?,
       status: json['status'] as String?,
       patient: json['patient'] as String?,
+      treatmentType: json['treatmentType'] as String?,
+      treatmentTypeName: json['treatmentTypeName'] as String?,
       patientRecords: patientRecords,
-      treatmentRecords: treatmentRecords,
-      treatmentPlanItem: json['treatmentPlanItem'] as String?,
       branch: json['branch'] as String?,
       patientName: json['patientName'] as String?,
       ownerName: json['ownerName'] as String?,
@@ -154,7 +130,6 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       expandedPatientSpecies: expandedPatientSpecies.isNotEmpty ? expandedPatientSpecies : null,
       expandedPatientBreed: expandedPatientBreed.isNotEmpty ? expandedPatientBreed : null,
       expandedPatientRecords: expandedPatientRecords,
-      expandedTreatmentRecords: expandedTreatmentRecords,
     );
   }
 
@@ -181,9 +156,9 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       purpose: purpose,
       status: _parseStatus(status),
       patient: patient,
+      treatmentType: treatmentType,
+      treatmentTypeName: treatmentTypeName,
       patientRecords: patientRecords,
-      treatmentRecords: treatmentRecords,
-      treatmentPlanItem: treatmentPlanItem,
       branch: branch,
       patientName: patientName,
       ownerName: ownerName,
@@ -193,7 +168,6 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       updated: parseToLocal(updated),
       patientExpanded: patientExpanded,
       patientRecordsExpanded: expandedPatientRecords,
-      treatmentRecordsExpanded: expandedTreatmentRecords,
     );
   }
 
@@ -221,9 +195,9 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       'purpose': appointment.purpose,
       'status': appointment.status.name,
       'patient': appointment.patient,
+      'treatmentType': appointment.treatmentType,
+      'treatmentTypeName': appointment.treatmentTypeName,
       'patientRecords': appointment.patientRecords,
-      'treatmentRecords': appointment.treatmentRecords,
-      'treatmentPlanItem': appointment.treatmentPlanItem,
       'branch': appointment.branch,
       'patientName': appointment.patientName,
       'ownerName': appointment.ownerName,

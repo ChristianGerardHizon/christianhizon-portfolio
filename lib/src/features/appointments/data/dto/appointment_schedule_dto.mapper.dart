@@ -16,7 +16,6 @@ class AppointmentScheduleDtoMapper
     if (_instance == null) {
       MapperContainer.globals.use(_instance = AppointmentScheduleDtoMapper._());
       PatientRecordMapper.ensureInitialized();
-      PatientTreatmentRecordMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -73,18 +72,20 @@ class AppointmentScheduleDtoMapper
     _$patient,
     opt: true,
   );
+  static String? _$treatmentType(AppointmentScheduleDto v) => v.treatmentType;
+  static const Field<AppointmentScheduleDto, String> _f$treatmentType = Field(
+    'treatmentType',
+    _$treatmentType,
+    opt: true,
+  );
+  static String? _$treatmentTypeName(AppointmentScheduleDto v) =>
+      v.treatmentTypeName;
+  static const Field<AppointmentScheduleDto, String> _f$treatmentTypeName =
+      Field('treatmentTypeName', _$treatmentTypeName, opt: true);
   static List<String> _$patientRecords(AppointmentScheduleDto v) =>
       v.patientRecords;
   static const Field<AppointmentScheduleDto, List<String>> _f$patientRecords =
       Field('patientRecords', _$patientRecords, opt: true, def: const []);
-  static List<String> _$treatmentRecords(AppointmentScheduleDto v) =>
-      v.treatmentRecords;
-  static const Field<AppointmentScheduleDto, List<String>> _f$treatmentRecords =
-      Field('treatmentRecords', _$treatmentRecords, opt: true, def: const []);
-  static String? _$treatmentPlanItem(AppointmentScheduleDto v) =>
-      v.treatmentPlanItem;
-  static const Field<AppointmentScheduleDto, String> _f$treatmentPlanItem =
-      Field('treatmentPlanItem', _$treatmentPlanItem, opt: true);
   static String? _$branch(AppointmentScheduleDto v) => v.branch;
   static const Field<AppointmentScheduleDto, String> _f$branch = Field(
     'branch',
@@ -158,16 +159,6 @@ class AppointmentScheduleDtoMapper
     opt: true,
     def: const [],
   );
-  static List<PatientTreatmentRecord> _$expandedTreatmentRecords(
-    AppointmentScheduleDto v,
-  ) => v.expandedTreatmentRecords;
-  static const Field<AppointmentScheduleDto, List<PatientTreatmentRecord>>
-  _f$expandedTreatmentRecords = Field(
-    'expandedTreatmentRecords',
-    _$expandedTreatmentRecords,
-    opt: true,
-    def: const [],
-  );
 
   @override
   final MappableFields<AppointmentScheduleDto> fields = const {
@@ -180,9 +171,9 @@ class AppointmentScheduleDtoMapper
     #purpose: _f$purpose,
     #status: _f$status,
     #patient: _f$patient,
+    #treatmentType: _f$treatmentType,
+    #treatmentTypeName: _f$treatmentTypeName,
     #patientRecords: _f$patientRecords,
-    #treatmentRecords: _f$treatmentRecords,
-    #treatmentPlanItem: _f$treatmentPlanItem,
     #branch: _f$branch,
     #patientName: _f$patientName,
     #ownerName: _f$ownerName,
@@ -196,7 +187,6 @@ class AppointmentScheduleDtoMapper
     #expandedPatientSpecies: _f$expandedPatientSpecies,
     #expandedPatientBreed: _f$expandedPatientBreed,
     #expandedPatientRecords: _f$expandedPatientRecords,
-    #expandedTreatmentRecords: _f$expandedTreatmentRecords,
   };
 
   static AppointmentScheduleDto _instantiate(DecodingData data) {
@@ -210,9 +200,9 @@ class AppointmentScheduleDtoMapper
       purpose: data.dec(_f$purpose),
       status: data.dec(_f$status),
       patient: data.dec(_f$patient),
+      treatmentType: data.dec(_f$treatmentType),
+      treatmentTypeName: data.dec(_f$treatmentTypeName),
       patientRecords: data.dec(_f$patientRecords),
-      treatmentRecords: data.dec(_f$treatmentRecords),
-      treatmentPlanItem: data.dec(_f$treatmentPlanItem),
       branch: data.dec(_f$branch),
       patientName: data.dec(_f$patientName),
       ownerName: data.dec(_f$ownerName),
@@ -226,7 +216,6 @@ class AppointmentScheduleDtoMapper
       expandedPatientSpecies: data.dec(_f$expandedPatientSpecies),
       expandedPatientBreed: data.dec(_f$expandedPatientBreed),
       expandedPatientRecords: data.dec(_f$expandedPatientRecords),
-      expandedTreatmentRecords: data.dec(_f$expandedTreatmentRecords),
     );
   }
 
@@ -302,24 +291,12 @@ abstract class AppointmentScheduleDtoCopyWith<
     implements ClassCopyWith<$R, $In, $Out> {
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>
   get patientRecords;
-  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>
-  get treatmentRecords;
   ListCopyWith<
     $R,
     PatientRecord,
     PatientRecordCopyWith<$R, PatientRecord, PatientRecord>
   >
   get expandedPatientRecords;
-  ListCopyWith<
-    $R,
-    PatientTreatmentRecord,
-    PatientTreatmentRecordCopyWith<
-      $R,
-      PatientTreatmentRecord,
-      PatientTreatmentRecord
-    >
-  >
-  get expandedTreatmentRecords;
   $R call({
     String? id,
     String? collectionId,
@@ -330,9 +307,9 @@ abstract class AppointmentScheduleDtoCopyWith<
     String? purpose,
     String? status,
     String? patient,
+    String? treatmentType,
+    String? treatmentTypeName,
     List<String>? patientRecords,
-    List<String>? treatmentRecords,
-    String? treatmentPlanItem,
     String? branch,
     String? patientName,
     String? ownerName,
@@ -346,7 +323,6 @@ abstract class AppointmentScheduleDtoCopyWith<
     String? expandedPatientSpecies,
     String? expandedPatientBreed,
     List<PatientRecord>? expandedPatientRecords,
-    List<PatientTreatmentRecord>? expandedTreatmentRecords,
   });
   AppointmentScheduleDtoCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
     Then<$Out2, $R2> t,
@@ -370,13 +346,6 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
     (v) => call(patientRecords: v),
   );
   @override
-  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>
-  get treatmentRecords => ListCopyWith(
-    $value.treatmentRecords,
-    (v, t) => ObjectCopyWith(v, $identity, t),
-    (v) => call(treatmentRecords: v),
-  );
-  @override
   ListCopyWith<
     $R,
     PatientRecord,
@@ -386,21 +355,6 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
     $value.expandedPatientRecords,
     (v, t) => v.copyWith.$chain(t),
     (v) => call(expandedPatientRecords: v),
-  );
-  @override
-  ListCopyWith<
-    $R,
-    PatientTreatmentRecord,
-    PatientTreatmentRecordCopyWith<
-      $R,
-      PatientTreatmentRecord,
-      PatientTreatmentRecord
-    >
-  >
-  get expandedTreatmentRecords => ListCopyWith(
-    $value.expandedTreatmentRecords,
-    (v, t) => v.copyWith.$chain(t),
-    (v) => call(expandedTreatmentRecords: v),
   );
   @override
   $R call({
@@ -413,9 +367,9 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
     Object? purpose = $none,
     Object? status = $none,
     Object? patient = $none,
+    Object? treatmentType = $none,
+    Object? treatmentTypeName = $none,
     List<String>? patientRecords,
-    List<String>? treatmentRecords,
-    Object? treatmentPlanItem = $none,
     Object? branch = $none,
     Object? patientName = $none,
     Object? ownerName = $none,
@@ -429,7 +383,6 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
     Object? expandedPatientSpecies = $none,
     Object? expandedPatientBreed = $none,
     List<PatientRecord>? expandedPatientRecords,
-    List<PatientTreatmentRecord>? expandedTreatmentRecords,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
@@ -441,9 +394,9 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
       if (purpose != $none) #purpose: purpose,
       if (status != $none) #status: status,
       if (patient != $none) #patient: patient,
+      if (treatmentType != $none) #treatmentType: treatmentType,
+      if (treatmentTypeName != $none) #treatmentTypeName: treatmentTypeName,
       if (patientRecords != null) #patientRecords: patientRecords,
-      if (treatmentRecords != null) #treatmentRecords: treatmentRecords,
-      if (treatmentPlanItem != $none) #treatmentPlanItem: treatmentPlanItem,
       if (branch != $none) #branch: branch,
       if (patientName != $none) #patientName: patientName,
       if (ownerName != $none) #ownerName: ownerName,
@@ -463,8 +416,6 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
         #expandedPatientBreed: expandedPatientBreed,
       if (expandedPatientRecords != null)
         #expandedPatientRecords: expandedPatientRecords,
-      if (expandedTreatmentRecords != null)
-        #expandedTreatmentRecords: expandedTreatmentRecords,
     }),
   );
   @override
@@ -478,12 +429,12 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
     purpose: data.get(#purpose, or: $value.purpose),
     status: data.get(#status, or: $value.status),
     patient: data.get(#patient, or: $value.patient),
-    patientRecords: data.get(#patientRecords, or: $value.patientRecords),
-    treatmentRecords: data.get(#treatmentRecords, or: $value.treatmentRecords),
-    treatmentPlanItem: data.get(
-      #treatmentPlanItem,
-      or: $value.treatmentPlanItem,
+    treatmentType: data.get(#treatmentType, or: $value.treatmentType),
+    treatmentTypeName: data.get(
+      #treatmentTypeName,
+      or: $value.treatmentTypeName,
     ),
+    patientRecords: data.get(#patientRecords, or: $value.patientRecords),
     branch: data.get(#branch, or: $value.branch),
     patientName: data.get(#patientName, or: $value.patientName),
     ownerName: data.get(#ownerName, or: $value.ownerName),
@@ -514,10 +465,6 @@ class _AppointmentScheduleDtoCopyWithImpl<$R, $Out>
     expandedPatientRecords: data.get(
       #expandedPatientRecords,
       or: $value.expandedPatientRecords,
-    ),
-    expandedTreatmentRecords: data.get(
-      #expandedTreatmentRecords,
-      or: $value.expandedTreatmentRecords,
     ),
   );
 
