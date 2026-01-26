@@ -8,7 +8,10 @@ import '../../../../../core/hooks/use_infinite_scroll.dart';
 import '../../../../../core/routing/routes/appointments.routes.dart';
 import '../../../../../core/widgets/end_of_list_indicator.dart';
 import '../../../../patients/domain/patient.dart';
+import '../../../../patients/domain/patient_record.dart';
+import '../../../../patients/presentation/controllers/patient_records_controller.dart';
 import '../../../domain/appointment_schedule.dart';
+import '../../controllers/appointments_controller.dart';
 import '../../controllers/patient_appointments_controller.dart';
 import '../cards/appointment_card.dart';
 import '../sheets/create_appointment_sheet.dart';
@@ -192,7 +195,17 @@ class PatientAppointmentsTab extends HookConsumerWidget {
     WidgetRef ref,
     String id,
     AppointmentScheduleStatus status,
-  ) {
+  ) async {
+    // Special handling for completing an appointment
+    if (status == AppointmentScheduleStatus.completed) {
+      // Fetch the appointment to check if it has a treatment type
+      final appointment = await ref.read(appointmentProvider(id).future);
+      if (appointment != null && context.mounted) {
+        _showCompletionDialog(context, ref, appointment);
+      }
+      return;
+    }
+
     final statusLabel = switch (status) {
       AppointmentScheduleStatus.scheduled => 'Scheduled',
       AppointmentScheduleStatus.completed => 'Completed',
@@ -232,6 +245,135 @@ class PatientAppointmentsTab extends HookConsumerWidget {
         ],
       ),
     );
+  }
+
+  /// Shows a dialog when completing an appointment, asking if user wants to
+  /// create a treatment record.
+  void _showCompletionDialog(
+    BuildContext context,
+    WidgetRef ref,
+    AppointmentSchedule appointment,
+  ) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Complete Appointment'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Would you like to create a treatment record for this appointment?',
+            ),
+            if (appointment.patientTreatmentName != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Theme.of(dialogContext).colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.medical_services_outlined,
+                      size: 20,
+                      color: Theme.of(dialogContext).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        appointment.patientTreatmentName!,
+                        style: Theme.of(dialogContext).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          OutlinedButton(
+            onPressed: () async {
+              Navigator.pop(dialogContext);
+              await _completeAppointment(context, ref, appointment, createRecord: false);
+            },
+            child: const Text('Complete Only'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(dialogContext);
+              await _completeAppointment(context, ref, appointment, createRecord: true);
+            },
+            child: const Text('Create Record'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Completes the appointment and optionally creates a treatment record.
+  Future<void> _completeAppointment(
+    BuildContext context,
+    WidgetRef ref,
+    AppointmentSchedule appointment, {
+    required bool createRecord,
+  }) async {
+    // Update appointment status first
+    final success = await ref
+        .read(patientAppointmentsControllerProvider(patient.id).notifier)
+        .updateStatus(appointment.id, AppointmentScheduleStatus.completed);
+
+    if (!success) {
+      if (context.mounted) {
+        showErrorSnackBar(context, message: 'Failed to complete appointment');
+      }
+      return;
+    }
+
+    // Create treatment record if requested
+    if (createRecord && appointment.patient != null) {
+      final patientRecord = PatientRecord(
+        id: '', // Will be assigned by PocketBase
+        patientId: appointment.patient!,
+        date: DateTime.now(),
+        diagnosis: appointment.purpose ?? '',
+        weight: '',
+        temperature: '',
+        treatment: appointment.patientTreatmentName,
+        notes: appointment.notes,
+        appointment: appointment.id,
+      );
+
+      final recordCreated = await ref
+          .read(patientRecordsControllerProvider(appointment.patient!).notifier)
+          .createRecord(patientRecord);
+
+      if (context.mounted) {
+        if (recordCreated) {
+          showSuccessSnackBar(
+            context,
+            message: 'Appointment completed and treatment record created',
+          );
+        } else {
+          showWarningSnackBar(
+            context,
+            message: 'Appointment completed, but failed to create treatment record',
+          );
+        }
+      }
+    } else {
+      if (context.mounted) {
+        showSuccessSnackBar(context, message: 'Appointment marked as completed');
+      }
+    }
   }
 }
 
