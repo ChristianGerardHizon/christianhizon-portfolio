@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../patients/domain/patient_species.dart';
 import '../../controllers/species_controller.dart';
@@ -28,6 +29,10 @@ class SpeciesFormSheet extends HookConsumerWidget {
 
     // Form key
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final dirtyGuard = useFormDirtyGuard(
+      formKey: formKey,
+      initialValues: isEditing ? {'name': species!.name} : null,
+    );
 
     // UI state
     final isSaving = useState(false);
@@ -83,76 +88,84 @@ class SpeciesFormSheet extends HookConsumerWidget {
       }
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      child: FormBuilder(
-        key: formKey,
-        child: SingleChildScrollView(
-          controller: scrollController,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Drag handle
-              Center(
-                child: Container(
-                  width: 32,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Header
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      isEditing ? 'Edit Species' : 'New Species',
-                      style: theme.textTheme.titleLarge,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        child: FormBuilder(
+          key: formKey,
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Drag handle
+                Center(
+                  child: Container(
+                    width: 32,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  TextButton(
-                    onPressed: () => context.pop(),
-                    child: const Text('Cancel'),
-                  ),
-                  const SizedBox(width: 8),
-                  FilledButton(
-                    onPressed: isSaving.value ? null : handleSave,
-                    child: isSaving.value
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text('Save'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // Name field
-              FormBuilderTextField(
-                name: 'name',
-                initialValue: species?.name,
-                decoration: const InputDecoration(
-                  labelText: 'Name *',
-                  hintText: 'Enter species name (e.g., Dog, Cat)',
                 ),
-                validator: FormBuilderValidators.required(),
-                textInputAction: TextInputAction.done,
-                autofocus: true,
-              ),
-              const SizedBox(height: 24),
-            ],
+                const SizedBox(height: 16),
+
+                // Header
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        isEditing ? 'Edit Species' : 'New Species',
+                        style: theme.textTheme.titleLarge,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        if (await dirtyGuard.confirmDiscard(context)) {
+                          if (context.mounted) context.pop();
+                        }
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    const SizedBox(width: 8),
+                    FilledButton(
+                      onPressed: isSaving.value ? null : handleSave,
+                      child: isSaving.value
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('Save'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+
+                // Name field
+                FormBuilderTextField(
+                  name: 'name',
+                  initialValue: species?.name,
+                  decoration: const InputDecoration(
+                    labelText: 'Name *',
+                    hintText: 'Enter species name (e.g., Dog, Cat)',
+                  ),
+                  validator: FormBuilderValidators.required(),
+                  textInputAction: TextInputAction.done,
+                  autofocus: true,
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),

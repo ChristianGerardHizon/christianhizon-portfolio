@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../../patients/domain/patient.dart';
@@ -35,6 +36,15 @@ class EditMessageSheet extends HookConsumerWidget {
     final theme = Theme.of(context);
 
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final dirtyGuard = useFormDirtyGuard(
+      formKey: formKey,
+      initialValues: {
+        'content': message.content,
+        'date': message.sendDateTime,
+        'time': message.sendDateTime,
+        'notes': message.notes,
+      },
+    );
     final isSaving = useState(false);
 
     // Watch templates
@@ -193,48 +203,56 @@ class EditMessageSheet extends HookConsumerWidget {
       }
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      child: SingleChildScrollView(
-        child: FormBuilder(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Drag handle
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Header with actions
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Edit Message',
-                      style: theme.textTheme.titleLarge,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        child: SingleChildScrollView(
+          child: FormBuilder(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Drag handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    onPressed:
-                        isSaving.value ? null : () => Navigator.pop(context),
-                    child: const Text('Cancel'),
-                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Header with actions
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Edit Message',
+                        style: theme.textTheme.titleLarge,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: isSaving.value
+                          ? null
+                          : () async {
+                              if (await dirtyGuard.confirmDiscard(context)) {
+                                if (context.mounted) Navigator.pop(context);
+                              }
+                            },
+                      child: const Text('Cancel'),
+                    ),
                   const SizedBox(width: 8),
                   FilledButton(
                     onPressed: isSaving.value ? null : handleSave,
@@ -396,21 +414,22 @@ class EditMessageSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Notes (editable)
-              FormBuilderTextField(
-                name: 'notes',
-                initialValue: message.notes,
-                decoration: const InputDecoration(
-                  labelText: 'Internal Notes',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.notes),
-                  helperText: 'For internal reference only (not sent)',
+                // Notes (editable)
+                FormBuilderTextField(
+                  name: 'notes',
+                  initialValue: message.notes,
+                  decoration: const InputDecoration(
+                    labelText: 'Internal Notes',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.notes),
+                    helperText: 'For internal reference only (not sent)',
+                  ),
+                  maxLines: 2,
+                  enabled: !isSaving.value,
                 ),
-                maxLines: 2,
-                enabled: !isSaving.value,
-              ),
-              const SizedBox(height: 16),
-            ],
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         ),
       ),

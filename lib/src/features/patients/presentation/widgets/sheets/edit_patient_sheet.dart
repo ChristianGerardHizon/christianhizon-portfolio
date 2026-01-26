@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/routing/routes/patients.routes.dart';
 import '../../../../../core/widgets/form_feedback.dart';
@@ -26,6 +27,21 @@ class EditPatientSheet extends HookConsumerWidget {
 
     // Form key
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final dirtyGuard = useFormDirtyGuard(
+      formKey: formKey,
+      initialValues: {
+        'name': patient.name,
+        'species': patient.speciesId,
+        'breed': patient.breedId,
+        'sex': patient.sex,
+        'color': patient.color,
+        'dateOfBirth': patient.dateOfBirth,
+        'owner': patient.owner,
+        'contactNumber': patient.contactNumber,
+        'email': patient.email,
+        'address': patient.address,
+      },
+    );
 
     // UI state
     final isSaving = useState(false);
@@ -110,46 +126,54 @@ class EditPatientSheet extends HookConsumerWidget {
       }
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      child: FormBuilder(
-        key: formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Drag handle
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        child: FormBuilder(
+          key: formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Drag handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // === HEADER WITH ACTIONS ===
-              Row(
-                children: [
-                  Expanded(
-                    child:
-                        Text('Edit Patient', style: theme.textTheme.titleLarge),
-                  ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    onPressed:
-                        isSaving.value ? null : () => Navigator.pop(context),
-                    child: Text(t.common.cancel),
-                  ),
+                // === HEADER WITH ACTIONS ===
+                Row(
+                  children: [
+                    Expanded(
+                      child:
+                          Text('Edit Patient', style: theme.textTheme.titleLarge),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: isSaving.value
+                          ? null
+                          : () async {
+                              if (await dirtyGuard.confirmDiscard(context)) {
+                                if (context.mounted) Navigator.pop(context);
+                              }
+                            },
+                      child: Text(t.common.cancel),
+                    ),
                   const SizedBox(width: 8),
                   FilledButton(
                     onPressed: isSaving.value ? null : handleSave,
@@ -396,9 +420,12 @@ class EditPatientSheet extends HookConsumerWidget {
                       ),
                       enabled: !isSaving.value,
                       keyboardType: TextInputType.emailAddress,
-                      validator: FormBuilderValidators.email(
-                        errorText: 'Invalid email format',
-                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) return null;
+                        return FormBuilderValidators.email(
+                          errorText: 'Invalid email format',
+                        )(value);
+                      },
                     ),
                     const SizedBox(height: 16),
                     FormBuilderTextField(
@@ -415,8 +442,9 @@ class EditPatientSheet extends HookConsumerWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
-            ],
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         ),
       ),

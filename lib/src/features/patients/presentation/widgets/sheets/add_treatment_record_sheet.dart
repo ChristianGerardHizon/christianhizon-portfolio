@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/patient_treatment.dart';
@@ -55,6 +56,16 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
     final t = Translations.of(context);
 
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final dirtyGuard = useFormDirtyGuard(
+      formKey: formKey,
+      initialValues: existingRecord != null
+          ? {
+              'treatment': existingRecord!.treatmentId,
+              'date': existingRecord!.date,
+              'notes': existingRecord!.notes,
+            }
+          : null,
+    );
     final isSaving = useState(false);
 
     // Watch treatment catalog
@@ -118,48 +129,56 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
       }
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      child: SingleChildScrollView(
-        child: FormBuilder(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Drag handle
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Header with actions
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      isEditing ? 'Edit Treatment' : 'Add Treatment',
-                      style: theme.textTheme.titleLarge,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        child: SingleChildScrollView(
+          child: FormBuilder(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Drag handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    onPressed:
-                        isSaving.value ? null : () => Navigator.pop(context),
-                    child: Text(t.common.cancel),
-                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Header with actions
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        isEditing ? 'Edit Treatment' : 'Add Treatment',
+                        style: theme.textTheme.titleLarge,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: isSaving.value
+                          ? null
+                          : () async {
+                              if (await dirtyGuard.confirmDiscard(context)) {
+                                if (context.mounted) Navigator.pop(context);
+                              }
+                            },
+                      child: Text(t.common.cancel),
+                    ),
                   const SizedBox(width: 8),
                   FilledButton(
                     onPressed: isSaving.value ? null : handleSave,
@@ -218,20 +237,21 @@ class AddTreatmentRecordSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Notes
-              FormBuilderTextField(
-                name: 'notes',
-                initialValue: existingRecord?.notes,
-                decoration: const InputDecoration(
-                  labelText: 'Notes',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.notes),
+                // Notes
+                FormBuilderTextField(
+                  name: 'notes',
+                  initialValue: existingRecord?.notes,
+                  decoration: const InputDecoration(
+                    labelText: 'Notes',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.notes),
+                  ),
+                  maxLines: 3,
+                  enabled: !isSaving.value,
                 ),
-                maxLines: 3,
-                enabled: !isSaving.value,
-              ),
-              const SizedBox(height: 24),
-            ],
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),

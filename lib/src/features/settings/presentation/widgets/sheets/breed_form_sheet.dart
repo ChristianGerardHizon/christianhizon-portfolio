@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../patients/domain/patient_breed.dart';
 import '../../../../patients/presentation/controllers/species_breeds_provider.dart';
@@ -30,6 +31,12 @@ class BreedFormSheet extends HookConsumerWidget {
 
     // Form key
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final dirtyGuard = useFormDirtyGuard(
+      formKey: formKey,
+      initialValues: isEditing
+          ? {'name': breed!.name, 'species': breed!.speciesId}
+          : null,
+    );
 
     // UI state
     final isSaving = useState(false);
@@ -86,16 +93,19 @@ class BreedFormSheet extends HookConsumerWidget {
       }
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      child: FormBuilder(
-        key: formKey,
-        child: SingleChildScrollView(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        child: FormBuilder(
+          key: formKey,
+          child: SingleChildScrollView(
           controller: scrollController,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -124,7 +134,11 @@ class BreedFormSheet extends HookConsumerWidget {
                     ),
                   ),
                   TextButton(
-                    onPressed: () => context.pop(),
+                    onPressed: () async {
+                      if (await dirtyGuard.confirmDiscard(context)) {
+                        if (context.mounted) context.pop();
+                      }
+                    },
                     child: const Text('Cancel'),
                   ),
                   const SizedBox(width: 8),
@@ -178,18 +192,19 @@ class BreedFormSheet extends HookConsumerWidget {
               const SizedBox(height: 16),
 
               // Name field
-              FormBuilderTextField(
-                name: 'name',
-                initialValue: breed?.name,
-                decoration: const InputDecoration(
-                  labelText: 'Name *',
-                  hintText: 'Enter breed name',
+                FormBuilderTextField(
+                  name: 'name',
+                  initialValue: breed?.name,
+                  decoration: const InputDecoration(
+                    labelText: 'Name *',
+                    hintText: 'Enter breed name',
+                  ),
+                  validator: FormBuilderValidators.required(),
+                  textInputAction: TextInputAction.done,
                 ),
-                validator: FormBuilderValidators.required(),
-                textInputAction: TextInputAction.done,
-              ),
-              const SizedBox(height: 24),
-            ],
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),

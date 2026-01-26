@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../messages/domain/message.dart';
@@ -37,6 +38,7 @@ class CreateAppointmentSheet extends HookConsumerWidget {
     final t = Translations.of(context);
 
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final dirtyGuard = useFormDirtyGuard(formKey: formKey);
     final isSaving = useState(false);
     final hasTime = useState(false);
     final selectedPatient = useState<Patient?>(initialPatient);
@@ -188,46 +190,54 @@ class CreateAppointmentSheet extends HookConsumerWidget {
       }
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      child: SingleChildScrollView(
-        child: FormBuilder(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Drag handle
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        child: SingleChildScrollView(
+          child: FormBuilder(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Drag handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // === HEADER WITH ACTIONS ===
-              Row(
-                children: [
-                  Expanded(
-                    child: Text('New Appointment',
-                        style: theme.textTheme.titleLarge),
-                  ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    onPressed:
-                        isSaving.value ? null : () => Navigator.pop(context),
-                    child: Text(t.common.cancel),
-                  ),
+                // === HEADER WITH ACTIONS ===
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text('New Appointment',
+                          style: theme.textTheme.titleLarge),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: isSaving.value
+                          ? null
+                          : () async {
+                              if (await dirtyGuard.confirmDiscard(context)) {
+                                if (context.mounted) Navigator.pop(context);
+                              }
+                            },
+                      child: Text(t.common.cancel),
+                    ),
                   const SizedBox(width: 8),
                   FilledButton(
                     onPressed: isSaving.value ? null : handleSave,
@@ -754,7 +764,8 @@ class CreateAppointmentSheet extends HookConsumerWidget {
                   ),
                 ),
               ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

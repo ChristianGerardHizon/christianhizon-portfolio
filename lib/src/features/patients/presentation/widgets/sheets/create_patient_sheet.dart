@@ -433,9 +433,12 @@ class CreatePatientSheet extends HookConsumerWidget {
                       ),
                       enabled: !isSaving.value,
                       keyboardType: TextInputType.emailAddress,
-                      validator: FormBuilderValidators.email(
-                        errorText: 'Invalid email format',
-                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) return null;
+                        return FormBuilderValidators.email(
+                          errorText: 'Invalid email format',
+                        )(value);
+                      },
                     ),
                     const SizedBox(height: 16),
                     FormBuilderTextField(

@@ -5,11 +5,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../settings/presentation/controllers/message_templates_controller.dart';
-import '../../../../patients/domain/patient.dart';
-
+import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/widgets/form_feedback.dart';
+import '../../../../patients/domain/patient.dart';
+import '../../../../settings/presentation/controllers/message_templates_controller.dart';
 import '../../../../messages/domain/message.dart';
 import '../../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../../patients/domain/patient_record.dart';
@@ -35,6 +35,15 @@ class EditAppointmentSheet extends HookConsumerWidget {
     final t = Translations.of(context);
 
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final dirtyGuard = useFormDirtyGuard(
+      formKey: formKey,
+      initialValues: {
+        'date': appointment.date,
+        'time': appointment.hasTime ? appointment.date : null,
+        'purpose': appointment.purpose,
+        'notes': appointment.notes,
+      },
+    );
     final isSaving = useState(false);
     final hasTime = useState(appointment.hasTime);
     final sendReminder = useState(false);
@@ -193,46 +202,54 @@ class EditAppointmentSheet extends HookConsumerWidget {
       }
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      child: SingleChildScrollView(
-        child: FormBuilder(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Drag handle
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        child: SingleChildScrollView(
+          child: FormBuilder(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Drag handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // === HEADER WITH ACTIONS ===
-              Row(
-                children: [
-                  Expanded(
-                    child: Text('Edit Appointment',
-                        style: theme.textTheme.titleLarge),
-                  ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    onPressed:
-                        isSaving.value ? null : () => Navigator.pop(context),
-                    child: Text(t.common.cancel),
-                  ),
+                // === HEADER WITH ACTIONS ===
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text('Edit Appointment',
+                          style: theme.textTheme.titleLarge),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: isSaving.value
+                          ? null
+                          : () async {
+                              if (await dirtyGuard.confirmDiscard(context)) {
+                                if (context.mounted) Navigator.pop(context);
+                              }
+                            },
+                      child: Text(t.common.cancel),
+                    ),
                   const SizedBox(width: 8),
                   FilledButton(
                     onPressed: isSaving.value ? null : handleSave,
@@ -585,23 +602,24 @@ class EditAppointmentSheet extends HookConsumerWidget {
                 const SizedBox(height: 16),
               ],
 
-              // Linked items section
-              LinkedItemsSection(
-                patientRecords: linkedRecordsExpanded.value,
-                showActions: !isSaving.value,
-                onAddRecordPressed: appointment.patient != null
-                    ? () => _showAddRecordSheet(
-                          context: context,
-                          ref: ref,
-                          patientId: appointment.patient!,
-                          appointmentId: appointment.id,
-                          linkedRecordIds: linkedRecordIds,
-                          linkedRecordsExpanded: linkedRecordsExpanded,
-                        )
-                    : null,
-              ),
-              // Bottom actions removed (moved to header)
-            ],
+                // Linked items section
+                LinkedItemsSection(
+                  patientRecords: linkedRecordsExpanded.value,
+                  showActions: !isSaving.value,
+                  onAddRecordPressed: appointment.patient != null
+                      ? () => _showAddRecordSheet(
+                            context: context,
+                            ref: ref,
+                            patientId: appointment.patient!,
+                            appointmentId: appointment.id,
+                            linkedRecordIds: linkedRecordIds,
+                            linkedRecordsExpanded: linkedRecordsExpanded,
+                          )
+                      : null,
+                ),
+                // Bottom actions removed (moved to header)
+              ],
+            ),
           ),
         ),
       ),

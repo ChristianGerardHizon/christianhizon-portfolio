@@ -199,6 +199,18 @@ class TranslationsCommonEn {
 
 	/// en: 'No items to display'
 	String get emptyList => 'No items to display';
+
+	/// en: 'Discard changes?'
+	String get discardChanges => 'Discard changes?';
+
+	/// en: 'You have unsaved changes. Are you sure you want to discard them?'
+	String get discardChangesMessage => 'You have unsaved changes. Are you sure you want to discard them?';
+
+	/// en: 'Discard'
+	String get discard => 'Discard';
+
+	/// en: 'Keep Editing'
+	String get keepEditing => 'Keep Editing';
 }
 
 // Path: failures
@@ -483,6 +495,10 @@ extension on Translations {
 			'common.seeMore' => 'See More',
 			'common.noResults' => 'No results found',
 			'common.emptyList' => 'No items to display',
+			'common.discardChanges' => 'Discard changes?',
+			'common.discardChangesMessage' => 'You have unsaved changes. Are you sure you want to discard them?',
+			'common.discard' => 'Discard',
+			'common.keepEditing' => 'Keep Editing',
 			'failures.generic' => 'Something went wrong. Please try again.',
 			'failures.networkError' => 'Network error. Please check your connection.',
 			'failures.serverError' => 'Server error. Please try again later.',

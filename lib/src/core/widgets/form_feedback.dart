@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../i18n/strings.g.dart';
 import '../routing/router.dart';
 
 /// Gets the root ScaffoldMessenger, falling back to context if unavailable.
@@ -218,4 +219,38 @@ List<String> formatFormErrors(
       .where((e) => e.value.isNotEmpty)
       .map((e) => '${fieldLabels[e.key] ?? e.key}: ${e.value}')
       .toList();
+}
+
+/// Shows a confirmation dialog for discarding unsaved changes.
+///
+/// Returns true if user confirms discard, false otherwise.
+///
+/// Example:
+/// ```dart
+/// if (await showDiscardChangesDialog(context)) {
+///   Navigator.pop(context);
+/// }
+/// ```
+Future<bool> showDiscardChangesDialog(BuildContext context) async {
+  final t = Translations.of(context);
+
+  final result = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(t.common.discardChanges),
+      content: Text(t.common.discardChangesMessage),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: Text(t.common.keepEditing),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: Text(t.common.discard),
+        ),
+      ],
+    ),
+  );
+
+  return result ?? false;
 }

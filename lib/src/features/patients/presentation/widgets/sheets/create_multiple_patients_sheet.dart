@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/routing/routes/patients.routes.dart';
 import '../../../../../core/widgets/form_feedback.dart';
@@ -93,6 +94,7 @@ class CreateMultiplePatientsSheet extends HookConsumerWidget {
 
     // Owner form key and state
     final ownerFormKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final dirtyGuard = useFormDirtyGuard(formKey: ownerFormKey);
     final ownerName = useState('');
     final ownerPhone = useState('');
     final ownerEmail = useState<String?>(null);
@@ -226,7 +228,8 @@ class CreateMultiplePatientsSheet extends HookConsumerWidget {
         if (failCount == 0) {
           showSuccessSnackBar(
             context,
-            message: '$successCount patient${successCount > 1 ? 's' : ''} created',
+            message:
+                '$successCount patient${successCount > 1 ? 's' : ''} created',
           );
         } else {
           showErrorSnackBar(
@@ -241,131 +244,141 @@ class CreateMultiplePatientsSheet extends HookConsumerWidget {
       }
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Drag handle
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.outlineVariant,
-                borderRadius: BorderRadius.circular(2),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Drag handle
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.outlineVariant,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-          // Header
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'Add Multiple Patients',
-                  style: theme.textTheme.titleLarge,
+            // Header
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Add Multiple Patients',
+                    style: theme.textTheme.titleLarge,
+                  ),
                 ),
-              ),
-              TextButton(
-                onPressed: isSaving.value ? null : () => context.pop(),
-                child: Text(t.common.cancel),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
+                TextButton(
+                  onPressed: isSaving.value
+                      ? null
+                      : () async {
+                          if (await dirtyGuard.confirmDiscard(context)) {
+                            if (context.mounted) context.pop();
+                          }
+                        },
+                  child: Text(t.common.cancel),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
 
-          // Step indicator
-          _StepIndicator(
-            currentStep: currentStep.value,
-            onStepTap: (step) {
-              if (step < currentStep.value) {
-                currentStep.value = step;
-              }
-            },
-          ),
-          const SizedBox(height: 24),
+            // Step indicator
+            _StepIndicator(
+              currentStep: currentStep.value,
+              onStepTap: (step) {
+                if (step < currentStep.value) {
+                  currentStep.value = step;
+                }
+              },
+            ),
+            const SizedBox(height: 24),
 
-          // Step content
-          Expanded(
-            child: SingleChildScrollView(
-              controller: scrollController,
-              child: IndexedStack(
-                index: currentStep.value,
-                children: [
-                  // Step 0: Owner Information
-                  _OwnerStep(
-                    formKey: ownerFormKey,
-                    isSaving: isSaving.value,
-                    initialOwner: ownerName.value,
-                    initialPhone: ownerPhone.value,
-                    initialEmail: ownerEmail.value,
-                    initialAddress: ownerAddress.value,
-                  ),
+            // Step content
+            Expanded(
+              child: SingleChildScrollView(
+                controller: scrollController,
+                child: IndexedStack(
+                  index: currentStep.value,
+                  children: [
+                    // Step 0: Owner Information
+                    _OwnerStep(
+                      formKey: ownerFormKey,
+                      isSaving: isSaving.value,
+                      initialOwner: ownerName.value,
+                      initialPhone: ownerPhone.value,
+                      initialEmail: ownerEmail.value,
+                      initialAddress: ownerAddress.value,
+                    ),
 
-                  // Step 1: Patient Entries
-                  _PatientsStep(
-                    entries: entries.value,
-                    onAddEntry: addEntry,
-                    onRemoveEntry: removeEntry,
-                    isSaving: isSaving.value,
-                  ),
+                    // Step 1: Patient Entries
+                    _PatientsStep(
+                      entries: entries.value,
+                      onAddEntry: addEntry,
+                      onRemoveEntry: removeEntry,
+                      isSaving: isSaving.value,
+                    ),
 
-                  // Step 2: Confirmation
-                  _ConfirmationStep(
-                    ownerName: ownerName.value,
-                    ownerPhone: ownerPhone.value,
-                    ownerEmail: ownerEmail.value,
-                    ownerAddress: ownerAddress.value,
-                    entries: entries.value.where((e) => e.isValid).toList(),
-                    speciesAsync: speciesAsync,
-                    onEditOwner: () => currentStep.value = 0,
-                    onEditPatients: () => currentStep.value = 1,
-                  ),
-                ],
+                    // Step 2: Confirmation
+                    _ConfirmationStep(
+                      ownerName: ownerName.value,
+                      ownerPhone: ownerPhone.value,
+                      ownerEmail: ownerEmail.value,
+                      ownerAddress: ownerAddress.value,
+                      entries: entries.value.where((e) => e.isValid).toList(),
+                      speciesAsync: speciesAsync,
+                      onEditOwner: () => currentStep.value = 0,
+                      onEditPatients: () => currentStep.value = 1,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
 
-          // Navigation buttons
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              if (currentStep.value > 0)
-                OutlinedButton(
-                  onPressed: isSaving.value
-                      ? null
-                      : () => currentStep.value = currentStep.value - 1,
-                  child: const Text('Back'),
-                ),
-              const Spacer(),
-              if (currentStep.value < 2)
-                FilledButton(
-                  onPressed: isSaving.value
-                      ? null
-                      : () => goToStep(currentStep.value + 1),
-                  child: const Text('Next'),
-                ),
-              if (currentStep.value == 2)
-                FilledButton(
-                  onPressed: isSaving.value ? null : handleSubmit,
-                  child: isSaving.value
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Create All'),
-                ),
-            ],
-          ),
-        ],
+            // Navigation buttons
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                if (currentStep.value > 0)
+                  OutlinedButton(
+                    onPressed: isSaving.value
+                        ? null
+                        : () => currentStep.value = currentStep.value - 1,
+                    child: const Text('Back'),
+                  ),
+                const Spacer(),
+                if (currentStep.value < 2)
+                  FilledButton(
+                    onPressed: isSaving.value
+                        ? null
+                        : () => goToStep(currentStep.value + 1),
+                    child: const Text('Next'),
+                  ),
+                if (currentStep.value == 2)
+                  FilledButton(
+                    onPressed: isSaving.value ? null : handleSubmit,
+                    child: isSaving.value
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Create All'),
+                  ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -514,7 +527,6 @@ class _OwnerStep extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-
           FormBuilderTextField(
             name: 'owner',
             initialValue: initialOwner,
@@ -530,7 +542,6 @@ class _OwnerStep extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-
           FormBuilderTextField(
             name: 'contactNumber',
             initialValue: initialPhone,
@@ -546,7 +557,6 @@ class _OwnerStep extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-
           FormBuilderTextField(
             name: 'email',
             initialValue: initialEmail,
@@ -557,12 +567,14 @@ class _OwnerStep extends StatelessWidget {
             ),
             enabled: !isSaving,
             keyboardType: TextInputType.emailAddress,
-            validator: FormBuilderValidators.email(
-              errorText: 'Invalid email format',
-            ),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) return null;
+              return FormBuilderValidators.email(
+                errorText: 'Invalid email format',
+              )(value);
+            },
           ),
           const SizedBox(height: 16),
-
           FormBuilderTextField(
             name: 'address',
             initialValue: initialAddress,
@@ -637,7 +649,6 @@ class _PatientsStep extends HookConsumerWidget {
           ),
         ),
         const SizedBox(height: 16),
-
         ...entries.asMap().entries.map((mapEntry) {
           final index = mapEntry.key;
           final entry = mapEntry.value;
@@ -650,7 +661,6 @@ class _PatientsStep extends HookConsumerWidget {
             isSaving: isSaving,
           );
         }),
-
         const SizedBox(height: 16),
         Center(
           child: OutlinedButton.icon(
@@ -794,7 +804,8 @@ class _PatientEntryCard extends HookConsumerWidget {
                     children: [
                       Expanded(
                         child: speciesAsync.when(
-                          data: (speciesList) => DropdownButtonFormField<String>(
+                          data: (speciesList) =>
+                              DropdownButtonFormField<String>(
                             value: speciesId,
                             isExpanded: true,
                             decoration: const InputDecoration(
@@ -1026,7 +1037,8 @@ class _ConfirmationStep extends HookConsumerWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.check_circle, size: 20, color: theme.colorScheme.primary),
+            Icon(Icons.check_circle,
+                size: 20, color: theme.colorScheme.primary),
             const SizedBox(width: 8),
             Text(
               'Review & Confirm',
@@ -1270,6 +1282,7 @@ void showCreateMultiplePatientsSheet(BuildContext context) {
     isScrollControlled: true,
     useSafeArea: true,
     useRootNavigator: true,
+    isDismissible: false,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),
@@ -1278,6 +1291,7 @@ void showCreateMultiplePatientsSheet(BuildContext context) {
       minChildSize: 0.5,
       maxChildSize: 0.95,
       expand: false,
+      shouldCloseOnMinExtent: false,
       builder: (context, scrollController) => CreateMultiplePatientsSheet(
         scrollController: scrollController,
       ),

@@ -25,5 +25,9 @@
     "viewAll": "View All",
     "seeMore": "See More",
     "noResults": "No results found",
-    "emptyList": "No items to display"
+    "emptyList": "No items to display",
+    "discardChanges": "Discard changes?",
+    "discardChangesMessage": "You have unsaved changes. Are you sure you want to discard them?",
+    "discard": "Discard",
+    "keepEditing": "Keep Editing"
 }

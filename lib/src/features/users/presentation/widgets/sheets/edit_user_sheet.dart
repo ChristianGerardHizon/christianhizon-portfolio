@@ -6,11 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
-import '../../../../../core/routing/routes/users.routes.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../settings/presentation/controllers/branches_controller.dart';
 import '../../../domain/user.dart';
 import '../../controllers/paginated_users_controller.dart';
+import '../../controllers/user_provider.dart';
 import '../../controllers/user_roles_controller.dart';
 
 /// Bottom sheet for editing user information.
@@ -85,8 +85,8 @@ class EditUserSheet extends HookConsumerWidget {
 
         showSuccessSnackBar(context, message: 'User updated successfully');
 
-        // Refresh detail view
-        UserDetailRoute(id: user.id).go(context);
+        // Refresh detail view by invalidating the provider
+        ref.invalidate(userProvider(user.id));
       }
     }
 

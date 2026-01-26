@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/product_lot.dart';
@@ -28,6 +29,7 @@ class CreateLotSheet extends HookConsumerWidget {
 
     // Form key
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final dirtyGuard = useFormDirtyGuard(formKey: formKey);
 
     // UI state
     final isSaving = useState(false);
@@ -82,13 +84,16 @@ class CreateLotSheet extends HookConsumerWidget {
       }
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
       child: FormBuilder(
         key: formKey,
         child: SingleChildScrollView(
@@ -118,8 +123,13 @@ class CreateLotSheet extends HookConsumerWidget {
                   ),
                   const SizedBox(width: 8),
                   TextButton(
-                    onPressed:
-                        isSaving.value ? null : () => Navigator.pop(context),
+                    onPressed: isSaving.value
+                        ? null
+                        : () async {
+                            if (await dirtyGuard.confirmDiscard(context)) {
+                              if (context.mounted) Navigator.pop(context);
+                            }
+                          },
                     child: Text(t.common.cancel),
                   ),
                   const SizedBox(width: 8),
@@ -208,6 +218,7 @@ class CreateLotSheet extends HookConsumerWidget {
           ),
         ),
       ),
+    ),
     );
   }
 

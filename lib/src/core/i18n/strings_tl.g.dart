@@ -111,6 +111,10 @@ class _TranslationsCommonTl implements TranslationsCommonEn {
 	@override String get seeMore => 'Tingnan ang Higit Pa';
 	@override String get noResults => 'Walang nakitang resulta';
 	@override String get emptyList => 'Walang ipapakita';
+	@override String get discardChanges => 'I-discard ang mga pagbabago?';
+	@override String get discardChangesMessage => 'Mayroon kang mga hindi pa nase-save na pagbabago. Sigurado ka bang gusto mong i-discard ang mga ito?';
+	@override String get discard => 'I-discard';
+	@override String get keepEditing => 'Magpatuloy sa Pag-edit';
 }
 
 // Path: failures
@@ -267,6 +271,10 @@ extension on TranslationsTl {
 			'common.seeMore' => 'Tingnan ang Higit Pa',
 			'common.noResults' => 'Walang nakitang resulta',
 			'common.emptyList' => 'Walang ipapakita',
+			'common.discardChanges' => 'I-discard ang mga pagbabago?',
+			'common.discardChangesMessage' => 'Mayroon kang mga hindi pa nase-save na pagbabago. Sigurado ka bang gusto mong i-discard ang mga ito?',
+			'common.discard' => 'I-discard',
+			'common.keepEditing' => 'Magpatuloy sa Pag-edit',
 			'failures.generic' => 'May nangyaring mali. Pakisubukang muli.',
 			'failures.networkError' => 'Error sa network. Pakitingnan ang iyong koneksyon.',
 			'failures.serverError' => 'Error sa server. Pakisubukang muli mamaya.',

@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/product.dart';
@@ -45,6 +46,7 @@ class StockAdjustmentSheet extends HookConsumerWidget {
 
     // Form key
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final dirtyGuard = useFormDirtyGuard(formKey: formKey);
 
     // UI state
     final isSaving = useState(false);
@@ -125,270 +127,282 @@ class StockAdjustmentSheet extends HookConsumerWidget {
       }
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      child: FormBuilder(
-        key: formKey,
-        initialValue: {
-          'adjustmentType': 'add',
-          'amount': '',
-          'reason': '',
-        },
-        child: SingleChildScrollView(
-          controller: scrollController,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Drag handle
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // === HEADER WITH ACTIONS ===
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(_title, style: theme.textTheme.titleLarge),
-                  ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    onPressed:
-                        isSaving.value ? null : () => Navigator.pop(context),
-                    child: Text(t.common.cancel),
-                  ),
-                  const SizedBox(width: 8),
-                  FilledButton(
-                    onPressed: isSaving.value ? null : handleSave,
-                    child: isSaving.value
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Text(t.common.save),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // Current quantity display
-              Card(
-                color: theme.colorScheme.surfaceContainerHighest,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.inventory_2_outlined,
-                        color: theme.colorScheme.primary,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Current Stock',
-                              style: theme.textTheme.labelMedium?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                            Text(
-                              _currentQuantity.toStringAsFixed(0),
-                              style: theme.textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            if (lot != null)
-                              Text(
-                                'Lot: ${lot!.lotNumber}',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Adjustment type selector
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Adjustment Type',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: SegmentedButton<String>(
-                      segments: const [
-                        ButtonSegment(
-                          value: 'add',
-                          label: Text('Add'),
-                          icon: Icon(Icons.add),
-                        ),
-                        ButtonSegment(
-                          value: 'remove',
-                          label: Text('Remove'),
-                          icon: Icon(Icons.remove),
-                        ),
-                      ],
-                      selected: {adjustmentType.value},
-                      onSelectionChanged: isSaving.value
-                          ? null
-                          : (values) {
-                              adjustmentType.value = values.first;
-                            },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Amount (required)
-              FormBuilderTextField(
-                name: 'amount',
-                decoration: const InputDecoration(
-                  labelText: 'Quantity *',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.numbers),
-                  helperText: 'Enter the quantity to add or remove',
-                ),
-                enabled: !isSaving.value,
-                keyboardType: TextInputType.number,
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(
-                    errorText: 'Quantity is required',
-                  ),
-                  FormBuilderValidators.numeric(
-                    errorText: 'Must be a number',
-                  ),
-                  FormBuilderValidators.min(
-                    0,
-                    errorText: 'Must be a positive number',
-                  ),
-                ]),
-                onChanged: (value) {
-                  adjustmentAmount.value = _parseNum(value);
-                },
-              ),
-              const SizedBox(height: 16),
-
-              // New quantity preview
-              Card(
-                color: newQuantity < 0
-                    ? theme.colorScheme.errorContainer
-                    : theme.colorScheme.primaryContainer,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Icon(
-                        newQuantity < _currentQuantity
-                            ? Icons.trending_down
-                            : newQuantity > _currentQuantity
-                                ? Icons.trending_up
-                                : Icons.trending_flat,
-                        color: newQuantity < 0
-                            ? theme.colorScheme.error
-                            : theme.colorScheme.primary,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'New Stock',
-                              style: theme.textTheme.labelMedium?.copyWith(
-                                color: newQuantity < 0
-                                    ? theme.colorScheme.onErrorContainer
-                                    : theme.colorScheme.onPrimaryContainer,
-                              ),
-                            ),
-                            Text(
-                              newQuantity.toStringAsFixed(0),
-                              style: theme.textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: newQuantity < 0
-                                    ? theme.colorScheme.error
-                                    : theme.colorScheme.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Delta display
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: adjustmentType.value == 'add'
-                              ? Colors.green.withValues(alpha: 0.2)
-                              : Colors.red.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(
-                          adjustmentType.value == 'add'
-                              ? '+${adjustmentAmount.value.toStringAsFixed(0)}'
-                              : '-${adjustmentAmount.value.toStringAsFixed(0)}',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: adjustmentType.value == 'add'
-                                ? Colors.green
-                                : Colors.red,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Reason (optional)
-              FormBuilderTextField(
-                name: 'reason',
-                decoration: const InputDecoration(
-                  labelText: 'Reason',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.notes),
-                  helperText: 'e.g., Received shipment, Damaged items, Inventory count',
-                ),
-                enabled: !isSaving.value,
-                maxLines: 2,
-                textCapitalization: TextCapitalization.sentences,
-              ),
-              const SizedBox(height: 24),
-            ],
+    return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 24,
           ),
-        ),
-      ),
-    );
+          child: FormBuilder(
+            key: formKey,
+            initialValue: {
+              'adjustmentType': 'add',
+              'amount': '',
+              'reason': '',
+            },
+            child: SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Drag handle
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.outlineVariant,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // === HEADER WITH ACTIONS ===
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(_title, style: theme.textTheme.titleLarge),
+                      ),
+                      const SizedBox(width: 8),
+                      TextButton(
+                        onPressed: isSaving.value
+                            ? null
+                            : () async {
+                                if (await dirtyGuard.confirmDiscard(context)) {
+                                  if (context.mounted) Navigator.pop(context);
+                                }
+                              },
+                        child: Text(t.common.cancel),
+                      ),
+                      const SizedBox(width: 8),
+                      FilledButton(
+                        onPressed: isSaving.value ? null : handleSave,
+                        child: isSaving.value
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : Text(t.common.save),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Current quantity display
+                  Card(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.inventory_2_outlined,
+                            color: theme.colorScheme.primary,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Current Stock',
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  _currentQuantity.toStringAsFixed(0),
+                                  style:
+                                      theme.textTheme.headlineMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                if (lot != null)
+                                  Text(
+                                    'Lot: ${lot!.lotNumber}',
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Adjustment type selector
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Adjustment Type',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        child: SegmentedButton<String>(
+                          segments: const [
+                            ButtonSegment(
+                              value: 'add',
+                              label: Text('Add'),
+                              icon: Icon(Icons.add),
+                            ),
+                            ButtonSegment(
+                              value: 'remove',
+                              label: Text('Remove'),
+                              icon: Icon(Icons.remove),
+                            ),
+                          ],
+                          selected: {adjustmentType.value},
+                          onSelectionChanged: isSaving.value
+                              ? null
+                              : (values) {
+                                  adjustmentType.value = values.first;
+                                },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Amount (required)
+                  FormBuilderTextField(
+                    name: 'amount',
+                    decoration: const InputDecoration(
+                      labelText: 'Quantity *',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.numbers),
+                      helperText: 'Enter the quantity to add or remove',
+                    ),
+                    enabled: !isSaving.value,
+                    keyboardType: TextInputType.number,
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(
+                        errorText: 'Quantity is required',
+                      ),
+                      FormBuilderValidators.numeric(
+                        errorText: 'Must be a number',
+                      ),
+                      FormBuilderValidators.min(
+                        0,
+                        errorText: 'Must be a positive number',
+                      ),
+                    ]),
+                    onChanged: (value) {
+                      adjustmentAmount.value = _parseNum(value);
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  // New quantity preview
+                  Card(
+                    color: newQuantity < 0
+                        ? theme.colorScheme.errorContainer
+                        : theme.colorScheme.primaryContainer,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Icon(
+                            newQuantity < _currentQuantity
+                                ? Icons.trending_down
+                                : newQuantity > _currentQuantity
+                                    ? Icons.trending_up
+                                    : Icons.trending_flat,
+                            color: newQuantity < 0
+                                ? theme.colorScheme.error
+                                : theme.colorScheme.primary,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'New Stock',
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: newQuantity < 0
+                                        ? theme.colorScheme.onErrorContainer
+                                        : theme.colorScheme.onPrimaryContainer,
+                                  ),
+                                ),
+                                Text(
+                                  newQuantity.toStringAsFixed(0),
+                                  style:
+                                      theme.textTheme.headlineMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: newQuantity < 0
+                                        ? theme.colorScheme.error
+                                        : theme.colorScheme.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Delta display
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: adjustmentType.value == 'add'
+                                  ? Colors.green.withValues(alpha: 0.2)
+                                  : Colors.red.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text(
+                              adjustmentType.value == 'add'
+                                  ? '+${adjustmentAmount.value.toStringAsFixed(0)}'
+                                  : '-${adjustmentAmount.value.toStringAsFixed(0)}',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: adjustmentType.value == 'add'
+                                    ? Colors.green
+                                    : Colors.red,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Reason (optional)
+                  FormBuilderTextField(
+                    name: 'reason',
+                    decoration: const InputDecoration(
+                      labelText: 'Reason',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.notes),
+                      helperText:
+                          'e.g., Received shipment, Damaged items, Inventory count',
+                    ),
+                    enabled: !isSaving.value,
+                    maxLines: 2,
+                    textCapitalization: TextCapitalization.sentences,
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 
   String? _nullIfEmpty(String? text) {

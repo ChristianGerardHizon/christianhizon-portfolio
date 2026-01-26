@@ -25,5 +25,9 @@
     "viewAll": "Tingnan Lahat",
     "seeMore": "Tingnan ang Higit Pa",
     "noResults": "Walang nakitang resulta",
-    "emptyList": "Walang ipapakita"
+    "emptyList": "Walang ipapakita",
+    "discardChanges": "I-discard ang mga pagbabago?",
+    "discardChangesMessage": "Mayroon kang mga hindi pa nase-save na pagbabago. Sigurado ka bang gusto mong i-discard ang mga ito?",
+    "discard": "I-discard",
+    "keepEditing": "Magpatuloy sa Pag-edit"
 }

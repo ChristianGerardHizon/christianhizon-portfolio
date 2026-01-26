@@ -1,10 +1,13 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/widgets/form_feedback.dart';
+import '../../../../settings/domain/message_template.dart';
 import '../../../../patients/domain/patient.dart';
 import '../../../../patients/presentation/controllers/patients_controller.dart';
 import '../../../../appointments/presentation/controllers/appointments_controller.dart';
@@ -36,6 +39,7 @@ class CreateMessageSheet extends HookConsumerWidget {
     final theme = Theme.of(context);
 
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final dirtyGuard = useFormDirtyGuard(formKey: formKey);
     final isSaving = useState(false);
     final selectedPatient = useState<Patient?>(initialPatient);
 
@@ -199,48 +203,56 @@ class CreateMessageSheet extends HookConsumerWidget {
       }
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      child: SingleChildScrollView(
-        child: FormBuilder(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Drag handle
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Header with actions
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'New Message',
-                      style: theme.textTheme.titleLarge,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        child: SingleChildScrollView(
+          child: FormBuilder(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Drag handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    onPressed:
-                        isSaving.value ? null : () => Navigator.pop(context),
-                    child: const Text('Cancel'),
-                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Header with actions
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'New Message',
+                        style: theme.textTheme.titleLarge,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: isSaving.value
+                          ? null
+                          : () async {
+                              if (await dirtyGuard.confirmDiscard(context)) {
+                                if (context.mounted) Navigator.pop(context);
+                              }
+                            },
+                      child: const Text('Cancel'),
+                    ),
                   const SizedBox(width: 8),
                   FilledButton(
                     onPressed: isSaving.value ? null : handleSave,
@@ -376,66 +388,18 @@ class CreateMessageSheet extends HookConsumerWidget {
                 error: (_, __) => const SizedBox.shrink(),
                 data: (templates) {
                   if (templates.isEmpty) return const SizedBox.shrink();
-                  return Column(
-                    children: [
-                      FormBuilderDropdown<String>(
-                        name: 'template',
-                        decoration: const InputDecoration(
-                          labelText: 'Use Template',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.description_outlined),
-                          helperText: 'Select a template to auto-fill content',
-                        ),
-                        onChanged: (value) async {
-                          if (value != null) {
-                            final template =
-                                templates.firstWhere((t) => t.id == value);
 
-                            // Fetch branch data if template has a branch
-                            String? branchName;
-                            String? branchAddress;
-                            String? branchPhone;
-                            if (template.branch != null) {
-                              final branchData = await ref
-                                  .read(branchProvider(template.branch!).future);
-                              if (branchData != null) {
-                                branchName =
-                                    branchData.displayName ?? branchData.name;
-                                branchAddress = branchData.address;
-                                branchPhone = branchData.contactNumber;
-                              }
-                            }
+                  // Find the default template
+                  final defaultTemplate =
+                      templates.firstWhereOrNull((t) => t.isDefault);
 
-                            // Fetch appointment data if linked
-                            DateTime? appointmentDateTime;
-                            if (initialAppointmentId != null) {
-                              final appointmentData = await ref.read(
-                                appointmentProvider(initialAppointmentId!).future,
-                              );
-                              appointmentDateTime = appointmentData?.date;
-                            }
-
-                            final finalContent = replacePlaceholders(
-                              template.content,
-                              selectedPatient.value,
-                              branchName: branchName,
-                              branchAddress: branchAddress,
-                              branchPhone: branchPhone,
-                              appointmentDateTime: appointmentDateTime,
-                            );
-                            formKey.currentState?.fields['content']
-                                ?.didChange(finalContent);
-                          }
-                        },
-                        items: templates
-                            .map((t) => DropdownMenuItem(
-                                  value: t.id,
-                                  child: Text(t.name),
-                                ))
-                            .toList(),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
+                  return _TemplateSelector(
+                    templates: templates,
+                    defaultTemplate: defaultTemplate,
+                    formKey: formKey,
+                    selectedPatient: selectedPatient.value,
+                    initialAppointmentId: initialAppointmentId,
+                    replacePlaceholders: replacePlaceholders,
                   );
                 },
               ),
@@ -490,23 +454,160 @@ class CreateMessageSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Notes (internal)
-              FormBuilderTextField(
-                name: 'notes',
-                decoration: const InputDecoration(
-                  labelText: 'Internal Notes',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.notes),
-                  helperText: 'For internal reference only (not sent)',
+                // Notes (internal)
+                FormBuilderTextField(
+                  name: 'notes',
+                  decoration: const InputDecoration(
+                    labelText: 'Internal Notes',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.notes),
+                    helperText: 'For internal reference only (not sent)',
+                  ),
+                  maxLines: 2,
+                  enabled: !isSaving.value,
                 ),
-                maxLines: 2,
-                enabled: !isSaving.value,
-              ),
-              const SizedBox(height: 16),
-            ],
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Separate widget to handle template selection with default auto-selection.
+class _TemplateSelector extends HookConsumerWidget {
+  const _TemplateSelector({
+    required this.templates,
+    required this.defaultTemplate,
+    required this.formKey,
+    required this.selectedPatient,
+    required this.initialAppointmentId,
+    required this.replacePlaceholders,
+  });
+
+  final List<MessageTemplate> templates;
+  final MessageTemplate? defaultTemplate;
+  final GlobalKey<FormBuilderState> formKey;
+  final Patient? selectedPatient;
+  final String? initialAppointmentId;
+  final String Function(
+    String content,
+    Patient? patient, {
+    String? branchName,
+    String? branchAddress,
+    String? branchPhone,
+    DateTime? appointmentDateTime,
+  }) replacePlaceholders;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Track if we've already applied the default template
+    final hasAppliedDefault = useState(false);
+
+    // Apply default template content on first build
+    useEffect(() {
+      if (defaultTemplate != null && !hasAppliedDefault.value) {
+        // Schedule the content update for after the current build
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          hasAppliedDefault.value = true;
+
+          // Fetch branch data if template has a branch
+          String? branchName;
+          String? branchAddress;
+          String? branchPhone;
+          if (defaultTemplate!.branch != null) {
+            final branchData = await ref
+                .read(branchProvider(defaultTemplate!.branch!).future);
+            if (branchData != null) {
+              branchName = branchData.displayName ?? branchData.name;
+              branchAddress = branchData.address;
+              branchPhone = branchData.contactNumber;
+            }
+          }
+
+          // Fetch appointment data if linked
+          DateTime? appointmentDateTime;
+          if (initialAppointmentId != null) {
+            final appointmentData = await ref.read(
+              appointmentProvider(initialAppointmentId!).future,
+            );
+            appointmentDateTime = appointmentData?.date;
+          }
+
+          final finalContent = replacePlaceholders(
+            defaultTemplate!.content,
+            selectedPatient,
+            branchName: branchName,
+            branchAddress: branchAddress,
+            branchPhone: branchPhone,
+            appointmentDateTime: appointmentDateTime,
+          );
+          formKey.currentState?.fields['content']?.didChange(finalContent);
+        });
+      }
+      return null;
+    }, [defaultTemplate]);
+
+    return Column(
+      children: [
+        FormBuilderDropdown<String>(
+          name: 'template',
+          initialValue: defaultTemplate?.id,
+          decoration: const InputDecoration(
+            labelText: 'Use Template',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.description_outlined),
+            helperText: 'Select a template to auto-fill content',
+          ),
+          onChanged: (value) async {
+            if (value != null) {
+              final template = templates.firstWhere((t) => t.id == value);
+
+              // Fetch branch data if template has a branch
+              String? branchName;
+              String? branchAddress;
+              String? branchPhone;
+              if (template.branch != null) {
+                final branchData =
+                    await ref.read(branchProvider(template.branch!).future);
+                if (branchData != null) {
+                  branchName = branchData.displayName ?? branchData.name;
+                  branchAddress = branchData.address;
+                  branchPhone = branchData.contactNumber;
+                }
+              }
+
+              // Fetch appointment data if linked
+              DateTime? appointmentDateTime;
+              if (initialAppointmentId != null) {
+                final appointmentData = await ref.read(
+                  appointmentProvider(initialAppointmentId!).future,
+                );
+                appointmentDateTime = appointmentData?.date;
+              }
+
+              final finalContent = replacePlaceholders(
+                template.content,
+                selectedPatient,
+                branchName: branchName,
+                branchAddress: branchAddress,
+                branchPhone: branchPhone,
+                appointmentDateTime: appointmentDateTime,
+              );
+              formKey.currentState?.fields['content']?.didChange(finalContent);
+            }
+          },
+          items: templates
+              .map((t) => DropdownMenuItem(
+                    value: t.id,
+                    child: Text(t.name),
+                  ))
+              .toList(),
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }
