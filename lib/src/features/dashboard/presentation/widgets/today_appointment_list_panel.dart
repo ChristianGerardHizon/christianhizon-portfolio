@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../appointments/domain/appointment_schedule.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
+import '../../../appointments/presentation/utils/appointment_completion_handler.dart';
 import '../../../appointments/presentation/widgets/components/appointment_status_chip.dart';
 import '../../../appointments/presentation/widgets/sheets/edit_appointment_sheet.dart';
 
@@ -20,7 +21,8 @@ class TodayAppointmentListPanel extends ConsumerWidget {
 
   final String? selectedId;
   final ValueChanged<AppointmentSchedule>? onAppointmentTap;
-  final void Function(String id, AppointmentScheduleStatus status)? onStatusChange;
+  final void Function(String id, AppointmentScheduleStatus status)?
+      onStatusChange;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,9 +32,7 @@ class TodayAppointmentListPanel extends ConsumerWidget {
     return appointmentsAsync.when(
       data: (appointments) {
         // Filter to today's appointments
-        final todayAppointments = appointments
-            .where((a) => a.isToday)
-            .toList()
+        final todayAppointments = appointments.where((a) => a.isToday).toList()
           ..sort((a, b) => a.date.compareTo(b.date));
 
         // Split into upcoming and completed
@@ -97,14 +97,16 @@ class TodayAppointmentListPanel extends ConsumerWidget {
                               Icons.schedule,
                               theme.colorScheme.primary,
                             ),
-                            ...upcoming.map((appointment) =>
-                                _AppointmentTile(
+                            ...upcoming.map((appointment) => _AppointmentTile(
                                   appointment: appointment,
                                   isSelected: appointment.id == selectedId,
-                                  onTap: () => onAppointmentTap?.call(appointment),
+                                  onTap: () =>
+                                      onAppointmentTap?.call(appointment),
                                   onStatusChange: (status) =>
-                                      _handleStatusChange(context, ref, appointment.id, status),
-                                  onEdit: () => _handleEdit(context, ref, appointment),
+                                      _handleStatusChange(
+                                          context, ref, appointment, status),
+                                  onEdit: () =>
+                                      _handleEdit(context, ref, appointment),
                                 )),
                           ],
 
@@ -117,14 +119,16 @@ class TodayAppointmentListPanel extends ConsumerWidget {
                               Icons.check_circle,
                               Colors.green,
                             ),
-                            ...completed.map((appointment) =>
-                                _AppointmentTile(
+                            ...completed.map((appointment) => _AppointmentTile(
                                   appointment: appointment,
                                   isSelected: appointment.id == selectedId,
-                                  onTap: () => onAppointmentTap?.call(appointment),
+                                  onTap: () =>
+                                      onAppointmentTap?.call(appointment),
                                   onStatusChange: (status) =>
-                                      _handleStatusChange(context, ref, appointment.id, status),
-                                  onEdit: () => _handleEdit(context, ref, appointment),
+                                      _handleStatusChange(
+                                          context, ref, appointment, status),
+                                  onEdit: () =>
+                                      _handleEdit(context, ref, appointment),
                                 )),
                           ],
 
@@ -137,14 +141,16 @@ class TodayAppointmentListPanel extends ConsumerWidget {
                               Icons.info_outline,
                               theme.colorScheme.outline,
                             ),
-                            ...other.map((appointment) =>
-                                _AppointmentTile(
+                            ...other.map((appointment) => _AppointmentTile(
                                   appointment: appointment,
                                   isSelected: appointment.id == selectedId,
-                                  onTap: () => onAppointmentTap?.call(appointment),
+                                  onTap: () =>
+                                      onAppointmentTap?.call(appointment),
                                   onStatusChange: (status) =>
-                                      _handleStatusChange(context, ref, appointment.id, status),
-                                  onEdit: () => _handleEdit(context, ref, appointment),
+                                      _handleStatusChange(
+                                          context, ref, appointment, status),
+                                  onEdit: () =>
+                                      _handleEdit(context, ref, appointment),
                                 )),
                           ],
                         ],
@@ -252,16 +258,28 @@ class TodayAppointmentListPanel extends ConsumerWidget {
   Future<void> _handleStatusChange(
     BuildContext context,
     WidgetRef ref,
-    String id,
+    AppointmentSchedule appointment,
     AppointmentScheduleStatus status,
   ) async {
+    // Special handling for completing an appointment
+    if (status == AppointmentScheduleStatus.completed) {
+      await AppointmentCompletionHandler.showCompletionFlowAndComplete(
+        context: context,
+        ref: ref,
+        appointment: appointment,
+      );
+      return;
+    }
+
+    // For other status changes, update directly
     final success = await ref
         .read(appointmentsControllerProvider.notifier)
-        .updateStatus(id, status);
+        .updateStatus(appointment.id, status);
 
     if (context.mounted) {
       if (success) {
-        showSuccessSnackBar(context, message: 'Status updated to ${status.name}');
+        showSuccessSnackBar(context,
+            message: 'Status updated to ${status.name}');
       } else {
         showErrorSnackBar(context, message: 'Failed to update status');
       }
@@ -435,7 +453,8 @@ class _AppointmentTile extends StatelessWidget {
     }
   }
 
-  Color _getStatusColor(BuildContext context, AppointmentScheduleStatus status) {
+  Color _getStatusColor(
+      BuildContext context, AppointmentScheduleStatus status) {
     final theme = Theme.of(context);
     switch (status) {
       case AppointmentScheduleStatus.scheduled:

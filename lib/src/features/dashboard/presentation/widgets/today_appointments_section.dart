@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../appointments/domain/appointment_schedule.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
+import '../../../appointments/presentation/utils/appointment_completion_handler.dart';
 import '../../../appointments/presentation/widgets/components/appointment_status_chip.dart';
 import '../../../appointments/presentation/widgets/sheets/edit_appointment_sheet.dart';
 
@@ -21,9 +22,7 @@ class TodayAppointmentsSection extends ConsumerWidget {
     return appointmentsAsync.when(
       data: (appointments) {
         // Filter to today's appointments
-        final todayAppointments = appointments
-            .where((a) => a.isToday)
-            .toList()
+        final todayAppointments = appointments.where((a) => a.isToday).toList()
           ..sort((a, b) => a.date.compareTo(b.date));
 
         // Split into upcoming and completed
@@ -88,7 +87,7 @@ class TodayAppointmentsSection extends ConsumerWidget {
                 (appointment) => _TodayAppointmentTile(
                   appointment: appointment,
                   onStatusChange: (status) =>
-                      _handleStatusChange(context, ref, appointment.id, status),
+                      _handleStatusChange(context, ref, appointment, status),
                   onEdit: () => _handleEdit(context, ref, appointment),
                 ),
               ),
@@ -109,7 +108,7 @@ class TodayAppointmentsSection extends ConsumerWidget {
                 (appointment) => _TodayAppointmentTile(
                   appointment: appointment,
                   onStatusChange: (status) =>
-                      _handleStatusChange(context, ref, appointment.id, status),
+                      _handleStatusChange(context, ref, appointment, status),
                   onEdit: () => _handleEdit(context, ref, appointment),
                 ),
               ),
@@ -131,7 +130,7 @@ class TodayAppointmentsSection extends ConsumerWidget {
                 (appointment) => _TodayAppointmentTile(
                   appointment: appointment,
                   onStatusChange: (status) =>
-                      _handleStatusChange(context, ref, appointment.id, status),
+                      _handleStatusChange(context, ref, appointment, status),
                   onEdit: () => _handleEdit(context, ref, appointment),
                 ),
               ),
@@ -251,16 +250,28 @@ class TodayAppointmentsSection extends ConsumerWidget {
   Future<void> _handleStatusChange(
     BuildContext context,
     WidgetRef ref,
-    String id,
+    AppointmentSchedule appointment,
     AppointmentScheduleStatus status,
   ) async {
+    // Special handling for completing an appointment
+    if (status == AppointmentScheduleStatus.completed) {
+      await AppointmentCompletionHandler.showCompletionFlowAndComplete(
+        context: context,
+        ref: ref,
+        appointment: appointment,
+      );
+      return;
+    }
+
+    // For other status changes, update directly
     final success = await ref
         .read(appointmentsControllerProvider.notifier)
-        .updateStatus(id, status);
+        .updateStatus(appointment.id, status);
 
     if (context.mounted) {
       if (success) {
-        showSuccessSnackBar(context, message: 'Status updated to ${status.name}');
+        showSuccessSnackBar(context,
+            message: 'Status updated to ${status.name}');
       } else {
         showErrorSnackBar(context, message: 'Failed to update status');
       }
@@ -312,7 +323,8 @@ class _TodayAppointmentTile extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: isUrgent
-            ? BorderSide(color: urgencyInfo.color.withValues(alpha: 0.3), width: 1)
+            ? BorderSide(
+                color: urgencyInfo.color.withValues(alpha: 0.3), width: 1)
             : BorderSide.none,
       ),
       child: InkWell(
@@ -541,7 +553,8 @@ class _QuickStatusButton extends StatelessWidget {
     }
   }
 
-  Color _getStatusColor(BuildContext context, AppointmentScheduleStatus status) {
+  Color _getStatusColor(
+      BuildContext context, AppointmentScheduleStatus status) {
     final theme = Theme.of(context);
     switch (status) {
       case AppointmentScheduleStatus.scheduled:

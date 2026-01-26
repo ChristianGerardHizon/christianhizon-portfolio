@@ -82,8 +82,9 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
     final expandedPatientName = record.get<String>('expand.patient.name');
     final expandedPatientOwner = record.get<String>('expand.patient.owner');
     final expandedPatientContact = record.get<String>('expand.patient.contactNumber');
-    final expandedPatientSpecies = record.get<String>('expand.patient.species');
-    final expandedPatientBreed = record.get<String>('expand.patient.breed');
+    // Extract species/breed names from nested expansion (patient.species, patient.breed)
+    final expandedPatientSpecies = record.get<String>('expand.patient.expand.species.name');
+    final expandedPatientBreed = record.get<String>('expand.patient.expand.breed.name');
 
     // Extract expanded treatment type data
     final expandedPatientTreatmentName = record.get<String>('expand.patientTreatment.name');

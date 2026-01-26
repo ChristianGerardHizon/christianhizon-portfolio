@@ -49,9 +49,11 @@ abstract class PBExpand {
   /// Expand for product queries - includes category and branch.
   static final Expand product = Expand.flat(['category', 'branch']);
 
-  /// Expand for appointment queries - includes patient, branch, and linked records/treatments.
+  /// Expand for appointment queries - includes patient (with species/breed), branch, and linked records/treatments.
   static final Expand appointment = Expand.flat([
     'patient',
+    'patient.species',
+    'patient.breed',
     'branch',
     'patientRecords',
     'patientTreatment',

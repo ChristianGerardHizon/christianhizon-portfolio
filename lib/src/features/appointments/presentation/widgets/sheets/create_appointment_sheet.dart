@@ -344,6 +344,18 @@ class CreateAppointmentSheet extends HookConsumerWidget {
                 initialValue: DateTime.now(),
                 validator: FormBuilderValidators.required(),
                 enabled: !isSaving.value,
+                onChanged: (value) {
+                  // When appointment date changes and reminder is enabled, update SMS date
+                  if (sendReminder.value && value != null) {
+                    reminderDateTime.value = DateTime(
+                      value.year,
+                      value.month,
+                      value.day - 1, // One day before
+                      9, // 9 AM
+                      0,
+                    );
+                  }
+                },
               ),
               const SizedBox(height: 16),
 

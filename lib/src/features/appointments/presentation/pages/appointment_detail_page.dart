@@ -8,12 +8,11 @@ import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../../messages/domain/message.dart';
 import '../../../messages/presentation/controllers/messages_controller.dart';
-import '../../../patients/domain/patient_record.dart';
-import '../../../patients/presentation/controllers/patient_records_controller.dart';
 import '../../../patients/presentation/widgets/sheets/add_record_sheet.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
+import '../utils/appointment_completion_handler.dart';
 import '../widgets/components/linked_items_section.dart';
 import '../widgets/sheets/edit_appointment_sheet.dart';
 
@@ -145,103 +144,104 @@ class _AppointmentDetailContent extends HookConsumerWidget {
             children: [
               // Status Banner
               _StatusBanner(
-              key: ValueKey('status-banner-${appointment.id}'),
-              appointment: appointment,
-              onStatusChange: (status) => _updateStatus(context, ref, status),
-            ),
-            const SizedBox(height: 24),
-
-            // Patient Info Section
-            _SectionCard(
-              title: 'Patient',
-              icon: Icons.pets,
-              child: _PatientInfoSection(
+                key: ValueKey('status-banner-${appointment.id}'),
                 appointment: appointment,
-                onTap: () => _navigateToPatient(context),
+                onStatusChange: (status) => _updateStatus(context, ref, status),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 24),
 
-            // Appointment Details Section
-            _SectionCard(
-              title: 'Appointment Details',
-              icon: Icons.calendar_today,
-              child: _AppointmentDetailsSection(appointment: appointment),
-            ),
-            const SizedBox(height: 16),
-
-            // Notes Section (if any)
-            if (appointment.notes?.isNotEmpty == true) ...[
+              // Patient Info Section
               _SectionCard(
-                title: 'Notes',
-                icon: Icons.notes,
-                child: Text(
-                  appointment.notes!,
-                  style: theme.textTheme.bodyMedium,
+                title: 'Patient',
+                icon: Icons.pets,
+                child: _PatientInfoSection(
+                  appointment: appointment,
+                  onTap: () => _navigateToPatient(context),
                 ),
               ),
               const SizedBox(height: 16),
-            ],
 
-            // Reminder Message Section
-            _ReminderMessageSection(
-              messagesAsync: reminderMessagesAsync,
-            ),
+              // Appointment Details Section
+              _SectionCard(
+                title: 'Appointment Details',
+                icon: Icons.calendar_today,
+                child: _AppointmentDetailsSection(appointment: appointment),
+              ),
+              const SizedBox(height: 16),
 
-            // Linked Items Section
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: LinkedItemsSection(
-                  patientRecords: appointment.patientRecordsExpanded,
-                  showActions: true,
-                  onAddRecordPressed: () {
-                    // Show sheet to add a new patient record and link it to this appointment
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      useSafeArea: true,
-                      useRootNavigator: true,
-                      builder: (context) => AddRecordSheet(
-                        patientId: appointment.patient!,
-                        appointmentId: appointment.id,
-                        onSave: (record) async {
-                          // Record is already created by the sheet; just link its ID
-                          final updatedIds = <String>[
-                            ...appointment.patientRecords,
-                            record.id
-                          ];
-                          final updatedAppointment = appointment.copyWith(
-                            patientRecords: updatedIds,
-                          );
-                          final success = await ref
-                              .read(paginatedAppointmentsControllerProvider
-                                  .notifier)
-                              .updateAppointment(updatedAppointment);
-                          if (success) {
-                            ref.invalidate(appointmentProvider(appointment.id));
-                          }
-                          return record;
-                        },
-                      ),
-                    );
-                  },
+              // Notes Section (if any)
+              if (appointment.notes?.isNotEmpty == true) ...[
+                _SectionCard(
+                  title: 'Notes',
+                  icon: Icons.notes,
+                  child: Text(
+                    appointment.notes!,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+
+              // Reminder Message Section
+              _ReminderMessageSection(
+                messagesAsync: reminderMessagesAsync,
+              ),
+
+              // Linked Items Section
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: LinkedItemsSection(
+                    patientRecords: appointment.patientRecordsExpanded,
+                    showActions: true,
+                    onAddRecordPressed: () {
+                      // Show sheet to add a new patient record and link it to this appointment
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        useSafeArea: true,
+                        useRootNavigator: true,
+                        builder: (context) => AddRecordSheet(
+                          patientId: appointment.patient!,
+                          appointmentId: appointment.id,
+                          onSave: (record) async {
+                            // Record is already created by the sheet; just link its ID
+                            final updatedIds = <String>[
+                              ...appointment.patientRecords,
+                              record.id
+                            ];
+                            final updatedAppointment = appointment.copyWith(
+                              patientRecords: updatedIds,
+                            );
+                            final success = await ref
+                                .read(paginatedAppointmentsControllerProvider
+                                    .notifier)
+                                .updateAppointment(updatedAppointment);
+                            if (success) {
+                              ref.invalidate(
+                                  appointmentProvider(appointment.id));
+                            }
+                            return record;
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            // Quick Actions
-            _QuickActionsSection(
-              appointment: appointment,
-              onMarkComplete: () => _updateStatus(
-                context,
-                ref,
-                AppointmentScheduleStatus.completed,
+              // Quick Actions
+              _QuickActionsSection(
+                appointment: appointment,
+                onMarkComplete: () => _updateStatus(
+                  context,
+                  ref,
+                  AppointmentScheduleStatus.completed,
+                ),
+                onEdit: () => _showEditSheet(context, ref),
+                onDelete: () => _confirmDelete(context, ref),
               ),
-              onEdit: () => _showEditSheet(context, ref),
-              onDelete: () => _confirmDelete(context, ref),
-            ),
               const SizedBox(height: 80), // Extra space for FAB
             ],
           ),
@@ -296,7 +296,8 @@ class _AppointmentDetailContent extends HookConsumerWidget {
               title: const Text('Print'),
               onTap: () {
                 Navigator.pop(context);
-                showWarningSnackBar(context, message: 'Print functionality coming soon');
+                showWarningSnackBar(context,
+                    message: 'Print functionality coming soon');
               },
             ),
             ListTile(
@@ -326,7 +327,11 @@ class _AppointmentDetailContent extends HookConsumerWidget {
   ) {
     // Special handling for completing an appointment
     if (status == AppointmentScheduleStatus.completed) {
-      _showCompletionDialog(context, ref);
+      AppointmentCompletionHandler.showCompletionFlowAndComplete(
+        context: context,
+        ref: ref,
+        appointment: appointment,
+      );
       return;
     }
 
@@ -363,9 +368,11 @@ class _AppointmentDetailContent extends HookConsumerWidget {
 
               if (context.mounted) {
                 if (success) {
-                  showSuccessSnackBar(context, message: 'Status updated to $statusLabel');
+                  showSuccessSnackBar(context,
+                      message: 'Status updated to $statusLabel');
                 } else {
-                  showErrorSnackBar(context, message: 'Failed to update status');
+                  showErrorSnackBar(context,
+                      message: 'Failed to update status');
                 }
               }
             },
@@ -374,147 +381,6 @@ class _AppointmentDetailContent extends HookConsumerWidget {
         ],
       ),
     );
-  }
-
-  /// Shows a dialog when completing an appointment, asking if user wants to
-  /// create a treatment record.
-  void _showCompletionDialog(BuildContext context, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Complete Appointment'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Would you like to create a treatment record for this appointment?',
-            ),
-            if (appointment.patientTreatmentName != null) ...[
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Theme.of(dialogContext).colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.medical_services_outlined,
-                      size: 20,
-                      color: Theme.of(dialogContext).colorScheme.primary,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        appointment.patientTreatmentName!,
-                        style: Theme.of(dialogContext).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
-          ),
-          OutlinedButton(
-            onPressed: () async {
-              Navigator.pop(dialogContext);
-              await _completeAppointment(context, ref, createRecord: false);
-            },
-            child: const Text('Complete Only'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              Navigator.pop(dialogContext);
-              await _completeAppointment(context, ref, createRecord: true);
-            },
-            child: const Text('Create Record'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Completes the appointment and optionally creates a treatment record.
-  Future<void> _completeAppointment(
-    BuildContext context,
-    WidgetRef ref, {
-    required bool createRecord,
-  }) async {
-    // Update appointment status first
-    final success = await ref
-        .read(paginatedAppointmentsControllerProvider.notifier)
-        .updateStatus(appointment.id, AppointmentScheduleStatus.completed);
-
-    if (!success) {
-      if (context.mounted) {
-        showErrorSnackBar(context, message: 'Failed to complete appointment');
-      }
-      return;
-    }
-
-    // Invalidate to refresh the appointment
-    ref.invalidate(appointmentsControllerProvider);
-    ref.invalidate(appointmentProvider(appointment.id));
-
-    // Create treatment record if requested
-    if (createRecord && appointment.patient != null) {
-      final patientRecord = PatientRecord(
-        id: '', // Will be assigned by PocketBase
-        patientId: appointment.patient!,
-        date: DateTime.now(),
-        diagnosis: appointment.purpose ?? '',
-        weight: '',
-        temperature: '',
-        treatment: appointment.patientTreatmentName,
-        notes: appointment.notes,
-        appointment: appointment.id,
-      );
-
-      final createdRecord = await ref
-          .read(patientRecordsControllerProvider(appointment.patient!).notifier)
-          .createRecordAndReturn(patientRecord);
-
-      if (createdRecord != null) {
-        // Link the record to the appointment
-        final updatedAppointment = appointment.copyWith(
-          patientRecords: [...appointment.patientRecords, createdRecord.id],
-        );
-        await ref
-            .read(paginatedAppointmentsControllerProvider.notifier)
-            .updateAppointment(updatedAppointment);
-
-        // Refresh the appointment to show the new record
-        ref.invalidate(appointmentProvider(appointment.id));
-      }
-
-      if (context.mounted) {
-        if (createdRecord != null) {
-          showSuccessSnackBar(
-            context,
-            message: 'Appointment completed and treatment record created',
-          );
-        } else {
-          showWarningSnackBar(
-            context,
-            message: 'Appointment completed, but failed to create treatment record',
-          );
-        }
-      }
-    } else {
-      if (context.mounted) {
-        showSuccessSnackBar(context, message: 'Appointment marked as completed');
-      }
-    }
   }
 
   void _confirmDelete(BuildContext context, WidgetRef ref) {
@@ -547,7 +413,8 @@ class _AppointmentDetailContent extends HookConsumerWidget {
                 if (success) {
                   showSuccessSnackBar(context, message: 'Appointment deleted');
                 } else {
-                  showErrorSnackBar(context, message: 'Failed to delete appointment');
+                  showErrorSnackBar(context,
+                      message: 'Failed to delete appointment');
                 }
               }
             },
@@ -786,6 +653,15 @@ class _PatientInfoSection extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+                  if (appointment.patientExpanded != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      '${appointment.patientExpanded!.species ?? "Unknown"} - ${appointment.patientExpanded!.breed ?? "Unknown breed"}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 4),
                   Row(
                     children: [
