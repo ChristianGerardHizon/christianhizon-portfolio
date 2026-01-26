@@ -45,11 +45,6 @@ class EditMessageSheet extends HookConsumerWidget {
         ? ref.watch(patientProvider(message.patient!))
         : const AsyncValue.data(null);
 
-    // Watch appointment if linked
-    final appointmentAsync = message.appointment != null
-        ? ref.watch(appointmentProvider(message.appointment!))
-        : const AsyncValue.data(null);
-
     String replacePlaceholders(
       String content,
       Patient? patient, {
@@ -316,13 +311,22 @@ class EditMessageSheet extends HookConsumerWidget {
                               }
                             }
 
+                            // Fetch appointment data if linked
+                            DateTime? appointmentDateTime;
+                            if (message.appointment != null) {
+                              final appointmentData = await ref.read(
+                                appointmentProvider(message.appointment!).future,
+                              );
+                              appointmentDateTime = appointmentData?.date;
+                            }
+
                             final finalContent = replacePlaceholders(
                               template.content,
                               patientAsync.value,
                               branchName: branchName,
                               branchAddress: branchAddress,
                               branchPhone: branchPhone,
-                              appointmentDateTime: appointmentAsync.value?.date,
+                              appointmentDateTime: appointmentDateTime,
                             );
                             formKey.currentState?.fields['content']
                                 ?.didChange(finalContent);
