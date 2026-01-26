@@ -10,7 +10,6 @@ import '../../domain/appointment_report.dart';
 import '../../domain/inventory_report.dart';
 import '../../domain/patient_report.dart';
 import '../../domain/sales_report.dart';
-import '../../domain/treatment_plan_report.dart';
 
 part 'reports_repository.g.dart';
 
@@ -40,11 +39,6 @@ abstract class ReportsRepository {
   });
 
   FutureEither<InventoryReport> getInventoryReport();
-
-  FutureEither<TreatmentPlanReport> getTreatmentPlanReport({
-    required DateTime startDate,
-    required DateTime endDate,
-  });
 }
 
 @Riverpod(keepAlive: true)
@@ -415,87 +409,5 @@ class ReportsRepositoryImpl implements ReportsRepository {
       stockStatusBreakdown: stockStatus,
       lowStockItems: lowStockItems,
     );
-  }
-
-  @override
-  FutureEither<TreatmentPlanReport> getTreatmentPlanReport({
-    required DateTime startDate,
-    required DateTime endDate,
-  }) async {
-    return TaskEither.tryCatch(
-      () async {
-        // Query views in parallel for best performance
-        final results = await Future.wait([
-          _pb
-              .collection(PocketBaseCollections.vwTreatmentPlanSummary)
-              .getFullList(),
-          _pb
-              .collection(PocketBaseCollections.vwOverdueTreatmentItems)
-              .getFullList(),
-        ]);
-
-        final summaryRecords = results[0];
-        final overdueRecords = results[1];
-
-        if (summaryRecords.isEmpty) {
-          return TreatmentPlanReport.empty.copyWith(
-            overdueItemsCount: overdueRecords.length,
-          );
-        }
-
-        var totalPlans = 0;
-        var activePlans = 0;
-        var completedPlans = 0;
-        var abandonedPlans = 0;
-
-        final byStatus = <String, int>{};
-        final byTreatmentType = <String, int>{};
-
-        for (final record in summaryRecords) {
-          final status = record.getStringValue('status');
-          final treatmentName = record.getStringValue('treatment_name');
-          final count = record.getIntValue('plan_count');
-
-          totalPlans += count;
-
-          // Count by status
-          switch (status.toLowerCase()) {
-            case 'active':
-              activePlans += count;
-            case 'completed':
-              completedPlans += count;
-            case 'abandoned':
-              abandonedPlans += count;
-          }
-
-          // By status for pie chart
-          if (status.isNotEmpty) {
-            byStatus[status] = (byStatus[status] ?? 0) + count;
-          }
-
-          // By treatment type
-          final treatmentLabel =
-              treatmentName.isEmpty ? 'Unknown' : treatmentName;
-          byTreatmentType[treatmentLabel] =
-              (byTreatmentType[treatmentLabel] ?? 0) + count;
-        }
-
-        // Calculate average progress (simplified)
-        final totalProgress =
-            totalPlans > 0 ? (completedPlans / totalPlans) * 100 : 0.0;
-
-        return TreatmentPlanReport(
-          totalPlans: totalPlans,
-          activePlans: activePlans,
-          completedPlans: completedPlans,
-          abandonedPlans: abandonedPlans,
-          averageProgressPercentage: totalProgress,
-          plansByStatus: byStatus,
-          plansByTreatmentType: byTreatmentType,
-          overdueItemsCount: overdueRecords.length,
-        );
-      },
-      Failure.handle,
-    ).run();
   }
 }

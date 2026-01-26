@@ -7,7 +7,6 @@ import '../widgets/views/appointment_report_view.dart';
 import '../widgets/views/inventory_report_view.dart';
 import '../widgets/views/patient_report_view.dart';
 import '../widgets/views/sales_report_view.dart';
-import '../widgets/views/treatment_plan_report_view.dart';
 
 /// Main reports page with tabbed navigation for different report types.
 class ReportsPage extends HookConsumerWidget {
@@ -15,7 +14,7 @@ class ReportsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tabController = useTabController(initialLength: 5);
+    final tabController = useTabController(initialLength: 4);
 
     return Scaffold(
       appBar: AppBar(
@@ -41,10 +40,6 @@ class ReportsPage extends HookConsumerWidget {
               icon: Icon(Icons.inventory_2),
               text: 'Inventory',
             ),
-            Tab(
-              icon: Icon(Icons.assignment),
-              text: 'Treatment Plans',
-            ),
           ],
         ),
         actions: [
@@ -66,7 +61,6 @@ class ReportsPage extends HookConsumerWidget {
           PatientReportView(),
           AppointmentReportView(),
           InventoryReportView(),
-          TreatmentPlanReportView(),
         ],
       ),
     );
