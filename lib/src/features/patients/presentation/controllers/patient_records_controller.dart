@@ -30,6 +30,8 @@ class PatientRecordsController extends _$PatientRecordsController {
 
     final result = await _repository.fetchByPatient(patientId);
 
+    if (!ref.mounted) return;
+
     state = result.fold(
       (failure) => AsyncError(failure, StackTrace.current),
       (records) => AsyncData(records),
@@ -39,6 +41,8 @@ class PatientRecordsController extends _$PatientRecordsController {
   /// Creates a new patient record.
   Future<bool> createRecord(PatientRecord record) async {
     final result = await _repository.create(record);
+
+    if (!ref.mounted) return false;
 
     return result.fold(
       (failure) => false,
@@ -58,6 +62,8 @@ class PatientRecordsController extends _$PatientRecordsController {
   Future<PatientRecord?> createRecordAndReturn(PatientRecord record) async {
     final result = await _repository.create(record);
 
+    if (!ref.mounted) return null;
+
     return result.fold(
       (failure) => null,
       (newRecord) {
@@ -72,6 +78,8 @@ class PatientRecordsController extends _$PatientRecordsController {
   /// Updates an existing patient record.
   Future<bool> updateRecord(PatientRecord record) async {
     final result = await _repository.update(record);
+
+    if (!ref.mounted) return false;
 
     return result.fold(
       (failure) => false,
@@ -90,6 +98,8 @@ class PatientRecordsController extends _$PatientRecordsController {
   /// Deletes a patient record (soft delete).
   Future<bool> deleteRecord(String id) async {
     final result = await _repository.delete(id);
+
+    if (!ref.mounted) return false;
 
     return result.fold(
       (failure) => false,
