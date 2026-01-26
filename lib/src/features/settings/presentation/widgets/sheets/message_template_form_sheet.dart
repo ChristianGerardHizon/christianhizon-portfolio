@@ -300,6 +300,18 @@ class MessageTemplateFormSheet extends HookConsumerWidget {
                     label: '{address}',
                     onTap: () => insertPlaceholder('{address}'),
                   ),
+                  _PlaceholderChip(
+                    label: '{patientPronoun}',
+                    onTap: () => insertPlaceholder('{patientPronoun}'),
+                  ),
+                  _PlaceholderChip(
+                    label: '{patientPronounObject}',
+                    onTap: () => insertPlaceholder('{patientPronounObject}'),
+                  ),
+                  _PlaceholderChip(
+                    label: '{patientPronounPossessive}',
+                    onTap: () => insertPlaceholder('{patientPronounPossessive}'),
+                  ),
                 ],
               ),
               const SizedBox(height: 12),

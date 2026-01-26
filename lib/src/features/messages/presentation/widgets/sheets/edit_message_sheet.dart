@@ -71,6 +71,21 @@ class EditMessageSheet extends HookConsumerWidget {
         replaced = replaced.replaceAll('{breed}', patient.breed ?? '');
         replaced = replaced.replaceAll('{email}', patient.email ?? '');
         replaced = replaced.replaceAll('{address}', patient.address ?? '');
+
+        // Replace pronoun placeholders based on patient sex
+        final isMale = patient.sex == PatientSex.male;
+        replaced = replaced.replaceAll(
+          '{patientPronoun}',
+          isMale ? 'he' : 'she',
+        );
+        replaced = replaced.replaceAll(
+          '{patientPronounObject}',
+          isMale ? 'him' : 'her',
+        );
+        replaced = replaced.replaceAll(
+          '{patientPronounPossessive}',
+          isMale ? 'his' : 'her',
+        );
       }
 
       // Replace branch data

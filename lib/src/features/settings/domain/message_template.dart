@@ -30,7 +30,7 @@ class MessageTemplate with MessageTemplateMappable {
   /// Message content with placeholders.
   ///
   /// Supported placeholders:
-  /// Patient: {patientName}, {patientPhone}, {ownerName}, {species}, {breed}, {email}, {address}
+  /// Patient: {patientName}, {patientPhone}, {ownerName}, {species}, {breed}, {email}, {address}, {patientPronoun}, {patientPronounObject}, {patientPronounPossessive}
   /// Branch: {branchName}, {branchAddress}, {branchPhone}
   /// Appointment: {appointmentDate}, {appointmentTime}, {appointmentDay}, {appointmentMonth}, {appointmentYear}, {appointmentHour}, {appointmentMinutes}, {appointmentAmPm}
   final String content;
@@ -63,6 +63,9 @@ class MessageTemplate with MessageTemplateMappable {
     '{breed}',
     '{email}',
     '{address}',
+    '{patientPronoun}',
+    '{patientPronounObject}',
+    '{patientPronounPossessive}',
     // Branch data
     '{branchName}',
     '{branchAddress}',
