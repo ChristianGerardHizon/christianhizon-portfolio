@@ -126,6 +126,8 @@ class EditAppointmentSheet extends HookConsumerWidget {
         notes: values['notes'] as String?,
         status: appointment.status,
         patient: appointment.patient,
+        patientTreatment: appointment.patientTreatment,
+        patientTreatmentName: appointment.patientTreatmentName,
         patientRecords: linkedRecordIds.value,
         branch: appointment.branch,
         patientName: appointment.patientName,

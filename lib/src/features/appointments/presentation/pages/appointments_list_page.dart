@@ -327,12 +327,23 @@ class AppointmentsListPage extends ConsumerWidget {
         appointment: appointment.id,
       );
 
-      final recordCreated = await ref
+      final createdRecord = await ref
           .read(patientRecordsControllerProvider(appointment.patient!).notifier)
-          .createRecord(patientRecord);
+          .createRecordAndReturn(patientRecord);
+
+      if (createdRecord != null) {
+        // Link the record to the appointment
+        final updatedAppointment = appointment.copyWith(
+          status: AppointmentScheduleStatus.completed,
+          patientRecords: [...appointment.patientRecords, createdRecord.id],
+        );
+        await ref
+            .read(paginatedAppointmentsControllerProvider.notifier)
+            .updateAppointment(updatedAppointment);
+      }
 
       if (context.mounted) {
-        if (recordCreated) {
+        if (createdRecord != null) {
           showSuccessSnackBar(
             context,
             message: 'Appointment completed and treatment record created',
