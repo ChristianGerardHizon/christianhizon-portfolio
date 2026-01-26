@@ -19,7 +19,9 @@
       "Bash(grepai search:*)",
       "Bash(grepai init --help:*)",
       "Bash(grepai status:*)",
-      "Bash(xargs cat:*)"
+      "Bash(xargs cat:*)",
+      "Bash(sort:*)",
+      "Bash(xargs git add:*)"
     ],
     "deny": [
       "Bash(rm:*)",
