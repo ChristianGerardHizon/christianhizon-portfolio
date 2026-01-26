@@ -42,6 +42,13 @@ class MessageTemplateMapper extends ClassMapperBase<MessageTemplate> {
     _$branch,
     opt: true,
   );
+  static bool _$isDefault(MessageTemplate v) => v.isDefault;
+  static const Field<MessageTemplate, bool> _f$isDefault = Field(
+    'isDefault',
+    _$isDefault,
+    opt: true,
+    def: false,
+  );
   static bool _$isDeleted(MessageTemplate v) => v.isDeleted;
   static const Field<MessageTemplate, bool> _f$isDeleted = Field(
     'isDeleted',
@@ -69,6 +76,7 @@ class MessageTemplateMapper extends ClassMapperBase<MessageTemplate> {
     #content: _f$content,
     #category: _f$category,
     #branch: _f$branch,
+    #isDefault: _f$isDefault,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
@@ -81,6 +89,7 @@ class MessageTemplateMapper extends ClassMapperBase<MessageTemplate> {
       content: data.dec(_f$content),
       category: data.dec(_f$category),
       branch: data.dec(_f$branch),
+      isDefault: data.dec(_f$isDefault),
       isDeleted: data.dec(_f$isDeleted),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
@@ -155,6 +164,7 @@ abstract class MessageTemplateCopyWith<$R, $In extends MessageTemplate, $Out>
     String? content,
     String? category,
     String? branch,
+    bool? isDefault,
     bool? isDeleted,
     DateTime? created,
     DateTime? updated,
@@ -179,6 +189,7 @@ class _MessageTemplateCopyWithImpl<$R, $Out>
     String? content,
     Object? category = $none,
     Object? branch = $none,
+    bool? isDefault,
     bool? isDeleted,
     Object? created = $none,
     Object? updated = $none,
@@ -189,6 +200,7 @@ class _MessageTemplateCopyWithImpl<$R, $Out>
       if (content != null) #content: content,
       if (category != $none) #category: category,
       if (branch != $none) #branch: branch,
+      if (isDefault != null) #isDefault: isDefault,
       if (isDeleted != null) #isDeleted: isDeleted,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
@@ -201,6 +213,7 @@ class _MessageTemplateCopyWithImpl<$R, $Out>
     content: data.get(#content, or: $value.content),
     category: data.get(#category, or: $value.category),
     branch: data.get(#branch, or: $value.branch),
+    isDefault: data.get(#isDefault, or: $value.isDefault),
     isDeleted: data.get(#isDeleted, or: $value.isDeleted),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),

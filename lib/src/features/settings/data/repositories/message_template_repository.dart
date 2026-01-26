@@ -95,6 +95,7 @@ class MessageTemplateRepositoryImpl implements MessageTemplateRepository {
           'content': template.content,
           'category': template.category,
           'branch': template.branch,
+          'isDefault': template.isDefault,
           'isDeleted': false,
         };
 
@@ -121,9 +122,13 @@ class MessageTemplateRepositoryImpl implements MessageTemplateRepository {
           'name': template.name,
           'content': template.content,
           'category': template.category,
+          'isDefault': template.isDefault,
         };
 
-        final record = await _collection.update(template.id, body: body);
+        final record = await _collection.update(
+          template.id,
+          body: body,
+        );
         return _toEntity(record);
       },
       Failure.handle,

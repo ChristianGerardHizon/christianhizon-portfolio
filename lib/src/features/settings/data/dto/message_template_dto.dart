@@ -17,6 +17,7 @@ class MessageTemplateDto with MessageTemplateDtoMappable {
   final String content;
   final String? category;
   final String? branch;
+  final bool isDefault;
   final bool isDeleted;
   final String? created;
   final String? updated;
@@ -29,6 +30,7 @@ class MessageTemplateDto with MessageTemplateDtoMappable {
     required this.content,
     this.category,
     this.branch,
+    this.isDefault = false,
     this.isDeleted = false,
     this.created,
     this.updated,
@@ -46,6 +48,7 @@ class MessageTemplateDto with MessageTemplateDtoMappable {
       content: json['content'] as String? ?? '',
       category: json['category'] as String?,
       branch: json['branch'] as String?,
+      isDefault: json['isDefault'] as bool? ?? false,
       isDeleted: json['isDeleted'] as bool? ?? false,
       created: json['created'] as String?,
       updated: json['updated'] as String?,
@@ -60,6 +63,7 @@ class MessageTemplateDto with MessageTemplateDtoMappable {
       content: content,
       category: category,
       branch: branch,
+      isDefault: isDefault,
       isDeleted: isDeleted,
       created: created != null ? DateTime.tryParse(created!) : null,
       updated: updated != null ? DateTime.tryParse(updated!) : null,
