@@ -16,7 +16,6 @@ import '../widgets/tabs/patient_details_tab.dart';
 import '../widgets/tabs/patient_files_tab.dart';
 import '../widgets/tabs/patient_overview_tab.dart';
 import '../widgets/tabs/patient_records_tab.dart';
-import '../widgets/tabs/patient_treatments_tab.dart';
 
 /// Patient detail page with tabbed content.
 ///
@@ -42,7 +41,7 @@ class PatientDetailPage extends HookConsumerWidget {
     final patientAsync = ref.watch(patientProvider(patientId));
 
     final tabController = useTabController(
-      initialLength: 6,
+      initialLength: 5,
       initialIndex: initialTab.index,
     );
     final isTablet = Breakpoints.isTabletOrLarger(context);
@@ -134,7 +133,6 @@ class PatientDetailPage extends HookConsumerWidget {
                 Tab(text: 'Overview'),
                 Tab(text: 'Details'),
                 Tab(text: 'Records'),
-                Tab(text: 'Treatments'),
                 Tab(text: 'Appointments'),
                 Tab(text: 'Files'),
               ],
@@ -146,7 +144,6 @@ class PatientDetailPage extends HookConsumerWidget {
               PatientOverviewTab(patient: patient),
               PatientDetailsTab(patient: patient),
               PatientRecordsTab(patient: patient),
-              PatientTreatmentsTab(patient: patient),
               PatientAppointmentsTab(patient: patient),
               PatientFilesTab(patient: patient),
             ],
