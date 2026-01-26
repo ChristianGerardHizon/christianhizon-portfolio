@@ -105,24 +105,38 @@ class _TemplateDetailContent extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Category
-            if (template.category != null) ...[
-              Text(
-                'Category',
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: theme.colorScheme.outline,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Chip(
-                label: Text(template.category!),
-                backgroundColor: theme.colorScheme.primaryContainer,
-                labelStyle: TextStyle(
-                  color: theme.colorScheme.onPrimaryContainer,
-                ),
-              ),
-              const SizedBox(height: 24),
-            ],
+            // Default badge and category row
+            Row(
+              children: [
+                // Category chip
+                if (template.category != null) ...[
+                  Chip(
+                    label: Text(template.category!),
+                    backgroundColor: theme.colorScheme.primaryContainer,
+                    labelStyle: TextStyle(
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                // Default badge
+                if (template.isDefault)
+                  Chip(
+                    label: const Text('Default'),
+                    avatar: Icon(
+                      Icons.star,
+                      size: 16,
+                      color: theme.colorScheme.onSecondaryContainer,
+                    ),
+                    backgroundColor: theme.colorScheme.secondaryContainer,
+                    labelStyle: TextStyle(
+                      color: theme.colorScheme.onSecondaryContainer,
+                    ),
+                  ),
+              ],
+            ),
+            if (template.category != null || template.isDefault)
+              const SizedBox(height: 16),
 
             // Content
             Text(
@@ -169,9 +183,9 @@ class _TemplateDetailContent extends ConsumerWidget {
               ),
             ],
 
-            // Treatment warning
-            if (template.usesTreatmentData) ...[
-              const SizedBox(height: 24),
+            // Appointment info
+            if (template.usesAppointmentData) ...[
+              const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -185,16 +199,50 @@ class _TemplateDetailContent extends ConsumerWidget {
                 child: Row(
                   children: [
                     Icon(
-                      Icons.info_outline,
+                      Icons.calendar_today_outlined,
                       color: theme.colorScheme.tertiary,
                       size: 20,
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'This template uses treatment data. Make sure a treatment is linked when using this template.',
+                        'This template uses appointment data. Date and time will be replaced when sending from an appointment.',
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onTertiaryContainer,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
+            // Branch info
+            if (template.usesBranchData) ...[
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.secondaryContainer
+                      .withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: theme.colorScheme.secondary.withValues(alpha: 0.5),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.business_outlined,
+                      color: theme.colorScheme.secondary,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'This template uses branch data. Branch details will be replaced when sending.',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSecondaryContainer,
                         ),
                       ),
                     ),

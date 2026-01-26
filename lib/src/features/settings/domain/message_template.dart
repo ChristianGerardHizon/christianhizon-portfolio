@@ -15,6 +15,7 @@ class MessageTemplate with MessageTemplateMappable {
     required this.content,
     this.category,
     this.branch,
+    this.isDefault = false,
     this.isDeleted = false,
     this.created,
     this.updated,
@@ -30,7 +31,8 @@ class MessageTemplate with MessageTemplateMappable {
   ///
   /// Supported placeholders:
   /// Patient: {patientName}, {patientPhone}, {ownerName}, {species}, {breed}, {email}, {address}
-  /// Treatment: {treatmentName}, {treatmentDate}, {treatmentNotes}
+  /// Branch: {branchName}, {branchAddress}, {branchPhone}
+  /// Appointment: {appointmentDate}, {appointmentTime}, {appointmentDay}, {appointmentMonth}, {appointmentYear}, {appointmentHour}, {appointmentMinutes}, {appointmentAmPm}
   final String content;
 
   /// Template category for organization (e.g., "Reminders", "Follow-up", "Billing").
@@ -38,6 +40,9 @@ class MessageTemplate with MessageTemplateMappable {
 
   /// FK to Branch.
   final String? branch;
+
+  /// Whether this is the default template for its category.
+  final bool isDefault;
 
   /// Soft delete flag.
   final bool isDeleted;
@@ -58,10 +63,19 @@ class MessageTemplate with MessageTemplateMappable {
     '{breed}',
     '{email}',
     '{address}',
-    // Treatment data
-    '{treatmentName}',
-    '{treatmentDate}',
-    '{treatmentNotes}',
+    // Branch data
+    '{branchName}',
+    '{branchAddress}',
+    '{branchPhone}',
+    // Appointment data
+    '{appointmentDate}',
+    '{appointmentTime}',
+    '{appointmentDay}',
+    '{appointmentMonth}',
+    '{appointmentYear}',
+    '{appointmentHour}',
+    '{appointmentMinutes}',
+    '{appointmentAmPm}',
   ];
 
   /// Returns a list of placeholders used in this template's content.
@@ -71,10 +85,22 @@ class MessageTemplate with MessageTemplateMappable {
         .toList();
   }
 
-  /// Returns true if this template uses any treatment-related placeholders.
-  bool get usesTreatmentData {
-    return content.contains('{treatmentName}') ||
-        content.contains('{treatmentDate}') ||
-        content.contains('{treatmentNotes}');
+  /// Returns true if this template uses any branch placeholders.
+  bool get usesBranchData {
+    return content.contains('{branchName}') ||
+        content.contains('{branchAddress}') ||
+        content.contains('{branchPhone}');
+  }
+
+  /// Returns true if this template uses any appointment placeholders.
+  bool get usesAppointmentData {
+    return content.contains('{appointmentDate}') ||
+        content.contains('{appointmentTime}') ||
+        content.contains('{appointmentDay}') ||
+        content.contains('{appointmentMonth}') ||
+        content.contains('{appointmentYear}') ||
+        content.contains('{appointmentHour}') ||
+        content.contains('{appointmentMinutes}') ||
+        content.contains('{appointmentAmPm}');
   }
 }

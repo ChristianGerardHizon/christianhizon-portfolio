@@ -75,6 +75,7 @@ class MessageTemplateFormSheet extends HookConsumerWidget {
         content: (values['content'] as String).trim(),
         category: _nullIfEmpty(values['category'] as String?),
         branch: template?.branch,
+        isDefault: values['isDefault'] as bool? ?? false,
       );
 
       bool success;
@@ -222,6 +223,20 @@ class MessageTemplateFormSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
+              // Is default toggle
+              FormBuilderSwitch(
+                name: 'isDefault',
+                initialValue: template?.isDefault ?? false,
+                title: const Text('Default Template'),
+                subtitle: const Text(
+                  'Use as default for this category/treatment type',
+                ),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                ),
+              ),
+              const SizedBox(height: 16),
+
               // Content field
               FormBuilderTextField(
                 name: 'content',
@@ -289,9 +304,9 @@ class MessageTemplateFormSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 12),
 
-              // Treatment placeholders
+              // Appointment placeholders
               Text(
-                'Treatment Data',
+                'Appointment Data',
                 style: theme.textTheme.labelSmall?.copyWith(
                   color: theme.colorScheme.outline,
                 ),
@@ -302,19 +317,75 @@ class MessageTemplateFormSheet extends HookConsumerWidget {
                 runSpacing: 8,
                 children: [
                   _PlaceholderChip(
-                    label: '{treatmentName}',
-                    onTap: () => insertPlaceholder('{treatmentName}'),
-                    isTreatment: true,
+                    label: '{appointmentDate}',
+                    onTap: () => insertPlaceholder('{appointmentDate}'),
+                    isAppointment: true,
                   ),
                   _PlaceholderChip(
-                    label: '{treatmentDate}',
-                    onTap: () => insertPlaceholder('{treatmentDate}'),
-                    isTreatment: true,
+                    label: '{appointmentTime}',
+                    onTap: () => insertPlaceholder('{appointmentTime}'),
+                    isAppointment: true,
                   ),
                   _PlaceholderChip(
-                    label: '{treatmentNotes}',
-                    onTap: () => insertPlaceholder('{treatmentNotes}'),
-                    isTreatment: true,
+                    label: '{appointmentDay}',
+                    onTap: () => insertPlaceholder('{appointmentDay}'),
+                    isAppointment: true,
+                  ),
+                  _PlaceholderChip(
+                    label: '{appointmentMonth}',
+                    onTap: () => insertPlaceholder('{appointmentMonth}'),
+                    isAppointment: true,
+                  ),
+                  _PlaceholderChip(
+                    label: '{appointmentYear}',
+                    onTap: () => insertPlaceholder('{appointmentYear}'),
+                    isAppointment: true,
+                  ),
+                  _PlaceholderChip(
+                    label: '{appointmentHour}',
+                    onTap: () => insertPlaceholder('{appointmentHour}'),
+                    isAppointment: true,
+                  ),
+                  _PlaceholderChip(
+                    label: '{appointmentMinutes}',
+                    onTap: () => insertPlaceholder('{appointmentMinutes}'),
+                    isAppointment: true,
+                  ),
+                  _PlaceholderChip(
+                    label: '{appointmentAmPm}',
+                    onTap: () => insertPlaceholder('{appointmentAmPm}'),
+                    isAppointment: true,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // Branch placeholders
+              Text(
+                'Branch Data',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.outline,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _PlaceholderChip(
+                    label: '{branchName}',
+                    onTap: () => insertPlaceholder('{branchName}'),
+                    isBranch: true,
+                  ),
+                  _PlaceholderChip(
+                    label: '{branchAddress}',
+                    onTap: () => insertPlaceholder('{branchAddress}'),
+                    isBranch: true,
+                  ),
+                  _PlaceholderChip(
+                    label: '{branchPhone}',
+                    onTap: () => insertPlaceholder('{branchPhone}'),
+                    isBranch: true,
                   ),
                 ],
               ),
@@ -336,16 +407,32 @@ class _PlaceholderChip extends StatelessWidget {
   const _PlaceholderChip({
     required this.label,
     required this.onTap,
-    this.isTreatment = false,
+    this.isAppointment = false,
+    this.isBranch = false,
   });
 
   final String label;
   final VoidCallback onTap;
-  final bool isTreatment;
+  final bool isAppointment;
+  final bool isBranch;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    Color backgroundColor;
+    Color textColor;
+
+    if (isAppointment) {
+      backgroundColor = theme.colorScheme.tertiaryContainer;
+      textColor = theme.colorScheme.onTertiaryContainer;
+    } else if (isBranch) {
+      backgroundColor = theme.colorScheme.secondaryContainer;
+      textColor = theme.colorScheme.onSecondaryContainer;
+    } else {
+      backgroundColor = theme.colorScheme.primaryContainer;
+      textColor = theme.colorScheme.onPrimaryContainer;
+    }
 
     return ActionChip(
       label: Text(
@@ -353,14 +440,10 @@ class _PlaceholderChip extends StatelessWidget {
         style: TextStyle(
           fontFamily: 'monospace',
           fontSize: 12,
-          color: isTreatment
-              ? theme.colorScheme.onTertiaryContainer
-              : theme.colorScheme.onPrimaryContainer,
+          color: textColor,
         ),
       ),
-      backgroundColor: isTreatment
-          ? theme.colorScheme.tertiaryContainer
-          : theme.colorScheme.primaryContainer,
+      backgroundColor: backgroundColor,
       onPressed: onTap,
     );
   }

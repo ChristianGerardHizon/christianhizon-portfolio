@@ -5,9 +5,10 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/widgets/form_feedback.dart';
+import '../../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../../patients/domain/patient.dart';
 import '../../../../patients/presentation/controllers/patient_provider.dart';
-import '../../../../appointments/presentation/controllers/appointments_controller.dart';
+import '../../../../settings/presentation/controllers/branch_provider.dart';
 import '../../../../settings/presentation/controllers/message_templates_controller.dart';
 import '../../../domain/message.dart';
 
@@ -49,10 +50,18 @@ class EditMessageSheet extends HookConsumerWidget {
         ? ref.watch(appointmentProvider(message.appointment!))
         : const AsyncValue.data(null);
 
-    String replacePlaceholders(String content, Patient? patient) {
+    String replacePlaceholders(
+      String content,
+      Patient? patient, {
+      String? branchName,
+      String? branchAddress,
+      String? branchPhone,
+      DateTime? appointmentDateTime,
+    }) {
       if (content.isEmpty) return content;
       var replaced = content;
 
+      // Replace patient data
       if (patient != null) {
         replaced = replaced.replaceAll('{patientName}', patient.name);
         replaced =
@@ -64,17 +73,69 @@ class EditMessageSheet extends HookConsumerWidget {
         replaced = replaced.replaceAll('{address}', patient.address ?? '');
       }
 
-      final appointment = appointmentAsync.value;
-      if (appointment != null) {
-        final treatmentName = appointment.treatmentRecordsExpanded.isNotEmpty
-            ? appointment.treatmentRecordsExpanded.first.treatmentName
-            : (appointment.purpose ?? '');
-        replaced = replaced.replaceAll('{treatmentName}', treatmentName);
-        replaced =
-            replaced.replaceAll('{treatmentDate}', appointment.displayDate);
-        replaced =
-            replaced.replaceAll('{treatmentNotes}', appointment.notes ?? '');
+      // Replace branch data
+      if (branchName != null) {
+        replaced = replaced.replaceAll('{branchName}', branchName);
       }
+      if (branchAddress != null) {
+        replaced = replaced.replaceAll('{branchAddress}', branchAddress);
+      }
+      if (branchPhone != null) {
+        replaced = replaced.replaceAll('{branchPhone}', branchPhone);
+      }
+
+      // Replace appointment data
+      if (appointmentDateTime != null) {
+        // Day names
+        const dayNames = [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday',
+        ];
+        // Month abbreviations
+        const monthNames = [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ];
+
+        final day = dayNames[appointmentDateTime.weekday - 1];
+        final month = monthNames[appointmentDateTime.month - 1];
+        final year = appointmentDateTime.year.toString();
+        final hour24 = appointmentDateTime.hour;
+        final hour12 = hour24 == 0 ? 12 : (hour24 > 12 ? hour24 - 12 : hour24);
+        final minutes = appointmentDateTime.minute.toString().padLeft(2, '0');
+        final amPm = hour24 >= 12 ? 'PM' : 'AM';
+
+        // Full date format: "Jan 15, 2025"
+        final dateStr =
+            '$month ${appointmentDateTime.day}, ${appointmentDateTime.year}';
+        // Time format: "2:30 PM"
+        final timeStr = '$hour12:$minutes $amPm';
+
+        replaced = replaced.replaceAll('{appointmentDate}', dateStr);
+        replaced = replaced.replaceAll('{appointmentTime}', timeStr);
+        replaced = replaced.replaceAll('{appointmentDay}', day);
+        replaced = replaced.replaceAll('{appointmentMonth}', month);
+        replaced = replaced.replaceAll('{appointmentYear}', year);
+        replaced = replaced.replaceAll('{appointmentHour}', hour12.toString());
+        replaced = replaced.replaceAll('{appointmentMinutes}', minutes);
+        replaced = replaced.replaceAll('{appointmentAmPm}', amPm);
+      }
+
       return replaced;
     }
 
@@ -220,13 +281,33 @@ class EditMessageSheet extends HookConsumerWidget {
                           prefixIcon: Icon(Icons.description_outlined),
                           helperText: 'Select a template to swap content',
                         ),
-                        onChanged: (value) {
+                        onChanged: (value) async {
                           if (value != null) {
                             final template =
                                 templates.firstWhere((t) => t.id == value);
+
+                            // Fetch branch data if template has a branch
+                            String? branchName;
+                            String? branchAddress;
+                            String? branchPhone;
+                            if (template.branch != null) {
+                              final branchData = await ref
+                                  .read(branchProvider(template.branch!).future);
+                              if (branchData != null) {
+                                branchName =
+                                    branchData.displayName ?? branchData.name;
+                                branchAddress = branchData.address;
+                                branchPhone = branchData.contactNumber;
+                              }
+                            }
+
                             final finalContent = replacePlaceholders(
                               template.content,
                               patientAsync.value,
+                              branchName: branchName,
+                              branchAddress: branchAddress,
+                              branchPhone: branchPhone,
+                              appointmentDateTime: appointmentAsync.value?.date,
                             );
                             formKey.currentState?.fields['content']
                                 ?.didChange(finalContent);
