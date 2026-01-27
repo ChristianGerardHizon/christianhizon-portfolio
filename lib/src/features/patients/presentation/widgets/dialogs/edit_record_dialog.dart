@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/patient_record.dart';
@@ -28,7 +29,6 @@ class EditRecordDialog extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final t = Translations.of(context);
-    final size = MediaQuery.sizeOf(context);
 
     // Pre-populate controllers with existing values
     final diagnosisController = useTextEditingController(
@@ -127,9 +127,7 @@ class EditRecordDialog extends HookConsumerWidget {
     }
 
     return DialogCloseHandler(
-      child: SizedBox(
-        width: size.width,
-        height: size.height,
+      child: ConstrainedDialogContent(
         child: Column(
           children: [
             // Header
@@ -256,14 +254,8 @@ void showEditRecordDialog(
   BuildContext context, {
   required PatientRecord record,
 }) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => Dialog(
-      insetPadding: const EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: EditRecordDialog(record: record),
-    ),
+    builder: (context) => EditRecordDialog(record: record),
   );
 }

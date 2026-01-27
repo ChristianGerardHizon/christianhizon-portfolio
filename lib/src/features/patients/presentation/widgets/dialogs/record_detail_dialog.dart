@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/patient.dart';
@@ -26,13 +27,10 @@ class RecordDetailDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final size = MediaQuery.sizeOf(context);
     final dateStr = _formatDate(record.date);
 
     return DialogCloseHandler(
-      child: SizedBox(
-        width: size.width,
-        height: size.height,
+      child: ConstrainedDialogContent(
         child: Column(
         children: [
           // Header
@@ -255,14 +253,8 @@ void showRecordDetailDialog(
   required PatientRecord record,
   required Patient patient,
 }) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => Dialog(
-      insetPadding: const EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: RecordDetailDialog(record: record, patient: patient),
-    ),
+    builder: (context) => RecordDetailDialog(record: record, patient: patient),
   );
 }

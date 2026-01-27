@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/routing/routes/patients.routes.dart';
+import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../appointments/presentation/controllers/appointments_controller.dart';
@@ -35,7 +36,6 @@ class CreatePatientFullDialog extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final t = Translations.of(context);
-    final size = MediaQuery.sizeOf(context);
 
     // Form key
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
@@ -308,9 +308,8 @@ class CreatePatientFullDialog extends HookConsumerWidget {
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
-        child: SizedBox(
-          width: size.width,
-          height: size.height,
+        child: ConstrainedDialogContent(
+          fullScreen: true,
           child: Column(
             children: [
               // Header
@@ -1148,14 +1147,9 @@ class _ActionCard extends StatelessWidget {
 /// This dialog shows the full form with all sections for patient creation,
 /// including medical records, prescriptions, and appointment scheduling.
 void showCreatePatientFullDialog(BuildContext context) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => const Dialog(
-      insetPadding: EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: CreatePatientFullDialog(),
-    ),
+    fullScreen: true,
+    builder: (context) => const CreatePatientFullDialog(),
   );
 }

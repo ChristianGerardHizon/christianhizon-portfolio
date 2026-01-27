@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../controllers/user_search_controller.dart';
 
@@ -14,13 +15,11 @@ class UserSearchFieldsDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final t = Translations.of(context);
-    final size = MediaQuery.sizeOf(context);
     final selectedFields = ref.watch(userSearchFieldsProvider);
 
     return DialogCloseHandler(
-      child: SizedBox(
-        width: size.width,
-        height: size.height,
+      child: ConstrainedDialogContent(
+        maxWidth: DialogConstraints.compactMaxWidth,
         child: Column(
         children: [
           // Header
@@ -127,14 +126,9 @@ class UserSearchFieldsDialog extends ConsumerWidget {
 
 /// Shows the user search fields selection dialog.
 void showUserSearchFieldsDialog(BuildContext context) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => const Dialog(
-      insetPadding: EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: UserSearchFieldsDialog(),
-    ),
+    maxWidth: DialogConstraints.compactMaxWidth,
+    builder: (context) => const UserSearchFieldsDialog(),
   );
 }

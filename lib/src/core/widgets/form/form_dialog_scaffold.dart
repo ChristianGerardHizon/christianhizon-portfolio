@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import '../../hooks/use_form_dirty_guard.dart';
+import '../dialog/dialog_constraints.dart';
 import '../dialog_close_handler.dart';
 import 'form_dialog_header.dart';
 
@@ -43,6 +44,8 @@ class FormDialogScaffold extends StatelessWidget {
     this.cancelLabel,
     this.showCancelButton = true,
     this.contentPadding = const EdgeInsets.symmetric(horizontal: 24),
+    this.fullScreen = false,
+    this.maxWidth = DialogConstraints.defaultMaxWidth,
   });
 
   /// The title displayed in the header.
@@ -75,18 +78,24 @@ class FormDialogScaffold extends StatelessWidget {
   /// Padding for the scrollable content area.
   final EdgeInsets contentPadding;
 
+  /// Forces full-screen mode regardless of screen size.
+  /// Recommended for complex forms with 10+ fields.
+  final bool fullScreen;
+
+  /// Maximum width for the dialog on tablet/desktop.
+  /// Ignored when [fullScreen] is true or on mobile.
+  final double maxWidth;
+
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-
     return DialogCloseHandler(
       onClose: (ctx) => dirtyGuard.confirmDiscard(ctx),
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
-        child: SizedBox(
-          width: size.width,
-          height: size.height,
+        child: ConstrainedDialogContent(
+          maxWidth: maxWidth,
+          fullScreen: fullScreen,
           child: Column(
             children: [
               FormDialogHeader(

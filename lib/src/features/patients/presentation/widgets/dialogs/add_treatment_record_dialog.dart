@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/patient_treatment.dart';
@@ -21,18 +22,12 @@ void showTreatmentRecordDialog(
   required Future<PatientTreatmentRecord?> Function(PatientTreatmentRecord)
       onSave,
 }) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => Dialog(
-      insetPadding: const EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: AddTreatmentRecordDialog(
-        patientId: patientId,
-        existingRecord: existingRecord,
-        onSave: onSave,
-      ),
+    builder: (context) => AddTreatmentRecordDialog(
+      patientId: patientId,
+      existingRecord: existingRecord,
+      onSave: onSave,
     ),
   );
 }
@@ -56,7 +51,6 @@ class AddTreatmentRecordDialog extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final t = Translations.of(context);
-    final size = MediaQuery.sizeOf(context);
 
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final dirtyGuard = useFormDirtyGuard(
@@ -137,9 +131,7 @@ class AddTreatmentRecordDialog extends HookConsumerWidget {
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
-        child: SizedBox(
-          width: size.width,
-          height: size.height,
+        child: ConstrainedDialogContent(
           child: Column(
             children: [
               // Header

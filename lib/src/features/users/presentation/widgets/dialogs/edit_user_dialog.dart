@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../settings/presentation/controllers/branches_controller.dart';
@@ -25,7 +26,6 @@ class EditUserDialog extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final t = Translations.of(context);
-    final size = MediaQuery.sizeOf(context);
 
     // Form key
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
@@ -107,9 +107,7 @@ class EditUserDialog extends HookConsumerWidget {
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
-        child: SizedBox(
-          width: size.width,
-          height: size.height,
+        child: ConstrainedDialogContent(
           child: Column(
             children: [
               // Header
@@ -508,14 +506,8 @@ class _StatusRow extends StatelessWidget {
 
 /// Shows the edit user dialog.
 void showEditUserDialog(BuildContext context, User user) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => Dialog(
-      insetPadding: const EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: EditUserDialog(user: user),
-    ),
+    builder: (context) => EditUserDialog(user: user),
   );
 }

@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../settings/presentation/controllers/branches_controller.dart';
@@ -17,15 +18,9 @@ import '../../controllers/product_provider.dart';
 
 /// Shows the edit product dialog.
 void showEditProductDialog(BuildContext context, String productId) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => Dialog(
-      insetPadding: const EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: EditProductDialog(productId: productId),
-    ),
+    builder: (context) => EditProductDialog(productId: productId),
   );
 }
 
@@ -41,14 +36,11 @@ class EditProductDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final size = MediaQuery.sizeOf(context);
 
     // Watch product
     final productAsync = ref.watch(productProvider(productId));
 
-    return SizedBox(
-      width: size.width,
-      height: size.height,
+    return ConstrainedDialogContent(
       child: productAsync.when(
         data: (product) {
           if (product == null) {

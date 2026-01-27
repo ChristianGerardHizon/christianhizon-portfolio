@@ -4,8 +4,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
-import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/utils/file_validation.dart';
+import '../../../../../core/widgets/dialog/dialog_constraints.dart';
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/patient_file.dart';
 
@@ -30,7 +31,6 @@ class AddFileDialog extends HookWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final t = Translations.of(context);
-    final size = MediaQuery.sizeOf(context);
 
     final notesController = useTextEditingController();
     final selectedFile = useState<PlatformFile?>(null);
@@ -93,9 +93,7 @@ class AddFileDialog extends HookWidget {
     }
 
     return DialogCloseHandler(
-      child: SizedBox(
-        width: size.width,
-        height: size.height,
+      child: ConstrainedDialogContent(
         child: Column(
         children: [
           // Header
@@ -306,17 +304,11 @@ void showAddFileDialog(
     String? notes,
   }) onUpload,
 }) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => Dialog(
-      insetPadding: const EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: AddFileDialog(
-        patientId: patientId,
-        onUpload: onUpload,
-      ),
+    builder: (context) => AddFileDialog(
+      patientId: patientId,
+      onUpload: onUpload,
     ),
   );
 }

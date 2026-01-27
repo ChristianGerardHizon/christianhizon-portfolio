@@ -10,6 +10,7 @@ import '../../../domain/product_category.dart';
 
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/routing/routes/products.routes.dart';
+import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/form/form.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../auth/presentation/controllers/auth_controller.dart';
@@ -317,14 +318,8 @@ class CreateProductDialog extends HookConsumerWidget {
 
 /// Shows the create product dialog.
 void showCreateProductDialog(BuildContext context) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => const Dialog(
-      insetPadding: EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: CreateProductDialog(),
-    ),
+    builder: (context) => const CreateProductDialog(),
   );
 }

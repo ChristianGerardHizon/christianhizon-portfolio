@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../foundation/sort_config.dart';
 import '../../i18n/strings.g.dart';
+import '../dialog/dialog_constraints.dart';
 import '../dialog_close_handler.dart';
 
 /// A reusable dialog for selecting sort field and direction.
@@ -36,7 +37,6 @@ class SortDialog extends HookWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final t = Translations.of(context);
-    final size = MediaQuery.sizeOf(context);
 
     // Local state for the dialog
     final selectedField = useState(currentSort.field);
@@ -56,9 +56,8 @@ class SortDialog extends HookWidget {
     }
 
     return DialogCloseHandler(
-      child: SizedBox(
-        width: size.width,
-        height: size.height,
+      child: ConstrainedDialogContent(
+        maxWidth: DialogConstraints.compactMaxWidth,
         child: Column(
           children: [
             // Header
@@ -185,20 +184,15 @@ void showSortDialog({
   required ValueChanged<SortConfig> onSortChanged,
   required SortConfig defaultSort,
 }) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => Dialog(
-      insetPadding: const EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: SortDialog(
-        title: title,
-        fields: fields,
-        currentSort: currentSort,
-        onSortChanged: onSortChanged,
-        defaultSort: defaultSort,
-      ),
+    maxWidth: DialogConstraints.compactMaxWidth,
+    builder: (context) => SortDialog(
+      title: title,
+      fields: fields,
+      currentSort: currentSort,
+      onSortChanged: onSortChanged,
+      defaultSort: defaultSort,
     ),
   );
 }

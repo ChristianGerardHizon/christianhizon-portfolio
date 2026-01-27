@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/routing/routes/patients.routes.dart';
+import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../auth/presentation/controllers/auth_controller.dart';
@@ -25,7 +26,6 @@ class CreatePatientDialog extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final t = Translations.of(context);
-    final size = MediaQuery.sizeOf(context);
 
     // Form key
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
@@ -162,9 +162,8 @@ class CreatePatientDialog extends HookConsumerWidget {
     }
 
     return DialogCloseHandler(
-      child: SizedBox(
-        width: size.width,
-        height: size.height,
+      child: ConstrainedDialogContent(
+        fullScreen: true,
         child: Column(
           children: [
             // Header
@@ -705,14 +704,9 @@ class _CollapsibleSection extends StatelessWidget {
 
 /// Shows the create patient dialog.
 void showCreatePatientDialog(BuildContext context) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => const Dialog(
-      insetPadding: EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: CreatePatientDialog(),
-    ),
+    fullScreen: true,
+    builder: (context) => const CreatePatientDialog(),
   );
 }

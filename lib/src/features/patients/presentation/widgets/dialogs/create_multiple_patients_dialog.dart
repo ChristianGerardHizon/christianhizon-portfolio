@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/routing/routes/patients.routes.dart';
+import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../auth/presentation/controllers/auth_controller.dart';
@@ -242,16 +243,13 @@ class CreateMultiplePatientsDialog extends HookConsumerWidget {
       }
     }
 
-    final size = MediaQuery.sizeOf(context);
-
     return DialogCloseHandler(
       onClose: (ctx) => dirtyGuard.confirmDiscard(ctx),
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
-        child: SizedBox(
-          width: size.width,
-          height: size.height,
+        child: ConstrainedDialogContent(
+          fullScreen: true,
           child: Column(
             children: [
               // Header
@@ -1284,14 +1282,9 @@ class _PatientReviewCard extends HookConsumerWidget {
 
 /// Shows the create multiple patients dialog.
 void showCreateMultiplePatientsDialog(BuildContext context) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => const Dialog(
-      insetPadding: EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: CreateMultiplePatientsDialog(),
-    ),
+    fullScreen: true,
+    builder: (context) => const CreateMultiplePatientsDialog(),
   );
 }

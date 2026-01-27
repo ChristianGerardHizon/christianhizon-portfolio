@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/user_role.dart';
@@ -23,7 +24,6 @@ class EditRoleDialog extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final t = Translations.of(context);
-    final size = MediaQuery.sizeOf(context);
 
     // Form key
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
@@ -101,10 +101,8 @@ class EditRoleDialog extends HookConsumerWidget {
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
-        child: SizedBox(
-        width: size.width,
-        height: size.height,
-        child: Column(
+        child: ConstrainedDialogContent(
+          child: Column(
           children: [
             // Header
             Padding(
@@ -370,14 +368,8 @@ class _SectionHeader extends StatelessWidget {
 
 /// Shows the edit role dialog.
 void showEditRoleDialog(BuildContext context, UserRole role) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => Dialog(
-      insetPadding: const EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: EditRoleDialog(role: role),
-    ),
+    builder: (context) => EditRoleDialog(role: role),
   );
 }

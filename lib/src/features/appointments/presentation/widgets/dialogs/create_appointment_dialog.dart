@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
+import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../messages/domain/message.dart';
@@ -36,7 +37,6 @@ class CreateAppointmentDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final size = MediaQuery.sizeOf(context);
 
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final dirtyGuard = useFormDirtyGuard(formKey: formKey);
@@ -196,10 +196,8 @@ class CreateAppointmentDialog extends HookConsumerWidget {
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
-        child: SizedBox(
-        width: size.width,
-        height: size.height,
-        child: Column(
+        child: ConstrainedDialogContent(
+          child: Column(
           children: [
             // Header
             Padding(
@@ -844,17 +842,11 @@ void showCreateAppointmentDialog(
   required Future<AppointmentSchedule?> Function(AppointmentSchedule appointment)
       onSave,
 }) {
-  showDialog(
+  showConstrainedDialog(
     context: context,
-    useRootNavigator: true,
-    barrierDismissible: false,
-    builder: (context) => Dialog(
-      insetPadding: const EdgeInsets.all(8),
-      clipBehavior: Clip.antiAlias,
-      child: CreateAppointmentDialog(
-        initialPatient: initialPatient,
-        onSave: onSave,
-      ),
+    builder: (context) => CreateAppointmentDialog(
+      initialPatient: initialPatient,
+      onSave: onSave,
     ),
   );
 }
