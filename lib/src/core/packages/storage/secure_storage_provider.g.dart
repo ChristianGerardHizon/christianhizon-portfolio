@@ -60,4 +60,4 @@ final class SecureStorageProvider extends $FunctionalProvider<
   }
 }
 
-String _$secureStorageHash() => r'a258bda40d2f36685fbecdd5f830905be2798ff2';
+String _$secureStorageHash() => r'7ffbf3a16b763241ad3dff5742be5fc7daf75f49';

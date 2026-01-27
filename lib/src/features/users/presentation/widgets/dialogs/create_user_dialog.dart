@@ -63,11 +63,11 @@ class CreateUserDialog extends HookConsumerWidget {
 
       final password = values['password'] as String;
 
-      final success = await ref
+      final createdUser = await ref
           .read(paginatedUsersControllerProvider.notifier)
           .createUser(user, password);
 
-      if (!success) {
+      if (createdUser == null) {
         if (context.mounted) {
           isSaving.value = false;
           showFormErrorDialog(
@@ -78,10 +78,6 @@ class CreateUserDialog extends HookConsumerWidget {
         return;
       }
 
-      // Get created user ID from state
-      final users = ref.read(paginatedUsersControllerProvider).value;
-      final createdUser = users?.items.firstOrNull;
-
       if (context.mounted) {
         isSaving.value = false;
         context.pop();
@@ -89,9 +85,7 @@ class CreateUserDialog extends HookConsumerWidget {
         showSuccessSnackBar(context, message: 'User created successfully');
 
         // Navigate to user detail
-        if (createdUser != null) {
-          UserDetailRoute(id: createdUser.id).go(context);
-        }
+        UserDetailRoute(id: createdUser.id).go(context);
       }
     }
 

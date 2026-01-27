@@ -153,15 +153,15 @@ class PaginatedUsersController extends _$PaginatedUsersController {
   }
 
   /// Creates a new user.
-  Future<bool> createUser(User user, String password) async {
+  Future<User?> createUser(User user, String password) async {
     final result = await _repository.create(user, password);
     return result.fold(
-      (failure) => false,
+      (failure) => null,
       (newUser) {
         state.whenData((currentState) {
           state = AsyncValue.data(currentState.prependItem(newUser));
         });
-        return true;
+        return newUser;
       },
     );
   }
