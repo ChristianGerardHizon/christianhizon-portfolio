@@ -42,6 +42,7 @@ class TranslationsTl with BaseTranslations<AppLocale, Translations> implements T
 	@override late final _TranslationsFailuresTl failures = _TranslationsFailuresTl._(_root);
 	@override late final _TranslationsFieldsTl fields = _TranslationsFieldsTl._(_root);
 	@override late final _TranslationsNavigationTl navigation = _TranslationsNavigationTl._(_root);
+	@override late final _TranslationsSortTl sort = _TranslationsSortTl._(_root);
 	@override late final _TranslationsValidationTl validation = _TranslationsValidationTl._(_root);
 }
 
@@ -115,6 +116,7 @@ class _TranslationsCommonTl implements TranslationsCommonEn {
 	@override String get discardChangesMessage => 'Mayroon kang mga hindi pa nase-save na pagbabago. Sigurado ka bang gusto mong i-discard ang mga ito?';
 	@override String get discard => 'I-discard';
 	@override String get keepEditing => 'Magpatuloy sa Pag-edit';
+	@override String get sort => 'Ayusin';
 }
 
 // Path: failures
@@ -196,6 +198,27 @@ class _TranslationsNavigationTl implements TranslationsNavigationEn {
 	@override String get account => 'Account';
 }
 
+// Path: sort
+class _TranslationsSortTl implements TranslationsSortEn {
+	_TranslationsSortTl._(this._root);
+
+	final TranslationsTl _root; // ignore: unused_field
+
+	// Translations
+	@override String get sortBy => 'Ayusin Ayon Sa';
+	@override String get direction => 'Direksyon';
+	@override String get ascending => 'Pataas';
+	@override String get descending => 'Pababa';
+	@override String get dateAdded => 'Petsa ng Pagdagdag';
+	@override String get lastUpdated => 'Huling Na-update';
+	@override String get date => 'Petsa';
+	@override String get amount => 'Halaga';
+	@override String get price => 'Presyo';
+	@override String get stock => 'Stock';
+	@override String get expiration => 'Expiration';
+	@override String get status => 'Katayuan';
+}
+
 // Path: validation
 class _TranslationsValidationTl implements TranslationsValidationEn {
 	_TranslationsValidationTl._(this._root);
@@ -275,6 +298,7 @@ extension on TranslationsTl {
 			'common.discardChangesMessage' => 'Mayroon kang mga hindi pa nase-save na pagbabago. Sigurado ka bang gusto mong i-discard ang mga ito?',
 			'common.discard' => 'I-discard',
 			'common.keepEditing' => 'Magpatuloy sa Pag-edit',
+			'common.sort' => 'Ayusin',
 			'failures.generic' => 'May nangyaring mali. Pakisubukang muli.',
 			'failures.networkError' => 'Error sa network. Pakitingnan ang iyong koneksyon.',
 			'failures.serverError' => 'Error sa server. Pakisubukang muli mamaya.',
@@ -327,6 +351,18 @@ extension on TranslationsTl {
 			'navigation.system' => 'Sistema',
 			'navigation.patientConfig' => 'Config ng Pasyente',
 			'navigation.account' => 'Account',
+			'sort.sortBy' => 'Ayusin Ayon Sa',
+			'sort.direction' => 'Direksyon',
+			'sort.ascending' => 'Pataas',
+			'sort.descending' => 'Pababa',
+			'sort.dateAdded' => 'Petsa ng Pagdagdag',
+			'sort.lastUpdated' => 'Huling Na-update',
+			'sort.date' => 'Petsa',
+			'sort.amount' => 'Halaga',
+			'sort.price' => 'Presyo',
+			'sort.stock' => 'Stock',
+			'sort.expiration' => 'Expiration',
+			'sort.status' => 'Katayuan',
 			'validation.required' => 'Kinakailangan ang field na ito',
 			'validation.invalidEmail' => 'Maglagay ng valid na email address',
 			'validation.invalidPhone' => 'Maglagay ng valid na numero ng telepono',

@@ -45,6 +45,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final TranslationsFailuresEn failures = TranslationsFailuresEn._(_root);
 	late final TranslationsFieldsEn fields = TranslationsFieldsEn._(_root);
 	late final TranslationsNavigationEn navigation = TranslationsNavigationEn._(_root);
+	late final TranslationsSortEn sort = TranslationsSortEn._(_root);
 	late final TranslationsValidationEn validation = TranslationsValidationEn._(_root);
 }
 
@@ -211,6 +212,9 @@ class TranslationsCommonEn {
 
 	/// en: 'Keep Editing'
 	String get keepEditing => 'Keep Editing';
+
+	/// en: 'Sort'
+	String get sort => 'Sort';
 }
 
 // Path: failures
@@ -396,6 +400,51 @@ class TranslationsNavigationEn {
 	String get account => 'Account';
 }
 
+// Path: sort
+class TranslationsSortEn {
+	TranslationsSortEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Sort By'
+	String get sortBy => 'Sort By';
+
+	/// en: 'Direction'
+	String get direction => 'Direction';
+
+	/// en: 'Ascending'
+	String get ascending => 'Ascending';
+
+	/// en: 'Descending'
+	String get descending => 'Descending';
+
+	/// en: 'Date Added'
+	String get dateAdded => 'Date Added';
+
+	/// en: 'Last Updated'
+	String get lastUpdated => 'Last Updated';
+
+	/// en: 'Date'
+	String get date => 'Date';
+
+	/// en: 'Amount'
+	String get amount => 'Amount';
+
+	/// en: 'Price'
+	String get price => 'Price';
+
+	/// en: 'Stock'
+	String get stock => 'Stock';
+
+	/// en: 'Expiration'
+	String get expiration => 'Expiration';
+
+	/// en: 'Status'
+	String get status => 'Status';
+}
+
 // Path: validation
 class TranslationsValidationEn {
 	TranslationsValidationEn._(this._root);
@@ -499,6 +548,7 @@ extension on Translations {
 			'common.discardChangesMessage' => 'You have unsaved changes. Are you sure you want to discard them?',
 			'common.discard' => 'Discard',
 			'common.keepEditing' => 'Keep Editing',
+			'common.sort' => 'Sort',
 			'failures.generic' => 'Something went wrong. Please try again.',
 			'failures.networkError' => 'Network error. Please check your connection.',
 			'failures.serverError' => 'Server error. Please try again later.',
@@ -551,6 +601,18 @@ extension on Translations {
 			'navigation.system' => 'System',
 			'navigation.patientConfig' => 'Patient Config',
 			'navigation.account' => 'Account',
+			'sort.sortBy' => 'Sort By',
+			'sort.direction' => 'Direction',
+			'sort.ascending' => 'Ascending',
+			'sort.descending' => 'Descending',
+			'sort.dateAdded' => 'Date Added',
+			'sort.lastUpdated' => 'Last Updated',
+			'sort.date' => 'Date',
+			'sort.amount' => 'Amount',
+			'sort.price' => 'Price',
+			'sort.stock' => 'Stock',
+			'sort.expiration' => 'Expiration',
+			'sort.status' => 'Status',
 			'validation.required' => 'This field is required',
 			'validation.invalidEmail' => 'Please enter a valid email address',
 			'validation.invalidPhone' => 'Please enter a valid phone number',
