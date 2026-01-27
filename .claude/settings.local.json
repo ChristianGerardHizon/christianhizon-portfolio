@@ -21,7 +21,8 @@
       "Bash(grepai status:*)",
       "Bash(xargs cat:*)",
       "Bash(sort:*)",
-      "Bash(xargs git add:*)"
+      "Bash(xargs git add:*)",
+      "WebFetch(domain:pub.dev)"
     ],
     "deny": [
       "Bash(rm:*)",
