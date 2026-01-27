@@ -1,67 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../core/packages/app_info/app_info_provider.dart';
-import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
+import '../../../../core/widgets/app_version_indicator.dart';
 
-/// Footer widget displaying app version, build number, and environment.
-///
-/// Shows:
-/// - Version and build number: `v1.0.0+1`
-/// - Environment badge (only for non-prod): `DEV` or `STAGING`
-class DashboardFooter extends ConsumerWidget {
+/// Dashboard footer widget that wraps AppVersionIndicator with padding.
+class DashboardFooter extends StatelessWidget {
   const DashboardFooter({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final appInfoAsync = ref.watch(appInfoProvider);
-    final env = currentEnvironment;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Version info
-          appInfoAsync.when(
-            data: (info) => Text(
-              'v${info.version}+${info.buildNumber}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.outline,
-              ),
-            ),
-            loading: () => Text(
-              'v...',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.outline,
-              ),
-            ),
-            error: (_, __) => const SizedBox.shrink(),
-          ),
-
-          // Environment badge (only for non-prod)
-          if (env != 'prod') ...[
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: env == 'dev'
-                    ? Colors.orange.withValues(alpha: 0.2)
-                    : Colors.blue.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                env.toUpperCase(),
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: env == 'dev' ? Colors.orange : Colors.blue,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: AppVersionIndicator(),
     );
   }
 }

@@ -6,8 +6,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../../core/assets/assets.gen.dart';
 import '../../../../core/i18n/strings.g.dart';
-import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../../../core/routing/routes/auth.routes.dart';
+import '../../../../core/widgets/app_version_indicator.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../controllers/auth_controller.dart';
 
@@ -202,15 +202,8 @@ class LoginPage extends HookConsumerWidget {
                   ),
                   const SizedBox(height: 32),
 
-                  // Server URL indicator
-                  Text(
-                    ref.watch(pocketbaseProvider).baseURL,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey.shade500,
-                          fontSize: 10,
-                        ),
-                  ),
+                  // App version indicator
+                  const AppVersionIndicator(),
                 ],
               ),
             ),
