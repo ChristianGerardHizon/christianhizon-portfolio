@@ -332,519 +332,524 @@ class CreatePatientFullDialog extends HookConsumerWidget {
                         style: theme.textTheme.titleLarge,
                       ),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: TextButton(
-                      onPressed: isSaving.value
-                          ? null
-                          : () async {
-                              if (await dirtyGuard.confirmDiscard(context)) {
-                                if (context.mounted) context.pop();
-                              }
-                            },
-                      child: Text(t.common.cancel),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: TextButton(
+                        onPressed: isSaving.value
+                            ? null
+                            : () async {
+                                if (await dirtyGuard.confirmDiscard(context)) {
+                                  if (context.mounted) context.pop();
+                                }
+                              },
+                        child: Text(t.common.cancel),
+                      ),
                     ),
-                  ),
-                  FilledButton(
-                    onPressed: isSaving.value ? null : handleSave,
-                    child: isSaving.value
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Text(t.common.save),
-                  ),
-                  const SizedBox(width: 8),
-                ],
+                    FilledButton(
+                      onPressed: isSaving.value ? null : handleSave,
+                      child: isSaving.value
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(t.common.save),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 8),
+              const SizedBox(height: 8),
 
-            // Content
-            Expanded(
-              child: FormBuilder(
-                key: formKey,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox(height: 16),
+              // Content
+              Expanded(
+                child: FormBuilder(
+                  key: formKey,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 16),
 
-                      // === PATIENT INFORMATION SECTION ===
-                      _SectionHeader(
-                        title: 'Patient Information',
-                        icon: Icons.pets,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Pet Name (required)
-                      FormBuilderTextField(
-                        name: 'name',
-                        decoration: const InputDecoration(
-                          labelText: 'Pet Name *',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.pets),
+                        // === PATIENT INFORMATION SECTION ===
+                        _SectionHeader(
+                          title: 'Patient Information',
+                          icon: Icons.pets,
                         ),
-                        enabled: !isSaving.value,
-                        textCapitalization: TextCapitalization.words,
-                        validator: FormBuilderValidators.required(
-                          errorText: 'Pet name is required',
-                        ),
-                        onChanged: (_) => updateRequiredFieldsStatus(),
-                      ),
-                      const SizedBox(height: 16),
+                        const SizedBox(height: 16),
 
-                      // Species & Breed dropdowns
-                      Row(
-                        children: [
-                          Expanded(
-                            child: speciesAsync.when(
-                              data: (speciesList) =>
-                                  FormBuilderDropdown<String>(
-                                name: 'species',
-                                decoration: const InputDecoration(
-                                  labelText: 'Species',
-                                  border: OutlineInputBorder(),
+                        // Pet Name (required)
+                        FormBuilderTextField(
+                          name: 'name',
+                          decoration: const InputDecoration(
+                            labelText: 'Pet Name *',
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.pets),
+                          ),
+                          enabled: !isSaving.value,
+                          textCapitalization: TextCapitalization.words,
+                          validator: FormBuilderValidators.required(
+                            errorText: 'Pet name is required',
+                          ),
+                          onChanged: (_) => updateRequiredFieldsStatus(),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Species & Breed dropdowns
+                        Row(
+                          children: [
+                            Expanded(
+                              child: speciesAsync.when(
+                                data: (speciesList) =>
+                                    FormBuilderDropdown<String>(
+                                  name: 'species',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Species',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  enabled: !isSaving.value,
+                                  items: speciesList.map((s) {
+                                    return DropdownMenuItem(
+                                      value: s.id,
+                                      child: Text(s.name),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    selectedSpeciesId.value = value;
+                                    // Clear breed when species changes
+                                    formKey.currentState?.fields['breed']
+                                        ?.didChange(null);
+                                  },
                                 ),
-                                enabled: !isSaving.value,
-                                items: speciesList.map((s) {
-                                  return DropdownMenuItem(
-                                    value: s.id,
-                                    child: Text(s.name),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  selectedSpeciesId.value = value;
-                                  // Clear breed when species changes
-                                  formKey.currentState?.fields['breed']
-                                      ?.didChange(null);
-                                },
-                              ),
-                              loading: () => const TextField(
-                                decoration: InputDecoration(
-                                  labelText: 'Species',
-                                  border: OutlineInputBorder(),
-                                  suffixIcon: SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: CircularProgressIndicator(
-                                          strokeWidth: 2),
+                                loading: () => const TextField(
+                                  decoration: InputDecoration(
+                                    labelText: 'Species',
+                                    border: OutlineInputBorder(),
+                                    suffixIcon: SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(12),
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2),
+                                      ),
                                     ),
                                   ),
+                                  enabled: false,
                                 ),
-                                enabled: false,
-                              ),
-                              error: (_, __) => const TextField(
-                                decoration: InputDecoration(
-                                  labelText: 'Species',
-                                  border: OutlineInputBorder(),
-                                  errorText: 'Failed to load',
+                                error: (_, __) => const TextField(
+                                  decoration: InputDecoration(
+                                    labelText: 'Species',
+                                    border: OutlineInputBorder(),
+                                    errorText: 'Failed to load',
+                                  ),
+                                  enabled: false,
                                 ),
-                                enabled: false,
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: breedsAsync.when(
-                              data: (breedsList) =>
-                                  FormBuilderDropdown<String>(
-                                name: 'breed',
-                                decoration: const InputDecoration(
-                                  labelText: 'Breed',
-                                  border: OutlineInputBorder(),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: breedsAsync.when(
+                                data: (breedsList) =>
+                                    FormBuilderDropdown<String>(
+                                  name: 'breed',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Breed',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  enabled: !isSaving.value &&
+                                      selectedSpeciesId.value != null,
+                                  items: breedsList.map((b) {
+                                    return DropdownMenuItem(
+                                      value: b.id,
+                                      child: Text(b.name),
+                                    );
+                                  }).toList(),
                                 ),
-                                enabled: !isSaving.value &&
-                                    selectedSpeciesId.value != null,
-                                items: breedsList.map((b) {
-                                  return DropdownMenuItem(
-                                    value: b.id,
-                                    child: Text(b.name),
-                                  );
-                                }).toList(),
-                              ),
-                              loading: () => const TextField(
-                                decoration: InputDecoration(
-                                  labelText: 'Breed',
-                                  border: OutlineInputBorder(),
+                                loading: () => const TextField(
+                                  decoration: InputDecoration(
+                                    labelText: 'Breed',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  enabled: false,
                                 ),
-                                enabled: false,
-                              ),
-                              error: (_, __) => const TextField(
-                                decoration: InputDecoration(
-                                  labelText: 'Breed',
-                                  border: OutlineInputBorder(),
+                                error: (_, __) => const TextField(
+                                  decoration: InputDecoration(
+                                    labelText: 'Breed',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  enabled: false,
                                 ),
-                                enabled: false,
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Sex selection
-                      FormBuilderChoiceChips<PatientSex>(
-                        name: 'sex',
-                        decoration: const InputDecoration(
-                          labelText: 'Sex',
-                          border: OutlineInputBorder(),
-                        ),
-                        enabled: !isSaving.value,
-                        spacing: 8,
-                        showCheckmark: true,
-                        options: const [
-                          FormBuilderChipOption(
-                            value: PatientSex.male,
-                            avatar: Icon(Icons.male, size: 18),
-                            child: Text('Male'),
-                          ),
-                          FormBuilderChipOption(
-                            value: PatientSex.female,
-                            avatar: Icon(Icons.female, size: 18),
-                            child: Text('Female'),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Color & Date of Birth
-                      Row(
-                        children: [
-                          Expanded(
-                            child: FormBuilderTextField(
-                              name: 'color',
-                              decoration: const InputDecoration(
-                                labelText: 'Color/Markings',
-                                border: OutlineInputBorder(),
-                              ),
-                              enabled: !isSaving.value,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: FormBuilderDateTimePicker(
-                              name: 'dateOfBirth',
-                              decoration: const InputDecoration(
-                                labelText: 'Date of Birth',
-                                border: OutlineInputBorder(),
-                                suffixIcon: Icon(Icons.calendar_today),
-                              ),
-                              enabled: !isSaving.value,
-                              inputType: InputType.date,
-                              firstDate: DateTime(1990),
-                              lastDate: DateTime.now(),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-
-                      // === OWNER INFORMATION SECTION (Collapsible) ===
-                      _CollapsibleSection(
-                        title: 'Owner Information',
-                        icon: Icons.person,
-                        isExpanded: ownerExpanded.value,
-                        onToggle: () =>
-                            ownerExpanded.value = !ownerExpanded.value,
-                        hasError: ownerHasError.value,
-                        maintainState: true,
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 16),
-                            FormBuilderTextField(
-                              name: 'owner',
-                              decoration: const InputDecoration(
-                                labelText: 'Owner Name *',
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.person),
-                              ),
-                              enabled: !isSaving.value,
-                              textCapitalization: TextCapitalization.words,
-                              validator: FormBuilderValidators.required(
-                                errorText: 'Owner name is required',
-                              ),
-                              onChanged: (_) => updateRequiredFieldsStatus(),
-                            ),
-                            const SizedBox(height: 16),
-                            FormBuilderTextField(
-                              name: 'contactNumber',
-                              decoration: const InputDecoration(
-                                labelText: 'Phone *',
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.phone),
-                              ),
-                              enabled: !isSaving.value,
-                              keyboardType: TextInputType.phone,
-                              validator: FormBuilderValidators.required(
-                                errorText: 'Phone number is required',
-                              ),
-                              onChanged: (_) => updateRequiredFieldsStatus(),
-                            ),
-                            const SizedBox(height: 16),
-                            FormBuilderTextField(
-                              name: 'email',
-                              decoration: const InputDecoration(
-                                labelText: 'Email',
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.email),
-                              ),
-                              enabled: !isSaving.value,
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return null;
-                                }
-                                return FormBuilderValidators.email(
-                                  errorText: 'Invalid email format',
-                                )(value);
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            FormBuilderTextField(
-                              name: 'address',
-                              decoration: const InputDecoration(
-                                labelText: 'Address',
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.location_on),
-                              ),
-                              enabled: !isSaving.value,
-                              maxLines: 2,
                             ),
                           ],
                         ),
-                      ),
-                      const SizedBox(height: 16),
+                        const SizedBox(height: 16),
 
-                      // === MEDICAL RECORD SECTION ===
-                      _DisabledSection(
-                        isDisabled: !requiredFieldsComplete.value,
-                        message: 'Complete required patient details above',
-                        child: _CollapsibleSection(
-                          title: 'Medical Record (Optional)',
-                          icon: Icons.medical_services,
-                          isExpanded: recordExpanded.value,
-                          onToggle: requiredFieldsComplete.value
-                              ? () {
-                                  recordExpanded.value = !recordExpanded.value;
-                                  if (recordExpanded.value) {
-                                    recordEverOpened.value = true;
-                                  }
-                                }
-                              : null,
-                          hasError: recordHasError.value,
-                          maintainState: false,
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 16),
-                              FormBuilderDateTimePicker(
-                                name: 'recordDate',
+                        // Sex selection
+                        FormBuilderChoiceChips<PatientSex>(
+                          name: 'sex',
+                          decoration: const InputDecoration(
+                            labelText: 'Sex',
+                            border: OutlineInputBorder(),
+                          ),
+                          enabled: !isSaving.value,
+                          spacing: 8,
+                          showCheckmark: true,
+                          options: const [
+                            FormBuilderChipOption(
+                              value: PatientSex.male,
+                              avatar: Icon(Icons.male, size: 18),
+                              child: Text('Male'),
+                            ),
+                            FormBuilderChipOption(
+                              value: PatientSex.female,
+                              avatar: Icon(Icons.female, size: 18),
+                              child: Text('Female'),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Color & Date of Birth
+                        Row(
+                          children: [
+                            Expanded(
+                              child: FormBuilderTextField(
+                                name: 'color',
                                 decoration: const InputDecoration(
-                                  labelText: 'Visit Date',
+                                  labelText: 'Color/Markings',
+                                  border: OutlineInputBorder(),
+                                ),
+                                enabled: !isSaving.value,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: FormBuilderDateTimePicker(
+                                name: 'dateOfBirth',
+                                decoration: const InputDecoration(
+                                  labelText: 'Date of Birth',
                                   border: OutlineInputBorder(),
                                   suffixIcon: Icon(Icons.calendar_today),
                                 ),
                                 enabled: !isSaving.value,
                                 inputType: InputType.date,
-                                initialValue: DateTime.now(),
-                                firstDate: DateTime(2000),
+                                firstDate: DateTime(1990),
                                 lastDate: DateTime.now(),
                               ),
-                              const SizedBox(height: 16),
-                              FormBuilderTextField(
-                                name: 'diagnosis',
-                                decoration: const InputDecoration(
-                                  labelText: 'Diagnosis *',
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.medical_services),
-                                ),
-                                enabled: !isSaving.value,
-                                maxLines: 2,
-                                onChanged: (_) => updateDiagnosisStatus(),
-                              ),
-                              const SizedBox(height: 16),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: FormBuilderTextField(
-                                      name: 'weight',
-                                      decoration: const InputDecoration(
-                                        labelText: 'Weight',
-                                        border: OutlineInputBorder(),
-                                        suffixText: 'kg',
-                                      ),
-                                      enabled: !isSaving.value,
-                                      keyboardType: TextInputType.number,
-                                      validator: FormBuilderValidators.numeric(
-                                        errorText: 'Must be a number',
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: FormBuilderTextField(
-                                      name: 'temperature',
-                                      decoration: const InputDecoration(
-                                        labelText: 'Temperature',
-                                        border: OutlineInputBorder(),
-                                        suffixText: '°C',
-                                      ),
-                                      enabled: !isSaving.value,
-                                      keyboardType: TextInputType.number,
-                                      validator: FormBuilderValidators.numeric(
-                                        errorText: 'Must be a number',
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              FormBuilderTextField(
-                                name: 'treatment',
-                                decoration: const InputDecoration(
-                                  labelText: 'Treatment',
-                                  border: OutlineInputBorder(),
-                                ),
-                                enabled: !isSaving.value,
-                                maxLines: 2,
-                              ),
-                              const SizedBox(height: 16),
-                              FormBuilderTextField(
-                                name: 'notes',
-                                decoration: const InputDecoration(
-                                  labelText: 'Notes',
-                                  border: OutlineInputBorder(),
-                                ),
-                                enabled: !isSaving.value,
-                                maxLines: 3,
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 16),
+                        const SizedBox(height: 24),
 
-                      // === PRESCRIPTION SECTION ===
-                      _DisabledSection(
-                        isDisabled: !recordHasDiagnosis.value,
-                        message: 'Add a diagnosis in Medical Record first',
-                        child: _CollapsibleSection(
-                          title: 'Prescription (Optional)',
-                          icon: Icons.medication,
-                          isExpanded: prescriptionExpanded.value,
-                          onToggle: recordHasDiagnosis.value
-                              ? () {
-                                  prescriptionExpanded.value =
-                                      !prescriptionExpanded.value;
-                                  if (prescriptionExpanded.value) {
-                                    prescriptionEverOpened.value = true;
-                                  }
-                                }
-                              : null,
-                          hasError: prescriptionHasError.value,
-                          maintainState: false,
+                        // === OWNER INFORMATION SECTION (Collapsible) ===
+                        _CollapsibleSection(
+                          title: 'Owner Information',
+                          icon: Icons.person,
+                          isExpanded: ownerExpanded.value,
+                          onToggle: () =>
+                              ownerExpanded.value = !ownerExpanded.value,
+                          hasError: ownerHasError.value,
+                          maintainState: true,
                           child: Column(
                             children: [
                               const SizedBox(height: 16),
                               FormBuilderTextField(
-                                name: 'medication',
+                                name: 'owner',
                                 decoration: const InputDecoration(
-                                  labelText: 'Medication *',
+                                  labelText: 'Owner Name *',
                                   border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.medication),
+                                  prefixIcon: Icon(Icons.person),
                                 ),
                                 enabled: !isSaving.value,
                                 textCapitalization: TextCapitalization.words,
-                              ),
-                              const SizedBox(height: 16),
-                              FormBuilderDateTimePicker(
-                                name: 'prescriptionDate',
-                                decoration: const InputDecoration(
-                                  labelText: 'Date',
-                                  border: OutlineInputBorder(),
-                                  suffixIcon: Icon(Icons.calendar_today),
+                                validator: FormBuilderValidators.required(
+                                  errorText: 'Owner name is required',
                                 ),
-                                enabled: !isSaving.value,
-                                inputType: InputType.date,
-                                initialValue: DateTime.now(),
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime.now()
-                                    .add(const Duration(days: 365)),
+                                onChanged: (_) => updateRequiredFieldsStatus(),
                               ),
                               const SizedBox(height: 16),
                               FormBuilderTextField(
-                                name: 'dosage',
+                                name: 'contactNumber',
                                 decoration: const InputDecoration(
-                                  labelText: 'Dosage',
+                                  labelText: 'Phone *',
                                   border: OutlineInputBorder(),
-                                  hintText: 'e.g., 250mg, 2x daily',
+                                  prefixIcon: Icon(Icons.phone),
                                 ),
                                 enabled: !isSaving.value,
+                                keyboardType: TextInputType.phone,
+                                validator: FormBuilderValidators.required(
+                                  errorText: 'Phone number is required',
+                                ),
+                                onChanged: (_) => updateRequiredFieldsStatus(),
                               ),
                               const SizedBox(height: 16),
                               FormBuilderTextField(
-                                name: 'instructions',
+                                name: 'email',
                                 decoration: const InputDecoration(
-                                  labelText: 'Instructions',
+                                  labelText: 'Email',
                                   border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.email),
                                 ),
                                 enabled: !isSaving.value,
-                                maxLines: 3,
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return null;
+                                  }
+                                  return FormBuilderValidators.email(
+                                    errorText: 'Invalid email format',
+                                  )(value);
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              FormBuilderTextField(
+                                name: 'address',
+                                decoration: const InputDecoration(
+                                  labelText: 'Address',
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.location_on),
+                                ),
+                                enabled: !isSaving.value,
+                                maxLines: 2,
                               ),
                             ],
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 24),
+                        const SizedBox(height: 16),
 
-                      // === SCHEDULE APPOINTMENT BUTTON ===
-                      _ActionCard(
-                        icon: Icons.calendar_month,
-                        title: 'Schedule Appointment',
-                        subtitle: 'Save patient first, then schedule a follow-up',
-                        enabled: !isSaving.value,
-                        onTap: () async {
-                          // First save the patient, then open appointment dialog
-                          final isValid = formKey.currentState!.saveAndValidate();
-                          if (!isValid) {
-                            showFormErrorDialog(
-                              context,
-                              errors: [
-                                'Please fill in required fields before scheduling',
+                        // === MEDICAL RECORD SECTION ===
+                        _DisabledSection(
+                          isDisabled: !requiredFieldsComplete.value,
+                          message: 'Complete required patient details above',
+                          child: _CollapsibleSection(
+                            title: 'Medical Record (Optional)',
+                            icon: Icons.medical_services,
+                            isExpanded: recordExpanded.value,
+                            onToggle: requiredFieldsComplete.value
+                                ? () {
+                                    recordExpanded.value =
+                                        !recordExpanded.value;
+                                    if (recordExpanded.value) {
+                                      recordEverOpened.value = true;
+                                    }
+                                  }
+                                : null,
+                            hasError: recordHasError.value,
+                            maintainState: false,
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 16),
+                                FormBuilderDateTimePicker(
+                                  name: 'recordDate',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Visit Date',
+                                    border: OutlineInputBorder(),
+                                    suffixIcon: Icon(Icons.calendar_today),
+                                  ),
+                                  enabled: !isSaving.value,
+                                  inputType: InputType.date,
+                                  initialValue: DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime.now(),
+                                ),
+                                const SizedBox(height: 16),
+                                FormBuilderTextField(
+                                  name: 'diagnosis',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Diagnosis *',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(Icons.medical_services),
+                                  ),
+                                  enabled: !isSaving.value,
+                                  maxLines: 2,
+                                  onChanged: (_) => updateDiagnosisStatus(),
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: FormBuilderTextField(
+                                        name: 'weight',
+                                        decoration: const InputDecoration(
+                                          labelText: 'Weight',
+                                          border: OutlineInputBorder(),
+                                          suffixText: 'kg',
+                                        ),
+                                        enabled: !isSaving.value,
+                                        keyboardType: TextInputType.number,
+                                        validator:
+                                            FormBuilderValidators.numeric(
+                                          errorText: 'Must be a number',
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: FormBuilderTextField(
+                                        name: 'temperature',
+                                        decoration: const InputDecoration(
+                                          labelText: 'Temperature',
+                                          border: OutlineInputBorder(),
+                                          suffixText: '°C',
+                                        ),
+                                        enabled: !isSaving.value,
+                                        keyboardType: TextInputType.number,
+                                        validator:
+                                            FormBuilderValidators.numeric(
+                                          errorText: 'Must be a number',
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                FormBuilderTextField(
+                                  name: 'treatment',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Treatment',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  enabled: !isSaving.value,
+                                  maxLines: 2,
+                                ),
+                                const SizedBox(height: 16),
+                                FormBuilderTextField(
+                                  name: 'notes',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Notes',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  enabled: !isSaving.value,
+                                  maxLines: 3,
+                                ),
                               ],
-                            );
-                            return;
-                          }
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
 
-                          await handleSave();
+                        // === PRESCRIPTION SECTION ===
+                        _DisabledSection(
+                          isDisabled: !recordHasDiagnosis.value,
+                          message: 'Add a diagnosis in Medical Record first',
+                          child: _CollapsibleSection(
+                            title: 'Prescription (Optional)',
+                            icon: Icons.medication,
+                            isExpanded: prescriptionExpanded.value,
+                            onToggle: recordHasDiagnosis.value
+                                ? () {
+                                    prescriptionExpanded.value =
+                                        !prescriptionExpanded.value;
+                                    if (prescriptionExpanded.value) {
+                                      prescriptionEverOpened.value = true;
+                                    }
+                                  }
+                                : null,
+                            hasError: prescriptionHasError.value,
+                            maintainState: false,
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 16),
+                                FormBuilderTextField(
+                                  name: 'medication',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Medication *',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(Icons.medication),
+                                  ),
+                                  enabled: !isSaving.value,
+                                  textCapitalization: TextCapitalization.words,
+                                ),
+                                const SizedBox(height: 16),
+                                FormBuilderDateTimePicker(
+                                  name: 'prescriptionDate',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Date',
+                                    border: OutlineInputBorder(),
+                                    suffixIcon: Icon(Icons.calendar_today),
+                                  ),
+                                  enabled: !isSaving.value,
+                                  inputType: InputType.date,
+                                  initialValue: DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime.now()
+                                      .add(const Duration(days: 365)),
+                                ),
+                                const SizedBox(height: 16),
+                                FormBuilderTextField(
+                                  name: 'dosage',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Dosage',
+                                    border: OutlineInputBorder(),
+                                    hintText: 'e.g., 250mg, 2x daily',
+                                  ),
+                                  enabled: !isSaving.value,
+                                ),
+                                const SizedBox(height: 16),
+                                FormBuilderTextField(
+                                  name: 'instructions',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Instructions',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  enabled: !isSaving.value,
+                                  maxLines: 3,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
 
-                          // Get the created patient and open appointment dialog
-                          if (context.mounted) {
-                            final patients =
-                                ref.read(patientsControllerProvider).value;
-                            final createdPatient = patients?.firstOrNull;
-                            if (createdPatient != null) {
-                              openCreateAppointmentDialog(createdPatient);
+                        // === SCHEDULE APPOINTMENT BUTTON ===
+                        _ActionCard(
+                          icon: Icons.calendar_month,
+                          title: 'Schedule Appointment',
+                          subtitle:
+                              'Save patient first, then schedule a follow-up',
+                          enabled: !isSaving.value,
+                          onTap: () async {
+                            // First save the patient, then open appointment dialog
+                            final isValid =
+                                formKey.currentState!.saveAndValidate();
+                            if (!isValid) {
+                              showFormErrorDialog(
+                                context,
+                                errors: [
+                                  'Please fill in required fields before scheduling',
+                                ],
+                              );
+                              return;
                             }
-                          }
-                        },
-                      ),
 
-                      const SizedBox(height: 24),
-                    ],
+                            await handleSave();
+
+                            // Get the created patient and open appointment dialog
+                            if (context.mounted) {
+                              final patients =
+                                  ref.read(patientsControllerProvider).value;
+                              final createdPatient = patients?.firstOrNull;
+                              if (createdPatient != null) {
+                                openCreateAppointmentDialog(createdPatient);
+                              }
+                            }
+                          },
+                        ),
+
+                        const SizedBox(height: 24),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -913,7 +918,6 @@ class _CollapsibleSection extends StatelessWidget {
     required this.isExpanded,
     required this.onToggle,
     required this.child,
-    this.trailing,
     this.hasError = false,
     this.maintainState = false,
   });
@@ -923,7 +927,6 @@ class _CollapsibleSection extends StatelessWidget {
   final bool isExpanded;
   final VoidCallback? onToggle;
   final Widget child;
-  final Widget? trailing;
   final bool hasError;
 
   /// If true, the child is kept in the widget tree when collapsed (using Offstage).
@@ -969,7 +972,6 @@ class _CollapsibleSection extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (trailing != null) trailing!,
                   Icon(
                     isExpanded ? Icons.expand_less : Icons.expand_more,
                     color: isEnabled
@@ -1114,7 +1116,8 @@ class _ActionCard extends StatelessWidget {
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: enabled
                             ? theme.colorScheme.onSurface
-                            : theme.colorScheme.onSurface.withValues(alpha: 0.38),
+                            : theme.colorScheme.onSurface
+                                .withValues(alpha: 0.38),
                       ),
                     ),
                     Text(
@@ -1131,7 +1134,8 @@ class _ActionCard extends StatelessWidget {
                 size: 16,
                 color: enabled
                     ? theme.colorScheme.onSurfaceVariant
-                    : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.38),
+                    : theme.colorScheme.onSurfaceVariant
+                        .withValues(alpha: 0.38),
               ),
             ],
           ),
