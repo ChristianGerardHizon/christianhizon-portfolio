@@ -11,12 +11,12 @@ import '../../../features/settings/presentation/controllers/species_controller.d
 import '../../../features/settings/presentation/pages/system_shell.dart';
 import '../../../features/settings/presentation/widgets/message_template_detail_panel.dart';
 import '../../../features/settings/presentation/widgets/product_category_detail_panel.dart';
-import '../../../features/settings/presentation/widgets/sheets/message_template_form_sheet.dart';
+import '../../../features/settings/presentation/widgets/dialogs/message_template_form_dialog.dart';
 import '../../../features/settings/presentation/widgets/species_detail_panel.dart';
 import '../../../features/settings/presentation/widgets/treatment_type_detail_panel.dart';
 import '../../../features/settings/presentation/widgets/printer_config_detail_panel.dart';
 import '../../../features/settings/presentation/controllers/printer_configs_controller.dart';
-import '../../../features/settings/presentation/widgets/sheets/printer_config_form_sheet.dart';
+import '../../../features/settings/presentation/widgets/dialogs/printer_config_form_dialog.dart';
 import '../../utils/breakpoints.dart';
 
 part 'system.routes.g.dart';
@@ -747,13 +747,7 @@ class _MobileMessageTemplatesListPage extends ConsumerWidget {
   }
 
   void _showCreateSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => const MessageTemplateFormSheet(),
-    );
+    showMessageTemplateFormDialog(context);
   }
 }
 
@@ -1008,20 +1002,6 @@ class _MobilePrinterListPage extends ConsumerWidget {
   }
 
   void _showCreateSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.8,
-        minChildSize: 0.5,
-        maxChildSize: 0.95,
-        expand: false,
-        builder: (context, scrollController) => PrinterConfigFormSheet(
-          scrollController: scrollController,
-        ),
-      ),
-    );
+    showPrinterConfigFormDialog(context);
   }
 }

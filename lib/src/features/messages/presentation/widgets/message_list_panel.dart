@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../domain/message.dart';
 import '../controllers/messages_controller.dart';
 import 'message_card.dart';
-import 'sheets/create_message_sheet.dart';
+import 'dialogs/create_message_dialog.dart';
 
 /// Message list panel with filter header.
 ///
@@ -173,22 +173,14 @@ class MessageListPanel extends HookConsumerWidget {
   }
 
   void _showCreateMessageSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => CreateMessageSheet(
-        onSave: (message) async {
-          final created = await ref
-              .read(messagesControllerProvider.notifier)
-              .createMessageAndReturn(message);
-          return created;
-        },
-      ),
+    showCreateMessageDialog(
+      context,
+      onSave: (message) async {
+        final created = await ref
+            .read(messagesControllerProvider.notifier)
+            .createMessageAndReturn(message);
+        return created;
+      },
     );
   }
 }

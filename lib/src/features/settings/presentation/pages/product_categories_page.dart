@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../products/domain/product_category.dart';
 import '../controllers/product_categories_controller.dart';
-import '../widgets/sheets/product_category_form_sheet.dart';
+import '../widgets/dialogs/product_category_form_dialog.dart';
 
 /// Product categories list page with CRUD operations.
 class ProductCategoriesPage extends ConsumerWidget {
@@ -122,13 +122,7 @@ class ProductCategoriesPage extends ConsumerWidget {
   }
 
   void _showFormSheet(BuildContext context, {ProductCategory? category}) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => ProductCategoryFormSheet(category: category),
-    );
+    showProductCategoryFormDialog(context, category: category);
   }
 
   void _showDeleteConfirmation(

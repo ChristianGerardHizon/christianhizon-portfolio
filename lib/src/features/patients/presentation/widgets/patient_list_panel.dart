@@ -10,8 +10,8 @@ import '../../domain/patient.dart';
 import '../controllers/paginated_patients_controller.dart';
 import '../controllers/patient_search_controller.dart';
 import 'patient_avatar.dart';
-import 'sheets/create_multiple_patients_sheet.dart';
-import 'sheets/search_fields_sheet.dart';
+import 'dialogs/create_multiple_patients_dialog.dart';
+import 'dialogs/search_fields_dialog.dart';
 
 /// Patient list panel with search header and infinite scroll.
 ///
@@ -74,7 +74,7 @@ class PatientListPanel extends HookConsumerWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showCreateMultiplePatientsSheet(context),
+        onPressed: () => showCreateMultiplePatientsDialog(context),
         tooltip: 'Add Patient',
         child: const Icon(Icons.add),
       ),
@@ -300,7 +300,7 @@ class _SearchInput extends StatelessWidget {
           label: Text('$fieldCount'),
           child: IconButton.filledTonal(
             icon: const Icon(Icons.tune),
-            onPressed: () => showSearchFieldsSheet(context),
+            onPressed: () => showSearchFieldsDialog(context),
             tooltip: t.common.filter,
           ),
         ),

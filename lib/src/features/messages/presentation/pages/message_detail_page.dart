@@ -8,7 +8,7 @@ import '../../../../core/routing/routes/messages.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../domain/message.dart';
 import '../controllers/messages_controller.dart';
-import '../widgets/sheets/edit_message_sheet.dart';
+import '../widgets/dialogs/edit_message_dialog.dart';
 
 /// Message detail page showing full message information.
 ///
@@ -491,24 +491,20 @@ class _MessageDetailContent extends ConsumerWidget {
   }
 
   void _showEditSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useRootNavigator: true,
-      builder: (context) => EditMessageSheet(
-        message: message,
-        onSave: (updatedMessage) async {
-          final success = await ref
-              .read(messagesControllerProvider.notifier)
-              .updateMessage(updatedMessage);
+    showEditMessageDialog(
+      context,
+      message: message,
+      onSave: (updatedMessage) async {
+        final success = await ref
+            .read(messagesControllerProvider.notifier)
+            .updateMessage(updatedMessage);
 
-          if (success) {
-            ref.invalidate(messageProvider(message.id));
-            return updatedMessage;
-          }
-          return null;
-        },
-      ),
+        if (success) {
+          ref.invalidate(messageProvider(message.id));
+          return updatedMessage;
+        }
+        return null;
+      },
     );
   }
 

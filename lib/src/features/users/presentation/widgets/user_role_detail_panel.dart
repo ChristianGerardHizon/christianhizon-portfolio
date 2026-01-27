@@ -5,7 +5,7 @@ import '../../../../core/widgets/form_feedback.dart';
 import '../../domain/user_role.dart';
 import '../controllers/user_roles_controller.dart';
 import 'permission_category_widget.dart';
-import 'sheets/edit_role_sheet.dart';
+import 'dialogs/edit_role_dialog.dart';
 
 /// Detail panel for viewing a role in tablet layout.
 class UserRoleDetailPanel extends ConsumerWidget {
@@ -42,7 +42,7 @@ class UserRoleDetailPanel extends ConsumerWidget {
           ),
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () => showEditRoleSheet(context, role),
+            onPressed: () => showEditRoleDialog(context, role),
             tooltip: 'Edit',
           ),
           if (!role.isSystem)

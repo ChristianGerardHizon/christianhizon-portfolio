@@ -4,9 +4,9 @@ import 'package:intl/intl.dart';
 
 import '../../domain/product_lot.dart';
 import '../controllers/product_lots_controller.dart';
-import 'sheets/create_lot_sheet.dart';
-import 'sheets/edit_lot_sheet.dart';
-import 'sheets/stock_adjustment_sheet.dart';
+import 'dialogs/create_lot_dialog.dart';
+import 'dialogs/edit_lot_dialog.dart';
+import 'dialogs/stock_adjustment_dialog.dart';
 
 /// Widget for displaying a list of product lots.
 class ProductLotList extends ConsumerWidget {
@@ -89,7 +89,7 @@ class _EmptyLotState extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             FilledButton.icon(
-              onPressed: () => showCreateLotSheet(context, productId),
+              onPressed: () => showCreateLotDialog(context, productId),
               icon: const Icon(Icons.add),
               label: const Text('Add Lot'),
             ),
@@ -171,8 +171,8 @@ class _LotListContent extends ConsumerWidget {
               final lot = lots[index];
               return _LotListTile(
                 lot: lot,
-                onAdjust: () => showLotStockAdjustmentSheet(context, lot),
-                onEdit: () => showEditLotSheet(context, lot),
+                onAdjust: () => showLotStockAdjustmentDialog(context, lot),
+                onEdit: () => showEditLotDialog(context, lot),
                 onDelete: () => _confirmDelete(context, ref, lot),
               );
             },
@@ -185,7 +185,7 @@ class _LotListContent extends ConsumerWidget {
           child: SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
-              onPressed: () => showCreateLotSheet(context, productId),
+              onPressed: () => showCreateLotDialog(context, productId),
               icon: const Icon(Icons.add),
               label: const Text('Add Lot'),
             ),

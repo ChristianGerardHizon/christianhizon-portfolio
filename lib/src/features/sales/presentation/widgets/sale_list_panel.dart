@@ -11,7 +11,7 @@ import '../../../pos/domain/sale.dart';
 import '../controllers/paginated_sales_controller.dart';
 import '../controllers/sale_search_controller.dart';
 import 'sale_status_chip.dart';
-import 'sheets/sale_search_fields_sheet.dart';
+import 'dialogs/sale_search_fields_dialog.dart';
 
 /// Sale list panel with search header and infinite scroll.
 ///
@@ -337,7 +337,7 @@ class _SearchInput extends StatelessWidget {
           label: Text('$fieldCount'),
           child: IconButton.filledTonal(
             icon: const Icon(Icons.tune),
-            onPressed: () => showSaleSearchFieldsSheet(context),
+            onPressed: () => showSaleSearchFieldsDialog(context),
             tooltip: t.common.filter,
           ),
         ),

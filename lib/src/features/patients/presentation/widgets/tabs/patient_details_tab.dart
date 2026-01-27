@@ -10,7 +10,7 @@ import '../../../data/repositories/patient_repository.dart';
 import '../../../domain/patient.dart';
 import '../../controllers/patient_provider.dart';
 import '../patient_avatar.dart';
-import '../sheets/edit_patient_sheet.dart';
+import '../dialogs/edit_patient_dialog.dart';
 
 /// Details tab content showing comprehensive patient and owner information.
 class PatientDetailsTab extends HookConsumerWidget {
@@ -524,16 +524,7 @@ class PatientDetailsTab extends HookConsumerWidget {
   }
 
   void _showEditPatientDialog(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => EditPatientSheet(patient: patient),
-    );
+    showEditPatientDialog(context, patient: patient);
   }
 
   String _formatDate(DateTime date) {

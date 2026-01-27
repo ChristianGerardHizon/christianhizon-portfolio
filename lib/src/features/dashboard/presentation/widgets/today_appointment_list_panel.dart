@@ -6,7 +6,7 @@ import '../../../appointments/domain/appointment_schedule.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../appointments/presentation/utils/appointment_completion_handler.dart';
 import '../../../appointments/presentation/widgets/components/appointment_status_chip.dart';
-import '../../../appointments/presentation/widgets/sheets/edit_appointment_sheet.dart';
+import '../../../appointments/presentation/widgets/dialogs/edit_appointment_dialog.dart';
 
 /// List panel showing today's appointments for the dashboard.
 ///
@@ -291,17 +291,12 @@ class TodayAppointmentListPanel extends ConsumerWidget {
     WidgetRef ref,
     AppointmentSchedule appointment,
   ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => EditAppointmentSheet(
-        appointment: appointment,
-        onSave: (updated) => ref
-            .read(appointmentsControllerProvider.notifier)
-            .updateAppointment(updated),
-      ),
+    showEditAppointmentDialog(
+      context,
+      appointment: appointment,
+      onSave: (updated) => ref
+          .read(appointmentsControllerProvider.notifier)
+          .updateAppointment(updated),
     );
   }
 }

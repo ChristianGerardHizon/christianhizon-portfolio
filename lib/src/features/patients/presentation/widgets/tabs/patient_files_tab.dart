@@ -6,7 +6,7 @@ import '../../../domain/patient_file.dart';
 import '../../controllers/patient_files_controller.dart';
 import '../../pages/file_viewer_page.dart';
 import '../cards/file_card.dart';
-import '../sheets/add_file_sheet.dart';
+import '../dialogs/add_file_dialog.dart';
 
 /// Tab displaying patient files with upload capability.
 class PatientFilesTab extends HookConsumerWidget {
@@ -161,22 +161,17 @@ class PatientFilesTab extends HookConsumerWidget {
   }
 
   void _showAddFileSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => AddFileSheet(
-        patientId: patient.id,
-        onUpload: ({
-          required String fileName,
-          required List<int> bytes,
-          String? notes,
-        }) =>
-            ref
-                .read(patientFilesControllerProvider(patient.id).notifier)
-                .uploadFile(fileName: fileName, bytes: bytes, notes: notes),
-      ),
+    showAddFileDialog(
+      context,
+      patientId: patient.id,
+      onUpload: ({
+        required String fileName,
+        required List<int> bytes,
+        String? notes,
+      }) =>
+          ref
+              .read(patientFilesControllerProvider(patient.id).notifier)
+              .uploadFile(fileName: fileName, bytes: bytes, notes: notes),
     );
   }
 
@@ -384,22 +379,17 @@ class AddFileFab extends ConsumerWidget {
   }
 
   void _showAddFileSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => AddFileSheet(
-        patientId: patientId,
-        onUpload: ({
-          required String fileName,
-          required List<int> bytes,
-          String? notes,
-        }) =>
-            ref
-                .read(patientFilesControllerProvider(patientId).notifier)
-                .uploadFile(fileName: fileName, bytes: bytes, notes: notes),
-      ),
+    showAddFileDialog(
+      context,
+      patientId: patientId,
+      onUpload: ({
+        required String fileName,
+        required List<int> bytes,
+        String? notes,
+      }) =>
+          ref
+              .read(patientFilesControllerProvider(patientId).notifier)
+              .uploadFile(fileName: fileName, bytes: bytes, notes: notes),
     );
   }
 }

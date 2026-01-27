@@ -8,7 +8,7 @@ import '../../../../../core/widgets/form_feedback.dart';
 import '../../../data/repositories/user_repository.dart';
 import '../../../domain/user.dart';
 import '../../controllers/user_provider.dart';
-import '../sheets/edit_user_sheet.dart';
+import '../dialogs/edit_user_dialog.dart';
 import '../user_avatar.dart';
 
 /// Details tab content showing comprehensive user information.
@@ -337,16 +337,7 @@ class UserDetailsTab extends HookConsumerWidget {
   }
 
   void _showEditUserDialog(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => EditUserSheet(user: user),
-    );
+    showEditUserDialog(context, user);
   }
 }
 

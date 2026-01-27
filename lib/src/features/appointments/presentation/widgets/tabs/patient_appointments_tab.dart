@@ -14,8 +14,8 @@ import '../../../domain/appointment_schedule.dart';
 import '../../controllers/appointments_controller.dart';
 import '../../controllers/patient_appointments_controller.dart';
 import '../cards/appointment_card.dart';
-import '../sheets/create_appointment_sheet.dart';
-import '../sheets/edit_appointment_sheet.dart';
+import '../dialogs/create_appointment_dialog.dart';
+import '../dialogs/edit_appointment_dialog.dart';
 
 /// Appointments tab showing appointments for a specific patient.
 class PatientAppointmentsTab extends HookConsumerWidget {
@@ -105,22 +105,14 @@ class PatientAppointmentsTab extends HookConsumerWidget {
   }
 
   void _showAddAppointmentSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => CreateAppointmentSheet(
-        initialPatient: patient,
-        onSave: (appointment) async {
-          return await ref
-              .read(patientAppointmentsControllerProvider(patient.id).notifier)
-              .createAppointmentAndReturn(appointment);
-        },
-      ),
+    showCreateAppointmentDialog(
+      context,
+      initialPatient: patient,
+      onSave: (appointment) async {
+        return await ref
+            .read(patientAppointmentsControllerProvider(patient.id).notifier)
+            .createAppointmentAndReturn(appointment);
+      },
     );
   }
 
@@ -129,23 +121,15 @@ class PatientAppointmentsTab extends HookConsumerWidget {
     WidgetRef ref,
     AppointmentSchedule appointment,
   ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => EditAppointmentSheet(
-        appointment: appointment,
-        onSave: (updated) async {
-          final success = await ref
-              .read(patientAppointmentsControllerProvider(patient.id).notifier)
-              .updateAppointment(updated);
-          return success;
-        },
-      ),
+    showEditAppointmentDialog(
+      context,
+      appointment: appointment,
+      onSave: (updated) async {
+        final success = await ref
+            .read(patientAppointmentsControllerProvider(patient.id).notifier)
+            .updateAppointment(updated);
+        return success;
+      },
     );
   }
 

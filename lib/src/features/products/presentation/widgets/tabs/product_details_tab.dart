@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/product.dart';
 import '../product_image.dart';
-import '../sheets/edit_product_sheet.dart';
+import '../dialogs/edit_product_dialog.dart';
 
 /// Details tab content showing comprehensive product information.
 class ProductDetailsTab extends HookConsumerWidget {
@@ -294,7 +294,7 @@ class ProductDetailsTab extends HookConsumerWidget {
           runSpacing: 8,
           children: [
             FilledButton.icon(
-              onPressed: () => _showEditProductSheet(context),
+              onPressed: () => _showEditProductDialog(context),
               icon: const Icon(Icons.edit),
               label: const Text('Edit Details'),
             ),
@@ -311,8 +311,8 @@ class ProductDetailsTab extends HookConsumerWidget {
     );
   }
 
-  void _showEditProductSheet(BuildContext context) {
-    showEditProductSheet(context, product.id);
+  void _showEditProductDialog(BuildContext context) {
+    showEditProductDialog(context, product.id);
   }
 }
 

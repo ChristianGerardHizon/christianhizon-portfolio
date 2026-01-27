@@ -8,13 +8,13 @@ import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../../messages/domain/message.dart';
 import '../../../messages/presentation/controllers/messages_controller.dart';
-import '../../../patients/presentation/widgets/sheets/add_record_sheet.dart';
+import '../../../patients/presentation/widgets/dialogs/add_record_dialog.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
 import '../utils/appointment_completion_handler.dart';
 import '../widgets/components/linked_items_section.dart';
-import '../widgets/sheets/edit_appointment_sheet.dart';
+import '../widgets/dialogs/edit_appointment_dialog.dart';
 
 /// Comprehensive appointment detail page.
 ///
@@ -195,35 +195,30 @@ class _AppointmentDetailContent extends HookConsumerWidget {
                     patientRecords: appointment.patientRecordsExpanded,
                     showActions: true,
                     onAddRecordPressed: () {
-                      // Show sheet to add a new patient record and link it to this appointment
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        useSafeArea: true,
-                        useRootNavigator: true,
-                        builder: (context) => AddRecordSheet(
-                          patientId: appointment.patient!,
-                          appointmentId: appointment.id,
-                          onSave: (record) async {
-                            // Record is already created by the sheet; just link its ID
-                            final updatedIds = <String>[
-                              ...appointment.patientRecords,
-                              record.id
-                            ];
-                            final updatedAppointment = appointment.copyWith(
-                              patientRecords: updatedIds,
-                            );
-                            final success = await ref
-                                .read(paginatedAppointmentsControllerProvider
-                                    .notifier)
-                                .updateAppointment(updatedAppointment);
-                            if (success) {
-                              ref.invalidate(
-                                  appointmentProvider(appointment.id));
-                            }
-                            return record;
-                          },
-                        ),
+                      // Show dialog to add a new patient record and link it to this appointment
+                      showAddRecordDialog(
+                        context,
+                        patientId: appointment.patient!,
+                        appointmentId: appointment.id,
+                        onSave: (record) async {
+                          // Record is already created by the dialog; just link its ID
+                          final updatedIds = <String>[
+                            ...appointment.patientRecords,
+                            record.id
+                          ];
+                          final updatedAppointment = appointment.copyWith(
+                            patientRecords: updatedIds,
+                          );
+                          final success = await ref
+                              .read(paginatedAppointmentsControllerProvider
+                                  .notifier)
+                              .updateAppointment(updatedAppointment);
+                          if (success) {
+                            ref.invalidate(
+                                appointmentProvider(appointment.id));
+                          }
+                          return record;
+                        },
                       );
                     },
                   ),
@@ -251,27 +246,19 @@ class _AppointmentDetailContent extends HookConsumerWidget {
   }
 
   void _showEditSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => EditAppointmentSheet(
-        appointment: appointment,
-        onSave: (updated) async {
-          final success = await ref
-              .read(paginatedAppointmentsControllerProvider.notifier)
-              .updateAppointment(updated);
-          if (success) {
-            ref.invalidate(appointmentsControllerProvider);
-            ref.invalidate(appointmentProvider(appointment.id));
-          }
-          return success;
-        },
-      ),
+    showEditAppointmentDialog(
+      context,
+      appointment: appointment,
+      onSave: (updated) async {
+        final success = await ref
+            .read(paginatedAppointmentsControllerProvider.notifier)
+            .updateAppointment(updated);
+        if (success) {
+          ref.invalidate(appointmentsControllerProvider);
+          ref.invalidate(appointmentProvider(appointment.id));
+        }
+        return success;
+      },
     );
   }
 

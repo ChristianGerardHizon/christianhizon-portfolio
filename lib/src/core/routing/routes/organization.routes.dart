@@ -13,7 +13,7 @@ import '../../../features/users/domain/user_tab.dart';
 import '../../../features/users/presentation/controllers/paginated_users_controller.dart';
 import '../../../features/users/presentation/controllers/user_roles_controller.dart';
 import '../../../features/users/presentation/pages/user_detail_page.dart';
-import '../../../features/users/presentation/widgets/sheets/edit_role_sheet.dart';
+import '../../../features/users/presentation/widgets/dialogs/edit_role_dialog.dart';
 import '../../../features/users/presentation/widgets/user_list_panel.dart';
 import '../../../features/users/presentation/widgets/user_role_detail_panel.dart';
 import '../../../features/users/presentation/widgets/user_role_list_panel.dart';
@@ -390,7 +390,7 @@ class _OrganizationRolesListPage extends ConsumerWidget {
           selectedId: null,
           onRefresh: () =>
               ref.read(userRolesControllerProvider.notifier).refresh(),
-          onEdit: (role) => showEditRoleSheet(context, role),
+          onEdit: (role) => showEditRoleDialog(context, role),
           onDelete: (role) => _confirmDeleteRole(context, ref, role),
           onRoleTap: (role) {
             OrganizationRoleDetailRoute(id: role.id).push(context);

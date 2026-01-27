@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/utils/currency_format.dart';
 import '../../../products/domain/product_lot.dart';
 import '../cart_controller.dart';
-import 'checkout_sheet.dart';
+import 'checkout_dialog.dart';
 
 class CartView extends ConsumerWidget {
   const CartView({super.key});
@@ -446,7 +446,7 @@ class CartView extends ConsumerWidget {
                         child: FilledButton.icon(
                           onPressed: cartItems.isEmpty || isSyncing
                               ? null
-                              : () => showCheckoutSheet(context),
+                              : () => showCheckoutDialog(context),
                           icon: const Icon(Icons.shopping_cart_checkout),
                           label: const Text('Checkout'),
                         ),

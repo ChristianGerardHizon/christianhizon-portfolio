@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../domain/product.dart';
 import '../product_lot_list.dart';
 import '../product_stock_badge.dart';
-import '../sheets/stock_adjustment_sheet.dart';
+import '../dialogs/stock_adjustment_dialog.dart';
 
 /// Stock tab for product detail page.
 ///
@@ -106,7 +106,7 @@ class _SimpleStockView extends StatelessWidget {
 
           // Adjust stock button
           FilledButton.icon(
-            onPressed: () => showProductStockAdjustmentSheet(context, product),
+            onPressed: () => showProductStockAdjustmentDialog(context, product),
             icon: const Icon(Icons.tune),
             label: const Text('Adjust Stock'),
           ),

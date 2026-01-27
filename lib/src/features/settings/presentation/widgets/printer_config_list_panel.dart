@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/routing/routes/system.routes.dart';
 import '../../domain/printer_config.dart';
 import '../controllers/printer_configs_controller.dart';
-import 'sheets/printer_config_form_sheet.dart';
+import 'dialogs/printer_config_form_dialog.dart';
 
 /// List panel for printer configurations (tablet master-detail layout).
 class PrinterConfigListPanel extends ConsumerWidget {
@@ -191,20 +191,6 @@ class PrinterConfigListPanel extends ConsumerWidget {
   }
 
   void _showCreateSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.8,
-        minChildSize: 0.5,
-        maxChildSize: 0.95,
-        expand: false,
-        builder: (context, scrollController) => PrinterConfigFormSheet(
-          scrollController: scrollController,
-        ),
-      ),
-    );
+    showPrinterConfigFormDialog(context);
   }
 }

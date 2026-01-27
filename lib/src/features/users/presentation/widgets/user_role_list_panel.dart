@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/i18n/strings.g.dart';
 import '../../domain/user_role.dart';
-import 'sheets/create_role_sheet.dart';
+import 'dialogs/create_role_dialog.dart';
 
 /// Role list panel with search and list selection.
 class UserRoleListPanel extends HookConsumerWidget {
@@ -53,7 +53,7 @@ class UserRoleListPanel extends HookConsumerWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showCreateRoleSheet(context),
+        onPressed: () => showCreateRoleDialog(context),
         tooltip: 'Add Role',
         child: const Icon(Icons.add),
       ),

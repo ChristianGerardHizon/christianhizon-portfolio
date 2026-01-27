@@ -12,8 +12,8 @@ import '../controllers/paginated_products_controller.dart';
 import '../controllers/product_search_controller.dart';
 import 'product_image.dart';
 import 'product_stock_badge.dart';
-import 'sheets/create_product_sheet.dart';
-import 'sheets/product_search_fields_sheet.dart';
+import 'dialogs/create_product_dialog.dart';
+import 'dialogs/product_search_fields_dialog.dart';
 
 /// Product list panel with search header and infinite scroll.
 ///
@@ -78,7 +78,7 @@ class ProductListPanel extends HookConsumerWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showCreateProductSheet(context),
+        onPressed: () => showCreateProductDialog(context),
         tooltip: 'Add Product',
         child: const Icon(Icons.add),
       ),
@@ -326,7 +326,7 @@ class _SearchInput extends StatelessWidget {
           label: Text('$fieldCount'),
           child: IconButton.filledTonal(
             icon: const Icon(Icons.tune),
-            onPressed: () => showProductSearchFieldsSheet(context),
+            onPressed: () => showProductSearchFieldsDialog(context),
             tooltip: t.common.filter,
           ),
         ),

@@ -7,7 +7,7 @@ import '../../../../core/widgets/form_feedback.dart';
 import '../../domain/user_role.dart';
 import '../controllers/user_roles_controller.dart';
 import '../widgets/empty_role_detail_state.dart';
-import '../widgets/sheets/edit_role_sheet.dart';
+import '../widgets/dialogs/edit_role_dialog.dart';
 import '../widgets/user_role_detail_panel.dart';
 import '../widgets/user_role_list_panel.dart';
 
@@ -67,7 +67,7 @@ class UserRolesPage extends HookConsumerWidget {
           selectedId: selectedRoleId.value,
           onRefresh: () =>
               ref.read(userRolesControllerProvider.notifier).refresh(),
-          onEdit: (role) => showEditRoleSheet(context, role),
+          onEdit: (role) => showEditRoleDialog(context, role),
           onDelete: (role) => _showDeleteConfirmation(context, ref, role),
           onRoleTap: isTablet ? (role) => selectedRoleId.value = role.id : null,
         );

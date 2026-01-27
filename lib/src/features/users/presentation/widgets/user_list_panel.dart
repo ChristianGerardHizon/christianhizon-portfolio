@@ -9,8 +9,8 @@ import '../../../../core/widgets/end_of_list_indicator.dart';
 import '../../domain/user.dart';
 import '../controllers/paginated_users_controller.dart';
 import '../controllers/user_search_controller.dart';
-import 'sheets/create_user_sheet.dart';
-import 'sheets/search_fields_sheet.dart';
+import 'dialogs/create_user_dialog.dart';
+import 'dialogs/search_fields_dialog.dart';
 import 'user_avatar.dart';
 
 /// User list panel with search header and infinite scroll.
@@ -74,7 +74,7 @@ class UserListPanel extends HookConsumerWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showCreateUserSheet(context),
+        onPressed: () => showCreateUserDialog(context),
         tooltip: 'Add User',
         child: const Icon(Icons.add),
       ),
@@ -300,7 +300,7 @@ class _SearchInput extends StatelessWidget {
           label: Text('$fieldCount'),
           child: IconButton.filledTonal(
             icon: const Icon(Icons.tune),
-            onPressed: () => showUserSearchFieldsSheet(context),
+            onPressed: () => showUserSearchFieldsDialog(context),
             tooltip: t.common.filter,
           ),
         ),

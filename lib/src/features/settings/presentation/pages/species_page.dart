@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../patients/domain/patient_species.dart';
 import '../controllers/species_controller.dart';
-import '../widgets/sheets/species_form_sheet.dart';
+import '../widgets/dialogs/species_form_dialog.dart';
 
 /// Species list page with CRUD operations.
 class SpeciesPage extends HookConsumerWidget {
@@ -186,13 +186,7 @@ class SpeciesPage extends HookConsumerWidget {
   }
 
   void _showFormSheet(BuildContext context, {PatientSpecies? species}) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => SpeciesFormSheet(species: species),
-    );
+    showSpeciesFormDialog(context, species: species);
   }
 
   void _handleAction(

@@ -8,7 +8,7 @@ import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../appointments/domain/appointment_schedule.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../appointments/presentation/widgets/components/appointment_status_chip.dart';
-import '../../../appointments/presentation/widgets/sheets/edit_appointment_sheet.dart';
+import '../../../appointments/presentation/widgets/dialogs/edit_appointment_dialog.dart';
 
 /// Quick summary view for an appointment on the dashboard.
 ///
@@ -303,20 +303,12 @@ class AppointmentQuickSummary extends ConsumerWidget {
   }
 
   void _showEditSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => EditAppointmentSheet(
-        appointment: appointment,
-        onSave: (updated) => ref
-            .read(appointmentsControllerProvider.notifier)
-            .updateAppointment(updated),
-      ),
+    showEditAppointmentDialog(
+      context,
+      appointment: appointment,
+      onSave: (updated) => ref
+          .read(appointmentsControllerProvider.notifier)
+          .updateAppointment(updated),
     );
   }
 

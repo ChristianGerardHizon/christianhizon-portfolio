@@ -5,8 +5,8 @@ import '../../../../core/routing/routes/appointments.routes.dart';
 import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/routing/routes/sales.routes.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
-import '../../../appointments/presentation/widgets/sheets/create_appointment_sheet.dart';
-import '../../../patients/presentation/widgets/sheets/create_patient_sheet.dart';
+import '../../../appointments/presentation/widgets/dialogs/create_appointment_dialog.dart';
+import '../../../patients/presentation/widgets/dialogs/create_patient_dialog.dart';
 
 /// Section displaying quick action buttons on the dashboard.
 ///
@@ -57,14 +57,14 @@ class QuickActionsSection extends ConsumerWidget {
                   icon: Icons.calendar_month,
                   label: 'New Appointment',
                   color: Colors.blue,
-                  onTap: () => _showCreateAppointmentSheet(context, ref),
+                  onTap: () => _showCreateAppointmentDialog(context, ref),
                 ),
                 const SizedBox(width: 12),
                 _QuickActionButton(
                   icon: Icons.pets,
                   label: 'New Patient',
                   color: Colors.teal,
-                  onTap: () => showCreatePatientSheet(context),
+                  onTap: () => showCreatePatientDialog(context),
                 ),
                 const SizedBox(width: 12),
                 _QuickActionButton(
@@ -95,22 +95,14 @@ class QuickActionsSection extends ConsumerWidget {
     );
   }
 
-  void _showCreateAppointmentSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => CreateAppointmentSheet(
-        onSave: (appointment) async {
-          return await ref
-              .read(appointmentsControllerProvider.notifier)
-              .createAppointmentAndReturn(appointment);
-        },
-      ),
+  void _showCreateAppointmentDialog(BuildContext context, WidgetRef ref) {
+    showCreateAppointmentDialog(
+      context,
+      onSave: (appointment) async {
+        return await ref
+            .read(appointmentsControllerProvider.notifier)
+            .createAppointmentAndReturn(appointment);
+      },
     );
   }
 }

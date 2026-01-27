@@ -10,7 +10,7 @@ import '../../../products/domain/product.dart';
 import '../../../products/domain/product_status.dart';
 import '../cart_controller.dart';
 import '../providers/pos_product_stock_provider.dart';
-import 'lot_selection_sheet.dart';
+import 'lot_selection_dialog.dart';
 
 class ProductGrid extends ConsumerWidget {
   const ProductGrid({
@@ -245,7 +245,7 @@ class _ProductCard extends ConsumerWidget {
 
     if (product.trackByLot) {
       // Show lot selection sheet for lot-tracked products
-      showLotSelectionSheet(
+      showLotSelectionDialog(
         context,
         product: product,
         onLotSelected: (lot, quantity) {

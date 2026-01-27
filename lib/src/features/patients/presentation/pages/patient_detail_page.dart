@@ -11,7 +11,7 @@ import '../../domain/patient.dart';
 import '../../domain/patient_tab.dart';
 import '../controllers/patient_provider.dart';
 import '../controllers/patients_controller.dart';
-import '../widgets/sheets/edit_patient_sheet.dart';
+import '../widgets/dialogs/edit_patient_dialog.dart';
 import '../widgets/tabs/patient_details_tab.dart';
 import '../widgets/tabs/patient_files_tab.dart';
 import '../widgets/tabs/patient_overview_tab.dart';
@@ -157,16 +157,7 @@ class PatientDetailPage extends HookConsumerWidget {
   }
 
   void _showEditPatientDialog(BuildContext context, Patient patient) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => EditPatientSheet(patient: patient),
-    );
+    showEditPatientDialog(context, patient: patient);
   }
 
   void _showMoreOptions(BuildContext context, WidgetRef ref, Patient patient) {

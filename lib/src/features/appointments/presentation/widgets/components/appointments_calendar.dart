@@ -10,7 +10,7 @@ import '../../../../patients/presentation/controllers/patient_records_controller
 import '../../../domain/appointment_schedule.dart';
 import '../../controllers/appointments_controller.dart';
 import '../cards/appointment_card.dart';
-import '../sheets/edit_appointment_sheet.dart';
+import '../dialogs/edit_appointment_dialog.dart';
 
 /// Calendar view for appointments using table_calendar.
 class AppointmentsCalendar extends HookConsumerWidget {
@@ -186,23 +186,15 @@ class AppointmentsCalendar extends HookConsumerWidget {
     WidgetRef ref,
     AppointmentSchedule appointment,
   ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => EditAppointmentSheet(
-        appointment: appointment,
-        onSave: (updated) async {
-          final success = await ref
-              .read(appointmentsControllerProvider.notifier)
-              .updateAppointment(updated);
-          return success;
-        },
-      ),
+    showEditAppointmentDialog(
+      context,
+      appointment: appointment,
+      onSave: (updated) async {
+        final success = await ref
+            .read(appointmentsControllerProvider.notifier)
+            .updateAppointment(updated);
+        return success;
+      },
     );
   }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controllers/branches_controller.dart';
-import '../widgets/sheets/branch_form_sheet.dart';
+import '../widgets/dialogs/branch_form_dialog.dart';
 
 /// Branches list page with CRUD operations.
 class BranchesPage extends ConsumerWidget {
@@ -125,13 +125,7 @@ class BranchesPage extends ConsumerWidget {
   }
 
   void _showFormSheet(BuildContext context, {dynamic branch}) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => BranchFormSheet(branch: branch),
-    );
+    showBranchFormDialog(context, branch: branch);
   }
 
   void _handleAction(

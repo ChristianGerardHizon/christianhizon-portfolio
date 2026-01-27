@@ -10,7 +10,7 @@ import '../../../settings/domain/branch.dart';
 import '../../../settings/presentation/controllers/branches_controller.dart';
 import '../../../users/presentation/controllers/paginated_users_controller.dart';
 import '../../../users/presentation/controllers/user_roles_controller.dart';
-import '../../../users/presentation/widgets/sheets/edit_role_sheet.dart';
+import '../../../users/presentation/widgets/dialogs/edit_role_dialog.dart';
 import '../../../users/presentation/widgets/user_list_panel.dart';
 import '../../../users/presentation/widgets/user_role_list_panel.dart';
 import 'empty_organization_state.dart';
@@ -168,7 +168,7 @@ class _RolesListWrapper extends ConsumerWidget {
         roles: roles,
         selectedId: selectedId,
         onRefresh: () => rolesController.refresh(),
-        onEdit: (role) => showEditRoleSheet(context, role),
+        onEdit: (role) => showEditRoleDialog(context, role),
         onDelete: (role) => _confirmDeleteRole(context, ref, role),
         onRoleTap: (role) {
           OrganizationRoleDetailRoute(id: role.id).go(context);

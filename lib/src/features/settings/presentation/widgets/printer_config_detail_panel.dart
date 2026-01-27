@@ -10,7 +10,7 @@ import '../../../pos/presentation/services/thermal_print_service.dart';
 import '../../data/repositories/printer_config_repository.dart';
 import '../../domain/printer_config.dart';
 import '../controllers/printer_configs_controller.dart';
-import 'sheets/printer_config_form_sheet.dart';
+import 'dialogs/printer_config_form_dialog.dart';
 
 /// Detail panel for viewing/editing a printer configuration.
 class PrinterConfigDetailPanel extends ConsumerWidget {
@@ -108,21 +108,7 @@ class PrinterConfigDetailPanel extends ConsumerWidget {
   }
 
   void _showCreateSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.8,
-        minChildSize: 0.5,
-        maxChildSize: 0.95,
-        expand: false,
-        builder: (context, scrollController) => PrinterConfigFormSheet(
-          scrollController: scrollController,
-        ),
-      ),
-    );
+    showPrinterConfigFormDialog(context);
   }
 }
 
@@ -312,22 +298,7 @@ class _PrinterDetailContent extends HookConsumerWidget {
   }
 
   void _showEditSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.8,
-        minChildSize: 0.5,
-        maxChildSize: 0.95,
-        expand: false,
-        builder: (context, scrollController) => PrinterConfigFormSheet(
-          config: config,
-          scrollController: scrollController,
-        ),
-      ),
-    );
+    showPrinterConfigFormDialog(context, config: config);
   }
 
   Future<void> _setAsDefault(BuildContext context, WidgetRef ref) async {

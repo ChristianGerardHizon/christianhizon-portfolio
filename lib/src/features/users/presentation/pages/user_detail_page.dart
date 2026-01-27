@@ -11,7 +11,7 @@ import '../../domain/user.dart';
 import '../../domain/user_tab.dart';
 import '../controllers/paginated_users_controller.dart';
 import '../controllers/user_provider.dart';
-import '../widgets/sheets/edit_user_sheet.dart';
+import '../widgets/dialogs/edit_user_dialog.dart';
 import '../widgets/tabs/user_details_tab.dart';
 import '../widgets/tabs/user_overview_tab.dart';
 
@@ -142,16 +142,7 @@ class UserDetailPage extends HookConsumerWidget {
   }
 
   void _showEditUserDialog(BuildContext context, User user) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => EditUserSheet(user: user),
-    );
+    showEditUserDialog(context, user);
   }
 
   void _showMoreOptions(BuildContext context, WidgetRef ref, User user) {

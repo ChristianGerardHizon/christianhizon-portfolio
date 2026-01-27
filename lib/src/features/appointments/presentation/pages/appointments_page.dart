@@ -12,8 +12,8 @@ import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
 import '../widgets/cards/appointment_card.dart';
 import '../widgets/components/appointments_calendar.dart';
-import '../widgets/sheets/create_appointment_sheet.dart';
-import '../widgets/sheets/edit_appointment_sheet.dart';
+import '../widgets/dialogs/create_appointment_dialog.dart';
+import '../widgets/dialogs/edit_appointment_dialog.dart';
 
 /// Main appointments page showing list and calendar views.
 class AppointmentsPage extends HookConsumerWidget {
@@ -232,27 +232,19 @@ class AppointmentsPage extends HookConsumerWidget {
   }
 
   void _showCreateAppointmentSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => CreateAppointmentSheet(
-        onSave: (appointment) async {
-          // Create in paginated controller (for list view)
-          final created = await ref
-              .read(paginatedAppointmentsControllerProvider.notifier)
-              .createAppointmentAndReturn(appointment);
-          // Also refresh the non-paginated controller (for calendar view)
-          if (created != null) {
-            ref.invalidate(appointmentsControllerProvider);
-          }
-          return created;
-        },
-      ),
+    showCreateAppointmentDialog(
+      context,
+      onSave: (appointment) async {
+        // Create in paginated controller (for list view)
+        final created = await ref
+            .read(paginatedAppointmentsControllerProvider.notifier)
+            .createAppointmentAndReturn(appointment);
+        // Also refresh the non-paginated controller (for calendar view)
+        if (created != null) {
+          ref.invalidate(appointmentsControllerProvider);
+        }
+        return created;
+      },
     );
   }
 
@@ -261,26 +253,18 @@ class AppointmentsPage extends HookConsumerWidget {
     WidgetRef ref,
     AppointmentSchedule appointment,
   ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => EditAppointmentSheet(
-        appointment: appointment,
-        onSave: (updated) async {
-          final success = await ref
-              .read(paginatedAppointmentsControllerProvider.notifier)
-              .updateAppointment(updated);
-          if (success) {
-            ref.invalidate(appointmentsControllerProvider);
-          }
-          return success;
-        },
-      ),
+    showEditAppointmentDialog(
+      context,
+      appointment: appointment,
+      onSave: (updated) async {
+        final success = await ref
+            .read(paginatedAppointmentsControllerProvider.notifier)
+            .updateAppointment(updated);
+        if (success) {
+          ref.invalidate(appointmentsControllerProvider);
+        }
+        return success;
+      },
     );
   }
 

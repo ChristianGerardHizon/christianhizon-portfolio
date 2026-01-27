@@ -8,7 +8,7 @@ import '../../../../core/widgets/form_feedback.dart';
 import '../../domain/product_tab.dart';
 import '../controllers/paginated_products_controller.dart';
 import '../controllers/product_provider.dart';
-import '../widgets/sheets/edit_product_sheet.dart';
+import '../widgets/dialogs/edit_product_dialog.dart';
 import '../widgets/tabs/product_adjustments_tab.dart';
 import '../widgets/tabs/product_details_tab.dart';
 import '../widgets/tabs/product_overview_tab.dart';
@@ -139,7 +139,7 @@ class ProductDetailPage extends HookConsumerWidget {
   }
 
   void _showEditSheet(BuildContext context, WidgetRef ref) {
-    showEditProductSheet(context, productId);
+    showEditProductDialog(context, productId);
   }
 
   Future<void> _handleMenuAction(

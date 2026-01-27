@@ -12,8 +12,8 @@ import '../controllers/product_categories_controller.dart';
 import '../controllers/species_controller.dart';
 import '../controllers/printer_configs_controller.dart';
 import 'empty_system_state.dart';
-import 'sheets/message_template_form_sheet.dart';
-import 'sheets/printer_config_form_sheet.dart';
+import 'dialogs/message_template_form_dialog.dart';
+import 'dialogs/printer_config_form_dialog.dart';
 import 'system_nav_panel.dart';
 
 /// Three-panel tablet layout for system settings.
@@ -485,13 +485,7 @@ class _MessageTemplateListWrapper extends ConsumerWidget {
   }
 
   void _showCreateSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => const MessageTemplateFormSheet(),
-    );
+    showMessageTemplateFormDialog(context);
   }
 }
 
@@ -779,20 +773,6 @@ class _PrinterListWrapper extends ConsumerWidget {
   }
 
   void _showCreateSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.8,
-        minChildSize: 0.5,
-        maxChildSize: 0.95,
-        expand: false,
-        builder: (context, scrollController) => PrinterConfigFormSheet(
-          scrollController: scrollController,
-        ),
-      ),
-    );
+    showPrinterConfigFormDialog(context);
   }
 }

@@ -7,7 +7,7 @@ import '../../../../core/widgets/form_feedback.dart';
 import '../../data/repositories/message_template_repository.dart';
 import '../../domain/message_template.dart';
 import '../controllers/message_templates_controller.dart';
-import 'sheets/message_template_form_sheet.dart';
+import 'dialogs/message_template_form_dialog.dart';
 
 /// Detail panel for viewing/editing a message template.
 class MessageTemplateDetailPanel extends ConsumerWidget {
@@ -257,13 +257,7 @@ class _TemplateDetailContent extends ConsumerWidget {
   }
 
   void _showEditSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (context) => MessageTemplateFormSheet(template: template),
-    );
+    showMessageTemplateFormDialog(context, template: template);
   }
 
   Future<void> _confirmDelete(BuildContext context, WidgetRef ref) async {

@@ -9,7 +9,7 @@ import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/patient_treatment_record.dart';
 import '../../controllers/patient_treatment_records_controller.dart';
 import '../cards/treatment_record_card.dart';
-import '../sheets/add_treatment_record_sheet.dart';
+import '../dialogs/add_treatment_record_dialog.dart';
 
 /// Section displaying treatment records for a patient, grouped by date.
 class TreatmentsSection extends ConsumerWidget {
@@ -168,7 +168,7 @@ class TreatmentsSection extends ConsumerWidget {
   }
 
   void _handleAddTreatment(BuildContext context, WidgetRef ref) {
-    showTreatmentRecordSheet(
+    showTreatmentRecordDialog(
       context,
       patientId: patientId,
       onSave: (record) async {
@@ -185,7 +185,7 @@ class TreatmentsSection extends ConsumerWidget {
     WidgetRef ref,
     PatientTreatmentRecord record,
   ) {
-    showTreatmentRecordSheet(
+    showTreatmentRecordDialog(
       context,
       patientId: patientId,
       existingRecord: record,
