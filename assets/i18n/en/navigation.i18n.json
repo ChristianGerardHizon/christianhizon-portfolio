@@ -17,5 +17,6 @@
     "organization": "Organization",
     "system": "System",
     "patientConfig": "Patient Config",
-    "account": "Account"
+    "account": "Account",
+    "noBranch": "No Branch"
 }

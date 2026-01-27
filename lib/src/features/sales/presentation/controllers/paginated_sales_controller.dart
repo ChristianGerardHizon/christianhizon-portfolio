@@ -4,6 +4,7 @@ import '../../../../core/constants/constants.dart';
 import '../../../../core/foundation/paginated_state.dart';
 import '../../../pos/data/repositories/sales_repository.dart';
 import '../../../pos/domain/sale.dart';
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import 'sale_sort_controller.dart';
 
 part 'paginated_sales_controller.g.dart';
@@ -21,6 +22,9 @@ class PaginatedSalesController extends _$PaginatedSalesController {
   String get _currentSort =>
       ref.read(saleSortControllerProvider).toSortString();
 
+  /// Gets the current branch filter.
+  String? get _branchFilter => ref.read(currentBranchFilterProvider);
+
   @override
   Future<PaginatedState<Sale>> build() async {
     _currentSearchQuery = null;
@@ -31,10 +35,16 @@ class PaginatedSalesController extends _$PaginatedSalesController {
       refresh();
     });
 
+    // Listen to branch changes and refresh
+    ref.listen(currentBranchFilterProvider, (_, __) {
+      refresh();
+    });
+
     final result = await _repository.fetchPaginated(
       page: 1,
       perPage: Pagination.defaultPageSize,
       sort: _currentSort,
+      filter: _branchFilter,
     );
 
     return result.fold(
@@ -76,11 +86,13 @@ class PaginatedSalesController extends _$PaginatedSalesController {
             page: nextPage,
             perPage: Pagination.defaultPageSize,
             sort: _currentSort,
+            filter: _branchFilter,
           )
         : await _repository.fetchPaginated(
             page: nextPage,
             perPage: Pagination.defaultPageSize,
             sort: _currentSort,
+            filter: _branchFilter,
           );
 
     result.fold(
@@ -100,7 +112,7 @@ class PaginatedSalesController extends _$PaginatedSalesController {
     );
   }
 
-  /// Refreshes the list (respects current search and sort).
+  /// Refreshes the list (respects current search, sort, and branch filter).
   Future<void> refresh() async {
     state = const AsyncValue.loading();
 
@@ -111,11 +123,13 @@ class PaginatedSalesController extends _$PaginatedSalesController {
             page: 1,
             perPage: Pagination.defaultPageSize,
             sort: _currentSort,
+            filter: _branchFilter,
           )
         : await _repository.fetchPaginated(
             page: 1,
             perPage: Pagination.defaultPageSize,
             sort: _currentSort,
+            filter: _branchFilter,
           );
 
     state = result.fold(
@@ -147,6 +161,7 @@ class PaginatedSalesController extends _$PaginatedSalesController {
       page: 1,
       perPage: Pagination.defaultPageSize,
       sort: _currentSort,
+      filter: _branchFilter,
     );
 
     state = result.fold(

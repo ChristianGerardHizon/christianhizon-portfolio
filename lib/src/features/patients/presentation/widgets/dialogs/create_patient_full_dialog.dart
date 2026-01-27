@@ -13,7 +13,7 @@ import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../../appointments/presentation/widgets/dialogs/create_appointment_dialog.dart';
-import '../../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../../domain/patient.dart';
 import '../../../domain/patient_record.dart';
 import '../../../domain/prescription.dart';
@@ -198,9 +198,8 @@ class CreatePatientFullDialog extends HookConsumerWidget {
 
       isSaving.value = true;
 
-      // Get current user's branch
-      final currentUser = ref.read(currentAuthProvider);
-      final userBranch = currentUser?.user.branch;
+      // Get current working branch
+      final userBranch = ref.read(currentBranchIdProvider);
 
       // 1. Create patient
       final patient = Patient(

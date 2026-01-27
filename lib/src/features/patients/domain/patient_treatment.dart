@@ -12,6 +12,7 @@ class PatientTreatment with PatientTreatmentMappable {
     required this.id,
     required this.name,
     this.icon,
+    this.branch,
     this.isDeleted = false,
     this.created,
     this.updated,
@@ -25,6 +26,9 @@ class PatientTreatment with PatientTreatmentMappable {
 
   /// Icon filename/identifier.
   final String? icon;
+
+  /// FK to Branch.
+  final String? branch;
 
   /// Soft delete flag.
   final bool isDeleted;

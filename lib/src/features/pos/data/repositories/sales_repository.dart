@@ -37,6 +37,7 @@ abstract class SalesRepository {
     int page = 1,
     int perPage = Pagination.defaultPageSize,
     String? sort,
+    String? filter,
   });
 }
 
@@ -200,17 +201,23 @@ class SalesRepositoryImpl implements SalesRepository {
     int page = 1,
     int perPage = Pagination.defaultPageSize,
     String? sort,
+    String? filter,
   }) async {
     return TaskEither.tryCatch(
       () async {
         // Use PBFilter for multi-field OR search
         final searchFields = fields ?? ['receiptNumber'];
-        final filter = PBFilter().searchFields(query, searchFields).build();
+        final searchFilter =
+            PBFilter().searchFields(query, searchFields).build();
+
+        // Combine search filter with optional branch filter
+        final combinedFilter =
+            filter != null ? '$searchFilter && $filter' : searchFilter;
 
         final result = await _sales.getList(
           page: page,
           perPage: perPage,
-          filter: filter,
+          filter: combinedFilter,
           sort: sort ?? '-created',
         );
 

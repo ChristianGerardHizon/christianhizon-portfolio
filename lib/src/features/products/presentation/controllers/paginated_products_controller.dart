@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/constants/constants.dart';
 import '../../../../core/foundation/paginated_state.dart';
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../data/repositories/product_lot_repository.dart';
 import '../../data/repositories/product_repository.dart';
 import '../../domain/product.dart';
@@ -24,6 +25,9 @@ class PaginatedProductsController extends _$PaginatedProductsController {
   String get _currentSort =>
       ref.read(productSortControllerProvider).toSortString();
 
+  /// Gets the current branch filter.
+  String? get _branchFilter => ref.read(currentBranchFilterProvider);
+
   @override
   Future<PaginatedState<Product>> build() async {
     _currentSearchQuery = null;
@@ -34,10 +38,16 @@ class PaginatedProductsController extends _$PaginatedProductsController {
       refresh();
     });
 
+    // Listen to branch changes and refresh
+    ref.listen(currentBranchFilterProvider, (_, __) {
+      refresh();
+    });
+
     final result = await _repository.fetchPaginated(
       page: 1,
       perPage: Pagination.defaultPageSize,
       sort: _currentSort,
+      filter: _branchFilter,
     );
 
     final paginated = result.fold(
@@ -115,11 +125,13 @@ class PaginatedProductsController extends _$PaginatedProductsController {
             page: nextPage,
             perPage: Pagination.defaultPageSize,
             sort: _currentSort,
+            filter: _branchFilter,
           )
         : await _repository.fetchPaginated(
             page: nextPage,
             perPage: Pagination.defaultPageSize,
             sort: _currentSort,
+            filter: _branchFilter,
           );
 
     await result.fold(
@@ -141,7 +153,7 @@ class PaginatedProductsController extends _$PaginatedProductsController {
     );
   }
 
-  /// Refreshes the list (respects current search and sort).
+  /// Refreshes the list (respects current search, sort, and branch filter).
   Future<void> refresh() async {
     state = const AsyncValue.loading();
 
@@ -152,11 +164,13 @@ class PaginatedProductsController extends _$PaginatedProductsController {
             page: 1,
             perPage: Pagination.defaultPageSize,
             sort: _currentSort,
+            filter: _branchFilter,
           )
         : await _repository.fetchPaginated(
             page: 1,
             perPage: Pagination.defaultPageSize,
             sort: _currentSort,
+            filter: _branchFilter,
           );
 
     await result.fold(
@@ -194,6 +208,7 @@ class PaginatedProductsController extends _$PaginatedProductsController {
       page: 1,
       perPage: Pagination.defaultPageSize,
       sort: _currentSort,
+      filter: _branchFilter,
     );
 
     await result.fold(

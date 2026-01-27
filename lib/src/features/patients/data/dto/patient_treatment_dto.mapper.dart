@@ -44,6 +44,12 @@ class PatientTreatmentDtoMapper extends ClassMapperBase<PatientTreatmentDto> {
     _$icon,
     opt: true,
   );
+  static String? _$branch(PatientTreatmentDto v) => v.branch;
+  static const Field<PatientTreatmentDto, String> _f$branch = Field(
+    'branch',
+    _$branch,
+    opt: true,
+  );
   static bool _$isDeleted(PatientTreatmentDto v) => v.isDeleted;
   static const Field<PatientTreatmentDto, bool> _f$isDeleted = Field(
     'isDeleted',
@@ -71,6 +77,7 @@ class PatientTreatmentDtoMapper extends ClassMapperBase<PatientTreatmentDto> {
     #collectionName: _f$collectionName,
     #name: _f$name,
     #icon: _f$icon,
+    #branch: _f$branch,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
@@ -83,6 +90,7 @@ class PatientTreatmentDtoMapper extends ClassMapperBase<PatientTreatmentDto> {
       collectionName: data.dec(_f$collectionName),
       name: data.dec(_f$name),
       icon: data.dec(_f$icon),
+      branch: data.dec(_f$branch),
       isDeleted: data.dec(_f$isDeleted),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
@@ -165,6 +173,7 @@ abstract class PatientTreatmentDtoCopyWith<
     String? collectionName,
     String? name,
     String? icon,
+    String? branch,
     bool? isDeleted,
     String? created,
     String? updated,
@@ -189,6 +198,7 @@ class _PatientTreatmentDtoCopyWithImpl<$R, $Out>
     String? collectionName,
     String? name,
     Object? icon = $none,
+    Object? branch = $none,
     bool? isDeleted,
     Object? created = $none,
     Object? updated = $none,
@@ -199,6 +209,7 @@ class _PatientTreatmentDtoCopyWithImpl<$R, $Out>
       if (collectionName != null) #collectionName: collectionName,
       if (name != null) #name: name,
       if (icon != $none) #icon: icon,
+      if (branch != $none) #branch: branch,
       if (isDeleted != null) #isDeleted: isDeleted,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
@@ -211,6 +222,7 @@ class _PatientTreatmentDtoCopyWithImpl<$R, $Out>
     collectionName: data.get(#collectionName, or: $value.collectionName),
     name: data.get(#name, or: $value.name),
     icon: data.get(#icon, or: $value.icon),
+    branch: data.get(#branch, or: $value.branch),
     isDeleted: data.get(#isDeleted, or: $value.isDeleted),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),

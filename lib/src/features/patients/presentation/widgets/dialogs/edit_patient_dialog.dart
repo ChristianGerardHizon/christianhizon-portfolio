@@ -11,7 +11,7 @@ import '../../../../../core/routing/routes/patients.routes.dart';
 import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
-import '../../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../../domain/patient.dart';
 import '../../controllers/patients_controller.dart';
 import '../../controllers/species_breeds_provider.dart';
@@ -86,9 +86,8 @@ class EditPatientDialog extends HookConsumerWidget {
       final values = formKey.currentState!.value;
       isSaving.value = true;
 
-      // Get current user's branch (preserve existing branch if user's branch is null)
-      final currentUser = ref.read(currentAuthProvider);
-      final userBranch = currentUser?.user.branch ?? patient.branch;
+      // Get current working branch (preserve existing branch if no branch selected)
+      final userBranch = ref.read(currentBranchIdProvider) ?? patient.branch;
 
       // Create updated patient
       final updatedPatient = Patient(

@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../data/repositories/appointment_schedule_repository.dart';
 import '../../domain/appointment_schedule.dart';
 
@@ -7,14 +8,23 @@ part 'daily_appointments_controller.g.dart';
 
 /// Controller for managing appointments for a specific date.
 ///
-/// Fetches only appointments for the selected date, making it more efficient
-/// than loading all appointments when only a single day is needed.
+/// Fetches only appointments for the selected date and current branch,
+/// making it more efficient than loading all appointments.
 @riverpod
 class DailyAppointmentsController extends _$DailyAppointmentsController {
+  /// Gets the current branch filter.
+  String? get _branchFilter => ref.read(currentBranchFilterProvider);
+
   @override
   Future<List<AppointmentSchedule>> build(DateTime date) async {
-    final result =
-        await ref.read(appointmentScheduleRepositoryProvider).fetchByDate(date);
+    // Listen to branch changes and refresh
+    ref.listen(currentBranchFilterProvider, (_, __) {
+      refresh();
+    });
+
+    final result = await ref
+        .read(appointmentScheduleRepositoryProvider)
+        .fetchByDate(date, filter: _branchFilter);
     return result.fold(
       (failure) => throw failure,
       (appointments) => appointments,
@@ -25,8 +35,9 @@ class DailyAppointmentsController extends _$DailyAppointmentsController {
   Future<void> refresh() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      final result =
-          await ref.read(appointmentScheduleRepositoryProvider).fetchByDate(date);
+      final result = await ref
+          .read(appointmentScheduleRepositoryProvider)
+          .fetchByDate(date, filter: _branchFilter);
       return result.fold(
         (failure) => throw failure,
         (appointments) => appointments,

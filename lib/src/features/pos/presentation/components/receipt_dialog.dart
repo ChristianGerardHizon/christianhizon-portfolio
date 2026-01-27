@@ -12,6 +12,7 @@ import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../../settings/presentation/controllers/branch_provider.dart';
 import '../../../settings/presentation/controllers/printer_config_provider.dart';
 import '../../domain/sale.dart';
@@ -62,7 +63,7 @@ class ReceiptDialog extends HookConsumerWidget {
     final currentAuth = ref.watch(currentAuthProvider);
 
     // Watch branch for business info on receipts
-    final branchId = currentAuth?.user.branch;
+    final branchId = ref.watch(currentBranchIdProvider);
     final branchAsync = ref.watch(branchProvider(branchId ?? ''));
 
     Future<void> handleThermalPrint({bool showSuccessMessage = true}) async {

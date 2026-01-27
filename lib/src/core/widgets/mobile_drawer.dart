@@ -5,6 +5,7 @@ import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../assets/assets.gen.dart';
 import '../i18n/strings.g.dart';
 import '../packages/pocketbase/pocketbase_provider.dart';
+import 'branch_switcher.dart';
 
 /// Mobile drawer with full navigation menu.
 ///
@@ -74,6 +75,9 @@ class MobileDrawer extends ConsumerWidget {
                 ],
               ),
             ),
+
+            // Branch switcher
+            const BranchSwitcher(),
 
             // Primary navigation
             _DrawerItem(

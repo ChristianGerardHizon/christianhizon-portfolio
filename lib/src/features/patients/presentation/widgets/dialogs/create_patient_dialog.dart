@@ -10,7 +10,7 @@ import '../../../../../core/routing/routes/patients.routes.dart';
 import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
-import '../../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../../domain/patient.dart';
 import '../../../domain/patient_record.dart';
 import '../../controllers/patient_records_controller.dart';
@@ -88,9 +88,8 @@ class CreatePatientDialog extends HookConsumerWidget {
 
       isSaving.value = true;
 
-      // Get current user's branch
-      final currentUser = ref.read(currentAuthProvider);
-      final userBranch = currentUser?.user.branch;
+      // Get current working branch
+      final branchId = ref.read(currentBranchIdProvider);
 
       // Create patient
       final patient = Patient(
@@ -105,7 +104,7 @@ class CreatePatientDialog extends HookConsumerWidget {
         color: _nullIfEmpty(values['color'] as String?),
         sex: values['sex'] as PatientSex?,
         dateOfBirth: values['dateOfBirth'] as DateTime?,
-        branch: userBranch,
+        branch: branchId,
       );
 
       final success = await ref

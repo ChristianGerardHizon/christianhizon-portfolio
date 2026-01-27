@@ -12,7 +12,7 @@ import '../../../../../core/routing/routes/patients.routes.dart';
 import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
-import '../../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../../domain/patient.dart';
 import '../../controllers/patients_controller.dart';
 import '../../controllers/species_breeds_provider.dart';
@@ -188,8 +188,7 @@ class CreateMultiplePatientsDialog extends HookConsumerWidget {
     Future<void> handleSubmit() async {
       isSaving.value = true;
 
-      final currentUser = ref.read(currentAuthProvider);
-      final branch = currentUser?.user.branch;
+      final branch = ref.read(currentBranchIdProvider);
 
       final validEntries = entries.value.where((e) => e.isValid).toList();
       int successCount = 0;

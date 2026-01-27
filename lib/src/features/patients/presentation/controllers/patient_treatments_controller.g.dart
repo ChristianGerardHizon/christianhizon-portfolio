@@ -10,7 +10,7 @@ part of 'patient_treatments_controller.dart';
 // ignore_for_file: type=lint, type=warning
 /// Controller for managing the treatment catalog (list of all treatments).
 ///
-/// This manages the global list of treatment types available in the system.
+/// This manages the list of treatment types available in the current branch.
 
 @ProviderFor(PatientTreatmentsController)
 final patientTreatmentsControllerProvider =
@@ -18,12 +18,12 @@ final patientTreatmentsControllerProvider =
 
 /// Controller for managing the treatment catalog (list of all treatments).
 ///
-/// This manages the global list of treatment types available in the system.
+/// This manages the list of treatment types available in the current branch.
 final class PatientTreatmentsControllerProvider extends $AsyncNotifierProvider<
     PatientTreatmentsController, List<PatientTreatment>> {
   /// Controller for managing the treatment catalog (list of all treatments).
   ///
-  /// This manages the global list of treatment types available in the system.
+  /// This manages the list of treatment types available in the current branch.
   PatientTreatmentsControllerProvider._()
       : super(
           from: null,
@@ -44,11 +44,11 @@ final class PatientTreatmentsControllerProvider extends $AsyncNotifierProvider<
 }
 
 String _$patientTreatmentsControllerHash() =>
-    r'd9d1633d42e885e7f6701d100771b6b04ef3dbcb';
+    r'0e4490fa039dee747753c0bcc3407367ea17dac4';
 
 /// Controller for managing the treatment catalog (list of all treatments).
 ///
-/// This manages the global list of treatment types available in the system.
+/// This manages the list of treatment types available in the current branch.
 
 abstract class _$PatientTreatmentsController
     extends $AsyncNotifier<List<PatientTreatment>> {

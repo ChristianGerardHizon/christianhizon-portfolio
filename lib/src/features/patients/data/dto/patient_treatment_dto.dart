@@ -15,6 +15,7 @@ class PatientTreatmentDto with PatientTreatmentDtoMappable {
   final String collectionName;
   final String name;
   final String? icon;
+  final String? branch;
   final bool isDeleted;
   final String? created;
   final String? updated;
@@ -25,6 +26,7 @@ class PatientTreatmentDto with PatientTreatmentDtoMappable {
     required this.collectionName,
     required this.name,
     this.icon,
+    this.branch,
     this.isDeleted = false,
     this.created,
     this.updated,
@@ -40,6 +42,7 @@ class PatientTreatmentDto with PatientTreatmentDtoMappable {
       collectionName: json['collectionName'] as String? ?? '',
       name: json['name'] as String? ?? '',
       icon: json['icon'] as String?,
+      branch: json['branch'] as String?,
       isDeleted: json['isDeleted'] as bool? ?? false,
       created: json['created'] as String?,
       updated: json['updated'] as String?,
@@ -52,6 +55,7 @@ class PatientTreatmentDto with PatientTreatmentDtoMappable {
       id: id,
       name: name,
       icon: icon,
+      branch: branch,
       isDeleted: isDeleted,
       created: created != null ? DateTime.tryParse(created!) : null,
       updated: updated != null ? DateTime.tryParse(updated!) : null,
@@ -63,6 +67,7 @@ class PatientTreatmentDto with PatientTreatmentDtoMappable {
     return {
       'name': treatment.name,
       'icon': treatment.icon,
+      'branch': treatment.branch,
     };
   }
 }

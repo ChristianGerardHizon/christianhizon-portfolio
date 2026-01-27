@@ -50,6 +50,7 @@ abstract class ProductRepository {
     int page = 1,
     int perPage = Pagination.defaultPageSize,
     String? sort,
+    String? filter,
   });
 
   /// Updates a product's image.
@@ -288,20 +289,25 @@ class ProductRepositoryImpl implements ProductRepository {
     int page = 1,
     int perPage = Pagination.defaultPageSize,
     String? sort,
+    String? filter,
   }) async {
     return TaskEither.tryCatch(
       () async {
         final searchFields = fields ?? ['name'];
-        final filter = PBFilter()
+        final searchFilter = PBFilter()
             .notDeleted()
             .searchFields(query, searchFields)
             .build();
+
+        // Combine search filter with optional branch filter
+        final combinedFilter =
+            filter != null ? '$searchFilter && $filter' : searchFilter;
 
         final result = await _collection.getList(
           page: page,
           perPage: perPage,
           expand: _expand,
-          filter: filter,
+          filter: combinedFilter,
           sort: sort ?? 'name',
         );
 

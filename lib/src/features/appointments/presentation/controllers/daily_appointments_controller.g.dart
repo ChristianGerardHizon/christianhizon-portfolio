@@ -10,8 +10,8 @@ part of 'daily_appointments_controller.dart';
 // ignore_for_file: type=lint, type=warning
 /// Controller for managing appointments for a specific date.
 ///
-/// Fetches only appointments for the selected date, making it more efficient
-/// than loading all appointments when only a single day is needed.
+/// Fetches only appointments for the selected date and current branch,
+/// making it more efficient than loading all appointments.
 
 @ProviderFor(DailyAppointmentsController)
 final dailyAppointmentsControllerProvider =
@@ -19,14 +19,14 @@ final dailyAppointmentsControllerProvider =
 
 /// Controller for managing appointments for a specific date.
 ///
-/// Fetches only appointments for the selected date, making it more efficient
-/// than loading all appointments when only a single day is needed.
+/// Fetches only appointments for the selected date and current branch,
+/// making it more efficient than loading all appointments.
 final class DailyAppointmentsControllerProvider extends $AsyncNotifierProvider<
     DailyAppointmentsController, List<AppointmentSchedule>> {
   /// Controller for managing appointments for a specific date.
   ///
-  /// Fetches only appointments for the selected date, making it more efficient
-  /// than loading all appointments when only a single day is needed.
+  /// Fetches only appointments for the selected date and current branch,
+  /// making it more efficient than loading all appointments.
   DailyAppointmentsControllerProvider._(
       {required DailyAppointmentsControllerFamily super.from,
       required DateTime super.argument})
@@ -65,12 +65,12 @@ final class DailyAppointmentsControllerProvider extends $AsyncNotifierProvider<
 }
 
 String _$dailyAppointmentsControllerHash() =>
-    r'9422dde9e8a84b1486813856aa2d243bfca60c01';
+    r'5475cad7906f3d276ca8c6cdedcdc916366ab7e8';
 
 /// Controller for managing appointments for a specific date.
 ///
-/// Fetches only appointments for the selected date, making it more efficient
-/// than loading all appointments when only a single day is needed.
+/// Fetches only appointments for the selected date and current branch,
+/// making it more efficient than loading all appointments.
 
 final class DailyAppointmentsControllerFamily extends $Family
     with
@@ -91,8 +91,8 @@ final class DailyAppointmentsControllerFamily extends $Family
 
   /// Controller for managing appointments for a specific date.
   ///
-  /// Fetches only appointments for the selected date, making it more efficient
-  /// than loading all appointments when only a single day is needed.
+  /// Fetches only appointments for the selected date and current branch,
+  /// making it more efficient than loading all appointments.
 
   DailyAppointmentsControllerProvider call(
     DateTime date,
@@ -105,8 +105,8 @@ final class DailyAppointmentsControllerFamily extends $Family
 
 /// Controller for managing appointments for a specific date.
 ///
-/// Fetches only appointments for the selected date, making it more efficient
-/// than loading all appointments when only a single day is needed.
+/// Fetches only appointments for the selected date and current branch,
+/// making it more efficient than loading all appointments.
 
 abstract class _$DailyAppointmentsController
     extends $AsyncNotifier<List<AppointmentSchedule>> {

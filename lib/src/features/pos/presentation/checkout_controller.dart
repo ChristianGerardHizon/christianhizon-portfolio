@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/foundation/failure.dart';
 import '../../auth/presentation/controllers/auth_controller.dart';
+import '../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../products/data/repositories/product_lot_repository.dart';
 import '../../products/data/repositories/product_repository.dart';
 import '../data/repositories/sales_repository.dart';
@@ -41,9 +42,9 @@ class CheckoutController extends _$CheckoutController {
       return left(const GenericFailure('Not authenticated'));
     }
 
-    final branchId = auth.user.branch;
+    final branchId = ref.read(currentBranchIdProvider);
     if (branchId == null) {
-      return left(const GenericFailure('No branch assigned'));
+      return left(const GenericFailure('No branch selected'));
     }
 
     final cashierId = auth.user.id;

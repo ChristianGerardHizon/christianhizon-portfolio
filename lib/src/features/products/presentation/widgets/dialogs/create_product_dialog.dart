@@ -13,7 +13,7 @@ import '../../../../../core/routing/routes/products.routes.dart';
 import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/form/form.dart';
 import '../../../../../core/widgets/form_feedback.dart';
-import '../../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../../../settings/presentation/controllers/branches_controller.dart';
 import '../../../domain/product.dart';
 import '../../controllers/paginated_products_controller.dart';
@@ -36,8 +36,7 @@ class CreateProductDialog extends HookConsumerWidget {
     // Watch categories and branches
     final categoriesAsync = ref.watch(productCategoriesProvider);
     final branchesAsync = ref.watch(branchesControllerProvider);
-    final currentAuth = ref.watch(currentAuthProvider);
-    final userBranchId = currentAuth?.user.branch;
+    final userBranchId = ref.watch(currentBranchIdProvider);
 
     Future<void> handleSave() async {
       final isValid = formKey.currentState!.saveAndValidate();

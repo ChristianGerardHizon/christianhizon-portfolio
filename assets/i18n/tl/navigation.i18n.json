@@ -17,5 +17,6 @@
     "organization": "Organisasyon",
     "system": "Sistema",
     "patientConfig": "Config ng Pasyente",
-    "account": "Account"
+    "account": "Account",
+    "noBranch": "Walang Sangay"
 }

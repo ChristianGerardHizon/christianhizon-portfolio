@@ -15,7 +15,9 @@ part 'patient_treatment_repository.g.dart';
 /// Repository interface for patient treatments (catalog).
 abstract class PatientTreatmentRepository {
   /// Fetches all treatments from the catalog.
-  FutureEither<List<PatientTreatment>> fetchAll();
+  ///
+  /// Optionally filter by branch using [filter] parameter.
+  FutureEither<List<PatientTreatment>> fetchAll({String? filter});
 
   /// Fetches a single treatment by ID.
   FutureEither<PatientTreatment> fetchOne(String id);
@@ -46,11 +48,15 @@ class PatientTreatmentRepositoryImpl implements PatientTreatmentRepository {
       _pb.collection(PocketBaseCollections.patientTreatments);
 
   @override
-  FutureEither<List<PatientTreatment>> fetchAll() async {
+  FutureEither<List<PatientTreatment>> fetchAll({String? filter}) async {
     return TaskEither.tryCatch(
       () async {
+        final baseFilter = PBFilters.active.build();
+        final filterString =
+            filter != null ? '$baseFilter && $filter' : baseFilter;
+
         final records = await _collection.getFullList(
-          filter: PBFilters.active.build(),
+          filter: filterString,
           sort: 'name',
         );
         return records

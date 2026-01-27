@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/constants/constants.dart';
 import '../../../../core/foundation/paginated_state.dart';
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../data/repositories/appointment_schedule_repository.dart';
 import '../../domain/appointment_schedule.dart';
 import 'appointment_sort_controller.dart';
@@ -18,6 +19,9 @@ class PaginatedAppointmentsController extends _$PaginatedAppointmentsController 
   String get _currentSort =>
       ref.read(appointmentSortControllerProvider).toSortString();
 
+  /// Gets the current branch filter.
+  String? get _branchFilter => ref.read(currentBranchFilterProvider);
+
   @override
   Future<PaginatedState<AppointmentSchedule>> build() async {
     // Listen to sort changes and refresh
@@ -25,10 +29,16 @@ class PaginatedAppointmentsController extends _$PaginatedAppointmentsController 
       refresh();
     });
 
+    // Listen to branch changes and refresh
+    ref.listen(currentBranchFilterProvider, (_, __) {
+      refresh();
+    });
+
     final result = await _repository.fetchPaginated(
       page: 1,
       perPage: Pagination.defaultPageSize,
       sort: _currentSort,
+      filter: _branchFilter,
     );
 
     return result.fold(
@@ -60,6 +70,7 @@ class PaginatedAppointmentsController extends _$PaginatedAppointmentsController 
       page: nextPage,
       perPage: Pagination.defaultPageSize,
       sort: _currentSort,
+      filter: _branchFilter,
     );
 
     result.fold(
@@ -80,7 +91,7 @@ class PaginatedAppointmentsController extends _$PaginatedAppointmentsController 
     );
   }
 
-  /// Refreshes the list from the beginning (respects current sort).
+  /// Refreshes the list from the beginning (respects current sort and branch filter).
   Future<void> refresh() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
@@ -88,6 +99,7 @@ class PaginatedAppointmentsController extends _$PaginatedAppointmentsController 
         page: 1,
         perPage: Pagination.defaultPageSize,
         sort: _currentSort,
+        filter: _branchFilter,
       );
       return result.fold(
         (failure) => throw failure,

@@ -24,6 +24,7 @@ abstract class AppointmentScheduleRepository {
     int page = 1,
     int perPage = Pagination.defaultPageSize,
     String? sort,
+    String? filter,
   });
 
   /// Fetches all appointments for a specific patient.
@@ -39,11 +40,15 @@ abstract class AppointmentScheduleRepository {
   /// Fetches appointments within a date range.
   FutureEither<List<AppointmentSchedule>> fetchByDateRange(
     DateTime start,
-    DateTime end,
-  );
+    DateTime end, {
+    String? filter,
+  });
 
   /// Fetches appointments for a specific date.
-  FutureEither<List<AppointmentSchedule>> fetchByDate(DateTime date);
+  FutureEither<List<AppointmentSchedule>> fetchByDate(
+    DateTime date, {
+    String? filter,
+  });
 
   /// Fetches a single appointment by ID.
   FutureEither<AppointmentSchedule> fetchOne(String id);
@@ -101,13 +106,18 @@ class AppointmentScheduleRepositoryImpl implements AppointmentScheduleRepository
     int page = 1,
     int perPage = Pagination.defaultPageSize,
     String? sort,
+    String? filter,
   }) async {
     return TaskEither.tryCatch(
       () async {
+        final baseFilter = PBFilters.active.build();
+        final filterString =
+            filter != null ? '$baseFilter && $filter' : baseFilter;
+
         final result = await _collection.getList(
           page: page,
           perPage: perPage,
-          filter: PBFilters.active.build(),
+          filter: filterString,
           sort: sort ?? '-date',
           expand: PBExpand.appointment.toString(),
         );
@@ -172,15 +182,20 @@ class AppointmentScheduleRepositoryImpl implements AppointmentScheduleRepository
   @override
   FutureEither<List<AppointmentSchedule>> fetchByDateRange(
     DateTime start,
-    DateTime end,
-  ) async {
+    DateTime end, {
+    String? filter,
+  }) async {
     return TaskEither.tryCatch(
       () async {
-        final filter = PBFilter()
+        final dateFilter = PBFilter()
             .between('date', start, end)
             .notDeleted();
+        final baseFilter = dateFilter.build();
+        final filterString =
+            filter != null ? '$baseFilter && $filter' : baseFilter;
+
         final records = await _collection.getFullList(
-          filter: filter.build(),
+          filter: filterString,
           sort: 'date',
           expand: PBExpand.appointment.toString(),
         );
@@ -193,11 +208,14 @@ class AppointmentScheduleRepositoryImpl implements AppointmentScheduleRepository
   }
 
   @override
-  FutureEither<List<AppointmentSchedule>> fetchByDate(DateTime date) async {
+  FutureEither<List<AppointmentSchedule>> fetchByDate(
+    DateTime date, {
+    String? filter,
+  }) async {
     // Get start and end of the day
     final startOfDay = DateTime(date.year, date.month, date.day);
     final endOfDay = DateTime(date.year, date.month, date.day, 23, 59, 59);
-    return fetchByDateRange(startOfDay, endOfDay);
+    return fetchByDateRange(startOfDay, endOfDay, filter: filter);
   }
 
   @override

@@ -196,6 +196,7 @@ class _TranslationsNavigationTl implements TranslationsNavigationEn {
 	@override String get system => 'Sistema';
 	@override String get patientConfig => 'Config ng Pasyente';
 	@override String get account => 'Account';
+	@override String get noBranch => 'Walang Sangay';
 }
 
 // Path: sort
@@ -351,6 +352,7 @@ extension on TranslationsTl {
 			'navigation.system' => 'Sistema',
 			'navigation.patientConfig' => 'Config ng Pasyente',
 			'navigation.account' => 'Account',
+			'navigation.noBranch' => 'Walang Sangay',
 			'sort.sortBy' => 'Ayusin Ayon Sa',
 			'sort.direction' => 'Direksyon',
 			'sort.ascending' => 'Pataas',

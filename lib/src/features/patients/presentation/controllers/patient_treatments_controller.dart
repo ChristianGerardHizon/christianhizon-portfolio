@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../data/repositories/patient_treatment_repository.dart';
 import '../../domain/patient_treatment.dart';
 
@@ -7,15 +8,23 @@ part 'patient_treatments_controller.g.dart';
 
 /// Controller for managing the treatment catalog (list of all treatments).
 ///
-/// This manages the global list of treatment types available in the system.
+/// This manages the list of treatment types available in the current branch.
 @Riverpod(keepAlive: true)
 class PatientTreatmentsController extends _$PatientTreatmentsController {
   PatientTreatmentRepository get _repository =>
       ref.read(patientTreatmentRepositoryProvider);
 
+  /// Gets the current branch filter.
+  String? get _branchFilter => ref.read(currentBranchFilterProvider);
+
   @override
   Future<List<PatientTreatment>> build() async {
-    final result = await _repository.fetchAll();
+    // Listen to branch changes and refresh
+    ref.listen(currentBranchFilterProvider, (_, __) {
+      refresh();
+    });
+
+    final result = await _repository.fetchAll(filter: _branchFilter);
 
     return result.fold(
       (failure) => throw failure,
@@ -27,7 +36,7 @@ class PatientTreatmentsController extends _$PatientTreatmentsController {
   Future<void> refresh() async {
     state = const AsyncLoading();
 
-    final result = await _repository.fetchAll();
+    final result = await _repository.fetchAll(filter: _branchFilter);
 
     state = result.fold(
       (failure) => AsyncError(failure, StackTrace.current),

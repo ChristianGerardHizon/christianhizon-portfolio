@@ -31,6 +31,12 @@ class PatientTreatmentMapper extends ClassMapperBase<PatientTreatment> {
     _$icon,
     opt: true,
   );
+  static String? _$branch(PatientTreatment v) => v.branch;
+  static const Field<PatientTreatment, String> _f$branch = Field(
+    'branch',
+    _$branch,
+    opt: true,
+  );
   static bool _$isDeleted(PatientTreatment v) => v.isDeleted;
   static const Field<PatientTreatment, bool> _f$isDeleted = Field(
     'isDeleted',
@@ -56,6 +62,7 @@ class PatientTreatmentMapper extends ClassMapperBase<PatientTreatment> {
     #id: _f$id,
     #name: _f$name,
     #icon: _f$icon,
+    #branch: _f$branch,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
@@ -66,6 +73,7 @@ class PatientTreatmentMapper extends ClassMapperBase<PatientTreatment> {
       id: data.dec(_f$id),
       name: data.dec(_f$name),
       icon: data.dec(_f$icon),
+      branch: data.dec(_f$branch),
       isDeleted: data.dec(_f$isDeleted),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
@@ -138,6 +146,7 @@ abstract class PatientTreatmentCopyWith<$R, $In extends PatientTreatment, $Out>
     String? id,
     String? name,
     String? icon,
+    String? branch,
     bool? isDeleted,
     DateTime? created,
     DateTime? updated,
@@ -160,6 +169,7 @@ class _PatientTreatmentCopyWithImpl<$R, $Out>
     String? id,
     String? name,
     Object? icon = $none,
+    Object? branch = $none,
     bool? isDeleted,
     Object? created = $none,
     Object? updated = $none,
@@ -168,6 +178,7 @@ class _PatientTreatmentCopyWithImpl<$R, $Out>
       if (id != null) #id: id,
       if (name != null) #name: name,
       if (icon != $none) #icon: icon,
+      if (branch != $none) #branch: branch,
       if (isDeleted != null) #isDeleted: isDeleted,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
@@ -178,6 +189,7 @@ class _PatientTreatmentCopyWithImpl<$R, $Out>
     id: data.get(#id, or: $value.id),
     name: data.get(#name, or: $value.name),
     icon: data.get(#icon, or: $value.icon),
+    branch: data.get(#branch, or: $value.branch),
     isDeleted: data.get(#isDeleted, or: $value.isDeleted),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),

@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/constants/constants.dart';
 import '../../../../core/foundation/paginated_state.dart';
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../data/repositories/patient_repository.dart';
 import '../../domain/patient.dart';
 import 'patient_sort_controller.dart';
@@ -21,6 +22,9 @@ class PaginatedPatientsController extends _$PaginatedPatientsController {
   String get _currentSort =>
       ref.read(patientSortControllerProvider).toSortString();
 
+  /// Gets the current branch filter.
+  String? get _branchFilter => ref.read(currentBranchFilterProvider);
+
   @override
   Future<PaginatedState<Patient>> build() async {
     _currentSearchQuery = null;
@@ -31,10 +35,16 @@ class PaginatedPatientsController extends _$PaginatedPatientsController {
       refresh();
     });
 
+    // Listen to branch changes and refresh
+    ref.listen(currentBranchFilterProvider, (_, __) {
+      refresh();
+    });
+
     final result = await _repository.fetchPaginated(
       page: 1,
       perPage: Pagination.defaultPageSize,
       sort: _currentSort,
+      filter: _branchFilter,
     );
 
     return result.fold(
@@ -76,11 +86,13 @@ class PaginatedPatientsController extends _$PaginatedPatientsController {
             page: nextPage,
             perPage: Pagination.defaultPageSize,
             sort: _currentSort,
+            filter: _branchFilter,
           )
         : await _repository.fetchPaginated(
             page: nextPage,
             perPage: Pagination.defaultPageSize,
             sort: _currentSort,
+            filter: _branchFilter,
           );
 
     result.fold(
@@ -100,7 +112,7 @@ class PaginatedPatientsController extends _$PaginatedPatientsController {
     );
   }
 
-  /// Refreshes the list (respects current search and sort).
+  /// Refreshes the list (respects current search, sort, and branch filter).
   Future<void> refresh() async {
     state = const AsyncValue.loading();
 
@@ -111,11 +123,13 @@ class PaginatedPatientsController extends _$PaginatedPatientsController {
             page: 1,
             perPage: Pagination.defaultPageSize,
             sort: _currentSort,
+            filter: _branchFilter,
           )
         : await _repository.fetchPaginated(
             page: 1,
             perPage: Pagination.defaultPageSize,
             sort: _currentSort,
+            filter: _branchFilter,
           );
 
     state = result.fold(
@@ -147,6 +161,7 @@ class PaginatedPatientsController extends _$PaginatedPatientsController {
       page: 1,
       perPage: Pagination.defaultPageSize,
       sort: _currentSort,
+      filter: _branchFilter,
     );
 
     state = result.fold(

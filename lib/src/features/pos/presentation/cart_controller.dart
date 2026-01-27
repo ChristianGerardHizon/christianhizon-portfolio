@@ -2,6 +2,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../auth/presentation/controllers/auth_controller.dart';
+import '../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../products/domain/product.dart';
 import '../../products/domain/product_lot.dart';
 import '../data/repositories/cart_repository.dart';
@@ -45,9 +46,8 @@ class CartController extends _$CartController {
 
   @override
   Future<CartState> build() async {
-    // Try to load existing active cart for current user's branch
-    final auth = ref.read(currentAuthProvider);
-    final branchId = auth?.user.branch;
+    // Try to load existing active cart for current working branch
+    final branchId = ref.read(currentBranchIdProvider);
 
     if (branchId == null) {
       return const CartState();
@@ -80,9 +80,8 @@ class CartController extends _$CartController {
       return currentState!.cartId;
     }
 
-    final auth = ref.read(currentAuthProvider);
-    final branchId = auth?.user.branch;
-    final userId = auth?.user.id;
+    final branchId = ref.read(currentBranchIdProvider);
+    final userId = ref.read(currentAuthProvider)?.user.id;
 
     if (branchId == null) return null;
 
