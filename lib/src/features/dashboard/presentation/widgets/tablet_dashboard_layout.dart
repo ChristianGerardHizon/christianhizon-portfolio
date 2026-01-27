@@ -6,6 +6,7 @@ import '../../../../core/widgets/form_feedback.dart';
 import '../../../appointments/domain/appointment_schedule.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
 import 'appointment_quick_summary.dart';
+import 'dashboard_footer.dart';
 import 'inventory_alerts_section.dart';
 import 'kpi_summary_section.dart';
 import 'quick_actions_section.dart';
@@ -155,6 +156,10 @@ class _DashboardOverviewPane extends StatelessWidget {
 
           // Inventory Alerts Section
           const InventoryAlertsSection(),
+          const SizedBox(height: 24),
+
+          // App Version Footer
+          const DashboardFooter(),
         ],
       ),
     );

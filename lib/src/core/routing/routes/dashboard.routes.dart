@@ -10,6 +10,7 @@ import '../../../features/dashboard/presentation/widgets/inventory_alerts_sectio
 import '../../../features/dashboard/presentation/widgets/kpi_summary_section.dart';
 import '../../../features/dashboard/presentation/widgets/quick_actions_section.dart';
 import '../../../features/dashboard/presentation/widgets/tablet_dashboard_layout.dart';
+import '../../../features/dashboard/presentation/widgets/dashboard_footer.dart';
 import '../../../features/dashboard/presentation/widgets/today_appointments_section.dart';
 import '../../utils/breakpoints.dart';
 
@@ -82,6 +83,10 @@ class DashboardPage extends ConsumerWidget {
 
               // Inventory Alerts Section
               InventoryAlertsSection(),
+              SizedBox(height: 24),
+
+              // App Version Footer
+              DashboardFooter(),
               SizedBox(height: 16),
             ],
           ),
