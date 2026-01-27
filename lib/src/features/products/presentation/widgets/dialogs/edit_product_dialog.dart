@@ -185,6 +185,7 @@ class _EditProductForm extends HookConsumerWidget {
         'expiration': product.expiration,
         'forSale': product.forSale,
         'trackByLot': product.trackByLot,
+        'requireStock': product.requireStock,
       },
     );
 
@@ -224,6 +225,7 @@ class _EditProductForm extends HookConsumerWidget {
         stockThreshold: _parseNum(values['stockThreshold'] as String?),
         forSale: values['forSale'] as bool? ?? true,
         trackByLot: values['trackByLot'] as bool? ?? false,
+        requireStock: values['requireStock'] as bool? ?? false,
         expiration: values['expiration'] as DateTime?,
         image: product.image,
         branch: values['branch'] as String?,
@@ -327,6 +329,7 @@ class _EditProductForm extends HookConsumerWidget {
                 'expiration': product.expiration,
                 'forSale': product.forSale,
                 'trackByLot': product.trackByLot,
+                'requireStock': product.requireStock,
               },
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -577,6 +580,17 @@ class _EditProductForm extends HookConsumerWidget {
                         ),
                       ],
                     ),
+                    FormBuilderSwitch(
+                      name: 'requireStock',
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                      title: const Text('Require Stock'),
+                      subtitle: const Text(
+                        'Block sales when out of stock',
+                      ),
+                      enabled: !isSaving.value,
+                    ),
                     const SizedBox(height: 24),
                   ],
                 ),
@@ -610,5 +624,6 @@ class _EditProductForm extends HookConsumerWidget {
     'expiration': 'Expiration Date',
     'forSale': 'For Sale',
     'trackByLot': 'Track by Lot',
+    'requireStock': 'Require Stock',
   };
 }

@@ -188,6 +188,11 @@ class ProductDetailsTab extends HookConsumerWidget {
         label: 'Track by Lot',
         value: product.trackByLot ? 'Yes' : 'No',
       ),
+      _DetailItem(
+        icon: Icons.inventory_outlined,
+        label: 'Require Stock',
+        value: product.requireStock ? 'Yes' : 'No',
+      ),
       if (product.expiration != null)
         _DetailItem(
           icon: Icons.event_outlined,

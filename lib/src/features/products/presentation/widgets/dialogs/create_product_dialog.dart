@@ -67,6 +67,7 @@ class CreateProductDialog extends HookConsumerWidget {
         stockThreshold: _parseNum(values['stockThreshold'] as String?),
         forSale: values['forSale'] as bool? ?? true,
         trackByLot: values['trackByLot'] as bool? ?? false,
+        requireStock: values['requireStock'] as bool? ?? false,
         expiration: values['expiration'] as DateTime?,
         branch: values['branch'] as String?,
       );
@@ -426,6 +427,18 @@ class CreateProductDialog extends HookConsumerWidget {
                           ),
                         ],
                       ),
+                      FormBuilderSwitch(
+                        name: 'requireStock',
+                        initialValue: false,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                        ),
+                        title: const Text('Require Stock'),
+                        subtitle: const Text(
+                          'Block sales when out of stock',
+                        ),
+                        enabled: !isSaving.value,
+                      ),
                       const SizedBox(height: 24),
                     ],
                   ),
@@ -460,6 +473,7 @@ class CreateProductDialog extends HookConsumerWidget {
     'expiration': 'Expiration Date',
     'forSale': 'For Sale',
     'trackByLot': 'Track by Lot',
+    'requireStock': 'Require Stock',
   };
 }
 
