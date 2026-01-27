@@ -4,12 +4,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/foundation/paginated_state.dart';
+import '../../../../core/foundation/sort_config.dart';
 import '../../../../core/hooks/use_infinite_scroll.dart';
 import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/widgets/end_of_list_indicator.dart';
+import '../../../../core/widgets/sort/sort_dialog.dart';
 import '../../../pos/domain/sale.dart';
 import '../controllers/paginated_sales_controller.dart';
 import '../controllers/sale_search_controller.dart';
+import '../controllers/sale_sort_controller.dart';
 import 'sale_status_chip.dart';
 import 'dialogs/sale_search_fields_dialog.dart';
 
@@ -46,6 +49,7 @@ class SaleListPanel extends HookConsumerWidget {
     final activeFieldCount = searchFields.length;
     final paginatedController =
         ref.read(paginatedSalesControllerProvider.notifier);
+    final sortConfig = ref.watch(saleSortControllerProvider);
 
     // Search is active from the controller
     final isSearchActive = paginatedController.isSearchActive;
@@ -102,14 +106,18 @@ class SaleListPanel extends HookConsumerWidget {
                 ? _ActiveSearchChip(
                     query: paginatedController.currentSearchQuery ?? '',
                     fieldCount: activeFieldCount,
+                    sortConfig: sortConfig,
                     onClear: clearSearch,
+                    onSortPressed: () => _showSortDialog(context, ref),
                   )
                 : _SearchInput(
                     controller: searchController,
                     fieldCount: activeFieldCount,
+                    sortConfig: sortConfig,
                     onSearch: performSearch,
                     onTextChanged: (text) => searchText.value = text,
                     searchText: searchText.value,
+                    onSortPressed: () => _showSortDialog(context, ref),
                   ),
           ),
 
@@ -198,20 +206,53 @@ class SaleListPanel extends HookConsumerWidget {
   }
 }
 
+void _showSortDialog(BuildContext context, WidgetRef ref) {
+  final t = Translations.of(context);
+  final currentSort = ref.read(saleSortControllerProvider);
+
+  // Build localized field labels
+  final localizedFields = saleSortableFields.map((field) {
+    final label = switch (field.key) {
+      'created' => t.sort.date,
+      'totalAmount' => t.sort.amount,
+      'receiptNumber' => t.fields.receiptNumber,
+      'customerName' => t.fields.customerName,
+      _ => field.label,
+    };
+    return (key: field.key, label: label);
+  }).toList();
+
+  showSortDialog(
+    context: context,
+    title: t.sort.sortBy,
+    fields: localizedFields,
+    currentSort: currentSort,
+    defaultSort: saleDefaultSort,
+    onSortChanged: (config) {
+      ref.read(saleSortControllerProvider.notifier).setSort(config);
+    },
+  );
+}
+
 class _ActiveSearchChip extends StatelessWidget {
   const _ActiveSearchChip({
     required this.query,
     required this.fieldCount,
+    required this.sortConfig,
     required this.onClear,
+    required this.onSortPressed,
   });
 
   final String query;
   final int fieldCount;
+  final SortConfig sortConfig;
   final VoidCallback onClear;
+  final VoidCallback onSortPressed;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final t = Translations.of(context);
 
     return Row(
       children: [
@@ -278,6 +319,14 @@ class _ActiveSearchChip extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(width: 8),
+        IconButton.filledTonal(
+          icon: Icon(
+            sortConfig.descending ? Icons.arrow_downward : Icons.arrow_upward,
+          ),
+          onPressed: onSortPressed,
+          tooltip: t.common.sort,
+        ),
       ],
     );
   }
@@ -287,16 +336,20 @@ class _SearchInput extends StatelessWidget {
   const _SearchInput({
     required this.controller,
     required this.fieldCount,
+    required this.sortConfig,
     required this.onSearch,
     required this.onTextChanged,
     required this.searchText,
+    required this.onSortPressed,
   });
 
   final TextEditingController controller;
   final int fieldCount;
+  final SortConfig sortConfig;
   final VoidCallback onSearch;
   final ValueChanged<String> onTextChanged;
   final String searchText;
+  final VoidCallback onSortPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -330,6 +383,14 @@ class _SearchInput extends StatelessWidget {
               filled: true,
             ),
           ),
+        ),
+        const SizedBox(width: 8),
+        IconButton.filledTonal(
+          icon: Icon(
+            sortConfig.descending ? Icons.arrow_downward : Icons.arrow_upward,
+          ),
+          onPressed: onSortPressed,
+          tooltip: t.common.sort,
         ),
         const SizedBox(width: 8),
         Badge(

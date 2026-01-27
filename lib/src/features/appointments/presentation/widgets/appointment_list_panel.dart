@@ -5,8 +5,11 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../core/foundation/paginated_state.dart';
 import '../../../../core/hooks/use_infinite_scroll.dart';
+import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/widgets/end_of_list_indicator.dart';
+import '../../../../core/widgets/sort/sort_dialog.dart';
 import '../../domain/appointment_schedule.dart';
+import '../controllers/appointment_sort_controller.dart';
 import '../controllers/appointments_controller.dart';
 import 'cards/appointment_card.dart';
 
@@ -40,12 +43,14 @@ class AppointmentListPanel extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final t = Translations.of(context);
 
     // View mode: 0 = list, 1 = calendar
     final viewMode = useState(0);
 
     // For calendar view, we need non-paginated data
     final appointmentsAsync = ref.watch(appointmentsControllerProvider);
+    final sortConfig = ref.watch(appointmentSortControllerProvider);
 
     // Infinite scroll hook
     final scrollController = useInfiniteScroll(
@@ -74,6 +79,20 @@ class AppointmentListPanel extends HookConsumerWidget {
                   '${paginatedState.totalItems} total',
                   style: theme.textTheme.bodySmall,
                 ),
+                const SizedBox(width: 8),
+                // Sort button (only show in list mode)
+                if (viewMode.value == 0)
+                  IconButton.filledTonal(
+                    icon: Icon(
+                      sortConfig.descending
+                          ? Icons.arrow_downward
+                          : Icons.arrow_upward,
+                      size: 18,
+                    ),
+                    onPressed: () => _showSortDialog(context, ref),
+                    tooltip: t.common.sort,
+                    visualDensity: VisualDensity.compact,
+                  ),
                 const SizedBox(width: 8),
                 SegmentedButton<int>(
                   segments: const [
@@ -315,6 +334,33 @@ class AppointmentListPanel extends HookConsumerWidget {
       return '$weekday, $month ${date.day}';
     }
   }
+}
+
+void _showSortDialog(BuildContext context, WidgetRef ref) {
+  final t = Translations.of(context);
+  final currentSort = ref.read(appointmentSortControllerProvider);
+
+  // Build localized field labels
+  final localizedFields = appointmentSortableFields.map((field) {
+    final label = switch (field.key) {
+      'date' => t.sort.date,
+      'created' => t.sort.dateAdded,
+      'status' => t.sort.status,
+      _ => field.label,
+    };
+    return (key: field.key, label: label);
+  }).toList();
+
+  showSortDialog(
+    context: context,
+    title: t.sort.sortBy,
+    fields: localizedFields,
+    currentSort: currentSort,
+    defaultSort: appointmentDefaultSort,
+    onSortChanged: (config) {
+      ref.read(appointmentSortControllerProvider.notifier).setSort(config);
+    },
+  );
 }
 
 /// Calendar view that supports selection highlighting using TableCalendar.

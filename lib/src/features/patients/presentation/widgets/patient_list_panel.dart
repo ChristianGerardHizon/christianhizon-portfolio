@@ -3,12 +3,15 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/foundation/paginated_state.dart';
+import '../../../../core/foundation/sort_config.dart';
 import '../../../../core/hooks/use_infinite_scroll.dart';
 import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/widgets/end_of_list_indicator.dart';
+import '../../../../core/widgets/sort/sort_dialog.dart';
 import '../../domain/patient.dart';
 import '../controllers/paginated_patients_controller.dart';
 import '../controllers/patient_search_controller.dart';
+import '../controllers/patient_sort_controller.dart';
 import 'patient_avatar.dart';
 import 'dialogs/create_multiple_patients_dialog.dart';
 import 'dialogs/search_fields_dialog.dart';
@@ -46,6 +49,7 @@ class PatientListPanel extends HookConsumerWidget {
     final activeFieldCount = searchFields.length;
     final paginatedController =
         ref.read(paginatedPatientsControllerProvider.notifier);
+    final sortConfig = ref.watch(patientSortControllerProvider);
 
     // Search is active from the controller
     final isSearchActive = paginatedController.isSearchActive;
@@ -103,14 +107,18 @@ class PatientListPanel extends HookConsumerWidget {
                 ? _ActiveSearchChip(
                     query: paginatedController.currentSearchQuery ?? '',
                     fieldCount: activeFieldCount,
+                    sortConfig: sortConfig,
                     onClear: clearSearch,
+                    onSortPressed: () => _showSortDialog(context, ref),
                   )
                 : _SearchInput(
                     controller: searchController,
                     fieldCount: activeFieldCount,
+                    sortConfig: sortConfig,
                     onSearch: performSearch,
                     onTextChanged: (text) => searchText.value = text,
                     searchText: searchText.value,
+                    onSortPressed: () => _showSortDialog(context, ref),
                   ),
           ),
 
@@ -161,20 +169,54 @@ class PatientListPanel extends HookConsumerWidget {
   }
 }
 
+void _showSortDialog(BuildContext context, WidgetRef ref) {
+  final t = Translations.of(context);
+  final currentSort = ref.read(patientSortControllerProvider);
+
+  // Build localized field labels
+  final localizedFields = patientSortableFields.map((field) {
+    final label = switch (field.key) {
+      'name' => t.fields.name,
+      'created' => t.sort.dateAdded,
+      'updated' => t.sort.lastUpdated,
+      'species' => t.fields.species,
+      'owner' => t.fields.owner,
+      _ => field.label,
+    };
+    return (key: field.key, label: label);
+  }).toList();
+
+  showSortDialog(
+    context: context,
+    title: t.sort.sortBy,
+    fields: localizedFields,
+    currentSort: currentSort,
+    defaultSort: patientDefaultSort,
+    onSortChanged: (config) {
+      ref.read(patientSortControllerProvider.notifier).setSort(config);
+    },
+  );
+}
+
 class _ActiveSearchChip extends StatelessWidget {
   const _ActiveSearchChip({
     required this.query,
     required this.fieldCount,
+    required this.sortConfig,
     required this.onClear,
+    required this.onSortPressed,
   });
 
   final String query;
   final int fieldCount;
+  final SortConfig sortConfig;
   final VoidCallback onClear;
+  final VoidCallback onSortPressed;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final t = Translations.of(context);
 
     return Row(
       children: [
@@ -241,6 +283,14 @@ class _ActiveSearchChip extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(width: 8),
+        IconButton.filledTonal(
+          icon: Icon(
+            sortConfig.descending ? Icons.arrow_downward : Icons.arrow_upward,
+          ),
+          onPressed: onSortPressed,
+          tooltip: t.common.sort,
+        ),
       ],
     );
   }
@@ -250,16 +300,20 @@ class _SearchInput extends StatelessWidget {
   const _SearchInput({
     required this.controller,
     required this.fieldCount,
+    required this.sortConfig,
     required this.onSearch,
     required this.onTextChanged,
     required this.searchText,
+    required this.onSortPressed,
   });
 
   final TextEditingController controller;
   final int fieldCount;
+  final SortConfig sortConfig;
   final VoidCallback onSearch;
   final ValueChanged<String> onTextChanged;
   final String searchText;
+  final VoidCallback onSortPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -293,6 +347,14 @@ class _SearchInput extends StatelessWidget {
               filled: true,
             ),
           ),
+        ),
+        const SizedBox(width: 8),
+        IconButton.filledTonal(
+          icon: Icon(
+            sortConfig.descending ? Icons.arrow_downward : Icons.arrow_upward,
+          ),
+          onPressed: onSortPressed,
+          tooltip: t.common.sort,
         ),
         const SizedBox(width: 8),
         Badge(

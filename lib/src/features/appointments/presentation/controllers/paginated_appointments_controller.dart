@@ -4,6 +4,7 @@ import '../../../../core/constants/constants.dart';
 import '../../../../core/foundation/paginated_state.dart';
 import '../../data/repositories/appointment_schedule_repository.dart';
 import '../../domain/appointment_schedule.dart';
+import 'appointment_sort_controller.dart';
 
 part 'paginated_appointments_controller.g.dart';
 
@@ -13,11 +14,21 @@ class PaginatedAppointmentsController extends _$PaginatedAppointmentsController 
   AppointmentScheduleRepository get _repository =>
       ref.read(appointmentScheduleRepositoryProvider);
 
+  /// Gets the current sort string from the sort controller.
+  String get _currentSort =>
+      ref.read(appointmentSortControllerProvider).toSortString();
+
   @override
   Future<PaginatedState<AppointmentSchedule>> build() async {
+    // Listen to sort changes and refresh
+    ref.listen(appointmentSortControllerProvider, (_, __) {
+      refresh();
+    });
+
     final result = await _repository.fetchPaginated(
       page: 1,
       perPage: Pagination.defaultPageSize,
+      sort: _currentSort,
     );
 
     return result.fold(
@@ -48,6 +59,7 @@ class PaginatedAppointmentsController extends _$PaginatedAppointmentsController 
     final result = await _repository.fetchPaginated(
       page: nextPage,
       perPage: Pagination.defaultPageSize,
+      sort: _currentSort,
     );
 
     result.fold(
@@ -68,13 +80,14 @@ class PaginatedAppointmentsController extends _$PaginatedAppointmentsController 
     );
   }
 
-  /// Refreshes the list from the beginning.
+  /// Refreshes the list from the beginning (respects current sort).
   Future<void> refresh() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final result = await _repository.fetchPaginated(
         page: 1,
         perPage: Pagination.defaultPageSize,
+        sort: _currentSort,
       );
       return result.fold(
         (failure) => throw failure,
