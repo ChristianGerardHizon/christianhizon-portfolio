@@ -1450,6 +1450,15 @@
       },
       {
         "hidden": false,
+        "id": "bool2241418015",
+        "name": "isDefault",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "hidden": false,
         "id": "autodate2990389176",
         "name": "created",
         "onCreate": true,
@@ -2430,6 +2439,19 @@
           "sad",
           "mood"
         ]
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2358601297",
+        "hidden": false,
+        "id": "relation3146128159",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "branch",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
       },
       {
         "hidden": false,
