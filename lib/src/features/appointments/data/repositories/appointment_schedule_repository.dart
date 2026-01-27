@@ -23,6 +23,7 @@ abstract class AppointmentScheduleRepository {
   FutureEitherPaginated<AppointmentSchedule> fetchPaginated({
     int page = 1,
     int perPage = Pagination.defaultPageSize,
+    String? sort,
   });
 
   /// Fetches all appointments for a specific patient.
@@ -99,6 +100,7 @@ class AppointmentScheduleRepositoryImpl implements AppointmentScheduleRepository
   FutureEitherPaginated<AppointmentSchedule> fetchPaginated({
     int page = 1,
     int perPage = Pagination.defaultPageSize,
+    String? sort,
   }) async {
     return TaskEither.tryCatch(
       () async {
@@ -106,7 +108,7 @@ class AppointmentScheduleRepositoryImpl implements AppointmentScheduleRepository
           page: page,
           perPage: perPage,
           filter: PBFilters.active.build(),
-          sort: '-date',
+          sort: sort ?? '-date',
           expand: PBExpand.appointment.toString(),
         );
         return PaginatedResult<AppointmentSchedule>(

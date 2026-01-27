@@ -49,6 +49,7 @@ abstract class PatientRepository {
     List<String>? fields,
     int page = 1,
     int perPage = Pagination.defaultPageSize,
+    String? sort,
   });
 
   /// Updates a patient's avatar image.
@@ -284,6 +285,7 @@ class PatientRepositoryImpl implements PatientRepository {
     List<String>? fields,
     int page = 1,
     int perPage = Pagination.defaultPageSize,
+    String? sort,
   }) async {
     return TaskEither.tryCatch(
       () async {
@@ -298,7 +300,7 @@ class PatientRepositoryImpl implements PatientRepository {
           perPage: perPage,
           expand: _expand,
           filter: filter,
-          sort: 'name',
+          sort: sort ?? 'name',
         );
 
         return PaginatedResult<Patient>(

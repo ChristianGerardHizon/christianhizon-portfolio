@@ -49,6 +49,7 @@ abstract class ProductRepository {
     List<String>? fields,
     int page = 1,
     int perPage = Pagination.defaultPageSize,
+    String? sort,
   });
 
   /// Updates a product's image.
@@ -286,6 +287,7 @@ class ProductRepositoryImpl implements ProductRepository {
     List<String>? fields,
     int page = 1,
     int perPage = Pagination.defaultPageSize,
+    String? sort,
   }) async {
     return TaskEither.tryCatch(
       () async {
@@ -300,7 +302,7 @@ class ProductRepositoryImpl implements ProductRepository {
           perPage: perPage,
           expand: _expand,
           filter: filter,
-          sort: 'name',
+          sort: sort ?? 'name',
         );
 
         return PaginatedResult<Product>(

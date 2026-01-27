@@ -36,6 +36,7 @@ abstract class SalesRepository {
     List<String>? fields,
     int page = 1,
     int perPage = Pagination.defaultPageSize,
+    String? sort,
   });
 }
 
@@ -198,6 +199,7 @@ class SalesRepositoryImpl implements SalesRepository {
     List<String>? fields,
     int page = 1,
     int perPage = Pagination.defaultPageSize,
+    String? sort,
   }) async {
     return TaskEither.tryCatch(
       () async {
@@ -209,7 +211,7 @@ class SalesRepositoryImpl implements SalesRepository {
           page: page,
           perPage: perPage,
           filter: filter,
-          sort: '-created',
+          sort: sort ?? '-created',
         );
 
         return PaginatedResult<Sale>(
