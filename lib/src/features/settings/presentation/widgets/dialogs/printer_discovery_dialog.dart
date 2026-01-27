@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../pos/presentation/services/thermal_print_service.dart';
 
 /// Dialog for discovering Bluetooth printers.
@@ -58,21 +59,22 @@ class PrinterDiscoveryDialog extends HookConsumerWidget {
       return null;
     }, []);
 
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Column(
-        children: [
-          // Header
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => context.pop(),
-                ),
-                const Icon(Icons.bluetooth_searching),
+    return DialogCloseHandler(
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => context.pop(),
+                  ),
+                  const Icon(Icons.bluetooth_searching),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -112,6 +114,7 @@ class PrinterDiscoveryDialog extends HookConsumerWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

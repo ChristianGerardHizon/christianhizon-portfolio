@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/utils/file_validation.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/patient_file.dart';
@@ -91,10 +92,11 @@ class AddFileDialog extends HookWidget {
       }
     }
 
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Column(
+    return DialogCloseHandler(
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
         children: [
           // Header
           Padding(
@@ -181,6 +183,7 @@ class AddFileDialog extends HookWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

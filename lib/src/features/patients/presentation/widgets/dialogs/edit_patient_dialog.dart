@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/routing/routes/patients.routes.dart';
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../domain/patient.dart';
@@ -127,33 +128,35 @@ class EditPatientDialog extends HookConsumerWidget {
       }
     }
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
-      child: SizedBox(
-        width: size.width,
-        height: size.height,
-        child: Column(
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: isSaving.value
-                        ? null
-                        : () async {
-                            if (await dirtyGuard.confirmDiscard(context)) {
-                              if (context.mounted) context.pop();
-                            }
-                          },
-                  ),
-                  Expanded(
-                    child:
-                        Text('Edit Patient', style: theme.textTheme.titleLarge),
-                  ),
+    return DialogCloseHandler(
+      onClose: (ctx) => dirtyGuard.confirmDiscard(ctx),
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+        child: SizedBox(
+          width: size.width,
+          height: size.height,
+          child: Column(
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: isSaving.value
+                          ? null
+                          : () async {
+                              if (await dirtyGuard.confirmDiscard(context)) {
+                                if (context.mounted) context.pop();
+                              }
+                            },
+                    ),
+                    Expanded(
+                      child:
+                          Text('Edit Patient', style: theme.textTheme.titleLarge),
+                    ),
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: TextButton(
@@ -457,6 +460,7 @@ class EditPatientDialog extends HookConsumerWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

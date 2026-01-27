@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/patient.dart';
 import '../../../domain/patient_record.dart';
@@ -28,10 +29,11 @@ class RecordDetailDialog extends StatelessWidget {
     final size = MediaQuery.sizeOf(context);
     final dateStr = _formatDate(record.date);
 
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Column(
+    return DialogCloseHandler(
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
         children: [
           // Header
           Padding(
@@ -218,6 +220,7 @@ class RecordDetailDialog extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

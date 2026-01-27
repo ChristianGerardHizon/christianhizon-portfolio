@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../controllers/sale_search_controller.dart';
 
 /// Dialog for selecting which fields to include in sale search.
@@ -16,24 +17,25 @@ class SaleSearchFieldsDialog extends ConsumerWidget {
     final t = Translations.of(context);
     final selectedFields = ref.watch(saleSearchFieldsProvider);
 
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Column(
-        children: [
-          // Header
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => context.pop(),
-                ),
-                Expanded(
-                  child: Text(
-                    t.fields.searchFields,
-                    style: theme.textTheme.titleLarge,
+    return DialogCloseHandler(
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => context.pop(),
+                  ),
+                  Expanded(
+                    child: Text(
+                      t.fields.searchFields,
+                      style: theme.textTheme.titleLarge,
                   ),
                 ),
                 Padding(
@@ -105,6 +107,7 @@ class SaleSearchFieldsDialog extends ConsumerWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

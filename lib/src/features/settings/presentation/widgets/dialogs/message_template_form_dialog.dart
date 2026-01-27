@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/message_template.dart';
 import '../../controllers/message_templates_controller.dart';
@@ -136,24 +137,25 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
       }
     }
 
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Column(
-        children: [
-          // Header
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: isSaving.value ? null : () => context.pop(),
-                ),
-                Expanded(
-                  child: Text(
-                    isEditing ? 'Edit Template' : 'New Template',
-                    style: theme.textTheme.titleLarge,
+    return DialogCloseHandler(
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: isSaving.value ? null : () => context.pop(),
+                  ),
+                  Expanded(
+                    child: Text(
+                      isEditing ? 'Edit Template' : 'New Template',
+                      style: theme.textTheme.titleLarge,
                   ),
                 ),
                 Padding(
@@ -412,6 +414,7 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

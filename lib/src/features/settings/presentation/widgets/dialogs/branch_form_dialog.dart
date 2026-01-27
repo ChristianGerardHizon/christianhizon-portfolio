@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/branch.dart';
 import '../../controllers/branches_controller.dart';
@@ -85,10 +86,11 @@ class BranchFormDialog extends HookConsumerWidget {
       }
     }
 
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Column(
+    return DialogCloseHandler(
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
         children: [
           // Header
           Padding(
@@ -202,6 +204,7 @@ class BranchFormDialog extends HookConsumerWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/widgets/dialog_close_handler.dart';
 import '../../../products/domain/product.dart';
 import '../../../products/domain/product_lot.dart';
 import '../../../products/presentation/controllers/product_lots_controller.dart';
@@ -35,27 +36,28 @@ class LotSelectionDialog extends HookConsumerWidget {
     final selectedLot = useState<ProductLot?>(null);
     final quantity = useState<int>(1);
 
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Column(
-        children: [
-          // Header
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => context.pop(),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Select Lot',
-                        style: theme.textTheme.titleLarge,
+    return DialogCloseHandler(
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => context.pop(),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Select Lot',
+                          style: theme.textTheme.titleLarge,
                       ),
                       Text(
                         product.name,
@@ -231,6 +233,7 @@ class LotSelectionDialog extends HookConsumerWidget {
               ),
             ),
         ],
+      ),
       ),
     );
   }

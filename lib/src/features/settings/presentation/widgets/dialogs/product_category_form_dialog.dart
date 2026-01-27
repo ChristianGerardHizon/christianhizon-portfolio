@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../products/domain/product_category.dart';
 import '../../controllers/product_categories_controller.dart';
@@ -84,10 +85,11 @@ class ProductCategoryFormDialog extends HookConsumerWidget {
       }
     }
 
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Column(
+    return DialogCloseHandler(
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
         children: [
           // Header
           Padding(
@@ -213,6 +215,7 @@ class ProductCategoryFormDialog extends HookConsumerWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

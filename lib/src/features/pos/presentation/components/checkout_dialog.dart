@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/currency_format.dart';
+import '../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../patients/data/repositories/patient_repository.dart';
 import '../../../patients/domain/patient.dart';
@@ -189,24 +190,25 @@ class CheckoutDialog extends HookConsumerWidget {
       );
     }
 
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: FormBuilder(
-        key: formKey,
-        child: Column(
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: isSaving.value ? null : () => context.pop(),
-                  ),
-                  Expanded(
-                    child: Text('Checkout', style: theme.textTheme.titleLarge),
+    return DialogCloseHandler(
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: FormBuilder(
+          key: formKey,
+          child: Column(
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: isSaving.value ? null : () => context.pop(),
+                    ),
+                    Expanded(
+                      child: Text('Checkout', style: theme.textTheme.titleLarge),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
@@ -785,6 +787,7 @@ class CheckoutDialog extends HookConsumerWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

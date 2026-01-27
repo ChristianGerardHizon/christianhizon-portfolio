@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/routing/routes/products.routes.dart';
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../../settings/presentation/controllers/branches_controller.dart';
@@ -98,10 +99,12 @@ class CreateProductDialog extends HookConsumerWidget {
       }
     }
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
-      child: SizedBox(
+    return DialogCloseHandler(
+      onClose: (ctx) => dirtyGuard.confirmDiscard(ctx),
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+        child: SizedBox(
         width: size.width,
         height: size.height,
         child: Column(
@@ -446,6 +449,7 @@ class CreateProductDialog extends HookConsumerWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

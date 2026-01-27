@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../settings/domain/message_template.dart';
 import '../../../../patients/domain/patient.dart';
@@ -205,10 +206,12 @@ class CreateMessageDialog extends HookConsumerWidget {
       }
     }
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
-      child: SizedBox(
+    return DialogCloseHandler(
+      onClose: (ctx) => dirtyGuard.confirmDiscard(ctx),
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+        child: SizedBox(
         width: size.width,
         height: size.height,
         child: Column(
@@ -486,6 +489,7 @@ class CreateMessageDialog extends HookConsumerWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

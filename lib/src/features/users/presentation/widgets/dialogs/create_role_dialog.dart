@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/user_role.dart';
 import '../../controllers/user_roles_controller.dart';
@@ -79,10 +80,12 @@ class CreateRoleDialog extends HookConsumerWidget {
       }
     }
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
-      child: SizedBox(
+    return DialogCloseHandler(
+      onClose: (ctx) => dirtyGuard.confirmDiscard(ctx),
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+        child: SizedBox(
         width: size.width,
         height: size.height,
         child: Column(
@@ -248,6 +251,7 @@ class CreateRoleDialog extends HookConsumerWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

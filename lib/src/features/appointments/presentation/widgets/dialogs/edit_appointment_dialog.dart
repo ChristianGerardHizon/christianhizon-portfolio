@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../patients/domain/patient.dart';
 import '../../../../settings/presentation/controllers/message_templates_controller.dart';
@@ -202,10 +203,12 @@ class EditAppointmentDialog extends HookConsumerWidget {
       }
     }
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
-      child: SizedBox(
+    return DialogCloseHandler(
+      onClose: (ctx) => dirtyGuard.confirmDiscard(ctx),
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: dirtyGuard.onPopInvokedWithResult,
+        child: SizedBox(
         width: size.width,
         height: size.height,
         child: Column(
@@ -656,6 +659,7 @@ class EditAppointmentDialog extends HookConsumerWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

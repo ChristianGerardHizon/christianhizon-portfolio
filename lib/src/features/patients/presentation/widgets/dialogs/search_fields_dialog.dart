@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/i18n/strings.g.dart';
+import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../controllers/patient_search_controller.dart';
 
 /// Dialog for selecting which fields to include in patient search.
@@ -16,10 +17,11 @@ class SearchFieldsDialog extends ConsumerWidget {
     final selectedFields = ref.watch(patientSearchFieldsProvider);
     final size = MediaQuery.sizeOf(context);
 
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Column(
+    return DialogCloseHandler(
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
         children: [
           // Header
           Padding(
@@ -112,6 +114,7 @@ class SearchFieldsDialog extends ConsumerWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

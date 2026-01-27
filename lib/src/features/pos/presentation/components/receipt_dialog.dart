@@ -9,6 +9,7 @@ import 'package:printing/printing.dart';
 
 import '../../../../core/routing/routes/system.routes.dart';
 import '../../../../core/utils/currency_format.dart';
+import '../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../settings/presentation/controllers/branch_provider.dart';
@@ -248,24 +249,25 @@ class ReceiptDialog extends HookConsumerWidget {
 
     final hasDefaultPrinter = defaultPrinterAsync.value != null;
 
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Column(
-        children: [
-          // Header
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => context.pop(),
-                ),
-                Expanded(
-                  child: Text(
-                    'Receipt',
-                    style: theme.textTheme.titleLarge,
+    return DialogCloseHandler(
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => context.pop(),
+                  ),
+                  Expanded(
+                    child: Text(
+                      'Receipt',
+                      style: theme.textTheme.titleLarge,
                   ),
                 ),
                 if (hasDefaultPrinter) ...[
@@ -457,6 +459,7 @@ class ReceiptDialog extends HookConsumerWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }
