@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../../../../settings/domain/branch.dart';
+import '../../../domain/product_category.dart';
 
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
@@ -205,9 +209,10 @@ class CreateProductDialog extends HookConsumerWidget {
                       ),
                       const SizedBox(height: 16),
 
-                      // Category dropdown
+                      // Category dropdown with typeahead
                       categoriesAsync.when(
-                        data: (categories) => FormBuilderDropdown<String>(
+                        data: (categories) =>
+                            FormBuilderTypeAhead<ProductCategory>(
                           name: 'category',
                           decoration: const InputDecoration(
                             labelText: 'Category',
@@ -215,17 +220,25 @@ class CreateProductDialog extends HookConsumerWidget {
                             prefixIcon: Icon(Icons.category_outlined),
                           ),
                           enabled: !isSaving.value,
-                          items: categories.map((c) {
-                            return DropdownMenuItem(
-                              value: c.id,
-                              child: Text(c.name),
-                            );
-                          }).toList(),
+                          suggestionsCallback: (query) {
+                            if (query.isEmpty) return categories;
+                            final lowerQuery = query.toLowerCase();
+                            return categories
+                                .where((c) =>
+                                    c.name.toLowerCase().contains(lowerQuery))
+                                .toList();
+                          },
+                          itemBuilder: (context, category) => ListTile(
+                            title: Text(category.name),
+                            dense: true,
+                          ),
+                          valueTransformer: (category) => category?.id,
                         ),
                         loading: () => const TextField(
                           decoration: InputDecoration(
                             labelText: 'Category',
                             border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.category_outlined),
                             suffixIcon: SizedBox(
                               width: 20,
                               height: 20,
@@ -242,6 +255,7 @@ class CreateProductDialog extends HookConsumerWidget {
                           decoration: InputDecoration(
                             labelText: 'Category',
                             border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.category_outlined),
                             errorText: 'Failed to load',
                           ),
                           enabled: false,
@@ -249,24 +263,48 @@ class CreateProductDialog extends HookConsumerWidget {
                       ),
                       const SizedBox(height: 16),
 
-                      // Branch dropdown
+                      // Branch dropdown with typeahead
                       branchesAsync.when(
-                        data: (branches) => FormBuilderDropdown<String>(
-                          name: 'branch',
-                          initialValue: userBranchId,
-                          decoration: const InputDecoration(
-                            labelText: 'Branch',
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.business),
-                          ),
-                          enabled: !isSaving.value,
-                          items: branches.map((branch) {
-                            return DropdownMenuItem(
-                              value: branch.id,
-                              child: Text(branch.name),
-                            );
-                          }).toList(),
-                        ),
+                        data: (branches) {
+                          // Find the user's branch for initial value
+                          final initialBranch = userBranchId != null
+                              ? branches.firstWhere(
+                                  (b) => b.id == userBranchId,
+                                  orElse: () => branches.first,
+                                )
+                              : null;
+                          return FormBuilderTypeAhead<Branch>(
+                            name: 'branch',
+                            initialValue: initialBranch,
+                            decoration: const InputDecoration(
+                              labelText: 'Branch',
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.business),
+                            ),
+                            enabled: !isSaving.value,
+                            suggestionsCallback: (query) {
+                              if (query.isEmpty) return branches;
+                              final lowerQuery = query.toLowerCase();
+                              return branches
+                                  .where((b) =>
+                                      b.name.toLowerCase().contains(lowerQuery))
+                                  .toList();
+                            },
+                            itemBuilder: (context, branch) => ListTile(
+                              title: Text(branch.name),
+                              subtitle: branch.address.isNotEmpty
+                                  ? Text(
+                                      branch.address,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall,
+                                    )
+                                  : null,
+                              dense: true,
+                            ),
+                            valueTransformer: (branch) => branch?.id,
+                          );
+                        },
                         loading: () => const TextField(
                           decoration: InputDecoration(
                             labelText: 'Branch',
