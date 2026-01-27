@@ -14,7 +14,6 @@ import '../routing/routes/sales.routes.dart';
 import '../routing/routes/sales_history.routes.dart';
 import '../routing/routes/system.routes.dart';
 import '../utils/breakpoints.dart';
-import '../widgets/breadcrumb_nav.dart';
 import '../widgets/mobile_bottom_nav.dart';
 import '../widgets/mobile_drawer.dart';
 import '../widgets/tablet_nav_rail.dart';

@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/routing/routes/system.routes.dart';
-import '../../../patients/domain/patient_treatment.dart';
 import '../../../patients/presentation/controllers/patient_treatments_controller.dart';
 import '../../../products/domain/product_category.dart';
 import '../../domain/message_template.dart';

@@ -46,7 +46,7 @@ class CartView extends ConsumerWidget {
                                 Icons.shopping_cart_outlined,
                                 size: 48,
                                 color: theme.colorScheme.onSurfaceVariant
-                                    .withOpacity(0.5),
+                                    .withValues(alpha: 0.5),
                               ),
                               const SizedBox(height: 12),
                               Text(
@@ -60,7 +60,7 @@ class CartView extends ConsumerWidget {
                                 'Add products from the grid',
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   color: theme.colorScheme.onSurfaceVariant
-                                      .withOpacity(0.7),
+                                      .withValues(alpha: 0.7),
                                 ),
                               ),
                             ],

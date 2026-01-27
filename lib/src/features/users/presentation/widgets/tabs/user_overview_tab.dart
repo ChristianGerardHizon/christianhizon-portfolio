@@ -320,8 +320,8 @@ class UserOverviewTab extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isPositive
-            ? theme.colorScheme.primaryContainer.withOpacity(0.5)
-            : theme.colorScheme.errorContainer.withOpacity(0.5),
+            ? theme.colorScheme.primaryContainer.withValues(alpha: 0.5)
+            : theme.colorScheme.errorContainer.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(

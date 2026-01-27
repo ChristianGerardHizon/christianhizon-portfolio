@@ -126,22 +126,26 @@ class SortDialog extends HookWidget {
                     ),
                     const SizedBox(height: 8),
 
-                    ...fields.map((field) {
-                      final isSelected = selectedField.value == field.key;
-                      return RadioListTile<String>(
-                        value: field.key,
-                        groupValue: selectedField.value,
-                        onChanged: (value) {
-                          if (value != null) {
-                            selectedField.value = value;
-                          }
-                        },
-                        title: Text(field.label),
-                        dense: true,
-                        contentPadding: EdgeInsets.zero,
-                        selected: isSelected,
-                      );
-                    }),
+                    RadioGroup<String>(
+                      groupValue: selectedField.value,
+                      onChanged: (value) {
+                        if (value != null) {
+                          selectedField.value = value;
+                        }
+                      },
+                      child: Column(
+                        children: fields.map((field) {
+                          final isSelected = selectedField.value == field.key;
+                          return RadioListTile<String>(
+                            value: field.key,
+                            title: Text(field.label),
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            selected: isSelected,
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   ],
                 ),
               ),

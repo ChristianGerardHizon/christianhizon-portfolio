@@ -810,7 +810,7 @@ class _PatientEntryCard extends HookConsumerWidget {
                         child: speciesAsync.when(
                           data: (speciesList) =>
                               DropdownButtonFormField<String>(
-                            value: speciesId,
+                            initialValue: speciesId,
                             isExpanded: true,
                             decoration: const InputDecoration(
                               labelText: 'Species',
@@ -857,7 +857,7 @@ class _PatientEntryCard extends HookConsumerWidget {
                       Expanded(
                         child: breedsAsync.when(
                           data: (breedsList) => DropdownButtonFormField<String>(
-                            value: breedId,
+                            initialValue: breedId,
                             isExpanded: true,
                             decoration: const InputDecoration(
                               labelText: 'Breed',
