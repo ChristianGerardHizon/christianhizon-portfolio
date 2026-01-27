@@ -405,13 +405,11 @@ class _BranchListTile extends StatelessWidget {
         ),
       ),
       title: Text(branch.name),
-      subtitle: branch.address != null
-          ? Text(
-              branch.address!,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            )
-          : null,
+      subtitle: Text(
+        branch.address,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
     );
@@ -540,8 +538,7 @@ List<Branch> _filterBranches(List<Branch> branches, String query) {
 
   return branches.where((b) {
     final nameMatch = b.name.toLowerCase().contains(normalizedQuery);
-    final addressMatch =
-        b.address?.toLowerCase().contains(normalizedQuery) ?? false;
+    final addressMatch = b.address.toLowerCase().contains(normalizedQuery);
     return nameMatch || addressMatch;
   }).toList();
 }

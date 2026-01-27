@@ -85,13 +85,11 @@ class BranchesPage extends ConsumerWidget {
                     ),
                   ),
                   title: Text(branch.name),
-                  subtitle: branch.address != null
-                      ? Text(
-                          branch.address!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        )
-                      : null,
+                  subtitle: Text(
+                    branch.address,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   trailing: PopupMenuButton<String>(
                     onSelected: (value) =>
                         _handleAction(context, ref, value, branch),

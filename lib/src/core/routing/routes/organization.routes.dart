@@ -57,8 +57,7 @@ class OrganizationShellRoute extends ShellRouteData {
   const OrganizationShellRoute();
 
   @override
-  Widget builder(
-      BuildContext context, GoRouterState state, Widget navigator) {
+  Widget builder(BuildContext context, GoRouterState state, Widget navigator) {
     return OrganizationShell(child: navigator);
   }
 }
@@ -608,13 +607,11 @@ class _MobileBranchListTile extends StatelessWidget {
         ),
       ),
       title: Text(branch.name),
-      subtitle: branch.address != null
-          ? Text(
-              branch.address!,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            )
-          : null,
+      subtitle: Text(
+        branch.address,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
     );
@@ -735,7 +732,8 @@ class _OrganizationBranchDetailPage extends HookConsumerWidget {
       if (!success) {
         if (context.mounted) {
           isSaving.value = false;
-          showErrorSnackBar(context, message: 'Failed to save branch. Please try again.');
+          showErrorSnackBar(context,
+              message: 'Failed to save branch. Please try again.');
         }
         return;
       }
@@ -787,7 +785,8 @@ class _OrganizationBranchDetailPage extends HookConsumerWidget {
           showSuccessSnackBar(context, message: 'Branch deleted successfully');
           context.pop();
         } else {
-          showErrorSnackBar(context, message: 'Failed to delete branch. Please try again.');
+          showErrorSnackBar(context,
+              message: 'Failed to delete branch. Please try again.');
         }
       }
     }
