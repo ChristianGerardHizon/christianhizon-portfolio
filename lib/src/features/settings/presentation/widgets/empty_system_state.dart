@@ -44,24 +44,26 @@ class EmptySystemState extends StatelessWidget {
         ),
     };
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 80, color: theme.colorScheme.outlineVariant),
-          const SizedBox(height: 16),
-          Text(
-            title,
-            style: theme.textTheme.titleLarge
-                ?.copyWith(color: theme.colorScheme.outline),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            subtitle,
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: theme.colorScheme.outline),
-          ),
-        ],
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 80, color: theme.colorScheme.outlineVariant),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              style: theme.textTheme.titleLarge
+                  ?.copyWith(color: theme.colorScheme.outline),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              subtitle,
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: theme.colorScheme.outline),
+            ),
+          ],
+        ),
       ),
     );
   }

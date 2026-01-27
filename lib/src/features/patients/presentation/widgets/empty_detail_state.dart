@@ -8,22 +8,24 @@ class EmptyDetailState extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.pets, size: 80, color: theme.colorScheme.outlineVariant),
-          const SizedBox(height: 16),
-          Text(
-            'Select a patient',
-            style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.outline),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Choose a patient from the list to view details',
-            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.outline),
-          ),
-        ],
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.pets, size: 80, color: theme.colorScheme.outlineVariant),
+            const SizedBox(height: 16),
+            Text(
+              'Select a patient',
+              style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.outline),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Choose a patient from the list to view details',
+              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.outline),
+            ),
+          ],
+        ),
       ),
     );
   }
