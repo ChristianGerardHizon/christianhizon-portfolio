@@ -90,6 +90,7 @@ class AsyncFormDropdown<T> extends StatelessWidget {
       data: (items) => FormBuilderTypeAhead<T>(
         name: name,
         initialValue: initialValue,
+        selectionToTextTransformer: displayString,
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),
