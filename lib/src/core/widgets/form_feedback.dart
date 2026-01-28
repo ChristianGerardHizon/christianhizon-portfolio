@@ -95,6 +95,8 @@ void showSuccessSnackBar(
       ),
       margin: const EdgeInsets.all(16),
       duration: duration,
+      showCloseIcon: true,
+      closeIconColor: Colors.white,
     ),
   );
 }
@@ -129,6 +131,8 @@ void showErrorSnackBar(
       ),
       margin: const EdgeInsets.all(16),
       duration: duration,
+      showCloseIcon: true,
+      closeIconColor: Colors.white,
     ),
   );
 }
@@ -162,6 +166,8 @@ void showInfoSnackBar(
       ),
       margin: const EdgeInsets.all(16),
       duration: duration,
+      showCloseIcon: true,
+      closeIconColor: Colors.white,
     ),
   );
 }
@@ -195,6 +201,8 @@ void showWarningSnackBar(
       ),
       margin: const EdgeInsets.all(16),
       duration: duration,
+      showCloseIcon: true,
+      closeIconColor: Colors.white,
     ),
   );
 }
