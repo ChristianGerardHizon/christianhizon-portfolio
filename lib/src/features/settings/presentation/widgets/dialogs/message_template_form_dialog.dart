@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../core/constants/constants.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/message_template.dart';
@@ -48,7 +49,9 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
 
     // Common category suggestions
     final defaultCategories = [
-      'Appointment Reminders',
+      MessageTemplateCategories.appointment,
+      MessageTemplateCategories.appointmentWithTreatment,
+      'Appointment Reminders', // Legacy
       'Follow-up',
       'Billing',
       'Promotions',

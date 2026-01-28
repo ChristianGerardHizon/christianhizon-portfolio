@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/repositories/message_template_repository.dart';
@@ -103,5 +104,15 @@ class MessageTemplatesController extends _$MessageTemplatesController {
     }
 
     return categorySet.toList()..sort();
+  }
+
+  /// Returns the default template for a given category.
+  ///
+  /// If no default is found for the category, returns null.
+  MessageTemplate? getDefaultForCategory(String category) {
+    final templates = state.value ?? [];
+    return templates.firstWhereOrNull(
+      (t) => t.category == category && t.isDefault,
+    );
   }
 }

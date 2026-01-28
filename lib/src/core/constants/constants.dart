@@ -81,3 +81,12 @@ abstract class Pagination {
   /// Maximum page size allowed
   static const int maxPageSize = 100;
 }
+
+/// Message template category constants
+abstract class MessageTemplateCategories {
+  /// Category for standard appointment reminders
+  static const String appointment = 'Appointment';
+
+  /// Category for appointment reminders with treatment
+  static const String appointmentWithTreatment = 'Appointment with Treatment';
+}

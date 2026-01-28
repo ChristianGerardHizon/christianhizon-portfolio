@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -6,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../core/constants/constants.dart';
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
@@ -15,6 +17,7 @@ import '../../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../../patients/domain/patient.dart';
 import '../../../../patients/presentation/controllers/patient_treatments_controller.dart';
 import '../../../../patients/presentation/controllers/patients_controller.dart';
+import '../../../../settings/domain/message_template.dart';
 import '../../../../settings/presentation/controllers/message_templates_controller.dart';
 import '../../../domain/appointment_schedule.dart';
 
@@ -741,74 +744,23 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                                   ),
                                   const SizedBox(height: 16),
 
-                                  // Template selector
+                                  // Template selector and message content
                                   templatesAsync.when(
                                     loading: () =>
                                         const LinearProgressIndicator(),
                                     error: (_, __) => const SizedBox.shrink(),
                                     data: (templates) {
-                                      if (templates.isEmpty) {
-                                        return const SizedBox.shrink();
-                                      }
-                                      return Column(
-                                        children: [
-                                          FormBuilderDropdown<String>(
-                                            name: 'template',
-                                            decoration: const InputDecoration(
-                                              labelText: 'Use Template',
-                                              border: OutlineInputBorder(),
-                                              prefixIcon: Icon(
-                                                  Icons.description_outlined),
-                                              helperText:
-                                                  'Select a template to auto-fill reminder',
-                                            ),
-                                            onChanged: (value) {
-                                              if (value != null) {
-                                                final template =
-                                                    templates.firstWhere(
-                                                        (t) => t.id == value);
-                                                final finalContent =
-                                                    replacePlaceholders(
-                                                  template.content,
-                                                  selectedPatient.value,
-                                                );
-                                                formKey.currentState
-                                                    ?.fields['reminderMessage']
-                                                    ?.didChange(finalContent);
-                                              }
-                                            },
-                                            items: templates
-                                                .map((t) => DropdownMenuItem(
-                                                      value: t.id,
-                                                      child: Text(t.name),
-                                                    ))
-                                                .toList(),
-                                          ),
-                                          const SizedBox(height: 16),
-                                        ],
+                                      return _ReminderMessageSection(
+                                        templates: templates,
+                                        formKey: formKey,
+                                        selectedPatient: selectedPatient.value,
+                                        selectedPatientTreatmentId:
+                                            selectedPatientTreatmentId,
+                                        sendReminder: sendReminder.value,
+                                        isSaving: isSaving.value,
+                                        replacePlaceholders: replacePlaceholders,
                                       );
                                     },
-                                  ),
-
-                                  // Message content
-                                  FormBuilderTextField(
-                                    name: 'reminderMessage',
-                                    initialValue: _getDefaultReminderMessage(
-                                        selectedPatient.value!.name),
-                                    decoration: const InputDecoration(
-                                      labelText: 'Message *',
-                                      hintText: 'Enter reminder message',
-                                      border: OutlineInputBorder(),
-                                      prefixIcon: Icon(Icons.sms),
-                                    ),
-                                    maxLines: 3,
-                                    enabled: !isSaving.value,
-                                    validator: sendReminder.value
-                                        ? FormBuilderValidators.required(
-                                            errorText:
-                                                'Message content is required',
-                                          )
-                                        : null,
                                   ),
                                 ],
                               ],
@@ -828,11 +780,6 @@ class CreateAppointmentDialog extends HookConsumerWidget {
       ),
     );
   }
-
-  String _getDefaultReminderMessage(String patientName) {
-    return 'Hello! This is a reminder about your appointment tomorrow for $patientName '
-        'at San Jose Vet Clinic. Please contact us if you need to reschedule.';
-  }
 }
 
 /// Shows the create appointment dialog.
@@ -849,4 +796,156 @@ void showCreateAppointmentDialog(
       onSave: onSave,
     ),
   );
+}
+
+/// Widget for handling reminder message template selection and content.
+///
+/// Automatically applies the appropriate default template based on
+/// whether a treatment is selected:
+/// - Without treatment: Uses "Appointment" category default template
+/// - With treatment: Uses "Appointment with Treatment" category default template
+class _ReminderMessageSection extends HookWidget {
+  const _ReminderMessageSection({
+    required this.templates,
+    required this.formKey,
+    required this.selectedPatient,
+    required this.selectedPatientTreatmentId,
+    required this.sendReminder,
+    required this.isSaving,
+    required this.replacePlaceholders,
+  });
+
+  final List<MessageTemplate> templates;
+  final GlobalKey<FormBuilderState> formKey;
+  final Patient? selectedPatient;
+  final ValueNotifier<String?> selectedPatientTreatmentId;
+  final bool sendReminder;
+  final bool isSaving;
+  final String Function(String, Patient?) replacePlaceholders;
+
+  /// Fallback message when no default template is found.
+  static String _getFallbackMessage(String patientName) {
+    return 'Hello! This is a reminder about your appointment tomorrow for $patientName '
+        'at San Jose Vet Clinic. Please contact us if you need to reschedule.';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Track if we've already applied the default template
+    final hasAppliedDefault = useState(false);
+
+    // Track the previous treatment ID to detect changes
+    final previousTreatmentId = useState<String?>(null);
+
+    // Determine which category to use based on treatment selection
+    final category = selectedPatientTreatmentId.value != null
+        ? MessageTemplateCategories.appointmentWithTreatment
+        : MessageTemplateCategories.appointment;
+
+    // Find default template for current category
+    final defaultTemplate = templates.firstWhereOrNull(
+      (t) => t.category == category && t.isDefault,
+    );
+
+    // Filter templates to show only appointment-related categories
+    final filteredTemplates = templates.where((t) =>
+        t.category == MessageTemplateCategories.appointment ||
+        t.category == MessageTemplateCategories.appointmentWithTreatment ||
+        t.category == 'Appointment Reminders' // Legacy backward compatibility
+        ).toList();
+
+    // Helper function to apply a template to the message field
+    void applyTemplate(MessageTemplate? template, Patient patient) {
+      String message;
+      if (template != null) {
+        message = replacePlaceholders(template.content, patient);
+      } else {
+        message = _getFallbackMessage(patient.name);
+      }
+      formKey.currentState?.fields['reminderMessage']?.didChange(message);
+    }
+
+    // Apply default template on first build
+    useEffect(() {
+      if (!hasAppliedDefault.value && selectedPatient != null) {
+        hasAppliedDefault.value = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          applyTemplate(defaultTemplate, selectedPatient!);
+        });
+      }
+      return null;
+    }, [selectedPatient]);
+
+    // React to treatment selection changes
+    useEffect(() {
+      // Only react if the treatment ID has actually changed and we've already applied a default
+      if (hasAppliedDefault.value &&
+          previousTreatmentId.value != selectedPatientTreatmentId.value &&
+          selectedPatient != null) {
+        previousTreatmentId.value = selectedPatientTreatmentId.value;
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          applyTemplate(defaultTemplate, selectedPatient!);
+        });
+      } else if (!hasAppliedDefault.value) {
+        // Track the initial value without triggering an update
+        previousTreatmentId.value = selectedPatientTreatmentId.value;
+      }
+      return null;
+    }, [selectedPatientTreatmentId.value, defaultTemplate]);
+
+    return Column(
+      children: [
+        // Template selector
+        if (filteredTemplates.isNotEmpty) ...[
+          FormBuilderDropdown<String>(
+            name: 'template',
+            initialValue: defaultTemplate?.id,
+            decoration: const InputDecoration(
+              labelText: 'Use Template',
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.description_outlined),
+              helperText: 'Select a template to auto-fill reminder',
+            ),
+            onChanged: (value) {
+              if (value != null && selectedPatient != null) {
+                final template = templates.firstWhere((t) => t.id == value);
+                final finalContent = replacePlaceholders(
+                  template.content,
+                  selectedPatient,
+                );
+                formKey.currentState?.fields['reminderMessage']
+                    ?.didChange(finalContent);
+              }
+            },
+            items: filteredTemplates
+                .map((t) => DropdownMenuItem(
+                      value: t.id,
+                      child: Text(t.name),
+                    ))
+                .toList(),
+          ),
+          const SizedBox(height: 16),
+        ],
+
+        // Message content field
+        FormBuilderTextField(
+          name: 'reminderMessage',
+          decoration: const InputDecoration(
+            labelText: 'Message *',
+            hintText: 'Enter reminder message',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.sms),
+          ),
+          maxLines: 3,
+          enabled: !isSaving,
+          validator: sendReminder
+              ? FormBuilderValidators.required(
+                  errorText: 'Message content is required',
+                )
+              : null,
+        ),
+      ],
+    );
+  }
 }
