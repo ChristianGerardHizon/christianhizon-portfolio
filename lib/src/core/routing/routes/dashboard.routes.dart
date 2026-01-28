@@ -12,6 +12,7 @@ import '../../../features/dashboard/presentation/widgets/quick_actions_section.d
 import '../../../features/dashboard/presentation/widgets/tablet_dashboard_layout.dart';
 import '../../../features/dashboard/presentation/widgets/dashboard_footer.dart';
 import '../../../features/dashboard/presentation/widgets/today_appointments_section.dart';
+import '../../../features/settings/presentation/controllers/current_branch_controller.dart';
 import '../../utils/breakpoints.dart';
 
 part 'dashboard.routes.g.dart';
@@ -97,28 +98,60 @@ class DashboardPage extends ConsumerWidget {
 }
 
 /// Mobile dashboard header widget.
-class _MobileDashboardHeader extends StatelessWidget {
+class _MobileDashboardHeader extends ConsumerWidget {
   const _MobileDashboardHeader();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final currentBranchAsync = ref.watch(currentBranchControllerProvider);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.dashboard,
-            color: theme.colorScheme.primary,
+          Row(
+            children: [
+              Icon(
+                Icons.dashboard,
+                color: theme.colorScheme.primary,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Dashboard Overview',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 8),
-          Text(
-            'Dashboard Overview',
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          // Show current branch if available
+          currentBranchAsync.whenOrNull(
+                data: (branch) {
+                  if (branch == null) return null;
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.store,
+                          size: 16,
+                          color: theme.colorScheme.outline,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          branch.displayName ?? branch.name,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.outline,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ) ??
+              const SizedBox.shrink(),
         ],
       ),
     );

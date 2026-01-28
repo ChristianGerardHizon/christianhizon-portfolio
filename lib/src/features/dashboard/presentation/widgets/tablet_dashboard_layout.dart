@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../appointments/domain/appointment_schedule.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import 'appointment_quick_summary.dart';
 import 'dashboard_footer.dart';
 import 'inventory_alerts_section.dart';
@@ -113,12 +114,13 @@ class TabletDashboardLayout extends HookConsumerWidget {
 /// Dashboard overview pane shown when no appointment is selected.
 ///
 /// Displays KPIs, inventory alerts and upcoming treatment plans.
-class _DashboardOverviewPane extends StatelessWidget {
+class _DashboardOverviewPane extends ConsumerWidget {
   const _DashboardOverviewPane();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final currentBranchAsync = ref.watch(currentBranchControllerProvider);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -141,6 +143,32 @@ class _DashboardOverviewPane extends StatelessWidget {
               ),
             ],
           ),
+          // Show current branch if available
+          currentBranchAsync.whenOrNull(
+                data: (branch) {
+                  if (branch == null) return null;
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.store,
+                          size: 16,
+                          color: theme.colorScheme.outline,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          branch.displayName ?? branch.name,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.outline,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ) ??
+              const SizedBox.shrink(),
           const SizedBox(height: 8),
           Text(
             'Select an appointment from the list to view details',
