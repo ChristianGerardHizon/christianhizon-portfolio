@@ -16,12 +16,15 @@ class UsersListPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final paginatedAsync = ref.watch(paginatedUsersControllerProvider);
 
-    return paginatedAsync.when(
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showCreateUserDialog(context),
+        tooltip: 'Add User',
+        child: const Icon(Icons.add),
       ),
-      error: (error, stack) => Scaffold(
-        body: Center(
+      body: paginatedAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -38,14 +41,7 @@ class UsersListPage extends ConsumerWidget {
             ],
           ),
         ),
-      ),
-      data: (paginatedState) => Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => showCreateUserDialog(context),
-          tooltip: 'Add User',
-          child: const Icon(Icons.add),
-        ),
-        body: UserListPanel(
+        data: (paginatedState) => UserListPanel(
           paginatedState: paginatedState,
           selectedId: null,
           onUserTap: (user) {

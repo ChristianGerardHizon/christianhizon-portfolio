@@ -37,35 +37,35 @@ class TabletUsersLayout extends ConsumerWidget {
       return detailChild;
     }
 
-    return usersAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 48),
-            const SizedBox(height: 16),
-            Text('Error: ${error.toString()}'),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => usersController.refresh(),
-              child: const Text('Retry'),
+    return Row(
+      children: [
+        // List panel
+        SizedBox(
+          width: 320,
+          child: Scaffold(
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => showCreateUserDialog(context),
+              tooltip: 'Add User',
+              child: const Icon(Icons.add),
             ),
-          ],
-        ),
-      ),
-      data: (paginatedState) => Row(
-        children: [
-          // List panel
-          SizedBox(
-            width: 320,
-            child: Scaffold(
-              floatingActionButton: FloatingActionButton(
-                onPressed: () => showCreateUserDialog(context),
-                tooltip: 'Add User',
-                child: const Icon(Icons.add),
+            body: usersAsync.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error_outline, size: 48),
+                    const SizedBox(height: 16),
+                    Text('Error: ${error.toString()}'),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => usersController.refresh(),
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
               ),
-              body: UserListPanel(
+              data: (paginatedState) => UserListPanel(
                 paginatedState: paginatedState,
                 selectedId: selectedUserId,
                 onUserTap: (user) {
@@ -77,15 +77,15 @@ class TabletUsersLayout extends ConsumerWidget {
               ),
             ),
           ),
-          const VerticalDivider(width: 1),
-          // Detail panel from router
-          Expanded(
-            child: (selectedUserId != null || isRolesPage)
-                ? detailChild
-                : const EmptyUserDetailState(),
-          ),
-        ],
-      ),
+        ),
+        const VerticalDivider(width: 1),
+        // Detail panel from router
+        Expanded(
+          child: (selectedUserId != null || isRolesPage)
+              ? detailChild
+              : const EmptyUserDetailState(),
+        ),
+      ],
     );
   }
 }
