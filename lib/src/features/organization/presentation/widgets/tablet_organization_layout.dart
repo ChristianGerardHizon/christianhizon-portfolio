@@ -8,6 +8,7 @@ import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/routing/routes/organization.routes.dart';
 import '../../../settings/domain/branch.dart';
 import '../../../settings/presentation/controllers/branches_controller.dart';
+import '../../../settings/presentation/widgets/dialogs/branch_form_dialog.dart';
 import '../../../users/presentation/controllers/paginated_users_controller.dart';
 import '../../../users/presentation/controllers/user_roles_controller.dart';
 import '../../../users/presentation/widgets/dialogs/create_user_dialog.dart';
@@ -250,8 +251,8 @@ class _BranchesListWrapper extends HookConsumerWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         heroTag: 'branch_fab',
-        onPressed: () =>
-            const OrganizationBranchDetailRoute(id: 'new').go(context),
+        onPressed: () => showBranchFormDialog(context),
+        tooltip: 'Add Branch',
         child: const Icon(Icons.add),
       ),
       body: branchesAsync.when(

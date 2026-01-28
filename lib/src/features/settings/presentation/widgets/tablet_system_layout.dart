@@ -13,6 +13,7 @@ import '../controllers/printer_configs_controller.dart';
 import 'empty_system_state.dart';
 import 'dialogs/message_template_form_dialog.dart';
 import 'dialogs/printer_config_form_dialog.dart';
+import 'dialogs/product_category_form_dialog.dart';
 import 'system_nav_panel.dart';
 import 'theme_settings_panel.dart';
 
@@ -236,8 +237,8 @@ class _ProductCategoryListWrapper extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'product_category_fab',
-        onPressed: () =>
-            const ProductCategoryDetailRoute(id: 'new').go(context),
+        onPressed: () => showProductCategoryFormDialog(context),
+        tooltip: 'Add Category',
         child: const Icon(Icons.add),
       ),
       body: categoriesAsync.when(

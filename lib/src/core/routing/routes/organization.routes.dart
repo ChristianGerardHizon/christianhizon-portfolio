@@ -9,6 +9,7 @@ import '../../widgets/form_feedback.dart';
 import '../../../features/organization/presentation/pages/organization_shell.dart';
 import '../../../features/settings/domain/branch.dart';
 import '../../../features/settings/presentation/controllers/branches_controller.dart';
+import '../../../features/settings/presentation/widgets/dialogs/branch_form_dialog.dart';
 import '../../../features/users/domain/user_tab.dart';
 import '../../../features/users/presentation/controllers/paginated_users_controller.dart';
 import '../../../features/users/presentation/controllers/user_roles_controller.dart';
@@ -519,8 +520,8 @@ class _OrganizationBranchesListPage extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'branch_fab',
-        onPressed: () =>
-            const OrganizationBranchDetailRoute(id: 'new').push(context),
+        onPressed: () => showBranchFormDialog(context),
+        tooltip: 'Add Branch',
         child: const Icon(Icons.add),
       ),
       body: branchesAsync.when(

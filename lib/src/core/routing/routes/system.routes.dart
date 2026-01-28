@@ -10,6 +10,7 @@ import '../../../features/patients/presentation/controllers/patient_treatments_c
 import '../../../features/settings/presentation/controllers/species_controller.dart';
 import '../../../features/settings/presentation/pages/system_shell.dart';
 import '../../../features/settings/presentation/widgets/message_template_detail_panel.dart';
+import '../../../features/settings/presentation/widgets/dialogs/product_category_form_dialog.dart';
 import '../../../features/settings/presentation/widgets/product_category_detail_panel.dart';
 import '../../../features/settings/presentation/widgets/dialogs/message_template_form_dialog.dart';
 import '../../../features/settings/presentation/widgets/species_detail_panel.dart';
@@ -521,8 +522,8 @@ class _MobileProductCategoriesListPage extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'product_category_fab',
-        onPressed: () =>
-            const ProductCategoryDetailRoute(id: 'new').push(context),
+        onPressed: () => showProductCategoryFormDialog(context),
+        tooltip: 'Add Category',
         child: const Icon(Icons.add),
       ),
       body: categoriesAsync.when(
