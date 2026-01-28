@@ -75,9 +75,9 @@ class CheckoutDialog extends HookConsumerWidget {
 
       isSearchingPatients.value = true;
       final result = await ref.read(patientRepositoryProvider).search(
-            query,
-            fields: ['name', 'owner'],
-          );
+        query,
+        fields: ['name', 'owner'],
+      );
 
       result.fold(
         (failure) {
@@ -145,16 +145,18 @@ class CheckoutDialog extends HookConsumerWidget {
               : null);
 
       // Process checkout
-      final result = await ref.read(checkoutControllerProvider.notifier).processCheckout(
-        paymentMethod: selectedPaymentMethod.value,
-        paymentRef: values['paymentRef'] as String?,
-        notes: values['notes'] as String?,
-        amountTendered: selectedPaymentMethod.value == PaymentMethod.cash
-            ? double.tryParse(values['amountTendered'] ?? '')
-            : null,
-        customerId: customerId,
-        customerName: customerName,
-      );
+      final result =
+          await ref.read(checkoutControllerProvider.notifier).processCheckout(
+                paymentMethod: selectedPaymentMethod.value,
+                paymentRef: values['paymentRef'] as String?,
+                notes: values['notes'] as String?,
+                amountTendered:
+                    selectedPaymentMethod.value == PaymentMethod.cash
+                        ? double.tryParse(values['amountTendered'] ?? '')
+                        : null,
+                customerId: customerId,
+                customerName: customerName,
+              );
 
       isSaving.value = false;
 
@@ -208,354 +210,48 @@ class CheckoutDialog extends HookConsumerWidget {
                       onPressed: isSaving.value ? null : () => context.pop(),
                     ),
                     Expanded(
-                      child: Text('Checkout', style: theme.textTheme.titleLarge),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: TextButton(
-                      onPressed: isSaving.value ? null : () => context.pop(),
-                      child: const Text('Cancel'),
+                      child:
+                          Text('Checkout', style: theme.textTheme.titleLarge),
                     ),
-                  ),
-                  FilledButton(
-                    onPressed: isSaving.value || cartItems.isEmpty ? null : handleCheckout,
-                    child: isSaving.value
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text('Complete Sale'),
-                  ),
-                  const SizedBox(width: 8),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: TextButton(
+                        onPressed: isSaving.value ? null : () => context.pop(),
+                        child: const Text('Cancel'),
+                      ),
+                    ),
+                    FilledButton(
+                      onPressed: isSaving.value || cartItems.isEmpty
+                          ? null
+                          : handleCheckout,
+                      child: isSaving.value
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('Complete Sale'),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
+              const SizedBox(height: 8),
 
-            // Scrollable content
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: 16),
+              // Scrollable content
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 16),
 
-                    // Order summary
-                    _buildOrderSummary(context, cartItems, total),
-                    const SizedBox(height: 24),
+                      // Order summary
+                      _buildOrderSummary(context, cartItems, total),
+                      const SizedBox(height: 24),
 
-                    // Customer section (optional)
-                    Card(
-                      color: theme.colorScheme.surfaceContainerHighest,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Section header with icon
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.person_outline,
-                                  color: theme.colorScheme.primary,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Customer (Optional)',
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-
-                            if (selectedPatient.value == null) ...[
-                              // SegmentedButton for customer type
-                              SizedBox(
-                                width: double.infinity,
-                                child: SegmentedButton<String>(
-                                  segments: const [
-                                    ButtonSegment(
-                                      value: 'patient',
-                                      label: Text('Patient'),
-                                      icon: Icon(Icons.pets),
-                                    ),
-                                    ButtonSegment(
-                                      value: 'walkin',
-                                      label: Text('Walk-in'),
-                                      icon: Icon(Icons.person_add_outlined),
-                                    ),
-                                  ],
-                                  selected: {customerType.value},
-                                  onSelectionChanged: (values) {
-                                    customerType.value = values.first;
-                                    // Clear the other field when switching
-                                    if (values.first == 'patient') {
-                                      customerNameController.clear();
-                                    } else {
-                                      patientSearchController.clear();
-                                      patientSearchResults.value = [];
-                                      showPatientDropdown.value = false;
-                                    }
-                                  },
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-
-                              // Conditional content based on customer type
-                              if (customerType.value == 'patient') ...[
-                                // Patient search
-                                TextField(
-                                  controller: patientSearchController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Search patient...',
-                                    prefixIcon: const Icon(Icons.search),
-                                    suffixIcon: isSearchingPatients.value
-                                        ? const Padding(
-                                            padding: EdgeInsets.all(12),
-                                            child: SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: CircularProgressIndicator(
-                                                  strokeWidth: 2),
-                                            ),
-                                          )
-                                        : null,
-                                    border: const OutlineInputBorder(),
-                                  ),
-                                  onChanged: searchPatients,
-                                ),
-                                if (showPatientDropdown.value &&
-                                    patientSearchResults.value.isNotEmpty)
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 4),
-                                    decoration: BoxDecoration(
-                                      color: theme.colorScheme.surface,
-                                      border: Border.all(
-                                          color: theme.colorScheme.outline),
-                                      borderRadius: BorderRadius.circular(8),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color:
-                                              Colors.black.withValues(alpha: 0.1),
-                                          blurRadius: 4,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: patientSearchResults.value
-                                          .map((patient) {
-                                        return ListTile(
-                                          dense: true,
-                                          leading: CircleAvatar(
-                                            radius: 16,
-                                            child: Text(
-                                              patient.name.isNotEmpty
-                                                  ? patient.name[0].toUpperCase()
-                                                  : '?',
-                                              style:
-                                                  const TextStyle(fontSize: 12),
-                                            ),
-                                          ),
-                                          title: Text(patient.name),
-                                          subtitle: patient.owner != null
-                                              ? Text(
-                                                  'Owner: ${patient.owner}',
-                                                  style:
-                                                      theme.textTheme.bodySmall,
-                                                )
-                                              : null,
-                                          onTap: () => selectPatient(patient),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
-                              ] else ...[
-                                // Walk-in customer name
-                                TextField(
-                                  controller: customerNameController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Customer name',
-                                    prefixIcon: Icon(Icons.person_outline),
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Enter customer name',
-                                  ),
-                                ),
-                              ],
-                            ] else ...[
-                              // Selected patient display
-                              Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: theme.colorScheme.primaryContainer
-                                      .withValues(alpha: 0.3),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      color: theme.colorScheme.primary
-                                          .withValues(alpha: 0.5)),
-                                ),
-                                child: Row(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 20,
-                                      backgroundColor: theme.colorScheme.primary,
-                                      child: Text(
-                                        selectedPatient.value!.name.isNotEmpty
-                                            ? selectedPatient.value!.name[0]
-                                                .toUpperCase()
-                                            : '?',
-                                        style: TextStyle(
-                                          color: theme.colorScheme.onPrimary,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            selectedPatient.value!.name,
-                                            style: theme.textTheme.titleSmall
-                                                ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          if (selectedPatient.value!.owner !=
-                                              null)
-                                            Text(
-                                              'Owner: ${selectedPatient.value!.owner}',
-                                              style: theme.textTheme.bodySmall
-                                                  ?.copyWith(
-                                                color: theme.colorScheme
-                                                    .onSurfaceVariant,
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.close),
-                                      onPressed: clearPatientSelection,
-                                      tooltip: 'Remove customer',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Payment method selection
-                    Card(
-                      color: theme.colorScheme.surfaceContainerHighest,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Section header with icon
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.payment,
-                                  color: theme.colorScheme.primary,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Payment Method',
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            FormBuilderChoiceChips<PaymentMethod>(
-                              name: 'paymentMethod',
-                              initialValue: PaymentMethod.cash,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                              spacing: 8,
-                              runSpacing: 8,
-                              options: [
-                                FormBuilderChipOption(
-                                  value: PaymentMethod.cash,
-                                  avatar: Icon(
-                                    Icons.payments_outlined,
-                                    size: 18,
-                                    color:
-                                        selectedPaymentMethod.value == PaymentMethod.cash
-                                            ? theme.colorScheme.onSecondaryContainer
-                                            : theme.colorScheme.onSurfaceVariant,
-                                  ),
-                                  child: const Text('Cash'),
-                                ),
-                                FormBuilderChipOption(
-                                  value: PaymentMethod.card,
-                                  avatar: Icon(
-                                    Icons.credit_card_outlined,
-                                    size: 18,
-                                    color:
-                                        selectedPaymentMethod.value == PaymentMethod.card
-                                            ? theme.colorScheme.onSecondaryContainer
-                                            : theme.colorScheme.onSurfaceVariant,
-                                  ),
-                                  child: const Text('Card'),
-                                ),
-                                FormBuilderChipOption(
-                                  value: PaymentMethod.bankTransfer,
-                                  avatar: Icon(
-                                    Icons.account_balance_outlined,
-                                    size: 18,
-                                    color: selectedPaymentMethod.value ==
-                                            PaymentMethod.bankTransfer
-                                        ? theme.colorScheme.onSecondaryContainer
-                                        : theme.colorScheme.onSurfaceVariant,
-                                  ),
-                                  child: const Text('Transfer'),
-                                ),
-                                FormBuilderChipOption(
-                                  value: PaymentMethod.check,
-                                  avatar: Icon(
-                                    Icons.receipt_long_outlined,
-                                    size: 18,
-                                    color:
-                                        selectedPaymentMethod.value == PaymentMethod.check
-                                            ? theme.colorScheme.onSecondaryContainer
-                                            : theme.colorScheme.onSurfaceVariant,
-                                  ),
-                                  child: const Text('Check'),
-                                ),
-                              ],
-                              onChanged: (value) {
-                                if (value != null) {
-                                  selectedPaymentMethod.value = value;
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Cash payment fields
-                    if (selectedPaymentMethod.value == PaymentMethod.cash) ...[
+                      // Customer section (optional)
                       Card(
                         color: theme.colorScheme.surfaceContainerHighest,
                         child: Padding(
@@ -563,18 +259,19 @@ class CheckoutDialog extends HookConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Section header
+                              // Section header with icon
                               Row(
                                 children: [
                                   Icon(
-                                    Icons.payments,
+                                    Icons.person_outline,
                                     color: theme.colorScheme.primary,
                                     size: 20,
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    'Cash Payment',
-                                    style: theme.textTheme.titleMedium?.copyWith(
+                                    'Customer (Optional)',
+                                    style:
+                                        theme.textTheme.titleMedium?.copyWith(
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -582,117 +279,493 @@ class CheckoutDialog extends HookConsumerWidget {
                               ),
                               const SizedBox(height: 16),
 
-                              // Amount tendered field
-                              FormBuilderTextField(
-                                name: 'amountTendered',
-                                decoration: InputDecoration(
-                                  labelText: 'Amount Tendered *',
-                                  prefixIcon: const Icon(Icons.attach_money),
-                                  prefixText: '₱ ',
-                                  border: const OutlineInputBorder(),
-                                  helperText: 'Minimum: ${total.toCurrency()}',
+                              if (selectedPatient.value == null) ...[
+                                // SegmentedButton for customer type
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: SegmentedButton<String>(
+                                    segments: const [
+                                      ButtonSegment(
+                                        value: 'patient',
+                                        label: Text('Patient'),
+                                        icon: Icon(Icons.pets),
+                                      ),
+                                      ButtonSegment(
+                                        value: 'walkin',
+                                        label: Text('Walk-in'),
+                                        icon: Icon(Icons.person_add_outlined),
+                                      ),
+                                    ],
+                                    selected: {customerType.value},
+                                    onSelectionChanged: (values) {
+                                      customerType.value = values.first;
+                                      // Clear the other field when switching
+                                      if (values.first == 'patient') {
+                                        customerNameController.clear();
+                                      } else {
+                                        patientSearchController.clear();
+                                        patientSearchResults.value = [];
+                                        showPatientDropdown.value = false;
+                                      }
+                                    },
+                                  ),
                                 ),
-                                keyboardType:
-                                    const TextInputType.numberWithOptions(decimal: true),
-                                validator: FormBuilderValidators.compose([
-                                  FormBuilderValidators.required(),
-                                  FormBuilderValidators.numeric(),
-                                ]),
+                                const SizedBox(height: 16),
+
+                                // Conditional content based on customer type
+                                if (customerType.value == 'patient') ...[
+                                  // Patient search
+                                  TextField(
+                                    controller: patientSearchController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Search patient...',
+                                      prefixIcon: const Icon(Icons.search),
+                                      suffixIcon: isSearchingPatients.value
+                                          ? const Padding(
+                                              padding: EdgeInsets.all(12),
+                                              child: SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                        strokeWidth: 2),
+                                              ),
+                                            )
+                                          : null,
+                                      border: const OutlineInputBorder(),
+                                    ),
+                                    onChanged: searchPatients,
+                                  ),
+                                  if (showPatientDropdown.value &&
+                                      patientSearchResults.value.isNotEmpty)
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 4),
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme.surface,
+                                        border: Border.all(
+                                            color: theme.colorScheme.outline),
+                                        borderRadius: BorderRadius.circular(8),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black
+                                                .withValues(alpha: 0.1),
+                                            blurRadius: 4,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: patientSearchResults.value
+                                            .map((patient) {
+                                          return ListTile(
+                                            dense: true,
+                                            leading: CircleAvatar(
+                                              radius: 16,
+                                              child: Text(
+                                                patient.name.isNotEmpty
+                                                    ? patient.name[0]
+                                                        .toUpperCase()
+                                                    : '?',
+                                                style: const TextStyle(
+                                                    fontSize: 12),
+                                              ),
+                                            ),
+                                            title: Text(patient.name),
+                                            subtitle: patient.owner != null
+                                                ? Text(
+                                                    'Owner: ${patient.owner}',
+                                                    style: theme
+                                                        .textTheme.bodySmall,
+                                                  )
+                                                : null,
+                                            onTap: () => selectPatient(patient),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                ] else ...[
+                                  // Walk-in customer name
+                                  TextField(
+                                    controller: customerNameController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Customer name',
+                                      prefixIcon: Icon(Icons.person_outline),
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Enter customer name',
+                                    ),
+                                  ),
+                                ],
+                              ] else ...[
+                                // Selected patient display
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.primaryContainer
+                                        .withValues(alpha: 0.3),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        color: theme.colorScheme.primary
+                                            .withValues(alpha: 0.5)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 20,
+                                        backgroundColor:
+                                            theme.colorScheme.primary,
+                                        child: Text(
+                                          selectedPatient.value!.name.isNotEmpty
+                                              ? selectedPatient.value!.name[0]
+                                                  .toUpperCase()
+                                              : '?',
+                                          style: TextStyle(
+                                            color: theme.colorScheme.onPrimary,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              selectedPatient.value!.name,
+                                              style: theme.textTheme.titleSmall
+                                                  ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            if (selectedPatient.value!.owner !=
+                                                null)
+                                              Text(
+                                                'Owner: ${selectedPatient.value!.owner}',
+                                                style: theme.textTheme.bodySmall
+                                                    ?.copyWith(
+                                                  color: theme.colorScheme
+                                                      .onSurfaceVariant,
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.close),
+                                        onPressed: clearPatientSelection,
+                                        tooltip: 'Remove customer',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Payment method selection
+                      Card(
+                        color: theme.colorScheme.surfaceContainerHighest,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Section header with icon
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.payment,
+                                    color: theme.colorScheme.primary,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Payment Method',
+                                    style:
+                                        theme.textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              FormBuilderChoiceChips<PaymentMethod>(
+                                name: 'paymentMethod',
+                                initialValue: PaymentMethod.cash,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                                spacing: 8,
+                                runSpacing: 8,
+                                options: [
+                                  FormBuilderChipOption(
+                                    value: PaymentMethod.cash,
+                                    avatar: Icon(
+                                      Icons.payments_outlined,
+                                      size: 18,
+                                      color: selectedPaymentMethod.value ==
+                                              PaymentMethod.cash
+                                          ? theme
+                                              .colorScheme.onSecondaryContainer
+                                          : theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                    child: const Text('Cash'),
+                                  ),
+                                  FormBuilderChipOption(
+                                    value: PaymentMethod.card,
+                                    avatar: Icon(
+                                      Icons.credit_card_outlined,
+                                      size: 18,
+                                      color: selectedPaymentMethod.value ==
+                                              PaymentMethod.card
+                                          ? theme
+                                              .colorScheme.onSecondaryContainer
+                                          : theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                    child: const Text('Card'),
+                                  ),
+                                  FormBuilderChipOption(
+                                    value: PaymentMethod.bankTransfer,
+                                    avatar: Icon(
+                                      Icons.account_balance_outlined,
+                                      size: 18,
+                                      color: selectedPaymentMethod.value ==
+                                              PaymentMethod.bankTransfer
+                                          ? theme
+                                              .colorScheme.onSecondaryContainer
+                                          : theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                    child: const Text('Transfer'),
+                                  ),
+                                  FormBuilderChipOption(
+                                    value: PaymentMethod.check,
+                                    avatar: Icon(
+                                      Icons.receipt_long_outlined,
+                                      size: 18,
+                                      color: selectedPaymentMethod.value ==
+                                              PaymentMethod.check
+                                          ? theme
+                                              .colorScheme.onSecondaryContainer
+                                          : theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                    child: const Text('Check'),
+                                  ),
+                                ],
                                 onChanged: (value) {
-                                  amountTendered.value =
-                                      double.tryParse(value ?? '') ?? 0;
+                                  if (value != null) {
+                                    selectedPaymentMethod.value = value;
+                                  }
                                 },
                               ),
                             ],
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 24),
 
-                      // Change preview card
-                      if (amountTendered.value > 0)
+                      // Cash payment fields
+                      if (selectedPaymentMethod.value ==
+                          PaymentMethod.cash) ...[
                         Card(
-                          color: amountTendered.value >= total
-                              ? theme.colorScheme.primaryContainer
-                              : theme.colorScheme.errorContainer,
+                          color: theme.colorScheme.surfaceContainerHighest,
                           child: Padding(
                             padding: const EdgeInsets.all(16),
-                            child: Row(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Status icon
-                                Icon(
-                                  amountTendered.value >= total
-                                      ? Icons.check_circle_outline
-                                      : Icons.warning_amber_outlined,
-                                  color: amountTendered.value >= total
-                                      ? theme.colorScheme.primary
-                                      : theme.colorScheme.error,
-                                ),
-                                const SizedBox(width: 12),
-
-                                // Change label and amount
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        amountTendered.value >= total
-                                            ? 'Change'
-                                            : 'Amount Short',
-                                        style: theme.textTheme.labelMedium?.copyWith(
-                                          color: amountTendered.value >= total
-                                              ? theme.colorScheme.onPrimaryContainer
-                                              : theme.colorScheme.onErrorContainer,
-                                        ),
-                                      ),
-                                      Text(
-                                        (amountTendered.value - total)
-                                            .abs()
-                                            .toCurrency(),
-                                        style:
-                                            theme.textTheme.headlineMedium?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: amountTendered.value >= total
-                                              ? theme.colorScheme.primary
-                                              : theme.colorScheme.error,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-                                // Delta badge
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: amountTendered.value >= total
-                                        ? Colors.green.withValues(alpha: 0.2)
-                                        : Colors.red.withValues(alpha: 0.2),
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Text(
-                                    amountTendered.value >= total
-                                        ? '+${change.toCurrency()}'
-                                        : '-${(total - amountTendered.value).toCurrency()}',
-                                    style: theme.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: amountTendered.value >= total
-                                          ? Colors.green
-                                          : Colors.red,
+                                // Section header
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.payments,
+                                      color: theme.colorScheme.primary,
+                                      size: 20,
                                     ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'Cash Payment',
+                                      style:
+                                          theme.textTheme.titleMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+
+                                // Amount tendered field
+                                FormBuilderTextField(
+                                  name: 'amountTendered',
+                                  decoration: InputDecoration(
+                                    labelText: 'Amount Tendered *',
+                                    prefixIcon: const Icon(Icons.money),
+                                    prefixText: '₱ ',
+                                    border: const OutlineInputBorder(),
+                                    helperText:
+                                        'Minimum: ${total.toCurrency()}',
+                                  ),
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                          decimal: true),
+                                  validator: FormBuilderValidators.compose([
+                                    FormBuilderValidators.required(),
+                                    FormBuilderValidators.numeric(),
+                                  ]),
+                                  onChanged: (value) {
+                                    amountTendered.value =
+                                        double.tryParse(value ?? '') ?? 0;
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Change preview card
+                        if (amountTendered.value > 0)
+                          Card(
+                            color: amountTendered.value >= total
+                                ? theme.colorScheme.primaryContainer
+                                : theme.colorScheme.errorContainer,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                children: [
+                                  // Status icon
+                                  Icon(
+                                    amountTendered.value >= total
+                                        ? Icons.check_circle_outline
+                                        : Icons.warning_amber_outlined,
+                                    color: amountTendered.value >= total
+                                        ? theme.colorScheme.primary
+                                        : theme.colorScheme.error,
+                                  ),
+                                  const SizedBox(width: 12),
+
+                                  // Change label and amount
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          amountTendered.value >= total
+                                              ? 'Change'
+                                              : 'Amount Short',
+                                          style: theme.textTheme.labelMedium
+                                              ?.copyWith(
+                                            color: amountTendered.value >= total
+                                                ? theme.colorScheme
+                                                    .onPrimaryContainer
+                                                : theme.colorScheme
+                                                    .onErrorContainer,
+                                          ),
+                                        ),
+                                        Text(
+                                          (amountTendered.value - total)
+                                              .abs()
+                                              .toCurrency(),
+                                          style: theme.textTheme.headlineMedium
+                                              ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: amountTendered.value >= total
+                                                ? theme.colorScheme.primary
+                                                : theme.colorScheme.error,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  // Delta badge
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: amountTendered.value >= total
+                                          ? Colors.green.withValues(alpha: 0.2)
+                                          : Colors.red.withValues(alpha: 0.2),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Text(
+                                      amountTendered.value >= total
+                                          ? '+${change.toCurrency()}'
+                                          : '-${(total - amountTendered.value).toCurrency()}',
+                                      style:
+                                          theme.textTheme.titleMedium?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: amountTendered.value >= total
+                                            ? Colors.green
+                                            : Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
+
+                      // Card/Transfer payment reference
+                      if (selectedPaymentMethod.value !=
+                          PaymentMethod.cash) ...[
+                        Card(
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Section header with dynamic icon
+                                Row(
+                                  children: [
+                                    Icon(
+                                      _getPaymentSectionIcon(
+                                          selectedPaymentMethod.value),
+                                      color: theme.colorScheme.primary,
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      _getPaymentSectionTitle(
+                                          selectedPaymentMethod.value),
+                                      style:
+                                          theme.textTheme.titleMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+
+                                FormBuilderTextField(
+                                  name: 'paymentRef',
+                                  decoration: InputDecoration(
+                                    labelText: _getPaymentRefLabel(
+                                        selectedPaymentMethod.value),
+                                    prefixIcon: Icon(_getPaymentRefIcon(
+                                        selectedPaymentMethod.value)),
+                                    border: const OutlineInputBorder(),
+                                    helperText: _getPaymentRefHelperText(
+                                        selectedPaymentMethod.value),
                                   ),
                                 ),
                               ],
                             ),
                           ),
                         ),
-                    ],
+                      ],
+                      const SizedBox(height: 24),
 
-                    // Card/Transfer payment reference
-                    if (selectedPaymentMethod.value != PaymentMethod.cash) ...[
+                      // Notes section
                       Card(
                         color: theme.colorScheme.surfaceContainerHighest,
                         child: Padding(
@@ -700,94 +773,49 @@ class CheckoutDialog extends HookConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Section header with dynamic icon
                               Row(
                                 children: [
                                   Icon(
-                                    _getPaymentSectionIcon(
-                                        selectedPaymentMethod.value),
+                                    Icons.notes,
                                     color: theme.colorScheme.primary,
                                     size: 20,
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    _getPaymentSectionTitle(
-                                        selectedPaymentMethod.value),
-                                    style: theme.textTheme.titleMedium?.copyWith(
+                                    'Additional Notes',
+                                    style:
+                                        theme.textTheme.titleMedium?.copyWith(
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 16),
-
                               FormBuilderTextField(
-                                name: 'paymentRef',
-                                decoration: InputDecoration(
-                                  labelText: _getPaymentRefLabel(
-                                      selectedPaymentMethod.value),
-                                  prefixIcon: Icon(_getPaymentRefIcon(
-                                      selectedPaymentMethod.value)),
-                                  border: const OutlineInputBorder(),
-                                  helperText: _getPaymentRefHelperText(
-                                      selectedPaymentMethod.value),
+                                name: 'notes',
+                                decoration: const InputDecoration(
+                                  labelText: 'Notes (Optional)',
+                                  hintText:
+                                      'Add any special instructions or comments',
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.edit_note),
                                 ),
+                                maxLines: 2,
+                                textCapitalization:
+                                    TextCapitalization.sentences,
                               ),
                             ],
                           ),
                         ),
                       ),
+                      const SizedBox(height: 24),
                     ],
-                    const SizedBox(height: 24),
-
-                    // Notes section
-                    Card(
-                      color: theme.colorScheme.surfaceContainerHighest,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.notes,
-                                  color: theme.colorScheme.primary,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Additional Notes',
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            FormBuilderTextField(
-                              name: 'notes',
-                              decoration: const InputDecoration(
-                                labelText: 'Notes (Optional)',
-                                hintText: 'Add any special instructions or comments',
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.edit_note),
-                              ),
-                              maxLines: 2,
-                              textCapitalization: TextCapitalization.sentences,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
