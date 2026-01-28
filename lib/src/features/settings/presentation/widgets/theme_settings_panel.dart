@@ -78,7 +78,12 @@ class _ThemeModeCard extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
-      color: isSelected ? theme.colorScheme.primaryContainer : null,
+      shape: isSelected
+          ? RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: theme.colorScheme.primary, width: 2),
+            )
+          : null,
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: isSelected
@@ -95,6 +100,7 @@ class _ThemeModeCard extends StatelessWidget {
           mode.displayName,
           style: TextStyle(
             fontWeight: isSelected ? FontWeight.w600 : null,
+            color: isSelected ? theme.colorScheme.primary : null,
           ),
         ),
         subtitle: Text(mode.description),
