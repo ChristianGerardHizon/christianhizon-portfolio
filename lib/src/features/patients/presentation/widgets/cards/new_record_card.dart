@@ -67,7 +67,8 @@ class NewRecordCard extends HookConsumerWidget {
         if (context.mounted) {
           isSaving.value = false;
           if (created != null) {
-            showSuccessSnackBar(context, message: 'Record created successfully');
+            showSuccessSnackBar(context,
+                message: 'Record created successfully');
             onSaved(created.id);
           } else {
             showErrorSnackBar(context, message: 'Failed to create record');
@@ -98,7 +99,7 @@ class NewRecordCard extends HookConsumerWidget {
 
     return Card(
       clipBehavior: Clip.antiAlias,
-      color: theme.colorScheme.primaryContainer.withValues(alpha: 0.1),
+      color: theme.colorScheme.primaryContainer.withValues(alpha: .9),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

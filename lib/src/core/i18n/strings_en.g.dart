@@ -120,8 +120,8 @@ class TranslationsCommonEn {
 
 	// Translations
 
-	/// en: 'SannJoseVet'
-	String get appName => 'SannJoseVet';
+	/// en: 'Sann Jose Animal Clinic'
+	String get appName => 'Sann Jose Animal Clinic';
 
 	/// en: 'N/A'
 	String get placeholderText => 'N/A';
@@ -520,7 +520,7 @@ extension on Translations {
 			'auth.signInToContinue' => 'Sign in to continue',
 			'auth.signingIn' => 'Signing in...',
 			'auth.verificationEmailSent' => 'A verification email has been sent to your email address',
-			'common.appName' => 'SannJoseVet',
+			'common.appName' => 'Sann Jose Animal Clinic',
 			'common.placeholderText' => 'N/A',
 			'common.save' => 'Save',
 			'common.cancel' => 'Cancel',
