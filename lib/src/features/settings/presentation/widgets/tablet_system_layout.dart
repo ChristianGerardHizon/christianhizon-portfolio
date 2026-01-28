@@ -14,6 +14,7 @@ import 'empty_system_state.dart';
 import 'dialogs/message_template_form_dialog.dart';
 import 'dialogs/printer_config_form_dialog.dart';
 import 'system_nav_panel.dart';
+import 'theme_settings_panel.dart';
 
 /// Three-panel tablet layout for system settings.
 ///
@@ -45,6 +46,8 @@ class TabletSystemLayout extends ConsumerWidget {
       currentMode = SystemMode.treatmentTypes;
     } else if (path.contains('/printers')) {
       currentMode = SystemMode.printers;
+    } else if (path.contains('/appearance')) {
+      currentMode = SystemMode.appearance;
     } else {
       currentMode = SystemMode.speciesBreeds;
     }
@@ -66,35 +69,44 @@ class TabletSystemLayout extends ConsumerWidget {
                 const TreatmentTypesRoute().go(context);
               case SystemMode.printers:
                 const PrinterSettingsRoute().go(context);
+              case SystemMode.appearance:
+                const AppearanceRoute().go(context);
             }
           },
         ),
         const VerticalDivider(width: 1),
 
-        // Panel 2: List
-        SizedBox(
-          width: 320,
-          child: switch (currentMode) {
-            SystemMode.speciesBreeds =>
-              _SpeciesListWrapper(selectedId: selectedId),
-            SystemMode.productCategories =>
-              _ProductCategoryListWrapper(selectedId: selectedId),
-            SystemMode.messageTemplates =>
-              _MessageTemplateListWrapper(selectedId: selectedId),
-            SystemMode.treatmentTypes =>
-              _TreatmentTypeListWrapper(selectedId: selectedId),
-            SystemMode.printers =>
-              _PrinterListWrapper(selectedId: selectedId),
-          },
-        ),
-        const VerticalDivider(width: 1),
+        // Panel 2: List (or full panel for appearance)
+        if (currentMode == SystemMode.appearance) ...[
+          // Appearance mode: Show settings panel directly (no list/detail split)
+          const Expanded(child: ThemeSettingsPanel()),
+        ] else ...[
+          SizedBox(
+            width: 320,
+            child: switch (currentMode) {
+              SystemMode.speciesBreeds =>
+                _SpeciesListWrapper(selectedId: selectedId),
+              SystemMode.productCategories =>
+                _ProductCategoryListWrapper(selectedId: selectedId),
+              SystemMode.messageTemplates =>
+                _MessageTemplateListWrapper(selectedId: selectedId),
+              SystemMode.treatmentTypes =>
+                _TreatmentTypeListWrapper(selectedId: selectedId),
+              SystemMode.printers =>
+                _PrinterListWrapper(selectedId: selectedId),
+              SystemMode.appearance =>
+                const SizedBox.shrink(), // Handled above
+            },
+          ),
+          const VerticalDivider(width: 1),
 
-        // Panel 3: Detail
-        Expanded(
-          child: selectedId != null
-              ? detailChild
-              : EmptySystemState(mode: currentMode),
-        ),
+          // Panel 3: Detail
+          Expanded(
+            child: selectedId != null
+                ? detailChild
+                : EmptySystemState(mode: currentMode),
+          ),
+        ],
       ],
     );
   }

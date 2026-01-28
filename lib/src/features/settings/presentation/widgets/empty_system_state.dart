@@ -42,6 +42,11 @@ class EmptySystemState extends StatelessWidget {
           'Select a printer',
           'Choose a printer from the list to view and configure',
         ),
+      SystemMode.appearance => (
+          Icons.palette_outlined,
+          'Appearance',
+          'Customize app theme and colors',
+        ),
     };
 
     return Scaffold(

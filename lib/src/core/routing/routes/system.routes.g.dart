@@ -67,6 +67,10 @@ RouteBase get $systemShellRoute => ShellRouteData.$route(
                 ),
               ],
             ),
+            GoRouteData.$route(
+              path: 'appearance',
+              factory: $AppearanceRoute._fromState,
+            ),
           ],
         ),
       ],
@@ -332,6 +336,29 @@ mixin $PrinterDetailRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
         '/system/printers/${Uri.encodeComponent(_self.id)}',
+      );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $AppearanceRoute on GoRouteData {
+  static AppearanceRoute _fromState(GoRouterState state) =>
+      const AppearanceRoute();
+
+  @override
+  String get location => GoRouteData.$location(
+        '/system/appearance',
       );
 
   @override

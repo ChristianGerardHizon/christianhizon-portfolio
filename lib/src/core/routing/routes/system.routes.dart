@@ -15,6 +15,7 @@ import '../../../features/settings/presentation/widgets/dialogs/message_template
 import '../../../features/settings/presentation/widgets/species_detail_panel.dart';
 import '../../../features/settings/presentation/widgets/treatment_type_detail_panel.dart';
 import '../../../features/settings/presentation/widgets/printer_config_detail_panel.dart';
+import '../../../features/settings/presentation/widgets/theme_settings_panel.dart';
 import '../../../features/settings/presentation/controllers/printer_configs_controller.dart';
 import '../../../features/settings/presentation/widgets/dialogs/printer_config_form_dialog.dart';
 import '../../utils/breakpoints.dart';
@@ -65,6 +66,8 @@ part 'system.routes.g.dart';
             TypedGoRoute<PrinterDetailRoute>(path: ':id'),
           ],
         ),
+        // Appearance/theme settings
+        TypedGoRoute<AppearanceRoute>(path: 'appearance'),
       ],
     ),
   ],
@@ -241,6 +244,16 @@ class PrinterDetailRoute extends GoRouteData with $PrinterDetailRoute {
   }
 }
 
+/// Appearance/theme settings route.
+class AppearanceRoute extends GoRouteData with $AppearanceRoute {
+  const AppearanceRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const ThemeSettingsPanel();
+  }
+}
+
 // ============================================================================
 // Mobile Pages
 // ============================================================================
@@ -309,6 +322,16 @@ class _MobileSystemLandingPage extends StatelessWidget {
                 description: 'Configure thermal receipt printers',
                 color: Colors.orange,
                 onTap: () => const PrinterSettingsRoute().go(context),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: _SystemOptionCard(
+                icon: Icons.palette,
+                title: 'Appearance',
+                description: 'Customize app theme and colors',
+                color: Colors.purple,
+                onTap: () => const AppearanceRoute().go(context),
               ),
             ),
           ],
