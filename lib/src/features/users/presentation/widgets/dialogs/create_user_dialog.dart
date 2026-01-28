@@ -14,6 +14,7 @@ import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../settings/presentation/controllers/branches_controller.dart';
 import '../../../domain/user.dart';
 import '../../controllers/paginated_users_controller.dart';
+import '../../controllers/user_entity_cache.dart';
 import '../../controllers/user_roles_controller.dart';
 
 /// Dialog for creating a new user.
@@ -83,6 +84,9 @@ class CreateUserDialog extends HookConsumerWidget {
         context.pop();
 
         showSuccessSnackBar(context, message: 'User created successfully');
+
+        // Pre-cache the user before navigation to avoid race condition
+        ref.read(userEntityCacheProvider.notifier).cacheUser(createdUser);
 
         // Navigate to user detail
         UserDetailRoute(id: createdUser.id).go(context);

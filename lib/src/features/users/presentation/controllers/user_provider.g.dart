@@ -9,16 +9,25 @@ part of 'user_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 /// Provider for a single user by ID.
+///
+/// Checks the entity cache first (for newly created users),
+/// then falls back to a network fetch.
 
 @ProviderFor(user)
 final userProvider = UserFamily._();
 
 /// Provider for a single user by ID.
+///
+/// Checks the entity cache first (for newly created users),
+/// then falls back to a network fetch.
 
 final class UserProvider
     extends $FunctionalProvider<AsyncValue<User?>, User?, FutureOr<User?>>
     with $FutureModifier<User?>, $FutureProvider<User?> {
   /// Provider for a single user by ID.
+  ///
+  /// Checks the entity cache first (for newly created users),
+  /// then falls back to a network fetch.
   UserProvider._(
       {required UserFamily super.from, required String super.argument})
       : super(
@@ -64,9 +73,12 @@ final class UserProvider
   }
 }
 
-String _$userHash() => r'b340737d4959df6e15203324e496ab4a757a8f6b';
+String _$userHash() => r'c5095c53fa0b812f777764cd75dbb11f1012bcc9';
 
 /// Provider for a single user by ID.
+///
+/// Checks the entity cache first (for newly created users),
+/// then falls back to a network fetch.
 
 final class UserFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<User?>, String> {
@@ -80,6 +92,9 @@ final class UserFamily extends $Family
         );
 
   /// Provider for a single user by ID.
+  ///
+  /// Checks the entity cache first (for newly created users),
+  /// then falls back to a network fetch.
 
   UserProvider call(
     String id,
