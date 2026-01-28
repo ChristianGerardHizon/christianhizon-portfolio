@@ -98,39 +98,31 @@ class _UsersListWrapper extends ConsumerWidget {
     final usersAsync = ref.watch(paginatedUsersControllerProvider);
     final usersController = ref.read(paginatedUsersControllerProvider.notifier);
 
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'user_fab',
-        onPressed: () =>
-            const OrganizationUserDetailRoute(id: 'new').go(context),
-        child: const Icon(Icons.add),
+    return usersAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 48),
+            const SizedBox(height: 16),
+            Text('Error: ${error.toString()}'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => usersController.refresh(),
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
       ),
-      body: usersAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 48),
-              const SizedBox(height: 16),
-              Text('Error: ${error.toString()}'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => usersController.refresh(),
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
-        data: (paginatedState) => UserListPanel(
-          paginatedState: paginatedState,
-          selectedId: selectedId,
-          onUserTap: (user) {
-            OrganizationUserDetailRoute(id: user.id).go(context);
-          },
-          onRefresh: () => usersController.refresh(),
-          onLoadMore: () => usersController.loadMore(),
-        ),
+      data: (paginatedState) => UserListPanel(
+        paginatedState: paginatedState,
+        selectedId: selectedId,
+        onUserTap: (user) {
+          OrganizationUserDetailRoute(id: user.id).go(context);
+        },
+        onRefresh: () => usersController.refresh(),
+        onLoadMore: () => usersController.loadMore(),
       ),
     );
   }

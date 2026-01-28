@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/routing/routes/users.routes.dart';
 import '../controllers/paginated_users_controller.dart';
+import '../widgets/dialogs/create_user_dialog.dart';
 import '../widgets/user_list_panel.dart';
 
 /// Users list page for mobile view.
@@ -38,16 +39,23 @@ class UsersListPage extends ConsumerWidget {
           ),
         ),
       ),
-      data: (paginatedState) => UserListPanel(
-        paginatedState: paginatedState,
-        selectedId: null,
-        onUserTap: (user) {
-          UserDetailRoute(id: user.id).push(context);
-        },
-        onRefresh: () =>
-            ref.read(paginatedUsersControllerProvider.notifier).refresh(),
-        onLoadMore: () =>
-            ref.read(paginatedUsersControllerProvider.notifier).loadMore(),
+      data: (paginatedState) => Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => showCreateUserDialog(context),
+          tooltip: 'Add User',
+          child: const Icon(Icons.add),
+        ),
+        body: UserListPanel(
+          paginatedState: paginatedState,
+          selectedId: null,
+          onUserTap: (user) {
+            UserDetailRoute(id: user.id).push(context);
+          },
+          onRefresh: () =>
+              ref.read(paginatedUsersControllerProvider.notifier).refresh(),
+          onLoadMore: () =>
+              ref.read(paginatedUsersControllerProvider.notifier).loadMore(),
+        ),
       ),
     );
   }

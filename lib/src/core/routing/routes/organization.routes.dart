@@ -13,6 +13,7 @@ import '../../../features/users/domain/user_tab.dart';
 import '../../../features/users/presentation/controllers/paginated_users_controller.dart';
 import '../../../features/users/presentation/controllers/user_roles_controller.dart';
 import '../../../features/users/presentation/pages/user_detail_page.dart';
+import '../../../features/users/presentation/widgets/dialogs/create_user_dialog.dart';
 import '../../../features/users/presentation/widgets/dialogs/edit_role_dialog.dart';
 import '../../../features/users/presentation/widgets/user_list_panel.dart';
 import '../../../features/users/presentation/widgets/user_role_detail_panel.dart';
@@ -310,6 +311,12 @@ class _OrganizationUsersListPage extends ConsumerWidget {
             onPressed: () => const OrganizationRolesRoute().go(context),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'org_users_fab',
+        onPressed: () => showCreateUserDialog(context),
+        tooltip: 'Add User',
+        child: const Icon(Icons.add),
       ),
       body: paginatedAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),

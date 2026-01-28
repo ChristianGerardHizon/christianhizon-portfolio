@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/routing/routes/users.routes.dart';
 import '../controllers/paginated_users_controller.dart';
+import 'dialogs/create_user_dialog.dart';
 import 'empty_user_detail_state.dart';
 import 'user_list_panel.dart';
 
@@ -58,15 +59,22 @@ class TabletUsersLayout extends ConsumerWidget {
           // List panel
           SizedBox(
             width: 320,
-            child: UserListPanel(
-              paginatedState: paginatedState,
-              selectedId: selectedUserId,
-              onUserTap: (user) {
-                // Navigate using the route - this updates the URL and detail panel
-                UserDetailRoute(id: user.id).go(context);
-              },
-              onRefresh: () => usersController.refresh(),
-              onLoadMore: () => usersController.loadMore(),
+            child: Scaffold(
+              floatingActionButton: FloatingActionButton(
+                onPressed: () => showCreateUserDialog(context),
+                tooltip: 'Add User',
+                child: const Icon(Icons.add),
+              ),
+              body: UserListPanel(
+                paginatedState: paginatedState,
+                selectedId: selectedUserId,
+                onUserTap: (user) {
+                  // Navigate using the route - this updates the URL and detail panel
+                  UserDetailRoute(id: user.id).go(context);
+                },
+                onRefresh: () => usersController.refresh(),
+                onLoadMore: () => usersController.loadMore(),
+              ),
             ),
           ),
           const VerticalDivider(width: 1),

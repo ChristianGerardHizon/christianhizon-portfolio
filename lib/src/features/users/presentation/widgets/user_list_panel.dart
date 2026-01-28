@@ -9,7 +9,6 @@ import '../../../../core/widgets/end_of_list_indicator.dart';
 import '../../domain/user.dart';
 import '../controllers/paginated_users_controller.dart';
 import '../controllers/user_search_controller.dart';
-import 'dialogs/create_user_dialog.dart';
 import 'dialogs/search_fields_dialog.dart';
 import 'user_avatar.dart';
 
@@ -72,13 +71,7 @@ class UserListPanel extends HookConsumerWidget {
       isLoading: paginatedState.isLoadingMore,
     );
 
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => showCreateUserDialog(context),
-        tooltip: 'Add User',
-        child: const Icon(Icons.add),
-      ),
-      body: Column(
+    return Column(
         children: [
           // Header
           Container(
@@ -156,8 +149,7 @@ class UserListPanel extends HookConsumerWidget {
             ),
           ),
         ],
-      ),
-    );
+      );
   }
 }
 
