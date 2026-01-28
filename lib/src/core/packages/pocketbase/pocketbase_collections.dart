@@ -66,4 +66,5 @@ abstract class PocketBaseCollections {
   static const String vwExpiredLots = 'vw_expired_lots';
   static const String vwNearExpirationLots = 'vw_near_expiration_lots';
   static const String vwMessagesPending = 'vw_messages_pending';
+  static const String vwMessageSummary = 'vw_message_summary';
 }

@@ -16,6 +16,14 @@ class AppointmentReport with AppointmentReportMappable {
     required this.appointmentsByStatus,
     required this.appointmentsByDay,
     required this.appointmentsByPurpose,
+    // Message breakdown fields
+    this.totalMessages = 0,
+    this.messageSentCount = 0,
+    this.messageFailedCount = 0,
+    this.messagePendingCount = 0,
+    this.messageCancelledCount = 0,
+    this.messagesByStatus = const {},
+    this.messagesByDay = const [],
   });
 
   final int totalAppointments;
@@ -32,6 +40,19 @@ class AppointmentReport with AppointmentReportMappable {
 
   /// Appointments by purpose (for bar chart).
   final Map<String, int> appointmentsByPurpose;
+
+  // Message breakdown fields
+  final int totalMessages;
+  final int messageSentCount;
+  final int messageFailedCount;
+  final int messagePendingCount;
+  final int messageCancelledCount;
+
+  /// Messages by status (for pie chart).
+  final Map<String, int> messagesByStatus;
+
+  /// Messages by day (for bar chart).
+  final List<DailyCount> messagesByDay;
 
   /// Completion rate as percentage.
   double get completionRate {
@@ -51,6 +72,20 @@ class AppointmentReport with AppointmentReportMappable {
     return (cancelledCount / totalAppointments) * 100;
   }
 
+  /// Message success rate as percentage (sent / processed messages).
+  double get messageSuccessRate {
+    final processed = messageSentCount + messageFailedCount;
+    if (processed == 0) return 0;
+    return (messageSentCount / processed) * 100;
+  }
+
+  /// Message failure rate as percentage (failed / processed messages).
+  double get messageFailureRate {
+    final processed = messageSentCount + messageFailedCount;
+    if (processed == 0) return 0;
+    return (messageFailedCount / processed) * 100;
+  }
+
   /// Empty report for initial/error states.
   static const empty = AppointmentReport(
     totalAppointments: 0,
@@ -61,5 +96,12 @@ class AppointmentReport with AppointmentReportMappable {
     appointmentsByStatus: {},
     appointmentsByDay: [],
     appointmentsByPurpose: {},
+    totalMessages: 0,
+    messageSentCount: 0,
+    messageFailedCount: 0,
+    messagePendingCount: 0,
+    messageCancelledCount: 0,
+    messagesByStatus: {},
+    messagesByDay: [],
   );
 }

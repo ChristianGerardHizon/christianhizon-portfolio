@@ -237,22 +237,30 @@ class ReportsRepositoryImpl implements ReportsRepository {
   }) async {
     return TaskEither.tryCatch(
       () async {
-        // Query the appointment summary view
-        final records = await _pb
-            .collection(PocketBaseCollections.vwAppointmentSummary)
-            .getFullList();
+        // Query views in parallel for best performance
+        final results = await Future.wait([
+          _pb.collection(PocketBaseCollections.vwAppointmentSummary).getFullList(),
+          _pb.collection(PocketBaseCollections.vwMessageSummary).getFullList(),
+        ]);
 
-        // Filter by date range
-        final filteredRecords = records.where((r) {
+        final appointmentRecords = results[0];
+        final messageRecords = results[1];
+
+        // Filter appointments by date range
+        final filteredRecords = appointmentRecords.where((r) {
           final dateStr = r.getStringValue('appointment_date');
           final date = DateTime.tryParse(dateStr)?.toLocal();
           return date != null && date.isInRange(startDate, endDate);
         }).toList();
 
-        if (filteredRecords.isEmpty) {
-          return AppointmentReport.empty;
-        }
+        // Filter messages by date range
+        final filteredMessages = messageRecords.where((r) {
+          final dateStr = r.getStringValue('message_date');
+          final date = DateTime.tryParse(dateStr)?.toLocal();
+          return date != null && date.isInRange(startDate, endDate);
+        }).toList();
 
+        // Appointment aggregation
         var totalAppointments = 0;
         var completedCount = 0;
         var scheduledCount = 0;
@@ -301,6 +309,50 @@ class ReportsRepositoryImpl implements ReportsRepository {
           }
         }
 
+        // Message aggregation
+        var totalMessages = 0;
+        var messageSentCount = 0;
+        var messageFailedCount = 0;
+        var messagePendingCount = 0;
+        var messageCancelledCount = 0;
+
+        final msgByStatus = <String, int>{};
+        final msgByDay = <DateTime, int>{};
+
+        for (final record in filteredMessages) {
+          final status = record.getStringValue('status');
+          final dateStr = record.getStringValue('message_date');
+          final date = DateTime.tryParse(dateStr)?.toLocal();
+          final count = record.getIntValue('message_count');
+
+          totalMessages += count;
+
+          // Count by message status
+          switch (status.toLowerCase()) {
+            case 'sent':
+              messageSentCount += count;
+            case 'failed':
+              messageFailedCount += count;
+            case 'pending':
+              messagePendingCount += count;
+            case 'cancelled':
+              messageCancelledCount += count;
+          }
+
+          // By status for pie chart
+          if (status.isNotEmpty) {
+            // Capitalize first letter for display
+            final displayStatus = status[0].toUpperCase() + status.substring(1);
+            msgByStatus[displayStatus] = (msgByStatus[displayStatus] ?? 0) + count;
+          }
+
+          // By day
+          if (date != null) {
+            final day = DateTime(date.year, date.month, date.day);
+            msgByDay[day] = (msgByDay[day] ?? 0) + count;
+          }
+        }
+
         return AppointmentReport(
           totalAppointments: totalAppointments,
           completedCount: completedCount,
@@ -313,6 +365,16 @@ class ReportsRepositoryImpl implements ReportsRepository {
               .toList()
             ..sort((a, b) => a.date.compareTo(b.date)),
           appointmentsByPurpose: byPurpose,
+          totalMessages: totalMessages,
+          messageSentCount: messageSentCount,
+          messageFailedCount: messageFailedCount,
+          messagePendingCount: messagePendingCount,
+          messageCancelledCount: messageCancelledCount,
+          messagesByStatus: msgByStatus,
+          messagesByDay: msgByDay.entries
+              .map((e) => DailyCount(date: e.key, count: e.value))
+              .toList()
+            ..sort((a, b) => a.date.compareTo(b.date)),
         );
       },
       Failure.handle,

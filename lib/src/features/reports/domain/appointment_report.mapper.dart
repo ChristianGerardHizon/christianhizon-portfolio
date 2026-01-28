@@ -65,6 +65,51 @@ class AppointmentReportMapper extends ClassMapperBase<AppointmentReport> {
     'appointmentsByPurpose',
     _$appointmentsByPurpose,
   );
+  static int _$totalMessages(AppointmentReport v) => v.totalMessages;
+  static const Field<AppointmentReport, int> _f$totalMessages = Field(
+    'totalMessages',
+    _$totalMessages,
+    opt: true,
+    def: 0,
+  );
+  static int _$messageSentCount(AppointmentReport v) => v.messageSentCount;
+  static const Field<AppointmentReport, int> _f$messageSentCount = Field(
+    'messageSentCount',
+    _$messageSentCount,
+    opt: true,
+    def: 0,
+  );
+  static int _$messageFailedCount(AppointmentReport v) => v.messageFailedCount;
+  static const Field<AppointmentReport, int> _f$messageFailedCount = Field(
+    'messageFailedCount',
+    _$messageFailedCount,
+    opt: true,
+    def: 0,
+  );
+  static int _$messagePendingCount(AppointmentReport v) =>
+      v.messagePendingCount;
+  static const Field<AppointmentReport, int> _f$messagePendingCount = Field(
+    'messagePendingCount',
+    _$messagePendingCount,
+    opt: true,
+    def: 0,
+  );
+  static int _$messageCancelledCount(AppointmentReport v) =>
+      v.messageCancelledCount;
+  static const Field<AppointmentReport, int> _f$messageCancelledCount = Field(
+    'messageCancelledCount',
+    _$messageCancelledCount,
+    opt: true,
+    def: 0,
+  );
+  static Map<String, int> _$messagesByStatus(AppointmentReport v) =>
+      v.messagesByStatus;
+  static const Field<AppointmentReport, Map<String, int>> _f$messagesByStatus =
+      Field('messagesByStatus', _$messagesByStatus, opt: true, def: const {});
+  static List<DailyCount> _$messagesByDay(AppointmentReport v) =>
+      v.messagesByDay;
+  static const Field<AppointmentReport, List<DailyCount>> _f$messagesByDay =
+      Field('messagesByDay', _$messagesByDay, opt: true, def: const []);
 
   @override
   final MappableFields<AppointmentReport> fields = const {
@@ -76,6 +121,13 @@ class AppointmentReportMapper extends ClassMapperBase<AppointmentReport> {
     #appointmentsByStatus: _f$appointmentsByStatus,
     #appointmentsByDay: _f$appointmentsByDay,
     #appointmentsByPurpose: _f$appointmentsByPurpose,
+    #totalMessages: _f$totalMessages,
+    #messageSentCount: _f$messageSentCount,
+    #messageFailedCount: _f$messageFailedCount,
+    #messagePendingCount: _f$messagePendingCount,
+    #messageCancelledCount: _f$messageCancelledCount,
+    #messagesByStatus: _f$messagesByStatus,
+    #messagesByDay: _f$messagesByDay,
   };
 
   static AppointmentReport _instantiate(DecodingData data) {
@@ -88,6 +140,13 @@ class AppointmentReportMapper extends ClassMapperBase<AppointmentReport> {
       appointmentsByStatus: data.dec(_f$appointmentsByStatus),
       appointmentsByDay: data.dec(_f$appointmentsByDay),
       appointmentsByPurpose: data.dec(_f$appointmentsByPurpose),
+      totalMessages: data.dec(_f$totalMessages),
+      messageSentCount: data.dec(_f$messageSentCount),
+      messageFailedCount: data.dec(_f$messageFailedCount),
+      messagePendingCount: data.dec(_f$messagePendingCount),
+      messageCancelledCount: data.dec(_f$messageCancelledCount),
+      messagesByStatus: data.dec(_f$messagesByStatus),
+      messagesByDay: data.dec(_f$messagesByDay),
     );
   }
 
@@ -168,6 +227,10 @@ abstract class AppointmentReportCopyWith<
   get appointmentsByDay;
   MapCopyWith<$R, String, int, ObjectCopyWith<$R, int, int>>
   get appointmentsByPurpose;
+  MapCopyWith<$R, String, int, ObjectCopyWith<$R, int, int>>
+  get messagesByStatus;
+  ListCopyWith<$R, DailyCount, DailyCountCopyWith<$R, DailyCount, DailyCount>>
+  get messagesByDay;
   $R call({
     int? totalAppointments,
     int? completedCount,
@@ -177,6 +240,13 @@ abstract class AppointmentReportCopyWith<
     Map<String, int>? appointmentsByStatus,
     List<DailyCount>? appointmentsByDay,
     Map<String, int>? appointmentsByPurpose,
+    int? totalMessages,
+    int? messageSentCount,
+    int? messageFailedCount,
+    int? messagePendingCount,
+    int? messageCancelledCount,
+    Map<String, int>? messagesByStatus,
+    List<DailyCount>? messagesByDay,
   });
   AppointmentReportCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
     Then<$Out2, $R2> t,
@@ -213,6 +283,20 @@ class _AppointmentReportCopyWithImpl<$R, $Out>
     (v) => call(appointmentsByPurpose: v),
   );
   @override
+  MapCopyWith<$R, String, int, ObjectCopyWith<$R, int, int>>
+  get messagesByStatus => MapCopyWith(
+    $value.messagesByStatus,
+    (v, t) => ObjectCopyWith(v, $identity, t),
+    (v) => call(messagesByStatus: v),
+  );
+  @override
+  ListCopyWith<$R, DailyCount, DailyCountCopyWith<$R, DailyCount, DailyCount>>
+  get messagesByDay => ListCopyWith(
+    $value.messagesByDay,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(messagesByDay: v),
+  );
+  @override
   $R call({
     int? totalAppointments,
     int? completedCount,
@@ -222,6 +306,13 @@ class _AppointmentReportCopyWithImpl<$R, $Out>
     Map<String, int>? appointmentsByStatus,
     List<DailyCount>? appointmentsByDay,
     Map<String, int>? appointmentsByPurpose,
+    int? totalMessages,
+    int? messageSentCount,
+    int? messageFailedCount,
+    int? messagePendingCount,
+    int? messageCancelledCount,
+    Map<String, int>? messagesByStatus,
+    List<DailyCount>? messagesByDay,
   }) => $apply(
     FieldCopyWithData({
       if (totalAppointments != null) #totalAppointments: totalAppointments,
@@ -234,6 +325,15 @@ class _AppointmentReportCopyWithImpl<$R, $Out>
       if (appointmentsByDay != null) #appointmentsByDay: appointmentsByDay,
       if (appointmentsByPurpose != null)
         #appointmentsByPurpose: appointmentsByPurpose,
+      if (totalMessages != null) #totalMessages: totalMessages,
+      if (messageSentCount != null) #messageSentCount: messageSentCount,
+      if (messageFailedCount != null) #messageFailedCount: messageFailedCount,
+      if (messagePendingCount != null)
+        #messagePendingCount: messagePendingCount,
+      if (messageCancelledCount != null)
+        #messageCancelledCount: messageCancelledCount,
+      if (messagesByStatus != null) #messagesByStatus: messagesByStatus,
+      if (messagesByDay != null) #messagesByDay: messagesByDay,
     }),
   );
   @override
@@ -258,6 +358,22 @@ class _AppointmentReportCopyWithImpl<$R, $Out>
       #appointmentsByPurpose,
       or: $value.appointmentsByPurpose,
     ),
+    totalMessages: data.get(#totalMessages, or: $value.totalMessages),
+    messageSentCount: data.get(#messageSentCount, or: $value.messageSentCount),
+    messageFailedCount: data.get(
+      #messageFailedCount,
+      or: $value.messageFailedCount,
+    ),
+    messagePendingCount: data.get(
+      #messagePendingCount,
+      or: $value.messagePendingCount,
+    ),
+    messageCancelledCount: data.get(
+      #messageCancelledCount,
+      or: $value.messageCancelledCount,
+    ),
+    messagesByStatus: data.get(#messagesByStatus, or: $value.messagesByStatus),
+    messagesByDay: data.get(#messagesByDay, or: $value.messagesByDay),
   );
 
   @override

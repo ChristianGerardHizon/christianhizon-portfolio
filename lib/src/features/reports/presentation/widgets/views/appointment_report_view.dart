@@ -107,7 +107,155 @@ class AppointmentReportView extends ConsumerWidget {
 
           // Completion Rate Card
           _buildCompletionRateCard(context, report),
+          const SizedBox(height: 32),
+
+          // Message Breakdown Section
+          _buildSectionHeader(context, 'Message Analytics'),
+          const SizedBox(height: 16),
+
+          // Message KPI Cards
+          _buildMessageKpiSection(context, report),
+          const SizedBox(height: 16),
+
+          // Message Charts Row
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Message Status Pie Chart
+              Expanded(
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: PieChartWidget(
+                      title: 'Messages by Status',
+                      data: report.messagesByStatus,
+                      height: 200,
+                      colors: const [
+                        Color(0xFF4CAF50), // Sent - Green
+                        Color(0xFFF44336), // Failed - Red
+                        Color(0xFFFFC107), // Pending - Amber
+                        Color(0xFF9E9E9E), // Cancelled - Grey
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              // Messages per Day Bar Chart
+              Expanded(
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: BarChartWidget(
+                      title: 'Messages per Day',
+                      data: Map.fromEntries(
+                        report.messagesByDay.map(
+                          (d) => MapEntry(
+                            DateFormat('MMM d').format(d.date),
+                            d.count,
+                          ),
+                        ),
+                      ),
+                      height: 200,
+                      barColor: Colors.blue,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Message Delivery Rates Card
+          _buildMessageRateCard(context, report),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(BuildContext context, String title) {
+    final theme = Theme.of(context);
+    return Text(
+      title,
+      style: theme.textTheme.titleMedium?.copyWith(
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  Widget _buildMessageKpiSection(BuildContext context, AppointmentReport report) {
+    return Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      children: [
+        KpiCard(
+          title: 'Total Messages',
+          value: report.totalMessages.toString(),
+          icon: Icons.message,
+          color: Colors.blue,
+          compact: true,
+        ),
+        KpiCard(
+          title: 'Sent',
+          value: report.messageSentCount.toString(),
+          icon: Icons.check_circle,
+          color: Colors.green,
+          compact: true,
+        ),
+        KpiCard(
+          title: 'Failed',
+          value: report.messageFailedCount.toString(),
+          icon: Icons.error,
+          color: Colors.red,
+          compact: true,
+        ),
+        KpiCard(
+          title: 'Success Rate',
+          value: '${report.messageSuccessRate.toStringAsFixed(1)}%',
+          icon: Icons.trending_up,
+          color: report.messageSuccessRate >= 90 ? Colors.green : Colors.orange,
+          compact: true,
+        ),
+        KpiCard(
+          title: 'Pending',
+          value: report.messagePendingCount.toString(),
+          icon: Icons.schedule,
+          color: Colors.amber,
+          compact: true,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMessageRateCard(BuildContext context, AppointmentReport report) {
+    final theme = Theme.of(context);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Message Delivery Rates',
+              style: theme.textTheme.titleSmall,
+            ),
+            const SizedBox(height: 16),
+            _buildRateRow(
+              context,
+              'Success Rate',
+              report.messageSuccessRate,
+              Colors.green,
+            ),
+            const SizedBox(height: 12),
+            _buildRateRow(
+              context,
+              'Failure Rate',
+              report.messageFailureRate,
+              Colors.red,
+            ),
+          ],
+        ),
       ),
     );
   }
