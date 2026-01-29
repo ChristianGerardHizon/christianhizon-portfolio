@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/i18n/strings.g.dart';
@@ -35,9 +36,7 @@ class EditPatientDialog extends HookConsumerWidget {
         'name': patient.name,
         'species': patient.speciesId,
         'breed': patient.breedId,
-        'sex': patient.sex,
         'color': patient.color,
-        'dateOfBirth': patient.dateOfBirth,
         'owner': patient.owner,
         'contactNumber': patient.contactNumber,
         'email': patient.email,
@@ -49,9 +48,12 @@ class EditPatientDialog extends HookConsumerWidget {
     final isSaving = useState(false);
     final ownerExpanded = useState(true);
     final ownerHasError = useState(false);
+    final detailsExpanded = useState(false);
 
     // Track selected species for breed filtering
     final selectedSpeciesId = useState<String?>(patient.speciesId);
+    final selectedSex = useState<PatientSex?>(patient.sex);
+    final selectedDateOfBirth = useState<DateTime?>(patient.dateOfBirth);
 
     // Watch providers
     final speciesAsync = ref.watch(speciesProvider);
@@ -100,8 +102,8 @@ class EditPatientDialog extends HookConsumerWidget {
         email: _nullIfEmpty(values['email'] as String?),
         address: _nullIfEmpty(values['address'] as String?),
         color: _nullIfEmpty(values['color'] as String?),
-        sex: values['sex'] as PatientSex?,
-        dateOfBirth: values['dateOfBirth'] as DateTime?,
+        sex: selectedSex.value,
+        dateOfBirth: selectedDateOfBirth.value,
         branch: userBranch,
       );
 
@@ -200,7 +202,7 @@ class EditPatientDialog extends HookConsumerWidget {
                           title: 'Patient Information',
                           icon: Icons.pets,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 12),
 
                         // Pet Name (required)
                         FormBuilderTextField(
@@ -209,7 +211,7 @@ class EditPatientDialog extends HookConsumerWidget {
                           decoration: const InputDecoration(
                             labelText: 'Pet Name *',
                             border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.pets),
+                            isDense: true,
                           ),
                           enabled: !isSaving.value,
                           textCapitalization: TextCapitalization.words,
@@ -217,7 +219,7 @@ class EditPatientDialog extends HookConsumerWidget {
                             errorText: 'Pet name is required',
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 12),
 
                         // Species & Breed dropdowns
                         Row(
@@ -230,6 +232,7 @@ class EditPatientDialog extends HookConsumerWidget {
                                   decoration: const InputDecoration(
                                     labelText: 'Species',
                                     border: OutlineInputBorder(),
+                                    isDense: true,
                                   ),
                                   enabled: !isSaving.value,
                                   initialValue: patient.speciesId,
@@ -250,15 +253,7 @@ class EditPatientDialog extends HookConsumerWidget {
                                   decoration: InputDecoration(
                                     labelText: 'Species',
                                     border: OutlineInputBorder(),
-                                    suffixIcon: SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(12),
-                                        child: CircularProgressIndicator(
-                                            strokeWidth: 2),
-                                      ),
-                                    ),
+                                    isDense: true,
                                   ),
                                   enabled: false,
                                 ),
@@ -266,6 +261,7 @@ class EditPatientDialog extends HookConsumerWidget {
                                   decoration: InputDecoration(
                                     labelText: 'Species',
                                     border: OutlineInputBorder(),
+                                    isDense: true,
                                     errorText: 'Failed to load',
                                   ),
                                   enabled: false,
@@ -285,6 +281,7 @@ class EditPatientDialog extends HookConsumerWidget {
                                     decoration: const InputDecoration(
                                       labelText: 'Breed',
                                       border: OutlineInputBorder(),
+                                      isDense: true,
                                     ),
                                     enabled: !isSaving.value &&
                                         selectedSpeciesId.value != null,
@@ -302,6 +299,7 @@ class EditPatientDialog extends HookConsumerWidget {
                                   decoration: InputDecoration(
                                     labelText: 'Breed',
                                     border: OutlineInputBorder(),
+                                    isDense: true,
                                   ),
                                   enabled: false,
                                 ),
@@ -309,6 +307,7 @@ class EditPatientDialog extends HookConsumerWidget {
                                   decoration: InputDecoration(
                                     labelText: 'Breed',
                                     border: OutlineInputBorder(),
+                                    isDense: true,
                                   ),
                                   enabled: false,
                                 ),
@@ -316,67 +315,149 @@ class EditPatientDialog extends HookConsumerWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 12),
 
-                        // Sex selection
-                        FormBuilderChoiceChips<PatientSex>(
-                          name: 'sex',
-                          decoration: const InputDecoration(
-                            labelText: 'Sex',
-                            border: OutlineInputBorder(),
-                          ),
-                          enabled: !isSaving.value,
-                          initialValue: patient.sex,
-                          spacing: 8,
-                          showCheckmark: true,
-                          options: const [
-                            FormBuilderChipOption(
-                              value: PatientSex.male,
-                              avatar: Icon(Icons.male, size: 18),
-                              child: Text('Male'),
-                            ),
-                            FormBuilderChipOption(
-                              value: PatientSex.female,
-                              avatar: Icon(Icons.female, size: 18),
-                              child: Text('Female'),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Color & Date of Birth
+                        // Sex selection & Date of Birth (inline row)
                         Row(
                           children: [
-                            Expanded(
-                              child: FormBuilderTextField(
-                                name: 'color',
-                                initialValue: patient.color,
-                                decoration: const InputDecoration(
-                                  labelText: 'Color/Markings',
-                                  border: OutlineInputBorder(),
-                                ),
-                                enabled: !isSaving.value,
+                            Text(
+                              'Sex:',
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                            const SizedBox(width: 8),
+                            ChoiceChip(
+                              label: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.male, size: 16),
+                                  const SizedBox(width: 4),
+                                  const Text('Male'),
+                                ],
                               ),
+                              selected: selectedSex.value == PatientSex.male,
+                              showCheckmark: true,
+                              onSelected: isSaving.value
+                                  ? null
+                                  : (selected) {
+                                      selectedSex.value =
+                                          selected ? PatientSex.male : null;
+                                    },
+                            ),
+                            const SizedBox(width: 8),
+                            ChoiceChip(
+                              label: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.female, size: 16),
+                                  const SizedBox(width: 4),
+                                  const Text('Female'),
+                                ],
+                              ),
+                              selected: selectedSex.value == PatientSex.female,
+                              showCheckmark: true,
+                              onSelected: isSaving.value
+                                  ? null
+                                  : (selected) {
+                                      selectedSex.value =
+                                          selected ? PatientSex.female : null;
+                                    },
                             ),
                             const SizedBox(width: 12),
                             Expanded(
-                              child: FormBuilderDateTimePicker(
-                                name: 'dateOfBirth',
-                                initialValue: patient.dateOfBirth,
-                                decoration: const InputDecoration(
-                                  labelText: 'Date of Birth',
-                                  border: OutlineInputBorder(),
-                                  suffixIcon: Icon(Icons.calendar_today),
+                              child: InkWell(
+                                onTap: isSaving.value
+                                    ? null
+                                    : () async {
+                                        final picked = await showDatePicker(
+                                          context: context,
+                                          initialDate:
+                                              selectedDateOfBirth.value ??
+                                                  DateTime.now(),
+                                          firstDate: DateTime(1990),
+                                          lastDate: DateTime.now(),
+                                        );
+                                        if (picked != null) {
+                                          selectedDateOfBirth.value = picked;
+                                        }
+                                      },
+                                child: InputDecorator(
+                                  decoration: const InputDecoration(
+                                    labelText: 'Date of Birth',
+                                    border: OutlineInputBorder(),
+                                    isDense: true,
+                                    suffixIcon:
+                                        Icon(Icons.calendar_today, size: 18),
+                                  ),
+                                  child: Text(
+                                    selectedDateOfBirth.value != null
+                                        ? DateFormat.yMMMd()
+                                            .format(selectedDateOfBirth.value!)
+                                        : 'Select...',
+                                    style: selectedDateOfBirth.value == null
+                                        ? theme.textTheme.bodyMedium?.copyWith(
+                                            color: theme
+                                                .colorScheme.onSurfaceVariant,
+                                          )
+                                        : null,
+                                  ),
                                 ),
-                                enabled: !isSaving.value,
-                                inputType: InputType.date,
-                                firstDate: DateTime(1990),
-                                lastDate: DateTime.now(),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 24),
+
+                        // Toggle more details (color/markings)
+                        InkWell(
+                          onTap: () => detailsExpanded.value =
+                              !detailsExpanded.value,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.tune,
+                                  size: 16,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  detailsExpanded.value
+                                      ? 'Hide details'
+                                      : 'More details',
+                                  style:
+                                      theme.textTheme.labelMedium?.copyWith(
+                                    color:
+                                        theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Icon(
+                                  detailsExpanded.value
+                                      ? Icons.expand_less
+                                      : Icons.expand_more,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        if (detailsExpanded.value)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: FormBuilderTextField(
+                              name: 'color',
+                              initialValue: patient.color,
+                              decoration: const InputDecoration(
+                                labelText: 'Color/Markings',
+                                border: OutlineInputBorder(),
+                                isDense: true,
+                              ),
+                              enabled: !isSaving.value,
+                            ),
+                          ),
+
+                        const SizedBox(height: 12),
 
                         // === OWNER INFORMATION SECTION (Collapsible) ===
                         _CollapsibleSection(
@@ -389,14 +470,14 @@ class EditPatientDialog extends HookConsumerWidget {
                           maintainState: true,
                           child: Column(
                             children: [
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 12),
                               FormBuilderTextField(
                                 name: 'owner',
                                 initialValue: patient.owner,
                                 decoration: const InputDecoration(
                                   labelText: 'Owner Name *',
                                   border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.person),
+                                  isDense: true,
                                 ),
                                 enabled: !isSaving.value,
                                 textCapitalization: TextCapitalization.words,
@@ -404,14 +485,14 @@ class EditPatientDialog extends HookConsumerWidget {
                                   errorText: 'Owner name is required',
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 12),
                               FormBuilderTextField(
                                 name: 'contactNumber',
                                 initialValue: patient.contactNumber,
                                 decoration: const InputDecoration(
                                   labelText: 'Phone *',
                                   border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.phone),
+                                  isDense: true,
                                 ),
                                 enabled: !isSaving.value,
                                 keyboardType: TextInputType.phone,
@@ -419,14 +500,14 @@ class EditPatientDialog extends HookConsumerWidget {
                                   errorText: 'Phone number is required',
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 12),
                               FormBuilderTextField(
                                 name: 'email',
                                 initialValue: patient.email,
                                 decoration: const InputDecoration(
                                   labelText: 'Email',
                                   border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.email),
+                                  isDense: true,
                                 ),
                                 enabled: !isSaving.value,
                                 keyboardType: TextInputType.emailAddress,
@@ -438,14 +519,14 @@ class EditPatientDialog extends HookConsumerWidget {
                                   )(value);
                                 },
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 12),
                               FormBuilderTextField(
                                 name: 'address',
                                 initialValue: patient.address,
                                 decoration: const InputDecoration(
                                   labelText: 'Address',
                                   border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.location_on),
+                                  isDense: true,
                                 ),
                                 enabled: !isSaving.value,
                                 maxLines: 2,
@@ -476,9 +557,7 @@ class EditPatientDialog extends HookConsumerWidget {
     'name': 'Pet Name',
     'species': 'Species',
     'breed': 'Breed',
-    'sex': 'Sex',
     'color': 'Color',
-    'dateOfBirth': 'Date of Birth',
     'owner': 'Owner Name',
     'contactNumber': 'Contact Number',
     'email': 'Email',

@@ -16,7 +16,9 @@ class PatientDto with PatientDtoMappable {
   final String collectionName;
   final String name;
   final String? species;
+  final String? speciesId;
   final String? breed;
+  final String? breedId;
   final String? owner;
   final String? contactNumber;
   final String? email;
@@ -37,7 +39,9 @@ class PatientDto with PatientDtoMappable {
     required this.collectionName,
     required this.name,
     this.species,
+    this.speciesId,
     this.breed,
+    this.breedId,
     this.owner,
     this.contactNumber,
     this.email,
@@ -72,7 +76,9 @@ class PatientDto with PatientDtoMappable {
       collectionName: json['collectionName'] as String? ?? '',
       name: json['name'] as String? ?? '',
       species: speciesName ?? json['species'] as String?,
+      speciesId: json['species'] as String?,
       breed: breedName ?? json['breed'] as String?,
+      breedId: json['breed'] as String?,
       owner: json['owner'] as String?,
       contactNumber: json['contactNumber'] as String?,
       email: json['email'] as String?,
@@ -95,9 +101,9 @@ class PatientDto with PatientDtoMappable {
       id: id,
       name: name,
       species: species,
-      speciesId: species,
+      speciesId: speciesId,
       breed: breed,
-      breedId: breed,
+      breedId: breedId,
       owner: owner,
       contactNumber: contactNumber,
       email: email,
