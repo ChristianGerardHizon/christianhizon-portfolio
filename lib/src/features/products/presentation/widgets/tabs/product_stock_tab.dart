@@ -21,6 +21,10 @@ class ProductStockTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!product.trackStock) {
+      return const _StockTrackingDisabledView();
+    }
+
     if (product.trackByLot) {
       return ProductLotList(productId: product.id);
     }
@@ -146,6 +150,47 @@ class _SimpleStockView extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// View shown when stock tracking is disabled for the product.
+class _StockTrackingDisabledView extends StatelessWidget {
+  const _StockTrackingDisabledView();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.inventory_2_outlined,
+              size: 64,
+              color: theme.colorScheme.outlineVariant,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Stock Tracking Disabled',
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Enable stock tracking in the product settings to manage inventory for this product.',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.outline,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

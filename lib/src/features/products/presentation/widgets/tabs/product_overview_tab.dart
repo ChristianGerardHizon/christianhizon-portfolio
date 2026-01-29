@@ -26,9 +26,11 @@ class ProductOverviewTab extends HookConsumerWidget {
           _buildPriceCard(context),
           const SizedBox(height: 16),
 
-          // Stock Status Card
-          _buildStockCard(context),
-          const SizedBox(height: 16),
+          // Stock Status Card (only when stock tracking is enabled)
+          if (product.trackStock) ...[
+            _buildStockCard(context),
+            const SizedBox(height: 16),
+          ],
 
           // Category Card
           _buildCategoryCard(context),

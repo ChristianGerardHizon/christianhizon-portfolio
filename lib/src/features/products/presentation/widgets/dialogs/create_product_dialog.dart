@@ -32,6 +32,8 @@ class CreateProductDialog extends HookConsumerWidget {
     // UI state
     final isSaving = useState(false);
     final trackByLot = useState(false);
+    final priceEnabled = useState(true);
+    final stockEnabled = useState(false);
 
     // Watch categories and branches
     final categoriesAsync = ref.watch(productCategoriesProvider);
@@ -61,13 +63,26 @@ class CreateProductDialog extends HookConsumerWidget {
         name: (values['name'] as String).trim(),
         description: _nullIfEmpty(values['description'] as String?),
         categoryId: values['category'] as String?,
-        price: _parseNum(values['price'] as String?) ?? 0,
-        quantity: _parseNum(values['quantity'] as String?),
-        stockThreshold: _parseNum(values['stockThreshold'] as String?),
+        price: priceEnabled.value
+            ? (_parseNum(values['price'] as String?) ?? 0)
+            : 0,
+        quantity: stockEnabled.value
+            ? _parseNum(values['quantity'] as String?)
+            : null,
+        stockThreshold: stockEnabled.value
+            ? _parseNum(values['stockThreshold'] as String?)
+            : null,
         forSale: values['forSale'] as bool? ?? true,
-        trackByLot: values['trackByLot'] as bool? ?? false,
-        requireStock: values['requireStock'] as bool? ?? false,
-        expiration: values['expiration'] as DateTime?,
+        trackStock: stockEnabled.value,
+        trackByLot: stockEnabled.value
+            ? (values['trackByLot'] as bool? ?? false)
+            : false,
+        requireStock: stockEnabled.value
+            ? (values['requireStock'] as bool? ?? false)
+            : false,
+        expiration: stockEnabled.value && !trackByLot.value
+            ? values['expiration'] as DateTime?
+            : null,
         branch: values['branch'] as String?,
       );
 
@@ -116,9 +131,9 @@ class CreateProductDialog extends HookConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // === PRODUCT INFORMATION ===
+          // === GENERAL ===
           const FormSectionHeader(
-            title: 'Product Information',
+            title: 'General',
             icon: Icons.inventory_2_outlined,
           ),
           const SizedBox(height: 16),
@@ -177,17 +192,30 @@ class CreateProductDialog extends HookConsumerWidget {
             subtitleBuilder: (branch) =>
                 branch.address.isNotEmpty ? branch.address : null,
           ),
-          const SizedBox(height: 24),
-
-          // === PRICING & STOCK ===
-          const FormSectionHeader(
-            title: 'Pricing & Stock',
-            icon: Icons.attach_money,
-          ),
           const SizedBox(height: 16),
 
-          // Price & Quantity (quantity hidden when tracking by lot)
-          if (trackByLot.value) ...[
+          // For Sale switch (always visible)
+          FormBuilderSwitch(
+            name: 'forSale',
+            initialValue: true,
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+            ),
+            title: const Text('For Sale'),
+            enabled: !isSaving.value,
+          ),
+          const SizedBox(height: 24),
+
+          // === PRICE SECTION ===
+          _SectionToggle(
+            title: 'Price',
+            icon: Icons.attach_money,
+            enabled: priceEnabled.value,
+            onToggle: (value) => priceEnabled.value = value,
+            isSaving: isSaving.value,
+          ),
+          if (priceEnabled.value) ...[
+            const SizedBox(height: 16),
             CurrencyInputField(
               name: 'price',
               label: 'Price',
@@ -195,97 +223,86 @@ class CreateProductDialog extends HookConsumerWidget {
               enabled: !isSaving.value,
               helperText: 'Leave empty for variable price (set at POS)',
             ),
-          ] else ...[
-            Row(
-              children: [
-                Expanded(
-                  child: CurrencyInputField(
-                    name: 'price',
-                    label: 'Price',
-                    required: false,
-                    enabled: !isSaving.value,
-                    helperText: 'Leave empty for variable price',
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: NumericInputField(
-                    name: 'quantity',
-                    label: 'Quantity',
-                    enabled: !isSaving.value,
-                  ),
-                ),
-              ],
-            ),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
 
-          // Stock threshold
-          NumericInputField(
-            name: 'stockThreshold',
-            label: 'Low Stock Threshold',
-            enabled: !isSaving.value,
-            helperText: 'Alert when quantity falls below this value',
+          // === STOCK SECTION ===
+          _SectionToggle(
+            title: 'Stock',
+            icon: Icons.inventory_2_outlined,
+            enabled: stockEnabled.value,
+            onToggle: (value) {
+              stockEnabled.value = value;
+              if (!value) {
+                trackByLot.value = false;
+              }
+            },
+            isSaving: isSaving.value,
           ),
-          const SizedBox(height: 16),
+          if (stockEnabled.value) ...[
+            const SizedBox(height: 16),
 
-          // Expiration date (hidden when tracking by lot)
-          if (!trackByLot.value) ...[
-            FormBuilderDateTimePicker(
-              name: 'expiration',
-              decoration: const InputDecoration(
-                labelText: 'Expiration Date',
-                border: OutlineInputBorder(),
-                suffixIcon: Icon(Icons.calendar_today),
+            // Quantity (hidden when tracking by lot)
+            if (!trackByLot.value) ...[
+              NumericInputField(
+                name: 'quantity',
+                label: 'Quantity',
+                enabled: !isSaving.value,
               ),
+              const SizedBox(height: 16),
+            ],
+
+            // Stock threshold
+            NumericInputField(
+              name: 'stockThreshold',
+              label: 'Low Stock Threshold',
               enabled: !isSaving.value,
-              inputType: InputType.date,
-              firstDate: DateTime.now(),
-              lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
+              helperText: 'Alert when quantity falls below this value',
             ),
             const SizedBox(height: 16),
-          ],
 
-          // Switches
-          Row(
-            children: [
-              Expanded(
-                child: FormBuilderSwitch(
-                  name: 'forSale',
-                  initialValue: true,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                  ),
-                  title: const Text('For Sale'),
-                  enabled: !isSaving.value,
+            // Expiration date (hidden when tracking by lot)
+            if (!trackByLot.value) ...[
+              FormBuilderDateTimePicker(
+                name: 'expiration',
+                decoration: const InputDecoration(
+                  labelText: 'Expiration Date',
+                  border: OutlineInputBorder(),
+                  suffixIcon: Icon(Icons.calendar_today),
                 ),
+                enabled: !isSaving.value,
+                inputType: InputType.date,
+                firstDate: DateTime.now(),
+                lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
               ),
-              Expanded(
-                child: FormBuilderSwitch(
-                  name: 'trackByLot',
-                  initialValue: false,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                  ),
-                  title: const Text('Track by Lot'),
-                  enabled: !isSaving.value,
-                  onChanged: (value) => trackByLot.value = value ?? false,
-                ),
-              ),
+              const SizedBox(height: 16),
             ],
-          ),
-          FormBuilderSwitch(
-            name: 'requireStock',
-            initialValue: false,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
+
+            // Track by Lot switch
+            FormBuilderSwitch(
+              name: 'trackByLot',
+              initialValue: false,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+              ),
+              title: const Text('Track by Lot'),
+              subtitle: const Text('Track inventory by lot numbers'),
+              enabled: !isSaving.value,
+              onChanged: (value) => trackByLot.value = value ?? false,
             ),
-            title: const Text('Require Stock'),
-            subtitle: const Text(
-              'Block sales when out of stock',
+
+            // Require Stock switch
+            FormBuilderSwitch(
+              name: 'requireStock',
+              initialValue: false,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+              ),
+              title: const Text('Require Stock'),
+              subtitle: const Text('Block sales when out of stock'),
+              enabled: !isSaving.value,
             ),
-            enabled: !isSaving.value,
-          ),
+          ],
         ],
       ),
     );
@@ -315,6 +332,66 @@ class CreateProductDialog extends HookConsumerWidget {
     'trackByLot': 'Track by Lot',
     'requireStock': 'Require Stock',
   };
+}
+
+/// A toggle header for enabling/disabling a form section.
+class _SectionToggle extends StatelessWidget {
+  const _SectionToggle({
+    required this.title,
+    required this.icon,
+    required this.enabled,
+    required this.onToggle,
+    required this.isSaving,
+  });
+
+  final String title;
+  final IconData icon;
+  final bool enabled;
+  final ValueChanged<bool> onToggle;
+  final bool isSaving;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: enabled
+              ? theme.colorScheme.primary
+              : theme.colorScheme.outlineVariant,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: SwitchListTile(
+        value: enabled,
+        onChanged: isSaving ? null : onToggle,
+        title: Row(
+          children: [
+            Icon(
+              icon,
+              size: 20,
+              color: enabled
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: enabled
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        dense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+      ),
+    );
+  }
 }
 
 /// Shows the create product dialog.
