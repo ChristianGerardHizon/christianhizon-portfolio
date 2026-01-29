@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/routing/routes/organization.routes.dart';
+import '../../domain/branch.dart';
 import '../controllers/branches_controller.dart';
 import '../widgets/dialogs/branch_form_dialog.dart';
 
@@ -18,7 +20,7 @@ class BranchesPage extends ConsumerWidget {
         title: const Text('Branches'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showFormSheet(context),
+        onPressed: () => showBranchFormDialog(context),
         child: const Icon(Icons.add),
       ),
       body: branchesAsync.when(
@@ -112,7 +114,8 @@ class BranchesPage extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  onTap: () => _showFormSheet(context, branch: branch),
+                  onTap: () => OrganizationBranchDetailRoute(id: branch.id)
+                      .push(context),
                 );
               },
             ),
@@ -122,19 +125,15 @@ class BranchesPage extends ConsumerWidget {
     );
   }
 
-  void _showFormSheet(BuildContext context, {dynamic branch}) {
-    showBranchFormDialog(context, branch: branch);
-  }
-
   void _handleAction(
     BuildContext context,
     WidgetRef ref,
     String action,
-    dynamic branch,
+    Branch branch,
   ) {
     switch (action) {
       case 'edit':
-        _showFormSheet(context, branch: branch);
+        showBranchFormDialog(context, branch: branch);
         break;
       case 'delete':
         _showDeleteConfirmation(context, ref, branch);
@@ -145,7 +144,7 @@ class BranchesPage extends ConsumerWidget {
   void _showDeleteConfirmation(
     BuildContext context,
     WidgetRef ref,
-    dynamic branch,
+    Branch branch,
   ) {
     showDialog(
       context: context,

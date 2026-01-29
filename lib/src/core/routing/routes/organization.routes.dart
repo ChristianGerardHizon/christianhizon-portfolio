@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../widgets/form_feedback.dart';
 import '../../../features/organization/presentation/pages/organization_shell.dart';
@@ -627,12 +625,10 @@ class _MobileBranchListTile extends StatelessWidget {
 }
 
 /// Wrapper to display branch detail with organization navigation.
-class _BranchDetailWrapper extends HookConsumerWidget {
+class _BranchDetailWrapper extends ConsumerWidget {
   const _BranchDetailWrapper({required this.branchId});
 
   final String branchId;
-
-  bool get isCreating => branchId == 'new';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -646,13 +642,13 @@ class _BranchDetailWrapper extends HookConsumerWidget {
           orElse: () => null,
         );
 
-    if (!isCreating && branchesAsync.isLoading) {
+    if (branchesAsync.isLoading) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
 
-    if (!isCreating && branch == null) {
+    if (branch == null) {
       return Scaffold(
         appBar: AppBar(),
         body: Center(
@@ -677,200 +673,220 @@ class _BranchDetailWrapper extends HookConsumerWidget {
       );
     }
 
-    return _OrganizationBranchDetailPage(
-      branch: branch,
-      isCreating: isCreating,
-    );
+    return _OrganizationBranchDetailPage(branch: branch);
   }
 }
 
-/// Branch detail page for organization section.
-class _OrganizationBranchDetailPage extends HookConsumerWidget {
-  const _OrganizationBranchDetailPage({
-    required this.branch,
-    required this.isCreating,
-  });
+/// Read-only branch detail page for organization section (mobile).
+class _OrganizationBranchDetailPage extends ConsumerWidget {
+  const _OrganizationBranchDetailPage({required this.branch});
 
-  final Branch? branch;
-  final bool isCreating;
+  final Branch branch;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
-    final isSaving = useState(false);
-    final isDeleting = useState(false);
-
-    // Reset form when branch changes
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        formKey.currentState?.patchValue({
-          'name': branch?.name ?? '',
-          'address': branch?.address ?? '',
-          'contactNumber': branch?.contactNumber ?? '',
-        });
-      });
-      return null;
-    }, [branch?.id]);
-
-    Future<void> handleSave() async {
-      final isValid = formKey.currentState!.saveAndValidate();
-      if (!isValid) return;
-
-      final values = formKey.currentState!.value;
-      isSaving.value = true;
-
-      final branchData = Branch(
-        id: isCreating ? '' : branch!.id,
-        name: (values['name'] as String).trim(),
-        address: (values['address'] as String).trim(),
-        contactNumber: (values['contactNumber'] as String).trim(),
-      );
-
-      bool success;
-      if (isCreating) {
-        success = await ref
-            .read(branchesControllerProvider.notifier)
-            .createBranch(branchData);
-      } else {
-        success = await ref
-            .read(branchesControllerProvider.notifier)
-            .updateBranch(branchData);
-      }
-
-      if (!success) {
-        if (context.mounted) {
-          isSaving.value = false;
-          showErrorSnackBar(context,
-              message: 'Failed to save branch. Please try again.');
-        }
-        return;
-      }
-
-      if (context.mounted) {
-        isSaving.value = false;
-        showSuccessSnackBar(
-          context,
-          message: isCreating
-              ? 'Branch created successfully'
-              : 'Branch updated successfully',
-        );
-
-        if (isCreating) {
-          context.pop();
-        }
-      }
-    }
-
-    Future<void> handleDelete() async {
-      final confirmed = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Delete Branch'),
-          content: Text('Are you sure you want to delete "${branch?.name}"?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: const Text('Delete'),
-            ),
-          ],
-        ),
-      );
-
-      if (confirmed != true) return;
-
-      isDeleting.value = true;
-      final success = await ref
-          .read(branchesControllerProvider.notifier)
-          .deleteBranch(branch!.id);
-
-      if (context.mounted) {
-        isDeleting.value = false;
-        if (success) {
-          showSuccessSnackBar(context, message: 'Branch deleted successfully');
-          context.pop();
-        } else {
-          showErrorSnackBar(context,
-              message: 'Failed to delete branch. Please try again.');
-        }
-      }
-    }
+    final theme = Theme.of(context);
+    final dateFormat = DateFormat.yMMMd();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isCreating ? 'New Branch' : 'Edit Branch'),
+        title: Text(branch.name),
         actions: [
-          if (!isCreating)
-            IconButton(
-              icon: isDeleting.value
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.delete_outline),
-              onPressed: isDeleting.value ? null : handleDelete,
-            ),
-          const SizedBox(width: 8),
-          FilledButton(
-            onPressed: isSaving.value ? null : handleSave,
-            child: isSaving.value
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('Save'),
+          IconButton(
+            icon: const Icon(Icons.edit_outlined),
+            tooltip: 'Edit',
+            onPressed: () => showBranchFormDialog(context, branch: branch),
           ),
-          const SizedBox(width: 16),
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            tooltip: 'Delete',
+            onPressed: () => _handleDelete(context, ref),
+          ),
+          const SizedBox(width: 8),
         ],
       ),
-      body: FormBuilder(
-        key: formKey,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              FormBuilderTextField(
-                name: 'name',
-                initialValue: isCreating ? '' : branch?.name,
-                decoration: const InputDecoration(
-                  labelText: 'Name *',
-                  hintText: 'Enter branch name',
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Branch header card
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 32,
+                      backgroundColor: theme.colorScheme.primaryContainer,
+                      child: Icon(
+                        Icons.store,
+                        size: 32,
+                        color: theme.colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            branch.name,
+                            style: theme.textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          if (branch.displayName != null &&
+                              branch.displayName!.isNotEmpty) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              branch.displayName!,
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                validator: FormBuilderValidators.required(),
-                textInputAction: TextInputAction.next,
               ),
-              const SizedBox(height: 16),
-              FormBuilderTextField(
-                name: 'address',
-                initialValue: isCreating ? '' : branch?.address,
-                decoration: const InputDecoration(
-                  labelText: 'Address',
-                  hintText: 'Enter address',
+            ),
+            const SizedBox(height: 24),
+
+            // Details section
+            Text(
+              'Details',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    _buildDetailRow(
+                      theme,
+                      icon: Icons.store,
+                      label: 'Name',
+                      value: branch.name,
+                    ),
+                    if (branch.displayName != null &&
+                        branch.displayName!.isNotEmpty)
+                      _buildDetailRow(
+                        theme,
+                        icon: Icons.badge,
+                        label: 'Display Name',
+                        value: branch.displayName!,
+                      ),
+                    _buildDetailRow(
+                      theme,
+                      icon: Icons.location_on,
+                      label: 'Address',
+                      value: branch.address,
+                    ),
+                    _buildDetailRow(
+                      theme,
+                      icon: Icons.phone,
+                      label: 'Contact Number',
+                      value: branch.contactNumber,
+                    ),
+                    if (branch.created != null)
+                      _buildDetailRow(
+                        theme,
+                        icon: Icons.calendar_today,
+                        label: 'Created',
+                        value: dateFormat.format(branch.created!.toLocal()),
+                      ),
+                    if (branch.updated != null)
+                      _buildDetailRow(
+                        theme,
+                        icon: Icons.update,
+                        label: 'Last Updated',
+                        value: dateFormat.format(branch.updated!.toLocal()),
+                      ),
+                  ],
                 ),
-                maxLines: 2,
-                textInputAction: TextInputAction.next,
               ),
-              const SizedBox(height: 16),
-              FormBuilderTextField(
-                name: 'contactNumber',
-                initialValue: isCreating ? '' : branch?.contactNumber,
-                decoration: const InputDecoration(
-                  labelText: 'Contact Number',
-                  hintText: 'Enter contact number',
-                ),
-                keyboardType: TextInputType.phone,
-                textInputAction: TextInputAction.done,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  Widget _buildDetailRow(
+    ThemeData theme, {
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 20, color: theme.colorScheme.onSurfaceVariant),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleDelete(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Branch'),
+        content: Text('Are you sure you want to delete "${branch.name}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    final success = await ref
+        .read(branchesControllerProvider.notifier)
+        .deleteBranch(branch.id);
+
+    if (context.mounted) {
+      if (success) {
+        showSuccessSnackBar(context, message: 'Branch deleted successfully');
+        context.pop();
+      } else {
+        showErrorSnackBar(context,
+            message: 'Failed to delete branch. Please try again.');
+      }
+    }
   }
 }
