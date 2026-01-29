@@ -15,7 +15,7 @@ part 'message_template_repository.g.dart';
 /// Repository interface for message template operations.
 abstract class MessageTemplateRepository {
   /// Fetches all message templates.
-  FutureEither<List<MessageTemplate>> fetchAll();
+  FutureEither<List<MessageTemplate>> fetchAll({String? filter});
 
   /// Fetches a single message template by ID.
   FutureEither<MessageTemplate> fetchOne(String id);
@@ -51,13 +51,15 @@ class MessageTemplateRepositoryImpl implements MessageTemplateRepository {
   }
 
   @override
-  FutureEither<List<MessageTemplate>> fetchAll() async {
+  FutureEither<List<MessageTemplate>> fetchAll({String? filter}) async {
     return TaskEither.tryCatch(
       () async {
-        final filter = PBFilters.active.build();
+        final baseFilter = PBFilters.active.build();
+        final filterString =
+            filter != null ? '$baseFilter && $filter' : baseFilter;
 
         final records = await _collection.getFullList(
-          filter: filter,
+          filter: filterString,
           sort: 'category,name',
         );
 

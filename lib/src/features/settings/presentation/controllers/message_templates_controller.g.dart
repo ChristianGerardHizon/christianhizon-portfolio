@@ -44,7 +44,7 @@ final class MessageTemplatesControllerProvider extends $AsyncNotifierProvider<
 }
 
 String _$messageTemplatesControllerHash() =>
-    r'7bbae68d67b9577200e40202d166293fc7864746';
+    r'6f50fe3187951c0bd3620f3e8583dc92286c726d';
 
 /// Controller for managing message template list state.
 ///

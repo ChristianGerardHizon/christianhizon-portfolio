@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../data/repositories/message_template_repository.dart';
 import '../../domain/message_template.dart';
 
@@ -14,9 +15,15 @@ class MessageTemplatesController extends _$MessageTemplatesController {
   MessageTemplateRepository get _repository =>
       ref.read(messageTemplateRepositoryProvider);
 
+  /// Gets the current branch filter.
+  String? get _branchFilter => ref.read(currentBranchFilterProvider);
+
   @override
   Future<List<MessageTemplate>> build() async {
-    final result = await _repository.fetchAll();
+    // Watch branch filter — triggers rebuild when branch changes.
+    final branchFilter = ref.watch(currentBranchFilterProvider);
+
+    final result = await _repository.fetchAll(filter: branchFilter);
     return result.fold(
       (failure) => throw failure,
       (templates) => templates,
@@ -27,7 +34,7 @@ class MessageTemplatesController extends _$MessageTemplatesController {
   Future<void> refresh() async {
     state = const AsyncLoading();
 
-    final result = await _repository.fetchAll();
+    final result = await _repository.fetchAll(filter: _branchFilter);
 
     state = result.fold(
       (failure) => AsyncError(failure, StackTrace.current),

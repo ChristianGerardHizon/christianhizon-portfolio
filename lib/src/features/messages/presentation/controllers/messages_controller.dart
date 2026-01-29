@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../data/repositories/message_repository.dart';
 import '../../domain/message.dart';
 
@@ -10,9 +11,17 @@ part 'messages_controller.g.dart';
 /// Provides a global, cached list of all messages with CRUD operations.
 @Riverpod(keepAlive: true)
 class MessagesController extends _$MessagesController {
+  /// Gets the current branch filter.
+  String? get _branchFilter => ref.read(currentBranchFilterProvider);
+
   @override
   Future<List<Message>> build() async {
-    final result = await ref.read(messageRepositoryProvider).fetchAll();
+    // Watch branch filter — triggers rebuild when branch changes.
+    final branchFilter = ref.watch(currentBranchFilterProvider);
+
+    final result = await ref
+        .read(messageRepositoryProvider)
+        .fetchAll(filter: branchFilter);
     return result.fold(
       (failure) => throw failure,
       (messages) => messages,
@@ -23,7 +32,9 @@ class MessagesController extends _$MessagesController {
   Future<void> refresh() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      final result = await ref.read(messageRepositoryProvider).fetchAll();
+      final result = await ref
+          .read(messageRepositoryProvider)
+          .fetchAll(filter: _branchFilter);
       return result.fold(
         (failure) => throw failure,
         (messages) => messages,
