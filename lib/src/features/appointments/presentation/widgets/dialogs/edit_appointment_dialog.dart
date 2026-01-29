@@ -93,6 +93,13 @@ class EditAppointmentDialog extends HookConsumerWidget {
         replaced = replaced.replaceAll('{notes}', notes);
       }
 
+      // Replace treatment data
+      if (appointment.patientTreatmentName != null &&
+          appointment.patientTreatmentName!.isNotEmpty) {
+        replaced = replaced.replaceAll(
+            '{treatmentName}', appointment.patientTreatmentName!);
+      }
+
       return replaced;
     }
 

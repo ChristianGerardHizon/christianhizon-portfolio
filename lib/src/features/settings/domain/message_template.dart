@@ -33,6 +33,7 @@ class MessageTemplate with MessageTemplateMappable {
   /// Patient: {patientName}, {patientPhone}, {ownerName}, {species}, {breed}, {email}, {address}, {patientPronoun}, {patientPronounObject}, {patientPronounPossessive}
   /// Branch: {branchName}, {branchAddress}, {branchPhone}
   /// Appointment: {appointmentDate}, {appointmentTime}, {appointmentDay}, {appointmentMonth}, {appointmentYear}, {appointmentHour}, {appointmentMinutes}, {appointmentAmPm}
+  /// Treatment: {treatmentName}
   final String content;
 
   /// Template category for organization (e.g., "Reminders", "Follow-up", "Billing").
@@ -79,6 +80,8 @@ class MessageTemplate with MessageTemplateMappable {
     '{appointmentHour}',
     '{appointmentMinutes}',
     '{appointmentAmPm}',
+    // Treatment data
+    '{treatmentName}',
   ];
 
   /// Returns a list of placeholders used in this template's content.
