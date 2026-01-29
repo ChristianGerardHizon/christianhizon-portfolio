@@ -176,7 +176,7 @@
     "listRule": "",
     "viewRule": "",
     "createRule": "id = @request.auth.id || @request.auth.role.permissions ?~  \"users.create\"",
-    "updateRule": "id = @request.auth.id || @request.auth.role.permissions ?~  \"users.update\"",
+    "updateRule": "id = @request.auth.id || @request.auth.role.permissions ?~  \"users.edit\"",
     "deleteRule": "id = @request.auth.id || @request.auth.role.permissions ?~  \"users.delete\"",
     "name": "users",
     "type": "auth",
@@ -341,7 +341,7 @@
     ],
     "system": false,
     "authRule": "",
-    "manageRule": null,
+    "manageRule": "id = @request.auth.id || @request.auth.role.permissions ?~  \"users.delete\"",
     "authAlert": {
       "enabled": true,
       "emailTemplate": {
@@ -1456,6 +1456,33 @@
         "required": false,
         "system": false,
         "type": "bool"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2358601297",
+        "hidden": false,
+        "id": "relation3146128159",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "branch",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "hidden": false,
+        "id": "file1184794806",
+        "maxSelect": 1,
+        "maxSize": 0,
+        "mimeTypes": [],
+        "name": "paymentProof",
+        "presentable": false,
+        "protected": false,
+        "required": false,
+        "system": false,
+        "thumbs": [],
+        "type": "file"
       },
       {
         "hidden": false,
@@ -3524,6 +3551,15 @@
       },
       {
         "hidden": false,
+        "id": "bool_trackStock",
+        "name": "trackStock",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "hidden": false,
         "id": "bool4275633621",
         "name": "trackByLot",
         "presentable": false,
@@ -3567,6 +3603,15 @@
         "hidden": false,
         "id": "bool2435309888",
         "name": "requireStock",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "hidden": false,
+        "id": "bool1250173306",
+        "name": "trackStock",
         "presentable": false,
         "required": false,
         "system": false,
@@ -4681,6 +4726,19 @@
         "type": "text"
       },
       {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2358601297",
+        "hidden": false,
+        "id": "_clone_HkPl",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "branch",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
         "hidden": false,
         "id": "number65336868",
         "max": null,
@@ -4695,7 +4753,7 @@
     ],
     "indexes": [],
     "system": false,
-    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  COUNT(*) AS active_count\nFROM patients p\nWHERE p.isDeleted = false OR p.isDeleted IS NULL"
+    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  p.branch,\n  COUNT(*) AS active_count\nFROM patients p\nWHERE p.isDeleted = false OR p.isDeleted IS NULL\nGROUP BY p.branch"
   },
   {
     "id": "pbc_1199470182",
@@ -5117,6 +5175,19 @@
         "type": "text"
       },
       {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2358601297",
+        "hidden": false,
+        "id": "_clone_B3yj",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "branch",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
         "hidden": false,
         "id": "json554441351",
         "maxSize": 1,
@@ -5161,7 +5232,7 @@
     ],
     "indexes": [],
     "system": false,
-    "viewQuery": "SELECT\n  pl.product AS id,\n  SUM(pl.quantity) AS total_quantity,\n  COUNT(*) AS lot_count,\n  MIN(pl.expiration) AS earliest_expiration,\n  MAX(pl.expiration) AS latest_expiration\nFROM productLots pl\nWHERE (pl.isDeleted = false OR pl.isDeleted IS NULL)\nGROUP BY pl.product"
+    "viewQuery": "SELECT\n  pl.product AS id,\n  p.branch,\n  SUM(pl.quantity) AS total_quantity,\n  COUNT(*) AS lot_count,\n  MIN(pl.expiration) AS earliest_expiration,\n  MAX(pl.expiration) AS latest_expiration\nFROM productLots pl\nJOIN products p ON pl.product = p.id\nWHERE (pl.isDeleted = false OR pl.isDeleted IS NULL)\nGROUP BY pl.product, p.branch"
   },
   {
     "id": "pbc_4080903852",
@@ -5320,6 +5391,86 @@
     "indexes": [],
     "system": false,
     "viewQuery": "SELECT\n  p.id,\n  p.name,\n  p.quantity,\n  p.stockThreshold,\n  p.branch\nFROM products p\nWHERE (p.isDeleted = false OR p.isDeleted IS NULL)\n  AND p.trackByLot = false\n  AND p.stockThreshold > 0\n  AND p.quantity <= p.stockThreshold"
+  },
+  {
+    "id": "pbc_2457047736",
+    "listRule": "",
+    "viewRule": "",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "name": "vw_message_summary",
+    "type": "view",
+    "fields": [
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 0,
+        "min": 0,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "json51096739",
+        "maxSize": 1,
+        "name": "message_date",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "json"
+      },
+      {
+        "hidden": false,
+        "id": "_clone_63TR",
+        "maxSelect": 1,
+        "name": "status",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "select",
+        "values": [
+          "pending",
+          "sent",
+          "failed",
+          "cancelled"
+        ]
+      },
+      {
+        "hidden": false,
+        "id": "number2055191433",
+        "max": null,
+        "min": null,
+        "name": "message_count",
+        "onlyInt": false,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2358601297",
+        "hidden": false,
+        "id": "_clone_OIsw",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "branch",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      }
+    ],
+    "indexes": [],
+    "system": false,
+    "viewQuery": "SELECT\n    (ROW_NUMBER() OVER()) as id,\n    DATE(sendDateTime) as message_date,\n    status,\n    COUNT(*) as message_count,\n    branch\nFROM messages\nWHERE isDeleted = false\nGROUP BY DATE(sendDateTime), status, branch\nORDER BY message_date DESC"
   },
   {
     "id": "pbc_3573922523",
@@ -5595,7 +5746,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_P5YZ",
+        "id": "_clone_cg2c",
         "max": 0,
         "min": 0,
         "name": "species_name",
@@ -5605,6 +5756,19 @@
         "required": false,
         "system": false,
         "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2358601297",
+        "hidden": false,
+        "id": "_clone_xP5y",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "branch",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
       },
       {
         "hidden": false,
@@ -5621,7 +5785,7 @@
     ],
     "indexes": [],
     "system": false,
-    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  DATE(p.created) AS registration_date,\n  ps.name AS species_name,\n  COUNT(*) AS patient_count\nFROM patients p\nLEFT JOIN patientSpecies ps ON p.species = ps.id\nWHERE p.isDeleted = false OR p.isDeleted IS NULL\nGROUP BY DATE(p.created), ps.name\nORDER BY registration_date DESC"
+    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  DATE(p.created) AS registration_date,\n  ps.name AS species_name,\n  p.branch,\n  COUNT(*) AS patient_count\nFROM patients p\nLEFT JOIN patientSpecies ps ON p.species = ps.id\nWHERE p.isDeleted = false OR p.isDeleted IS NULL\nGROUP BY DATE(p.created), ps.name, p.branch\nORDER BY registration_date DESC\n"
   },
   {
     "id": "pbc_1809516200",
@@ -5651,7 +5815,7 @@
         "cascadeDelete": false,
         "collectionId": "pbc_1303084616",
         "hidden": false,
-        "id": "_clone_QgHu",
+        "id": "_clone_FbDe",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "plan",
@@ -5662,7 +5826,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_LogB",
+        "id": "_clone_B9JB",
         "max": "",
         "min": "",
         "name": "expectedDate",
@@ -5673,7 +5837,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_uB70",
+        "id": "_clone_zpfg",
         "maxSelect": 1,
         "name": "status",
         "presentable": false,
@@ -5692,7 +5856,7 @@
         "cascadeDelete": false,
         "collectionId": "pbc_1820489269",
         "hidden": false,
-        "id": "_clone_fjXG",
+        "id": "_clone_4Oeq",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "patient",
@@ -5704,7 +5868,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_Hc2K",
+        "id": "_clone_xm4P",
         "max": 0,
         "min": 0,
         "name": "treatment_name",
@@ -5714,11 +5878,24 @@
         "required": false,
         "system": false,
         "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2358601297",
+        "hidden": false,
+        "id": "_clone_icqN",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "branch",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
       }
     ],
     "indexes": [],
     "system": false,
-    "viewQuery": "SELECT\n  tpi.id,\n  tpi.plan,\n  tpi.expectedDate,\n  tpi.status,\n  tp.patient,\n  t.name AS treatment_name\nFROM treatmentPlanItems tpi\nJOIN treatmentPlans tp ON tpi.plan = tp.id\nLEFT JOIN patientTreatments t ON tp.treatment = t.id\nWHERE (tpi.isDeleted = false OR tpi.isDeleted IS NULL)\n  AND (tp.isDeleted = false OR tp.isDeleted IS NULL)\n  AND tpi.status IN ('scheduled', 'booked')\n  AND tpi.expectedDate < datetime('now')\nORDER BY tpi.expectedDate ASC"
+    "viewQuery": "SELECT\n  tpi.id,\n  tpi.plan,\n  tpi.expectedDate,\n  tpi.status,\n  tp.patient,\n  t.name AS treatment_name,\n  t.branch\nFROM treatmentPlanItems tpi\nJOIN treatmentPlans tp ON tpi.plan = tp.id\nLEFT JOIN patientTreatments t ON tp.treatment = t.id\nWHERE (tpi.isDeleted = false OR tpi.isDeleted IS NULL)\n  AND (tp.isDeleted = false OR tp.isDeleted IS NULL)\n  AND tpi.status IN ('scheduled', 'booked')\n  AND tpi.expectedDate < datetime('now')\nORDER BY tpi.expectedDate ASC"
   },
   {
     "id": "pbc_2524346138",
@@ -5760,7 +5937,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_22AT",
+        "id": "_clone_EH5L",
         "max": 0,
         "min": 0,
         "name": "species_name",
@@ -5773,7 +5950,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_yLC2",
+        "id": "_clone_uUvo",
         "maxSelect": 1,
         "name": "sex",
         "presentable": false,
@@ -5784,6 +5961,19 @@
           "male",
           "female"
         ]
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2358601297",
+        "hidden": false,
+        "id": "_clone_8oc3",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "branch",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
       },
       {
         "hidden": false,
@@ -5800,7 +5990,7 @@
     ],
     "indexes": [],
     "system": false,
-    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  ps.id AS species_id,\n  ps.name AS species_name,\n  p.sex,\n  COUNT(*) AS patient_count\nFROM patients p\nLEFT JOIN patientSpecies ps ON p.species = ps.id\nWHERE p.isDeleted = false OR p.isDeleted IS NULL\nGROUP BY ps.id, ps.name, p.sex"
+    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  ps.id AS species_id,\n  ps.name AS species_name,\n  p.sex,\n  p.branch,\n  COUNT(*) AS patient_count\nFROM patients p\nLEFT JOIN patientSpecies ps ON p.species = ps.id\nWHERE p.isDeleted = false OR p.isDeleted IS NULL\nGROUP BY ps.id, ps.name, p.sex, p.branch"
   },
   {
     "id": "pbc_3432702729",
@@ -5929,7 +6119,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_jAmc",
+        "id": "_clone_ufkz",
         "maxSelect": 1,
         "name": "status",
         "presentable": false,
@@ -5942,6 +6132,19 @@
           "missed",
           "cancelled"
         ]
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2358601297",
+        "hidden": false,
+        "id": "_clone_wZuT",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "branch",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
       },
       {
         "hidden": false,
@@ -5958,7 +6161,7 @@
     ],
     "indexes": [],
     "system": false,
-    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  a.status,\n  COUNT(*) AS count\nFROM appointmentSchedules a\nWHERE DATE(a.date) = DATE('now')\n  AND (a.isDeleted = false OR a.isDeleted IS NULL)\nGROUP BY a.status"
+    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  a.status,\n  a.branch,\n  COUNT(*) AS count\nFROM appointmentSchedules a\nWHERE DATE(a.date) = DATE('now')\n  AND (a.isDeleted = false OR a.isDeleted IS NULL)\nGROUP BY a.status, a.branch"
   },
   {
     "id": "pbc_1231561320",
@@ -5985,6 +6188,19 @@
         "type": "text"
       },
       {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2358601297",
+        "hidden": false,
+        "id": "_clone_edT4",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "branch",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
         "hidden": false,
         "id": "number619353122",
         "max": null,
@@ -6009,7 +6225,7 @@
     ],
     "indexes": [],
     "system": false,
-    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  COUNT(*) AS transaction_count,\n  COALESCE(SUM(s.totalAmount), 0) AS total_revenue\nFROM sales s\nWHERE DATE(s.created) = DATE('now')\n  AND s.status = 'completed'\n  AND (s.isDeleted = false OR s.isDeleted IS NULL)"
+    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  s.branch,\n  COUNT(*) AS transaction_count,\n  COALESCE(SUM(s.totalAmount), 0) AS total_revenue\nFROM sales s\nWHERE DATE(s.created) = DATE('now')\n  AND s.status = 'completed'\n  AND (s.isDeleted = false OR s.isDeleted IS NULL)\nGROUP BY s.branch"
   },
   {
     "id": "pbc_3971230533",
@@ -6038,7 +6254,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_GD3j",
+        "id": "_clone_KIc2",
         "max": 0,
         "min": 0,
         "name": "productName",
@@ -6053,10 +6269,23 @@
         "cascadeDelete": false,
         "collectionId": "pbc_4092854851",
         "hidden": false,
-        "id": "_clone_cUL0",
+        "id": "_clone_UPzD",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "product_id",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2358601297",
+        "hidden": false,
+        "id": "_clone_JY6E",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "branch",
         "presentable": false,
         "required": false,
         "system": false,
@@ -6107,7 +6336,7 @@
     ],
     "indexes": [],
     "system": false,
-    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  si.productName,\n  si.product AS product_id,\n  DATE(s.created) AS sale_date,\n  SUM(si.quantity) AS total_quantity_sold,\n  SUM(si.subtotal) AS total_revenue,\n  COUNT(DISTINCT s.id) AS transaction_count\nFROM saleItems si\nJOIN sales s ON si.sale = s.id\nWHERE (s.isDeleted = false OR s.isDeleted IS NULL)\n  AND s.status = 'completed'\nGROUP BY si.productName, si.product, DATE(s.created)\nORDER BY total_revenue DESC"
+    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  si.productName,\n  si.product AS product_id,\n  s.branch,\n  DATE(s.created) AS sale_date,\n  SUM(si.quantity) AS total_quantity_sold,\n  SUM(si.subtotal) AS total_revenue,\n  COUNT(DISTINCT s.id) AS transaction_count\nFROM saleItems si\nJOIN sales s ON si.sale = s.id\nWHERE (s.isDeleted = false OR s.isDeleted IS NULL)\n  AND s.status = 'completed'\nGROUP BY si.productName, si.product, s.branch, DATE(s.created)\nORDER BY total_revenue DESC"
   },
   {
     "id": "pbc_1169818120",
@@ -6135,7 +6364,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_oiDM",
+        "id": "_clone_9E5m",
         "maxSelect": 1,
         "name": "status",
         "presentable": false,
@@ -6152,7 +6381,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_Oglo",
+        "id": "_clone_9Ll0",
         "max": 0,
         "min": 0,
         "name": "treatment_name",
@@ -6177,6 +6406,19 @@
         "type": "relation"
       },
       {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2358601297",
+        "hidden": false,
+        "id": "_clone_kIsv",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "branch",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
         "hidden": false,
         "id": "number3598647710",
         "max": null,
@@ -6191,6 +6433,6 @@
     ],
     "indexes": [],
     "system": false,
-    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  tp.status,\n  t.name AS treatment_name,\n  t.id AS treatment_id,\n  COUNT(*) AS plan_count\nFROM treatmentPlans tp\nLEFT JOIN patientTreatments t ON tp.treatment = t.id\nWHERE tp.isDeleted = false OR tp.isDeleted IS NULL\nGROUP BY tp.status, t.name, t.id"
+    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  tp.status,\n  t.name AS treatment_name,\n  t.id AS treatment_id,\n  t.branch,\n  COUNT(*) AS plan_count\nFROM treatmentPlans tp\nLEFT JOIN patientTreatments t ON tp.treatment = t.id\nWHERE tp.isDeleted = false OR tp.isDeleted IS NULL\nGROUP BY tp.status, t.name, t.id, t.branch"
   }
 ]

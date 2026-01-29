@@ -15,7 +15,7 @@ Based on `pb_schema.json`, these are the key collections:
 | `patients` | id, name, species, breed, sex, branch, isDeleted, created |
 | `patientSpecies` | id, name |
 | `patientBreeds` | id, name, species |
-| `products` | id, name, category, price, quantity, stockThreshold, trackByLot, expiration, branch, isDeleted |
+| `products` | id, name, category, price, quantity, stockThreshold, trackStock, trackByLot, expiration, branch, isDeleted |
 | `productLots` | id, product, quantity, lotNumber, expiration, isDeleted |
 | `productCategories` | id, name, parent |
 | `sales` | id, totalAmount, paymentMethod, status, branch, cashier, created, isDeleted |
@@ -66,7 +66,8 @@ LEFT JOIN (
   WHERE pl.isDeleted = false OR pl.isDeleted IS NULL
   GROUP BY pl.product
 ) lot_totals ON p.id = lot_totals.product
-WHERE p.isDeleted = false OR p.isDeleted IS NULL
+WHERE (p.isDeleted = false OR p.isDeleted IS NULL)
+  AND p.trackStock = true
 ```
 
 > **Note:** Stock status calculation is done in the app:
@@ -345,6 +346,7 @@ SELECT
   p.branch
 FROM products p
 WHERE (p.isDeleted = false OR p.isDeleted IS NULL)
+  AND p.trackStock = true
   AND p.trackByLot = false
   AND p.stockThreshold > 0
   AND p.quantity <= p.stockThreshold
@@ -364,6 +366,7 @@ SELECT
 FROM products p
 LEFT JOIN productLots pl ON p.id = pl.product AND (pl.isDeleted = false OR pl.isDeleted IS NULL)
 WHERE (p.isDeleted = false OR p.isDeleted IS NULL)
+  AND p.trackStock = true
   AND p.trackByLot = true
   AND p.stockThreshold > 0
 GROUP BY p.id, p.name, p.stockThreshold, p.branch
