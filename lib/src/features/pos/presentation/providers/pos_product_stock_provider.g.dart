@@ -75,7 +75,7 @@ final class PosProductStockProvider extends $FunctionalProvider<
   }
 }
 
-String _$posProductStockHash() => r'9da6cc769cdd8add5daf5c743da50f858fe986f3';
+String _$posProductStockHash() => r'af8754dde9e5729b8d53c26dd9692c13eb8cc712';
 
 /// Provider that calculates stock status for a product.
 ///

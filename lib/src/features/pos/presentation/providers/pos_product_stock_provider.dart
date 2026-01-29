@@ -12,6 +12,8 @@ part 'pos_product_stock_provider.g.dart';
 /// For lot-tracked products, sums all lot quantities to determine stock status.
 @riverpod
 Future<ProductStatus> posProductStock(Ref ref, Product product) async {
+  if (!product.trackStock) return ProductStatus.noThreshold;
+
   if (!product.trackByLot) {
     return product.stockStatus;
   }

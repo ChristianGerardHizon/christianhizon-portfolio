@@ -85,6 +85,13 @@ class ProductDtoMapper extends ClassMapperBase<ProductDto> {
     opt: true,
     def: true,
   );
+  static bool _$trackStock(ProductDto v) => v.trackStock;
+  static const Field<ProductDto, bool> _f$trackStock = Field(
+    'trackStock',
+    _$trackStock,
+    opt: true,
+    def: false,
+  );
   static bool _$requireStock(ProductDto v) => v.requireStock;
   static const Field<ProductDto, bool> _f$requireStock = Field(
     'requireStock',
@@ -145,6 +152,7 @@ class ProductDtoMapper extends ClassMapperBase<ProductDto> {
     #stockThreshold: _f$stockThreshold,
     #price: _f$price,
     #forSale: _f$forSale,
+    #trackStock: _f$trackStock,
     #requireStock: _f$requireStock,
     #quantity: _f$quantity,
     #expiration: _f$expiration,
@@ -168,6 +176,7 @@ class ProductDtoMapper extends ClassMapperBase<ProductDto> {
       stockThreshold: data.dec(_f$stockThreshold),
       price: data.dec(_f$price),
       forSale: data.dec(_f$forSale),
+      trackStock: data.dec(_f$trackStock),
       requireStock: data.dec(_f$requireStock),
       quantity: data.dec(_f$quantity),
       expiration: data.dec(_f$expiration),
@@ -251,6 +260,7 @@ abstract class ProductDtoCopyWith<$R, $In extends ProductDto, $Out>
     num? stockThreshold,
     num? price,
     bool? forSale,
+    bool? trackStock,
     bool? requireStock,
     num? quantity,
     String? expiration,
@@ -284,6 +294,7 @@ class _ProductDtoCopyWithImpl<$R, $Out>
     Object? stockThreshold = $none,
     num? price,
     bool? forSale,
+    bool? trackStock,
     bool? requireStock,
     Object? quantity = $none,
     Object? expiration = $none,
@@ -305,6 +316,7 @@ class _ProductDtoCopyWithImpl<$R, $Out>
       if (stockThreshold != $none) #stockThreshold: stockThreshold,
       if (price != null) #price: price,
       if (forSale != null) #forSale: forSale,
+      if (trackStock != null) #trackStock: trackStock,
       if (requireStock != null) #requireStock: requireStock,
       if (quantity != $none) #quantity: quantity,
       if (expiration != $none) #expiration: expiration,
@@ -328,6 +340,7 @@ class _ProductDtoCopyWithImpl<$R, $Out>
     stockThreshold: data.get(#stockThreshold, or: $value.stockThreshold),
     price: data.get(#price, or: $value.price),
     forSale: data.get(#forSale, or: $value.forSale),
+    trackStock: data.get(#trackStock, or: $value.trackStock),
     requireStock: data.get(#requireStock, or: $value.requireStock),
     quantity: data.get(#quantity, or: $value.quantity),
     expiration: data.get(#expiration, or: $value.expiration),

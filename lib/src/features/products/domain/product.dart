@@ -20,6 +20,7 @@ class Product with ProductMappable {
     this.stockThreshold,
     this.price = 0,
     this.forSale = true,
+    this.trackStock = false,
     this.requireStock = false,
     this.quantity,
     this.expiration,
@@ -59,6 +60,9 @@ class Product with ProductMappable {
   /// Whether product is for sale.
   final bool forSale;
 
+  /// Whether stock tracking is enabled for this product.
+  final bool trackStock;
+
   /// Whether stock is required to add to cart.
   /// If true and product is out of stock, it cannot be added to cart.
   final bool requireStock;
@@ -90,6 +94,7 @@ class Product with ProductMappable {
   /// Returns true if stock is low based on threshold.
   /// Returns false if out of stock (qty <= 0) since that's a different status.
   bool get isLowStock {
+    if (!trackStock) return false;
     if (stockThreshold == null) return false;
     // For lot-tracked products, treat null quantity as 0
     final qty = trackByLot ? (quantity ?? 0) : quantity;
@@ -124,6 +129,7 @@ class Product with ProductMappable {
 
   /// Returns true if product is out of stock.
   bool get isOutOfStock {
+    if (!trackStock) return false;
     // For lot-tracked products, treat null quantity as 0
     if (trackByLot) {
       return (quantity ?? 0) <= 0;
@@ -133,6 +139,8 @@ class Product with ProductMappable {
 
   /// Calculates the stock status.
   ProductStatus get stockStatus {
+    if (!trackStock) return ProductStatus.noThreshold;
+
     // For lot-tracked products, treat null quantity as 0 (out of stock)
     // since quantity is synced from lots
     if (trackByLot) {

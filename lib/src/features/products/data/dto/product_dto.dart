@@ -23,6 +23,7 @@ class ProductDto with ProductDtoMappable {
   final num? stockThreshold;
   final num price;
   final bool forSale;
+  final bool trackStock;
   final bool requireStock;
   final num? quantity;
   final String? expiration;
@@ -44,6 +45,7 @@ class ProductDto with ProductDtoMappable {
     this.stockThreshold,
     this.price = 0,
     this.forSale = true,
+    this.trackStock = false,
     this.requireStock = false,
     this.quantity,
     this.expiration,
@@ -74,6 +76,7 @@ class ProductDto with ProductDtoMappable {
       stockThreshold: json['stockThreshold'] as num?,
       price: json['price'] as num? ?? 0,
       forSale: json['forSale'] as bool? ?? true,
+      trackStock: json['trackStock'] as bool? ?? false,
       requireStock: json['requireStock'] as bool? ?? false,
       quantity: json['quantity'] as num?,
       expiration: json['expiration'] as String?,
@@ -97,6 +100,7 @@ class ProductDto with ProductDtoMappable {
       stockThreshold: stockThreshold,
       price: price,
       forSale: forSale,
+      trackStock: trackStock,
       requireStock: requireStock,
       quantity: quantity,
       expiration: parseToLocal(expiration),
