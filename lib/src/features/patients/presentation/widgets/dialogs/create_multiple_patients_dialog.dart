@@ -26,7 +26,7 @@ class _PatientEntry {
         breedId = ValueNotifier<String?>(null),
         sex = ValueNotifier<PatientSex?>(null),
         dateOfBirth = ValueNotifier<DateTime?>(null),
-        isExpanded = ValueNotifier<bool>(true);
+        isExpanded = ValueNotifier<bool>(false);
 
   final TextEditingController nameController;
   final TextEditingController colorController;
@@ -551,14 +551,22 @@ class _OwnerStep extends StatelessWidget {
             initialValue: initialPhone,
             decoration: const InputDecoration(
               labelText: 'Phone *',
+              hintText: '09XXXXXXXXX',
               border: OutlineInputBorder(),
               prefixIcon: Icon(Icons.phone),
             ),
             enabled: !isSaving,
             keyboardType: TextInputType.phone,
-            validator: FormBuilderValidators.required(
-              errorText: 'Phone number is required',
-            ),
+            maxLength: 11,
+            validator: FormBuilderValidators.compose([
+              FormBuilderValidators.required(
+                errorText: 'Phone number is required',
+              ),
+              FormBuilderValidators.match(
+                RegExp(r'^09\d{9}$'),
+                errorText: 'Must follow format: 09XXXXXXXXX (11 digits)',
+              ),
+            ]),
           ),
           const SizedBox(height: 16),
           FormBuilderTextField(
@@ -768,6 +776,193 @@ class _PatientEntryCard extends HookConsumerWidget {
             ),
           ),
 
+          // Species & Breed
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: speciesAsync.when(
+                    data: (speciesList) =>
+                        DropdownButtonFormField<String>(
+                      initialValue: speciesId,
+                      isExpanded: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Species',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                      items: [
+                        const DropdownMenuItem<String>(
+                          value: null,
+                          child: Text('Select...'),
+                        ),
+                        ...speciesList.map((s) => DropdownMenuItem(
+                              value: s.id,
+                              child: Text(s.name),
+                            )),
+                      ],
+                      onChanged: isSaving
+                          ? null
+                          : (value) {
+                              entry.speciesId.value = value;
+                              entry.breedId.value = null;
+                            },
+                    ),
+                    loading: () => const TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Species',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                      enabled: false,
+                    ),
+                    error: (_, __) => const TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Species',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                        errorText: 'Failed to load',
+                      ),
+                      enabled: false,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: breedsAsync.when(
+                    data: (breedsList) => DropdownButtonFormField<String>(
+                      initialValue: breedId,
+                      isExpanded: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Breed',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                      items: [
+                        const DropdownMenuItem<String>(
+                          value: null,
+                          child: Text('Select...'),
+                        ),
+                        ...breedsList.map((b) => DropdownMenuItem(
+                              value: b.id,
+                              child: Text(b.name),
+                            )),
+                      ],
+                      onChanged: isSaving || speciesId == null
+                          ? null
+                          : (value) => entry.breedId.value = value,
+                    ),
+                    loading: () => const TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Breed',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                      enabled: false,
+                    ),
+                    error: (_, __) => const TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Breed',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                      enabled: false,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Sex selection & Date of Birth
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+            child: Row(
+              children: [
+                Text(
+                  'Sex:',
+                  style: theme.textTheme.bodyMedium,
+                ),
+                const SizedBox(width: 8),
+                ChoiceChip(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.male, size: 16),
+                      const SizedBox(width: 4),
+                      const Text('Male'),
+                    ],
+                  ),
+                  selected: sex == PatientSex.male,
+                  showCheckmark: true,
+                  onSelected: isSaving
+                      ? null
+                      : (selected) {
+                          entry.sex.value =
+                              selected ? PatientSex.male : null;
+                        },
+                ),
+                const SizedBox(width: 8),
+                ChoiceChip(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.female, size: 16),
+                      const SizedBox(width: 4),
+                      const Text('Female'),
+                    ],
+                  ),
+                  selected: sex == PatientSex.female,
+                  showCheckmark: true,
+                  onSelected: isSaving
+                      ? null
+                      : (selected) {
+                          entry.sex.value =
+                              selected ? PatientSex.female : null;
+                        },
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: InkWell(
+                    onTap: isSaving
+                        ? null
+                        : () async {
+                            final picked = await showDatePicker(
+                              context: context,
+                              initialDate: dateOfBirth ?? DateTime.now(),
+                              firstDate: DateTime(1990),
+                              lastDate: DateTime.now(),
+                            );
+                            if (picked != null) {
+                              entry.dateOfBirth.value = picked;
+                            }
+                          },
+                    child: InputDecorator(
+                      decoration: const InputDecoration(
+                        labelText: 'Date of Birth',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                        suffixIcon: Icon(Icons.calendar_today, size: 18),
+                      ),
+                      child: Text(
+                        dateOfBirth != null
+                            ? DateFormat.yMMMd().format(dateOfBirth)
+                            : 'Select...',
+                        style: dateOfBirth == null
+                            ? theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              )
+                            : null,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
           // Toggle more details
           InkWell(
             onTap: () => entry.isExpanded.value = !isExpanded,
@@ -797,211 +992,18 @@ class _PatientEntryCard extends HookConsumerWidget {
             ),
           ),
 
-          // Expanded content
+          // Expanded content (additional details)
           if (isExpanded)
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-              child: Column(
-                children: [
-                  // Species & Breed
-                  Row(
-                    children: [
-                      Expanded(
-                        child: speciesAsync.when(
-                          data: (speciesList) =>
-                              DropdownButtonFormField<String>(
-                            initialValue: speciesId,
-                            isExpanded: true,
-                            decoration: const InputDecoration(
-                              labelText: 'Species',
-                              border: OutlineInputBorder(),
-                              isDense: true,
-                            ),
-                            items: [
-                              const DropdownMenuItem<String>(
-                                value: null,
-                                child: Text('Select...'),
-                              ),
-                              ...speciesList.map((s) => DropdownMenuItem(
-                                    value: s.id,
-                                    child: Text(s.name),
-                                  )),
-                            ],
-                            onChanged: isSaving
-                                ? null
-                                : (value) {
-                                    entry.speciesId.value = value;
-                                    entry.breedId.value = null;
-                                  },
-                          ),
-                          loading: () => const TextField(
-                            decoration: InputDecoration(
-                              labelText: 'Species',
-                              border: OutlineInputBorder(),
-                              isDense: true,
-                            ),
-                            enabled: false,
-                          ),
-                          error: (_, __) => const TextField(
-                            decoration: InputDecoration(
-                              labelText: 'Species',
-                              border: OutlineInputBorder(),
-                              isDense: true,
-                              errorText: 'Failed to load',
-                            ),
-                            enabled: false,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: breedsAsync.when(
-                          data: (breedsList) => DropdownButtonFormField<String>(
-                            initialValue: breedId,
-                            isExpanded: true,
-                            decoration: const InputDecoration(
-                              labelText: 'Breed',
-                              border: OutlineInputBorder(),
-                              isDense: true,
-                            ),
-                            items: [
-                              const DropdownMenuItem<String>(
-                                value: null,
-                                child: Text('Select...'),
-                              ),
-                              ...breedsList.map((b) => DropdownMenuItem(
-                                    value: b.id,
-                                    child: Text(b.name),
-                                  )),
-                            ],
-                            onChanged: isSaving || speciesId == null
-                                ? null
-                                : (value) => entry.breedId.value = value,
-                          ),
-                          loading: () => const TextField(
-                            decoration: InputDecoration(
-                              labelText: 'Breed',
-                              border: OutlineInputBorder(),
-                              isDense: true,
-                            ),
-                            enabled: false,
-                          ),
-                          error: (_, __) => const TextField(
-                            decoration: InputDecoration(
-                              labelText: 'Breed',
-                              border: OutlineInputBorder(),
-                              isDense: true,
-                            ),
-                            enabled: false,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Sex selection
-                  Row(
-                    children: [
-                      Text(
-                        'Sex:',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      const SizedBox(width: 16),
-                      ChoiceChip(
-                        label: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.male, size: 16),
-                            const SizedBox(width: 4),
-                            const Text('Male'),
-                          ],
-                        ),
-                        selected: sex == PatientSex.male,
-                        showCheckmark: true,
-                        onSelected: isSaving
-                            ? null
-                            : (selected) {
-                                entry.sex.value =
-                                    selected ? PatientSex.male : null;
-                              },
-                      ),
-                      const SizedBox(width: 8),
-                      ChoiceChip(
-                        label: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.female, size: 16),
-                            const SizedBox(width: 4),
-                            const Text('Female'),
-                          ],
-                        ),
-                        selected: sex == PatientSex.female,
-                        showCheckmark: true,
-                        onSelected: isSaving
-                            ? null
-                            : (selected) {
-                                entry.sex.value =
-                                    selected ? PatientSex.female : null;
-                              },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Color & Date of Birth
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: entry.colorController,
-                          decoration: const InputDecoration(
-                            labelText: 'Color/Markings',
-                            border: OutlineInputBorder(),
-                            isDense: true,
-                          ),
-                          enabled: !isSaving,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: InkWell(
-                          onTap: isSaving
-                              ? null
-                              : () async {
-                                  final picked = await showDatePicker(
-                                    context: context,
-                                    initialDate: dateOfBirth ?? DateTime.now(),
-                                    firstDate: DateTime(1990),
-                                    lastDate: DateTime.now(),
-                                  );
-                                  if (picked != null) {
-                                    entry.dateOfBirth.value = picked;
-                                  }
-                                },
-                          child: InputDecorator(
-                            decoration: const InputDecoration(
-                              labelText: 'Date of Birth',
-                              border: OutlineInputBorder(),
-                              isDense: true,
-                              suffixIcon: Icon(Icons.calendar_today, size: 18),
-                            ),
-                            child: Text(
-                              dateOfBirth != null
-                                  ? DateFormat.yMMMd().format(dateOfBirth)
-                                  : 'Select...',
-                              style: dateOfBirth == null
-                                  ? theme.textTheme.bodyMedium?.copyWith(
-                                      color: theme.colorScheme.onSurfaceVariant,
-                                    )
-                                  : null,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              child: TextField(
+                controller: entry.colorController,
+                decoration: const InputDecoration(
+                  labelText: 'Color/Markings',
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
+                enabled: !isSaving,
               ),
             ),
         ],
