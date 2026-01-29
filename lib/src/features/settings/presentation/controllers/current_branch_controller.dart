@@ -9,7 +9,12 @@ import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../dashboard/presentation/controllers/dashboard_kpi_provider.dart';
 import '../../../dashboard/presentation/controllers/inventory_alerts_controller.dart';
 import '../../../dashboard/presentation/controllers/todays_sales_controller.dart';
+import '../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../patients/presentation/controllers/paginated_patients_controller.dart';
+import '../../../reports/presentation/controllers/appointment_report_controller.dart';
+import '../../../reports/presentation/controllers/inventory_report_controller.dart';
+import '../../../reports/presentation/controllers/patient_report_controller.dart';
+import '../../../reports/presentation/controllers/sales_report_controller.dart';
 import '../../../patients/presentation/controllers/patient_treatments_controller.dart';
 import '../../../products/presentation/controllers/paginated_products_controller.dart';
 import '../../../sales/presentation/controllers/paginated_sales_controller.dart';
@@ -17,6 +22,7 @@ import '../../../users/presentation/controllers/user_provider.dart';
 import '../../../users/presentation/controllers/user_role_provider.dart';
 import '../../domain/branch.dart';
 import 'branches_controller.dart';
+import 'message_templates_controller.dart';
 
 part 'current_branch_controller.g.dart';
 
@@ -112,6 +118,16 @@ class CurrentBranchController extends _$CurrentBranchController {
     ref.invalidate(todaySalesSummaryProvider);
     ref.invalidate(todaySalesProvider);
     ref.invalidate(inventoryAlertsSummaryProvider);
+
+    // Invalidate message providers
+    ref.invalidate(messagesControllerProvider);
+    ref.invalidate(messageTemplatesControllerProvider);
+
+    // Invalidate report providers
+    ref.invalidate(salesReportProvider);
+    ref.invalidate(patientReportProvider);
+    ref.invalidate(appointmentReportProvider);
+    ref.invalidate(inventoryReportProvider);
   }
 }
 

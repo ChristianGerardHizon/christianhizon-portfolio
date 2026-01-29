@@ -49,4 +49,4 @@ final class AppointmentReportProvider extends $FunctionalProvider<
   }
 }
 
-String _$appointmentReportHash() => r'717d1725fe22dedf315bec03bfb5f3f344f24084';
+String _$appointmentReportHash() => r'40a926997a0e217126044bfa5435167d90761eff';

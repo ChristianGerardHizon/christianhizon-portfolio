@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../data/repositories/reports_repository.dart';
 import '../../domain/inventory_report.dart';
 
@@ -9,9 +10,10 @@ part 'inventory_report_controller.g.dart';
 /// Note: Inventory report doesn't use date filtering - it shows current state.
 @riverpod
 Future<InventoryReport> inventoryReport(Ref ref) async {
+  final branchId = ref.watch(currentBranchIdProvider);
   final repository = ref.read(reportsRepositoryProvider);
 
-  final result = await repository.getInventoryReport();
+  final result = await repository.getInventoryReport(branchId: branchId);
 
   return result.fold(
     (failure) => throw failure,

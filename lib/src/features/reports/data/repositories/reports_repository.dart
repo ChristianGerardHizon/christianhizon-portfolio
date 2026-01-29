@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/foundation/failure.dart';
 import '../../../../core/foundation/type_defs.dart';
+import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../domain/appointment_report.dart';
@@ -26,19 +27,22 @@ abstract class ReportsRepository {
   FutureEither<SalesReport> getSalesReport({
     required DateTime startDate,
     required DateTime endDate,
+    String? branchId,
   });
 
   FutureEither<PatientReport> getPatientReport({
     required DateTime startDate,
     required DateTime endDate,
+    String? branchId,
   });
 
   FutureEither<AppointmentReport> getAppointmentReport({
     required DateTime startDate,
     required DateTime endDate,
+    String? branchId,
   });
 
-  FutureEither<InventoryReport> getInventoryReport();
+  FutureEither<InventoryReport> getInventoryReport({String? branchId});
 }
 
 @Riverpod(keepAlive: true)
@@ -53,17 +57,26 @@ class ReportsRepositoryImpl implements ReportsRepository {
 
   RecordService get _products => _pb.collection(PocketBaseCollections.products);
 
+  /// Returns a PocketBase filter for branch on view collections.
+  static String? _branchViewFilter(String? branchId) {
+    if (branchId == null) return null;
+    return 'branch = "$branchId"';
+  }
+
   @override
   FutureEither<SalesReport> getSalesReport({
     required DateTime startDate,
     required DateTime endDate,
+    String? branchId,
   }) async {
     return TaskEither.tryCatch(
       () async {
+        final branchFilter = _branchViewFilter(branchId);
+
         // Query views in parallel for best performance
         final results = await Future.wait([
-          _pb.collection(PocketBaseCollections.vwSalesDailySummary).getFullList(),
-          _pb.collection(PocketBaseCollections.vwTopSellingProducts).getFullList(),
+          _pb.collection(PocketBaseCollections.vwSalesDailySummary).getFullList(filter: branchFilter),
+          _pb.collection(PocketBaseCollections.vwTopSellingProducts).getFullList(filter: branchFilter),
         ]);
 
         final dailySummaryRecords = results[0];
@@ -163,14 +176,17 @@ class ReportsRepositoryImpl implements ReportsRepository {
   FutureEither<PatientReport> getPatientReport({
     required DateTime startDate,
     required DateTime endDate,
+    String? branchId,
   }) async {
     return TaskEither.tryCatch(
       () async {
+        final branchFilter = _branchViewFilter(branchId);
+
         // Query views in parallel for best performance
         final results = await Future.wait([
-          _pb.collection(PocketBaseCollections.vwPatientStatistics).getFullList(),
-          _pb.collection(PocketBaseCollections.vwNewPatientsByDate).getFullList(),
-          _pb.collection(PocketBaseCollections.vwActivePatientsCount).getFullList(),
+          _pb.collection(PocketBaseCollections.vwPatientStatistics).getFullList(filter: branchFilter),
+          _pb.collection(PocketBaseCollections.vwNewPatientsByDate).getFullList(filter: branchFilter),
+          _pb.collection(PocketBaseCollections.vwActivePatientsCount).getFullList(filter: branchFilter),
         ]);
 
         final statisticsRecords = results[0];
@@ -234,13 +250,16 @@ class ReportsRepositoryImpl implements ReportsRepository {
   FutureEither<AppointmentReport> getAppointmentReport({
     required DateTime startDate,
     required DateTime endDate,
+    String? branchId,
   }) async {
     return TaskEither.tryCatch(
       () async {
+        final branchFilter = _branchViewFilter(branchId);
+
         // Query views in parallel for best performance
         final results = await Future.wait([
-          _pb.collection(PocketBaseCollections.vwAppointmentSummary).getFullList(),
-          _pb.collection(PocketBaseCollections.vwMessageSummary).getFullList(),
+          _pb.collection(PocketBaseCollections.vwAppointmentSummary).getFullList(filter: branchFilter),
+          _pb.collection(PocketBaseCollections.vwMessageSummary).getFullList(filter: branchFilter),
         ]);
 
         final appointmentRecords = results[0];
@@ -382,11 +401,15 @@ class ReportsRepositoryImpl implements ReportsRepository {
   }
 
   @override
-  FutureEither<InventoryReport> getInventoryReport() async {
+  FutureEither<InventoryReport> getInventoryReport({String? branchId}) async {
     return TaskEither.tryCatch(
       () async {
+        final filter = branchId != null
+            ? PBFilters.forBranch(branchId).build()
+            : null;
         final products = await _products.getFullList(
           expand: 'category',
+          filter: filter,
         );
 
         return _aggregateInventoryReport(products);

@@ -45,4 +45,4 @@ final class PatientReportProvider extends $FunctionalProvider<
   }
 }
 
-String _$patientReportHash() => r'215ce2912ba4e9346ae1994cd56dd110014b4792';
+String _$patientReportHash() => r'a3d66fe854f50dac57f6393d7896a8b67131206e';
