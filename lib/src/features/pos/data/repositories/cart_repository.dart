@@ -166,11 +166,9 @@ class CartRepositoryImpl implements CartRepository {
       () async {
         final body = <String, dynamic>{
           'quantity': item.quantity,
+          // Always send customPrice so it can be updated or cleared
+          'customPrice': item.customPrice ?? 0,
         };
-        // Update custom price if present
-        if (item.customPrice != null) {
-          body['customPrice'] = item.customPrice;
-        }
         // Update lot fields if present
         if (item.productLotId != null) {
           body['productLot'] = item.productLotId;

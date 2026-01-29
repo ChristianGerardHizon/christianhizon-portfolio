@@ -4,7 +4,6 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/currency_format.dart';
-import '../../../products/domain/product_lot.dart';
 import '../cart_controller.dart';
 import 'checkout_dialog.dart';
 import 'variable_price_dialog.dart';
@@ -159,7 +158,7 @@ class CartView extends ConsumerWidget {
                                                 ref
                                                     .read(cartControllerProvider
                                                         .notifier)
-                                                    .removeFromCart(product);
+                                                    .removeItemById(item.id);
                                               },
                                         tooltip: 'Remove item',
                                       ),
@@ -249,8 +248,8 @@ class CartView extends ConsumerWidget {
                                                         .read(
                                                             cartControllerProvider
                                                                 .notifier)
-                                                        .updateQuantity(
-                                                          product,
+                                                        .updateQuantityById(
+                                                          item.id,
                                                           item.quantity
                                                                   .toInt() -
                                                               1,
@@ -289,35 +288,14 @@ class CartView extends ConsumerWidget {
                                                         newQuantity !=
                                                             item.quantity
                                                                 .toInt()) {
-                                                      if (item.hasLot) {
-                                                        // Create minimal ProductLot for lookup
-                                                        final lot = ProductLot(
-                                                          id: item.productLotId!,
-                                                          productId:
-                                                              item.productId,
-                                                          lotNumber:
-                                                              item.lotNumber ??
-                                                                  '',
-                                                        );
-                                                        ref
-                                                            .read(
-                                                                cartControllerProvider
-                                                                    .notifier)
-                                                            .updateQuantityWithLot(
-                                                              product,
-                                                              lot,
-                                                              newQuantity,
-                                                            );
-                                                      } else {
-                                                        ref
-                                                            .read(
-                                                                cartControllerProvider
-                                                                    .notifier)
-                                                            .updateQuantity(
-                                                              product,
-                                                              newQuantity,
-                                                            );
-                                                      }
+                                                      ref
+                                                          .read(
+                                                              cartControllerProvider
+                                                                  .notifier)
+                                                          .updateQuantityById(
+                                                            item.id,
+                                                            newQuantity,
+                                                          );
                                                     }
                                                   },
                                             child: Container(
@@ -349,8 +327,8 @@ class CartView extends ConsumerWidget {
                                                         .read(
                                                             cartControllerProvider
                                                                 .notifier)
-                                                        .updateQuantity(
-                                                          product,
+                                                        .updateQuantityById(
+                                                          item.id,
                                                           item.quantity
                                                                   .toInt() +
                                                               1,

@@ -111,16 +111,20 @@ class CartController extends _$CartController {
     final currentState = state.value;
     if (currentState == null) return;
 
-    // Check if product already exists (by productId only, no lot)
-    final existingIndex =
-        currentState.items.indexWhere((item) =>
-            item.productId == product.id && !item.hasLot);
+    // Check if a matching item already exists:
+    // - For variable-price products, match on productId + customPrice
+    // - For regular products, match on productId (non-lot)
+    final existingIndex = currentState.items.indexWhere((item) {
+      if (item.productId != product.id || item.hasLot) return false;
+      if (customPrice != null) return item.customPrice == customPrice;
+      return !item.hasCustomPrice;
+    });
 
     if (existingIndex >= 0) {
       // Update quantity of existing item
       final existingItem = currentState.items[existingIndex];
       final newQuantity = existingItem.quantity + 1;
-      await updateQuantity(product, newQuantity.toInt());
+      await updateQuantityById(existingItem.id, newQuantity.toInt());
     } else {
       // Add new item
       state = AsyncData(currentState.copyWith(isSyncing: true));
@@ -148,7 +152,12 @@ class CartController extends _$CartController {
           state = AsyncData(currentState.copyWith(isSyncing: false));
         },
         (createdItem) {
-          final newItems = <CartItem>[...currentState.items, createdItem];
+          // Preserve customPrice if the server didn't return it
+          // (PocketBase may default to 0 which the DTO strips)
+          final item = createdItem.customPrice == null && customPrice != null
+              ? createdItem.copyWith(customPrice: customPrice)
+              : createdItem;
+          final newItems = <CartItem>[...currentState.items, item];
           state = AsyncData(CartState(
             cartId: cartId,
             items: newItems,
@@ -222,7 +231,11 @@ class CartController extends _$CartController {
           state = AsyncData(currentState.copyWith(isSyncing: false));
         },
         (createdItem) {
-          final newItems = <CartItem>[...currentState.items, createdItem];
+          // Preserve customPrice if the server didn't return it
+          final item = createdItem.customPrice == null && customPrice != null
+              ? createdItem.copyWith(customPrice: customPrice)
+              : createdItem;
+          final newItems = <CartItem>[...currentState.items, item];
           state = AsyncData(CartState(
             cartId: cartId,
             items: newItems,
@@ -338,7 +351,10 @@ class CartController extends _$CartController {
     );
   }
 
-  /// Updates the quantity of a product in the cart.
+  /// Updates the quantity of a product in the cart (by product ID).
+  ///
+  /// For products that may have multiple line items (e.g. variable-price),
+  /// prefer [updateQuantityById] instead.
   Future<void> updateQuantity(Product product, int quantity) async {
     if (quantity <= 0) {
       await removeFromCart(product);
@@ -352,6 +368,33 @@ class CartController extends _$CartController {
         currentState.items.indexWhere((item) => item.productId == product.id);
     if (index < 0) return;
 
+    await _updateQuantityAtIndex(index, quantity);
+  }
+
+  /// Updates the quantity of a specific cart item by its ID.
+  ///
+  /// Use this for items that share a product ID (e.g. variable-price items
+  /// with different custom prices).
+  Future<void> updateQuantityById(String cartItemId, int quantity) async {
+    if (quantity <= 0) {
+      await removeItemById(cartItemId);
+      return;
+    }
+
+    final currentState = state.value;
+    if (currentState == null) return;
+
+    final index =
+        currentState.items.indexWhere((item) => item.id == cartItemId);
+    if (index < 0) return;
+
+    await _updateQuantityAtIndex(index, quantity);
+  }
+
+  Future<void> _updateQuantityAtIndex(int index, int quantity) async {
+    final currentState = state.value;
+    if (currentState == null) return;
+
     final item = currentState.items[index];
     state = AsyncData(currentState.copyWith(isSyncing: true));
 
@@ -364,8 +407,43 @@ class CartController extends _$CartController {
         state = AsyncData(currentState.copyWith(isSyncing: false));
       },
       (syncedItem) {
+        // Preserve customPrice if the server didn't return it
+        final finalItem = syncedItem.customPrice == null &&
+                item.customPrice != null
+            ? syncedItem.copyWith(customPrice: item.customPrice)
+            : syncedItem;
         final newItems = [...currentState.items];
-        newItems[index] = syncedItem;
+        newItems[index] = finalItem;
+        state = AsyncData(currentState.copyWith(
+          items: newItems,
+          isSyncing: false,
+        ));
+      },
+    );
+  }
+
+  /// Removes a specific cart item by its ID.
+  Future<void> removeItemById(String cartItemId) async {
+    final currentState = state.value;
+    if (currentState == null) return;
+
+    final item = currentState.items.firstWhere(
+      (item) => item.id == cartItemId,
+      orElse: () => const CartItem(),
+    );
+    if (item.id.isEmpty) return;
+
+    state = AsyncData(currentState.copyWith(isSyncing: true));
+
+    final result = await _cartRepo.deleteCartItem(cartItemId);
+    result.fold(
+      (failure) {
+        state = AsyncData(currentState.copyWith(isSyncing: false));
+      },
+      (_) {
+        final newItems = currentState.items
+            .where((i) => i.id != cartItemId)
+            .toList();
         state = AsyncData(currentState.copyWith(
           items: newItems,
           isSyncing: false,
@@ -394,8 +472,12 @@ class CartController extends _$CartController {
         state = AsyncData(currentState.copyWith(isSyncing: false));
       },
       (syncedItem) {
+        // Preserve customPrice if the server didn't return it
+        final finalItem = syncedItem.customPrice == null
+            ? syncedItem.copyWith(customPrice: newPrice)
+            : syncedItem;
         final newItems = [...currentState.items];
-        newItems[index] = syncedItem;
+        newItems[index] = finalItem;
         state = AsyncData(currentState.copyWith(
           items: newItems,
           isSyncing: false,
