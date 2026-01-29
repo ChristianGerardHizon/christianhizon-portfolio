@@ -827,13 +827,14 @@ class _RecordActions extends ConsumerWidget {
                 branch: branch,
               );
               final generator = PrescriptionPdfGenerator(pdfData);
+              if (!context.mounted) return;
               switch (action) {
                 case _PdfAction.print:
-                  await generator.printPrescription();
+                  await generator.printPrescription(context);
                 case _PdfAction.share:
-                  await generator.sharePrescription();
+                  await generator.sharePrescription(context);
                 case _PdfAction.save:
-                  final path = await generator.savePrescription();
+                  final path = await generator.savePrescription(context);
                   if (context.mounted && path != null) {
                     showSuccessSnackBar(context, message: 'Prescription saved');
                   }

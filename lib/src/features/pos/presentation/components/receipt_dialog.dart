@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +9,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+import '../../../../core/pdf/pdf_task_runner.dart';
 import '../../../../core/routing/routes/system.routes.dart';
 import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/dialog_close_handler.dart';
@@ -18,6 +21,134 @@ import '../../../settings/presentation/controllers/printer_config_provider.dart'
 import '../../domain/sale.dart';
 import '../../domain/sale_item.dart';
 import '../services/thermal_print_service.dart';
+
+/// Payload for receipt PDF generation in an isolate.
+class _ReceiptPdfPayload {
+  _ReceiptPdfPayload({
+    required this.receiptNumber,
+    required this.createdDate,
+    required this.paymentMethod,
+    required this.totalAmount,
+    this.paymentRef,
+    this.notes,
+  });
+
+  final String receiptNumber;
+  final DateTime createdDate;
+  final String paymentMethod;
+  final double totalAmount;
+  final String? paymentRef;
+  final String? notes;
+}
+
+/// Top-level function that builds receipt PDF bytes in an isolate.
+Future<Uint8List> _buildReceiptPdfBytes(_ReceiptPdfPayload payload) async {
+  final dateFormat = DateFormat('MMM dd, yyyy hh:mm a');
+  // Use 'P' instead of '₱' for PDF compatibility (Helvetica doesn't support ₱)
+  final currencyFormat = NumberFormat.currency(symbol: 'P', decimalDigits: 2);
+
+  final pdf = pw.Document();
+  pdf.addPage(
+    pw.Page(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(40),
+      build: (context) => pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Center(
+            child: pw.Text(
+              'Receipt',
+              style: pw.TextStyle(
+                fontSize: 24,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+          ),
+          pw.SizedBox(height: 8),
+          pw.Center(
+            child: pw.Text(
+              '#${payload.receiptNumber}',
+              style: const pw.TextStyle(fontSize: 12),
+            ),
+          ),
+          pw.SizedBox(height: 20),
+          pw.Divider(),
+          pw.SizedBox(height: 10),
+          pw.Text(
+            'Date: ${dateFormat.format(payload.createdDate)}',
+          ),
+          pw.SizedBox(height: 4),
+          pw.Text(
+            'Payment: ${_formatPaymentMethodLabel(payload.paymentMethod)}',
+          ),
+          if (payload.paymentRef != null &&
+              payload.paymentRef!.isNotEmpty) ...[
+            pw.SizedBox(height: 4),
+            pw.Text('Reference: ${payload.paymentRef}'),
+          ],
+          pw.SizedBox(height: 10),
+          pw.Divider(),
+          pw.SizedBox(height: 10),
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text(
+                'Total:',
+                style: pw.TextStyle(
+                  fontSize: 16,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+              pw.Text(
+                currencyFormat.format(payload.totalAmount),
+                style: pw.TextStyle(
+                  fontSize: 16,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          if (payload.notes != null && payload.notes!.isNotEmpty) ...[
+            pw.SizedBox(height: 10),
+            pw.Divider(),
+            pw.SizedBox(height: 10),
+            pw.Text(
+              'Notes:',
+              style: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 4),
+            pw.Text(payload.notes!),
+          ],
+          pw.SizedBox(height: 20),
+          pw.Center(
+            child: pw.Text(
+              'Thank you!',
+              style: const pw.TextStyle(fontSize: 12),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+  return await pdf.save();
+}
+
+String _formatPaymentMethodLabel(String method) {
+  switch (method) {
+    case 'cash':
+      return 'Cash';
+    case 'card':
+      return 'Card';
+    case 'bankTransfer':
+      return 'Bank Transfer';
+    case 'check':
+      return 'Check';
+    default:
+      return method;
+  }
+}
 
 /// Shows the receipt dialog after successful checkout.
 Future<void> showReceiptDialog(
@@ -151,100 +282,23 @@ class ReceiptDialog extends HookConsumerWidget {
     }, [defaultPrinterAsync.value]);
 
     Future<void> handlePdfPrint() async {
-      final dateFormat = DateFormat('MMM dd, yyyy hh:mm a');
-      // Use 'P' instead of '₱' for PDF compatibility (Helvetica doesn't support ₱)
-      final currencyFormat =
-          NumberFormat.currency(symbol: 'P', decimalDigits: 2);
+      final result = await runPdfTask<_ReceiptPdfPayload>(
+        context: context,
+        message: 'Generating receipt...',
+        preload: () async => _ReceiptPdfPayload(
+          receiptNumber: sale.receiptNumber,
+          createdDate: sale.created ?? DateTime.now(),
+          paymentMethod: sale.paymentMethod,
+          totalAmount: sale.totalAmount.toDouble(),
+          paymentRef: sale.paymentRef,
+          notes: sale.notes,
+        ),
+        generate: _buildReceiptPdfBytes,
+      );
+      if (result is! PdfTaskSuccess) return;
 
       await Printing.layoutPdf(
-        onLayout: (format) async {
-          final pdf = pw.Document();
-          pdf.addPage(
-            pw.Page(
-              pageFormat: PdfPageFormat.a4,
-              margin: const pw.EdgeInsets.all(40),
-              build: (context) => pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Center(
-                    child: pw.Text(
-                      'Receipt',
-                      style: pw.TextStyle(
-                        fontSize: 24,
-                        fontWeight: pw.FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  pw.SizedBox(height: 8),
-                  pw.Center(
-                    child: pw.Text(
-                      '#${sale.receiptNumber}',
-                      style: const pw.TextStyle(fontSize: 12),
-                    ),
-                  ),
-                  pw.SizedBox(height: 20),
-                  pw.Divider(),
-                  pw.SizedBox(height: 10),
-                  pw.Text(
-                    'Date: ${sale.created != null ? dateFormat.format(sale.created!) : dateFormat.format(DateTime.now())}',
-                  ),
-                  pw.SizedBox(height: 4),
-                  pw.Text(
-                    'Payment: ${_formatPaymentMethod(sale.paymentMethod)}',
-                  ),
-                  if (sale.paymentRef != null &&
-                      sale.paymentRef!.isNotEmpty) ...[
-                    pw.SizedBox(height: 4),
-                    pw.Text('Reference: ${sale.paymentRef}'),
-                  ],
-                  pw.SizedBox(height: 10),
-                  pw.Divider(),
-                  pw.SizedBox(height: 10),
-                  pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Text(
-                        'Total:',
-                        style: pw.TextStyle(
-                          fontSize: 16,
-                          fontWeight: pw.FontWeight.bold,
-                        ),
-                      ),
-                      pw.Text(
-                        currencyFormat.format(sale.totalAmount),
-                        style: pw.TextStyle(
-                          fontSize: 16,
-                          fontWeight: pw.FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (sale.notes != null && sale.notes!.isNotEmpty) ...[
-                    pw.SizedBox(height: 10),
-                    pw.Divider(),
-                    pw.SizedBox(height: 10),
-                    pw.Text(
-                      'Notes:',
-                      style: pw.TextStyle(
-                        fontWeight: pw.FontWeight.bold,
-                      ),
-                    ),
-                    pw.SizedBox(height: 4),
-                    pw.Text(sale.notes!),
-                  ],
-                  pw.SizedBox(height: 20),
-                  pw.Center(
-                    child: pw.Text(
-                      'Thank you!',
-                      style: const pw.TextStyle(fontSize: 12),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-          return pdf.save();
-        },
+        onLayout: (_) async => result.bytes,
       );
     }
 
@@ -530,18 +584,6 @@ class ReceiptDialog extends HookConsumerWidget {
     );
   }
 
-  String _formatPaymentMethod(String method) {
-    switch (method) {
-      case 'cash':
-        return 'Cash';
-      case 'card':
-        return 'Card';
-      case 'bankTransfer':
-        return 'Bank Transfer';
-      case 'check':
-        return 'Check';
-      default:
-        return method;
-    }
-  }
+  String _formatPaymentMethod(String method) =>
+      _formatPaymentMethodLabel(method);
 }
