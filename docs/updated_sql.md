@@ -118,6 +118,7 @@ SELECT
   (ROW_NUMBER() OVER()) AS id,
   si.productName,
   si.product AS product_id,
+  s.branch,
   DATE(s.created) AS sale_date,
   SUM(si.quantity) AS total_quantity_sold,
   SUM(si.subtotal) AS total_revenue,
@@ -126,7 +127,7 @@ FROM saleItems si
 JOIN sales s ON si.sale = s.id
 WHERE (s.isDeleted = false OR s.isDeleted IS NULL)
   AND s.status = 'completed'
-GROUP BY si.productName, si.product, DATE(s.created)
+GROUP BY si.productName, si.product, s.branch, DATE(s.created)
 ORDER BY total_revenue DESC
 ```
 
@@ -150,32 +151,37 @@ ORDER BY total_revenue DESC
 SELECT
   (ROW_NUMBER() OVER()) AS id,
   a.status,
+  a.branch,
   COUNT(*) AS count
 FROM appointmentSchedules a
 WHERE DATE(a.date) = DATE('now')
   AND (a.isDeleted = false OR a.isDeleted IS NULL)
-GROUP BY a.status
+GROUP BY a.status, a.branch
 ```
 
 **Alternative: vw_todays_sales**
 ```sql
 SELECT
   (ROW_NUMBER() OVER()) AS id,
+  s.branch,
   COUNT(*) AS transaction_count,
   COALESCE(SUM(s.totalAmount), 0) AS total_revenue
 FROM sales s
 WHERE DATE(s.created) = DATE('now')
   AND s.status = 'completed'
   AND (s.isDeleted = false OR s.isDeleted IS NULL)
+GROUP BY s.branch
 ```
 
 **Alternative: vw_active_patients_count**
 ```sql
 SELECT
   (ROW_NUMBER() OVER()) AS id,
+  p.branch,
   COUNT(*) AS active_count
 FROM patients p
 WHERE p.isDeleted = false OR p.isDeleted IS NULL
+GROUP BY p.branch
 ```
 
 **Benefits:**
@@ -197,11 +203,12 @@ SELECT
   ps.id AS species_id,
   ps.name AS species_name,
   p.sex,
+  p.branch,
   COUNT(*) AS patient_count
 FROM patients p
 LEFT JOIN patientSpecies ps ON p.species = ps.id
 WHERE p.isDeleted = false OR p.isDeleted IS NULL
-GROUP BY ps.id, ps.name, p.sex
+GROUP BY ps.id, ps.name, p.sex, p.branch
 ```
 
 ### 5b. vw_new_patients_by_date
@@ -213,11 +220,12 @@ SELECT
   (ROW_NUMBER() OVER()) AS id,
   DATE(p.created) AS registration_date,
   ps.name AS species_name,
+  p.branch,
   COUNT(*) AS patient_count
 FROM patients p
 LEFT JOIN patientSpecies ps ON p.species = ps.id
 WHERE p.isDeleted = false OR p.isDeleted IS NULL
-GROUP BY DATE(p.created), ps.name
+GROUP BY DATE(p.created), ps.name, p.branch
 ORDER BY registration_date DESC
 ```
 
@@ -258,13 +266,15 @@ ORDER BY appointment_date DESC
 ```sql
 SELECT
   pl.product AS id,
+  p.branch,
   SUM(pl.quantity) AS total_quantity,
   COUNT(*) AS lot_count,
   MIN(pl.expiration) AS earliest_expiration,
   MAX(pl.expiration) AS latest_expiration
 FROM productLots pl
+JOIN products p ON pl.product = p.id
 WHERE (pl.isDeleted = false OR pl.isDeleted IS NULL)
-GROUP BY pl.product
+GROUP BY pl.product, p.branch
 ```
 
 **Benefits:**
@@ -283,11 +293,12 @@ SELECT
   tp.status,
   t.name AS treatment_name,
   t.id AS treatment_id,
+  t.branch,
   COUNT(*) AS plan_count
 FROM treatmentPlans tp
 LEFT JOIN patientTreatments t ON tp.treatment = t.id
 WHERE tp.isDeleted = false OR tp.isDeleted IS NULL
-GROUP BY tp.status, t.name, t.id
+GROUP BY tp.status, t.name, t.id, t.branch
 ```
 
 ### 8b. vw_overdue_treatment_items
@@ -301,7 +312,8 @@ SELECT
   tpi.expectedDate,
   tpi.status,
   tp.patient,
-  t.name AS treatment_name
+  t.name AS treatment_name,
+  t.branch
 FROM treatmentPlanItems tpi
 JOIN treatmentPlans tp ON tpi.plan = tp.id
 LEFT JOIN patientTreatments t ON tp.treatment = t.id
@@ -474,25 +486,25 @@ migrate((app) => {
 
 ## Summary Table
 
-| Priority | View Name | Purpose |
-|----------|-----------|---------|
-| HIGH | `vw_inventory_status` | Products with lot totals and expiration counts |
-| HIGH | `vw_sales_daily_summary` | Sales aggregated by day/payment method |
-| HIGH | `vw_top_selling_products` | Product sales aggregated by day |
-| HIGH | `vw_todays_appointments` | Today's appointments grouped by status |
-| HIGH | `vw_todays_sales` | Today's sales count and revenue |
-| HIGH | `vw_active_patients_count` | Total active patients count |
-| MEDIUM | `vw_patient_statistics` | Patients grouped by species/sex |
-| MEDIUM | `vw_new_patients_by_date` | New patient registrations by date |
-| MEDIUM | `vw_appointment_summary` | Appointments grouped by date/status/purpose |
-| MEDIUM | `vw_lot_quantity_totals` | Lot totals per product |
-| MEDIUM | `vw_treatment_plan_summary` | Plans grouped by status/treatment |
-| MEDIUM | `vw_overdue_treatment_items` | Overdue treatment plan items |
-| LOW | `vw_low_stock_products` | Non-lot products below threshold |
-| LOW | `vw_low_stock_lot_products` | Lot-tracked products below threshold |
-| LOW | `vw_expired_lots` | Expired product lots |
-| LOW | `vw_near_expiration_lots` | Lots expiring within 30 days |
-| LOW | `vw_messages_pending` | Pending messages for dashboard |
+| Priority | View Name | Purpose | Branch |
+|----------|-----------|---------|--------|
+| HIGH | `vw_inventory_status` | Products with lot totals and expiration counts | `p.branch` |
+| HIGH | `vw_sales_daily_summary` | Sales aggregated by day/payment method/branch | `s.branch` |
+| HIGH | `vw_top_selling_products` | Product sales aggregated by day/branch | `s.branch` |
+| HIGH | `vw_todays_appointments` | Today's appointments grouped by status/branch | `a.branch` |
+| HIGH | `vw_todays_sales` | Today's sales count and revenue per branch | `s.branch` |
+| HIGH | `vw_active_patients_count` | Active patients count per branch | `p.branch` |
+| MEDIUM | `vw_patient_statistics` | Patients grouped by species/sex/branch | `p.branch` |
+| MEDIUM | `vw_new_patients_by_date` | New patient registrations by date/branch | `p.branch` |
+| MEDIUM | `vw_appointment_summary` | Appointments grouped by date/status/purpose/branch | `branch` |
+| MEDIUM | `vw_lot_quantity_totals` | Lot totals per product/branch | `p.branch` |
+| MEDIUM | `vw_treatment_plan_summary` | Plans grouped by status/treatment/branch | `t.branch` |
+| MEDIUM | `vw_overdue_treatment_items` | Overdue treatment plan items with branch | `t.branch` |
+| LOW | `vw_low_stock_products` | Non-lot products below threshold | `p.branch` |
+| LOW | `vw_low_stock_lot_products` | Lot-tracked products below threshold | `p.branch` |
+| LOW | `vw_expired_lots` | Expired product lots | `p.branch` |
+| LOW | `vw_near_expiration_lots` | Lots expiring within 30 days | `p.branch` |
+| LOW | `vw_messages_pending` | Pending messages for dashboard | `m.branch` |
 
 ---
 

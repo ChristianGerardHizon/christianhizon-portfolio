@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../domain/inventory_alert.dart';
 
 part 'inventory_alerts_controller.g.dart';
@@ -15,14 +16,25 @@ part 'inventory_alerts_controller.g.dart';
 /// - vw_near_expiration_lots
 @riverpod
 Future<InventoryAlertsSummary> inventoryAlertsSummary(Ref ref) async {
+  final branchId = ref.watch(currentBranchIdProvider);
   final pb = ref.read(pocketbaseProvider);
+  final branchFilter =
+      branchId != null ? 'branch = "$branchId"' : null;
 
   // Query all 4 views in parallel for best performance
   final results = await Future.wait([
-    pb.collection(PocketBaseCollections.vwLowStockProducts).getFullList(),
-    pb.collection(PocketBaseCollections.vwLowStockLotProducts).getFullList(),
-    pb.collection(PocketBaseCollections.vwExpiredLots).getFullList(),
-    pb.collection(PocketBaseCollections.vwNearExpirationLots).getFullList(),
+    pb
+        .collection(PocketBaseCollections.vwLowStockProducts)
+        .getFullList(filter: branchFilter),
+    pb
+        .collection(PocketBaseCollections.vwLowStockLotProducts)
+        .getFullList(filter: branchFilter),
+    pb
+        .collection(PocketBaseCollections.vwExpiredLots)
+        .getFullList(filter: branchFilter),
+    pb
+        .collection(PocketBaseCollections.vwNearExpirationLots)
+        .getFullList(filter: branchFilter),
   ]);
 
   final lowStockRecords = results[0];

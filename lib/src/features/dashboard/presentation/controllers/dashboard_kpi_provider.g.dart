@@ -101,18 +101,21 @@ String _$productsExpiredCountHash() =>
 
 /// Count of active patients.
 /// Uses vw_active_patients_count view for optimized query.
+/// Filtered by the current branch.
 
 @ProviderFor(activePatientsCount)
 final activePatientsCountProvider = ActivePatientsCountProvider._();
 
 /// Count of active patients.
 /// Uses vw_active_patients_count view for optimized query.
+/// Filtered by the current branch.
 
 final class ActivePatientsCountProvider
     extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int> {
   /// Count of active patients.
   /// Uses vw_active_patients_count view for optimized query.
+  /// Filtered by the current branch.
   ActivePatientsCountProvider._()
       : super(
           from: null,
@@ -139,7 +142,7 @@ final class ActivePatientsCountProvider
 }
 
 String _$activePatientsCountHash() =>
-    r'f8b8d7595f12c264dbe12945700f7e6e55cd2fb8';
+    r'3294da53a26d6cc2066cbc20490afc89201fe16c';
 
 /// Count of products with low stock.
 /// Delegates to the unified inventory alerts controller for both lot-tracked
@@ -188,6 +191,7 @@ String _$lowStockProductsCountHash() =>
 
 /// Today's appointments breakdown by status.
 /// Uses vw_todays_appointments view for optimized query.
+/// Filtered by the current branch.
 
 @ProviderFor(todayAppointmentsBreakdown)
 final todayAppointmentsBreakdownProvider =
@@ -195,6 +199,7 @@ final todayAppointmentsBreakdownProvider =
 
 /// Today's appointments breakdown by status.
 /// Uses vw_todays_appointments view for optimized query.
+/// Filtered by the current branch.
 
 final class TodayAppointmentsBreakdownProvider extends $FunctionalProvider<
         AsyncValue<TodayAppointmentsBreakdown>,
@@ -205,6 +210,7 @@ final class TodayAppointmentsBreakdownProvider extends $FunctionalProvider<
         $FutureProvider<TodayAppointmentsBreakdown> {
   /// Today's appointments breakdown by status.
   /// Uses vw_todays_appointments view for optimized query.
+  /// Filtered by the current branch.
   TodayAppointmentsBreakdownProvider._()
       : super(
           from: null,
@@ -232,4 +238,4 @@ final class TodayAppointmentsBreakdownProvider extends $FunctionalProvider<
 }
 
 String _$todayAppointmentsBreakdownHash() =>
-    r'ab90b11b4c4c1e40e8fb9bf3da12e0b026a247ec';
+    r'9dbacf3695e4bc4dc00f111ebe94052706e5f34b';

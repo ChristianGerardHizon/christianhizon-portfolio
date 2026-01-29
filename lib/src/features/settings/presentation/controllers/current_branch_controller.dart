@@ -2,9 +2,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/storage/secure_storage_provider.dart';
+import '../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../appointments/presentation/controllers/daily_appointments_controller.dart';
 import '../../../appointments/presentation/controllers/paginated_appointments_controller.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../dashboard/presentation/controllers/dashboard_kpi_provider.dart';
+import '../../../dashboard/presentation/controllers/inventory_alerts_controller.dart';
+import '../../../dashboard/presentation/controllers/todays_sales_controller.dart';
 import '../../../patients/presentation/controllers/paginated_patients_controller.dart';
 import '../../../patients/presentation/controllers/patient_treatments_controller.dart';
 import '../../../products/presentation/controllers/paginated_products_controller.dart';
@@ -100,6 +104,14 @@ class CurrentBranchController extends _$CurrentBranchController {
     ref.invalidate(paginatedAppointmentsControllerProvider);
     ref.invalidate(dailyAppointmentsControllerProvider);
     ref.invalidate(paginatedSalesControllerProvider);
+
+    // Invalidate dashboard providers
+    ref.invalidate(appointmentsControllerProvider);
+    ref.invalidate(activePatientsCountProvider);
+    ref.invalidate(todayAppointmentsBreakdownProvider);
+    ref.invalidate(todaySalesSummaryProvider);
+    ref.invalidate(todaySalesProvider);
+    ref.invalidate(inventoryAlertsSummaryProvider);
   }
 }
 

@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import 'inventory_alerts_controller.dart';
 
 part 'dashboard_kpi_provider.g.dart';
@@ -24,12 +25,16 @@ Future<int> productsExpiredCount(Ref ref) async {
 
 /// Count of active patients.
 /// Uses vw_active_patients_count view for optimized query.
+/// Filtered by the current branch.
 @riverpod
 Future<int> activePatientsCount(Ref ref) async {
+  final branchId = ref.watch(currentBranchIdProvider);
   final pb = ref.read(pocketbaseProvider);
   final records = await pb
       .collection(PocketBaseCollections.vwActivePatientsCount)
-      .getFullList();
+      .getFullList(
+        filter: branchId != null ? 'branch = "$branchId"' : null,
+      );
   if (records.isEmpty) return 0;
   return records.first.getIntValue('active_count');
 }
@@ -61,12 +66,16 @@ class TodayAppointmentsBreakdown {
 
 /// Today's appointments breakdown by status.
 /// Uses vw_todays_appointments view for optimized query.
+/// Filtered by the current branch.
 @riverpod
 Future<TodayAppointmentsBreakdown> todayAppointmentsBreakdown(Ref ref) async {
+  final branchId = ref.watch(currentBranchIdProvider);
   final pb = ref.read(pocketbaseProvider);
   final records = await pb
       .collection(PocketBaseCollections.vwTodaysAppointments)
-      .getFullList();
+      .getFullList(
+        filter: branchId != null ? 'branch = "$branchId"' : null,
+      );
 
   var scheduled = 0;
   var completed = 0;

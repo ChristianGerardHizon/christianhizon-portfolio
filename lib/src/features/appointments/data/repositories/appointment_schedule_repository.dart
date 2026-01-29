@@ -17,7 +17,7 @@ part 'appointment_schedule_repository.g.dart';
 /// Repository interface for appointment schedules.
 abstract class AppointmentScheduleRepository {
   /// Fetches all appointments.
-  FutureEither<List<AppointmentSchedule>> fetchAll();
+  FutureEither<List<AppointmentSchedule>> fetchAll({String? filter});
 
   /// Fetches appointments with pagination.
   FutureEitherPaginated<AppointmentSchedule> fetchPaginated({
@@ -85,11 +85,14 @@ class AppointmentScheduleRepositoryImpl implements AppointmentScheduleRepository
       _pb.collection(PocketBaseCollections.appointments);
 
   @override
-  FutureEither<List<AppointmentSchedule>> fetchAll() async {
+  FutureEither<List<AppointmentSchedule>> fetchAll({String? filter}) async {
     return TaskEither.tryCatch(
       () async {
+        final baseFilter = PBFilters.active.build();
+        final combinedFilter =
+            filter != null ? '$baseFilter && $filter' : baseFilter;
         final records = await _collection.getFullList(
-          filter: PBFilters.active.build(),
+          filter: combinedFilter,
           sort: '-date',
           expand: PBExpand.appointment.toString(),
         );

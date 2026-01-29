@@ -68,7 +68,7 @@ final class InventoryAlertsSummaryProvider extends $FunctionalProvider<
 }
 
 String _$inventoryAlertsSummaryHash() =>
-    r'7ed4948f3877b87c3bce9ab1ac800767067852d1';
+    r'd99d1aeacb415c1f74c48eeb823ca57de9e6cbfe';
 
 /// Count of low stock products (including lot-tracked).
 
