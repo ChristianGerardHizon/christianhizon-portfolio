@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'dart:io' show Platform;
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -859,7 +861,9 @@ class CheckoutDialog extends HookConsumerWidget {
                                                   ImageSource.gallery),
                                         ),
                                       ),
-                                      if (!kIsWeb) ...[
+                                      if (!kIsWeb &&
+                                          (Platform.isAndroid ||
+                                              Platform.isIOS)) ...[
                                         const SizedBox(width: 8),
                                         Expanded(
                                           child: OutlinedButton.icon(
