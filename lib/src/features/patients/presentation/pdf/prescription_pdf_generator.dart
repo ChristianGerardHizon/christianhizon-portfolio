@@ -8,6 +8,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+import '../../../../core/utils/permission_service.dart';
 import '../../../settings/domain/branch.dart';
 import '../../domain/patient.dart';
 import '../../domain/patient_record.dart';
@@ -57,7 +58,12 @@ class PrescriptionPdfGenerator {
   }
 
   /// Saves PDF via save dialog (desktop) or to downloads (mobile/web).
+  ///
+  /// Requests storage permissions on Android if needed.
+  /// Throws [PermissionDeniedException] if permission is permanently denied.
   Future<String?> savePrescription() async {
+    await PermissionService.ensureStoragePermissions();
+
     final pdfBytes = await _generatePdf();
     final filename = 'Prescription_${_formatFilename()}';
 

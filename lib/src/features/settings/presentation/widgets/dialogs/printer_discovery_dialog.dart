@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
+import '../../../../../core/utils/permission_service.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../pos/presentation/services/thermal_print_service.dart';
 
@@ -24,10 +25,12 @@ class PrinterDiscoveryDialog extends HookConsumerWidget {
     final isScanning = useState(false);
     final devices = useState<List<BluetoothInfo>>([]);
     final error = useState<String?>(null);
+    final isPermissionPermanentlyDenied = useState(false);
 
     Future<void> scanForPrinters() async {
       isScanning.value = true;
       error.value = null;
+      isPermissionPermanentlyDenied.value = false;
 
       try {
         final printService = ref.read(thermalPrintServiceProvider.notifier);
@@ -47,6 +50,9 @@ class PrinterDiscoveryDialog extends HookConsumerWidget {
           error.value =
               'No Bluetooth devices found. Make sure your printer is paired and turned on.';
         }
+      } on PermissionDeniedException catch (e) {
+        error.value = e.message;
+        isPermissionPermanentlyDenied.value = e.isPermanent;
       } catch (e) {
         error.value = 'Error scanning for devices: $e';
       } finally {
@@ -111,6 +117,9 @@ class PrinterDiscoveryDialog extends HookConsumerWidget {
               isScanning: isScanning.value,
               devices: devices.value,
               error: error.value,
+              isPermissionPermanentlyDenied:
+                  isPermissionPermanentlyDenied.value,
+              onRetry: scanForPrinters,
             ),
           ),
         ],
@@ -124,6 +133,8 @@ class PrinterDiscoveryDialog extends HookConsumerWidget {
     required bool isScanning,
     required List<BluetoothInfo> devices,
     required String? error,
+    required bool isPermissionPermanentlyDenied,
+    required VoidCallback onRetry,
   }) {
     final theme = Theme.of(context);
 
@@ -142,23 +153,43 @@ class PrinterDiscoveryDialog extends HookConsumerWidget {
 
     if (error != null) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.bluetooth_disabled,
-              size: 48,
-              color: theme.colorScheme.error,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              error,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                isPermissionPermanentlyDenied
+                    ? Icons.block
+                    : Icons.bluetooth_disabled,
+                size: 48,
                 color: theme.colorScheme.error,
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              Text(
+                error,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+              const SizedBox(height: 16),
+              if (isPermissionPermanentlyDenied)
+                FilledButton.icon(
+                  onPressed: () async {
+                    await PermissionService.openSettings();
+                  },
+                  icon: const Icon(Icons.settings),
+                  label: const Text('Open Settings'),
+                )
+              else
+                OutlinedButton.icon(
+                  onPressed: onRetry,
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Try Again'),
+                ),
+            ],
+          ),
         ),
       );
     }

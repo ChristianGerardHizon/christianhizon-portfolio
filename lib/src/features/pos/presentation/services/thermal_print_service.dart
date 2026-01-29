@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/utils/permission_service.dart';
 import '../../../settings/domain/printer_config.dart';
 import '../../../settings/domain/printer_paper_width.dart';
 import '../../domain/sale.dart';
@@ -79,7 +80,13 @@ class ThermalPrintService extends _$ThermalPrintService {
   }
 
   /// Discovers available Bluetooth printers.
+  ///
+  /// Requests Bluetooth permissions if not yet granted.
+  /// Throws [PermissionDeniedException] if permissions are permanently denied.
   Future<List<BluetoothInfo>> discoverBluetoothPrinters() async {
+    // Ensure Bluetooth permissions are granted before scanning
+    await PermissionService.ensureBluetoothPermissions();
+
     try {
       final isEnabled = await PrintBluetoothThermal.bluetoothEnabled;
       if (!isEnabled) {
@@ -95,10 +102,15 @@ class ThermalPrintService extends _$ThermalPrintService {
   }
 
   /// Checks if Bluetooth is available and enabled.
+  ///
+  /// Requests Bluetooth permissions if not yet granted.
+  /// Throws [PermissionDeniedException] if permissions are permanently denied.
   Future<bool> isBluetoothEnabled() async {
     try {
+      await PermissionService.ensureBluetoothPermissions();
       return await PrintBluetoothThermal.bluetoothEnabled;
     } catch (e) {
+      if (e is PermissionDeniedException) rethrow;
       return false;
     }
   }
@@ -120,6 +132,13 @@ class ThermalPrintService extends _$ThermalPrintService {
   Future<PrintResult> _printViaBluetooth(
       String macAddress, List<int> bytes) async {
     try {
+      // Ensure Bluetooth permissions are granted before printing
+      try {
+        await PermissionService.ensureBluetoothPermissions();
+      } on PermissionDeniedException catch (e) {
+        return PrintFailure(e.message);
+      }
+
       // Check if Bluetooth is enabled
       final isEnabled = await PrintBluetoothThermal.bluetoothEnabled;
       if (!isEnabled) {
