@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:http/http.dart' as http;
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,7 +18,11 @@ import '../dto/sale_item_dto.dart';
 part 'sales_repository.g.dart';
 
 abstract class SalesRepository {
-  FutureEither<Sale> createSale(Sale sale, List<SaleItem> items);
+  FutureEither<Sale> createSale(
+    Sale sale,
+    List<SaleItem> items, {
+    http.MultipartFile? paymentProofFile,
+  });
   FutureEither<Sale> getSale(String id);
   FutureEither<List<Sale>> getSales({String? branchId, DateTime? date});
   FutureEither<List<SaleItem>> getSaleItems(String saleId);
@@ -56,7 +61,7 @@ class SalesRepositoryImpl implements SalesRepository {
       _pb.collection(PocketBaseCollections.saleItems);
 
   Sale _toSaleEntity(RecordModel record) {
-    return SaleDto.fromRecord(record).toEntity();
+    return SaleDto.fromRecord(record).toEntity(baseUrl: _pb.baseURL);
   }
 
   SaleItem _toSaleItemEntity(RecordModel record) {
@@ -66,7 +71,11 @@ class SalesRepositoryImpl implements SalesRepository {
   }
 
   @override
-  FutureEither<Sale> createSale(Sale sale, List<SaleItem> items) async {
+  FutureEither<Sale> createSale(
+    Sale sale,
+    List<SaleItem> items, {
+    http.MultipartFile? paymentProofFile,
+  }) async {
     return TaskEither.tryCatch(
       () async {
         // 1. Create Sale Record
@@ -82,7 +91,10 @@ class SalesRepositoryImpl implements SalesRepository {
           'paymentRef': sale.paymentRef,
           'notes': sale.notes,
         };
-        final saleRecord = await _sales.create(body: saleBody);
+        final saleRecord = await _sales.create(
+          body: saleBody,
+          files: paymentProofFile != null ? [paymentProofFile] : [],
+        );
 
         // 2. Create Sale Items
         // Ideally we should do this in batch or have backend logic, but for now loop

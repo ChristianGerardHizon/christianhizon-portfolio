@@ -1,9 +1,14 @@
+import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/dialog_close_handler.dart';
@@ -57,6 +62,10 @@ class CheckoutDialog extends HookConsumerWidget {
     final isSearchingPatients = useState(false);
     final showPatientDropdown = useState(false);
 
+    // Payment proof image state
+    final paymentProofBytes = useState<Uint8List?>(null);
+    final paymentProofFileName = useState<String?>(null);
+
     // Watch cart state
     final cartState = ref.watch(cartControllerProvider);
     final cartItems = cartState.value?.items ?? [];
@@ -107,6 +116,25 @@ class CheckoutDialog extends HookConsumerWidget {
       showPatientDropdown.value = false;
     }
 
+    Future<void> pickPaymentProof(ImageSource source) async {
+      final picker = ImagePicker();
+      final image = await picker.pickImage(
+        source: source,
+        maxWidth: 1200,
+        maxHeight: 1200,
+        imageQuality: 85,
+      );
+      if (image == null) return;
+      final bytes = await image.readAsBytes();
+      paymentProofBytes.value = bytes;
+      paymentProofFileName.value = image.name;
+    }
+
+    void clearPaymentProof() {
+      paymentProofBytes.value = null;
+      paymentProofFileName.value = null;
+    }
+
     Future<void> handleCheckout() async {
       final isValid = formKey.currentState!.saveAndValidate();
       if (!isValid) {
@@ -144,6 +172,16 @@ class CheckoutDialog extends HookConsumerWidget {
               ? customerNameController.text.trim()
               : null);
 
+      // Build payment proof file if image was picked
+      http.MultipartFile? proofFile;
+      if (paymentProofBytes.value != null) {
+        proofFile = http.MultipartFile.fromBytes(
+          'paymentProof',
+          paymentProofBytes.value!,
+          filename: paymentProofFileName.value ?? 'payment_proof.jpg',
+        );
+      }
+
       // Process checkout
       final result =
           await ref.read(checkoutControllerProvider.notifier).processCheckout(
@@ -156,6 +194,7 @@ class CheckoutDialog extends HookConsumerWidget {
                         : null,
                 customerId: customerId,
                 customerName: customerName,
+                paymentProofFile: proofFile,
               );
 
       isSaving.value = false;
@@ -758,6 +797,84 @@ class CheckoutDialog extends HookConsumerWidget {
                                         selectedPaymentMethod.value),
                                   ),
                                 ),
+
+                                // OR divider
+                                const SizedBox(height: 16),
+                                Row(
+                                  children: [
+                                    const Expanded(child: Divider()),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: Text('OR',
+                                          style: theme.textTheme.bodySmall),
+                                    ),
+                                    const Expanded(child: Divider()),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+
+                                // Payment proof image
+                                Text(
+                                  'Payment Proof Image',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                if (paymentProofBytes.value != null) ...[
+                                  Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(8),
+                                        child: Image.memory(
+                                          paymentProofBytes.value!,
+                                          height: 150,
+                                          width: double.infinity,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 4,
+                                        right: 4,
+                                        child: IconButton.filledTonal(
+                                          icon: const Icon(Icons.close,
+                                              size: 18),
+                                          onPressed: clearPaymentProof,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ] else ...[
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: OutlinedButton.icon(
+                                          icon: const Icon(
+                                              Icons.photo_library),
+                                          label: const Text('Gallery'),
+                                          onPressed: () =>
+                                              pickPaymentProof(
+                                                  ImageSource.gallery),
+                                        ),
+                                      ),
+                                      if (!kIsWeb) ...[
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: OutlinedButton.icon(
+                                            icon: const Icon(
+                                                Icons.camera_alt),
+                                            label: const Text('Camera'),
+                                            onPressed: () =>
+                                                pickPaymentProof(
+                                                    ImageSource.camera),
+                                          ),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                ],
                               ],
                             ),
                           ),

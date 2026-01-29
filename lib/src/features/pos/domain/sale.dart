@@ -18,6 +18,7 @@ class Sale with SaleMappable {
     this.patient,
     this.customerName,
     this.paymentRef,
+    this.paymentProofUrl,
     this.notes,
     this.created,
     this.updated,
@@ -52,6 +53,9 @@ class Sale with SaleMappable {
 
   /// External payment reference.
   final String? paymentRef;
+
+  /// URL of the payment proof image (screenshot of transaction).
+  final String? paymentProofUrl;
 
   /// Internal notes.
   final String? notes;

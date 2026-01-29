@@ -65,6 +65,12 @@ class SaleMapper extends ClassMapperBase<Sale> {
     _$paymentRef,
     opt: true,
   );
+  static String? _$paymentProofUrl(Sale v) => v.paymentProofUrl;
+  static const Field<Sale, String> _f$paymentProofUrl = Field(
+    'paymentProofUrl',
+    _$paymentProofUrl,
+    opt: true,
+  );
   static String? _$notes(Sale v) => v.notes;
   static const Field<Sale, String> _f$notes = Field(
     'notes',
@@ -96,6 +102,7 @@ class SaleMapper extends ClassMapperBase<Sale> {
     #patient: _f$patient,
     #customerName: _f$customerName,
     #paymentRef: _f$paymentRef,
+    #paymentProofUrl: _f$paymentProofUrl,
     #notes: _f$notes,
     #created: _f$created,
     #updated: _f$updated,
@@ -113,6 +120,7 @@ class SaleMapper extends ClassMapperBase<Sale> {
       patient: data.dec(_f$patient),
       customerName: data.dec(_f$customerName),
       paymentRef: data.dec(_f$paymentRef),
+      paymentProofUrl: data.dec(_f$paymentProofUrl),
       notes: data.dec(_f$notes),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
@@ -176,6 +184,7 @@ abstract class SaleCopyWith<$R, $In extends Sale, $Out>
     String? patient,
     String? customerName,
     String? paymentRef,
+    String? paymentProofUrl,
     String? notes,
     DateTime? created,
     DateTime? updated,
@@ -201,6 +210,7 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
     Object? patient = $none,
     Object? customerName = $none,
     Object? paymentRef = $none,
+    Object? paymentProofUrl = $none,
     Object? notes = $none,
     Object? created = $none,
     Object? updated = $none,
@@ -216,6 +226,7 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
       if (patient != $none) #patient: patient,
       if (customerName != $none) #customerName: customerName,
       if (paymentRef != $none) #paymentRef: paymentRef,
+      if (paymentProofUrl != $none) #paymentProofUrl: paymentProofUrl,
       if (notes != $none) #notes: notes,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
@@ -233,6 +244,7 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
     patient: data.get(#patient, or: $value.patient),
     customerName: data.get(#customerName, or: $value.customerName),
     paymentRef: data.get(#paymentRef, or: $value.paymentRef),
+    paymentProofUrl: data.get(#paymentProofUrl, or: $value.paymentProofUrl),
     notes: data.get(#notes, or: $value.notes),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),

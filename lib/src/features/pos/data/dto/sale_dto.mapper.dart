@@ -72,6 +72,12 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
     _$paymentRef,
     opt: true,
   );
+  static String? _$paymentProof(SaleDto v) => v.paymentProof;
+  static const Field<SaleDto, String> _f$paymentProof = Field(
+    'paymentProof',
+    _$paymentProof,
+    opt: true,
+  );
   static String? _$notes(SaleDto v) => v.notes;
   static const Field<SaleDto, String> _f$notes = Field(
     'notes',
@@ -105,6 +111,7 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
     #patient: _f$patient,
     #customerName: _f$customerName,
     #paymentRef: _f$paymentRef,
+    #paymentProof: _f$paymentProof,
     #notes: _f$notes,
     #created: _f$created,
     #updated: _f$updated,
@@ -124,6 +131,7 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
       patient: data.dec(_f$patient),
       customerName: data.dec(_f$customerName),
       paymentRef: data.dec(_f$paymentRef),
+      paymentProof: data.dec(_f$paymentProof),
       notes: data.dec(_f$notes),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
@@ -200,6 +208,7 @@ abstract class SaleDtoCopyWith<$R, $In extends SaleDto, $Out>
     String? patient,
     String? customerName,
     String? paymentRef,
+    String? paymentProof,
     String? notes,
     String? created,
     String? updated,
@@ -229,6 +238,7 @@ class _SaleDtoCopyWithImpl<$R, $Out>
     Object? patient = $none,
     Object? customerName = $none,
     Object? paymentRef = $none,
+    Object? paymentProof = $none,
     Object? notes = $none,
     Object? created = $none,
     Object? updated = $none,
@@ -246,6 +256,7 @@ class _SaleDtoCopyWithImpl<$R, $Out>
       if (patient != $none) #patient: patient,
       if (customerName != $none) #customerName: customerName,
       if (paymentRef != $none) #paymentRef: paymentRef,
+      if (paymentProof != $none) #paymentProof: paymentProof,
       if (notes != $none) #notes: notes,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
@@ -265,6 +276,7 @@ class _SaleDtoCopyWithImpl<$R, $Out>
     patient: data.get(#patient, or: $value.patient),
     customerName: data.get(#customerName, or: $value.customerName),
     paymentRef: data.get(#paymentRef, or: $value.paymentRef),
+    paymentProof: data.get(#paymentProof, or: $value.paymentProof),
     notes: data.get(#notes, or: $value.notes),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),

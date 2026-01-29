@@ -184,6 +184,70 @@ class _SaleDetailContent extends ConsumerWidget {
                         label: 'Reference',
                         value: sale.paymentRef!,
                       ),
+                    if (sale.paymentProofUrl != null &&
+                        sale.paymentProofUrl!.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.image,
+                            size: 18,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Payment Proof',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                      ),
+                                ),
+                                const SizedBox(height: 4),
+                                GestureDetector(
+                                  onTap: () => showDialog(
+                                    context: context,
+                                    builder: (_) => Dialog(
+                                      child: InteractiveViewer(
+                                        child: Image.network(
+                                          sale.paymentProofUrl!,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                      sale.paymentProofUrl!,
+                                      height: 120,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) =>
+                                          const SizedBox(
+                                        height: 50,
+                                        child: Center(
+                                          child: Icon(Icons.broken_image),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                     if (sale.notes != null && sale.notes!.isNotEmpty)
                       _InfoRow(
                         icon: Icons.note,

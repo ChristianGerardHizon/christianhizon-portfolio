@@ -20,6 +20,7 @@ class SaleDto with SaleDtoMappable {
   final String? patient;
   final String? customerName;
   final String? paymentRef;
+  final String? paymentProof;
   final String? notes;
   final String? created;
   final String? updated;
@@ -37,6 +38,7 @@ class SaleDto with SaleDtoMappable {
     this.patient,
     this.customerName,
     this.paymentRef,
+    this.paymentProof,
     this.notes,
     this.created,
     this.updated,
@@ -56,13 +58,14 @@ class SaleDto with SaleDtoMappable {
       patient: record.getStringValue('patient'),
       customerName: record.getStringValue('customerName'),
       paymentRef: record.getStringValue('paymentRef'),
+      paymentProof: record.getStringValue('paymentProof'),
       notes: record.getStringValue('notes'),
       created: record.get<String>('created'),
       updated: record.get<String>('updated'),
     );
   }
 
-  Sale toEntity() {
+  Sale toEntity({String? baseUrl}) {
     return Sale(
       id: id,
       receiptNumber: receiptNumber,
@@ -74,9 +77,17 @@ class SaleDto with SaleDtoMappable {
       patient: patient != null && patient!.isNotEmpty ? patient : null,
       customerName: customerName != null && customerName!.isNotEmpty ? customerName : null,
       paymentRef: paymentRef,
+      paymentProofUrl: _buildPaymentProofUrl(baseUrl),
       notes: notes,
       created: parseToLocal(created),
       updated: parseToLocal(updated),
     );
+  }
+
+  String? _buildPaymentProofUrl(String? baseUrl) {
+    if (paymentProof == null || paymentProof!.isEmpty || baseUrl == null) {
+      return null;
+    }
+    return '$baseUrl/api/files/$collectionName/$id/$paymentProof';
   }
 }

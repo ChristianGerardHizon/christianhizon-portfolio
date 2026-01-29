@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:fpdart/fpdart.dart';
+import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/foundation/failure.dart';
@@ -31,6 +32,7 @@ class CheckoutController extends _$CheckoutController {
     double? amountTendered,
     String? customerId,
     String? customerName,
+    http.MultipartFile? paymentProofFile,
   }) async {
     final cartState = ref.read(cartControllerProvider).value;
     if (cartState == null || cartState.isEmpty) {
@@ -90,7 +92,11 @@ class CheckoutController extends _$CheckoutController {
     final productRepo = ref.read(productRepositoryProvider);
 
     // Save to backend
-    final result = await salesRepo.createSale(sale, saleItems);
+    final result = await salesRepo.createSale(
+      sale,
+      saleItems,
+      paymentProofFile: paymentProofFile,
+    );
 
     return result.fold(
       (failure) => left(failure),

@@ -379,6 +379,35 @@ class ReceiptDialog extends HookConsumerWidget {
                         sale.paymentRef!,
                       ),
                     ],
+                    if (sale.paymentProofUrl != null &&
+                        sale.paymentProofUrl!.isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Payment Proof',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          sale.paymentProofUrl!,
+                          height: 150,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => const SizedBox(
+                            height: 50,
+                            child: Center(
+                              child: Icon(Icons.broken_image),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 16),
                     // Prominent total display
                     Container(
