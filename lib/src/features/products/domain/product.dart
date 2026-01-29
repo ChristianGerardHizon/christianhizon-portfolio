@@ -153,8 +153,12 @@ class Product with ProductMappable {
     return ProductStatus.inStock;
   }
 
+  /// Whether this product has a variable price (price must be entered at POS).
+  bool get isVariablePrice => price <= 0;
+
   /// Formatted price display.
-  String get priceDisplay => '₱${price.toStringAsFixed(2)}';
+  String get priceDisplay =>
+      isVariablePrice ? 'Variable' : '₱${price.toStringAsFixed(2)}';
 
   /// Formatted quantity display.
   String get quantityDisplay {

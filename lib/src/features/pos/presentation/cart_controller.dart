@@ -106,7 +106,8 @@ class CartController extends _$CartController {
   }
 
   /// Adds a product to the cart (for non-lot-tracked products).
-  Future<void> addToCart(Product product) async {
+  /// For variable-price products, [customPrice] must be provided.
+  Future<void> addToCart(Product product, {num? customPrice}) async {
     final currentState = state.value;
     if (currentState == null) return;
 
@@ -137,6 +138,7 @@ class CartController extends _$CartController {
         productId: product.id,
         product: product,
         quantity: 1,
+        customPrice: customPrice,
       );
 
       final result = await _cartRepo.addCartItem(cartItem);
@@ -161,11 +163,13 @@ class CartController extends _$CartController {
   ///
   /// For lot-tracked products, items are identified by both productId AND lotId.
   /// This means the same product from different lots creates separate cart items.
+  /// For variable-price products, [customPrice] must be provided.
   Future<void> addToCartWithLot(
     Product product,
     ProductLot lot,
-    int quantity,
-  ) async {
+    int quantity, {
+    num? customPrice,
+  }) async {
     final currentState = state.value;
     if (currentState == null) return;
 
@@ -207,6 +211,7 @@ class CartController extends _$CartController {
         productId: product.id,
         product: product,
         quantity: quantity,
+        customPrice: customPrice,
         productLotId: lot.id,
         lotNumber: lot.lotNumber,
       );
@@ -352,6 +357,36 @@ class CartController extends _$CartController {
 
     // Update in backend
     final updatedItem = item.copyWith(quantity: quantity);
+    final result = await _cartRepo.updateCartItem(updatedItem);
+
+    result.fold(
+      (failure) {
+        state = AsyncData(currentState.copyWith(isSyncing: false));
+      },
+      (syncedItem) {
+        final newItems = [...currentState.items];
+        newItems[index] = syncedItem;
+        state = AsyncData(currentState.copyWith(
+          items: newItems,
+          isSyncing: false,
+        ));
+      },
+    );
+  }
+
+  /// Updates the custom price of a cart item.
+  Future<void> updateCustomPrice(String cartItemId, num newPrice) async {
+    final currentState = state.value;
+    if (currentState == null) return;
+
+    final index =
+        currentState.items.indexWhere((item) => item.id == cartItemId);
+    if (index < 0) return;
+
+    final item = currentState.items[index];
+    state = AsyncData(currentState.copyWith(isSyncing: true));
+
+    final updatedItem = item.copyWith(customPrice: newPrice);
     final result = await _cartRepo.updateCartItem(updatedItem);
 
     result.fold(

@@ -172,7 +172,7 @@ class _EditProductForm extends HookConsumerWidget {
         'description': product.description ?? '',
         'category': product.categoryId,
         'branch': product.branch,
-        'price': product.price.toString(),
+        'price': product.isVariablePrice ? '' : product.price.toString(),
         'quantity': product.quantity?.toString() ?? '',
         'stockThreshold': product.stockThreshold?.toString() ?? '',
         'expiration': product.expiration,
@@ -318,7 +318,7 @@ class _EditProductForm extends HookConsumerWidget {
                 'description': product.description ?? '',
                 'category': product.categoryId,
                 'branch': product.branch,
-                'price': product.price.toString(),
+                'price': product.isVariablePrice ? '' : product.price.toString(),
                 'quantity': product.quantity?.toString() ?? '',
                 'stockThreshold': product.stockThreshold?.toString() ?? '',
                 'expiration': product.expiration,
@@ -455,20 +455,17 @@ class _EditProductForm extends HookConsumerWidget {
                       FormBuilderTextField(
                         name: 'price',
                         decoration: const InputDecoration(
-                          labelText: 'Price *',
+                          labelText: 'Price',
                           border: OutlineInputBorder(),
                           prefixText: '₱ ',
+                          helperText:
+                              'Leave empty for variable price (set at POS)',
                         ),
                         enabled: !isSaving.value,
                         keyboardType: TextInputType.number,
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(
-                            errorText: 'Price is required',
-                          ),
-                          FormBuilderValidators.numeric(
-                            errorText: 'Must be a number',
-                          ),
-                        ]),
+                        validator: FormBuilderValidators.numeric(
+                          errorText: 'Must be a number',
+                        ),
                       ),
                     ] else ...[
                       Row(
@@ -477,20 +474,16 @@ class _EditProductForm extends HookConsumerWidget {
                             child: FormBuilderTextField(
                               name: 'price',
                               decoration: const InputDecoration(
-                                labelText: 'Price *',
+                                labelText: 'Price',
                                 border: OutlineInputBorder(),
                                 prefixText: '₱ ',
+                                helperText: 'Leave empty for variable price',
                               ),
                               enabled: !isSaving.value,
                               keyboardType: TextInputType.number,
-                              validator: FormBuilderValidators.compose([
-                                FormBuilderValidators.required(
-                                  errorText: 'Price is required',
-                                ),
-                                FormBuilderValidators.numeric(
-                                  errorText: 'Must be a number',
-                                ),
-                              ]),
+                              validator: FormBuilderValidators.numeric(
+                                errorText: 'Must be a number',
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),

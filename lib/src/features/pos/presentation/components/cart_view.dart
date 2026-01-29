@@ -7,6 +7,7 @@ import '../../../../core/utils/currency_format.dart';
 import '../../../products/domain/product_lot.dart';
 import '../cart_controller.dart';
 import 'checkout_dialog.dart';
+import 'variable_price_dialog.dart';
 
 class CartView extends ConsumerWidget {
   const CartView({super.key});
@@ -171,16 +172,57 @@ class CartView extends ConsumerWidget {
                                 // Row 2: Unit price, quantity controls, and total
                                 Row(
                                   children: [
-                                    // Unit price (flexible to allow shrinking)
+                                    // Unit price (tappable to edit for variable-price products)
                                     Expanded(
-                                      child: Text(
-                                        '${product.price.toCurrency()} each',
-                                        style:
-                                            theme.textTheme.bodySmall?.copyWith(
-                                          color:
-                                              theme.colorScheme.onSurfaceVariant,
+                                      child: GestureDetector(
+                                        onTap: (item.hasCustomPrice ||
+                                                (product.isVariablePrice))
+                                            ? () async {
+                                                final newPrice =
+                                                    await showVariablePriceDialog(
+                                                  context,
+                                                  productName: product.name,
+                                                  currentPrice:
+                                                      item.effectivePrice,
+                                                );
+                                                if (newPrice != null) {
+                                                  ref
+                                                      .read(
+                                                          cartControllerProvider
+                                                              .notifier)
+                                                      .updateCustomPrice(
+                                                          item.id, newPrice);
+                                                }
+                                              }
+                                            : null,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                '${item.effectivePrice.toCurrency()} each',
+                                                style: theme
+                                                    .textTheme.bodySmall
+                                                    ?.copyWith(
+                                                  color: theme.colorScheme
+                                                      .onSurfaceVariant,
+                                                ),
+                                                overflow:
+                                                    TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            if (item.hasCustomPrice ||
+                                                product.isVariablePrice) ...[
+                                              const SizedBox(width: 4),
+                                              Icon(
+                                                Icons.edit,
+                                                size: 12,
+                                                color: theme
+                                                    .colorScheme.primary,
+                                              ),
+                                            ],
+                                          ],
                                         ),
-                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
 

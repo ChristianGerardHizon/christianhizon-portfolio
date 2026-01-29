@@ -191,8 +191,9 @@ class CreateProductDialog extends HookConsumerWidget {
             CurrencyInputField(
               name: 'price',
               label: 'Price',
-              required: true,
+              required: false,
               enabled: !isSaving.value,
+              helperText: 'Leave empty for variable price (set at POS)',
             ),
           ] else ...[
             Row(
@@ -201,8 +202,9 @@ class CreateProductDialog extends HookConsumerWidget {
                   child: CurrencyInputField(
                     name: 'price',
                     label: 'Price',
-                    required: true,
+                    required: false,
                     enabled: !isSaving.value,
+                    helperText: 'Leave empty for variable price',
                   ),
                 ),
                 const SizedBox(width: 12),

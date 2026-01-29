@@ -215,7 +215,7 @@ class CheckoutDialog extends HookConsumerWidget {
                     productId: item.productId,
                     productName: item.product!.name,
                     quantity: item.quantity,
-                    unitPrice: item.product!.price,
+                    unitPrice: item.effectivePrice,
                     subtotal: item.total,
                     productLotId: item.productLotId,
                     lotNumber: item.lotNumber,
@@ -1027,7 +1027,7 @@ class CheckoutDialog extends HookConsumerWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            '@ ${product.price.toCurrency()}',
+                            '@ ${item.effectivePrice.toCurrency()}',
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
                             ),

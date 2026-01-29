@@ -56,6 +56,12 @@ class CartItemMapper extends ClassMapperBase<CartItem> {
     opt: true,
     def: 1,
   );
+  static num? _$customPrice(CartItem v) => v.customPrice;
+  static const Field<CartItem, num> _f$customPrice = Field(
+    'customPrice',
+    _$customPrice,
+    opt: true,
+  );
   static String? _$productLotId(CartItem v) => v.productLotId;
   static const Field<CartItem, String> _f$productLotId = Field(
     'productLotId',
@@ -88,6 +94,7 @@ class CartItemMapper extends ClassMapperBase<CartItem> {
     #productId: _f$productId,
     #product: _f$product,
     #quantity: _f$quantity,
+    #customPrice: _f$customPrice,
     #productLotId: _f$productLotId,
     #lotNumber: _f$lotNumber,
     #created: _f$created,
@@ -101,6 +108,7 @@ class CartItemMapper extends ClassMapperBase<CartItem> {
       productId: data.dec(_f$productId),
       product: data.dec(_f$product),
       quantity: data.dec(_f$quantity),
+      customPrice: data.dec(_f$customPrice),
       productLotId: data.dec(_f$productLotId),
       lotNumber: data.dec(_f$lotNumber),
       created: data.dec(_f$created),
@@ -172,6 +180,7 @@ abstract class CartItemCopyWith<$R, $In extends CartItem, $Out>
     String? productId,
     Product? product,
     num? quantity,
+    num? customPrice,
     String? productLotId,
     String? lotNumber,
     DateTime? created,
@@ -198,6 +207,7 @@ class _CartItemCopyWithImpl<$R, $Out>
     String? productId,
     Object? product = $none,
     num? quantity,
+    Object? customPrice = $none,
     Object? productLotId = $none,
     Object? lotNumber = $none,
     Object? created = $none,
@@ -209,6 +219,7 @@ class _CartItemCopyWithImpl<$R, $Out>
       if (productId != null) #productId: productId,
       if (product != $none) #product: product,
       if (quantity != null) #quantity: quantity,
+      if (customPrice != $none) #customPrice: customPrice,
       if (productLotId != $none) #productLotId: productLotId,
       if (lotNumber != $none) #lotNumber: lotNumber,
       if (created != $none) #created: created,
@@ -222,6 +233,7 @@ class _CartItemCopyWithImpl<$R, $Out>
     productId: data.get(#productId, or: $value.productId),
     product: data.get(#product, or: $value.product),
     quantity: data.get(#quantity, or: $value.quantity),
+    customPrice: data.get(#customPrice, or: $value.customPrice),
     productLotId: data.get(#productLotId, or: $value.productLotId),
     lotNumber: data.get(#lotNumber, or: $value.lotNumber),
     created: data.get(#created, or: $value.created),

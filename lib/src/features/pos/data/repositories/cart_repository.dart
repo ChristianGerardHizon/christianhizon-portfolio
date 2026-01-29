@@ -144,6 +144,10 @@ class CartRepositoryImpl implements CartRepository {
           'product': item.productId,
           'quantity': item.quantity,
         };
+        // Add custom price if present (for variable-price products)
+        if (item.customPrice != null) {
+          body['customPrice'] = item.customPrice;
+        }
         // Add lot fields if present (for lot-tracked products)
         if (item.productLotId != null && item.productLotId!.isNotEmpty) {
           body['productLot'] = item.productLotId;
@@ -163,6 +167,10 @@ class CartRepositoryImpl implements CartRepository {
         final body = <String, dynamic>{
           'quantity': item.quantity,
         };
+        // Update custom price if present
+        if (item.customPrice != null) {
+          body['customPrice'] = item.customPrice;
+        }
         // Update lot fields if present
         if (item.productLotId != null) {
           body['productLot'] = item.productLotId;

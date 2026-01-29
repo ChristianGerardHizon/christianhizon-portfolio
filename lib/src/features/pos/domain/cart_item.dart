@@ -15,6 +15,7 @@ class CartItem with CartItemMappable {
     this.productId = '',
     this.product,
     this.quantity = 1,
+    this.customPrice,
     this.productLotId,
     this.lotNumber,
     this.created,
@@ -36,6 +37,9 @@ class CartItem with CartItemMappable {
   /// Quantity.
   final num quantity;
 
+  /// Custom price override (for variable-price products).
+  final num? customPrice;
+
   /// Product Lot ID (for lot-tracked products).
   final String? productLotId;
 
@@ -48,8 +52,14 @@ class CartItem with CartItemMappable {
   /// Last update timestamp.
   final DateTime? updated;
 
-  /// Total price of this item (quantity * product price).
-  num get total => (product?.price ?? 0) * quantity;
+  /// The effective unit price for this item.
+  num get effectivePrice => customPrice ?? product?.price ?? 0;
+
+  /// Total price of this item (quantity * effective price).
+  num get total => effectivePrice * quantity;
+
+  /// Whether this item uses a custom price.
+  bool get hasCustomPrice => customPrice != null;
 
   /// Whether this item is from a specific lot.
   bool get hasLot => productLotId != null && productLotId!.isNotEmpty;

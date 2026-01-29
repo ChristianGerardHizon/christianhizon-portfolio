@@ -11,6 +11,7 @@ import '../../../products/domain/product_status.dart';
 import '../cart_controller.dart';
 import '../providers/pos_product_stock_provider.dart';
 import 'lot_selection_dialog.dart';
+import 'variable_price_dialog.dart';
 
 class ProductGrid extends ConsumerWidget {
   const ProductGrid({
@@ -197,9 +198,13 @@ class _ProductCard extends ConsumerWidget {
                     const SizedBox(height: 4),
                     // Price - compact display at bottom
                     Text(
-                      product.price.toCurrency(),
+                      product.isVariablePrice
+                          ? 'Variable'
+                          : product.price.toCurrency(),
                       style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.colorScheme.primary,
+                        color: product.isVariablePrice
+                            ? theme.colorScheme.tertiary
+                            : theme.colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -249,13 +254,40 @@ class _ProductCard extends ConsumerWidget {
         context,
         product: product,
         onLotSelected: (lot, quantity) {
-          cartNotifier.addToCartWithLot(
-            product,
-            lot,
-            quantity,
-          );
+          if (product.isVariablePrice) {
+            // Variable-price + lot-tracked: prompt for price after lot selection
+            showVariablePriceDialog(
+              context,
+              productName: product.name,
+            ).then((price) {
+              if (price != null) {
+                cartNotifier.addToCartWithLot(
+                  product,
+                  lot,
+                  quantity,
+                  customPrice: price,
+                );
+              }
+            });
+          } else {
+            cartNotifier.addToCartWithLot(
+              product,
+              lot,
+              quantity,
+            );
+          }
         },
       );
+    } else if (product.isVariablePrice) {
+      // Variable-price product: prompt for price before adding to cart
+      showVariablePriceDialog(
+        context,
+        productName: product.name,
+      ).then((price) {
+        if (price != null) {
+          cartNotifier.addToCart(product, customPrice: price);
+        }
+      });
     } else {
       // Regular add to cart for non-lot products
       cartNotifier.addToCart(product);

@@ -63,7 +63,7 @@ class CheckoutController extends _$CheckoutController {
         productId: cartItem.productId,
         productName: product?.name ?? 'Unknown Product',
         quantity: cartItem.quantity,
-        unitPrice: product?.price ?? 0,
+        unitPrice: cartItem.effectivePrice,
         subtotal: cartItem.total,
         productLotId: cartItem.productLotId,
         lotNumber: cartItem.lotNumber,

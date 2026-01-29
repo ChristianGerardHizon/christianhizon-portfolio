@@ -45,6 +45,12 @@ class CartItemDtoMapper extends ClassMapperBase<CartItemDto> {
     'quantity',
     _$quantity,
   );
+  static num? _$customPrice(CartItemDto v) => v.customPrice;
+  static const Field<CartItemDto, num> _f$customPrice = Field(
+    'customPrice',
+    _$customPrice,
+    opt: true,
+  );
   static String? _$productLot(CartItemDto v) => v.productLot;
   static const Field<CartItemDto, String> _f$productLot = Field(
     'productLot',
@@ -78,6 +84,7 @@ class CartItemDtoMapper extends ClassMapperBase<CartItemDto> {
     #cart: _f$cart,
     #product: _f$product,
     #quantity: _f$quantity,
+    #customPrice: _f$customPrice,
     #productLot: _f$productLot,
     #lotNumber: _f$lotNumber,
     #created: _f$created,
@@ -92,6 +99,7 @@ class CartItemDtoMapper extends ClassMapperBase<CartItemDto> {
       cart: data.dec(_f$cart),
       product: data.dec(_f$product),
       quantity: data.dec(_f$quantity),
+      customPrice: data.dec(_f$customPrice),
       productLot: data.dec(_f$productLot),
       lotNumber: data.dec(_f$lotNumber),
       created: data.dec(_f$created),
@@ -166,6 +174,7 @@ abstract class CartItemDtoCopyWith<$R, $In extends CartItemDto, $Out>
     String? cart,
     String? product,
     num? quantity,
+    num? customPrice,
     String? productLot,
     String? lotNumber,
     String? created,
@@ -190,6 +199,7 @@ class _CartItemDtoCopyWithImpl<$R, $Out>
     String? cart,
     String? product,
     num? quantity,
+    Object? customPrice = $none,
     Object? productLot = $none,
     Object? lotNumber = $none,
     Object? created = $none,
@@ -202,6 +212,7 @@ class _CartItemDtoCopyWithImpl<$R, $Out>
       if (cart != null) #cart: cart,
       if (product != null) #product: product,
       if (quantity != null) #quantity: quantity,
+      if (customPrice != $none) #customPrice: customPrice,
       if (productLot != $none) #productLot: productLot,
       if (lotNumber != $none) #lotNumber: lotNumber,
       if (created != $none) #created: created,
@@ -216,6 +227,7 @@ class _CartItemDtoCopyWithImpl<$R, $Out>
     cart: data.get(#cart, or: $value.cart),
     product: data.get(#product, or: $value.product),
     quantity: data.get(#quantity, or: $value.quantity),
+    customPrice: data.get(#customPrice, or: $value.customPrice),
     productLot: data.get(#productLot, or: $value.productLot),
     lotNumber: data.get(#lotNumber, or: $value.lotNumber),
     created: data.get(#created, or: $value.created),

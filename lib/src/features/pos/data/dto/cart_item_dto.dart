@@ -15,6 +15,7 @@ class CartItemDto with CartItemDtoMappable {
   final String cart;
   final String product;
   final num quantity;
+  final num? customPrice;
   final String? productLot;
   final String? lotNumber;
   final String? created;
@@ -27,6 +28,7 @@ class CartItemDto with CartItemDtoMappable {
     required this.cart,
     required this.product,
     required this.quantity,
+    this.customPrice,
     this.productLot,
     this.lotNumber,
     this.created,
@@ -45,6 +47,13 @@ class CartItemDto with CartItemDtoMappable {
       }
     }
 
+    // Handle customPrice which might be 0 or null
+    final rawCustomPrice = record.data['customPrice'];
+    num? customPrice;
+    if (rawCustomPrice != null && rawCustomPrice is num && rawCustomPrice > 0) {
+      customPrice = rawCustomPrice;
+    }
+
     return CartItemDto(
       id: record.id,
       collectionId: record.collectionId,
@@ -52,6 +61,7 @@ class CartItemDto with CartItemDtoMappable {
       cart: record.getStringValue('cart'),
       product: record.getStringValue('product'),
       quantity: record.getDoubleValue('quantity'),
+      customPrice: customPrice,
       productLot: record.getStringValue('productLot'),
       lotNumber: lotNumber,
       created: record.get<String>('created'),
@@ -65,6 +75,7 @@ class CartItemDto with CartItemDtoMappable {
       cartId: cart,
       productId: product,
       quantity: quantity,
+      customPrice: customPrice,
       productLotId: productLot,
       lotNumber: lotNumber,
       product: productExpanded != null
