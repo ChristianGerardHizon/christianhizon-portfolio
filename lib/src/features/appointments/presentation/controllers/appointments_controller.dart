@@ -1,6 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../data/repositories/appointment_schedule_repository.dart';
 import '../../domain/appointment_schedule.dart';
@@ -12,21 +11,17 @@ part 'appointments_controller.g.dart';
 /// Provides a global, cached list of all appointments with CRUD operations.
 @Riverpod(keepAlive: true)
 class AppointmentsController extends _$AppointmentsController {
-  String? get _branchFilter {
-    final branchId = ref.read(currentBranchIdProvider);
-    if (branchId == null) return null;
-    return PBFilters.forBranch(branchId).build();
-  }
+  /// Gets the current branch filter.
+  String? get _branchFilter => ref.read(currentBranchFilterProvider);
 
   @override
   Future<List<AppointmentSchedule>> build() async {
-    ref.listen(currentBranchFilterProvider, (_, __) {
-      refresh();
-    });
+    // Watch branch filter — triggers rebuild when branch changes.
+    final branchFilter = ref.watch(currentBranchFilterProvider);
 
     final result = await ref
         .read(appointmentScheduleRepositoryProvider)
-        .fetchAll(filter: _branchFilter);
+        .fetchAll(filter: branchFilter);
     return result.fold(
       (failure) => throw failure,
       (appointments) => appointments,

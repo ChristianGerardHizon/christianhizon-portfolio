@@ -43,7 +43,7 @@ final class AppointmentsControllerProvider extends $AsyncNotifierProvider<
 }
 
 String _$appointmentsControllerHash() =>
-    r'df6c0e790e964b694e68e0d4a301f664e83e71b6';
+    r'0a711dcbfe7e4a94ddd7e334987a06eb56c0c17b';
 
 /// Controller for managing the main appointments list.
 ///
