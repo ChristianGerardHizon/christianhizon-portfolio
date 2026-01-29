@@ -104,7 +104,7 @@ class _MobileDashboardHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final currentBranchAsync = ref.watch(currentBranchControllerProvider);
+    final branch = ref.watch(currentBranchControllerProvider).value;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -127,31 +127,26 @@ class _MobileDashboardHeader extends ConsumerWidget {
             ],
           ),
           // Show current branch if available
-          currentBranchAsync.whenOrNull(
-                data: (branch) {
-                  if (branch == null) return null;
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.store,
-                          size: 16,
-                          color: theme.colorScheme.outline,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          branch.displayName ?? branch.name,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.outline,
-                          ),
-                        ),
-                      ],
+          if (branch != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.store,
+                    size: 16,
+                    color: theme.colorScheme.outline,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    branch.displayName ?? branch.name,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.outline,
                     ),
-                  );
-                },
-              ) ??
-              const SizedBox.shrink(),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );
