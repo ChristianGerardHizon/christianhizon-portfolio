@@ -4,6 +4,7 @@ on:
   pull_request:
     types: [ closed ]
     branches: [ "staging", "main" ]
+  workflow_dispatch:
 
 concurrency:
   group: deploy-${{ github.ref }}
@@ -17,7 +18,7 @@ jobs:
   # JOB 1: STAGING TRACK
   # ==========================================
   deploy-staging:
-    if: github.event.pull_request.merged == true && github.base_ref == 'staging'
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && github.base_ref == 'staging')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
