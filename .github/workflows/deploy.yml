@@ -7,6 +7,10 @@ on:
     types: [ closed ]
     branches: [ "main" ]
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write # REQUIRED for creating GitHub Releases
 
@@ -19,22 +23,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-      # --- OPTIMIZATION START ---
-      # 1. Setup Java 17 with Gradle Cache
+      # --- SETUP & CACHE START ---
       - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
           cache: 'gradle'
 
-      # 2. Setup Flutter with SDK Cache
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          flutter-version: '3.27.4'
           cache: true
 
-      # 3. Cache Pub Dependencies
       - name: Cache Pub dependencies
         uses: actions/cache@v4
         with:
@@ -43,30 +46,33 @@ jobs:
             ~/.pub-cache/git
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: ${{ runner.os }}-pub-
-          
+
+      - name: Cache Flutter build
+        uses: actions/cache@v4
+        with:
+          path: |
+            build/
+            .dart_tool/
+          key: ${{ runner.os }}-flutter-build-staging-${{ hashFiles('lib/**', 'pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-flutter-build-staging-
+
       - name: Install dependencies
         run: flutter pub get
-      # --- OPTIMIZATION END ---
+      # --- SETUP & CACHE END ---
 
-      # 4. ROBUST VERSION CALCULATION
+      # ROBUST VERSION CALCULATION
       - name: Calculate Staging Version
         id: calc_staging
-        env: 
+        env:
           URL: ${{ secrets.VERSION_MANAGER_URL }}
           ID: ${{ secrets.VERSION_COLLECTION_ID }}
         run: |
-          # Safety Check
           if [ -z "$URL" ] || [ -z "$ID" ]; then
             echo "::error::Secrets VERSION_MANAGER_URL or VERSION_COLLECTION_ID are missing!"
             exit 1
           fi
 
-          if ! command -v jq &> /dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
-          
-          # Fetch
           RESPONSE=$(curl -s "$URL/$ID")
-          
-          # Parse
           MAJOR=$(echo $RESPONSE | jq -r '.major')
           MINOR=$(echo $RESPONSE | jq -r '.minor')
           PATCH=$(echo $RESPONSE | jq -r '.patch')
@@ -76,25 +82,23 @@ jobs:
              exit 1
           fi
 
-          # Logic: Staging is Next Patch
           NEXT_PATCH=$((PATCH + 1))
           STAGING_VER="$MAJOR.$MINOR.$NEXT_PATCH-staging"
-          
+
           echo "STAGING_VER=$STAGING_VER" >> $GITHUB_ENV
           echo "Calculated Staging Version: $STAGING_VER"
 
-      # 5. BUILD WEB & APK (Using ENV=staging)
+      # BUILD WEB & APK
       - name: Build Web
         run: flutter build web --release --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
       - name: Build APK (Debug)
         run: flutter build apk --debug --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
-      # 6. RENAME (Prepare for push)
+      # DEPLOY
       - name: Prepare Folder
         run: mv build/web pb_public
 
-      # 7. PUSH TO SERVER REPO (STAGING BRANCH)
       - name: Deploy to Server Staging
         uses: cpina/github-action-push-to-another-repository@v1.7.2
         env:
@@ -115,7 +119,7 @@ jobs:
   deploy-production:
     if: github.event.pull_request.merged == true && github.base_ref == 'main'
     runs-on: ubuntu-latest
-    environment: Production # <--- TRIGGERS MANUAL APPROVAL
+    environment: Production
     outputs:
       prod_ver: ${{ steps.calc_prod.outputs.prod_ver }}
       new_patch: ${{ steps.calc_prod.outputs.new_patch }}
@@ -124,8 +128,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-      # --- OPTIMIZATION START ---
+      # --- SETUP & CACHE START ---
       - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
@@ -134,7 +140,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          flutter-version: '3.27.4'
           cache: true
 
       - name: Cache Pub dependencies
@@ -145,15 +151,24 @@ jobs:
             ~/.pub-cache/git
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: ${{ runner.os }}-pub-
-          
+
+      - name: Cache Flutter build
+        uses: actions/cache@v4
+        with:
+          path: |
+            build/
+            .dart_tool/
+          key: ${{ runner.os }}-flutter-build-prod-${{ hashFiles('lib/**', 'pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-flutter-build-prod-
+
       - name: Install dependencies
         run: flutter pub get
-      # --- OPTIMIZATION END ---
+      # --- SETUP & CACHE END ---
 
-      # 1. ROBUST VERSION CALCULATION
+      # ROBUST VERSION CALCULATION
       - name: Calculate Prod Version
         id: calc_prod
-        env: 
+        env:
           URL: ${{ secrets.VERSION_MANAGER_URL }}
           ID: ${{ secrets.VERSION_COLLECTION_ID }}
         run: |
@@ -162,8 +177,6 @@ jobs:
             exit 1
           fi
 
-          if ! command -v jq &> /dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
-          
           RESPONSE=$(curl -s "$URL/$ID")
           MAJOR=$(echo $RESPONSE | jq -r '.major')
           MINOR=$(echo $RESPONSE | jq -r '.minor')
@@ -171,21 +184,20 @@ jobs:
 
           if [ "$MAJOR" == "null" ]; then exit 1; fi
 
-          # Logic: Increment Patch for Prod
           NEW_PATCH=$((PATCH + 1))
           PROD_VER="$MAJOR.$MINOR.$NEW_PATCH"
-          
+
           echo "PROD_VER=$PROD_VER" >> $GITHUB_ENV
           echo "prod_ver=$PROD_VER" >> $GITHUB_OUTPUT
           echo "new_patch=$NEW_PATCH" >> $GITHUB_OUTPUT
           echo "major=$MAJOR" >> $GITHUB_OUTPUT
           echo "minor=$MINOR" >> $GITHUB_OUTPUT
 
-      # 2. DECODE KEYSTORE FOR RELEASE SIGNING
+      # DECODE KEYSTORE FOR RELEASE SIGNING
       - name: Decode Keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/android/app/upload-keystore.jks
 
-      # 3. BUILD WEB & APK (Using ENV=prod)
+      # BUILD WEB & APK
       - name: Build Web
         run: flutter build web --release --build-name=${{ env.PROD_VER }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
@@ -198,18 +210,16 @@ jobs:
           CM_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: flutter build apk --release --build-name=${{ env.PROD_VER }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
-      # 3. Save APK for Release Job
+      # UPLOAD & DEPLOY
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
-      # 4. RENAME
       - name: Prepare Folder
         run: mv build/web pb_public
 
-      # 5. PUSH TO SERVER REPO (MAIN BRANCH)
       - name: Deploy to Server Main
         uses: cpina/github-action-push-to-another-repository@v1.7.2
         env:
@@ -244,7 +254,7 @@ jobs:
           files: app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Update Version Manager
         env:
           NEW_PATCH: ${{ needs.deploy-production.outputs.new_patch }}
@@ -254,13 +264,9 @@ jobs:
           ID: ${{ secrets.VERSION_COLLECTION_ID }}
           TOKEN: ${{ secrets.PB_TOKEN }}
         run: |
-           if ! command -v jq &> /dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
-
-           # Payload (using outputs from deploy-production, no re-fetch needed)
            PAYLOAD=$(jq -n --argjson major "$MAJOR" --argjson minor "$MINOR" --argjson patch "$NEW_PATCH" \
              '{major: $major, minor: $minor, patch: $patch}')
 
-           # Update (Supports Auth if token is present)
            if [ -z "$TOKEN" ]; then
               curl -s -X PATCH "$URL/$ID" -H "Content-Type: application/json" -d "$PAYLOAD"
            else
