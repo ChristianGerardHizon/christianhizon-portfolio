@@ -58,12 +58,12 @@ jobs:
           echo "STAGING_VER=$STAGING_VER" >> $GITHUB_ENV
           echo "Calculated Staging Version: $STAGING_VER"
 
-      # 2. Build Web & APK
+      # 2. BUILD WEB & APK (Using ENV=staging)
       - name: Build Web
-        run: flutter build web --release --build-name=${{ env.STAGING_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
+        run: flutter build web --release --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging
 
       - name: Build APK (Debug)
-        run: flutter build apk --debug --build-name=${{ env.STAGING_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
+        run: flutter build apk --debug --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging
 
       # 3. RENAME (Prepare for push)
       - name: Prepare Folder
@@ -128,12 +128,12 @@ jobs:
           echo "prod_ver=$PROD_VER" >> $GITHUB_OUTPUT
           echo "new_patch=$NEW_PATCH" >> $GITHUB_OUTPUT
 
-      # 2. Build Web & APK
+      # 2. BUILD WEB & APK (Using ENV=production)
       - name: Build Web
-        run: flutter build web --release --build-name=${{ env.PROD_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
+        run: flutter build web --release --build-name=${{ env.PROD_VER }} --dart-define=ENV=production
 
       - name: Build APK (Debug)
-        run: flutter build apk --debug --build-name=${{ env.PROD_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
+        run: flutter build apk --debug --build-name=${{ env.PROD_VER }} --dart-define=ENV=production
 
       # 3. Save APK for Release Job
       - name: Upload APK Artifact
@@ -153,7 +153,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.DEPLOY_PAT }}
         with:
           source-directory: 'pb_public'
-          destination-github-username: 'ChristianGerardHizon' # <--- CHANGE THIS
+          destination-github-username: 'YOUR_GITHUB_USERNAME' # <--- CHANGE THIS
           destination-repository-name: 'sanjose_server'     # <--- CHANGE THIS
           target-branch: 'main'
           target-directory: 'pb_public'
