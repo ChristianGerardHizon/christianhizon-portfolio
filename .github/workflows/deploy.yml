@@ -127,8 +127,10 @@ jobs:
 
           NEXT_PATCH=$((PATCH + 1))
           STAGING_VER="$MAJOR.$MINOR.$NEXT_PATCH-staging"
+          STAGING_VER_BASE="$MAJOR.$MINOR.$NEXT_PATCH"
 
           echo "STAGING_VER=$STAGING_VER" >> $GITHUB_ENV
+          echo "STAGING_VER_BASE=$STAGING_VER_BASE" >> $GITHUB_ENV
           echo "Calculated Staging Version: $STAGING_VER"
 
       # BUILD WEB & APK
@@ -160,9 +162,9 @@ jobs:
       - name: Create Staging Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: staging-${{ env.STAGING_VER }}
+          tag_name: staging-${{ env.STAGING_VER_BASE }}
           target_commitish: ${{ github.sha }}
-          name: "Staging ${{ env.STAGING_VER }}"
+          name: "Staging ${{ env.STAGING_VER_BASE }}"
           prerelease: true
           files: build/app/outputs/flutter-apk/app-release.apk
         env:
