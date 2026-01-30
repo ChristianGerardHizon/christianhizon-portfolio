@@ -1,6 +1,10 @@
 # Miscellaneous
 task.md
 *.class
+*.jks
+*.keystore
+key.properties
+keystore-secrets.txt
 *.log
 *.pyc
 *.swp

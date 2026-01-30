@@ -44,7 +44,8 @@ jobs:
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: ${{ runner.os }}-pub-
           
-      - run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
       # --- OPTIMIZATION END ---
 
       # 4. ROBUST VERSION CALCULATION
@@ -100,8 +101,8 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.DEPLOY_PAT }}
         with:
           source-directory: 'pb_public'
-          destination-github-username: 'YOUR_GITHUB_USERNAME' # <--- CHANGE THIS
-          destination-repository-name: 'sanjose_server'     # <--- CHANGE THIS
+          destination-github-username: 'ChristianGerardHizon'
+          destination-repository-name: 'sanjose_server'
           target-branch: 'staging'
           target-directory: 'pb_public'
           create-target-branch-if-needed: true
@@ -118,6 +119,8 @@ jobs:
     outputs:
       prod_ver: ${{ steps.calc_prod.outputs.prod_ver }}
       new_patch: ${{ steps.calc_prod.outputs.new_patch }}
+      major: ${{ steps.calc_prod.outputs.major }}
+      minor: ${{ steps.calc_prod.outputs.minor }}
 
     steps:
       - uses: actions/checkout@v4
@@ -143,7 +146,8 @@ jobs:
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: ${{ runner.os }}-pub-
           
-      - run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
       # --- OPTIMIZATION END ---
 
       # 1. ROBUST VERSION CALCULATION
@@ -174,20 +178,32 @@ jobs:
           echo "PROD_VER=$PROD_VER" >> $GITHUB_ENV
           echo "prod_ver=$PROD_VER" >> $GITHUB_OUTPUT
           echo "new_patch=$NEW_PATCH" >> $GITHUB_OUTPUT
+          echo "major=$MAJOR" >> $GITHUB_OUTPUT
+          echo "minor=$MINOR" >> $GITHUB_OUTPUT
 
-      # 2. BUILD WEB & APK (Using ENV=prod)
+      # 2. DECODE KEYSTORE FOR RELEASE SIGNING
+      - name: Decode Keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/android/app/upload-keystore.jks
+
+      # 3. BUILD WEB & APK (Using ENV=prod)
       - name: Build Web
         run: flutter build web --release --build-name=${{ env.PROD_VER }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
-      - name: Build APK (Debug)
-        run: flutter build apk --debug --build-name=${{ env.PROD_VER }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
+      - name: Build APK (Release)
+        env:
+          CI: "true"
+          CM_KEYSTORE_PATH: ${{ github.workspace }}/android/app/upload-keystore.jks
+          CM_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          CM_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          CM_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: flutter build apk --release --build-name=${{ env.PROD_VER }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
       # 3. Save APK for Release Job
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
 
       # 4. RENAME
       - name: Prepare Folder
@@ -200,8 +216,8 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.DEPLOY_PAT }}
         with:
           source-directory: 'pb_public'
-          destination-github-username: 'YOUR_GITHUB_USERNAME' # <--- CHANGE THIS
-          destination-repository-name: 'sanjose_server'     # <--- CHANGE THIS
+          destination-github-username: 'ChristianGerardHizon'
+          destination-repository-name: 'sanjose_server'
           target-branch: 'main'
           target-directory: 'pb_public'
           commit-message: "Deploy Production: ${{ env.PROD_VER }}"
@@ -222,31 +238,28 @@ jobs:
           name: app-release-apk
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ needs.deploy-production.outputs.prod_ver }}
-          files: app-debug.apk
+          files: app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Update Version Manager
         env:
           NEW_PATCH: ${{ needs.deploy-production.outputs.new_patch }}
+          MAJOR: ${{ needs.deploy-production.outputs.major }}
+          MINOR: ${{ needs.deploy-production.outputs.minor }}
           URL: ${{ secrets.VERSION_MANAGER_URL }}
           ID: ${{ secrets.VERSION_COLLECTION_ID }}
           TOKEN: ${{ secrets.PB_TOKEN }}
         run: |
            if ! command -v jq &> /dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
-           
-           # Re-fetch for Major/Minor
-           RESPONSE=$(curl -s "$URL/$ID")
-           MAJOR=$(echo $RESPONSE | jq -r '.major')
-           MINOR=$(echo $RESPONSE | jq -r '.minor')
-           
-           # Payload
+
+           # Payload (using outputs from deploy-production, no re-fetch needed)
            PAYLOAD=$(jq -n --argjson major "$MAJOR" --argjson minor "$MINOR" --argjson patch "$NEW_PATCH" \
              '{major: $major, minor: $minor, patch: $patch}')
-           
+
            # Update (Supports Auth if token is present)
            if [ -z "$TOKEN" ]; then
               curl -s -X PATCH "$URL/$ID" -H "Content-Type: application/json" -d "$PAYLOAD"
