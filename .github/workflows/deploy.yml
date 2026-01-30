@@ -34,6 +34,10 @@ jobs:
           if [ -z "${{ secrets.VERSION_MANAGER_URL }}" ]; then MISSING="$MISSING VERSION_MANAGER_URL"; fi
           if [ -z "${{ secrets.VERSION_COLLECTION_ID }}" ]; then MISSING="$MISSING VERSION_COLLECTION_ID"; fi
           if [ -z "${{ secrets.POCKETBASE_URL_STAGING }}" ]; then MISSING="$MISSING POCKETBASE_URL_STAGING"; fi
+          if [ -z "${{ secrets.KEYSTORE_BASE64 }}" ]; then MISSING="$MISSING KEYSTORE_BASE64"; fi
+          if [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ]; then MISSING="$MISSING KEYSTORE_PASSWORD"; fi
+          if [ -z "${{ secrets.KEY_ALIAS }}" ]; then MISSING="$MISSING KEY_ALIAS"; fi
+          if [ -z "${{ secrets.KEY_PASSWORD }}" ]; then MISSING="$MISSING KEY_PASSWORD"; fi
           if [ -n "$MISSING" ]; then
             echo "::error::Missing required secrets:$MISSING"
             exit 1
@@ -133,11 +137,21 @@ jobs:
           echo "STAGING_VER_BASE=$STAGING_VER_BASE" >> $GITHUB_ENV
           echo "Calculated Staging Version: $STAGING_VER"
 
+      # DECODE KEYSTORE FOR RELEASE SIGNING
+      - name: Decode Keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/android/app/upload-keystore.jks
+
       # BUILD WEB & APK
       - name: Build Web (WASM)
         run: flutter build web --wasm --release --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
       - name: Build APK (Release)
+        env:
+          CI: "true"
+          CM_KEYSTORE_PATH: ${{ github.workspace }}/android/app/upload-keystore.jks
+          CM_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          CM_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          CM_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: flutter build apk --release --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
       # DEPLOY
