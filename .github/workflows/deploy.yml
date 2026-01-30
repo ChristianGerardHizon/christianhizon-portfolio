@@ -1,4 +1,4 @@
-name: Deploy Parallel Branches
+name: Deploy System
 
 on:
   push:
@@ -8,11 +8,11 @@ on:
     branches: [ "main" ]
 
 permissions:
-  contents: write
+  contents: write # REQUIRED for creating GitHub Releases
 
 jobs:
   # ==========================================
-  # STAGING TRACK
+  # JOB 1: STAGING TRACK
   # ==========================================
   deploy-staging:
     if: github.ref == 'refs/heads/staging'
@@ -23,18 +23,40 @@ jobs:
         with:
           channel: 'stable'
 
-      # 1. Calculate Version
+      # 1. ROBUST VERSION CALCULATION
       - name: Calculate Staging Version
         id: calc_staging
+        env: 
+          URL: ${{ secrets.VERSION_MANAGER_URL }}
+          ID: ${{ secrets.VERSION_COLLECTION_ID }}
         run: |
+          # Safety Check
+          if [ -z "$URL" ] || [ -z "$ID" ]; then
+            echo "::error::Secrets VERSION_MANAGER_URL or VERSION_COLLECTION_ID are missing!"
+            exit 1
+          fi
+
           if ! command -v jq &> /dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
-          RESPONSE=$(curl -s ${{ secrets.VERSION_MANAGER_URL }}/${{ secrets.VERSION_COLLECTION_ID }})
+          
+          # Fetch
+          RESPONSE=$(curl -s "$URL/$ID")
+          
+          # Parse
           MAJOR=$(echo $RESPONSE | jq -r '.major')
           MINOR=$(echo $RESPONSE | jq -r '.minor')
           PATCH=$(echo $RESPONSE | jq -r '.patch')
+
+          if [ "$MAJOR" == "null" ]; then
+             echo "::error::Failed to parse version. Response: $RESPONSE"
+             exit 1
+          fi
+
+          # Logic: Staging is Next Patch
           NEXT_PATCH=$((PATCH + 1))
           STAGING_VER="$MAJOR.$MINOR.$NEXT_PATCH-staging"
+          
           echo "STAGING_VER=$STAGING_VER" >> $GITHUB_ENV
+          echo "Calculated Staging Version: $STAGING_VER"
 
       # 2. Build Web & APK
       - name: Build Web
@@ -43,33 +65,32 @@ jobs:
       - name: Build APK (Debug)
         run: flutter build apk --debug --build-name=${{ env.STAGING_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
-      # 3. RENAME to Standard 'pb_public'
-      # Since we are pushing to a separate branch, we don't need a unique name like 'pb_public_staging'
+      # 3. RENAME (Prepare for push)
       - name: Prepare Folder
         run: mv build/web pb_public
 
-      # 4. PUSH TO SERVER REPO -> STAGING BRANCH
+      # 4. PUSH TO SERVER REPO (STAGING BRANCH)
       - name: Deploy to Server Staging
         uses: cpina/github-action-push-to-another-repository@v1.7.2
         env:
           API_TOKEN_GITHUB: ${{ secrets.DEPLOY_PAT }}
         with:
           source-directory: 'pb_public'
-          destination-github-username: 'YOUR_GITHUB_USER'
-          destination-repository-name: 'sanjose_server'
-          target-branch: 'staging'   # <--- PUSHES TO STAGING
+          destination-github-username: 'YOUR_GITHUB_USERNAME' # <--- CHANGE THIS
+          destination-repository-name: 'sanjose_server'     # <--- CHANGE THIS
+          target-branch: 'staging'
           target-directory: 'pb_public'
           create-target-branch-if-needed: true
           commit-message: "Deploy Staging: ${{ env.STAGING_VER }}"
           user-email: 'bot@gymsystem.com'
 
   # ==========================================
-  # PRODUCTION TRACK
+  # JOB 2: PRODUCTION TRACK
   # ==========================================
   deploy-production:
     if: github.event.pull_request.merged == true && github.base_ref == 'main'
     runs-on: ubuntu-latest
-    environment: Production
+    environment: Production # <--- TRIGGERS MANUAL APPROVAL
     outputs:
       prod_ver: ${{ steps.calc_prod.outputs.prod_ver }}
       new_patch: ${{ steps.calc_prod.outputs.new_patch }}
@@ -78,15 +99,28 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
 
-      # 1. Calculate Prod Version
+      # 1. ROBUST VERSION CALCULATION
       - name: Calculate Prod Version
         id: calc_prod
+        env: 
+          URL: ${{ secrets.VERSION_MANAGER_URL }}
+          ID: ${{ secrets.VERSION_COLLECTION_ID }}
         run: |
+          if [ -z "$URL" ] || [ -z "$ID" ]; then
+            echo "::error::Secrets Missing!"
+            exit 1
+          fi
+
           if ! command -v jq &> /dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
-          RESPONSE=$(curl -s ${{ secrets.VERSION_MANAGER_URL }}/${{ secrets.VERSION_COLLECTION_ID }})
+          
+          RESPONSE=$(curl -s "$URL/$ID")
           MAJOR=$(echo $RESPONSE | jq -r '.major')
           MINOR=$(echo $RESPONSE | jq -r '.minor')
           PATCH=$(echo $RESPONSE | jq -r '.patch')
+
+          if [ "$MAJOR" == "null" ]; then exit 1; fi
+
+          # Logic: Increment Patch for Prod
           NEW_PATCH=$((PATCH + 1))
           PROD_VER="$MAJOR.$MINOR.$NEW_PATCH"
           
@@ -101,32 +135,33 @@ jobs:
       - name: Build APK (Debug)
         run: flutter build apk --debug --build-name=${{ env.PROD_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
+      # 3. Save APK for Release Job
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
 
-      # 3. RENAME
+      # 4. RENAME
       - name: Prepare Folder
         run: mv build/web pb_public
 
-      # 4. PUSH TO SERVER REPO -> MAIN BRANCH
+      # 5. PUSH TO SERVER REPO (MAIN BRANCH)
       - name: Deploy to Server Main
         uses: cpina/github-action-push-to-another-repository@v1.7.2
         env:
           API_TOKEN_GITHUB: ${{ secrets.DEPLOY_PAT }}
         with:
           source-directory: 'pb_public'
-          destination-github-username: 'YOUR_GITHUB_USER'
-          destination-repository-name: 'sanjose_server'
-          target-branch: 'main'      # <--- PUSHES TO MAIN
+          destination-github-username: 'ChristianGerardHizon' # <--- CHANGE THIS
+          destination-repository-name: 'sanjose_server'     # <--- CHANGE THIS
+          target-branch: 'main'
           target-directory: 'pb_public'
           commit-message: "Deploy Production: ${{ env.PROD_VER }}"
           user-email: 'bot@gymsystem.com'
 
   # ==========================================
-  # RELEASE & SYNC (Same as before)
+  # JOB 3: RELEASE & SYNC
   # ==========================================
   release-and-sync:
     needs: deploy-production
@@ -138,6 +173,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: app-release-apk
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
@@ -145,17 +181,28 @@ jobs:
           files: app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Update Version Manager
         env:
           NEW_PATCH: ${{ needs.deploy-production.outputs.new_patch }}
+          URL: ${{ secrets.VERSION_MANAGER_URL }}
+          ID: ${{ secrets.VERSION_COLLECTION_ID }}
+          TOKEN: ${{ secrets.PB_TOKEN }}
         run: |
            if ! command -v jq &> /dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
-           RESPONSE=$(curl -s ${{ secrets.VERSION_MANAGER_URL }}/${{ secrets.VERSION_COLLECTION_ID }})
+           
+           # Re-fetch for Major/Minor
+           RESPONSE=$(curl -s "$URL/$ID")
            MAJOR=$(echo $RESPONSE | jq -r '.major')
            MINOR=$(echo $RESPONSE | jq -r '.minor')
+           
+           # Payload
            PAYLOAD=$(jq -n --argjson major "$MAJOR" --argjson minor "$MINOR" --argjson patch "$NEW_PATCH" \
              '{major: $major, minor: $minor, patch: $patch}')
-           curl -s -X PATCH ${{ secrets.VERSION_MANAGER_URL }}/${{ secrets.VERSION_COLLECTION_ID }} \
-             -H "Content-Type: application/json" \
-             -H "Authorization: ${{ secrets.PB_TOKEN }}" \
-             -d "$PAYLOAD"
+           
+           # Update (Supports Auth if token is present)
+           if [ -z "$TOKEN" ]; then
+              curl -s -X PATCH "$URL/$ID" -H "Content-Type: application/json" -d "$PAYLOAD"
+           else
+              curl -s -X PATCH "$URL/$ID" -H "Content-Type: application/json" -H "Authorization: $TOKEN" -d "$PAYLOAD"
+           fi
