@@ -1,4 +1,4 @@
-name: Deploy to SanJose Server
+name: Deploy Parallel Branches
 
 on:
   push:
@@ -8,11 +8,11 @@ on:
     branches: [ "main" ]
 
 permissions:
-  contents: write # For Releases
+  contents: write
 
 jobs:
   # ==========================================
-  # JOB 1: STAGING -> Pushes to 'pb_public_staging'
+  # STAGING TRACK
   # ==========================================
   deploy-staging:
     if: github.ref == 'refs/heads/staging'
@@ -36,34 +36,35 @@ jobs:
           STAGING_VER="$MAJOR.$MINOR.$NEXT_PATCH-staging"
           echo "STAGING_VER=$STAGING_VER" >> $GITHUB_ENV
 
-      # 2. Build Web
+      # 2. Build Web & APK
       - name: Build Web
         run: flutter build web --release --build-name=${{ env.STAGING_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
-      # 3. Build APK (Debug)
-      - name: Build APK
+      - name: Build APK (Debug)
         run: flutter build apk --debug --build-name=${{ env.STAGING_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
-      # 4. RENAME (Prepare for push)
+      # 3. RENAME to Standard 'pb_public'
+      # Since we are pushing to a separate branch, we don't need a unique name like 'pb_public_staging'
       - name: Prepare Folder
-        run: mv build/web pb_public_staging
+        run: mv build/web pb_public
 
-      # 5. PUSH TO SERVER REPO (Target: pb_public_staging)
-      - name: Deploy to Server Repo
+      # 4. PUSH TO SERVER REPO -> STAGING BRANCH
+      - name: Deploy to Server Staging
         uses: cpina/github-action-push-to-another-repository@v1.7.2
         env:
           API_TOKEN_GITHUB: ${{ secrets.DEPLOY_PAT }}
         with:
-          source-directory: 'pb_public_staging'
+          source-directory: 'pb_public'
           destination-github-username: 'YOUR_GITHUB_USER'
           destination-repository-name: 'sanjose_server'
-          target-branch: 'main' # We push directly to main so the server has the file
-          target-directory: 'pb_public_staging' # Updates this specific folder
-          commit-message: "Deploy Staging Web: ${{ env.STAGING_VER }}"
+          target-branch: 'staging'   # <--- PUSHES TO STAGING
+          target-directory: 'pb_public'
+          create-target-branch-if-needed: true
+          commit-message: "Deploy Staging: ${{ env.STAGING_VER }}"
           user-email: 'bot@gymsystem.com'
 
   # ==========================================
-  # JOB 2: PRODUCTION -> Pushes to 'pb_public'
+  # PRODUCTION TRACK
   # ==========================================
   deploy-production:
     if: github.event.pull_request.merged == true && github.base_ref == 'main'
@@ -93,27 +94,25 @@ jobs:
           echo "prod_ver=$PROD_VER" >> $GITHUB_OUTPUT
           echo "new_patch=$NEW_PATCH" >> $GITHUB_OUTPUT
 
-      # 2. Build Web
+      # 2. Build Web & APK
       - name: Build Web
         run: flutter build web --release --build-name=${{ env.PROD_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
-      # 3. Build APK
-      - name: Build APK
+      - name: Build APK (Debug)
         run: flutter build apk --debug --build-name=${{ env.PROD_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
-      # 4. Save APK for Release
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
 
-      # 5. RENAME (Prepare for push)
+      # 3. RENAME
       - name: Prepare Folder
         run: mv build/web pb_public
 
-      # 6. PUSH TO SERVER REPO (Target: pb_public)
-      - name: Deploy to Server Repo
+      # 4. PUSH TO SERVER REPO -> MAIN BRANCH
+      - name: Deploy to Server Main
         uses: cpina/github-action-push-to-another-repository@v1.7.2
         env:
           API_TOKEN_GITHUB: ${{ secrets.DEPLOY_PAT }}
@@ -121,13 +120,13 @@ jobs:
           source-directory: 'pb_public'
           destination-github-username: 'YOUR_GITHUB_USER'
           destination-repository-name: 'sanjose_server'
-          target-branch: 'main'
-          target-directory: 'pb_public' # Updates the main public folder
-          commit-message: "Deploy Production Web: ${{ env.PROD_VER }}"
+          target-branch: 'main'      # <--- PUSHES TO MAIN
+          target-directory: 'pb_public'
+          commit-message: "Deploy Production: ${{ env.PROD_VER }}"
           user-email: 'bot@gymsystem.com'
 
   # ==========================================
-  # JOB 3: RELEASE & SYNC
+  # RELEASE & SYNC (Same as before)
   # ==========================================
   release-and-sync:
     needs: deploy-production
@@ -139,7 +138,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: app-release-apk
-
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
@@ -147,7 +145,6 @@ jobs:
           files: app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
       - name: Update Version Manager
         env:
           NEW_PATCH: ${{ needs.deploy-production.outputs.new_patch }}
@@ -156,10 +153,8 @@ jobs:
            RESPONSE=$(curl -s ${{ secrets.VERSION_MANAGER_URL }}/${{ secrets.VERSION_COLLECTION_ID }})
            MAJOR=$(echo $RESPONSE | jq -r '.major')
            MINOR=$(echo $RESPONSE | jq -r '.minor')
-           
            PAYLOAD=$(jq -n --argjson major "$MAJOR" --argjson minor "$MINOR" --argjson patch "$NEW_PATCH" \
              '{major: $major, minor: $minor, patch: $patch}')
-           
            curl -s -X PATCH ${{ secrets.VERSION_MANAGER_URL }}/${{ secrets.VERSION_COLLECTION_ID }} \
              -H "Content-Type: application/json" \
              -H "Authorization: ${{ secrets.PB_TOKEN }}" \
