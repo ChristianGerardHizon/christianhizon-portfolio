@@ -40,18 +40,27 @@ android {
     }
 
     // ✅ Define the "release" signing config correctly
+    // ✅ Define the "release" signing config correctly
     signingConfigs {
         create("release") {
-            if (System.getenv()["CI"] == "true") {
-                storeFile = file(System.getenv()["CM_KEYSTORE_PATH"])
+            val envKeystorePath = System.getenv()["CM_KEYSTORE_PATH"]
+            
+            // Check if we are in CI AND the keystore path is actually set
+            if (System.getenv()["CI"] == "true" && !envKeystorePath.isNullOrEmpty()) {
+                storeFile = file(envKeystorePath)
                 storePassword = System.getenv()["CM_KEYSTORE_PASSWORD"]
                 keyAlias = System.getenv()["CM_KEY_ALIAS"]
                 keyPassword = System.getenv()["CM_KEY_PASSWORD"]
-            } else {
+            } else if (keystorePropertiesFile.exists()) {
+                // Fallback to local key.properties if it exists
                 storeFile = file(keystoreProperties.getProperty("storeFile"))
                 storePassword = keystoreProperties.getProperty("storePassword")
                 keyAlias = keystoreProperties.getProperty("keyAlias")
                 keyPassword = keystoreProperties.getProperty("keyPassword")
+            } else {
+                // If neither exists, we don't set the release config.
+                // This prevents the "path null" crash.
+                // Note: Actual 'release' builds will fail signing, but 'debug' builds will work fine.
             }
         }
     }
