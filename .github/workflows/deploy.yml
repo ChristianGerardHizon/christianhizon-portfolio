@@ -156,6 +156,18 @@ jobs:
           commit-message: "Deploy Staging: ${{ env.STAGING_VER }}"
           user-email: 'bot@gymsystem.com'
 
+      # RELEASE
+      - name: Create Staging Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: staging-${{ env.STAGING_VER }}
+          target_commitish: ${{ github.sha }}
+          name: "Staging ${{ env.STAGING_VER }}"
+          prerelease: true
+          files: build/app/outputs/flutter-apk/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   # ==========================================
   # JOB 2: PRODUCTION TRACK
   # ==========================================
@@ -168,11 +180,16 @@ jobs:
       new_patch: ${{ steps.calc_prod.outputs.new_patch }}
       major: ${{ steps.calc_prod.outputs.major }}
       minor: ${{ steps.calc_prod.outputs.minor }}
+      commit_sha: ${{ steps.get_sha.outputs.sha }}
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+
+      - name: Capture commit SHA
+        id: get_sha
+        run: echo "sha=${{ github.sha }}" >> $GITHUB_OUTPUT
 
       # --- PREFLIGHT CHECKS ---
       - name: Verify deploy secrets exist
@@ -341,6 +358,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ needs.deploy-production.outputs.prod_ver }}
+          target_commitish: ${{ needs.deploy-production.outputs.commit_sha }}
+          name: "v${{ needs.deploy-production.outputs.prod_ver }}"
           files: app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
