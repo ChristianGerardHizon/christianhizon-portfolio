@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/widgets/form_feedback.dart';
@@ -11,7 +12,7 @@ import '../../../appointments/presentation/widgets/dialogs/edit_appointment_dial
 /// Section displaying today's appointments on the dashboard.
 ///
 /// Shows upcoming and completed appointments for today with quick status change.
-class TodayAppointmentsSection extends ConsumerWidget {
+class TodayAppointmentsSection extends HookConsumerWidget {
   const TodayAppointmentsSection({super.key});
 
   @override
@@ -19,11 +20,28 @@ class TodayAppointmentsSection extends ConsumerWidget {
     final theme = Theme.of(context);
     final appointmentsAsync = ref.watch(appointmentsControllerProvider);
 
+    // Client-side search state
+    final searchController = useTextEditingController();
+    final searchQuery = useState('');
+
     return appointmentsAsync.when(
       data: (appointments) {
         // Filter to today's appointments
-        final todayAppointments = appointments.where((a) => a.isToday).toList()
+        var todayAppointments = appointments.where((a) => a.isToday).toList()
           ..sort((a, b) => a.date.compareTo(b.date));
+
+        // Apply client-side search filter
+        if (searchQuery.value.isNotEmpty) {
+          final query = searchQuery.value.toLowerCase();
+          todayAppointments = todayAppointments.where((a) {
+            final patientName = a.patientDisplayName.toLowerCase();
+            final ownerName = a.ownerDisplayName.toLowerCase();
+            final purpose = (a.purpose ?? '').toLowerCase();
+            return patientName.contains(query) ||
+                ownerName.contains(query) ||
+                purpose.contains(query);
+          }).toList();
+        }
 
         // Split into upcoming and completed
         final upcoming = todayAppointments
@@ -38,7 +56,7 @@ class TodayAppointmentsSection extends ConsumerWidget {
                 a.status != AppointmentScheduleStatus.completed)
             .toList();
 
-        if (todayAppointments.isEmpty) {
+        if (appointments.where((a) => a.isToday).isEmpty) {
           return _buildEmptyState(context);
         }
 
@@ -71,7 +89,61 @@ class TodayAppointmentsSection extends ConsumerWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 8),
+
+            // Search bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: TextField(
+                controller: searchController,
+                onChanged: (value) => searchQuery.value = value,
+                decoration: InputDecoration(
+                  hintText: 'Search today\'s appointments...',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: searchQuery.value.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            searchController.clear();
+                            searchQuery.value = '';
+                          },
+                        )
+                      : null,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  isDense: true,
+                  filled: true,
+                ),
+              ),
+            ),
             const SizedBox(height: 16),
+
+            // No results for search
+            if (todayAppointments.isEmpty && searchQuery.value.isNotEmpty) ...[
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.search_off,
+                        size: 48,
+                        color: theme.colorScheme.outline,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'No matching appointments',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.outline,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
 
             // Upcoming appointments
             if (upcoming.isNotEmpty) ...[

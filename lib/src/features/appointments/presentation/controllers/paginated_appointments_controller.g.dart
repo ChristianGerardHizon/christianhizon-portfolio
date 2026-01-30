@@ -39,7 +39,7 @@ final class PaginatedAppointmentsControllerProvider
 }
 
 String _$paginatedAppointmentsControllerHash() =>
-    r'5f38b7f2318b8d7a750b7f4e75175906cb70344b';
+    r'4777c67341a11f1ee5612a9290d8084b03c6f372';
 
 /// Controller for managing paginated appointments list.
 

@@ -15,6 +15,10 @@ class PaginatedAppointmentsController extends _$PaginatedAppointmentsController 
   AppointmentScheduleRepository get _repository =>
       ref.read(appointmentScheduleRepositoryProvider);
 
+  // Track current search state
+  String? _currentSearchQuery;
+  List<String>? _currentSearchFields;
+
   /// Gets the current sort string from the sort controller.
   String get _currentSort =>
       ref.read(appointmentSortControllerProvider).toSortString();
@@ -22,8 +26,17 @@ class PaginatedAppointmentsController extends _$PaginatedAppointmentsController 
   /// Gets the current branch filter.
   String? get _branchFilter => ref.read(currentBranchFilterProvider);
 
+  /// Whether search is currently active.
+  bool get isSearchActive => _currentSearchQuery != null;
+
+  /// The current search query, if any.
+  String? get currentSearchQuery => _currentSearchQuery;
+
   @override
   Future<PaginatedState<AppointmentSchedule>> build() async {
+    _currentSearchQuery = null;
+    _currentSearchFields = null;
+
     // Listen to sort changes and refresh
     ref.listen(appointmentSortControllerProvider, (_, __) {
       refresh();
@@ -66,12 +79,23 @@ class PaginatedAppointmentsController extends _$PaginatedAppointmentsController 
     state = AsyncValue.data(currentState.copyWith(isLoadingMore: true));
 
     final nextPage = currentState.currentPage + 1;
-    final result = await _repository.fetchPaginated(
-      page: nextPage,
-      perPage: Pagination.defaultPageSize,
-      sort: _currentSort,
-      filter: _branchFilter,
-    );
+
+    // Use search or regular fetch based on current state
+    final result = _currentSearchQuery != null
+        ? await _repository.searchPaginated(
+            _currentSearchQuery!,
+            fields: _currentSearchFields,
+            page: nextPage,
+            perPage: Pagination.defaultPageSize,
+            sort: _currentSort,
+            filter: _branchFilter,
+          )
+        : await _repository.fetchPaginated(
+            page: nextPage,
+            perPage: Pagination.defaultPageSize,
+            sort: _currentSort,
+            filter: _branchFilter,
+          );
 
     result.fold(
       (failure) {
@@ -91,27 +115,75 @@ class PaginatedAppointmentsController extends _$PaginatedAppointmentsController 
     );
   }
 
-  /// Refreshes the list from the beginning (respects current sort and branch filter).
+  /// Refreshes the list from the beginning (respects current search, sort, and branch filter).
   Future<void> refresh() async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      final result = await _repository.fetchPaginated(
-        page: 1,
-        perPage: Pagination.defaultPageSize,
-        sort: _currentSort,
-        filter: _branchFilter,
-      );
-      return result.fold(
-        (failure) => throw failure,
-        (paginated) => PaginatedState<AppointmentSchedule>(
-          items: paginated.items,
-          currentPage: paginated.page,
-          totalItems: paginated.totalItems,
-          totalPages: paginated.totalPages,
-          hasReachedEnd: !paginated.hasMore,
-        ),
-      );
-    });
+
+    final result = _currentSearchQuery != null
+        ? await _repository.searchPaginated(
+            _currentSearchQuery!,
+            fields: _currentSearchFields,
+            page: 1,
+            perPage: Pagination.defaultPageSize,
+            sort: _currentSort,
+            filter: _branchFilter,
+          )
+        : await _repository.fetchPaginated(
+            page: 1,
+            perPage: Pagination.defaultPageSize,
+            sort: _currentSort,
+            filter: _branchFilter,
+          );
+
+    state = result.fold(
+      (failure) => AsyncError(failure, StackTrace.current),
+      (paginated) => AsyncData(PaginatedState<AppointmentSchedule>(
+        items: paginated.items,
+        currentPage: paginated.page,
+        totalItems: paginated.totalItems,
+        totalPages: paginated.totalPages,
+        hasReachedEnd: !paginated.hasMore,
+      )),
+    );
+  }
+
+  /// Searches appointments (resets to page 1).
+  Future<void> search(String query, {List<String>? fields}) async {
+    if (query.isEmpty) {
+      return clearSearch();
+    }
+
+    _currentSearchQuery = query;
+    _currentSearchFields = fields;
+
+    state = const AsyncValue.loading();
+
+    final result = await _repository.searchPaginated(
+      query,
+      fields: fields,
+      page: 1,
+      perPage: Pagination.defaultPageSize,
+      sort: _currentSort,
+      filter: _branchFilter,
+    );
+
+    state = result.fold(
+      (failure) => AsyncError(failure, StackTrace.current),
+      (paginated) => AsyncData(PaginatedState<AppointmentSchedule>(
+        items: paginated.items,
+        currentPage: paginated.page,
+        totalItems: paginated.totalItems,
+        totalPages: paginated.totalPages,
+        hasReachedEnd: !paginated.hasMore,
+      )),
+    );
+  }
+
+  /// Clears search and reloads all appointments.
+  Future<void> clearSearch() async {
+    _currentSearchQuery = null;
+    _currentSearchFields = null;
+    return refresh();
   }
 
   /// Creates a new appointment and adds it to the top of the list.

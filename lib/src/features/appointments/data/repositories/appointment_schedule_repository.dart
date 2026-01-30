@@ -67,6 +67,16 @@ abstract class AppointmentScheduleRepository {
 
   /// Deletes an appointment (soft delete).
   FutureEither<void> delete(String id);
+
+  /// Searches appointments with pagination.
+  FutureEitherPaginated<AppointmentSchedule> searchPaginated(
+    String query, {
+    List<String>? fields,
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+    String? sort,
+    String? filter,
+  });
 }
 
 /// Provider for the appointment schedule repository.
@@ -83,6 +93,28 @@ class AppointmentScheduleRepositoryImpl implements AppointmentScheduleRepository
 
   RecordService get _collection =>
       _pb.collection(PocketBaseCollections.appointments);
+
+  /// Maps user-facing search field names to PocketBase filter fields.
+  ///
+  /// For relation-backed fields (patient name, owner), includes both the
+  /// cached field on the appointment record and the relation field via
+  /// dot notation so the search works even if the cached field is empty.
+  List<String> _expandSearchFields(List<String> fields) {
+    final expanded = <String>[];
+    for (final field in fields) {
+      switch (field) {
+        case 'patientName':
+          expanded.addAll(['patientName', 'patient.name']);
+        case 'ownerName':
+          expanded.addAll(['ownerName', 'patient.owner']);
+        case 'ownerContact':
+          expanded.addAll(['ownerContact', 'patient.contactNumber']);
+        default:
+          expanded.add(field);
+      }
+    }
+    return expanded;
+  }
 
   @override
   FutureEither<List<AppointmentSchedule>> fetchAll({String? filter}) async {
@@ -287,6 +319,50 @@ class AppointmentScheduleRepositoryImpl implements AppointmentScheduleRepository
     return TaskEither.tryCatch(
       () async {
         await _collection.update(id, body: {'isDeleted': true});
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEitherPaginated<AppointmentSchedule> searchPaginated(
+    String query, {
+    List<String>? fields,
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+    String? sort,
+    String? filter,
+  }) async {
+    return TaskEither.tryCatch(
+      () async {
+        final selectedFields = fields ?? ['patientName'];
+        // Expand search fields to include both cached fields and relation fields
+        final searchFields = _expandSearchFields(selectedFields);
+        final searchFilter = PBFilter()
+            .notDeleted()
+            .searchFields(query, searchFields)
+            .build();
+
+        // Combine search filter with optional branch filter
+        final combinedFilter =
+            filter != null ? '$searchFilter && $filter' : searchFilter;
+
+        final result = await _collection.getList(
+          page: page,
+          perPage: perPage,
+          filter: combinedFilter,
+          sort: sort ?? '-date',
+          expand: PBExpand.appointment.toString(),
+        );
+
+        return PaginatedResult<AppointmentSchedule>(
+          items: result.items
+              .map((r) => AppointmentScheduleDto.fromRecord(r).toEntity())
+              .toList(),
+          page: result.page,
+          totalItems: result.totalItems,
+          totalPages: result.totalPages,
+        );
       },
       Failure.handle,
     ).run();
