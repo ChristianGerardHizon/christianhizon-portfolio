@@ -18,6 +18,7 @@ import '../../../../patients/domain/patient.dart';
 import '../../../../patients/presentation/controllers/patient_treatments_controller.dart';
 import '../../../../patients/presentation/controllers/patients_controller.dart';
 import '../../../../settings/domain/message_template.dart';
+import '../../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../../../settings/presentation/controllers/message_templates_controller.dart';
 import '../../../domain/appointment_schedule.dart';
 
@@ -148,6 +149,7 @@ class CreateAppointmentDialog extends HookConsumerWidget {
         status: AppointmentScheduleStatus.scheduled,
         patient: patient.id,
         patientTreatment: selectedPatientTreatmentId.value,
+        branch: ref.read(currentBranchIdProvider),
         patientName: patient.name,
         ownerName: patient.owner,
         ownerContact: patient.contactNumber,
