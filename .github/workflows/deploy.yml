@@ -137,6 +137,24 @@ jobs:
           echo "STAGING_VER_BASE=$STAGING_VER_BASE" >> $GITHUB_ENV
           echo "Calculated Staging Version: $STAGING_VER"
 
+      - name: Resolve unique staging tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="staging-${{ env.STAGING_VER_BASE }}"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/git/refs/tags/$TAG")
+
+          if [ "$STATUS" == "200" ]; then
+            # Tag exists, append run number to make it unique
+            TAG="${TAG}-build.${{ github.run_number }}"
+            echo "::notice::Tag already exists, using $TAG instead."
+          fi
+
+          echo "STAGING_TAG=$TAG" >> $GITHUB_ENV
+          echo "Resolved staging tag: $TAG"
+
       # DECODE KEYSTORE FOR RELEASE SIGNING
       - name: Decode Keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/android/app/upload-keystore.jks
@@ -176,9 +194,9 @@ jobs:
       - name: Create Staging Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: staging-${{ env.STAGING_VER_BASE }}
+          tag_name: ${{ env.STAGING_TAG }}
           target_commitish: ${{ github.sha }}
-          name: "Staging ${{ env.STAGING_VER_BASE }}"
+          name: ${{ env.STAGING_TAG }}
           prerelease: true
           files: build/app/outputs/flutter-apk/app-release.apk
         env:
