@@ -1,11 +1,9 @@
 name: Deploy System
 
 on:
-  push:
-    branches: [ "staging" ]
   pull_request:
     types: [ closed ]
-    branches: [ "main" ]
+    branches: [ "staging", "main" ]
 
 concurrency:
   group: deploy-${{ github.ref }}
@@ -19,7 +17,7 @@ jobs:
   # JOB 1: STAGING TRACK
   # ==========================================
   deploy-staging:
-    if: github.ref == 'refs/heads/staging'
+    if: github.event.pull_request.merged == true && github.base_ref == 'staging'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
