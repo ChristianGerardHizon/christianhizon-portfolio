@@ -1,0 +1,162 @@
+name: Deploy Pipeline (Debug Mode)
+
+on:
+  push:
+    branches: [ "staging" ]
+  pull_request:
+    types: [ closed ]
+    branches: [ "main" ]
+
+permissions:
+  contents: write # REQUIRED for creating GitHub Releases
+
+jobs:
+  # ====================================================
+  # JOB 1: STAGING (Automatic on Push)
+  # ====================================================
+  deploy-staging:
+    if: github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      # 1. Calculate Staging Version (Read-Only)
+      - name: Calculate Staging Version
+        id: calc_staging
+        run: |
+          if ! command -v jq &> /dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
+          
+          # Fetch from Version Manager
+          RESPONSE=$(curl -s ${{ secrets.VERSION_MANAGER_URL }}/${{ secrets.VERSION_COLLECTION_ID }})
+          MAJOR=$(echo $RESPONSE | jq -r '.major')
+          MINOR=$(echo $RESPONSE | jq -r '.minor')
+          PATCH=$(echo $RESPONSE | jq -r '.patch')
+          
+          NEXT_PATCH=$((PATCH + 1))
+          STAGING_VER="$MAJOR.$MINOR.$NEXT_PATCH-staging"
+          
+          echo "STAGING_VER=$STAGING_VER" >> $GITHUB_ENV
+
+      # 2. Build APK (DEBUG MODE)
+      # Uses the default Android debug.keystore
+      - name: Build APK (Staging)
+        run: flutter build apk --debug --build-name=${{ env.STAGING_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL }}
+
+      # 3. Upload Artifact (Optional - useful for checking staging builds)
+      - name: Upload Staging APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+
+  # ====================================================
+  # JOB 2: PRODUCTION (Gated by Manual Approval)
+  # ====================================================
+  deploy-production:
+    if: github.event.pull_request.merged == true && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    environment: Production # <--- TRIGGERS THE GATE
+    
+    outputs:
+      prod_ver: ${{ steps.calc_prod.outputs.prod_ver }}
+      new_patch: ${{ steps.calc_prod.outputs.new_patch }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+
+      # 1. Calculate Production Version
+      - name: Calculate Prod Version
+        id: calc_prod
+        run: |
+          if ! command -v jq &> /dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
+          
+          RESPONSE=$(curl -s ${{ secrets.VERSION_MANAGER_URL }}/${{ secrets.VERSION_COLLECTION_ID }})
+          MAJOR=$(echo $RESPONSE | jq -r '.major')
+          MINOR=$(echo $RESPONSE | jq -r '.minor')
+          PATCH=$(echo $RESPONSE | jq -r '.patch')
+          
+          NEW_PATCH=$((PATCH + 1))
+          PROD_VER="$MAJOR.$MINOR.$NEW_PATCH"
+          
+          echo "PROD_VER=$PROD_VER" >> $GITHUB_ENV
+          echo "prod_ver=$PROD_VER" >> $GITHUB_OUTPUT
+          echo "new_patch=$NEW_PATCH" >> $GITHUB_OUTPUT
+
+      # 2. Build Web & Mobile (DEBUG MODE)
+      # Note: We skip AppBundle (.aab) because stores don't accept debug builds anyway.
+      - name: Build Web
+        run: flutter build web --release --build-name=${{ env.PROD_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL }}
+      
+      - name: Build APK
+        run: flutter build apk --debug --build-name=${{ env.PROD_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL }}
+
+      # 3. Save APK for the Release Job
+      # Note: Path is now 'app-debug.apk'
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+
+      # 4. Deploy Web (Firebase works fine with debug/release mix)
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: your-firebase-id
+          channelId: live
+
+  # ====================================================
+  # JOB 3: RELEASE & SYNC (Runs after Prod Success)
+  # ====================================================
+  release-and-sync:
+    needs: deploy-production
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Download the APK
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release-apk
+
+      # 2. Create GitHub Release
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.deploy-production.outputs.prod_ver }}
+          name: Release v${{ needs.deploy-production.outputs.prod_ver }}
+          body: "Automated Debug Build for Production."
+          files: app-debug.apk # Note: File name matches output of download step
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 3. UPDATE POCKETBASE
+      - name: Update Version Manager
+        env:
+          NEW_PATCH: ${{ needs.deploy-production.outputs.new_patch }}
+        run: |
+           if ! command -v jq &> /dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
+           
+           RESPONSE=$(curl -s ${{ secrets.VERSION_MANAGER_URL }}/${{ secrets.VERSION_COLLECTION_ID }})
+           MAJOR=$(echo $RESPONSE | jq -r '.major')
+           MINOR=$(echo $RESPONSE | jq -r '.minor')
+           
+           PAYLOAD=$(jq -n --argjson major "$MAJOR" --argjson minor "$MINOR" --argjson patch "$NEW_PATCH" \
+             '{major: $major, minor: $minor, patch: $patch}')
+           
+           curl -s -X PATCH ${{ secrets.VERSION_MANAGER_URL }}/${{ secrets.VERSION_COLLECTION_ID }} \
+             -H "Content-Type: application/json" \
+             -H "Authorization: ${{ secrets.PB_TOKEN }}" \
+             -d "$PAYLOAD"
