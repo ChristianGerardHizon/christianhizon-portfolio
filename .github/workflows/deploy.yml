@@ -1,4 +1,4 @@
-name: Deploy Web & Release APK
+name: Deploy to SanJose Server
 
 on:
   push:
@@ -8,11 +8,11 @@ on:
     branches: [ "main" ]
 
 permissions:
-  contents: write # REQUIRED for creating GitHub Releases
+  contents: write # For Releases
 
 jobs:
   # ==========================================
-  # JOB 1: STAGING (Auto-Deploy to Staging Branch)
+  # JOB 1: STAGING -> Pushes to 'pb_public_staging'
   # ==========================================
   deploy-staging:
     if: github.ref == 'refs/heads/staging'
@@ -23,7 +23,7 @@ jobs:
         with:
           channel: 'stable'
 
-      # 1. CALCULATE VERSION (Read-Only)
+      # 1. Calculate Version
       - name: Calculate Staging Version
         id: calc_staging
         run: |
@@ -36,48 +36,39 @@ jobs:
           STAGING_VER="$MAJOR.$MINOR.$NEXT_PATCH-staging"
           echo "STAGING_VER=$STAGING_VER" >> $GITHUB_ENV
 
-      # 2. BUILD WEB (Release Mode)
+      # 2. Build Web
       - name: Build Web
-        run: flutter build web --release --build-name=${{ env.STAGING_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL }}
+        run: flutter build web --release --build-name=${{ env.STAGING_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
-      # 3. BUILD APK (Debug Mode)
+      # 3. Build APK (Debug)
       - name: Build APK
-        run: flutter build apk --debug --build-name=${{ env.STAGING_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL }}
+        run: flutter build apk --debug --build-name=${{ env.STAGING_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
-      # 4. RENAME FOLDER (build/web -> pb_public)
-      # This prepares the folder structure for PocketBase
-      - name: Prepare pb_public
-        run: mv build/web pb_public
+      # 4. RENAME (Prepare for push)
+      - name: Prepare Folder
+        run: mv build/web pb_public_staging
 
-      # 5. PUSH TO DEPLOY REPO (Staging Branch)
-      # This action automatically wipes the target directory before copying new files
-      - name: Deploy Web to External Repo
+      # 5. PUSH TO SERVER REPO (Target: pb_public_staging)
+      - name: Deploy to Server Repo
         uses: cpina/github-action-push-to-another-repository@v1.7.2
         env:
           API_TOKEN_GITHUB: ${{ secrets.DEPLOY_PAT }}
         with:
-          source-directory: 'pb_public'
-          destination-github-username: 'YOUR_GITHUB_USERNAME'
-          destination-repository-name: 'my-app-deploy'
-          target-branch: 'staging'
-          target-directory: 'pb_public' # Creates/Updates 'pb_public' at the root
-          commit-message: "Deploy Staging: ${{ env.STAGING_VER }}"
-          user-email: 'bot@example.com'
-
-      # 6. (Optional) Upload Staging APK for easy access
-      - name: Upload Staging APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: staging-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          source-directory: 'pb_public_staging'
+          destination-github-username: 'YOUR_GITHUB_USER'
+          destination-repository-name: 'sanjose_server'
+          target-branch: 'main' # We push directly to main so the server has the file
+          target-directory: 'pb_public_staging' # Updates this specific folder
+          commit-message: "Deploy Staging Web: ${{ env.STAGING_VER }}"
+          user-email: 'bot@gymsystem.com'
 
   # ==========================================
-  # JOB 2: PRODUCTION (Gated -> Deploy Web -> Release APK)
+  # JOB 2: PRODUCTION -> Pushes to 'pb_public'
   # ==========================================
   deploy-production:
     if: github.event.pull_request.merged == true && github.base_ref == 'main'
     runs-on: ubuntu-latest
-    environment: Production # Manual Approval Gate
+    environment: Production
     outputs:
       prod_ver: ${{ steps.calc_prod.outputs.prod_ver }}
       new_patch: ${{ steps.calc_prod.outputs.new_patch }}
@@ -86,7 +77,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
 
-      # 1. CALCULATE PROD VERSION
+      # 1. Calculate Prod Version
       - name: Calculate Prod Version
         id: calc_prod
         run: |
@@ -102,73 +93,66 @@ jobs:
           echo "prod_ver=$PROD_VER" >> $GITHUB_OUTPUT
           echo "new_patch=$NEW_PATCH" >> $GITHUB_OUTPUT
 
-      # 2. BUILD WEB (Release)
+      # 2. Build Web
       - name: Build Web
-        run: flutter build web --release --build-name=${{ env.PROD_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL }}
+        run: flutter build web --release --build-name=${{ env.PROD_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
-      # 3. BUILD APK (Debug Mode)
+      # 3. Build APK
       - name: Build APK
-        run: flutter build apk --debug --build-name=${{ env.PROD_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL }}
+        run: flutter build apk --debug --build-name=${{ env.PROD_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
-      # 4. SAVE APK FOR RELEASE (We need it in the next job)
+      # 4. Save APK for Release
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
 
-      # 5. RENAME FOLDER (build/web -> pb_public)
-      - name: Prepare pb_public
+      # 5. RENAME (Prepare for push)
+      - name: Prepare Folder
         run: mv build/web pb_public
 
-      # 6. PUSH TO DEPLOY REPO (Main Branch)
-      # Wipes 'pb_public' in the target and replaces it with the new build
-      - name: Deploy Web to External Repo
+      # 6. PUSH TO SERVER REPO (Target: pb_public)
+      - name: Deploy to Server Repo
         uses: cpina/github-action-push-to-another-repository@v1.7.2
         env:
           API_TOKEN_GITHUB: ${{ secrets.DEPLOY_PAT }}
         with:
           source-directory: 'pb_public'
-          destination-github-username: 'YOUR_GITHUB_USERNAME'
-          destination-repository-name: 'my-app-deploy'
+          destination-github-username: 'YOUR_GITHUB_USER'
+          destination-repository-name: 'sanjose_server'
           target-branch: 'main'
-          target-directory: 'pb_public' # Creates/Updates 'pb_public' at the root
-          commit-message: "Deploy Production: ${{ env.PROD_VER }}"
-          user-email: 'bot@example.com'
+          target-directory: 'pb_public' # Updates the main public folder
+          commit-message: "Deploy Production Web: ${{ env.PROD_VER }}"
+          user-email: 'bot@gymsystem.com'
 
   # ==========================================
-  # JOB 3: CREATE RELEASE & SYNC DB
+  # JOB 3: RELEASE & SYNC
   # ==========================================
   release-and-sync:
     needs: deploy-production
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Crucial for Releases
+      contents: write
     steps:
-      # 1. Download the APK from the previous job
       - name: Download APK
         uses: actions/download-artifact@v4
         with:
           name: app-release-apk
 
-      # 2. Create GitHub Release
-      - name: Create GitHub Release
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ needs.deploy-production.outputs.prod_ver }}
-          name: Release v${{ needs.deploy-production.outputs.prod_ver }}
-          body: "Production Build (Web Deployed to Repo, APK Attached)"
           files: app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # 3. Update PocketBase Version Manager
+          
       - name: Update Version Manager
         env:
           NEW_PATCH: ${{ needs.deploy-production.outputs.new_patch }}
         run: |
            if ! command -v jq &> /dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
-           
            RESPONSE=$(curl -s ${{ secrets.VERSION_MANAGER_URL }}/${{ secrets.VERSION_COLLECTION_ID }})
            MAJOR=$(echo $RESPONSE | jq -r '.major')
            MINOR=$(echo $RESPONSE | jq -r '.minor')
