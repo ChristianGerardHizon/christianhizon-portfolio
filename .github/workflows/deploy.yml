@@ -1,4 +1,4 @@
-name: Deploy Pipeline (Debug Mode)
+name: Deploy Web & Release APK
 
 on:
   push:
@@ -11,82 +11,90 @@ permissions:
   contents: write # REQUIRED for creating GitHub Releases
 
 jobs:
-  # ====================================================
-  # JOB 1: STAGING (Automatic on Push)
-  # ====================================================
+  # ==========================================
+  # JOB 1: STAGING (Auto-Deploy to Staging Branch)
+  # ==========================================
   deploy-staging:
     if: github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
 
-      # 1. Calculate Staging Version (Read-Only)
+      # 1. CALCULATE VERSION (Read-Only)
       - name: Calculate Staging Version
         id: calc_staging
         run: |
           if ! command -v jq &> /dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
-          
-          # Fetch from Version Manager
           RESPONSE=$(curl -s ${{ secrets.VERSION_MANAGER_URL }}/${{ secrets.VERSION_COLLECTION_ID }})
           MAJOR=$(echo $RESPONSE | jq -r '.major')
           MINOR=$(echo $RESPONSE | jq -r '.minor')
           PATCH=$(echo $RESPONSE | jq -r '.patch')
-          
           NEXT_PATCH=$((PATCH + 1))
           STAGING_VER="$MAJOR.$MINOR.$NEXT_PATCH-staging"
-          
           echo "STAGING_VER=$STAGING_VER" >> $GITHUB_ENV
 
-      # 2. Build APK (DEBUG MODE)
-      # Uses the default Android debug.keystore
-      - name: Build APK (Staging)
+      # 2. BUILD WEB (Release Mode)
+      - name: Build Web
+        run: flutter build web --release --build-name=${{ env.STAGING_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL }}
+
+      # 3. BUILD APK (Debug Mode)
+      - name: Build APK
         run: flutter build apk --debug --build-name=${{ env.STAGING_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL }}
 
-      # 3. Upload Artifact (Optional - useful for checking staging builds)
+      # 4. RENAME FOLDER (build/web -> pb_public)
+      # This prepares the folder structure for PocketBase
+      - name: Prepare pb_public
+        run: mv build/web pb_public
+
+      # 5. PUSH TO DEPLOY REPO (Staging Branch)
+      # This action automatically wipes the target directory before copying new files
+      - name: Deploy Web to External Repo
+        uses: cpina/github-action-push-to-another-repository@v1.7.2
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.DEPLOY_PAT }}
+        with:
+          source-directory: 'pb_public'
+          destination-github-username: 'YOUR_GITHUB_USERNAME'
+          destination-repository-name: 'my-app-deploy'
+          target-branch: 'staging'
+          target-directory: 'pb_public' # Creates/Updates 'pb_public' at the root
+          commit-message: "Deploy Staging: ${{ env.STAGING_VER }}"
+          user-email: 'bot@example.com'
+
+      # 6. (Optional) Upload Staging APK for easy access
       - name: Upload Staging APK
         uses: actions/upload-artifact@v4
         with:
           name: staging-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
 
-  # ====================================================
-  # JOB 2: PRODUCTION (Gated by Manual Approval)
-  # ====================================================
+  # ==========================================
+  # JOB 2: PRODUCTION (Gated -> Deploy Web -> Release APK)
+  # ==========================================
   deploy-production:
     if: github.event.pull_request.merged == true && github.base_ref == 'main'
     runs-on: ubuntu-latest
-    environment: Production # <--- TRIGGERS THE GATE
-    
+    environment: Production # Manual Approval Gate
     outputs:
       prod_ver: ${{ steps.calc_prod.outputs.prod_ver }}
       new_patch: ${{ steps.calc_prod.outputs.new_patch }}
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
       - uses: subosito/flutter-action@v2
 
-      # 1. Calculate Production Version
+      # 1. CALCULATE PROD VERSION
       - name: Calculate Prod Version
         id: calc_prod
         run: |
           if ! command -v jq &> /dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
-          
           RESPONSE=$(curl -s ${{ secrets.VERSION_MANAGER_URL }}/${{ secrets.VERSION_COLLECTION_ID }})
           MAJOR=$(echo $RESPONSE | jq -r '.major')
           MINOR=$(echo $RESPONSE | jq -r '.minor')
           PATCH=$(echo $RESPONSE | jq -r '.patch')
-          
           NEW_PATCH=$((PATCH + 1))
           PROD_VER="$MAJOR.$MINOR.$NEW_PATCH"
           
@@ -94,55 +102,67 @@ jobs:
           echo "prod_ver=$PROD_VER" >> $GITHUB_OUTPUT
           echo "new_patch=$NEW_PATCH" >> $GITHUB_OUTPUT
 
-      # 2. Build Web & Mobile (DEBUG MODE)
-      # Note: We skip AppBundle (.aab) because stores don't accept debug builds anyway.
+      # 2. BUILD WEB (Release)
       - name: Build Web
         run: flutter build web --release --build-name=${{ env.PROD_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL }}
-      
+
+      # 3. BUILD APK (Debug Mode)
       - name: Build APK
         run: flutter build apk --debug --build-name=${{ env.PROD_VER }} --dart-define=API_URL=${{ secrets.POCKETBASE_URL }}
 
-      # 3. Save APK for the Release Job
-      # Note: Path is now 'app-debug.apk'
+      # 4. SAVE APK FOR RELEASE (We need it in the next job)
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
 
-      # 4. Deploy Web (Firebase works fine with debug/release mix)
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: your-firebase-id
-          channelId: live
+      # 5. RENAME FOLDER (build/web -> pb_public)
+      - name: Prepare pb_public
+        run: mv build/web pb_public
 
-  # ====================================================
-  # JOB 3: RELEASE & SYNC (Runs after Prod Success)
-  # ====================================================
+      # 6. PUSH TO DEPLOY REPO (Main Branch)
+      # Wipes 'pb_public' in the target and replaces it with the new build
+      - name: Deploy Web to External Repo
+        uses: cpina/github-action-push-to-another-repository@v1.7.2
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.DEPLOY_PAT }}
+        with:
+          source-directory: 'pb_public'
+          destination-github-username: 'YOUR_GITHUB_USERNAME'
+          destination-repository-name: 'my-app-deploy'
+          target-branch: 'main'
+          target-directory: 'pb_public' # Creates/Updates 'pb_public' at the root
+          commit-message: "Deploy Production: ${{ env.PROD_VER }}"
+          user-email: 'bot@example.com'
+
+  # ==========================================
+  # JOB 3: CREATE RELEASE & SYNC DB
+  # ==========================================
   release-and-sync:
     needs: deploy-production
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Crucial for Releases
     steps:
-      # 1. Download the APK
+      # 1. Download the APK from the previous job
       - name: Download APK
         uses: actions/download-artifact@v4
         with:
           name: app-release-apk
 
       # 2. Create GitHub Release
-      - name: Create Release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ needs.deploy-production.outputs.prod_ver }}
           name: Release v${{ needs.deploy-production.outputs.prod_ver }}
-          body: "Automated Debug Build for Production."
-          files: app-debug.apk # Note: File name matches output of download step
+          body: "Production Build (Web Deployed to Repo, APK Attached)"
+          files: app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # 3. UPDATE POCKETBASE
+      # 3. Update PocketBase Version Manager
       - name: Update Version Manager
         env:
           NEW_PATCH: ${{ needs.deploy-production.outputs.new_patch }}
