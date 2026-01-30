@@ -45,10 +45,10 @@ jobs:
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/ChristianGerardHizon/sanjose_server")
+            "https://api.github.com/repos/ChristianGerardHizon/sannjose_server")
 
           if [ "$STATUS" != "200" ]; then
-            echo "::error::Cannot access destination repo ChristianGerardHizon/sanjose_server (HTTP $STATUS)."
+            echo "::error::Cannot access destination repo ChristianGerardHizon/sannjose_server (HTTP $STATUS)."
             echo "::error::Verify that DEPLOY_PAT is valid and has repo access."
             exit 1
           fi
@@ -60,7 +60,7 @@ jobs:
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/ChristianGerardHizon/sanjose_server/branches/staging")
+            "https://api.github.com/repos/ChristianGerardHizon/sannjose_server/branches/staging")
 
           if [ "$STATUS" != "200" ]; then
             echo "::warning::Branch 'staging' not found (HTTP $STATUS). The deploy action will attempt to create it."
@@ -149,7 +149,7 @@ jobs:
         with:
           source-directory: 'pb_public'
           destination-github-username: 'ChristianGerardHizon'
-          destination-repository-name: 'sanjose_server'
+          destination-repository-name: 'sannjose_server'
           target-branch: 'staging'
           target-directory: 'pb_public'
           create-target-branch-if-needed: true
@@ -197,10 +197,10 @@ jobs:
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/ChristianGerardHizon/sanjose_server")
+            "https://api.github.com/repos/ChristianGerardHizon/sannjose_server")
 
           if [ "$STATUS" != "200" ]; then
-            echo "::error::Cannot access destination repo ChristianGerardHizon/sanjose_server (HTTP $STATUS)."
+            echo "::error::Cannot access destination repo ChristianGerardHizon/sannjose_server (HTTP $STATUS)."
             echo "::error::Verify that DEPLOY_PAT is valid and has repo access."
             exit 1
           fi
@@ -212,7 +212,7 @@ jobs:
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/ChristianGerardHizon/sanjose_server/branches/main")
+            "https://api.github.com/repos/ChristianGerardHizon/sannjose_server/branches/main")
 
           if [ "$STATUS" != "200" ]; then
             echo "::warning::Branch 'main' not found on destination repo (HTTP $STATUS). Deploy may fail."
@@ -317,7 +317,7 @@ jobs:
         with:
           source-directory: 'pb_public'
           destination-github-username: 'ChristianGerardHizon'
-          destination-repository-name: 'sanjose_server'
+          destination-repository-name: 'sannjose_server'
           target-branch: 'main'
           target-directory: 'pb_public'
           commit-message: "Deploy Production: ${{ env.PROD_VER }}"
