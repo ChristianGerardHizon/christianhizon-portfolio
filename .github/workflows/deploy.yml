@@ -132,11 +132,11 @@ jobs:
           echo "Calculated Staging Version: $STAGING_VER"
 
       # BUILD WEB & APK
-      - name: Build Web
-        run: flutter build web --release --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
+      - name: Build Web (WASM)
+        run: flutter build web --wasm --release --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
-      - name: Build APK (Debug)
-        run: flutter build apk --debug --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
+      - name: Build APK (Release)
+        run: flutter build apk --release --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
       # DEPLOY
       - name: Prepare Folder
