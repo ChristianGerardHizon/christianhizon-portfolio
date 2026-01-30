@@ -7,8 +7,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
+import '../../../../../core/widgets/form/async_form_dropdown.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../patients/domain/patient_breed.dart';
+import '../../../../patients/domain/patient_species.dart';
 import '../../../../patients/presentation/controllers/species_breeds_provider.dart';
 import '../../controllers/breeds_controller.dart';
 
@@ -165,41 +167,18 @@ class BreedFormDialog extends HookConsumerWidget {
                     children: [
                       const SizedBox(height: 16),
 
-                      // Species dropdown
-                      speciesAsync.when(
-                        loading: () => FormBuilderTextField(
-                          name: 'species',
-                          enabled: false,
-                          decoration: const InputDecoration(
-                            labelText: 'Species *',
-                            hintText: 'Loading...',
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                        error: (_, __) => FormBuilderTextField(
-                          name: 'species',
-                          enabled: false,
-                          decoration: const InputDecoration(
-                            labelText: 'Species *',
-                            hintText: 'Error loading species',
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                        data: (speciesList) => FormBuilderDropdown<String>(
-                          name: 'species',
-                          initialValue: breed?.speciesId,
-                          decoration: const InputDecoration(
-                            labelText: 'Species *',
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: FormBuilderValidators.required(),
-                          items: speciesList
-                              .map((s) => DropdownMenuItem(
-                                    value: s.id,
-                                    child: Text(s.name),
-                                  ))
-                              .toList(),
-                        ),
+                      // Species typeahead
+                      AsyncFormDropdown<PatientSpecies>(
+                        name: 'species',
+                        label: 'Species *',
+                        asyncData: speciesAsync,
+                        displayString: (s) => s.name,
+                        initialValue: speciesAsync.asData?.value
+                            .where((s) => s.id == breed?.speciesId)
+                            .firstOrNull,
+                        valueTransformer: (s) => s?.id,
+                        validator: (s) =>
+                            s == null ? 'This field cannot be empty.' : null,
                       ),
                       const SizedBox(height: 16),
 

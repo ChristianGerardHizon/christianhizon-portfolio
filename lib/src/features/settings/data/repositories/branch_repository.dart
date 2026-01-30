@@ -94,7 +94,7 @@ class BranchRepositoryImpl implements BranchRepository {
           'name': branch.name,
           'displayName': branch.displayName,
           'address': branch.address,
-          'contactNumber': branch.contactNumber,
+          'contact': branch.contactNumber,
           'isDeleted': false,
         };
 
@@ -121,7 +121,7 @@ class BranchRepositoryImpl implements BranchRepository {
           'name': branch.name,
           'displayName': branch.displayName,
           'address': branch.address,
-          'contactNumber': branch.contactNumber,
+          'contact': branch.contactNumber,
         };
 
         final record = await _collection.update(branch.id, body: body);

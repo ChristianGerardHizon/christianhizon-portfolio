@@ -11,9 +11,12 @@ import '../../../../../core/i18n/strings.g.dart';
 import '../../../../../core/routing/routes/patients.routes.dart';
 import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
+import '../../../../../core/widgets/form/async_form_dropdown.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../../domain/patient.dart';
+import '../../../domain/patient_breed.dart';
+import '../../../domain/patient_species.dart';
 import '../../controllers/patients_controller.dart';
 import '../../controllers/species_breeds_provider.dart';
 
@@ -221,96 +224,41 @@ class EditPatientDialog extends HookConsumerWidget {
                         ),
                         const SizedBox(height: 12),
 
-                        // Species & Breed dropdowns
+                        // Species & Breed typeaheads
                         Row(
                           children: [
                             Expanded(
-                              child: speciesAsync.when(
-                                data: (speciesList) =>
-                                    FormBuilderDropdown<String>(
-                                  name: 'species',
-                                  decoration: const InputDecoration(
-                                    labelText: 'Species',
-                                    border: OutlineInputBorder(),
-                                    isDense: true,
-                                  ),
-                                  enabled: !isSaving.value,
-                                  initialValue: patient.speciesId,
-                                  items: speciesList.map((s) {
-                                    return DropdownMenuItem(
-                                      value: s.id,
-                                      child: Text(s.name),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    selectedSpeciesId.value = value;
-                                    // Clear breed when species changes
-                                    formKey.currentState?.fields['breed']
-                                        ?.didChange(null);
-                                  },
-                                ),
-                                loading: () => const TextField(
-                                  decoration: InputDecoration(
-                                    labelText: 'Species',
-                                    border: OutlineInputBorder(),
-                                    isDense: true,
-                                  ),
-                                  enabled: false,
-                                ),
-                                error: (_, __) => const TextField(
-                                  decoration: InputDecoration(
-                                    labelText: 'Species',
-                                    border: OutlineInputBorder(),
-                                    isDense: true,
-                                    errorText: 'Failed to load',
-                                  ),
-                                  enabled: false,
-                                ),
+                              child: AsyncFormDropdown<PatientSpecies>(
+                                name: 'species',
+                                label: 'Species',
+                                asyncData: speciesAsync,
+                                displayString: (s) => s.name,
+                                enabled: !isSaving.value,
+                                initialValue: speciesAsync.asData?.value
+                                    .where((s) => s.id == patient.speciesId)
+                                    .firstOrNull,
+                                valueTransformer: (s) => s?.id,
+                                onChanged: (species) {
+                                  selectedSpeciesId.value = species?.id;
+                                  // Clear breed when species changes
+                                  formKey.currentState?.fields['breed']
+                                      ?.didChange(null);
+                                },
                               ),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
-                              child: breedsAsync.when(
-                                data: (breedsList) {
-                                  // Only use patient's breedId if it exists in the list
-                                  final breedExists = breedsList.any(
-                                    (b) => b.id == patient.breedId,
-                                  );
-                                  return FormBuilderDropdown<String>(
-                                    name: 'breed',
-                                    decoration: const InputDecoration(
-                                      labelText: 'Breed',
-                                      border: OutlineInputBorder(),
-                                      isDense: true,
-                                    ),
-                                    enabled: !isSaving.value &&
-                                        selectedSpeciesId.value != null,
-                                    initialValue:
-                                        breedExists ? patient.breedId : null,
-                                    items: breedsList.map((b) {
-                                      return DropdownMenuItem(
-                                        value: b.id,
-                                        child: Text(b.name),
-                                      );
-                                    }).toList(),
-                                  );
-                                },
-                                loading: () => const TextField(
-                                  decoration: InputDecoration(
-                                    labelText: 'Breed',
-                                    border: OutlineInputBorder(),
-                                    isDense: true,
-                                  ),
-                                  enabled: false,
-                                ),
-                                error: (_, __) => const TextField(
-                                  decoration: InputDecoration(
-                                    labelText: 'Breed',
-                                    border: OutlineInputBorder(),
-                                    isDense: true,
-                                  ),
-                                  enabled: false,
-                                ),
+                              child: AsyncFormDropdown<PatientBreed>(
+                                name: 'breed',
+                                label: 'Breed',
+                                asyncData: breedsAsync,
+                                displayString: (b) => b.name,
+                                enabled: !isSaving.value &&
+                                    selectedSpeciesId.value != null,
+                                initialValue: breedsAsync.asData?.value
+                                    .where((b) => b.id == patient.breedId)
+                                    .firstOrNull,
+                                valueTransformer: (b) => b?.id,
                               ),
                             ),
                           ],

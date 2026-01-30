@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../features/pos/presentation/cart_controller.dart';
+import '../../features/settings/presentation/controllers/current_branch_controller.dart';
 import '../routing/routes/appointments.routes.dart';
 import '../routing/routes/dashboard.routes.dart';
 import '../routing/routes/messages.routes.dart';
@@ -113,6 +114,41 @@ class _AppRootState extends ConsumerState<AppRoot> {
     return _buildTabletLayout(context);
   }
 
+  Widget _buildBranchBar(BuildContext context) {
+    final theme = Theme.of(context);
+    final branchAsync = ref.watch(currentBranchControllerProvider);
+
+    return branchAsync.when(
+      data: (branch) {
+        if (branch == null) return const SizedBox.shrink();
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          color: theme.colorScheme.surfaceContainerHighest,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.store,
+                size: 14,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                branch.name,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+
   Widget _buildMobileLayout(BuildContext context) {
     final selectedIndex = _getSelectedIndex(context);
 
@@ -125,7 +161,12 @@ class _AppRootState extends ConsumerState<AppRoot> {
       body: SafeArea(
         child: ColoredBox(
           color: Theme.of(context).scaffoldBackgroundColor,
-          child: widget.child,
+          child: Column(
+            children: [
+              _buildBranchBar(context),
+              Expanded(child: widget.child),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: MobileBottomNav(
@@ -159,11 +200,7 @@ class _AppRootState extends ConsumerState<AppRoot> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // const Padding(
-                      //   padding:
-                      //       EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      //   child: BreadcrumbNav(),
-                      // ),
+                      _buildBranchBar(context),
                       Expanded(child: widget.child),
                     ],
                   ),
