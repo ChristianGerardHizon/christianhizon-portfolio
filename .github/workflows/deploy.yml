@@ -161,7 +161,7 @@ jobs:
 
       # BUILD WEB & APK
       - name: Build Web (WASM)
-        run: flutter build web --wasm --release --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
+        run: flutter build web --wasm --release --build-name=${{ env.STAGING_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
       - name: Build APK (Release)
         env:
@@ -170,7 +170,7 @@ jobs:
           CM_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           CM_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           CM_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: flutter build apk --release --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
+        run: flutter build apk --release --build-name=${{ env.STAGING_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
       # DEPLOY
       - name: Prepare Folder
@@ -340,7 +340,7 @@ jobs:
 
       # BUILD WEB & APK
       - name: Build Web
-        run: flutter build web --release --build-name=${{ env.PROD_VER }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
+        run: flutter build web --release --build-name=${{ env.PROD_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
       - name: Build APK (Release)
         env:
@@ -349,7 +349,7 @@ jobs:
           CM_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           CM_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           CM_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: flutter build apk --release --build-name=${{ env.PROD_VER }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
+        run: flutter build apk --release --build-name=${{ env.PROD_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
       # UPLOAD & DEPLOY
       - name: Upload APK Artifact
