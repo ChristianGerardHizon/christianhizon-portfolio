@@ -26,6 +26,49 @@ jobs:
         with:
           fetch-depth: 1
 
+      # --- PREFLIGHT CHECKS ---
+      - name: Verify deploy secrets exist
+        run: |
+          MISSING=""
+          if [ -z "${{ secrets.DEPLOY_PAT }}" ]; then MISSING="$MISSING DEPLOY_PAT"; fi
+          if [ -z "${{ secrets.VERSION_MANAGER_URL }}" ]; then MISSING="$MISSING VERSION_MANAGER_URL"; fi
+          if [ -z "${{ secrets.VERSION_COLLECTION_ID }}" ]; then MISSING="$MISSING VERSION_COLLECTION_ID"; fi
+          if [ -z "${{ secrets.POCKETBASE_URL_STAGING }}" ]; then MISSING="$MISSING POCKETBASE_URL_STAGING"; fi
+          if [ -n "$MISSING" ]; then
+            echo "::error::Missing required secrets:$MISSING"
+            exit 1
+          fi
+
+      - name: Verify destination repository is accessible
+        env:
+          GH_TOKEN: ${{ secrets.DEPLOY_PAT }}
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/ChristianGerardHizon/sanjose_server")
+
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::Cannot access destination repo ChristianGerardHizon/sanjose_server (HTTP $STATUS)."
+            echo "::error::Verify that DEPLOY_PAT is valid and has repo access."
+            exit 1
+          fi
+          echo "Destination repository is accessible."
+
+      - name: Verify destination branch exists
+        env:
+          GH_TOKEN: ${{ secrets.DEPLOY_PAT }}
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/ChristianGerardHizon/sanjose_server/branches/staging")
+
+          if [ "$STATUS" != "200" ]; then
+            echo "::warning::Branch 'staging' not found (HTTP $STATUS). The deploy action will attempt to create it."
+          else
+            echo "Destination branch 'staging' exists."
+          fi
+      # --- PREFLIGHT CHECKS END ---
+
       # --- SETUP & CACHE START ---
       - uses: actions/setup-java@v4
         with:
@@ -130,6 +173,53 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+
+      # --- PREFLIGHT CHECKS ---
+      - name: Verify deploy secrets exist
+        run: |
+          MISSING=""
+          if [ -z "${{ secrets.DEPLOY_PAT }}" ]; then MISSING="$MISSING DEPLOY_PAT"; fi
+          if [ -z "${{ secrets.VERSION_MANAGER_URL }}" ]; then MISSING="$MISSING VERSION_MANAGER_URL"; fi
+          if [ -z "${{ secrets.VERSION_COLLECTION_ID }}" ]; then MISSING="$MISSING VERSION_COLLECTION_ID"; fi
+          if [ -z "${{ secrets.POCKETBASE_URL_PROD }}" ]; then MISSING="$MISSING POCKETBASE_URL_PROD"; fi
+          if [ -z "${{ secrets.KEYSTORE_BASE64 }}" ]; then MISSING="$MISSING KEYSTORE_BASE64"; fi
+          if [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ]; then MISSING="$MISSING KEYSTORE_PASSWORD"; fi
+          if [ -z "${{ secrets.KEY_ALIAS }}" ]; then MISSING="$MISSING KEY_ALIAS"; fi
+          if [ -z "${{ secrets.KEY_PASSWORD }}" ]; then MISSING="$MISSING KEY_PASSWORD"; fi
+          if [ -n "$MISSING" ]; then
+            echo "::error::Missing required secrets:$MISSING"
+            exit 1
+          fi
+
+      - name: Verify destination repository is accessible
+        env:
+          GH_TOKEN: ${{ secrets.DEPLOY_PAT }}
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/ChristianGerardHizon/sanjose_server")
+
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::Cannot access destination repo ChristianGerardHizon/sanjose_server (HTTP $STATUS)."
+            echo "::error::Verify that DEPLOY_PAT is valid and has repo access."
+            exit 1
+          fi
+          echo "Destination repository is accessible."
+
+      - name: Verify destination branch exists
+        env:
+          GH_TOKEN: ${{ secrets.DEPLOY_PAT }}
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/ChristianGerardHizon/sanjose_server/branches/main")
+
+          if [ "$STATUS" != "200" ]; then
+            echo "::warning::Branch 'main' not found on destination repo (HTTP $STATUS). Deploy may fail."
+          else
+            echo "Destination branch 'main' exists."
+          fi
+      # --- PREFLIGHT CHECKS END ---
 
       # --- SETUP & CACHE START ---
       - uses: actions/setup-java@v4
