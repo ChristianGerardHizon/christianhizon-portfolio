@@ -19,16 +19,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # ADD THIS STEP FOR JAVA 17
+
+      # --- OPTIMIZATION START ---
+      # 1. Setup Java 17 with Gradle Cache
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu' # Zulu is a reliable distribution for Android builds
+          distribution: 'zulu'
           java-version: '17'
+          cache: 'gradle'
+
+      # 2. Setup Flutter with SDK Cache
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          cache: true
 
-      # 1. ROBUST VERSION CALCULATION
+      # 3. Cache Pub Dependencies
+      - name: Cache Pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache/hosted
+            ~/.pub-cache/git
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-pub-
+          
+      - run: flutter pub get
+      # --- OPTIMIZATION END ---
+
+      # 4. ROBUST VERSION CALCULATION
       - name: Calculate Staging Version
         id: calc_staging
         env: 
@@ -63,18 +82,18 @@ jobs:
           echo "STAGING_VER=$STAGING_VER" >> $GITHUB_ENV
           echo "Calculated Staging Version: $STAGING_VER"
 
-      # 2. BUILD WEB & APK (Using ENV=staging)
+      # 5. BUILD WEB & APK (Using ENV=staging)
       - name: Build Web
-        run: flutter build web --release --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging
+        run: flutter build web --release --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
       - name: Build APK (Debug)
-        run: flutter build apk --debug --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging
+        run: flutter build apk --debug --build-name=${{ env.STAGING_VER }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
-      # 3. RENAME (Prepare for push)
+      # 6. RENAME (Prepare for push)
       - name: Prepare Folder
         run: mv build/web pb_public
 
-      # 4. PUSH TO SERVER REPO (STAGING BRANCH)
+      # 7. PUSH TO SERVER REPO (STAGING BRANCH)
       - name: Deploy to Server Staging
         uses: cpina/github-action-push-to-another-repository@v1.7.2
         env:
@@ -102,12 +121,30 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      # ADD THIS STEP FOR JAVA 17
+
+      # --- OPTIMIZATION START ---
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu' # Zulu is a reliable distribution for Android builds
+          distribution: 'zulu'
           java-version: '17'
+          cache: 'gradle'
+
       - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Cache Pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache/hosted
+            ~/.pub-cache/git
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-pub-
+          
+      - run: flutter pub get
+      # --- OPTIMIZATION END ---
 
       # 1. ROBUST VERSION CALCULATION
       - name: Calculate Prod Version
@@ -138,12 +175,12 @@ jobs:
           echo "prod_ver=$PROD_VER" >> $GITHUB_OUTPUT
           echo "new_patch=$NEW_PATCH" >> $GITHUB_OUTPUT
 
-      # 2. BUILD WEB & APK (Using ENV=production)
+      # 2. BUILD WEB & APK (Using ENV=prod)
       - name: Build Web
-        run: flutter build web --release --build-name=${{ env.PROD_VER }} --dart-define=ENV=production
+        run: flutter build web --release --build-name=${{ env.PROD_VER }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
       - name: Build APK (Debug)
-        run: flutter build apk --debug --build-name=${{ env.PROD_VER }} --dart-define=ENV=production
+        run: flutter build apk --debug --build-name=${{ env.PROD_VER }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
       # 3. Save APK for Release Job
       - name: Upload APK Artifact

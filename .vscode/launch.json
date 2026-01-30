@@ -11,7 +11,8 @@
             "program": "lib/main.dart",
             "args": [
                 "--web-port=8000",
-                "--dart-define=ENV=dev"
+                "--dart-define=ENV=dev",
+                "--dart-define=API_URL=http://127.0.0.1:8090"
             ]
         },
         {
@@ -21,10 +22,11 @@
             "program": "lib/main.dart",
             "args": [
                 "--web-port=8000",
-                "--dart-define=ENV=staging"
+                "--dart-define=ENV=staging",
+                "--dart-define=API_URL=https://staging.sannjoseanimalclinic.com"
             ]
         },
-                {
+        {
             "name": "staging | release",
             "request": "launch",
             "type": "dart",
@@ -32,7 +34,8 @@
             "program": "lib/main.dart",
             "args": [
                 "--web-port=8000",
-                "--dart-define=ENV=staging"
+                "--dart-define=ENV=staging",
+                "--dart-define=API_URL=https://staging.sannjoseanimalclinic.com"
             ]
         },
         {
@@ -42,10 +45,11 @@
             "program": "lib/main.dart",
             "args": [
                 "--web-port=8000",
-                "--dart-define=ENV=prod"
+                "--dart-define=ENV=prod",
+                "--dart-define=API_URL=https://www.sannjoseanimalclinic.com"
             ]
         },
-               {
+        {
             "name": "prod | release",
             "request": "launch",
             "type": "dart",
@@ -53,7 +57,8 @@
             "program": "lib/main.dart",
             "args": [
                 "--web-port=8000",
-                "--dart-define=ENV=prod"
+                "--dart-define=ENV=prod",
+                "--dart-define=API_URL=https://www.sannjoseanimalclinic.com"
             ]
         },
         {

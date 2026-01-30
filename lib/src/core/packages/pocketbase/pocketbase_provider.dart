@@ -18,8 +18,15 @@ abstract class PocketBaseUrls {
 /// Valid values: 'dev', 'staging', 'prod'
 const String _env = String.fromEnvironment('ENV', defaultValue: '');
 
+/// Optional URL override via --dart-define=API_URL=<url>
+/// If set, this takes priority over ENV-based URL resolution.
+const String _apiUrlOverride = String.fromEnvironment('API_URL', defaultValue: '');
+
 /// Resolves the PocketBase URL based on environment configuration.
+/// Priority: API_URL override > ENV-based URL > kDebugMode fallback.
 String get pocketbaseUrl {
+  if (_apiUrlOverride.isNotEmpty) return _apiUrlOverride;
+
   switch (_env) {
     case 'prod':
       return PocketBaseUrls.prod;
