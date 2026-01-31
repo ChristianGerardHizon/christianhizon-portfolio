@@ -58,6 +58,8 @@ class CreateMessageDialog extends HookConsumerWidget {
       String? branchName,
       String? branchAddress,
       String? branchPhone,
+      String? branchOperatingHours,
+      String? branchCutOffTime,
       DateTime? appointmentDateTime,
     }) {
       if (content.isEmpty) return content;
@@ -100,6 +102,14 @@ class CreateMessageDialog extends HookConsumerWidget {
       }
       if (branchPhone != null) {
         replaced = replaced.replaceAll('{branchPhone}', branchPhone);
+      }
+      if (branchOperatingHours != null) {
+        replaced = replaced.replaceAll(
+            '{branchOperatingHours}', branchOperatingHours);
+      }
+      if (branchCutOffTime != null) {
+        replaced =
+            replaced.replaceAll('{branchCutOffTime}', branchCutOffTime);
       }
 
       // Replace appointment data
@@ -404,9 +414,9 @@ class CreateMessageDialog extends HookConsumerWidget {
                         data: (templates) {
                           if (templates.isEmpty) return const SizedBox.shrink();
 
-                          // Find the default template
+                          // Use the first template as default
                           final defaultTemplate =
-                              templates.firstWhereOrNull((t) => t.isDefault);
+                              templates.firstOrNull;
 
                           return _TemplateSelector(
                             templates: templates,
@@ -517,6 +527,8 @@ class _TemplateSelector extends HookConsumerWidget {
     String? branchName,
     String? branchAddress,
     String? branchPhone,
+    String? branchOperatingHours,
+    String? branchCutOffTime,
     DateTime? appointmentDateTime,
   }) replacePlaceholders;
 
@@ -536,6 +548,8 @@ class _TemplateSelector extends HookConsumerWidget {
           String? branchName;
           String? branchAddress;
           String? branchPhone;
+          String? branchOperatingHours;
+          String? branchCutOffTime;
           if (defaultTemplate!.branch != null) {
             final branchData = await ref
                 .read(branchProvider(defaultTemplate!.branch!).future);
@@ -543,6 +557,8 @@ class _TemplateSelector extends HookConsumerWidget {
               branchName = branchData.displayName ?? branchData.name;
               branchAddress = branchData.address;
               branchPhone = branchData.contactNumber;
+              branchOperatingHours = branchData.operatingHours;
+              branchCutOffTime = branchData.cutOffTime;
             }
           }
 
@@ -561,6 +577,8 @@ class _TemplateSelector extends HookConsumerWidget {
             branchName: branchName,
             branchAddress: branchAddress,
             branchPhone: branchPhone,
+            branchOperatingHours: branchOperatingHours,
+            branchCutOffTime: branchCutOffTime,
             appointmentDateTime: appointmentDateTime,
           );
           formKey.currentState?.fields['content']?.didChange(finalContent);
@@ -588,6 +606,8 @@ class _TemplateSelector extends HookConsumerWidget {
               String? branchName;
               String? branchAddress;
               String? branchPhone;
+              String? branchOperatingHours;
+              String? branchCutOffTime;
               if (template.branch != null) {
                 final branchData =
                     await ref.read(branchProvider(template.branch!).future);
@@ -595,6 +615,8 @@ class _TemplateSelector extends HookConsumerWidget {
                   branchName = branchData.displayName ?? branchData.name;
                   branchAddress = branchData.address;
                   branchPhone = branchData.contactNumber;
+                  branchOperatingHours = branchData.operatingHours;
+                  branchCutOffTime = branchData.cutOffTime;
                 }
               }
 
@@ -613,6 +635,8 @@ class _TemplateSelector extends HookConsumerWidget {
                 branchName: branchName,
                 branchAddress: branchAddress,
                 branchPhone: branchPhone,
+                branchOperatingHours: branchOperatingHours,
+                branchCutOffTime: branchCutOffTime,
                 appointmentDateTime: appointmentDateTime,
               );
               formKey.currentState?.fields['content']?.didChange(finalContent);

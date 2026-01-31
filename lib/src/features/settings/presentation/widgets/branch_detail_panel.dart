@@ -219,6 +219,20 @@ class _BranchDetailsBody extends StatelessWidget {
                     label: 'Contact Number',
                     value: branch.contactNumber,
                   ),
+                  if (branch.operatingHours != null &&
+                      branch.operatingHours!.isNotEmpty)
+                    _DetailRow(
+                      icon: Icons.schedule,
+                      label: 'Operating Hours',
+                      value: branch.operatingHours!,
+                    ),
+                  if (branch.cutOffTime != null &&
+                      branch.cutOffTime!.isNotEmpty)
+                    _DetailRow(
+                      icon: Icons.timer_off,
+                      label: 'Cut-off Time',
+                      value: branch.cutOffTime!,
+                    ),
                   if (branch.created != null)
                     _DetailRow(
                       icon: Icons.calendar_today,

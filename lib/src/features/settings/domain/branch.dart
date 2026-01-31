@@ -13,6 +13,8 @@ class Branch with BranchMappable {
     required this.address,
     required this.contactNumber,
     this.displayName,
+    this.operatingHours,
+    this.cutOffTime,
     this.isDeleted = false,
     this.created,
     this.updated,
@@ -32,6 +34,12 @@ class Branch with BranchMappable {
 
   /// Display name for formal/external use (e.g., "San Jose Veterinary Clinic").
   final String? displayName;
+
+  /// Operating hours (e.g., "Mon-Sat 8:00 AM - 5:00 PM").
+  final String? operatingHours;
+
+  /// Cut-off time for appointments/services (e.g., "4:30 PM").
+  final String? cutOffTime;
 
   /// Soft delete flag.
   final bool isDeleted;

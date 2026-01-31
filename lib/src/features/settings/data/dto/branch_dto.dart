@@ -17,6 +17,8 @@ class BranchDto with BranchDtoMappable {
   final String address;
   final String contactNumber;
   final String? displayName;
+  final String? operatingHours;
+  final String? cutOffTime;
   final bool isDeleted;
   final String? created;
   final String? updated;
@@ -29,6 +31,8 @@ class BranchDto with BranchDtoMappable {
     required this.address,
     required this.contactNumber,
     this.displayName,
+    this.operatingHours,
+    this.cutOffTime,
     this.isDeleted = false,
     this.created,
     this.updated,
@@ -46,6 +50,8 @@ class BranchDto with BranchDtoMappable {
       address: json['address'] as String? ?? '',
       contactNumber: json['contactNumber'] as String? ?? '',
       displayName: json['displayName'] as String?,
+      operatingHours: json['operatingHours'] as String?,
+      cutOffTime: json['cutOffTime'] as String?,
       isDeleted: json['isDeleted'] as bool? ?? false,
       created: json['created'] as String?,
       updated: json['updated'] as String?,
@@ -60,6 +66,8 @@ class BranchDto with BranchDtoMappable {
       address: address,
       contactNumber: contactNumber,
       displayName: displayName,
+      operatingHours: operatingHours,
+      cutOffTime: cutOffTime,
       isDeleted: isDeleted,
       created: created != null ? DateTime.tryParse(created!) : null,
       updated: updated != null ? DateTime.tryParse(updated!) : null,

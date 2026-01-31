@@ -84,6 +84,9 @@ class CreateAppointmentDialog extends HookConsumerWidget {
     // Watch templates for dropdown
     final templatesAsync = ref.watch(messageTemplatesControllerProvider);
 
+    // Watch current branch for placeholder replacement
+    final currentBranch = ref.watch(currentBranchControllerProvider).value;
+
     String replacePlaceholders(String content, Patient? patient) {
       if (content.isEmpty) return content;
 
@@ -128,11 +131,32 @@ class CreateAppointmentDialog extends HookConsumerWidget {
               .map((t) => t!.name)
               .toList();
           if (names.isNotEmpty) {
-            replaced = replaced.replaceAll(
-                '{treatmentNames}', names.join(' and '));
-            replaced = replaced.replaceAll('{treatmentName}', names.join(', '));
+            final formatted = switch (names.length) {
+              1 => names.first,
+              2 => '${names[0]} and ${names[1]}',
+              _ =>
+                '${names.sublist(0, names.length - 1).join(', ')} and ${names.last}',
+            };
+            replaced =
+                replaced.replaceAll('{treatmentNames}', formatted);
+            replaced =
+                replaced.replaceAll('{treatmentName}', formatted);
           }
         }
+      }
+
+      // Replace branch data
+      if (currentBranch != null) {
+        replaced = replaced.replaceAll(
+            '{branchName}', currentBranch.displayName ?? currentBranch.name);
+        replaced =
+            replaced.replaceAll('{branchAddress}', currentBranch.address);
+        replaced = replaced.replaceAll(
+            '{branchPhone}', currentBranch.contactNumber);
+        replaced = replaced.replaceAll(
+            '{branchOperatingHours}', currentBranch.operatingHours ?? '');
+        replaced = replaced.replaceAll(
+            '{branchCutOffTime}', currentBranch.cutOffTime ?? '');
       }
 
       return replaced;

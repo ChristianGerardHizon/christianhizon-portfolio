@@ -16,6 +16,7 @@ import '../../../../patients/domain/patient.dart';
 import '../../../../patients/domain/patient_treatment.dart';
 import '../../../../patients/presentation/controllers/patient_treatments_controller.dart';
 import '../../../../patients/presentation/controllers/top_treatment_types_provider.dart';
+import '../../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../../../settings/presentation/controllers/message_templates_controller.dart';
 import '../../../../messages/domain/message.dart';
 import '../../../../messages/presentation/controllers/messages_controller.dart';
@@ -69,6 +70,9 @@ class EditAppointmentDialog extends HookConsumerWidget {
     // Watch templates for dropdown
     final templatesAsync = ref.watch(messageTemplatesControllerProvider);
 
+    // Watch current branch for placeholder replacement
+    final currentBranch = ref.watch(currentBranchControllerProvider).value;
+
     String replacePlaceholders(String content, Patient? patient) {
       if (content.isEmpty) return content;
 
@@ -105,8 +109,29 @@ class EditAppointmentDialog extends HookConsumerWidget {
 
       // Replace treatment data
       if (appointment.patientTreatmentName.isNotEmpty) {
+        final names = appointment.patientTreatmentName;
+        final formatted = switch (names.length) {
+          1 => names.first,
+          2 => '${names[0]} and ${names[1]}',
+          _ =>
+            '${names.sublist(0, names.length - 1).join(', ')} and ${names.last}',
+        };
+        replaced = replaced.replaceAll('{treatmentNames}', formatted);
+        replaced = replaced.replaceAll('{treatmentName}', formatted);
+      }
+
+      // Replace branch data
+      if (currentBranch != null) {
         replaced = replaced.replaceAll(
-            '{treatmentName}', appointment.treatmentNamesDisplay);
+            '{branchName}', currentBranch.displayName ?? currentBranch.name);
+        replaced =
+            replaced.replaceAll('{branchAddress}', currentBranch.address);
+        replaced = replaced.replaceAll(
+            '{branchPhone}', currentBranch.contactNumber);
+        replaced = replaced.replaceAll(
+            '{branchOperatingHours}', currentBranch.operatingHours ?? '');
+        replaced = replaced.replaceAll(
+            '{branchCutOffTime}', currentBranch.cutOffTime ?? '');
       }
 
       return replaced;

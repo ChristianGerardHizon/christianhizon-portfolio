@@ -90,6 +90,9 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
         isSaving.value = false;
         context.pop();
 
+        // Refresh the list to reflect changes
+        ref.read(messageTemplatesControllerProvider.notifier).refresh();
+
         showSuccessSnackBar(
           context,
           message: isEditing
@@ -397,6 +400,18 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
                         _PlaceholderChip(
                           label: '{branchPhone}',
                           onTap: () => insertPlaceholder('{branchPhone}'),
+                          isBranch: true,
+                        ),
+                        _PlaceholderChip(
+                          label: '{branchOperatingHours}',
+                          onTap: () =>
+                              insertPlaceholder('{branchOperatingHours}'),
+                          isBranch: true,
+                        ),
+                        _PlaceholderChip(
+                          label: '{branchCutOffTime}',
+                          onTap: () =>
+                              insertPlaceholder('{branchCutOffTime}'),
                           isBranch: true,
                         ),
                       ],
