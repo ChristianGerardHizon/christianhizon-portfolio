@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/constants/constants.dart';
 import '../../../../core/routing/routes/system.routes.dart';
 import '../../../patients/presentation/controllers/patient_treatments_controller.dart';
 import '../../../products/domain/product_category.dart';
@@ -475,7 +476,8 @@ class _MessageTemplateListWrapper extends ConsumerWidget {
                         vertical: 4,
                       ),
                       child: Text(
-                        category,
+                        MessageTemplateCategories.labels[category] ??
+                            category,
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: theme.colorScheme.primary,
                           fontWeight: FontWeight.w600,

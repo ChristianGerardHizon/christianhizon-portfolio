@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../constants/constants.dart';
 import '../../../features/products/domain/product_category.dart';
 import '../../../features/settings/domain/message_template.dart';
 import '../../../features/settings/presentation/controllers/message_templates_controller.dart';
@@ -752,7 +753,8 @@ class _MobileMessageTemplatesListPage extends ConsumerWidget {
                         vertical: 4,
                       ),
                       child: Text(
-                        category,
+                        MessageTemplateCategories.labels[category] ??
+                            category,
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: theme.colorScheme.primary,
                           fontWeight: FontWeight.w600,
