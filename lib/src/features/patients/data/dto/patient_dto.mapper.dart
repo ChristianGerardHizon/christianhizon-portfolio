@@ -41,10 +41,22 @@ class PatientDtoMapper extends ClassMapperBase<PatientDto> {
     _$species,
     opt: true,
   );
+  static String? _$speciesId(PatientDto v) => v.speciesId;
+  static const Field<PatientDto, String> _f$speciesId = Field(
+    'speciesId',
+    _$speciesId,
+    opt: true,
+  );
   static String? _$breed(PatientDto v) => v.breed;
   static const Field<PatientDto, String> _f$breed = Field(
     'breed',
     _$breed,
+    opt: true,
+  );
+  static String? _$breedId(PatientDto v) => v.breedId;
+  static const Field<PatientDto, String> _f$breedId = Field(
+    'breedId',
+    _$breedId,
     opt: true,
   );
   static String? _$owner(PatientDto v) => v.owner;
@@ -135,7 +147,9 @@ class PatientDtoMapper extends ClassMapperBase<PatientDto> {
     #collectionName: _f$collectionName,
     #name: _f$name,
     #species: _f$species,
+    #speciesId: _f$speciesId,
     #breed: _f$breed,
+    #breedId: _f$breedId,
     #owner: _f$owner,
     #contactNumber: _f$contactNumber,
     #email: _f$email,
@@ -158,7 +172,9 @@ class PatientDtoMapper extends ClassMapperBase<PatientDto> {
       collectionName: data.dec(_f$collectionName),
       name: data.dec(_f$name),
       species: data.dec(_f$species),
+      speciesId: data.dec(_f$speciesId),
       breed: data.dec(_f$breed),
+      breedId: data.dec(_f$breedId),
       owner: data.dec(_f$owner),
       contactNumber: data.dec(_f$contactNumber),
       email: data.dec(_f$email),
@@ -242,7 +258,9 @@ abstract class PatientDtoCopyWith<$R, $In extends PatientDto, $Out>
     String? collectionName,
     String? name,
     String? species,
+    String? speciesId,
     String? breed,
+    String? breedId,
     String? owner,
     String? contactNumber,
     String? email,
@@ -282,7 +300,9 @@ class _PatientDtoCopyWithImpl<$R, $Out>
     String? collectionName,
     String? name,
     Object? species = $none,
+    Object? speciesId = $none,
     Object? breed = $none,
+    Object? breedId = $none,
     Object? owner = $none,
     Object? contactNumber = $none,
     Object? email = $none,
@@ -303,7 +323,9 @@ class _PatientDtoCopyWithImpl<$R, $Out>
       if (collectionName != null) #collectionName: collectionName,
       if (name != null) #name: name,
       if (species != $none) #species: species,
+      if (speciesId != $none) #speciesId: speciesId,
       if (breed != $none) #breed: breed,
+      if (breedId != $none) #breedId: breedId,
       if (owner != $none) #owner: owner,
       if (contactNumber != $none) #contactNumber: contactNumber,
       if (email != $none) #email: email,
@@ -326,7 +348,9 @@ class _PatientDtoCopyWithImpl<$R, $Out>
     collectionName: data.get(#collectionName, or: $value.collectionName),
     name: data.get(#name, or: $value.name),
     species: data.get(#species, or: $value.species),
+    speciesId: data.get(#speciesId, or: $value.speciesId),
     breed: data.get(#breed, or: $value.breed),
+    breedId: data.get(#breedId, or: $value.breedId),
     owner: data.get(#owner, or: $value.owner),
     contactNumber: data.get(#contactNumber, or: $value.contactNumber),
     email: data.get(#email, or: $value.email),

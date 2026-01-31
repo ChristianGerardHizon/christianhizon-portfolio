@@ -44,7 +44,7 @@ class BranchDto with BranchDtoMappable {
       collectionName: json['collectionName'] as String? ?? '',
       name: json['name'] as String? ?? '',
       address: json['address'] as String? ?? '',
-      contactNumber: json['contact'] as String? ?? '',
+      contactNumber: json['contactNumber'] as String? ?? '',
       displayName: json['displayName'] as String?,
       isDeleted: json['isDeleted'] as bool? ?? false,
       created: json['created'] as String?,
