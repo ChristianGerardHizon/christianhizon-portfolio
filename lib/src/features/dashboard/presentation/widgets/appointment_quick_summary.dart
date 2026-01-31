@@ -8,6 +8,7 @@ import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../appointments/domain/appointment_schedule.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../appointments/presentation/utils/appointment_completion_handler.dart';
+import '../../../appointments/presentation/utils/appointment_reschedule_handler.dart';
 import '../../../appointments/presentation/widgets/components/appointment_status_chip.dart';
 import '../../../appointments/presentation/widgets/dialogs/edit_appointment_dialog.dart';
 
@@ -263,6 +264,17 @@ class AppointmentQuickSummary extends ConsumerWidget {
                     ),
                     icon: const Icon(Icons.check),
                     label: const Text('Mark Complete'),
+                  ),
+                if (appointment.status != AppointmentScheduleStatus.completed)
+                  OutlinedButton.icon(
+                    onPressed: () =>
+                        AppointmentRescheduleHandler.showRescheduleFlow(
+                      context: context,
+                      ref: ref,
+                      appointment: appointment,
+                    ),
+                    icon: const Icon(Icons.event_repeat),
+                    label: const Text('Reschedule'),
                   ),
                 OutlinedButton.icon(
                   onPressed: () => _showEditSheet(context, ref),

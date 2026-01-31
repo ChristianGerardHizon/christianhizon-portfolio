@@ -15,6 +15,7 @@ import 'empty_system_state.dart';
 import 'dialogs/message_template_form_dialog.dart';
 import 'dialogs/printer_config_form_dialog.dart';
 import 'dialogs/product_category_form_dialog.dart';
+import 'import_landing_panel.dart';
 import 'system_nav_panel.dart';
 import 'theme_settings_panel.dart';
 
@@ -50,6 +51,8 @@ class TabletSystemLayout extends ConsumerWidget {
       currentMode = SystemMode.printers;
     } else if (path.contains('/appearance')) {
       currentMode = SystemMode.appearance;
+    } else if (path.contains('/import')) {
+      currentMode = SystemMode.import;
     } else {
       currentMode = SystemMode.speciesBreeds;
     }
@@ -73,15 +76,20 @@ class TabletSystemLayout extends ConsumerWidget {
                 const PrinterSettingsRoute().go(context);
               case SystemMode.appearance:
                 const AppearanceRoute().go(context);
+              case SystemMode.import:
+                const ImportRoute().go(context);
             }
           },
         ),
         const VerticalDivider(width: 1),
 
-        // Panel 2: List (or full panel for appearance)
+        // Panel 2: List (or full panel for appearance/import)
         if (currentMode == SystemMode.appearance) ...[
           // Appearance mode: Show settings panel directly (no list/detail split)
           const Expanded(child: ThemeSettingsPanel()),
+        ] else if (currentMode == SystemMode.import) ...[
+          // Import mode: Show landing panel directly (no list/detail split)
+          const Expanded(child: ImportLandingPanel()),
         ] else ...[
           SizedBox(
             width: 320,
@@ -97,6 +105,8 @@ class TabletSystemLayout extends ConsumerWidget {
               SystemMode.printers =>
                 _PrinterListWrapper(selectedId: selectedId),
               SystemMode.appearance =>
+                const SizedBox.shrink(), // Handled above
+              SystemMode.import =>
                 const SizedBox.shrink(), // Handled above
             },
           ),

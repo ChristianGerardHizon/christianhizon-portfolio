@@ -99,8 +99,8 @@ class MobileDrawer extends ConsumerWidget {
               onTap: () => _selectAndClose(context, 2),
             ),
             _DrawerItem(
-              icon: Icons.inventory_2,
-              label: t.navigation.products,
+              icon: Icons.point_of_sale,
+              label: t.navigation.sales,
               selected: selectedIndex == 3,
               onTap: () => _selectAndClose(context, 3),
             ),
@@ -109,8 +109,8 @@ class MobileDrawer extends ConsumerWidget {
 
             // Secondary navigation
             _DrawerItem(
-              icon: Icons.point_of_sale,
-              label: t.navigation.sales,
+              icon: Icons.inventory_2,
+              label: t.navigation.products,
               selected: selectedIndex == 4,
               onTap: () => _selectAndClose(context, 4),
             ),

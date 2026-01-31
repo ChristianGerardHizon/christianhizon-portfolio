@@ -20,6 +20,7 @@ import '../../../features/settings/presentation/widgets/printer_config_detail_pa
 import '../../../features/settings/presentation/widgets/theme_settings_panel.dart';
 import '../../../features/settings/presentation/controllers/printer_configs_controller.dart';
 import '../../../features/settings/presentation/widgets/dialogs/printer_config_form_dialog.dart';
+import '../../../features/settings/presentation/widgets/import_landing_panel.dart';
 import '../../utils/breakpoints.dart';
 
 part 'system.routes.g.dart';
@@ -70,6 +71,8 @@ part 'system.routes.g.dart';
         ),
         // Appearance/theme settings
         TypedGoRoute<AppearanceRoute>(path: 'appearance'),
+        // Import products from CSV
+        TypedGoRoute<ImportRoute>(path: 'import'),
       ],
     ),
   ],
@@ -256,6 +259,21 @@ class AppearanceRoute extends GoRouteData with $AppearanceRoute {
   }
 }
 
+/// Import products from CSV route.
+class ImportRoute extends GoRouteData with $ImportRoute {
+  const ImportRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    // On tablet, handled by shell - return empty
+    if (Breakpoints.isTabletOrLarger(context)) {
+      return const SizedBox.shrink();
+    }
+    // Mobile: Show import landing page
+    return const _MobileImportPage();
+  }
+}
+
 // ============================================================================
 // Mobile Pages
 // ============================================================================
@@ -334,6 +352,16 @@ class _MobileSystemLandingPage extends StatelessWidget {
                 description: 'Customize app theme and colors',
                 color: Colors.purple,
                 onTap: () => const AppearanceRoute().go(context),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: _SystemOptionCard(
+                icon: Icons.file_upload,
+                title: 'Import',
+                description: 'Import products from CSV file',
+                color: Colors.indigo,
+                onTap: () => const ImportRoute().go(context),
               ),
             ),
           ],
@@ -1034,5 +1062,20 @@ class _MobilePrinterListPage extends ConsumerWidget {
 
   void _showCreateSheet(BuildContext context) {
     showPrinterConfigFormDialog(context);
+  }
+}
+
+/// Mobile import page.
+class _MobileImportPage extends StatelessWidget {
+  const _MobileImportPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Import Products'),
+      ),
+      body: const ImportLandingPanel(),
+    );
   }
 }

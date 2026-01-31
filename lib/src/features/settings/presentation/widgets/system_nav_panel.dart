@@ -8,6 +8,7 @@ enum SystemMode {
   treatmentTypes,
   printers,
   appearance,
+  import,
 }
 
 /// Vertical navigation panel for selecting system mode.
@@ -99,6 +100,15 @@ class SystemNavPanel extends StatelessWidget {
             label: 'Appearance',
             isSelected: currentMode == SystemMode.appearance,
             onTap: () => onModeChanged(SystemMode.appearance),
+          ),
+          const SizedBox(height: 4),
+          // Import button
+          _NavButton(
+            icon: Icons.file_upload_outlined,
+            selectedIcon: Icons.file_upload,
+            label: 'Import',
+            isSelected: currentMode == SystemMode.import,
+            onTap: () => onModeChanged(SystemMode.import),
           ),
           const Spacer(),
         ],

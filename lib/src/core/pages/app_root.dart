@@ -47,8 +47,8 @@ class _AppRootState extends ConsumerState<AppRoot> {
     DashboardRoute.path, // 0: /
     PatientsRoute.path, // 1: /patients
     AppointmentsRoute.path, // 2: /appointments
-    ProductsRoute.path, // 3: /products
-    SalesRoute.path, // 4: /cashier
+    SalesRoute.path, // 3: /cashier
+    ProductsRoute.path, // 4: /products
     SalesHistoryRoute.path, // 5: /sales
     MessagesRoute.path, // 6: /messages
     ReportsRoute.path, // 7: /reports
@@ -61,8 +61,8 @@ class _AppRootState extends ConsumerState<AppRoot> {
     DashboardRoute(), // 0
     PatientsRoute(), // 1
     AppointmentsRoute(), // 2
-    ProductsRoute(), // 3
-    SalesRoute(), // 4
+    SalesRoute(), // 3
+    ProductsRoute(), // 4
     SalesHistoryRoute(), // 5
     MessagesRoute(), // 6
     ReportsRoute(), // 7

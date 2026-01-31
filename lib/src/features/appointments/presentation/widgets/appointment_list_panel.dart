@@ -29,6 +29,7 @@ class AppointmentListPanel extends HookConsumerWidget {
     required this.onRefresh,
     required this.onLoadMore,
     required this.onEdit,
+    this.onReschedule,
     required this.onDelete,
     required this.onStatusChange,
     required this.onCreateAppointment,
@@ -40,6 +41,7 @@ class AppointmentListPanel extends HookConsumerWidget {
   final Future<void> Function() onRefresh;
   final VoidCallback onLoadMore;
   final void Function(AppointmentSchedule) onEdit;
+  final void Function(AppointmentSchedule)? onReschedule;
   final void Function(AppointmentSchedule) onDelete;
   final void Function(String id, AppointmentScheduleStatus status) onStatusChange;
   final VoidCallback onCreateAppointment;
@@ -263,6 +265,9 @@ class AppointmentListPanel extends HookConsumerWidget {
                       appointment: appointment,
                       onTap: () => onAppointmentTap(appointment),
                       onEdit: () => onEdit(appointment),
+                      onReschedule: onReschedule != null
+                          ? () => onReschedule!(appointment)
+                          : null,
                       onDelete: () => onDelete(appointment),
                       onStatusChange: (status) =>
                           onStatusChange(appointment.id, status),

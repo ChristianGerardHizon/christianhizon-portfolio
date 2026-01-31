@@ -47,6 +47,11 @@ class EmptySystemState extends StatelessWidget {
           'Appearance',
           'Customize app theme and colors',
         ),
+      SystemMode.import => (
+          Icons.file_upload_outlined,
+          'Import Products',
+          'Import products and categories from a CSV file',
+        ),
     };
 
     return Scaffold(

@@ -7,7 +7,6 @@ import '../../../appointments/domain/appointment_schedule.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../appointments/presentation/utils/appointment_completion_handler.dart';
 import '../../../appointments/presentation/utils/appointment_reschedule_handler.dart';
-import '../../../appointments/presentation/widgets/components/appointment_status_chip.dart';
 import '../../../appointments/presentation/widgets/dialogs/edit_appointment_dialog.dart';
 
 /// List panel showing today's appointments for the dashboard.
@@ -159,6 +158,9 @@ class TodayAppointmentListPanel extends HookConsumerWidget {
                                           context, ref, appointment, status),
                                   onEdit: () =>
                                       _handleEdit(context, ref, appointment),
+                                  onReschedule: () =>
+                                      _handleReschedule(
+                                          context, ref, appointment),
                                 )),
                           ],
 
@@ -181,6 +183,9 @@ class TodayAppointmentListPanel extends HookConsumerWidget {
                                           context, ref, appointment, status),
                                   onEdit: () =>
                                       _handleEdit(context, ref, appointment),
+                                  onReschedule: () =>
+                                      _handleReschedule(
+                                          context, ref, appointment),
                                 )),
                           ],
 
@@ -203,6 +208,9 @@ class TodayAppointmentListPanel extends HookConsumerWidget {
                                           context, ref, appointment, status),
                                   onEdit: () =>
                                       _handleEdit(context, ref, appointment),
+                                  onReschedule: () =>
+                                      _handleReschedule(
+                                          context, ref, appointment),
                                 )),
                           ],
                         ],
@@ -346,16 +354,6 @@ class TodayAppointmentListPanel extends HookConsumerWidget {
       return;
     }
 
-    // Special handling for missed appointment with reschedule option
-    if (status == AppointmentScheduleStatus.missed) {
-      await AppointmentRescheduleHandler.showRescheduleFlowAndMarkMissed(
-        context: context,
-        ref: ref,
-        appointment: appointment,
-      );
-      return;
-    }
-
     // For other status changes, update directly
     final success = await ref
         .read(appointmentsControllerProvider.notifier)
@@ -369,6 +367,18 @@ class TodayAppointmentListPanel extends HookConsumerWidget {
         showErrorSnackBar(context, message: 'Failed to update status');
       }
     }
+  }
+
+  void _handleReschedule(
+    BuildContext context,
+    WidgetRef ref,
+    AppointmentSchedule appointment,
+  ) {
+    AppointmentRescheduleHandler.showRescheduleFlow(
+      context: context,
+      ref: ref,
+      appointment: appointment,
+    );
   }
 
   void _handleEdit(
@@ -394,6 +404,7 @@ class _AppointmentTile extends StatelessWidget {
     this.onTap,
     this.onStatusChange,
     this.onEdit,
+    this.onReschedule,
   });
 
   final AppointmentSchedule appointment;
@@ -401,6 +412,7 @@ class _AppointmentTile extends StatelessWidget {
   final VoidCallback? onTap;
   final void Function(AppointmentScheduleStatus)? onStatusChange;
   final VoidCallback? onEdit;
+  final VoidCallback? onReschedule;
 
   @override
   Widget build(BuildContext context) {
@@ -502,43 +514,93 @@ class _AppointmentTile extends StatelessWidget {
                 ),
               ),
 
-              // Status chip
-              PopupMenuButton<AppointmentScheduleStatus>(
-                tooltip: 'Change status',
-                onSelected: onStatusChange,
-                position: PopupMenuPosition.under,
-                child: AppointmentStatusChip(status: appointment.status),
-                itemBuilder: (context) => AppointmentScheduleStatus.values
-                    .map(
-                      (s) => PopupMenuItem(
-                        value: s,
-                        child: Row(
-                          children: [
-                            Icon(
-                              _getStatusIcon(s),
-                              size: 18,
-                              color: _getStatusColor(context, s),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(_getStatusLabel(s)),
-                            if (s == appointment.status) ...[
-                              const Spacer(),
-                              Icon(
-                                Icons.check,
-                                size: 18,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    )
-                    .toList(),
+              // More actions popup with reschedule + status change
+              _TileActionsPopup(
+                appointment: appointment,
+                onReschedule: onReschedule,
+                onStatusChange: onStatusChange,
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+}
+
+/// Popup menu for appointment tile with reschedule + status change.
+class _TileActionsPopup extends StatelessWidget {
+  const _TileActionsPopup({
+    required this.appointment,
+    this.onReschedule,
+    this.onStatusChange,
+  });
+
+  final AppointmentSchedule appointment;
+  final VoidCallback? onReschedule;
+  final void Function(AppointmentScheduleStatus)? onStatusChange;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      icon: const Icon(Icons.more_vert, size: 20),
+      tooltip: 'More actions',
+      position: PopupMenuPosition.under,
+      itemBuilder: (context) => [
+        // Reschedule (non-completed only)
+        if (onReschedule != null &&
+            appointment.status != AppointmentScheduleStatus.completed)
+          const PopupMenuItem(
+            value: 'reschedule',
+            child: ListTile(
+              leading: Icon(Icons.event_repeat),
+              title: Text('Reschedule'),
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+            ),
+          ),
+        // Change Status section
+        if (onStatusChange != null) ...[
+          const PopupMenuDivider(),
+          const PopupMenuItem(
+            enabled: false,
+            child: Text('Change Status'),
+          ),
+          ...AppointmentScheduleStatus.values.map(
+            (status) => PopupMenuItem(
+              value: 'status_${status.name}',
+              child: ListTile(
+                leading: Icon(
+                  _getStatusIcon(status),
+                  color: _getStatusColor(context, status),
+                ),
+                title: Text(_getStatusLabel(status)),
+                trailing: status == appointment.status
+                    ? Icon(
+                        Icons.check,
+                        size: 18,
+                        color: Theme.of(context).colorScheme.primary,
+                      )
+                    : null,
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+              ),
+            ),
+          ),
+        ],
+      ],
+      onSelected: (value) {
+        if (value == 'reschedule') {
+          onReschedule?.call();
+        } else if (value.startsWith('status_')) {
+          final statusName = value.substring(7);
+          final status = AppointmentScheduleStatus.values.firstWhere(
+            (s) => s.name == statusName,
+          );
+          onStatusChange?.call(status);
+        }
+      },
     );
   }
 

@@ -9,6 +9,7 @@ import '../../../patients/presentation/controllers/patient_records_controller.da
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
+import '../utils/appointment_reschedule_handler.dart';
 import 'appointment_list_panel.dart';
 import 'empty_appointment_detail_state.dart';
 import 'dialogs/create_appointment_dialog.dart';
@@ -70,6 +71,12 @@ class TabletAppointmentsLayout extends ConsumerWidget {
               onLoadMore: () => paginatedController.loadMore(),
               onEdit: (appointment) =>
                   _showEditAppointmentSheet(context, ref, appointment),
+              onReschedule: (appointment) =>
+                  AppointmentRescheduleHandler.showRescheduleFlow(
+                context: context,
+                ref: ref,
+                appointment: appointment,
+              ),
               onDelete: (appointment) =>
                   _confirmDelete(context, ref, appointment),
               onStatusChange: (id, status) =>
