@@ -214,6 +214,12 @@ class _AppointmentDetailContent extends HookConsumerWidget {
                   ref,
                   AppointmentScheduleStatus.completed,
                 ),
+                onReschedule: () =>
+                    AppointmentRescheduleHandler.showRescheduleFlow(
+                  context: context,
+                  ref: ref,
+                  appointment: appointment,
+                ),
                 onEdit: () => _showEditSheet(context, ref),
                 onDelete: () => _confirmDelete(context, ref),
               ),
@@ -338,16 +344,6 @@ class _AppointmentDetailContent extends HookConsumerWidget {
     // Special handling for completing an appointment
     if (status == AppointmentScheduleStatus.completed) {
       AppointmentCompletionHandler.showCompletionFlowAndComplete(
-        context: context,
-        ref: ref,
-        appointment: appointment,
-      );
-      return;
-    }
-
-    // Special handling for missed appointment with reschedule option
-    if (status == AppointmentScheduleStatus.missed) {
-      AppointmentRescheduleHandler.showRescheduleFlowAndMarkMissed(
         context: context,
         ref: ref,
         appointment: appointment,
@@ -890,12 +886,14 @@ class _QuickActionsSection extends StatelessWidget {
     required this.onMarkComplete,
     required this.onEdit,
     required this.onDelete,
+    required this.onReschedule,
   });
 
   final AppointmentSchedule appointment;
   final VoidCallback onMarkComplete;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final VoidCallback onReschedule;
 
   @override
   Widget build(BuildContext context) {
@@ -920,6 +918,12 @@ class _QuickActionsSection extends StatelessWidget {
                 onPressed: onMarkComplete,
                 icon: const Icon(Icons.check),
                 label: const Text('Mark Complete'),
+              ),
+            if (appointment.status != AppointmentScheduleStatus.completed)
+              OutlinedButton.icon(
+                onPressed: onReschedule,
+                icon: const Icon(Icons.event_repeat),
+                label: const Text('Reschedule'),
               ),
             OutlinedButton.icon(
               onPressed: onEdit,

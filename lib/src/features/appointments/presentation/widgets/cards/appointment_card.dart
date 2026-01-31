@@ -9,6 +9,7 @@ class AppointmentCard extends StatelessWidget {
     required this.appointment,
     this.onTap,
     this.onEdit,
+    this.onReschedule,
     this.onDelete,
     this.onStatusChange,
     this.showPatientInfo = true,
@@ -17,6 +18,7 @@ class AppointmentCard extends StatelessWidget {
   final AppointmentSchedule appointment;
   final VoidCallback? onTap;
   final VoidCallback? onEdit;
+  final VoidCallback? onReschedule;
   final VoidCallback? onDelete;
   final void Function(AppointmentScheduleStatus)? onStatusChange;
   final bool showPatientInfo;
@@ -52,7 +54,7 @@ class AppointmentCard extends StatelessWidget {
                     ),
                   ),
                   AppointmentStatusChip(status: appointment.status),
-                  if (onEdit != null || onDelete != null || onStatusChange != null)
+                  if (onEdit != null || onReschedule != null || onDelete != null || onStatusChange != null)
                     _buildPopupMenu(context),
                 ],
               ),
@@ -198,6 +200,17 @@ class AppointmentCard extends StatelessWidget {
               dense: true,
             ),
           ),
+        if (onReschedule != null &&
+            appointment.status != AppointmentScheduleStatus.completed)
+          const PopupMenuItem(
+            value: 'reschedule',
+            child: ListTile(
+              leading: Icon(Icons.event_repeat),
+              title: Text('Reschedule'),
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+            ),
+          ),
         if (onStatusChange != null) ...[
           const PopupMenuDivider(),
           const PopupMenuItem(
@@ -235,6 +248,8 @@ class AppointmentCard extends StatelessWidget {
       onSelected: (value) {
         if (value == 'edit') {
           onEdit?.call();
+        } else if (value == 'reschedule') {
+          onReschedule?.call();
         } else if (value == 'delete') {
           onDelete?.call();
         } else if (value.startsWith('status_')) {

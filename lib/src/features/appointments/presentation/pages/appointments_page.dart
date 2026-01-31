@@ -10,6 +10,7 @@ import '../../../../core/widgets/end_of_list_indicator.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
+import '../utils/appointment_reschedule_handler.dart';
 import '../widgets/cards/appointment_card.dart';
 import '../widgets/components/appointments_calendar.dart';
 import '../widgets/dialogs/create_appointment_dialog.dart';
@@ -147,6 +148,12 @@ class AppointmentsPage extends HookConsumerWidget {
               .loadMore(),
           onEdit: (appointment) =>
               _showEditAppointmentSheet(context, ref, appointment),
+          onReschedule: (appointment) =>
+              AppointmentRescheduleHandler.showRescheduleFlow(
+            context: context,
+            ref: ref,
+            appointment: appointment,
+          ),
           onDelete: (appointment) =>
               _confirmDelete(context, ref, appointment),
           onStatusChange: (id, status) =>
@@ -372,6 +379,7 @@ class _PaginatedListView extends HookWidget {
     required this.onRefresh,
     required this.onLoadMore,
     required this.onEdit,
+    required this.onReschedule,
     required this.onDelete,
     required this.onStatusChange,
   });
@@ -381,6 +389,7 @@ class _PaginatedListView extends HookWidget {
   final Future<void> Function() onRefresh;
   final VoidCallback onLoadMore;
   final void Function(AppointmentSchedule) onEdit;
+  final void Function(AppointmentSchedule) onReschedule;
   final void Function(AppointmentSchedule) onDelete;
   final void Function(String id, AppointmentScheduleStatus status) onStatusChange;
 
@@ -437,6 +446,7 @@ class _PaginatedListView extends HookWidget {
                         AppointmentDetailRoute(id: appointment.id).go(context);
                       },
                       onEdit: () => onEdit(appointment),
+                      onReschedule: () => onReschedule(appointment),
                       onDelete: () => onDelete(appointment),
                       onStatusChange: (status) =>
                           onStatusChange(appointment.id, status),

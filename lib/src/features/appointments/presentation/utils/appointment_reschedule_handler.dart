@@ -2,206 +2,137 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/widgets/form_feedback.dart';
+import '../../../messages/domain/message.dart';
+import '../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../patients/presentation/controllers/patient_provider.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
-import '../widgets/dialogs/create_appointment_dialog.dart';
+import '../widgets/dialogs/reschedule_appointment_dialog.dart';
 
-/// Handles the missed appointment flow with optional rescheduling.
+/// Handles standalone appointment rescheduling.
 ///
-/// This utility provides a consistent experience for marking appointments
-/// as missed, with the option to create a new rescheduled appointment
-/// using the [CreateAppointmentDialog] in reschedule mode.
+/// This utility updates an existing appointment's date (instead of creating
+/// a new one), resets its status to scheduled, cancels pending SMS reminders,
+/// and optionally creates a new SMS reminder for the new date.
 class AppointmentRescheduleHandler {
   const AppointmentRescheduleHandler._();
 
-  /// Shows a confirm dialog, then either marks as missed or opens the
-  /// [CreateAppointmentDialog] in reschedule mode.
+  /// Shows the reschedule dialog and updates the appointment in-place.
   ///
   /// Flow:
-  /// 1. Shows confirm dialog: "Cancel" / "Just Mark Missed" / "Reschedule"
-  /// 2. If cancelled, does nothing
-  /// 3. If "Just Mark Missed", updates status to missed
-  /// 4. If "Reschedule", opens [CreateAppointmentDialog] pre-filled with
-  ///    original data (read-only), empty date, editable SMS section.
-  ///    The onSave callback creates the new appointment and marks old as missed.
-  static Future<void> showRescheduleFlowAndMarkMissed({
+  /// 1. Resolves patient data for the SMS section
+  /// 2. Opens [RescheduleAppointmentDialog]
+  /// 3. Updates the existing appointment's date + resets status to scheduled
+  /// 4. Cancels any existing pending SMS reminders
+  /// 5. Creates a new SMS reminder if enabled
+  /// 6. Invalidates providers and calls [onComplete]
+  static Future<void> showRescheduleFlow({
     required BuildContext context,
     required WidgetRef ref,
     required AppointmentSchedule appointment,
     VoidCallback? onComplete,
   }) async {
-    final choice = await _showConfirmDialog(context, appointment);
-
-    if (choice == null || !context.mounted) return;
-
-    if (choice == _RescheduleChoice.justMarkMissed) {
-      await _markAsMissed(
-        context: context,
-        ref: ref,
-        appointment: appointment,
-      );
-      onComplete?.call();
-      return;
-    }
-
-    // Reschedule: resolve patient, then open CreateAppointmentDialog
+    // Resolve patient for SMS section
     final patient = appointment.patientExpanded ??
         await ref.read(patientProvider(appointment.patient!).future);
 
-    if (patient == null) {
-      if (context.mounted) {
-        showErrorSnackBar(context, message: 'Could not load patient data');
-      }
-      return;
-    }
-
     if (!context.mounted) return;
 
-    showCreateAppointmentDialog(
+    final result = await showRescheduleAppointmentDialog(
       context,
-      initialPatient: patient,
-      rescheduleFrom: appointment,
-      onSave: (newAppointment) async {
-        // Create the new appointment
-        final created = await ref
-            .read(paginatedAppointmentsControllerProvider.notifier)
-            .createAppointmentAndReturn(newAppointment);
-
-        if (created == null) return null;
-
-        // Mark old appointment as missed
-        final missedSuccess = await ref
-            .read(paginatedAppointmentsControllerProvider.notifier)
-            .updateStatus(appointment.id, AppointmentScheduleStatus.missed);
-
-        if (!missedSuccess && context.mounted) {
-          showWarningSnackBar(context,
-              message:
-                  'New appointment created but failed to mark old one as missed');
-        }
-
-        ref.invalidate(appointmentsControllerProvider);
-        ref.invalidate(appointmentProvider(appointment.id));
-
-        onComplete?.call();
-
-        return created;
-      },
+      appointment: appointment,
+      patient: patient,
     );
-  }
 
-  /// Shows the initial confirm dialog with three choices.
-  static Future<_RescheduleChoice?> _showConfirmDialog(
-    BuildContext context,
-    AppointmentSchedule appointment,
-  ) {
-    final theme = Theme.of(context);
-    return showDialog<_RescheduleChoice>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Missed Appointment'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.pets,
-                          size: 20,
-                          color: theme.colorScheme.onSurfaceVariant),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          appointment.patientDisplayName,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(Icons.calendar_today,
-                          size: 20,
-                          color: theme.colorScheme.onSurfaceVariant),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          appointment.displayDate,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Would you like to reschedule this appointment?',
-              style: theme.textTheme.bodyMedium,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          OutlinedButton(
-            onPressed: () =>
-                Navigator.pop(ctx, _RescheduleChoice.justMarkMissed),
-            child: const Text('Just Mark Missed'),
-          ),
-          FilledButton(
-            onPressed: () =>
-                Navigator.pop(ctx, _RescheduleChoice.reschedule),
-            child: const Text('Reschedule'),
-          ),
-        ],
-      ),
+    if (result == null || !context.mounted) return;
+
+    // Update the existing appointment with new date and reset status
+    final updated = appointment.copyWith(
+      date: result.newDate,
+      hasTime: result.hasTime,
+      status: AppointmentScheduleStatus.scheduled,
     );
-  }
 
-  /// Marks an appointment as missed.
-  static Future<void> _markAsMissed({
-    required BuildContext context,
-    required WidgetRef ref,
-    required AppointmentSchedule appointment,
-  }) async {
     final success = await ref
         .read(paginatedAppointmentsControllerProvider.notifier)
-        .updateStatus(appointment.id, AppointmentScheduleStatus.missed);
+        .updateAppointment(updated);
 
     if (!success) {
       if (context.mounted) {
         showErrorSnackBar(context,
-            message: 'Failed to mark appointment as missed');
+            message: 'Failed to reschedule appointment');
       }
       return;
     }
 
+    // Cancel existing pending SMS reminders for this appointment
+    await _cancelPendingReminders(ref, appointment.id);
+
+    // Create new SMS reminder if enabled
+    if (result.sendReminder &&
+        result.reminderMessage != null &&
+        result.reminderMessage!.isNotEmpty &&
+        patient?.contactNumber != null &&
+        patient!.contactNumber!.isNotEmpty) {
+      final message = Message(
+        id: '',
+        phone: patient.contactNumber!,
+        content: result.reminderMessage!,
+        sendDateTime: result.reminderDateTime ??
+            DateTime(
+              result.newDate.year,
+              result.newDate.month,
+              result.newDate.day - 1,
+              9,
+              0,
+            ),
+        patient: patient.id,
+        appointment: appointment.id,
+        notes: 'Appointment reminder (rescheduled)',
+      );
+
+      await ref
+          .read(messagesControllerProvider.notifier)
+          .createMessage(message);
+    }
+
+    // Invalidate providers to refresh data
     ref.invalidate(appointmentsControllerProvider);
     ref.invalidate(appointmentProvider(appointment.id));
+    ref.invalidate(messagesByAppointmentProvider(appointment.id));
 
     if (context.mounted) {
-      showSuccessSnackBar(context,
-          message: 'Appointment marked as missed');
+      showSuccessSnackBar(
+        context,
+        message: result.sendReminder
+            ? 'Appointment rescheduled with reminder'
+            : 'Appointment rescheduled successfully',
+      );
+    }
+
+    onComplete?.call();
+  }
+
+  /// Cancels all pending SMS reminders for the given appointment.
+  static Future<void> _cancelPendingReminders(
+    WidgetRef ref,
+    String appointmentId,
+  ) async {
+    try {
+      final messages = await ref
+          .read(messagesByAppointmentProvider(appointmentId).future);
+
+      final unsentMessages = messages.where(
+          (m) => m.status == MessageStatus.pending || m.status == MessageStatus.failed);
+
+      for (final message in unsentMessages) {
+        await ref
+            .read(messagesControllerProvider.notifier)
+            .cancelMessage(message.id);
+      }
+    } catch (_) {
+      // Non-critical: if we can't cancel old reminders, still proceed
     }
   }
 }
-
-enum _RescheduleChoice { justMarkMissed, reschedule }
