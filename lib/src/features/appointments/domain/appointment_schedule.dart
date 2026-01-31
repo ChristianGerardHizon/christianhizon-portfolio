@@ -28,8 +28,8 @@ class AppointmentSchedule with AppointmentScheduleMappable {
     this.purpose,
     this.status = AppointmentScheduleStatus.scheduled,
     this.patient,
-    this.patientTreatment,
-    this.patientTreatmentName,
+    this.patientTreatment = const [],
+    this.patientTreatmentName = const [],
     this.patientRecords = const [],
     this.branch,
     this.patientName,
@@ -40,6 +40,7 @@ class AppointmentSchedule with AppointmentScheduleMappable {
     this.updated,
     this.patientExpanded,
     this.patientRecordsExpanded = const [],
+    this.autoCreateRecord = true,
   });
 
   /// PocketBase record ID.
@@ -63,11 +64,11 @@ class AppointmentSchedule with AppointmentScheduleMappable {
   /// FK to Patient.
   final String? patient;
 
-  /// FK to PatientTreatment (treatment type catalog).
-  final String? patientTreatment;
+  /// FKs to PatientTreatment (treatment type catalog).
+  final List<String> patientTreatment;
 
-  /// Expanded patient treatment name (when loaded).
-  final String? patientTreatmentName;
+  /// Expanded patient treatment names (when loaded).
+  final List<String> patientTreatmentName;
 
   /// List of linked PatientRecord IDs.
   final List<String> patientRecords;
@@ -98,6 +99,9 @@ class AppointmentSchedule with AppointmentScheduleMappable {
 
   /// Expanded patient records (when loaded).
   final List<PatientRecord> patientRecordsExpanded;
+
+  /// Whether completing this appointment should automatically create treatment records.
+  final bool autoCreateRecord;
 
   /// PocketBase collection name.
   static const collectionName = 'appointment_schedules';
@@ -163,4 +167,10 @@ class AppointmentSchedule with AppointmentScheduleMappable {
   int get linkedItemsCount {
     return patientRecords.length;
   }
+
+  /// Returns true if appointment has treatments assigned.
+  bool get hasTreatments => patientTreatment.isNotEmpty;
+
+  /// Returns comma-separated display string for treatment names.
+  String get treatmentNamesDisplay => patientTreatmentName.join(', ');
 }

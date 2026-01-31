@@ -23,13 +23,14 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
   final String? purpose;
   final String? status;
   final String? patient;
-  final String? patientTreatment;
+  final List<String> patientTreatment;
   final List<String> patientRecords;
   final String? branch;
   final String? patientName;
   final String? ownerName;
   final String? ownerContact;
   final bool isDeleted;
+  final bool autoCreateRecord;
   final String? created;
   final String? updated;
 
@@ -41,7 +42,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
   final String? expandedPatientBreed;
 
   // Expanded treatment type fields
-  final String? expandedPatientTreatmentName;
+  final List<String> expandedPatientTreatmentNames;
 
   // Expanded relation arrays
   final List<PatientRecord> expandedPatientRecords;
@@ -56,13 +57,14 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
     this.purpose,
     this.status,
     this.patient,
-    this.patientTreatment,
+    this.patientTreatment = const [],
     this.patientRecords = const [],
     this.branch,
     this.patientName,
     this.ownerName,
     this.ownerContact,
     this.isDeleted = false,
+    this.autoCreateRecord = true,
     this.created,
     this.updated,
     this.expandedPatientName,
@@ -70,7 +72,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
     this.expandedPatientContact,
     this.expandedPatientSpecies,
     this.expandedPatientBreed,
-    this.expandedPatientTreatmentName,
+    this.expandedPatientTreatmentNames = const [],
     this.expandedPatientRecords = const [],
   });
 
@@ -86,8 +88,22 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
     final expandedPatientSpecies = record.get<String>('expand.patient.expand.species.name');
     final expandedPatientBreed = record.get<String>('expand.patient.expand.breed.name');
 
-    // Extract expanded treatment type data
-    final expandedPatientTreatmentName = record.get<String>('expand.patientTreatment.name');
+    // Parse patientTreatment array (multi-relation field)
+    final ptRaw = json['patientTreatment'];
+    final patientTreatment = ptRaw is List ? ptRaw.cast<String>() : <String>[];
+
+    // Parse expanded treatment names from multi-relation expand
+    final expandedTreatmentNames = <String>[];
+    final expand = json['expand'] as Map<String, dynamic>?;
+    final ptExpand = expand?['patientTreatment'];
+    if (ptExpand is List) {
+      for (final item in ptExpand) {
+        if (item is Map<String, dynamic>) {
+          final name = item['name'] as String?;
+          if (name != null && name.isNotEmpty) expandedTreatmentNames.add(name);
+        }
+      }
+    }
 
     // Parse patientRecords array (relation array field)
     final patientRecordsRaw = json['patientRecords'];
@@ -97,7 +113,6 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
 
     // Parse expanded patient records
     final expandedPatientRecords = <PatientRecord>[];
-    final expand = json['expand'] as Map<String, dynamic>?;
     if (expand != null) {
       final patientRecordsExpand = expand['patientRecords'];
       if (patientRecordsExpand is List) {
@@ -120,13 +135,14 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       purpose: json['purpose'] as String?,
       status: json['status'] as String?,
       patient: json['patient'] as String?,
-      patientTreatment: json['patientTreatment'] as String?,
+      patientTreatment: patientTreatment,
       patientRecords: patientRecords,
       branch: json['branch'] as String?,
       patientName: json['patientName'] as String?,
       ownerName: json['ownerName'] as String?,
       ownerContact: json['ownerContact'] as String?,
       isDeleted: json['isDeleted'] as bool? ?? false,
+      autoCreateRecord: json['autoCreateRecord'] as bool? ?? true,
       created: json['created'] as String?,
       updated: json['updated'] as String?,
       expandedPatientName: expandedPatientName.isNotEmpty ? expandedPatientName : null,
@@ -134,7 +150,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       expandedPatientContact: expandedPatientContact.isNotEmpty ? expandedPatientContact : null,
       expandedPatientSpecies: expandedPatientSpecies.isNotEmpty ? expandedPatientSpecies : null,
       expandedPatientBreed: expandedPatientBreed.isNotEmpty ? expandedPatientBreed : null,
-      expandedPatientTreatmentName: expandedPatientTreatmentName.isNotEmpty ? expandedPatientTreatmentName : null,
+      expandedPatientTreatmentNames: expandedTreatmentNames,
       expandedPatientRecords: expandedPatientRecords,
     );
   }
@@ -163,7 +179,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       status: _parseStatus(status),
       patient: patient,
       patientTreatment: patientTreatment,
-      patientTreatmentName: expandedPatientTreatmentName,
+      patientTreatmentName: expandedPatientTreatmentNames,
       patientRecords: patientRecords,
       branch: branch,
       patientName: patientName,
@@ -174,6 +190,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       updated: parseToLocal(updated),
       patientExpanded: patientExpanded,
       patientRecordsExpanded: expandedPatientRecords,
+      autoCreateRecord: autoCreateRecord,
     );
   }
 
@@ -207,6 +224,7 @@ class AppointmentScheduleDto with AppointmentScheduleDtoMappable {
       'patientName': appointment.patientName,
       'ownerName': appointment.ownerName,
       'ownerContact': appointment.ownerContact,
+      'autoCreateRecord': appointment.autoCreateRecord,
     };
   }
 

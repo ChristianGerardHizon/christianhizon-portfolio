@@ -48,7 +48,8 @@ class CreateAppointmentDialog extends HookConsumerWidget {
     final hasTime = useState(false);
     final selectedPatient = useState<Patient?>(initialPatient);
     final sendReminder = useState(false);
-    final selectedPatientTreatmentId = useState<String?>(null);
+    final isTreatment = useState(false);
+    final selectedPatientTreatmentIds = useState<List<String>>([]);
     final reminderDateTime = useState<DateTime?>(null);
 
     // Watch patients for dropdown
@@ -95,14 +96,16 @@ class CreateAppointmentDialog extends HookConsumerWidget {
       }
 
       // Replace treatment data
-      if (selectedPatientTreatmentId.value != null) {
+      if (selectedPatientTreatmentIds.value.isNotEmpty) {
         final treatmentTypes = treatmentTypesAsync.value;
         if (treatmentTypes != null) {
-          final treatment = treatmentTypes.firstWhereOrNull(
-            (t) => t.id == selectedPatientTreatmentId.value,
-          );
-          if (treatment != null) {
-            replaced = replaced.replaceAll('{treatmentName}', treatment.name);
+          final names = selectedPatientTreatmentIds.value
+              .map((id) => treatmentTypes.firstWhereOrNull((t) => t.id == id))
+              .where((t) => t != null)
+              .map((t) => t!.name)
+              .toList();
+          if (names.isNotEmpty) {
+            replaced = replaced.replaceAll('{treatmentName}', names.join(', '));
           }
         }
       }
@@ -118,6 +121,12 @@ class CreateAppointmentDialog extends HookConsumerWidget {
 
       if (patient == null) {
         showErrorSnackBar(context, message: 'Please select a patient');
+        return;
+      }
+
+      if (isTreatment.value && selectedPatientTreatmentIds.value.isEmpty) {
+        showErrorSnackBar(context,
+            message: 'Please select at least one treatment type');
         return;
       }
 
@@ -144,16 +153,18 @@ class CreateAppointmentDialog extends HookConsumerWidget {
         id: '', // Will be assigned by PocketBase
         date: finalDate,
         hasTime: hasTime.value,
-        purpose: values['purpose'] as String?,
+        purpose: isTreatment.value ? null : values['purpose'] as String?,
         notes: values['notes'] as String?,
         status: AppointmentScheduleStatus.scheduled,
         patient: patient.id,
-        patientTreatment: selectedPatientTreatmentId.value,
+        patientTreatment:
+            isTreatment.value ? selectedPatientTreatmentIds.value : const [],
         branch: ref.read(currentBranchIdProvider),
         patientName: patient.name,
         ownerName: patient.owner,
         ownerContact: patient.contactNumber,
         isDeleted: false,
+        autoCreateRecord: isTreatment.value,
       );
 
       final created = await onSave(appointment);
@@ -437,47 +448,102 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                           const SizedBox(height: 16),
                         ],
 
-                        // Treatment Type
-                        treatmentTypesAsync.when(
-                          loading: () => const LinearProgressIndicator(),
-                          error: (_, __) =>
-                              const Text('Error loading treatment types'),
-                          data: (treatmentTypes) => FormBuilderDropdown<String>(
-                            name: 'patientTreatment',
-                            decoration: InputDecoration(
-                              labelText: 'Treatment Type (Optional)',
-                              border: const OutlineInputBorder(),
-                              prefixIcon:
-                                  const Icon(Icons.medical_services_outlined),
-                              suffixIcon: selectedPatientTreatmentId.value !=
-                                      null
-                                  ? IconButton(
-                                      icon: const Icon(Icons.clear),
-                                      onPressed: () {
-                                        formKey.currentState
-                                            ?.fields['patientTreatment']
-                                            ?.didChange(null);
-                                        selectedPatientTreatmentId.value = null;
-                                      },
-                                    )
-                                  : null,
+                        // Appointment Type Toggle
+                        SegmentedButton<bool>(
+                          segments: const [
+                            ButtonSegment<bool>(
+                              value: false,
+                              label: Text('General'),
+                              icon: Icon(Icons.description_outlined),
                             ),
-                            onChanged: (value) {
-                              selectedPatientTreatmentId.value = value;
-                            },
-                            items: treatmentTypes
-                                .map((t) => DropdownMenuItem(
-                                      value: t.id,
-                                      child: Text(t.name),
-                                    ))
-                                .toList(),
-                            enabled: !isSaving.value,
-                          ),
+                            ButtonSegment<bool>(
+                              value: true,
+                              label: Text('Treatment'),
+                              icon: Icon(Icons.medical_services_outlined),
+                            ),
+                          ],
+                          selected: {isTreatment.value},
+                          onSelectionChanged: isSaving.value
+                              ? null
+                              : (value) {
+                                  isTreatment.value = value.first;
+                                  if (value.first) {
+                                    // Switching to treatment: clear purpose
+                                    formKey.currentState?.fields['purpose']
+                                        ?.didChange(null);
+                                  } else {
+                                    // Switching to checkup: clear treatments
+                                    selectedPatientTreatmentIds.value = [];
+                                  }
+                                },
                         ),
                         const SizedBox(height: 16),
 
-                        // Purpose (hidden when treatment type is selected)
-                        if (selectedPatientTreatmentId.value == null) ...[
+                        // Treatment Type (shown when Treatment is selected)
+                        if (isTreatment.value) ...[
+                          treatmentTypesAsync.when(
+                            loading: () => const LinearProgressIndicator(),
+                            error: (_, __) =>
+                                const Text('Error loading treatment types'),
+                            data: (treatmentTypes) => InputDecorator(
+                              decoration: InputDecoration(
+                                labelText: 'Treatment Types *',
+                                border: const OutlineInputBorder(),
+                                prefixIcon:
+                                    const Icon(Icons.medical_services_outlined),
+                                errorText: selectedPatientTreatmentIds
+                                        .value.isEmpty
+                                    ? null
+                                    : null,
+                              ),
+                              child: Wrap(
+                                spacing: 8,
+                                runSpacing: 4,
+                                children: treatmentTypes.map((t) {
+                                  final isSelected =
+                                      selectedPatientTreatmentIds.value
+                                          .contains(t.id);
+                                  return FilterChip(
+                                    label: Text(t.name),
+                                    selected: isSelected,
+                                    onSelected: isSaving.value
+                                        ? null
+                                        : (selected) {
+                                            final current = [
+                                              ...selectedPatientTreatmentIds
+                                                  .value
+                                            ];
+                                            if (selected) {
+                                              current.add(t.id);
+                                            } else {
+                                              current.remove(t.id);
+                                            }
+                                            selectedPatientTreatmentIds.value =
+                                                current;
+                                          },
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                          if (selectedPatientTreatmentIds.value.isEmpty &&
+                              isTreatment.value)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 12, top: 4),
+                              child: Text(
+                                'Please select at least one treatment type',
+                                style: TextStyle(
+                                  color: theme.colorScheme.error,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          const SizedBox(height: 16),
+                        ],
+
+                        // Purpose (shown when General is selected)
+                        if (!isTreatment.value) ...[
                           FormBuilderTextField(
                             name: 'purpose',
                             decoration: const InputDecoration(
@@ -785,8 +851,8 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                                           formKey: formKey,
                                           selectedPatient:
                                               selectedPatient.value,
-                                          selectedPatientTreatmentId:
-                                              selectedPatientTreatmentId,
+                                          selectedPatientTreatmentIds:
+                                              selectedPatientTreatmentIds,
                                           sendReminder: sendReminder.value,
                                           isSaving: isSaving.value,
                                           replacePlaceholders:
@@ -842,7 +908,7 @@ class _ReminderMessageSection extends HookWidget {
     required this.templates,
     required this.formKey,
     required this.selectedPatient,
-    required this.selectedPatientTreatmentId,
+    required this.selectedPatientTreatmentIds,
     required this.sendReminder,
     required this.isSaving,
     required this.replacePlaceholders,
@@ -851,7 +917,7 @@ class _ReminderMessageSection extends HookWidget {
   final List<MessageTemplate> templates;
   final GlobalKey<FormBuilderState> formKey;
   final Patient? selectedPatient;
-  final ValueNotifier<String?> selectedPatientTreatmentId;
+  final ValueNotifier<List<String>> selectedPatientTreatmentIds;
   final bool sendReminder;
   final bool isSaving;
   final String Function(String, Patient?) replacePlaceholders;
@@ -867,11 +933,11 @@ class _ReminderMessageSection extends HookWidget {
     // Track if we've already applied the default template
     final hasAppliedDefault = useState(false);
 
-    // Track the previous treatment ID to detect changes
-    final previousTreatmentId = useState<String?>(null);
+    // Track the previous treatment IDs to detect changes
+    final previousTreatmentIds = useState<List<String>>([]);
 
     // Determine which category to use based on treatment selection
-    final category = selectedPatientTreatmentId.value != null
+    final category = selectedPatientTreatmentIds.value.isNotEmpty
         ? MessageTemplateCategories.appointmentWithTreatment
         : MessageTemplateCategories.appointment;
 
@@ -915,21 +981,22 @@ class _ReminderMessageSection extends HookWidget {
 
     // React to treatment selection changes
     useEffect(() {
-      // Only react if the treatment ID has actually changed and we've already applied a default
+      final currentIds = selectedPatientTreatmentIds.value;
+      // Only react if the treatment IDs have actually changed and we've already applied a default
       if (hasAppliedDefault.value &&
-          previousTreatmentId.value != selectedPatientTreatmentId.value &&
+          previousTreatmentIds.value.length != currentIds.length &&
           selectedPatient != null) {
-        previousTreatmentId.value = selectedPatientTreatmentId.value;
+        previousTreatmentIds.value = currentIds;
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
           applyTemplate(defaultTemplate, selectedPatient!);
         });
       } else if (!hasAppliedDefault.value) {
         // Track the initial value without triggering an update
-        previousTreatmentId.value = selectedPatientTreatmentId.value;
+        previousTreatmentIds.value = currentIds;
       }
       return null;
-    }, [selectedPatientTreatmentId.value, defaultTemplate]);
+    }, [selectedPatientTreatmentIds.value, defaultTemplate]);
 
     return Column(
       children: [
