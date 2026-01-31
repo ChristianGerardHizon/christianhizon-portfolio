@@ -33,6 +33,8 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
 
     // UI state
     final isSaving = useState(false);
+    final contentController =
+        useTextEditingController(text: template?.content);
 
     // Fixed category options
     const categories = [
@@ -98,27 +100,19 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
     }
 
     void insertPlaceholder(String placeholder) {
-      final field = formKey.currentState?.fields['content'];
-      if (field != null) {
-        final controller = (field.widget as FormBuilderTextField).controller;
-        if (controller != null) {
-          final text = controller.text;
-          final selection = controller.selection;
-          final newText = text.replaceRange(
-            selection.start,
-            selection.end,
-            placeholder,
-          );
-          controller.text = newText;
-          controller.selection = TextSelection.collapsed(
-            offset: selection.start + placeholder.length,
-          );
-        } else {
-          // Fallback: append to end
-          final currentValue = field.value as String? ?? '';
-          field.didChange('$currentValue$placeholder');
-        }
-      }
+      final text = contentController.text;
+      final selection = contentController.selection;
+      final baseOffset = selection.isValid ? selection.start : text.length;
+      final extentOffset = selection.isValid ? selection.end : text.length;
+      final newText = text.replaceRange(baseOffset, extentOffset, placeholder);
+      contentController.value = TextEditingValue(
+        text: newText,
+        selection: TextSelection.collapsed(
+          offset: baseOffset + placeholder.length,
+        ),
+      );
+      // Sync form field state
+      formKey.currentState?.fields['content']?.didChange(newText);
     }
 
     return DialogCloseHandler(
@@ -217,7 +211,7 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
                     // Content field
                     FormBuilderTextField(
                       name: 'content',
-                      initialValue: template?.content,
+                      controller: contentController,
                       decoration: const InputDecoration(
                         labelText: 'Message Content *',
                         hintText: 'Enter message with placeholders...',
