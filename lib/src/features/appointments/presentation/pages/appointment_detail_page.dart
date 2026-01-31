@@ -175,6 +175,16 @@ class _AppointmentDetailContent extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
+              // Treatment Types Section
+              if (appointment.hasTreatments) ...[
+                _SectionCard(
+                  title: 'Treatment Types',
+                  icon: Icons.medical_services_outlined,
+                  child: _TreatmentTypesSection(appointment: appointment),
+                ),
+                const SizedBox(height: 16),
+              ],
+
               // Notes Section (if any)
               if (appointment.notes?.isNotEmpty == true) ...[
                 _SectionCard(
@@ -750,14 +760,6 @@ class _AppointmentDetailsSection extends StatelessWidget {
             value: appointment.purpose!,
           ),
         ],
-        if (appointment.hasTreatments) ...[
-          const SizedBox(height: 8),
-          _DetailRow(
-            icon: Icons.medical_services_outlined,
-            label: 'Treatments',
-            value: appointment.treatmentNamesDisplay,
-          ),
-        ],
         if (appointment.hasTreatments && onAutoCreateRecordChanged != null) ...[
           const SizedBox(height: 12),
           Row(
@@ -779,6 +781,45 @@ class _AppointmentDetailsSection extends StatelessWidget {
                 onChanged: onAutoCreateRecordChanged,
               ),
             ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Treatment types section listing each treatment individually.
+class _TreatmentTypesSection extends StatelessWidget {
+  const _TreatmentTypesSection({required this.appointment});
+
+  final AppointmentSchedule appointment;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      children: [
+        for (int i = 0; i < appointment.patientTreatmentName.length; i++) ...[
+          if (i > 0) const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.vaccines_outlined,
+                  size: 18,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    appointment.patientTreatmentName[i],
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ],

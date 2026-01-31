@@ -15,6 +15,7 @@ import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../messages/domain/message.dart';
 import '../../../../messages/presentation/controllers/messages_controller.dart';
 import '../../../../patients/domain/patient.dart';
+import '../../../../patients/domain/patient_treatment.dart';
 import '../../../../patients/presentation/controllers/patient_treatments_controller.dart';
 import '../../../../patients/presentation/controllers/patients_controller.dart';
 import '../../../../settings/domain/message_template.dart';
@@ -485,45 +486,11 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                             loading: () => const LinearProgressIndicator(),
                             error: (_, __) =>
                                 const Text('Error loading treatment types'),
-                            data: (treatmentTypes) => InputDecorator(
-                              decoration: InputDecoration(
-                                labelText: 'Treatment Types *',
-                                border: const OutlineInputBorder(),
-                                prefixIcon:
-                                    const Icon(Icons.medical_services_outlined),
-                                errorText: selectedPatientTreatmentIds
-                                        .value.isEmpty
-                                    ? null
-                                    : null,
-                              ),
-                              child: Wrap(
-                                spacing: 8,
-                                runSpacing: 4,
-                                children: treatmentTypes.map((t) {
-                                  final isSelected =
-                                      selectedPatientTreatmentIds.value
-                                          .contains(t.id);
-                                  return FilterChip(
-                                    label: Text(t.name),
-                                    selected: isSelected,
-                                    onSelected: isSaving.value
-                                        ? null
-                                        : (selected) {
-                                            final current = [
-                                              ...selectedPatientTreatmentIds
-                                                  .value
-                                            ];
-                                            if (selected) {
-                                              current.add(t.id);
-                                            } else {
-                                              current.remove(t.id);
-                                            }
-                                            selectedPatientTreatmentIds.value =
-                                                current;
-                                          },
-                                  );
-                                }).toList(),
-                              ),
+                            data: (treatmentTypes) =>
+                                _TreatmentTypeSelector(
+                              treatmentTypes: treatmentTypes,
+                              selectedIds: selectedPatientTreatmentIds,
+                              enabled: !isSaving.value,
                             ),
                           ),
                           if (selectedPatientTreatmentIds.value.isEmpty &&
@@ -1050,6 +1017,107 @@ class _ReminderMessageSection extends HookWidget {
               : null,
         ),
       ],
+    );
+  }
+}
+
+/// Searchable treatment type selector with filter chips.
+class _TreatmentTypeSelector extends HookWidget {
+  const _TreatmentTypeSelector({
+    required this.treatmentTypes,
+    required this.selectedIds,
+    required this.enabled,
+  });
+
+  final List<PatientTreatment> treatmentTypes;
+  final ValueNotifier<List<String>> selectedIds;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    final searchQuery = useState('');
+    final searchController = useTextEditingController();
+
+    final filteredTypes = searchQuery.value.isEmpty
+        ? treatmentTypes
+        : treatmentTypes.where((t) {
+            return t.name.toLowerCase().contains(
+                  searchQuery.value.toLowerCase(),
+                );
+          }).toList();
+
+    return InputDecorator(
+      decoration: const InputDecoration(
+        labelText: 'Treatment Types *',
+        border: OutlineInputBorder(),
+        prefixIcon: Icon(Icons.medical_services_outlined),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (treatmentTypes.length > 5)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search treatments...',
+                  isDense: true,
+                  prefixIcon: const Icon(Icons.search, size: 20),
+                  suffixIcon: searchQuery.value.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear, size: 18),
+                          onPressed: () {
+                            searchController.clear();
+                            searchQuery.value = '';
+                          },
+                        )
+                      : null,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                ),
+                onChanged: (value) => searchQuery.value = value,
+              ),
+            ),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: filteredTypes.map((t) {
+              final isSelected = selectedIds.value.contains(t.id);
+              return FilterChip(
+                label: Text(t.name),
+                selected: isSelected,
+                onSelected: enabled
+                    ? (selected) {
+                        final current = [...selectedIds.value];
+                        if (selected) {
+                          current.add(t.id);
+                        } else {
+                          current.remove(t.id);
+                        }
+                        selectedIds.value = current;
+                      }
+                    : null,
+              );
+            }).toList(),
+          ),
+          if (filteredTypes.isEmpty && searchQuery.value.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                'No treatments matching "${searchQuery.value}"',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
