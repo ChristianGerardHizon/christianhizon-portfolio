@@ -68,6 +68,9 @@ class CreateAppointmentDialog extends HookConsumerWidget {
     );
     final reminderDateTime = useState<DateTime?>(null);
 
+    // Whether the form fields (below the patient selector) should be disabled
+    final noPatient = selectedPatient.value == null;
+
     // Watch patients for dropdown
     final patientsAsync = ref.watch(patientsControllerProvider);
 
@@ -124,6 +127,8 @@ class CreateAppointmentDialog extends HookConsumerWidget {
               .map((t) => t!.name)
               .toList();
           if (names.isNotEmpty) {
+            replaced = replaced.replaceAll(
+                '{treatmentNames}', names.join(' and '));
             replaced = replaced.replaceAll('{treatmentName}', names.join(', '));
           }
         }
@@ -288,7 +293,7 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                       ),
                     ),
                     FilledButton(
-                      onPressed: isSaving.value ? null : handleSave,
+                      onPressed: isSaving.value || noPatient ? null : handleSave,
                       child: isSaving.value
                           ? const SizedBox(
                               width: 20,
@@ -430,7 +435,7 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                           firstDate:
                               isRescheduleMode ? DateTime.now() : null,
                           validator: FormBuilderValidators.required(),
-                          enabled: !isSaving.value,
+                          enabled: !isSaving.value && !noPatient,
                           onChanged: (value) {
                             // When appointment date changes and reminder is enabled, update SMS date
                             if (sendReminder.value && value != null) {
@@ -452,7 +457,7 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                           child: SwitchListTile(
                             title: const Text('Include specific time'),
                             value: hasTime.value,
-                            onChanged: isSaving.value
+                            onChanged: isSaving.value || noPatient
                                 ? null
                                 : (value) => hasTime.value = value,
                             contentPadding: EdgeInsets.zero,
@@ -471,7 +476,7 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                             ),
                             inputType: InputType.time,
                             initialValue: DateTime.now(),
-                            enabled: !isSaving.value,
+                            enabled: !isSaving.value && !noPatient,
                           ),
                           const SizedBox(height: 16),
                         ],
@@ -492,7 +497,8 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                           ],
                           selected: {isTreatment.value},
                           onSelectionChanged: isSaving.value ||
-                                  isRescheduleMode
+                                  isRescheduleMode ||
+                                  noPatient
                               ? null
                               : (value) {
                                   isTreatment.value = value.first;
@@ -503,6 +509,23 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                                   } else {
                                     // Switching to checkup: clear treatments
                                     selectedPatientTreatmentIds.value = [];
+                                  }
+                                  // Re-apply default template for the new category
+                                  if (sendReminder.value) {
+                                    _applyDefaultTemplateAfterMount(
+                                      formKey: formKey,
+                                      templates:
+                                          templatesAsync.value ?? [],
+                                      isTreatment: value.first,
+                                      selectedPatientTreatmentIds:
+                                          value.first
+                                              ? selectedPatientTreatmentIds
+                                                  .value
+                                              : [],
+                                      patient: selectedPatient.value,
+                                      replacePlaceholders:
+                                          replacePlaceholders,
+                                    );
                                   }
                                 },
                         ),
@@ -541,7 +564,7 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                                   size: 16,
                                   color: theme.colorScheme.primary,
                                 ),
-                                enabled: !isSaving.value && !isRescheduleMode,
+                                enabled: !isSaving.value && !isRescheduleMode && !noPatient,
                                 suggestedItems: suggested,
                               );
                             },
@@ -573,7 +596,7 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                               hintText: 'e.g., Check-up, Vaccination, Surgery',
                             ),
                             initialValue: rescheduleFrom?.purpose,
-                            enabled: !isSaving.value && !isRescheduleMode,
+                            enabled: !isSaving.value && !isRescheduleMode && !noPatient,
                           ),
                           const SizedBox(height: 16),
                         ],
@@ -587,7 +610,7 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                           ),
                           initialValue: rescheduleFrom?.notes,
                           maxLines: 3,
-                          enabled: !isSaving.value && !isRescheduleMode,
+                          enabled: !isSaving.value && !isRescheduleMode && !noPatient,
                         ),
                         const SizedBox(height: 16),
 
@@ -612,10 +635,28 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                                     const Spacer(),
                                     Switch(
                                       value: sendReminder.value,
-                                      onChanged: isSaving.value
+                                      onChanged: isSaving.value || noPatient
                                           ? null
-                                          : (value) =>
-                                              sendReminder.value = value,
+                                          : (value) {
+                                              sendReminder.value = value;
+                                              if (value) {
+                                                _applyDefaultTemplateAfterMount(
+                                                  formKey: formKey,
+                                                  templates:
+                                                      templatesAsync.value ??
+                                                          [],
+                                                  isTreatment:
+                                                      isTreatment.value,
+                                                  selectedPatientTreatmentIds:
+                                                      selectedPatientTreatmentIds
+                                                          .value,
+                                                  patient:
+                                                      selectedPatient.value,
+                                                  replacePlaceholders:
+                                                      replacePlaceholders,
+                                                );
+                                              }
+                                            },
                                     ),
                                   ],
                                 ),
@@ -925,13 +966,42 @@ void showCreateAppointmentDialog(
   );
 }
 
-/// Widget for handling reminder message template selection and content.
+/// Finds the default template for the current category and applies it to the
+/// form fields after the reminder section mounts (one frame later).
 ///
-/// Automatically applies the appropriate default template based on
-/// whether a treatment is selected:
-/// - Without treatment: Uses "Appointment" category default template
-/// - With treatment: Uses "Appointment with Treatment" category default template
-class _ReminderMessageSection extends HookWidget {
+/// Called from the Send Reminder switch's onChanged when toggled on, and
+/// when the treatment selection changes while the reminder is enabled.
+void _applyDefaultTemplateAfterMount({
+  required GlobalKey<FormBuilderState> formKey,
+  required List<MessageTemplate> templates,
+  required bool isTreatment,
+  required List<String> selectedPatientTreatmentIds,
+  required Patient? patient,
+  required String Function(String, Patient?) replacePlaceholders,
+}) {
+  if (patient == null) return;
+
+  final category = selectedPatientTreatmentIds.isNotEmpty
+      ? MessageTemplateCategories.appointmentWithTreatment
+      : MessageTemplateCategories.appointment;
+
+  final firstTemplate = templates.firstWhereOrNull(
+    (t) => t.category == category,
+  );
+
+  if (firstTemplate == null) return;
+
+  final message = replacePlaceholders(firstTemplate.content, patient);
+
+  // Wait one frame for the _ReminderMessageSection fields to mount/register.
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    formKey.currentState?.fields['template']?.didChange(firstTemplate.id);
+    formKey.currentState?.fields['reminderMessage']?.didChange(message);
+  });
+}
+
+/// Widget for handling reminder message template selection and content.
+class _ReminderMessageSection extends StatelessWidget {
   const _ReminderMessageSection({
     required this.templates,
     required this.formKey,
@@ -950,28 +1020,16 @@ class _ReminderMessageSection extends HookWidget {
   final bool isSaving;
   final String Function(String, Patient?) replacePlaceholders;
 
-  /// Fallback message when no default template is found.
-  static String _getFallbackMessage(String patientName) {
-    return 'Hello! This is a reminder about your appointment tomorrow for $patientName '
-        'at San Jose Vet Clinic. Please contact us if you need to reschedule.';
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Track if we've already applied the default template
-    final hasAppliedDefault = useState(false);
-
-    // Track the previous treatment IDs to detect changes
-    final previousTreatmentIds = useState<List<String>>([]);
-
     // Determine which category to use based on treatment selection
     final category = selectedPatientTreatmentIds.value.isNotEmpty
         ? MessageTemplateCategories.appointmentWithTreatment
         : MessageTemplateCategories.appointment;
 
-    // Find default template for current category
+    // Find first template for current category
     final defaultTemplate = templates.firstWhereOrNull(
-      (t) => t.category == category && t.isDefault,
+      (t) => t.category == category,
     );
 
     // Filter templates to show only appointment-related categories
@@ -980,51 +1038,8 @@ class _ReminderMessageSection extends HookWidget {
                 t.category == MessageTemplateCategories.appointment ||
                 t.category ==
                     MessageTemplateCategories.appointmentWithTreatment ||
-                t.category ==
-                    'Appointment Reminders' // Legacy backward compatibility
-            )
+                t.category == MessageTemplateCategories.appointmentReminder)
         .toList();
-
-    // Helper function to apply a template to the message field
-    void applyTemplate(MessageTemplate? template, Patient patient) {
-      String message;
-      if (template != null) {
-        message = replacePlaceholders(template.content, patient);
-      } else {
-        message = _getFallbackMessage(patient.name);
-      }
-      formKey.currentState?.fields['reminderMessage']?.didChange(message);
-    }
-
-    // Apply default template on first build
-    useEffect(() {
-      if (!hasAppliedDefault.value && selectedPatient != null) {
-        hasAppliedDefault.value = true;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          applyTemplate(defaultTemplate, selectedPatient!);
-        });
-      }
-      return null;
-    }, [selectedPatient]);
-
-    // React to treatment selection changes
-    useEffect(() {
-      final currentIds = selectedPatientTreatmentIds.value;
-      // Only react if the treatment IDs have actually changed and we've already applied a default
-      if (hasAppliedDefault.value &&
-          previousTreatmentIds.value.length != currentIds.length &&
-          selectedPatient != null) {
-        previousTreatmentIds.value = currentIds;
-
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          applyTemplate(defaultTemplate, selectedPatient!);
-        });
-      } else if (!hasAppliedDefault.value) {
-        // Track the initial value without triggering an update
-        previousTreatmentIds.value = currentIds;
-      }
-      return null;
-    }, [selectedPatientTreatmentIds.value, defaultTemplate]);
 
     return Column(
       children: [

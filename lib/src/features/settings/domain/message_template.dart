@@ -15,7 +15,6 @@ class MessageTemplate with MessageTemplateMappable {
     required this.content,
     this.category,
     this.branch,
-    this.isDefault = false,
     this.isDeleted = false,
     this.created,
     this.updated,
@@ -41,9 +40,6 @@ class MessageTemplate with MessageTemplateMappable {
 
   /// FK to Branch.
   final String? branch;
-
-  /// Whether this is the default template for its category.
-  final bool isDefault;
 
   /// Soft delete flag.
   final bool isDeleted;
