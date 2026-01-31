@@ -1,0 +1,48 @@
+name: Auto Promote to Main
+
+on:
+  pull_request:
+    types: [closed]
+    branches: ["staging"]
+
+jobs:
+  promote:
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'promote-to-main')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Create PR from staging to main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Check if an open PR from staging to main already exists
+          EXISTING=$(gh pr list \
+            --repo "${{ github.repository }}" \
+            --head staging \
+            --base main \
+            --state open \
+            --json number \
+            --jq '.[0].number')
+
+          if [ -n "$EXISTING" ]; then
+            echo "PR #$EXISTING from staging to main already exists. Skipping."
+            exit 0
+          fi
+
+          gh pr create \
+            --repo "${{ github.repository }}" \
+            --head staging \
+            --base main \
+            --title "Release: promote staging to main" \
+            --body "$(cat <<'EOF'
+          ## Auto-promoted from staging
+
+          This PR was automatically created after merging PR #${{ github.event.pull_request.number }} into staging.
+
+          **Source PR:** ${{ github.event.pull_request.title }}
+
+          Please review and merge to trigger production deployment.
+          EOF
+          )"
