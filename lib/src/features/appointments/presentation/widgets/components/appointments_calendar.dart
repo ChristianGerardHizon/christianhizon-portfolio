@@ -314,33 +314,36 @@ class AppointmentsCalendar extends HookConsumerWidget {
             const Text(
               'Would you like to create a treatment record for this appointment?',
             ),
-            if (appointment.patientTreatmentName != null) ...[
+            if (appointment.hasTreatments) ...[
               const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Theme.of(dialogContext).colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.medical_services_outlined,
-                      size: 20,
-                      color: Theme.of(dialogContext).colorScheme.primary,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        appointment.patientTreatmentName!,
-                        style: Theme.of(dialogContext).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
+              ...appointment.patientTreatmentName.map((name) => Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(dialogContext).colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.medical_services_outlined,
+                        size: 20,
+                        color: Theme.of(dialogContext).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          name,
+                          style: Theme.of(dialogContext).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+              )),
             ],
           ],
         ),
@@ -396,7 +399,7 @@ class AppointmentsCalendar extends HookConsumerWidget {
         diagnosis: appointment.purpose ?? '',
         weight: '',
         temperature: '',
-        treatment: appointment.patientTreatmentName,
+        treatment: appointment.hasTreatments ? appointment.treatmentNamesDisplay : null,
         notes: appointment.notes,
         appointment: appointment.id,
       );
