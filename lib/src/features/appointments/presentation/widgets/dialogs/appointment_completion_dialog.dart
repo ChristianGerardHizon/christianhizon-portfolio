@@ -2,35 +2,24 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/appointment_schedule.dart';
 
-/// Result of the appointment completion dialog.
-enum CompletionDialogResult {
-  /// User cancelled the dialog.
-  cancel,
-
-  /// User chose to complete the appointment without creating a record.
-  completeOnly,
-
-  /// User chose to create a treatment record for the appointment.
-  createRecord,
-}
-
-/// Shows a dialog asking the user how they want to complete an appointment.
+/// Shows a confirmation dialog for completing an appointment.
 ///
-/// Returns [CompletionDialogResult.cancel] if the user cancels,
-/// [CompletionDialogResult.completeOnly] if they just want to mark it complete,
-/// or [CompletionDialogResult.createRecord] if they want to create a treatment record.
-Future<CompletionDialogResult> showAppointmentCompletionDialog(
+/// Informs the user whether treatment records will be auto-created based on
+/// the appointment's [autoCreateRecord] setting and whether it has treatments.
+///
+/// Returns `true` if the user confirms, `false` if cancelled.
+Future<bool> showAppointmentCompletionDialog(
   BuildContext context,
   AppointmentSchedule appointment,
 ) async {
-  final result = await showDialog<CompletionDialogResult>(
+  final result = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => _AppointmentCompletionDialog(
       appointment: appointment,
     ),
   );
 
-  return result ?? CompletionDialogResult.cancel;
+  return result ?? false;
 }
 
 class _AppointmentCompletionDialog extends StatelessWidget {
@@ -42,37 +31,104 @@ class _AppointmentCompletionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final willCreateRecords =
+        appointment.autoCreateRecord && appointment.hasTreatments;
+
     return AlertDialog(
       title: const Text('Complete Appointment'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Would you like to create a treatment record for this appointment?',
-          ),
-          if (appointment.patientTreatmentName != null) ...[
-            const SizedBox(height: 12),
+          const Text('Are you sure you want to complete this appointment?'),
+          const SizedBox(height: 12),
+          if (willCreateRecords) ...[
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                color: Theme.of(context).colorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
                 children: [
                   Icon(
-                    Icons.medical_services_outlined,
+                    Icons.auto_fix_high,
                     size: 20,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      appointment.patientTreatmentName!,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w500,
+                      'Treatment records will be created automatically.',
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (appointment.patientTreatmentName.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              ...appointment.patientTreatmentName.map((name) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.medical_services_outlined,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )),
+            ],
+          ] else ...[
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'No treatment records will be generated.',
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
                 ],
@@ -83,19 +139,12 @@ class _AppointmentCompletionDialog extends StatelessWidget {
       ),
       actions: [
         TextButton(
-          onPressed: () =>
-              Navigator.pop(context, CompletionDialogResult.cancel),
+          onPressed: () => Navigator.pop(context, false),
           child: const Text('Cancel'),
         ),
-        OutlinedButton(
-          onPressed: () =>
-              Navigator.pop(context, CompletionDialogResult.completeOnly),
-          child: const Text('Complete Only'),
-        ),
         FilledButton(
-          onPressed: () =>
-              Navigator.pop(context, CompletionDialogResult.createRecord),
-          child: const Text('Create Record'),
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Complete'),
         ),
       ],
     );

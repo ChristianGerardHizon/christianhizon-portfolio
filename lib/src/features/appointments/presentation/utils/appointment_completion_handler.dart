@@ -3,7 +3,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../patients/domain/patient_record.dart';
+import '../../../patients/domain/patient_treatment_record.dart';
 import '../../../patients/presentation/controllers/patient_records_controller.dart';
+import '../../../patients/presentation/controllers/patient_treatment_records_controller.dart';
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
@@ -16,10 +19,10 @@ import '../widgets/dialogs/appointment_completion_dialog.dart';
 class AppointmentCompletionHandler {
   const AppointmentCompletionHandler._();
 
-  /// Shows the completion dialog and handles the user's choice.
+  /// Shows the completion confirmation dialog and handles the completion.
   ///
-  /// This is the main entry point for completing an appointment.
-  /// It shows the dialog, then processes the user's choice accordingly.
+  /// The dialog informs the user whether treatment records will be auto-created
+  /// based on the appointment's [autoCreateRecord] setting.
   ///
   /// [context] - The build context for showing dialogs and snackbars.
   /// [ref] - The Riverpod ref for reading providers.
@@ -31,19 +34,20 @@ class AppointmentCompletionHandler {
     required AppointmentSchedule appointment,
     VoidCallback? onComplete,
   }) async {
-    final result = await showAppointmentCompletionDialog(context, appointment);
+    final confirmed = await showAppointmentCompletionDialog(context, appointment);
 
-    if (result == CompletionDialogResult.cancel) {
-      return;
-    }
+    if (!confirmed) return;
 
     if (!context.mounted) return;
+
+    final createRecord =
+        appointment.autoCreateRecord && appointment.hasTreatments;
 
     await completeAppointment(
       context: context,
       ref: ref,
       appointment: appointment,
-      createRecord: result == CompletionDialogResult.createRecord,
+      createRecord: createRecord,
       onComplete: onComplete,
     );
   }
@@ -80,6 +84,11 @@ class AppointmentCompletionHandler {
 
     // Create treatment record if requested
     if (createRecord && appointment.patient != null) {
+      // Use appointment's branch or fall back to current branch
+      final branch =
+          appointment.branch ?? ref.read(currentBranchIdProvider);
+
+      // Create the patient visit record
       final patientRecord = PatientRecord(
         id: '', // Will be assigned by PocketBase
         patientId: appointment.patient!,
@@ -87,14 +96,38 @@ class AppointmentCompletionHandler {
         diagnosis: appointment.purpose ?? '',
         weight: '',
         temperature: '',
-        treatment: appointment.patientTreatmentName,
+        treatment: appointment.hasTreatments
+            ? appointment.treatmentNamesDisplay
+            : null,
         notes: appointment.notes,
         appointment: appointment.id,
+        branch: branch,
       );
 
       final createdRecord = await ref
           .read(patientRecordsControllerProvider(appointment.patient!).notifier)
           .createRecordAndReturn(patientRecord);
+
+      // Create individual treatment records for each treatment type
+      var treatmentRecordsCreated = 0;
+      if (appointment.hasTreatments) {
+        for (final treatmentId in appointment.patientTreatment) {
+          final treatmentRecord = PatientTreatmentRecord(
+            id: '',
+            treatmentId: treatmentId,
+            patientId: appointment.patient!,
+            date: DateTime.now(),
+            notes: appointment.notes,
+            appointment: appointment.id,
+          );
+          final created = await ref
+              .read(patientTreatmentRecordsControllerProvider(
+                      appointment.patient!)
+                  .notifier)
+              .createTreatmentRecordAndReturn(treatmentRecord);
+          if (created != null) treatmentRecordsCreated++;
+        }
+      }
 
       if (createdRecord != null) {
         // Link the record to the appointment
@@ -111,9 +144,13 @@ class AppointmentCompletionHandler {
 
       if (context.mounted) {
         if (createdRecord != null) {
+          final treatmentMsg = treatmentRecordsCreated > 0
+              ? ' and $treatmentRecordsCreated treatment record${treatmentRecordsCreated > 1 ? 's' : ''} created'
+              : '';
           showSuccessSnackBar(
             context,
-            message: 'Appointment completed and treatment record created',
+            message:
+                'Appointment completed, visit record$treatmentMsg created',
           );
         } else {
           showWarningSnackBar(

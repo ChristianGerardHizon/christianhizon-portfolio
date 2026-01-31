@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/constants/constants.dart';
 import '../../../../core/foundation/failure.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../data/repositories/message_template_repository.dart';
@@ -111,7 +112,10 @@ class _TemplateDetailContent extends ConsumerWidget {
                 // Category chip
                 if (template.category != null) ...[
                   Chip(
-                    label: Text(template.category!),
+                    label: Text(
+                      MessageTemplateCategories.labels[template.category] ??
+                          template.category!,
+                    ),
                     backgroundColor: theme.colorScheme.primaryContainer,
                     labelStyle: TextStyle(
                       color: theme.colorScheme.onPrimaryContainer,
@@ -119,23 +123,9 @@ class _TemplateDetailContent extends ConsumerWidget {
                   ),
                   const SizedBox(width: 8),
                 ],
-                // Default badge
-                if (template.isDefault)
-                  Chip(
-                    label: const Text('Default'),
-                    avatar: Icon(
-                      Icons.star,
-                      size: 16,
-                      color: theme.colorScheme.onSecondaryContainer,
-                    ),
-                    backgroundColor: theme.colorScheme.secondaryContainer,
-                    labelStyle: TextStyle(
-                      color: theme.colorScheme.onSecondaryContainer,
-                    ),
-                  ),
               ],
             ),
-            if (template.category != null || template.isDefault)
+            if (template.category != null)
               const SizedBox(height: 16),
 
             // Content

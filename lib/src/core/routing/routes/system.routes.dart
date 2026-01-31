@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../constants/constants.dart';
 import '../../../features/products/domain/product_category.dart';
 import '../../../features/settings/domain/message_template.dart';
 import '../../../features/settings/presentation/controllers/message_templates_controller.dart';
@@ -731,39 +732,45 @@ class _MobileMessageTemplatesListPage extends ConsumerWidget {
               .groupedByCategory;
           final categories = grouped.keys.toList()..sort();
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(8),
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              final category = categories[index];
-              final categoryTemplates = grouped[category]!;
+          return RefreshIndicator(
+            onRefresh: () => ref
+                .read(messageTemplatesControllerProvider.notifier)
+                .refresh(),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                final category = categories[index];
+                final categoryTemplates = grouped[category]!;
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (index > 0) const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    child: Text(
-                      category,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w600,
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (index > 0) const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      child: Text(
+                        MessageTemplateCategories.labels[category] ??
+                            category,
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-                  ...categoryTemplates.map((template) =>
-                      _MobileTemplateListTile(
-                        template: template,
-                        onTap: () => MessageTemplateDetailRoute(id: template.id)
-                            .push(context),
-                      )),
-                ],
-              );
-            },
+                    ...categoryTemplates.map((template) =>
+                        _MobileTemplateListTile(
+                          template: template,
+                          onTap: () => MessageTemplateDetailRoute(id: template.id)
+                              .push(context),
+                        )),
+                  ],
+                );
+              },
+            ),
           );
         },
       ),

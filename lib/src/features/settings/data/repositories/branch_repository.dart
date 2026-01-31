@@ -94,7 +94,9 @@ class BranchRepositoryImpl implements BranchRepository {
           'name': branch.name,
           'displayName': branch.displayName,
           'address': branch.address,
-          'contact': branch.contactNumber,
+          'contactNumber': branch.contactNumber,
+          'operatingHours': branch.operatingHours,
+          'cutOffTime': branch.cutOffTime,
           'isDeleted': false,
         };
 
@@ -121,7 +123,9 @@ class BranchRepositoryImpl implements BranchRepository {
           'name': branch.name,
           'displayName': branch.displayName,
           'address': branch.address,
-          'contact': branch.contactNumber,
+          'contactNumber': branch.contactNumber,
+          'operatingHours': branch.operatingHours,
+          'cutOffTime': branch.cutOffTime,
         };
 
         final record = await _collection.update(branch.id, body: body);

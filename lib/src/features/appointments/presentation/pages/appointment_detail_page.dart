@@ -8,12 +8,11 @@ import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../../messages/domain/message.dart';
 import '../../../messages/presentation/controllers/messages_controller.dart';
-import '../../../patients/presentation/widgets/dialogs/add_record_dialog.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
 import '../utils/appointment_completion_handler.dart';
-import '../widgets/components/linked_items_section.dart';
+import '../utils/appointment_reschedule_handler.dart';
 import '../widgets/dialogs/edit_appointment_dialog.dart';
 
 /// Comprehensive appointment detail page.
@@ -165,9 +164,27 @@ class _AppointmentDetailContent extends HookConsumerWidget {
               _SectionCard(
                 title: 'Appointment Details',
                 icon: Icons.calendar_today,
-                child: _AppointmentDetailsSection(appointment: appointment),
+                child: _AppointmentDetailsSection(
+                  appointment: appointment,
+                  onAutoCreateRecordChanged: appointment.hasTreatments &&
+                          appointment.status ==
+                              AppointmentScheduleStatus.scheduled
+                      ? (value) => _toggleAutoCreateRecord(
+                          context, ref, value)
+                      : null,
+                ),
               ),
               const SizedBox(height: 16),
+
+              // Treatment Types Section
+              if (appointment.hasTreatments) ...[
+                _SectionCard(
+                  title: 'Treatment Types',
+                  icon: Icons.medical_services_outlined,
+                  child: _TreatmentTypesSection(appointment: appointment),
+                ),
+                const SizedBox(height: 16),
+              ],
 
               // Notes Section (if any)
               if (appointment.notes?.isNotEmpty == true) ...[
@@ -187,43 +204,6 @@ class _AppointmentDetailContent extends HookConsumerWidget {
                 messagesAsync: reminderMessagesAsync,
               ),
 
-              // Linked Items Section
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: LinkedItemsSection(
-                    patientRecords: appointment.patientRecordsExpanded,
-                    showActions: true,
-                    onAddRecordPressed: () {
-                      // Show dialog to add a new patient record and link it to this appointment
-                      showAddRecordDialog(
-                        context,
-                        patientId: appointment.patient!,
-                        appointmentId: appointment.id,
-                        onSave: (record) async {
-                          // Record is already created by the dialog; just link its ID
-                          final updatedIds = <String>[
-                            ...appointment.patientRecords,
-                            record.id
-                          ];
-                          final updatedAppointment = appointment.copyWith(
-                            patientRecords: updatedIds,
-                          );
-                          final success = await ref
-                              .read(paginatedAppointmentsControllerProvider
-                                  .notifier)
-                              .updateAppointment(updatedAppointment);
-                          if (success) {
-                            ref.invalidate(
-                                appointmentProvider(appointment.id));
-                          }
-                          return record;
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
               const SizedBox(height: 24),
 
               // Quick Actions
@@ -243,6 +223,49 @@ class _AppointmentDetailContent extends HookConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _toggleAutoCreateRecord(
+      BuildContext context, WidgetRef ref, bool value) {
+    if (!value) {
+      // Turning off: show confirmation
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Disable Auto-Create Records'),
+          content: const Text(
+            'Treatment records will not be generated when this appointment is completed. You can re-enable this at any time.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                await _saveAutoCreateRecord(ref, false);
+              },
+              child: const Text('Disable'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // Turning on: apply immediately
+      _saveAutoCreateRecord(ref, true);
+    }
+  }
+
+  Future<void> _saveAutoCreateRecord(WidgetRef ref, bool value) async {
+    final updated = appointment.copyWith(autoCreateRecord: value);
+    final success = await ref
+        .read(paginatedAppointmentsControllerProvider.notifier)
+        .updateAppointment(updated);
+    if (success) {
+      ref.invalidate(appointmentsControllerProvider);
+      ref.invalidate(appointmentProvider(appointment.id));
+    }
   }
 
   void _showEditSheet(BuildContext context, WidgetRef ref) {
@@ -315,6 +338,16 @@ class _AppointmentDetailContent extends HookConsumerWidget {
     // Special handling for completing an appointment
     if (status == AppointmentScheduleStatus.completed) {
       AppointmentCompletionHandler.showCompletionFlowAndComplete(
+        context: context,
+        ref: ref,
+        appointment: appointment,
+      );
+      return;
+    }
+
+    // Special handling for missed appointment with reschedule option
+    if (status == AppointmentScheduleStatus.missed) {
+      AppointmentRescheduleHandler.showRescheduleFlowAndMarkMissed(
         context: context,
         ref: ref,
         appointment: appointment,
@@ -694,9 +727,13 @@ class _PatientInfoSection extends StatelessWidget {
 
 /// Appointment details section.
 class _AppointmentDetailsSection extends StatelessWidget {
-  const _AppointmentDetailsSection({required this.appointment});
+  const _AppointmentDetailsSection({
+    required this.appointment,
+    this.onAutoCreateRecordChanged,
+  });
 
   final AppointmentSchedule appointment;
+  final ValueChanged<bool>? onAutoCreateRecordChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -718,6 +755,14 @@ class _AppointmentDetailsSection extends StatelessWidget {
               ? timeFormat.format(appointment.date)
               : 'All day',
         ),
+        const SizedBox(height: 8),
+        _DetailRow(
+          icon: appointment.hasTreatments
+              ? Icons.medical_services_outlined
+              : Icons.description_outlined,
+          label: 'Type',
+          value: appointment.hasTreatments ? 'Treatment' : 'General',
+        ),
         if (appointment.purpose?.isNotEmpty == true) ...[
           const SizedBox(height: 8),
           _DetailRow(
@@ -726,12 +771,66 @@ class _AppointmentDetailsSection extends StatelessWidget {
             value: appointment.purpose!,
           ),
         ],
-        if (appointment.patientTreatmentName?.isNotEmpty == true) ...[
-          const SizedBox(height: 8),
-          _DetailRow(
-            icon: Icons.medical_services_outlined,
-            label: 'Treatment',
-            value: appointment.patientTreatmentName!,
+        if (appointment.hasTreatments && onAutoCreateRecordChanged != null) ...[
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Icon(
+                Icons.auto_fix_high,
+                size: 16,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Auto-create treatment records',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+              Switch(
+                value: appointment.autoCreateRecord,
+                onChanged: onAutoCreateRecordChanged,
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Treatment types section listing each treatment individually.
+class _TreatmentTypesSection extends StatelessWidget {
+  const _TreatmentTypesSection({required this.appointment});
+
+  final AppointmentSchedule appointment;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      children: [
+        for (int i = 0; i < appointment.patientTreatmentName.length; i++) ...[
+          if (i > 0) const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.vaccines_outlined,
+                  size: 18,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    appointment.patientTreatmentName[i],
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ],

@@ -15,7 +15,6 @@ class MessageTemplate with MessageTemplateMappable {
     required this.content,
     this.category,
     this.branch,
-    this.isDefault = false,
     this.isDeleted = false,
     this.created,
     this.updated,
@@ -31,7 +30,7 @@ class MessageTemplate with MessageTemplateMappable {
   ///
   /// Supported placeholders:
   /// Patient: {patientName}, {patientPhone}, {ownerName}, {species}, {breed}, {email}, {address}, {patientPronoun}, {patientPronounObject}, {patientPronounPossessive}
-  /// Branch: {branchName}, {branchAddress}, {branchPhone}
+  /// Branch: {branchName}, {branchAddress}, {branchPhone}, {branchOperatingHours}, {branchCutOffTime}
   /// Appointment: {appointmentDate}, {appointmentTime}, {appointmentDay}, {appointmentMonth}, {appointmentYear}, {appointmentHour}, {appointmentMinutes}, {appointmentAmPm}
   /// Treatment: {treatmentName}
   final String content;
@@ -41,9 +40,6 @@ class MessageTemplate with MessageTemplateMappable {
 
   /// FK to Branch.
   final String? branch;
-
-  /// Whether this is the default template for its category.
-  final bool isDefault;
 
   /// Soft delete flag.
   final bool isDeleted;
@@ -71,6 +67,8 @@ class MessageTemplate with MessageTemplateMappable {
     '{branchName}',
     '{branchAddress}',
     '{branchPhone}',
+    '{branchOperatingHours}',
+    '{branchCutOffTime}',
     // Appointment data
     '{appointmentDate}',
     '{appointmentTime}',
@@ -95,7 +93,9 @@ class MessageTemplate with MessageTemplateMappable {
   bool get usesBranchData {
     return content.contains('{branchName}') ||
         content.contains('{branchAddress}') ||
-        content.contains('{branchPhone}');
+        content.contains('{branchPhone}') ||
+        content.contains('{branchOperatingHours}') ||
+        content.contains('{branchCutOffTime}');
   }
 
   /// Returns true if this template uses any appointment placeholders.

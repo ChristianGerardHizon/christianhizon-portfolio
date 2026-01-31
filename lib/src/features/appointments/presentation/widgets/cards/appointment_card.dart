@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/appointment_schedule.dart';
 import '../components/appointment_status_chip.dart';
-import '../components/linked_items_section.dart';
-
 /// Card widget displaying an appointment with actions.
 class AppointmentCard extends StatelessWidget {
   const AppointmentCard({
@@ -53,13 +51,6 @@ class AppointmentCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Linked items indicator
-                  if (appointment.hasLinkedItems) ...[
-                    LinkedItemsIndicator(
-                      recordCount: appointment.patientRecords.length,
-                    ),
-                    const SizedBox(width: 8),
-                  ],
                   AppointmentStatusChip(status: appointment.status),
                   if (onEdit != null || onDelete != null || onStatusChange != null)
                     _buildPopupMenu(context),
@@ -108,6 +99,28 @@ class AppointmentCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
+              ],
+
+              // Treatment names
+              if (appointment.hasTreatments) ...[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.medical_services_outlined,
+                      size: 16,
+                      color: theme.colorScheme.outline,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        appointment.treatmentNamesDisplay,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
               ],
 
               // Purpose

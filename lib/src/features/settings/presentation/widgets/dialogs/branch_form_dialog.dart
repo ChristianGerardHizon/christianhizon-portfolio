@@ -39,6 +39,8 @@ class BranchFormDialog extends HookConsumerWidget {
               'displayName': branch!.displayName ?? '',
               'address': branch!.address,
               'contactNumber': branch!.contactNumber,
+              'operatingHours': branch!.operatingHours ?? '',
+              'cutOffTime': branch!.cutOffTime ?? '',
             }
           : null,
     );
@@ -69,6 +71,8 @@ class BranchFormDialog extends HookConsumerWidget {
         address: (values['address'] as String).trim(),
         contactNumber: (values['contactNumber'] as String).trim(),
         displayName: _nullIfEmpty(values['displayName'] as String?),
+        operatingHours: _nullIfEmpty(values['operatingHours'] as String?),
+        cutOffTime: _nullIfEmpty(values['cutOffTime'] as String?),
       );
 
       bool success;
@@ -244,6 +248,36 @@ class BranchFormDialog extends HookConsumerWidget {
                           validator: FormBuilderValidators.required(
                             errorText: 'Contact number is required',
                           ),
+                          textInputAction: TextInputAction.next,
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Operating hours field
+                        FormBuilderTextField(
+                          name: 'operatingHours',
+                          initialValue: branch?.operatingHours,
+                          decoration: const InputDecoration(
+                            labelText: 'Operating Hours',
+                            hintText: 'e.g., Mon-Sat 8:00 AM - 5:00 PM',
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.schedule),
+                          ),
+                          enabled: !isSaving.value,
+                          textInputAction: TextInputAction.next,
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Cut-off time field
+                        FormBuilderTextField(
+                          name: 'cutOffTime',
+                          initialValue: branch?.cutOffTime,
+                          decoration: const InputDecoration(
+                            labelText: 'Cut-off Time',
+                            hintText: 'e.g., 4:30 PM',
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.timer_off),
+                          ),
+                          enabled: !isSaving.value,
                           textInputAction: TextInputAction.done,
                         ),
                         const SizedBox(height: 24),
@@ -264,6 +298,8 @@ class BranchFormDialog extends HookConsumerWidget {
     'displayName': 'Display Name',
     'address': 'Address',
     'contactNumber': 'Contact Number',
+    'operatingHours': 'Operating Hours',
+    'cutOffTime': 'Cut-off Time',
   };
 
   String? _nullIfEmpty(String? value) {

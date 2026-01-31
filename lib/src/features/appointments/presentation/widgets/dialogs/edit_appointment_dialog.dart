@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -7,18 +8,19 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/hooks/use_form_dirty_guard.dart';
+import '../../../../../core/widgets/form/chip_autocomplete_field.dart';
 import '../../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../patients/domain/patient.dart';
+import '../../../../patients/domain/patient_treatment.dart';
+import '../../../../patients/presentation/controllers/patient_treatments_controller.dart';
+import '../../../../patients/presentation/controllers/top_treatment_types_provider.dart';
+import '../../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../../../settings/presentation/controllers/message_templates_controller.dart';
 import '../../../../messages/domain/message.dart';
 import '../../../../messages/presentation/controllers/messages_controller.dart';
-import '../../../../patients/domain/patient_record.dart';
-import '../../../../patients/presentation/controllers/patient_records_controller.dart';
-import '../../../../patients/presentation/widgets/dialogs/add_record_dialog.dart';
 import '../../../domain/appointment_schedule.dart';
-import '../components/linked_items_section.dart';
 
 /// Dialog for editing an existing appointment.
 class EditAppointmentDialog extends HookConsumerWidget {
@@ -47,7 +49,16 @@ class EditAppointmentDialog extends HookConsumerWidget {
     );
     final isSaving = useState(false);
     final hasTime = useState(appointment.hasTime);
+    final isTreatment = useState(appointment.patientTreatment.isNotEmpty);
+    final selectedPatientTreatmentIds =
+        useState<List<String>>(appointment.patientTreatment);
     final sendReminder = useState(false);
+
+    // Watch treatment types for dropdown
+    final treatmentTypesAsync = ref.watch(patientTreatmentsControllerProvider);
+
+    // Watch top treatment type IDs for suggestions
+    final topTreatmentIds = ref.watch(topTreatmentTypeIdsProvider).value ?? [];
 
     // Check if appointment is in the future
     final isFutureAppointment = appointment.date.isAfter(DateTime.now());
@@ -58,6 +69,9 @@ class EditAppointmentDialog extends HookConsumerWidget {
 
     // Watch templates for dropdown
     final templatesAsync = ref.watch(messageTemplatesControllerProvider);
+
+    // Watch current branch for placeholder replacement
+    final currentBranch = ref.watch(currentBranchControllerProvider).value;
 
     String replacePlaceholders(String content, Patient? patient) {
       if (content.isEmpty) return content;
@@ -94,22 +108,34 @@ class EditAppointmentDialog extends HookConsumerWidget {
       }
 
       // Replace treatment data
-      if (appointment.patientTreatmentName != null &&
-          appointment.patientTreatmentName!.isNotEmpty) {
+      if (appointment.patientTreatmentName.isNotEmpty) {
+        final names = appointment.patientTreatmentName;
+        final formatted = switch (names.length) {
+          1 => names.first,
+          2 => '${names[0]} and ${names[1]}',
+          _ =>
+            '${names.sublist(0, names.length - 1).join(', ')} and ${names.last}',
+        };
+        replaced = replaced.replaceAll('{treatmentNames}', formatted);
+        replaced = replaced.replaceAll('{treatmentName}', formatted);
+      }
+
+      // Replace branch data
+      if (currentBranch != null) {
         replaced = replaced.replaceAll(
-            '{treatmentName}', appointment.patientTreatmentName!);
+            '{branchName}', currentBranch.displayName ?? currentBranch.name);
+        replaced =
+            replaced.replaceAll('{branchAddress}', currentBranch.address);
+        replaced = replaced.replaceAll(
+            '{branchPhone}', currentBranch.contactNumber);
+        replaced = replaced.replaceAll(
+            '{branchOperatingHours}', currentBranch.operatingHours ?? '');
+        replaced = replaced.replaceAll(
+            '{branchCutOffTime}', currentBranch.cutOffTime ?? '');
       }
 
       return replaced;
     }
-
-    // Linked records (initialized from appointment)
-    final linkedRecordIds = useState<List<String>>(appointment.patientRecords);
-
-    // Expanded records for display (tracks newly created items)
-    final linkedRecordsExpanded = useState<List<PatientRecord>>(
-      appointment.patientRecordsExpanded,
-    );
 
     Future<void> handleSave() async {
       if (!formKey.currentState!.saveAndValidate()) return;
@@ -135,17 +161,43 @@ class EditAppointmentDialog extends HookConsumerWidget {
         finalDate = DateTime(date.year, date.month, date.day);
       }
 
+      // Resolve treatment names from the list if treatments are selected
+      var patientTreatmentNames = <String>[];
+      if (isTreatment.value && selectedPatientTreatmentIds.value.isNotEmpty) {
+        final treatmentTypes = treatmentTypesAsync.value;
+        if (treatmentTypes != null) {
+          patientTreatmentNames = selectedPatientTreatmentIds.value
+              .map((id) => treatmentTypes.firstWhereOrNull((t) => t.id == id))
+              .where((t) => t != null)
+              .map((t) => t!.name)
+              .toList();
+        }
+      }
+
+      // Determine autoCreateRecord:
+      // - If type changed from the original, set based on new type
+      // - Otherwise preserve the existing value
+      final originalWasTreatment = appointment.patientTreatment.isNotEmpty;
+      final bool autoCreateRecord;
+      if (isTreatment.value != originalWasTreatment) {
+        autoCreateRecord = isTreatment.value;
+      } else {
+        autoCreateRecord = appointment.autoCreateRecord;
+      }
+
       final updated = AppointmentSchedule(
         id: appointment.id,
         date: finalDate,
         hasTime: hasTime.value,
-        purpose: values['purpose'] as String?,
+        purpose: isTreatment.value ? null : values['purpose'] as String?,
         notes: values['notes'] as String?,
         status: appointment.status,
         patient: appointment.patient,
-        patientTreatment: appointment.patientTreatment,
-        patientTreatmentName: appointment.patientTreatmentName,
-        patientRecords: linkedRecordIds.value,
+        patientTreatment:
+            isTreatment.value ? selectedPatientTreatmentIds.value : const [],
+        patientTreatmentName:
+            isTreatment.value ? patientTreatmentNames : const [],
+        patientRecords: appointment.patientRecords,
         branch: appointment.branch,
         patientName: appointment.patientName,
         ownerName: appointment.ownerName,
@@ -155,6 +207,7 @@ class EditAppointmentDialog extends HookConsumerWidget {
         patientRecordsExpanded: appointment.patientRecordsExpanded,
         created: appointment.created,
         updated: appointment.updated,
+        autoCreateRecord: autoCreateRecord,
       );
 
       final success = await onSave(updated);
@@ -337,19 +390,93 @@ class EditAppointmentDialog extends HookConsumerWidget {
                         const SizedBox(height: 16),
                       ],
 
-                      // Purpose
-                      FormBuilderTextField(
-                        name: 'purpose',
-                        decoration: const InputDecoration(
-                          labelText: 'Purpose',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.description_outlined),
-                          hintText: 'e.g., Check-up, Vaccination, Surgery',
-                        ),
-                        initialValue: appointment.purpose,
-                        enabled: !isSaving.value,
+                      // Appointment Type Toggle
+                      SegmentedButton<bool>(
+                        segments: const [
+                          ButtonSegment<bool>(
+                            value: false,
+                            label: Text('General'),
+                            icon: Icon(Icons.description_outlined),
+                          ),
+                          ButtonSegment<bool>(
+                            value: true,
+                            label: Text('Treatment'),
+                            icon: Icon(Icons.medical_services_outlined),
+                          ),
+                        ],
+                        selected: {isTreatment.value},
+                        onSelectionChanged: isSaving.value
+                            ? null
+                            : (value) {
+                                isTreatment.value = value.first;
+                                if (value.first) {
+                                  // Switching to treatment: clear purpose
+                                  formKey.currentState?.fields['purpose']
+                                      ?.didChange(null);
+                                } else {
+                                  // Switching to checkup: clear treatments
+                                  selectedPatientTreatmentIds.value = [];
+                                }
+                              },
                       ),
                       const SizedBox(height: 16),
+
+                      // Treatment Types (shown when Treatment is selected)
+                      if (isTreatment.value) ...[
+                        treatmentTypesAsync.when(
+                          loading: () => const LinearProgressIndicator(),
+                          error: (_, __) =>
+                              const Text('Error loading treatment types'),
+                          data: (treatmentTypes) {
+                            final selected = treatmentTypes
+                                .where((t) => selectedPatientTreatmentIds
+                                    .value
+                                    .contains(t.id))
+                                .toList();
+                            final suggested = topTreatmentIds
+                                .map((id) => treatmentTypes
+                                    .firstWhereOrNull((t) => t.id == id))
+                                .whereType<PatientTreatment>()
+                                .toList();
+                            return ChipAutocompleteField<PatientTreatment>(
+                              selectedItems: selected,
+                              onChanged: (items) {
+                                selectedPatientTreatmentIds.value =
+                                    items.map((t) => t.id).toList();
+                              },
+                              allItems: treatmentTypes,
+                              labelBuilder: (t) => t.name,
+                              filterCallback: (t, query) => t.name
+                                  .toLowerCase()
+                                  .contains(query.toLowerCase()),
+                              chipAvatar: (t) => Icon(
+                                Icons.medical_services_outlined,
+                                size: 16,
+                                color: theme.colorScheme.primary,
+                              ),
+                              enabled: !isSaving.value,
+                              suggestedItems: suggested,
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+
+                      // Purpose (shown when General is selected)
+                      if (!isTreatment.value) ...[
+                        FormBuilderTextField(
+                          name: 'purpose',
+                          decoration: const InputDecoration(
+                            labelText: 'Purpose',
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.description_outlined),
+                            hintText: 'e.g., Check-up, Vaccination, Surgery',
+                          ),
+                          initialValue: appointment.purpose,
+                          enabled: !isSaving.value,
+                        ),
+                        const SizedBox(height: 16),
+                      ],
 
                       // Notes
                       FormBuilderTextField(
@@ -641,21 +768,6 @@ class EditAppointmentDialog extends HookConsumerWidget {
                         const SizedBox(height: 16),
                       ],
 
-                      // Linked items section
-                      LinkedItemsSection(
-                        patientRecords: linkedRecordsExpanded.value,
-                        showActions: !isSaving.value,
-                        onAddRecordPressed: appointment.patient != null
-                            ? () => _showAddRecordDialog(
-                                  context: context,
-                                  ref: ref,
-                                  patientId: appointment.patient!,
-                                  appointmentId: appointment.id,
-                                  linkedRecordIds: linkedRecordIds,
-                                  linkedRecordsExpanded: linkedRecordsExpanded,
-                                )
-                            : null,
-                      ),
                       const SizedBox(height: 24),
                     ],
                   ),
@@ -666,36 +778,6 @@ class EditAppointmentDialog extends HookConsumerWidget {
         ),
       ),
       ),
-    );
-  }
-
-  void _showAddRecordDialog({
-    required BuildContext context,
-    required WidgetRef ref,
-    required String patientId,
-    required String appointmentId,
-    required ValueNotifier<List<String>> linkedRecordIds,
-    required ValueNotifier<List<PatientRecord>> linkedRecordsExpanded,
-  }) {
-    showAddRecordDialog(
-      context,
-      patientId: patientId,
-      appointmentId: appointmentId,
-      onSave: (record) async {
-        final created = await ref
-            .read(patientRecordsControllerProvider(patientId).notifier)
-            .createRecordAndReturn(record);
-
-        if (created != null) {
-          // Add to linked IDs and expanded list
-          linkedRecordIds.value = [...linkedRecordIds.value, created.id];
-          linkedRecordsExpanded.value = [
-            ...linkedRecordsExpanded.value,
-            created,
-          ];
-        }
-        return created;
-      },
     );
   }
 

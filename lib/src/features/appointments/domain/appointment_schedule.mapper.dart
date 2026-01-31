@@ -123,17 +123,19 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
     _$patient,
     opt: true,
   );
-  static String? _$patientTreatment(AppointmentSchedule v) =>
+  static List<String> _$patientTreatment(AppointmentSchedule v) =>
       v.patientTreatment;
-  static const Field<AppointmentSchedule, String> _f$patientTreatment = Field(
-    'patientTreatment',
-    _$patientTreatment,
-    opt: true,
-  );
-  static String? _$patientTreatmentName(AppointmentSchedule v) =>
+  static const Field<AppointmentSchedule, List<String>> _f$patientTreatment =
+      Field('patientTreatment', _$patientTreatment, opt: true, def: const []);
+  static List<String> _$patientTreatmentName(AppointmentSchedule v) =>
       v.patientTreatmentName;
-  static const Field<AppointmentSchedule, String> _f$patientTreatmentName =
-      Field('patientTreatmentName', _$patientTreatmentName, opt: true);
+  static const Field<AppointmentSchedule, List<String>>
+  _f$patientTreatmentName = Field(
+    'patientTreatmentName',
+    _$patientTreatmentName,
+    opt: true,
+    def: const [],
+  );
   static List<String> _$patientRecords(AppointmentSchedule v) =>
       v.patientRecords;
   static const Field<AppointmentSchedule, List<String>> _f$patientRecords =
@@ -196,6 +198,13 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
     opt: true,
     def: const [],
   );
+  static bool _$autoCreateRecord(AppointmentSchedule v) => v.autoCreateRecord;
+  static const Field<AppointmentSchedule, bool> _f$autoCreateRecord = Field(
+    'autoCreateRecord',
+    _$autoCreateRecord,
+    opt: true,
+    def: true,
+  );
 
   @override
   final MappableFields<AppointmentSchedule> fields = const {
@@ -218,6 +227,7 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
     #updated: _f$updated,
     #patientExpanded: _f$patientExpanded,
     #patientRecordsExpanded: _f$patientRecordsExpanded,
+    #autoCreateRecord: _f$autoCreateRecord,
   };
 
   static AppointmentSchedule _instantiate(DecodingData data) {
@@ -241,6 +251,7 @@ class AppointmentScheduleMapper extends ClassMapperBase<AppointmentSchedule> {
       updated: data.dec(_f$updated),
       patientExpanded: data.dec(_f$patientExpanded),
       patientRecordsExpanded: data.dec(_f$patientRecordsExpanded),
+      autoCreateRecord: data.dec(_f$autoCreateRecord),
     );
   }
 
@@ -315,6 +326,10 @@ abstract class AppointmentScheduleCopyWith<
 >
     implements ClassCopyWith<$R, $In, $Out> {
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>
+  get patientTreatment;
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>
+  get patientTreatmentName;
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>
   get patientRecords;
   PatientCopyWith<$R, Patient, Patient>? get patientExpanded;
   ListCopyWith<
@@ -331,8 +346,8 @@ abstract class AppointmentScheduleCopyWith<
     String? purpose,
     AppointmentScheduleStatus? status,
     String? patient,
-    String? patientTreatment,
-    String? patientTreatmentName,
+    List<String>? patientTreatment,
+    List<String>? patientTreatmentName,
     List<String>? patientRecords,
     String? branch,
     String? patientName,
@@ -343,6 +358,7 @@ abstract class AppointmentScheduleCopyWith<
     DateTime? updated,
     Patient? patientExpanded,
     List<PatientRecord>? patientRecordsExpanded,
+    bool? autoCreateRecord,
   });
   AppointmentScheduleCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
     Then<$Out2, $R2> t,
@@ -357,6 +373,20 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
   @override
   late final ClassMapperBase<AppointmentSchedule> $mapper =
       AppointmentScheduleMapper.ensureInitialized();
+  @override
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>
+  get patientTreatment => ListCopyWith(
+    $value.patientTreatment,
+    (v, t) => ObjectCopyWith(v, $identity, t),
+    (v) => call(patientTreatment: v),
+  );
+  @override
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>
+  get patientTreatmentName => ListCopyWith(
+    $value.patientTreatmentName,
+    (v, t) => ObjectCopyWith(v, $identity, t),
+    (v) => call(patientTreatmentName: v),
+  );
   @override
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>
   get patientRecords => ListCopyWith(
@@ -387,8 +417,8 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
     Object? purpose = $none,
     AppointmentScheduleStatus? status,
     Object? patient = $none,
-    Object? patientTreatment = $none,
-    Object? patientTreatmentName = $none,
+    List<String>? patientTreatment,
+    List<String>? patientTreatmentName,
     List<String>? patientRecords,
     Object? branch = $none,
     Object? patientName = $none,
@@ -399,6 +429,7 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
     Object? updated = $none,
     Object? patientExpanded = $none,
     List<PatientRecord>? patientRecordsExpanded,
+    bool? autoCreateRecord,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
@@ -408,8 +439,8 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
       if (purpose != $none) #purpose: purpose,
       if (status != null) #status: status,
       if (patient != $none) #patient: patient,
-      if (patientTreatment != $none) #patientTreatment: patientTreatment,
-      if (patientTreatmentName != $none)
+      if (patientTreatment != null) #patientTreatment: patientTreatment,
+      if (patientTreatmentName != null)
         #patientTreatmentName: patientTreatmentName,
       if (patientRecords != null) #patientRecords: patientRecords,
       if (branch != $none) #branch: branch,
@@ -422,6 +453,7 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
       if (patientExpanded != $none) #patientExpanded: patientExpanded,
       if (patientRecordsExpanded != null)
         #patientRecordsExpanded: patientRecordsExpanded,
+      if (autoCreateRecord != null) #autoCreateRecord: autoCreateRecord,
     }),
   );
   @override
@@ -451,6 +483,7 @@ class _AppointmentScheduleCopyWithImpl<$R, $Out>
       #patientRecordsExpanded,
       or: $value.patientRecordsExpanded,
     ),
+    autoCreateRecord: data.get(#autoCreateRecord, or: $value.autoCreateRecord),
   );
 
   @override

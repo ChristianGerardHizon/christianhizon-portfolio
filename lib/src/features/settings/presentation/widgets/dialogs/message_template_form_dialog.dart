@@ -9,6 +9,7 @@ import '../../../../../core/constants/constants.dart';
 import '../../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../../core/widgets/form_feedback.dart';
 import '../../../domain/message_template.dart';
+import '../../controllers/current_branch_controller.dart';
 import '../../controllers/message_templates_controller.dart';
 
 /// Dialog for creating or editing a message template.
@@ -32,34 +33,17 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
 
     // UI state
     final isSaving = useState(false);
+    final contentController =
+        useTextEditingController(text: template?.content);
 
-    // Categories from existing templates
-    final categories = ref.watch(messageTemplatesControllerProvider).maybeWhen(
-          data: (templates) {
-            final cats = templates
-                .map((t) => t.category)
-                .whereType<String>()
-                .toSet()
-                .toList()
-              ..sort();
-            return cats;
-          },
-          orElse: () => <String>[],
-        );
-
-    // Common category suggestions
-    final defaultCategories = [
+    // Fixed category options
+    const categories = [
       MessageTemplateCategories.appointment,
       MessageTemplateCategories.appointmentWithTreatment,
-      'Appointment Reminders', // Legacy
-      'Follow-up',
-      'Billing',
-      'Promotions',
-      'General',
+      MessageTemplateCategories.appointmentReminder,
     ];
 
-    final allCategories = {...defaultCategories, ...categories}.toList()
-      ..sort();
+    final selectedCategory = useState<String?>(template?.category);
 
     Future<void> handleSave() async {
       final isValid = formKey.currentState!.saveAndValidate();
@@ -77,8 +61,7 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
         name: (values['name'] as String).trim(),
         content: (values['content'] as String).trim(),
         category: _nullIfEmpty(values['category'] as String?),
-        branch: template?.branch,
-        isDefault: values['isDefault'] as bool? ?? false,
+        branch: template?.branch ?? ref.read(currentBranchIdProvider),
       );
 
       bool success;
@@ -107,6 +90,9 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
         isSaving.value = false;
         context.pop();
 
+        // Refresh the list to reflect changes
+        ref.read(messageTemplatesControllerProvider.notifier).refresh();
+
         showSuccessSnackBar(
           context,
           message: isEditing
@@ -117,27 +103,19 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
     }
 
     void insertPlaceholder(String placeholder) {
-      final field = formKey.currentState?.fields['content'];
-      if (field != null) {
-        final controller = (field.widget as FormBuilderTextField).controller;
-        if (controller != null) {
-          final text = controller.text;
-          final selection = controller.selection;
-          final newText = text.replaceRange(
-            selection.start,
-            selection.end,
-            placeholder,
-          );
-          controller.text = newText;
-          controller.selection = TextSelection.collapsed(
-            offset: selection.start + placeholder.length,
-          );
-        } else {
-          // Fallback: append to end
-          final currentValue = field.value as String? ?? '';
-          field.didChange('$currentValue$placeholder');
-        }
-      }
+      final text = contentController.text;
+      final selection = contentController.selection;
+      final baseOffset = selection.isValid ? selection.start : text.length;
+      final extentOffset = selection.isValid ? selection.end : text.length;
+      final newText = text.replaceRange(baseOffset, extentOffset, placeholder);
+      contentController.value = TextEditingValue(
+        text: newText,
+        selection: TextSelection.collapsed(
+          offset: baseOffset + placeholder.length,
+        ),
+      );
+      // Sync form field state
+      formKey.currentState?.fields['content']?.didChange(newText);
     }
 
     return DialogCloseHandler(
@@ -210,42 +188,33 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 16),
 
-                    // Category field (autocomplete)
+                    // Category field
                     FormBuilderDropdown<String>(
                       name: 'category',
                       initialValue: template?.category,
                       decoration: const InputDecoration(
                         labelText: 'Category',
-                        hintText: 'Select or type a category',
+                        hintText: 'Select a category',
                         border: OutlineInputBorder(),
                       ),
-                      items: allCategories
+                      onChanged: (value) =>
+                          selectedCategory.value = value,
+                      items: categories
                           .map((cat) => DropdownMenuItem(
                                 value: cat,
-                                child: Text(cat),
+                                child: Text(
+                                  MessageTemplateCategories.labels[cat] ??
+                                      cat,
+                                ),
                               ))
                           .toList(),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Is default toggle
-                    FormBuilderSwitch(
-                      name: 'isDefault',
-                      initialValue: template?.isDefault ?? false,
-                      title: const Text('Default Template'),
-                      subtitle: const Text(
-                        'Use as default for this category/treatment type',
-                      ),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                      ),
                     ),
                     const SizedBox(height: 16),
 
                     // Content field
                     FormBuilderTextField(
                       name: 'content',
-                      initialValue: template?.content,
+                      controller: contentController,
                       decoration: const InputDecoration(
                         labelText: 'Message Content *',
                         hintText: 'Enter message with placeholders...',
@@ -379,6 +348,31 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
                         ),
                       ],
                     ),
+                    // Treatment placeholders (only for appointmentWithTreatment)
+                    if (selectedCategory.value ==
+                        MessageTemplateCategories
+                            .appointmentWithTreatment) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        'Treatment Data',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.outline,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          _PlaceholderChip(
+                            label: '{treatmentNames}',
+                            onTap: () =>
+                                insertPlaceholder('{treatmentNames}'),
+                            isAppointment: true,
+                          ),
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: 12),
 
                     // Branch placeholders
@@ -406,6 +400,18 @@ class MessageTemplateFormDialog extends HookConsumerWidget {
                         _PlaceholderChip(
                           label: '{branchPhone}',
                           onTap: () => insertPlaceholder('{branchPhone}'),
+                          isBranch: true,
+                        ),
+                        _PlaceholderChip(
+                          label: '{branchOperatingHours}',
+                          onTap: () =>
+                              insertPlaceholder('{branchOperatingHours}'),
+                          isBranch: true,
+                        ),
+                        _PlaceholderChip(
+                          label: '{branchCutOffTime}',
+                          onTap: () =>
+                              insertPlaceholder('{branchCutOffTime}'),
                           isBranch: true,
                         ),
                       ],

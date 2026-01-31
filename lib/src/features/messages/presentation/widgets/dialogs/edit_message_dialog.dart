@@ -64,6 +64,8 @@ class EditMessageDialog extends HookConsumerWidget {
       String? branchName,
       String? branchAddress,
       String? branchPhone,
+      String? branchOperatingHours,
+      String? branchCutOffTime,
       DateTime? appointmentDateTime,
     }) {
       if (content.isEmpty) return content;
@@ -105,6 +107,14 @@ class EditMessageDialog extends HookConsumerWidget {
       }
       if (branchPhone != null) {
         replaced = replaced.replaceAll('{branchPhone}', branchPhone);
+      }
+      if (branchOperatingHours != null) {
+        replaced = replaced.replaceAll(
+            '{branchOperatingHours}', branchOperatingHours);
+      }
+      if (branchCutOffTime != null) {
+        replaced =
+            replaced.replaceAll('{branchCutOffTime}', branchCutOffTime);
       }
 
       // Replace appointment data
@@ -329,6 +339,8 @@ class EditMessageDialog extends HookConsumerWidget {
                                     String? branchName;
                                     String? branchAddress;
                                     String? branchPhone;
+                                    String? branchOperatingHours;
+                                    String? branchCutOffTime;
                                     if (template.branch != null) {
                                       final branchData = await ref.read(
                                           branchProvider(template.branch!).future);
@@ -337,6 +349,9 @@ class EditMessageDialog extends HookConsumerWidget {
                                             branchData.name;
                                         branchAddress = branchData.address;
                                         branchPhone = branchData.contactNumber;
+                                        branchOperatingHours =
+                                            branchData.operatingHours;
+                                        branchCutOffTime = branchData.cutOffTime;
                                       }
                                     }
 
@@ -356,6 +371,8 @@ class EditMessageDialog extends HookConsumerWidget {
                                       branchName: branchName,
                                       branchAddress: branchAddress,
                                       branchPhone: branchPhone,
+                                      branchOperatingHours: branchOperatingHours,
+                                      branchCutOffTime: branchCutOffTime,
                                       appointmentDateTime: appointmentDateTime,
                                     );
                                     formKey.currentState?.fields['content']

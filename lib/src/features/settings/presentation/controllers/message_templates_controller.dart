@@ -113,13 +113,11 @@ class MessageTemplatesController extends _$MessageTemplatesController {
     return categorySet.toList()..sort();
   }
 
-  /// Returns the default template for a given category.
-  ///
-  /// If no default is found for the category, returns null.
-  MessageTemplate? getDefaultForCategory(String category) {
+  /// Returns the first template for a given category.
+  MessageTemplate? getFirstForCategory(String category) {
     final templates = state.value ?? [];
     return templates.firstWhereOrNull(
-      (t) => t.category == category && t.isDefault,
+      (t) => t.category == category,
     );
   }
 }

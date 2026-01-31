@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../appointments/domain/appointment_schedule.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
+import '../../../appointments/presentation/utils/appointment_completion_handler.dart';
 import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import 'appointment_quick_summary.dart';
 import 'dashboard_footer.dart';
@@ -97,6 +98,22 @@ class TabletDashboardLayout extends HookConsumerWidget {
     String id,
     AppointmentScheduleStatus status,
   ) async {
+    // Special handling for completing an appointment
+    if (status == AppointmentScheduleStatus.completed) {
+      final appointments =
+          ref.read(appointmentsControllerProvider).value;
+      final appointment = appointments?.where((a) => a.id == id).firstOrNull;
+      if (appointment != null) {
+        await AppointmentCompletionHandler.showCompletionFlowAndComplete(
+          context: context,
+          ref: ref,
+          appointment: appointment,
+        );
+        return;
+      }
+    }
+
+    // For other status changes (or if appointment not found), update directly
     final success = await ref
         .read(appointmentsControllerProvider.notifier)
         .updateStatus(id, status);
