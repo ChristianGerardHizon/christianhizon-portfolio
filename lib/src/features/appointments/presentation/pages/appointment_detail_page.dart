@@ -12,6 +12,7 @@ import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
 import '../utils/appointment_completion_handler.dart';
+import '../utils/appointment_reschedule_handler.dart';
 import '../widgets/dialogs/edit_appointment_dialog.dart';
 
 /// Comprehensive appointment detail page.
@@ -337,6 +338,16 @@ class _AppointmentDetailContent extends HookConsumerWidget {
     // Special handling for completing an appointment
     if (status == AppointmentScheduleStatus.completed) {
       AppointmentCompletionHandler.showCompletionFlowAndComplete(
+        context: context,
+        ref: ref,
+        appointment: appointment,
+      );
+      return;
+    }
+
+    // Special handling for missed appointment with reschedule option
+    if (status == AppointmentScheduleStatus.missed) {
+      AppointmentRescheduleHandler.showRescheduleFlowAndMarkMissed(
         context: context,
         ref: ref,
         appointment: appointment,

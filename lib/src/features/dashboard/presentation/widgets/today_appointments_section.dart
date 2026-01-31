@@ -6,6 +6,7 @@ import '../../../../core/widgets/form_feedback.dart';
 import '../../../appointments/domain/appointment_schedule.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
 import '../../../appointments/presentation/utils/appointment_completion_handler.dart';
+import '../../../appointments/presentation/utils/appointment_reschedule_handler.dart';
 import '../../../appointments/presentation/widgets/components/appointment_status_chip.dart';
 import '../../../appointments/presentation/widgets/dialogs/edit_appointment_dialog.dart';
 
@@ -330,6 +331,16 @@ class TodayAppointmentsSection extends HookConsumerWidget {
     // Special handling for completing an appointment
     if (status == AppointmentScheduleStatus.completed) {
       await AppointmentCompletionHandler.showCompletionFlowAndComplete(
+        context: context,
+        ref: ref,
+        appointment: appointment,
+      );
+      return;
+    }
+
+    // Special handling for missed appointment with reschedule option
+    if (status == AppointmentScheduleStatus.missed) {
+      await AppointmentRescheduleHandler.showRescheduleFlowAndMarkMissed(
         context: context,
         ref: ref,
         appointment: appointment,
