@@ -794,6 +794,22 @@ class _OrganizationBranchDetailPage extends ConsumerWidget {
                       label: 'Contact Number',
                       value: branch.contactNumber,
                     ),
+                    if (branch.operatingHours != null &&
+                        branch.operatingHours!.isNotEmpty)
+                      _buildDetailRow(
+                        theme,
+                        icon: Icons.schedule,
+                        label: 'Operating Hours',
+                        value: branch.operatingHours!,
+                      ),
+                    if (branch.cutOffTime != null &&
+                        branch.cutOffTime!.isNotEmpty)
+                      _buildDetailRow(
+                        theme,
+                        icon: Icons.timer_off,
+                        label: 'Cut-off Time',
+                        value: branch.cutOffTime!,
+                      ),
                     if (branch.created != null)
                       _buildDetailRow(
                         theme,
