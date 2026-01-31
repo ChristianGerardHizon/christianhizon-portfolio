@@ -8,7 +8,7 @@ import '../i18n/strings.g.dart';
 /// - Dashboard (Home)
 /// - Patients
 /// - Appointments
-/// - Products
+/// - Cashier
 /// - More (opens drawer for additional options)
 class MobileBottomNav extends StatelessWidget {
   const MobileBottomNav({
@@ -59,9 +59,9 @@ class MobileBottomNav extends StatelessWidget {
           label: t.navigation.appointments,
         ),
         NavigationDestination(
-          icon: const Icon(Icons.inventory_2_outlined),
-          selectedIcon: const Icon(Icons.inventory_2),
-          label: t.navigation.products,
+          icon: const Icon(Icons.point_of_sale_outlined),
+          selectedIcon: const Icon(Icons.point_of_sale),
+          label: t.navigation.sales,
         ),
         NavigationDestination(
           icon: const Icon(Icons.more_horiz),
