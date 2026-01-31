@@ -16,6 +16,7 @@ import '../../../reports/presentation/controllers/inventory_report_controller.da
 import '../../../reports/presentation/controllers/patient_report_controller.dart';
 import '../../../reports/presentation/controllers/sales_report_controller.dart';
 import '../../../patients/presentation/controllers/patient_treatments_controller.dart';
+import '../../../patients/presentation/controllers/top_treatment_types_provider.dart';
 import '../../../products/presentation/controllers/paginated_products_controller.dart';
 import '../../../sales/presentation/controllers/paginated_sales_controller.dart';
 import '../../../users/presentation/controllers/user_provider.dart';
@@ -107,6 +108,7 @@ class CurrentBranchController extends _$CurrentBranchController {
     ref.invalidate(paginatedPatientsControllerProvider);
     ref.invalidate(paginatedProductsControllerProvider);
     ref.invalidate(patientTreatmentsControllerProvider);
+    ref.invalidate(topTreatmentTypeIdsProvider);
     ref.invalidate(paginatedAppointmentsControllerProvider);
     ref.invalidate(dailyAppointmentsControllerProvider);
     ref.invalidate(paginatedSalesControllerProvider);

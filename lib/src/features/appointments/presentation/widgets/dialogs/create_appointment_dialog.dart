@@ -19,6 +19,7 @@ import '../../../../patients/domain/patient.dart';
 import '../../../../patients/domain/patient_treatment.dart';
 import '../../../../patients/presentation/controllers/patient_treatments_controller.dart';
 import '../../../../patients/presentation/controllers/patients_controller.dart';
+import '../../../../patients/presentation/controllers/top_treatment_types_provider.dart';
 import '../../../../settings/domain/message_template.dart';
 import '../../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../../../settings/presentation/controllers/message_templates_controller.dart';
@@ -59,6 +60,9 @@ class CreateAppointmentDialog extends HookConsumerWidget {
 
     // Watch treatment types for dropdown
     final treatmentTypesAsync = ref.watch(patientTreatmentsControllerProvider);
+
+    // Watch top treatment type IDs for suggestions
+    final topTreatmentIds = ref.watch(topTreatmentTypeIdsProvider).value ?? [];
 
     // Watch templates for dropdown
     final templatesAsync = ref.watch(messageTemplatesControllerProvider);
@@ -493,6 +497,11 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                                       .value
                                       .contains(t.id))
                                   .toList();
+                              final suggested = topTreatmentIds
+                                  .map((id) => treatmentTypes
+                                      .firstWhereOrNull((t) => t.id == id))
+                                  .whereType<PatientTreatment>()
+                                  .toList();
                               return ChipAutocompleteField<PatientTreatment>(
                                 selectedItems: selected,
                                 onChanged: (items) {
@@ -510,6 +519,7 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                                   color: theme.colorScheme.primary,
                                 ),
                                 enabled: !isSaving.value,
+                                suggestedItems: suggested,
                               );
                             },
                           ),

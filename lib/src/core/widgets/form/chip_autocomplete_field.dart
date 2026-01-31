@@ -14,6 +14,7 @@ class ChipAutocompleteField<T extends Object> extends StatefulWidget {
     required this.filterCallback,
     this.chipAvatar,
     this.enabled = true,
+    this.suggestedItems,
   });
 
   final List<T> selectedItems;
@@ -23,6 +24,9 @@ class ChipAutocompleteField<T extends Object> extends StatefulWidget {
   final bool Function(T item, String query) filterCallback;
   final Widget Function(T item)? chipAvatar;
   final bool enabled;
+
+  /// Items to prioritize at the top of the list when there is no search query.
+  final List<T>? suggestedItems;
 
   @override
   State<ChipAutocompleteField<T>> createState() =>
@@ -43,6 +47,21 @@ class _ChipAutocompleteFieldState<T extends Object>
   List<T> get _available =>
       widget.allItems.where((t) => !widget.selectedItems.contains(t)).toList();
 
+  /// Splits available items into suggested and remaining lists.
+  /// Returns (suggested, remaining, total display list).
+  ({List<T> suggested, List<T> remaining}) _buildSuggestedDisplay(
+      List<T> available) {
+    final suggestions = widget.suggestedItems;
+    if (suggestions == null || suggestions.isEmpty) {
+      return (suggested: <T>[], remaining: available);
+    }
+    final suggested =
+        suggestions.where((t) => available.contains(t)).toList();
+    final remaining =
+        available.where((t) => !suggested.contains(t)).toList();
+    return (suggested: suggested, remaining: remaining);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -53,10 +72,25 @@ class _ChipAutocompleteFieldState<T extends Object>
         ? available.where((t) => widget.filterCallback(t, _query)).take(10).toList()
         : <T>[];
 
+    // When no query, build suggested + remaining display
+    final suggestedDisplay = !hasQuery ? _buildSuggestedDisplay(available) : null;
+    final hasSuggestions =
+        suggestedDisplay != null && suggestedDisplay.suggested.isNotEmpty;
+
     final showAllAvailable = !hasQuery && available.length <= 10;
     final displayList = hasQuery
         ? filteredSuggestions
-        : (showAllAvailable ? available : <T>[]);
+        : (showAllAvailable
+            ? available
+            : (hasSuggestions
+                ? [
+                    ...suggestedDisplay.suggested,
+                    ...suggestedDisplay.remaining
+                        .take(10 - suggestedDisplay.suggested.length),
+                  ]
+                : <T>[]));
+    final suggestedCount =
+        hasSuggestions ? suggestedDisplay.suggested.length : 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,11 +165,28 @@ class _ChipAutocompleteFieldState<T extends Object>
             child: ListView.separated(
               shrinkWrap: true,
               padding: const EdgeInsets.symmetric(vertical: 4),
-              itemCount: displayList.length,
+              itemCount: displayList.length +
+                  (suggestedCount > 0 && !hasQuery ? 1 : 0),
               separatorBuilder: (_, __) =>
                   Divider(height: 1, color: theme.colorScheme.outlineVariant),
               itemBuilder: (context, index) {
-                final item = displayList[index];
+                // Show "Suggested" header at position 0 when we have suggestions
+                if (suggestedCount > 0 && !hasQuery && index == 0) {
+                  return Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    child: Text(
+                      'Suggested',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  );
+                }
+                final itemIndex =
+                    suggestedCount > 0 && !hasQuery ? index - 1 : index;
+                final item = displayList[itemIndex];
                 return ListTile(
                   dense: true,
                   visualDensity: VisualDensity.compact,

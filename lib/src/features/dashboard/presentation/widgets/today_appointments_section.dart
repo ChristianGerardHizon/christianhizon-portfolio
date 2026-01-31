@@ -37,9 +37,11 @@ class TodayAppointmentsSection extends HookConsumerWidget {
             final patientName = a.patientDisplayName.toLowerCase();
             final ownerName = a.ownerDisplayName.toLowerCase();
             final purpose = (a.purpose ?? '').toLowerCase();
+            final treatments = a.treatmentNamesDisplay.toLowerCase();
             return patientName.contains(query) ||
                 ownerName.contains(query) ||
-                purpose.contains(query);
+                purpose.contains(query) ||
+                treatments.contains(query);
           }).toList();
         }
 
@@ -471,7 +473,29 @@ class _TodayAppointmentTile extends StatelessWidget {
                         ),
                       ],
                     ),
-                    if (appointment.purpose != null &&
+                    if (appointment.hasTreatments) ...[
+                      const SizedBox(height: 2),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.medical_services_outlined,
+                            size: 12,
+                            color: theme.colorScheme.primary,
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              appointment.treatmentNamesDisplay,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.primary,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ] else if (appointment.purpose != null &&
                         appointment.purpose!.isNotEmpty) ...[
                       const SizedBox(height: 2),
                       Text(

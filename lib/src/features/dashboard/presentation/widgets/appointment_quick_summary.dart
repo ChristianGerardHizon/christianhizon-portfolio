@@ -151,8 +151,8 @@ class AppointmentQuickSummary extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
 
-            // Purpose
-            if (appointment.purpose?.isNotEmpty == true)
+            // Treatment Types
+            if (appointment.hasTreatments)
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -162,13 +162,13 @@ class AppointmentQuickSummary extends ConsumerWidget {
                       Row(
                         children: [
                           Icon(
-                            Icons.description_outlined,
+                            Icons.medical_services_outlined,
                             size: 18,
                             color: theme.colorScheme.primary,
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'Purpose',
+                            'Treatment Types',
                             style: theme.textTheme.titleSmall?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
@@ -176,11 +176,67 @@ class AppointmentQuickSummary extends ConsumerWidget {
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        appointment.purpose!,
-                        style: theme.textTheme.bodyMedium,
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: appointment.patientTreatmentName
+                            .map(
+                              (name) => Chip(
+                                label: Text(
+                                  name,
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                                avatar: Icon(
+                                  Icons.vaccines_outlined,
+                                  size: 16,
+                                  color: theme.colorScheme.primary,
+                                ),
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                                visualDensity: VisualDensity.compact,
+                              ),
+                            )
+                            .toList(),
                       ),
                     ],
+                  ),
+                ),
+              ),
+
+            // Purpose
+            if (appointment.purpose?.isNotEmpty == true)
+              Padding(
+                padding: EdgeInsets.only(
+                    top: appointment.hasTreatments ? 16 : 0),
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.description_outlined,
+                              size: 18,
+                              color: theme.colorScheme.primary,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Purpose',
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          appointment.purpose!,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

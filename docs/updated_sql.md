@@ -508,6 +508,34 @@ migrate((app) => {
 | LOW | `vw_expired_lots` | Expired product lots | `p.branch` |
 | LOW | `vw_near_expiration_lots` | Lots expiring within 30 days | `p.branch` |
 | LOW | `vw_messages_pending` | Pending messages for dashboard | `m.branch` |
+| LOW | `vw_top_treatment_types` | Treatment types ranked by appointment usage | `pt.branch` |
+
+---
+
+### 14. vw_top_treatment_types
+
+**Purpose:** Rank treatment types by how often they appear in appointments, for prioritized suggestions.
+
+```sql
+SELECT
+  pt.id,
+  pt.name,
+  pt.branch,
+  COUNT(a.id) AS usage_count
+FROM patientTreatments pt
+LEFT JOIN appointmentSchedules a ON pt.id IN (
+  SELECT value FROM json_each(a.patientTreatment)
+)
+WHERE (pt.isDeleted = false OR pt.isDeleted IS NULL)
+GROUP BY pt.id, pt.name, pt.branch
+ORDER BY COUNT(a.id) DESC
+```
+
+> Create in PocketBase Admin UI: Collections > New > View type, name: `vw_top_treatment_types`.
+
+**Benefits:**
+- Surfaces most-used treatment types as suggestions in appointment dialogs
+- Single query with keepAlive provider — loaded once per session
 
 ---
 

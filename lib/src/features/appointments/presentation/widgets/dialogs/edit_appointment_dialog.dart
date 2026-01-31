@@ -15,6 +15,7 @@ import '../../../../../core/widgets/form_feedback.dart';
 import '../../../../patients/domain/patient.dart';
 import '../../../../patients/domain/patient_treatment.dart';
 import '../../../../patients/presentation/controllers/patient_treatments_controller.dart';
+import '../../../../patients/presentation/controllers/top_treatment_types_provider.dart';
 import '../../../../settings/presentation/controllers/message_templates_controller.dart';
 import '../../../../messages/domain/message.dart';
 import '../../../../messages/presentation/controllers/messages_controller.dart';
@@ -54,6 +55,9 @@ class EditAppointmentDialog extends HookConsumerWidget {
 
     // Watch treatment types for dropdown
     final treatmentTypesAsync = ref.watch(patientTreatmentsControllerProvider);
+
+    // Watch top treatment type IDs for suggestions
+    final topTreatmentIds = ref.watch(topTreatmentTypeIdsProvider).value ?? [];
 
     // Check if appointment is in the future
     final isFutureAppointment = appointment.date.isAfter(DateTime.now());
@@ -404,6 +408,11 @@ class EditAppointmentDialog extends HookConsumerWidget {
                                     .value
                                     .contains(t.id))
                                 .toList();
+                            final suggested = topTreatmentIds
+                                .map((id) => treatmentTypes
+                                    .firstWhereOrNull((t) => t.id == id))
+                                .whereType<PatientTreatment>()
+                                .toList();
                             return ChipAutocompleteField<PatientTreatment>(
                               selectedItems: selected,
                               onChanged: (items) {
@@ -421,6 +430,7 @@ class EditAppointmentDialog extends HookConsumerWidget {
                                 color: theme.colorScheme.primary,
                               ),
                               enabled: !isSaving.value,
+                              suggestedItems: suggested,
                             );
                           },
                         ),
