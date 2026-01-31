@@ -9,10 +9,16 @@ import '../../../../core/utils/breakpoints.dart';
 import '../../../appointments/presentation/controllers/patient_appointments_controller.dart';
 import '../../../appointments/presentation/widgets/dialogs/create_appointment_dialog.dart';
 import '../../../appointments/presentation/widgets/tabs/patient_appointments_tab.dart';
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
+import '../../data/repositories/prescription_repository.dart';
 import '../../domain/patient.dart';
 import '../../domain/patient_tab.dart';
+import '../../domain/prescription.dart';
 import '../controllers/patient_provider.dart';
+import '../controllers/patient_records_controller.dart';
+import '../controllers/patient_treatment_records_controller.dart';
 import '../controllers/patients_controller.dart';
+import '../pdf/patient_full_record_pdf_generator.dart';
 import '../widgets/dialogs/edit_patient_dialog.dart';
 import '../widgets/tabs/patient_details_tab.dart';
 import '../widgets/tabs/patient_files_tab.dart';
@@ -187,7 +193,7 @@ class PatientDetailPage extends HookConsumerWidget {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
-      builder: (context) => SafeArea(
+      builder: (sheetContext) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -195,32 +201,87 @@ class PatientDetailPage extends HookConsumerWidget {
               leading: const Icon(Icons.print),
               title: const Text('Print Record'),
               onTap: () {
-                Navigator.pop(context);
-                showWarningSnackBar(context, message: 'Print functionality coming soon');
+                Navigator.pop(sheetContext);
+                _handlePdfAction(context, ref, patient, _PdfAction.print);
               },
             ),
             ListTile(
               leading: const Icon(Icons.share),
               title: const Text('Share'),
               onTap: () {
-                Navigator.pop(context);
-                showWarningSnackBar(context, message: 'Share functionality coming soon');
+                Navigator.pop(sheetContext);
+                _handlePdfAction(context, ref, patient, _PdfAction.share);
               },
             ),
             ListTile(
               leading:
-                  Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+                  Icon(Icons.delete, color: Theme.of(sheetContext).colorScheme.error),
               title: Text(t.common.delete,
                   style:
-                      TextStyle(color: Theme.of(context).colorScheme.error)),
+                      TextStyle(color: Theme.of(sheetContext).colorScheme.error)),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pop(sheetContext);
                 _showDeleteConfirmation(context, ref, patient);
               },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _handlePdfAction(
+    BuildContext context,
+    WidgetRef ref,
+    Patient patient,
+    _PdfAction action,
+  ) async {
+    final data = await _gatherPdfData(ref, patient);
+    if (!context.mounted) return;
+
+    final generator = PatientFullRecordPdfGenerator(data);
+    switch (action) {
+      case _PdfAction.print:
+        await generator.printRecord(context);
+      case _PdfAction.share:
+        await generator.shareRecord(context);
+    }
+  }
+
+  Future<PatientFullRecordPdfData> _gatherPdfData(
+    WidgetRef ref,
+    Patient patient,
+  ) async {
+    final records = await ref.read(
+      patientRecordsControllerProvider(patient.id).future,
+    );
+    final sortedRecords = [...records]
+      ..sort((a, b) => b.date.compareTo(a.date));
+
+    final prescriptionRepo = ref.read(prescriptionRepositoryProvider);
+    final Map<String, List<Prescription>> recordPrescriptions = {};
+    await Future.wait(sortedRecords.map((record) async {
+      final result = await prescriptionRepo.fetchByRecord(record.id);
+      result.fold(
+        (_) {},
+        (prescriptions) => recordPrescriptions[record.id] = prescriptions,
+      );
+    }));
+
+    final treatmentRecords = await ref.read(
+      patientTreatmentRecordsControllerProvider(patient.id).future,
+    );
+    final sortedTreatments = [...treatmentRecords]
+      ..sort((a, b) => (b.date ?? DateTime(0)).compareTo(a.date ?? DateTime(0)));
+
+    final branch = ref.read(currentBranchControllerProvider).value;
+
+    return PatientFullRecordPdfData(
+      patient: patient,
+      records: sortedRecords,
+      recordPrescriptions: recordPrescriptions,
+      treatmentRecords: sortedTreatments,
+      branch: branch,
     );
   }
 
@@ -263,3 +324,5 @@ class PatientDetailPage extends HookConsumerWidget {
     );
   }
 }
+
+enum _PdfAction { print, share }
