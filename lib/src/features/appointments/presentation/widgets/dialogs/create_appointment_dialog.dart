@@ -25,12 +25,13 @@ import '../../../../settings/presentation/controllers/current_branch_controller.
 import '../../../../settings/presentation/controllers/message_templates_controller.dart';
 import '../../../domain/appointment_schedule.dart';
 
-/// Dialog for creating a new appointment.
+/// Dialog for creating a new appointment or rescheduling an existing one.
 class CreateAppointmentDialog extends HookConsumerWidget {
   const CreateAppointmentDialog({
     super.key,
     this.initialPatient,
     required this.onSave,
+    this.rescheduleFrom,
   });
 
   /// Pre-selected patient (when creating from patient context).
@@ -40,6 +41,12 @@ class CreateAppointmentDialog extends HookConsumerWidget {
   /// Returns the created appointment on success, or null on failure.
   final Future<AppointmentSchedule?> Function(AppointmentSchedule appointment)
       onSave;
+
+  /// Original appointment when rescheduling. If set, most fields become
+  /// read-only and the dialog title/button reflect reschedule mode.
+  final AppointmentSchedule? rescheduleFrom;
+
+  bool get isRescheduleMode => rescheduleFrom != null;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,8 +58,14 @@ class CreateAppointmentDialog extends HookConsumerWidget {
     final hasTime = useState(false);
     final selectedPatient = useState<Patient?>(initialPatient);
     final sendReminder = useState(false);
-    final isTreatment = useState(false);
-    final selectedPatientTreatmentIds = useState<List<String>>([]);
+    final isTreatment = useState(
+      rescheduleFrom != null
+          ? rescheduleFrom!.patientTreatment.isNotEmpty
+          : false,
+    );
+    final selectedPatientTreatmentIds = useState<List<String>>(
+      rescheduleFrom?.patientTreatment ?? [],
+    );
     final reminderDateTime = useState<DateTime?>(null);
 
     // Watch patients for dropdown
@@ -215,9 +228,13 @@ class CreateAppointmentDialog extends HookConsumerWidget {
           context.pop();
           showSuccessSnackBar(
             context,
-            message: sendReminder.value
-                ? 'Appointment created with reminder'
-                : 'Appointment created successfully',
+            message: isRescheduleMode
+                ? (sendReminder.value
+                    ? 'Appointment rescheduled with reminder'
+                    : 'Appointment rescheduled successfully')
+                : (sendReminder.value
+                    ? 'Appointment created with reminder'
+                    : 'Appointment created successfully'),
           );
         } else {
           isSaving.value = false;
@@ -251,7 +268,9 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                     ),
                     Expanded(
                       child: Text(
-                        'New Appointment',
+                        isRescheduleMode
+                            ? 'Reschedule Appointment'
+                            : 'New Appointment',
                         style: theme.textTheme.titleLarge,
                       ),
                     ),
@@ -276,7 +295,7 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                               height: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Save'),
+                          : Text(isRescheduleMode ? 'Reschedule' : 'Save'),
                     ),
                     const SizedBox(width: 8),
                   ],
@@ -406,7 +425,10 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                             prefixIcon: Icon(Icons.calendar_today),
                           ),
                           inputType: InputType.date,
-                          initialValue: DateTime.now(),
+                          initialValue:
+                              isRescheduleMode ? null : DateTime.now(),
+                          firstDate:
+                              isRescheduleMode ? DateTime.now() : null,
                           validator: FormBuilderValidators.required(),
                           enabled: !isSaving.value,
                           onChanged: (value) {
@@ -469,7 +491,8 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                             ),
                           ],
                           selected: {isTreatment.value},
-                          onSelectionChanged: isSaving.value
+                          onSelectionChanged: isSaving.value ||
+                                  isRescheduleMode
                               ? null
                               : (value) {
                                   isTreatment.value = value.first;
@@ -518,7 +541,7 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                                   size: 16,
                                   color: theme.colorScheme.primary,
                                 ),
-                                enabled: !isSaving.value,
+                                enabled: !isSaving.value && !isRescheduleMode,
                                 suggestedItems: suggested,
                               );
                             },
@@ -549,7 +572,8 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                               prefixIcon: Icon(Icons.description_outlined),
                               hintText: 'e.g., Check-up, Vaccination, Surgery',
                             ),
-                            enabled: !isSaving.value,
+                            initialValue: rescheduleFrom?.purpose,
+                            enabled: !isSaving.value && !isRescheduleMode,
                           ),
                           const SizedBox(height: 16),
                         ],
@@ -561,8 +585,9 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                             labelText: 'Notes',
                             border: OutlineInputBorder(),
                           ),
+                          initialValue: rescheduleFrom?.notes,
                           maxLines: 3,
-                          enabled: !isSaving.value,
+                          enabled: !isSaving.value && !isRescheduleMode,
                         ),
                         const SizedBox(height: 16),
 
@@ -878,18 +903,24 @@ class CreateAppointmentDialog extends HookConsumerWidget {
 }
 
 /// Shows the create appointment dialog.
+///
+/// When [rescheduleFrom] is provided, the dialog opens in reschedule mode
+/// with most fields pre-filled and read-only. Only date and SMS section
+/// are editable.
 void showCreateAppointmentDialog(
   BuildContext context, {
   Patient? initialPatient,
   required Future<AppointmentSchedule?> Function(
           AppointmentSchedule appointment)
       onSave,
+  AppointmentSchedule? rescheduleFrom,
 }) {
   showConstrainedDialog(
     context: context,
     builder: (context) => CreateAppointmentDialog(
       initialPatient: initialPatient,
       onSave: onSave,
+      rescheduleFrom: rescheduleFrom,
     ),
   );
 }
