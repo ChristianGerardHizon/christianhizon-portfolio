@@ -67,6 +67,7 @@ class CreateAppointmentDialog extends HookConsumerWidget {
       rescheduleFrom?.patientTreatment ?? [],
     );
     final reminderDateTime = useState<DateTime?>(null);
+    final currentStep = useState(0);
 
     // Whether the form fields (below the patient selector) should be disabled
     final noPatient = selectedPatient.value == null;
@@ -279,31 +280,96 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                         style: theme.textTheme.titleLarge,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: TextButton(
-                        onPressed: isSaving.value
-                            ? null
-                            : () async {
-                                if (await dirtyGuard.confirmDiscard(context)) {
-                                  if (context.mounted) context.pop();
-                                }
-                              },
-                        child: const Text('Cancel'),
+                    if (currentStep.value == 1) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: TextButton(
+                          onPressed:
+                              isSaving.value ? null : () => currentStep.value = 0,
+                          child: const Text('Back'),
+                        ),
                       ),
-                    ),
-                    FilledButton(
-                      onPressed: isSaving.value || noPatient ? null : handleSave,
-                      child: isSaving.value
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : Text(isRescheduleMode ? 'Reschedule' : 'Save'),
-                    ),
+                      FilledButton(
+                        onPressed: isSaving.value || noPatient ? null : handleSave,
+                        child: isSaving.value
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : Text(isRescheduleMode ? 'Reschedule' : 'Save'),
+                      ),
+                    ] else ...[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: TextButton(
+                          onPressed: isSaving.value
+                              ? null
+                              : () async {
+                                  if (await dirtyGuard
+                                      .confirmDiscard(context)) {
+                                    if (context.mounted) context.pop();
+                                  }
+                                },
+                          child: const Text('Cancel'),
+                        ),
+                      ),
+                      FilledButton(
+                        onPressed: isSaving.value || noPatient
+                            ? null
+                            : () {
+                                // Validate step 0 before advancing
+                                if (selectedPatient.value == null) {
+                                  showErrorSnackBar(context,
+                                      message: 'Please select a patient');
+                                  return;
+                                }
+                                if (isTreatment.value &&
+                                    selectedPatientTreatmentIds
+                                        .value.isEmpty) {
+                                  showErrorSnackBar(context,
+                                      message:
+                                          'Please select at least one treatment type');
+                                  return;
+                                }
+                                // Auto-apply default template when entering step 1
+                                if (sendReminder.value) {
+                                  _applyDefaultTemplateAfterMount(
+                                    formKey: formKey,
+                                    templates:
+                                        templatesAsync.value ?? [],
+                                    isTreatment: isTreatment.value,
+                                    selectedPatientTreatmentIds:
+                                        selectedPatientTreatmentIds.value,
+                                    patient: selectedPatient.value,
+                                    replacePlaceholders:
+                                        replacePlaceholders,
+                                  );
+                                }
+                                currentStep.value = 1;
+                              },
+                        child: const Text('Next'),
+                      ),
+                    ],
                     const SizedBox(width: 8),
                   ],
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Step indicator
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: _StepIndicator(
+                  currentStep: currentStep.value,
+                  onStepTap: (step) {
+                    // Only allow going back, not forward without validation
+                    if (step < currentStep.value) {
+                      currentStep.value = step;
+                    }
+                  },
                 ),
               ),
 
@@ -313,7 +379,11 @@ class CreateAppointmentDialog extends HookConsumerWidget {
               Expanded(
                 child: FormBuilder(
                   key: formKey,
-                  child: SingleChildScrollView(
+                  child: IndexedStack(
+                    index: currentStep.value,
+                    children: [
+                      // Step 0: Appointment Details
+                      SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -551,8 +621,22 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                               return ChipAutocompleteField<PatientTreatment>(
                                 selectedItems: selected,
                                 onChanged: (items) {
-                                  selectedPatientTreatmentIds.value =
+                                  final ids =
                                       items.map((t) => t.id).toList();
+                                  selectedPatientTreatmentIds.value = ids;
+                                  // Re-apply template with updated treatment names
+                                  if (sendReminder.value) {
+                                    _applyDefaultTemplateAfterMount(
+                                      formKey: formKey,
+                                      templates:
+                                          templatesAsync.value ?? [],
+                                      isTreatment: true,
+                                      selectedPatientTreatmentIds: ids,
+                                      patient: selectedPatient.value,
+                                      replacePlaceholders:
+                                          replacePlaceholders,
+                                    );
+                                  }
                                 },
                                 allItems: treatmentTypes,
                                 labelBuilder: (t) => t.name,
@@ -612,326 +696,339 @@ class CreateAppointmentDialog extends HookConsumerWidget {
                           maxLines: 3,
                           enabled: !isSaving.value && !isRescheduleMode && !noPatient,
                         ),
-                        const SizedBox(height: 16),
-
-                        // === REMINDER MESSAGE SECTION ===
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.notifications_active,
-                                      color: theme.colorScheme.primary,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      'Send Reminder Message',
-                                      style: theme.textTheme.titleMedium,
-                                    ),
-                                    const Spacer(),
-                                    Switch(
-                                      value: sendReminder.value,
-                                      onChanged: isSaving.value || noPatient
-                                          ? null
-                                          : (value) {
-                                              sendReminder.value = value;
-                                              if (value) {
-                                                _applyDefaultTemplateAfterMount(
-                                                  formKey: formKey,
-                                                  templates:
-                                                      templatesAsync.value ??
-                                                          [],
-                                                  isTreatment:
-                                                      isTreatment.value,
-                                                  selectedPatientTreatmentIds:
-                                                      selectedPatientTreatmentIds
-                                                          .value,
-                                                  patient:
-                                                      selectedPatient.value,
-                                                  replacePlaceholders:
-                                                      replacePlaceholders,
-                                                );
-                                              }
-                                            },
-                                    ),
-                                  ],
-                                ),
-                                if (sendReminder.value) ...[
-                                  const SizedBox(height: 16),
-                                  if (selectedPatient.value == null) ...[
-                                    Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: theme.colorScheme.errorContainer,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.warning,
-                                            color: theme
-                                                .colorScheme.onErrorContainer,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(
-                                              'Please select a patient first',
-                                              style: TextStyle(
-                                                color: theme.colorScheme
-                                                    .onErrorContainer,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ] else if (selectedPatient
-                                              .value!.contactNumber ==
-                                          null ||
-                                      selectedPatient
-                                          .value!.contactNumber!.isEmpty) ...[
-                                    Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: theme.colorScheme.errorContainer,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.warning,
-                                            color: theme
-                                                .colorScheme.onErrorContainer,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(
-                                              'No contact number on file for this patient',
-                                              style: TextStyle(
-                                                color: theme.colorScheme
-                                                    .onErrorContainer,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ] else ...[
-                                    // Phone number display
-                                    Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: theme.colorScheme
-                                            .surfaceContainerHighest,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.phone,
-                                            size: 20,
-                                            color: theme
-                                                .colorScheme.onSurfaceVariant,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            'To: ${selectedPatient.value!.contactNumber}',
-                                            style: theme.textTheme.bodyMedium
-                                                ?.copyWith(
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          if (selectedPatient.value!.owner !=
-                                                  null &&
-                                              selectedPatient
-                                                  .value!.owner!.isNotEmpty)
-                                            Text(
-                                              ' (${selectedPatient.value!.owner})',
-                                              style: theme.textTheme.bodyMedium
-                                                  ?.copyWith(
-                                                color: theme.colorScheme
-                                                    .onSurfaceVariant,
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-
-                                    // Send date/time picker
-                                    Builder(
-                                      builder: (context) {
-                                        // Calculate default reminder time (1 day before at 9 AM)
-                                        final now = DateTime.now();
-                                        final appointmentDate = formKey
-                                                .currentState
-                                                ?.fields['date']
-                                                ?.value as DateTime? ??
-                                            now;
-                                        final defaultReminderDate = DateTime(
-                                          appointmentDate.year,
-                                          appointmentDate.month,
-                                          appointmentDate.day - 1,
-                                          9,
-                                          0,
-                                        );
-                                        // Ensure display date is not before now
-                                        final displayDateTime =
-                                            reminderDateTime.value ??
-                                                defaultReminderDate;
-
-                                        // Calculate valid date range for picker
-                                        final today = DateTime(
-                                            now.year, now.month, now.day);
-                                        final appointmentDay = DateTime(
-                                          appointmentDate.year,
-                                          appointmentDate.month,
-                                          appointmentDate.day,
-                                        );
-                                        // Ensure initialDate is within valid range
-                                        final validInitialDate =
-                                            displayDateTime.isBefore(today)
-                                                ? today
-                                                : (displayDateTime
-                                                        .isAfter(appointmentDay)
-                                                    ? appointmentDay
-                                                    : displayDateTime);
-
-                                        return InkWell(
-                                          onTap: isSaving.value
-                                              ? null
-                                              : () async {
-                                                  // Show date picker
-                                                  final pickedDate =
-                                                      await showDatePicker(
-                                                    context: context,
-                                                    initialDate:
-                                                        validInitialDate,
-                                                    firstDate: today,
-                                                    lastDate: appointmentDay,
-                                                  );
-                                                  if (pickedDate != null &&
-                                                      context.mounted) {
-                                                    // Show time picker
-                                                    final pickedTime =
-                                                        await showTimePicker(
-                                                      context: context,
-                                                      initialTime: TimeOfDay
-                                                          .fromDateTime(
-                                                              displayDateTime),
-                                                    );
-                                                    if (pickedTime != null) {
-                                                      reminderDateTime.value =
-                                                          DateTime(
-                                                        pickedDate.year,
-                                                        pickedDate.month,
-                                                        pickedDate.day,
-                                                        pickedTime.hour,
-                                                        pickedTime.minute,
-                                                      );
-                                                    }
-                                                  }
-                                                },
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color:
-                                                    theme.colorScheme.outline,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.schedule_send,
-                                                  size: 20,
-                                                  color:
-                                                      theme.colorScheme.primary,
-                                                ),
-                                                const SizedBox(width: 12),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        'Send Date & Time',
-                                                        style: theme
-                                                            .textTheme.bodySmall
-                                                            ?.copyWith(
-                                                          color: theme
-                                                              .colorScheme
-                                                              .onSurfaceVariant,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 2),
-                                                      Text(
-                                                        DateFormat(
-                                                                'MMM d, yyyy - h:mm a')
-                                                            .format(
-                                                                displayDateTime),
-                                                        style: theme.textTheme
-                                                            .bodyMedium
-                                                            ?.copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Icon(
-                                                  Icons.edit,
-                                                  size: 18,
-                                                  color: theme.colorScheme
-                                                      .onSurfaceVariant,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    const SizedBox(height: 16),
-
-                                    // Template selector and message content
-                                    templatesAsync.when(
-                                      loading: () =>
-                                          const LinearProgressIndicator(),
-                                      error: (_, __) => const SizedBox.shrink(),
-                                      data: (templates) {
-                                        return _ReminderMessageSection(
-                                          templates: templates,
-                                          formKey: formKey,
-                                          selectedPatient:
-                                              selectedPatient.value,
-                                          selectedPatientTreatmentIds:
-                                              selectedPatientTreatmentIds,
-                                          sendReminder: sendReminder.value,
-                                          isSaving: isSaving.value,
-                                          replacePlaceholders:
-                                              replacePlaceholders,
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ],
-                              ],
-                            ),
-                          ),
-                        ),
                         const SizedBox(height: 24),
                       ],
                     ),
+                  ),
+
+                      // Step 1: Reminder Message
+                      SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const SizedBox(height: 16),
+
+                            // === REMINDER MESSAGE SECTION ===
+                            Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.notifications_active,
+                                          color: theme.colorScheme.primary,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'Send Reminder Message',
+                                          style: theme.textTheme.titleMedium,
+                                        ),
+                                        const Spacer(),
+                                        Switch(
+                                          value: sendReminder.value,
+                                          onChanged: isSaving.value || noPatient
+                                              ? null
+                                              : (value) {
+                                                  sendReminder.value = value;
+                                                  if (value) {
+                                                    _applyDefaultTemplateAfterMount(
+                                                      formKey: formKey,
+                                                      templates:
+                                                          templatesAsync.value ??
+                                                              [],
+                                                      isTreatment:
+                                                          isTreatment.value,
+                                                      selectedPatientTreatmentIds:
+                                                          selectedPatientTreatmentIds
+                                                              .value,
+                                                      patient:
+                                                          selectedPatient.value,
+                                                      replacePlaceholders:
+                                                          replacePlaceholders,
+                                                    );
+                                                  }
+                                                },
+                                        ),
+                                      ],
+                                    ),
+                                    if (sendReminder.value) ...[
+                                      const SizedBox(height: 16),
+                                      if (selectedPatient.value == null) ...[
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: theme.colorScheme.errorContainer,
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.warning,
+                                                color: theme
+                                                    .colorScheme.onErrorContainer,
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Expanded(
+                                                child: Text(
+                                                  'Please select a patient first',
+                                                  style: TextStyle(
+                                                    color: theme.colorScheme
+                                                        .onErrorContainer,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ] else if (selectedPatient
+                                                  .value!.contactNumber ==
+                                              null ||
+                                          selectedPatient
+                                              .value!.contactNumber!.isEmpty) ...[
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: theme.colorScheme.errorContainer,
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.warning,
+                                                color: theme
+                                                    .colorScheme.onErrorContainer,
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Expanded(
+                                                child: Text(
+                                                  'No contact number on file for this patient',
+                                                  style: TextStyle(
+                                                    color: theme.colorScheme
+                                                        .onErrorContainer,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ] else ...[
+                                        // Phone number display
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: theme.colorScheme
+                                                .surfaceContainerHighest,
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.phone,
+                                                size: 20,
+                                                color: theme
+                                                    .colorScheme.onSurfaceVariant,
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                'To: ${selectedPatient.value!.contactNumber}',
+                                                style: theme.textTheme.bodyMedium
+                                                    ?.copyWith(
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              if (selectedPatient.value!.owner !=
+                                                      null &&
+                                                  selectedPatient
+                                                      .value!.owner!.isNotEmpty)
+                                                Text(
+                                                  ' (${selectedPatient.value!.owner})',
+                                                  style: theme.textTheme.bodyMedium
+                                                      ?.copyWith(
+                                                    color: theme.colorScheme
+                                                        .onSurfaceVariant,
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+
+                                        // Send date/time picker
+                                        Builder(
+                                          builder: (context) {
+                                            // Calculate default reminder time (1 day before at 9 AM)
+                                            final now = DateTime.now();
+                                            final appointmentDate = formKey
+                                                    .currentState
+                                                    ?.fields['date']
+                                                    ?.value as DateTime? ??
+                                                now;
+                                            final defaultReminderDate = DateTime(
+                                              appointmentDate.year,
+                                              appointmentDate.month,
+                                              appointmentDate.day - 1,
+                                              9,
+                                              0,
+                                            );
+                                            // Ensure display date is not before now
+                                            final displayDateTime =
+                                                reminderDateTime.value ??
+                                                    defaultReminderDate;
+
+                                            // Calculate valid date range for picker
+                                            final today = DateTime(
+                                                now.year, now.month, now.day);
+                                            final appointmentDay = DateTime(
+                                              appointmentDate.year,
+                                              appointmentDate.month,
+                                              appointmentDate.day,
+                                            );
+                                            // Ensure initialDate is within valid range
+                                            final validInitialDate =
+                                                displayDateTime.isBefore(today)
+                                                    ? today
+                                                    : (displayDateTime
+                                                            .isAfter(appointmentDay)
+                                                        ? appointmentDay
+                                                        : displayDateTime);
+
+                                            return InkWell(
+                                              onTap: isSaving.value
+                                                  ? null
+                                                  : () async {
+                                                      // Show date picker
+                                                      final pickedDate =
+                                                          await showDatePicker(
+                                                        context: context,
+                                                        initialDate:
+                                                            validInitialDate,
+                                                        firstDate: today,
+                                                        lastDate: appointmentDay,
+                                                      );
+                                                      if (pickedDate != null &&
+                                                          context.mounted) {
+                                                        // Show time picker
+                                                        final pickedTime =
+                                                            await showTimePicker(
+                                                          context: context,
+                                                          initialTime: TimeOfDay
+                                                              .fromDateTime(
+                                                                  displayDateTime),
+                                                        );
+                                                        if (pickedTime != null) {
+                                                          reminderDateTime.value =
+                                                              DateTime(
+                                                            pickedDate.year,
+                                                            pickedDate.month,
+                                                            pickedDate.day,
+                                                            pickedTime.hour,
+                                                            pickedTime.minute,
+                                                          );
+                                                        }
+                                                      }
+                                                    },
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: Container(
+                                                padding: const EdgeInsets.all(12),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color:
+                                                        theme.colorScheme.outline,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.schedule_send,
+                                                      size: 20,
+                                                      color:
+                                                          theme.colorScheme.primary,
+                                                    ),
+                                                    const SizedBox(width: 12),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            'Send Date & Time',
+                                                            style: theme
+                                                                .textTheme.bodySmall
+                                                                ?.copyWith(
+                                                              color: theme
+                                                                  .colorScheme
+                                                                  .onSurfaceVariant,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 2),
+                                                          Text(
+                                                            DateFormat(
+                                                                    'MMM d, yyyy - h:mm a')
+                                                                .format(
+                                                                    displayDateTime),
+                                                            style: theme.textTheme
+                                                                .bodyMedium
+                                                                ?.copyWith(
+                                                              fontWeight:
+                                                                  FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Icon(
+                                                      Icons.edit,
+                                                      size: 18,
+                                                      color: theme.colorScheme
+                                                          .onSurfaceVariant,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        const SizedBox(height: 16),
+
+                                        // Template selector and message content
+                                        templatesAsync.when(
+                                          loading: () =>
+                                              const LinearProgressIndicator(),
+                                          error: (_, __) => const SizedBox.shrink(),
+                                          data: (templates) {
+                                            return _ReminderMessageSection(
+                                              templates: templates,
+                                              formKey: formKey,
+                                              selectedPatient:
+                                                  selectedPatient.value,
+                                              selectedPatientTreatmentIds:
+                                                  selectedPatientTreatmentIds,
+                                              sendReminder: sendReminder.value,
+                                              isSaving: isSaving.value,
+                                              replacePlaceholders:
+                                                  replacePlaceholders,
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -939,6 +1036,86 @@ class CreateAppointmentDialog extends HookConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Step indicator showing progress through the appointment wizard.
+class _StepIndicator extends StatelessWidget {
+  const _StepIndicator({
+    required this.currentStep,
+    required this.onStepTap,
+  });
+
+  final int currentStep;
+  final ValueChanged<int> onStepTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    Widget buildStep(int index, String label, IconData icon) {
+      final isActive = currentStep == index;
+      final isComplete = currentStep > index;
+      final color = isActive || isComplete
+          ? theme.colorScheme.primary
+          : theme.colorScheme.outlineVariant;
+
+      return Expanded(
+        child: GestureDetector(
+          onTap: () => onStepTap(index),
+          child: Column(
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isActive || isComplete
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.surfaceContainerHighest,
+                  border: Border.all(color: color, width: 2),
+                ),
+                child: Icon(
+                  isComplete ? Icons.check : icon,
+                  size: 16,
+                  color: isActive || isComplete
+                      ? theme.colorScheme.onPrimary
+                      : theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: isActive
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.onSurfaceVariant,
+                  fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    Widget buildConnector(bool isComplete) {
+      return Container(
+        height: 2,
+        width: 24,
+        color: isComplete
+            ? theme.colorScheme.primary
+            : theme.colorScheme.outlineVariant,
+      );
+    }
+
+    return Row(
+      children: [
+        buildStep(0, 'Details', Icons.event),
+        buildConnector(currentStep > 0),
+        buildStep(1, 'Message', Icons.sms),
+      ],
     );
   }
 }
@@ -1027,53 +1204,80 @@ class _ReminderMessageSection extends StatelessWidget {
         ? MessageTemplateCategories.appointmentWithTreatment
         : MessageTemplateCategories.appointment;
 
-    // Find first template for current category
-    final defaultTemplate = templates.firstWhereOrNull(
-      (t) => t.category == category,
-    );
-
-    // Filter templates to show only appointment-related categories
-    final filteredTemplates = templates
-        .where((t) =>
-                t.category == MessageTemplateCategories.appointment ||
-                t.category ==
-                    MessageTemplateCategories.appointmentWithTreatment ||
-                t.category == MessageTemplateCategories.appointmentReminder)
+    // Filter templates matching the current appointment category
+    final matchingTemplates = templates
+        .where((t) => t.category == category)
         .toList();
+
+    // Find first matching template as default
+    final defaultTemplate = matchingTemplates.firstOrNull;
+
+    final categoryLabel =
+        MessageTemplateCategories.labels[category] ?? category;
+
+    if (matchingTemplates.isEmpty) {
+      return Column(
+        children: [
+          Card(
+            color: Theme.of(context).colorScheme.errorContainer,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    color: Theme.of(context).colorScheme.onErrorContainer,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'No message template found for "$categoryLabel". '
+                      'Please create one in Settings > Message Templates.',
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).colorScheme.onErrorContainer,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
 
     return Column(
       children: [
         // Template selector
-        if (filteredTemplates.isNotEmpty) ...[
-          FormBuilderDropdown<String>(
-            name: 'template',
-            initialValue: defaultTemplate?.id,
-            decoration: const InputDecoration(
-              labelText: 'Use Template',
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(Icons.description_outlined),
-              helperText: 'Select a template to auto-fill reminder',
-            ),
-            onChanged: (value) {
-              if (value != null && selectedPatient != null) {
-                final template = templates.firstWhere((t) => t.id == value);
-                final finalContent = replacePlaceholders(
-                  template.content,
-                  selectedPatient,
-                );
-                formKey.currentState?.fields['reminderMessage']
-                    ?.didChange(finalContent);
-              }
-            },
-            items: filteredTemplates
-                .map((t) => DropdownMenuItem(
-                      value: t.id,
-                      child: Text(t.name),
-                    ))
-                .toList(),
+        FormBuilderDropdown<String>(
+          name: 'template',
+          initialValue: defaultTemplate?.id,
+          decoration: const InputDecoration(
+            labelText: 'Use Template',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.description_outlined),
+            helperText: 'Select a template to auto-fill reminder',
           ),
-          const SizedBox(height: 16),
-        ],
+          onChanged: (value) {
+            if (value != null && selectedPatient != null) {
+              final template = templates.firstWhere((t) => t.id == value);
+              final finalContent = replacePlaceholders(
+                template.content,
+                selectedPatient,
+              );
+              formKey.currentState?.fields['reminderMessage']
+                  ?.didChange(finalContent);
+            }
+          },
+          items: matchingTemplates
+              .map((t) => DropdownMenuItem(
+                    value: t.id,
+                    child: Text(t.name),
+                  ))
+              .toList(),
+        ),
+        const SizedBox(height: 16),
 
         // Message content field
         FormBuilderTextField(
