@@ -6,6 +6,8 @@ import '../../../../core/i18n/strings.g.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
+import '../../../appointments/presentation/controllers/patient_appointments_controller.dart';
+import '../../../appointments/presentation/widgets/dialogs/create_appointment_dialog.dart';
 import '../../../appointments/presentation/widgets/tabs/patient_appointments_tab.dart';
 import '../../domain/patient.dart';
 import '../../domain/patient_tab.dart';
@@ -118,6 +120,12 @@ class PatientDetailPage extends HookConsumerWidget {
                 tooltip: 'Refresh',
               ),
               IconButton(
+                icon: const Icon(Icons.calendar_month),
+                onPressed: () => _showBookAppointmentDialog(
+                    context, ref, patient),
+                tooltip: 'Book Appointment',
+              ),
+              IconButton(
                 icon: const Icon(Icons.edit),
                 onPressed: () => _showEditPatientDialog(context, patient),
                 tooltip: t.common.edit,
@@ -152,6 +160,19 @@ class PatientDetailPage extends HookConsumerWidget {
             ],
           ),
         );
+      },
+    );
+  }
+
+  void _showBookAppointmentDialog(
+      BuildContext context, WidgetRef ref, Patient patient) {
+    showCreateAppointmentDialog(
+      context,
+      initialPatient: patient,
+      onSave: (appointment) async {
+        return await ref
+            .read(patientAppointmentsControllerProvider(patient.id).notifier)
+            .createAppointmentAndReturn(appointment);
       },
     );
   }
