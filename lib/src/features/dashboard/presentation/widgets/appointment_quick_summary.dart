@@ -7,6 +7,7 @@ import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../appointments/domain/appointment_schedule.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
+import '../../../appointments/presentation/utils/appointment_completion_handler.dart';
 import '../../../appointments/presentation/widgets/components/appointment_status_chip.dart';
 import '../../../appointments/presentation/widgets/dialogs/edit_appointment_dialog.dart';
 
@@ -312,11 +313,22 @@ class AppointmentQuickSummary extends ConsumerWidget {
     );
   }
 
-  void _updateStatus(
+  Future<void> _updateStatus(
     BuildContext context,
     WidgetRef ref,
     AppointmentScheduleStatus status,
   ) async {
+    // Special handling for completing an appointment
+    if (status == AppointmentScheduleStatus.completed) {
+      await AppointmentCompletionHandler.showCompletionFlowAndComplete(
+        context: context,
+        ref: ref,
+        appointment: appointment,
+      );
+      return;
+    }
+
+    // For other status changes, update directly
     final success = await ref
         .read(appointmentsControllerProvider.notifier)
         .updateStatus(appointment.id, status);

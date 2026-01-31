@@ -6,6 +6,7 @@ import '../../../patients/domain/patient_record.dart';
 import '../../../patients/domain/patient_treatment_record.dart';
 import '../../../patients/presentation/controllers/patient_records_controller.dart';
 import '../../../patients/presentation/controllers/patient_treatment_records_controller.dart';
+import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../domain/appointment_schedule.dart';
 import '../controllers/appointments_controller.dart';
 import '../controllers/paginated_appointments_controller.dart';
@@ -83,6 +84,10 @@ class AppointmentCompletionHandler {
 
     // Create treatment record if requested
     if (createRecord && appointment.patient != null) {
+      // Use appointment's branch or fall back to current branch
+      final branch =
+          appointment.branch ?? ref.read(currentBranchIdProvider);
+
       // Create the patient visit record
       final patientRecord = PatientRecord(
         id: '', // Will be assigned by PocketBase
@@ -96,6 +101,7 @@ class AppointmentCompletionHandler {
             : null,
         notes: appointment.notes,
         appointment: appointment.id,
+        branch: branch,
       );
 
       final createdRecord = await ref
