@@ -8,6 +8,7 @@ import '../../../../core/routing/routes/system.routes.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../patients/domain/patient_treatment.dart';
 import '../../../patients/presentation/controllers/patient_treatments_controller.dart';
+import '../controllers/current_branch_controller.dart';
 
 /// Detail panel for viewing/editing a treatment type in tablet layout.
 class TreatmentTypeDetailPanel extends HookConsumerWidget {
@@ -59,6 +60,9 @@ class TreatmentTypeDetailPanel extends HookConsumerWidget {
       final treatmentData = PatientTreatment(
         id: isCreating ? '' : treatmentId,
         name: (values['name'] as String).trim(),
+        branch: isCreating
+            ? ref.read(currentBranchIdProvider)
+            : treatment?.branch,
       );
 
       bool success;
