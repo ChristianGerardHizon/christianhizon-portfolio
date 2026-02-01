@@ -252,6 +252,11 @@ FormBuilderTextField(
 - Controllers: `*_controller.dart`
 - Models: `*_model.dart` or entity name
 
+## Pull Requests
+
+- **All PRs must target the `staging` branch**, not `main`.
+- When creating PRs with `gh pr create`, always use `--base staging`.
+
 ## Testing
 
 Tests are located in `/test` directory mirroring the `lib/` structure.

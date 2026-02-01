@@ -3,9 +3,21 @@ import 'package:flutter/material.dart';
 import '../i18n/strings.g.dart';
 import '../routing/router.dart';
 
-/// Gets the root ScaffoldMessenger, falling back to context if unavailable.
-ScaffoldMessengerState _getRootMessenger(BuildContext context) {
-  return rootScaffoldMessengerKey.currentState ?? ScaffoldMessenger.of(context);
+/// Gets the ScaffoldMessenger to use for snackbars.
+///
+/// When [useRootMessenger] is true (default), uses the root ScaffoldMessenger
+/// so snackbars appear at the app level. When false, uses the nearest
+/// ScaffoldMessenger from [context] — useful when called from dialogs that
+/// want the snackbar to appear within their own scaffold.
+ScaffoldMessengerState _getMessenger(
+  BuildContext context, {
+  bool useRootMessenger = true,
+}) {
+  if (useRootMessenger) {
+    return rootScaffoldMessengerKey.currentState ??
+        ScaffoldMessenger.of(context);
+  }
+  return ScaffoldMessenger.of(context);
 }
 
 /// Shows an error dialog with a list of validation errors.
@@ -78,8 +90,9 @@ void showSuccessSnackBar(
   BuildContext context, {
   required String message,
   Duration duration = const Duration(seconds: 3),
+  bool useRootMessenger = true,
 }) {
-  _getRootMessenger(context).showSnackBar(
+  _getMessenger(context, useRootMessenger: useRootMessenger).showSnackBar(
     SnackBar(
       content: Row(
         children: [
@@ -114,8 +127,9 @@ void showErrorSnackBar(
   BuildContext context, {
   required String message,
   Duration duration = const Duration(seconds: 4),
+  bool useRootMessenger = true,
 }) {
-  _getRootMessenger(context).showSnackBar(
+  _getMessenger(context, useRootMessenger: useRootMessenger).showSnackBar(
     SnackBar(
       content: Row(
         children: [
@@ -149,8 +163,9 @@ void showInfoSnackBar(
   BuildContext context, {
   required String message,
   Duration duration = const Duration(seconds: 3),
+  bool useRootMessenger = true,
 }) {
-  _getRootMessenger(context).showSnackBar(
+  _getMessenger(context, useRootMessenger: useRootMessenger).showSnackBar(
     SnackBar(
       content: Row(
         children: [
@@ -184,8 +199,9 @@ void showWarningSnackBar(
   BuildContext context, {
   required String message,
   Duration duration = const Duration(seconds: 4),
+  bool useRootMessenger = true,
 }) {
-  _getRootMessenger(context).showSnackBar(
+  _getMessenger(context, useRootMessenger: useRootMessenger).showSnackBar(
     SnackBar(
       content: Row(
         children: [

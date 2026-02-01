@@ -174,16 +174,8 @@ class EditAppointmentDialog extends HookConsumerWidget {
         }
       }
 
-      // Determine autoCreateRecord:
-      // - If type changed from the original, set based on new type
-      // - Otherwise preserve the existing value
-      final originalWasTreatment = appointment.patientTreatment.isNotEmpty;
-      final bool autoCreateRecord;
-      if (isTreatment.value != originalWasTreatment) {
-        autoCreateRecord = isTreatment.value;
-      } else {
-        autoCreateRecord = appointment.autoCreateRecord;
-      }
+      // Preserve the existing autoCreateRecord since type cannot change
+      final autoCreateRecord = appointment.autoCreateRecord;
 
       final updated = AppointmentSchedule(
         id: appointment.id,
@@ -344,6 +336,27 @@ class EditAppointmentDialog extends HookConsumerWidget {
                       ),
                       const SizedBox(height: 16),
 
+                      // Appointment Type (read-only)
+                      IgnorePointer(
+                        child: SegmentedButton<bool>(
+                          segments: const [
+                            ButtonSegment<bool>(
+                              value: false,
+                              label: Text('General'),
+                              icon: Icon(Icons.description_outlined),
+                            ),
+                            ButtonSegment<bool>(
+                              value: true,
+                              label: Text('Treatment'),
+                              icon: Icon(Icons.medical_services_outlined),
+                            ),
+                          ],
+                          selected: {isTreatment.value},
+                          onSelectionChanged: null,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
                       // Date picker
                       FormBuilderDateTimePicker(
                         name: 'date',
@@ -389,37 +402,6 @@ class EditAppointmentDialog extends HookConsumerWidget {
                         ),
                         const SizedBox(height: 16),
                       ],
-
-                      // Appointment Type Toggle
-                      SegmentedButton<bool>(
-                        segments: const [
-                          ButtonSegment<bool>(
-                            value: false,
-                            label: Text('General'),
-                            icon: Icon(Icons.description_outlined),
-                          ),
-                          ButtonSegment<bool>(
-                            value: true,
-                            label: Text('Treatment'),
-                            icon: Icon(Icons.medical_services_outlined),
-                          ),
-                        ],
-                        selected: {isTreatment.value},
-                        onSelectionChanged: isSaving.value
-                            ? null
-                            : (value) {
-                                isTreatment.value = value.first;
-                                if (value.first) {
-                                  // Switching to treatment: clear purpose
-                                  formKey.currentState?.fields['purpose']
-                                      ?.didChange(null);
-                                } else {
-                                  // Switching to checkup: clear treatments
-                                  selectedPatientTreatmentIds.value = [];
-                                }
-                              },
-                      ),
-                      const SizedBox(height: 16),
 
                       // Treatment Types (shown when Treatment is selected)
                       if (isTreatment.value) ...[
