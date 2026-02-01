@@ -43,12 +43,13 @@ class MobileDrawer extends ConsumerWidget {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Assets.icons.appIconTransparent.image(
-                    width: 60,
-                    height: 60,
+                    width: 48,
+                    height: 48,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
                   Text(
                     'Sann Jose Animal Clinic',
                     style: theme.textTheme.titleLarge,
