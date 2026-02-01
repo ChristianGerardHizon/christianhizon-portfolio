@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -48,16 +49,45 @@ class Application extends HookConsumerWidget {
               }
             });
 
-            return WindowSizeListener(
-              child: MaterialApp.router(
-                scaffoldMessengerKey: rootScaffoldMessengerKey,
-                title: appTitle,
-                debugShowCheckedModeBanner: false,
-                locale: TranslationProvider.of(context).flutterLocale,
-                supportedLocales: AppLocaleUtils.supportedLocales,
-                localizationsDelegates: GlobalMaterialLocalizations.delegates,
-                theme: ThemeProvider.themeOf(themeContext).data,
-                routerConfig: router,
+            return PopScope(
+              canPop: false,
+              onPopInvokedWithResult: (didPop, _) async {
+                if (didPop) return;
+                final shouldExit = await showDialog<bool>(
+                  context: themeContext,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Exit App'),
+                    content: const Text(
+                      'Are you sure you want to close the app?',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text('Cancel'),
+                      ),
+                      FilledButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: const Text('Exit'),
+                      ),
+                    ],
+                  ),
+                );
+                if (shouldExit ?? false) {
+                  SystemNavigator.pop();
+                }
+              },
+              child: WindowSizeListener(
+                child: MaterialApp.router(
+                  scaffoldMessengerKey: rootScaffoldMessengerKey,
+                  title: appTitle,
+                  debugShowCheckedModeBanner: false,
+                  locale: TranslationProvider.of(context).flutterLocale,
+                  supportedLocales: AppLocaleUtils.supportedLocales,
+                  localizationsDelegates:
+                      GlobalMaterialLocalizations.delegates,
+                  theme: ThemeProvider.themeOf(themeContext).data,
+                  routerConfig: router,
+                ),
               ),
             );
           },

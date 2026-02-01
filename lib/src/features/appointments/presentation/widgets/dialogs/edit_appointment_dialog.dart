@@ -344,6 +344,22 @@ class EditAppointmentDialog extends HookConsumerWidget {
                       ),
                       const SizedBox(height: 16),
 
+                      // Treatment type (read-only)
+                      if (appointment.patientTreatmentName != null &&
+                          appointment.patientTreatmentName!.isNotEmpty) ...[
+                        FormBuilderTextField(
+                          name: 'treatmentType',
+                          initialValue: appointment.patientTreatmentName,
+                          decoration: const InputDecoration(
+                            labelText: 'Treatment Type',
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.medical_services_outlined),
+                          ),
+                          enabled: false,
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+
                       // Date picker
                       FormBuilderDateTimePicker(
                         name: 'date',
