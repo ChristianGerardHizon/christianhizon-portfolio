@@ -292,221 +292,6 @@ class CheckoutDialog extends HookConsumerWidget {
                       _buildOrderSummary(context, cartItems, total),
                       const SizedBox(height: 24),
 
-                      // Customer section (optional)
-                      Card(
-                        color: theme.colorScheme.surfaceContainerHighest,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Section header with icon
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.person_outline,
-                                    color: theme.colorScheme.primary,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'Customer (Optional)',
-                                    style:
-                                        theme.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-
-                              if (selectedPatient.value == null) ...[
-                                // SegmentedButton for customer type
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: SegmentedButton<String>(
-                                    segments: const [
-                                      ButtonSegment(
-                                        value: 'patient',
-                                        label: Text('Patient'),
-                                        icon: Icon(Icons.pets),
-                                      ),
-                                      ButtonSegment(
-                                        value: 'walkin',
-                                        label: Text('Walk-in'),
-                                        icon: Icon(Icons.person_add_outlined),
-                                      ),
-                                    ],
-                                    selected: {customerType.value},
-                                    onSelectionChanged: (values) {
-                                      customerType.value = values.first;
-                                      // Clear the other field when switching
-                                      if (values.first == 'patient') {
-                                        customerNameController.clear();
-                                      } else {
-                                        patientSearchController.clear();
-                                        patientSearchResults.value = [];
-                                        showPatientDropdown.value = false;
-                                      }
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-
-                                // Conditional content based on customer type
-                                if (customerType.value == 'patient') ...[
-                                  // Patient search
-                                  TextField(
-                                    controller: patientSearchController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Search patient...',
-                                      prefixIcon: const Icon(Icons.search),
-                                      suffixIcon: isSearchingPatients.value
-                                          ? const Padding(
-                                              padding: EdgeInsets.all(12),
-                                              child: SizedBox(
-                                                height: 20,
-                                                width: 20,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                        strokeWidth: 2),
-                                              ),
-                                            )
-                                          : null,
-                                      border: const OutlineInputBorder(),
-                                    ),
-                                    onChanged: searchPatients,
-                                  ),
-                                  if (showPatientDropdown.value &&
-                                      patientSearchResults.value.isNotEmpty)
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 4),
-                                      decoration: BoxDecoration(
-                                        color: theme.colorScheme.surface,
-                                        border: Border.all(
-                                            color: theme.colorScheme.outline),
-                                        borderRadius: BorderRadius.circular(8),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black
-                                                .withValues(alpha: 0.1),
-                                            blurRadius: 4,
-                                            offset: const Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: patientSearchResults.value
-                                            .map((patient) {
-                                          return ListTile(
-                                            dense: true,
-                                            leading: CircleAvatar(
-                                              radius: 16,
-                                              child: Text(
-                                                patient.name.isNotEmpty
-                                                    ? patient.name[0]
-                                                        .toUpperCase()
-                                                    : '?',
-                                                style: const TextStyle(
-                                                    fontSize: 12),
-                                              ),
-                                            ),
-                                            title: Text(patient.name),
-                                            subtitle: patient.owner != null
-                                                ? Text(
-                                                    'Owner: ${patient.owner}',
-                                                    style: theme
-                                                        .textTheme.bodySmall,
-                                                  )
-                                                : null,
-                                            onTap: () => selectPatient(patient),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
-                                ] else ...[
-                                  // Walk-in customer name
-                                  TextField(
-                                    controller: customerNameController,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Customer name',
-                                      prefixIcon: Icon(Icons.person_outline),
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Enter customer name',
-                                    ),
-                                  ),
-                                ],
-                              ] else ...[
-                                // Selected patient display
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: theme.colorScheme.primaryContainer
-                                        .withValues(alpha: 0.3),
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                        color: theme.colorScheme.primary
-                                            .withValues(alpha: 0.5)),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 20,
-                                        backgroundColor:
-                                            theme.colorScheme.primary,
-                                        child: Text(
-                                          selectedPatient.value!.name.isNotEmpty
-                                              ? selectedPatient.value!.name[0]
-                                                  .toUpperCase()
-                                              : '?',
-                                          style: TextStyle(
-                                            color: theme.colorScheme.onPrimary,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              selectedPatient.value!.name,
-                                              style: theme.textTheme.titleSmall
-                                                  ?.copyWith(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            if (selectedPatient.value!.owner !=
-                                                null)
-                                              Text(
-                                                'Owner: ${selectedPatient.value!.owner}',
-                                                style: theme.textTheme.bodySmall
-                                                    ?.copyWith(
-                                                  color: theme.colorScheme
-                                                      .onSurfaceVariant,
-                                                ),
-                                              ),
-                                          ],
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.close),
-                                        onPressed: clearPatientSelection,
-                                        tooltip: 'Remove customer',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
                       // Payment method selection
                       Card(
                         color: theme.colorScheme.surfaceContainerHighest,
@@ -884,6 +669,221 @@ class CheckoutDialog extends HookConsumerWidget {
                           ),
                         ),
                       ],
+                      const SizedBox(height: 24),
+
+                      // Customer section (optional)
+                      Card(
+                        color: theme.colorScheme.surfaceContainerHighest,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Section header with icon
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.person_outline,
+                                    color: theme.colorScheme.primary,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Customer (Optional)',
+                                    style:
+                                        theme.textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+
+                              if (selectedPatient.value == null) ...[
+                                // SegmentedButton for customer type
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: SegmentedButton<String>(
+                                    segments: const [
+                                      ButtonSegment(
+                                        value: 'patient',
+                                        label: Text('Patient'),
+                                        icon: Icon(Icons.pets),
+                                      ),
+                                      ButtonSegment(
+                                        value: 'walkin',
+                                        label: Text('Walk-in'),
+                                        icon: Icon(Icons.person_add_outlined),
+                                      ),
+                                    ],
+                                    selected: {customerType.value},
+                                    onSelectionChanged: (values) {
+                                      customerType.value = values.first;
+                                      // Clear the other field when switching
+                                      if (values.first == 'patient') {
+                                        customerNameController.clear();
+                                      } else {
+                                        patientSearchController.clear();
+                                        patientSearchResults.value = [];
+                                        showPatientDropdown.value = false;
+                                      }
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+
+                                // Conditional content based on customer type
+                                if (customerType.value == 'patient') ...[
+                                  // Patient search
+                                  TextField(
+                                    controller: patientSearchController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Search patient...',
+                                      prefixIcon: const Icon(Icons.search),
+                                      suffixIcon: isSearchingPatients.value
+                                          ? const Padding(
+                                              padding: EdgeInsets.all(12),
+                                              child: SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                        strokeWidth: 2),
+                                              ),
+                                            )
+                                          : null,
+                                      border: const OutlineInputBorder(),
+                                    ),
+                                    onChanged: searchPatients,
+                                  ),
+                                  if (showPatientDropdown.value &&
+                                      patientSearchResults.value.isNotEmpty)
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 4),
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme.surface,
+                                        border: Border.all(
+                                            color: theme.colorScheme.outline),
+                                        borderRadius: BorderRadius.circular(8),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black
+                                                .withValues(alpha: 0.1),
+                                            blurRadius: 4,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: patientSearchResults.value
+                                            .map((patient) {
+                                          return ListTile(
+                                            dense: true,
+                                            leading: CircleAvatar(
+                                              radius: 16,
+                                              child: Text(
+                                                patient.name.isNotEmpty
+                                                    ? patient.name[0]
+                                                        .toUpperCase()
+                                                    : '?',
+                                                style: const TextStyle(
+                                                    fontSize: 12),
+                                              ),
+                                            ),
+                                            title: Text(patient.name),
+                                            subtitle: patient.owner != null
+                                                ? Text(
+                                                    'Owner: ${patient.owner}',
+                                                    style: theme
+                                                        .textTheme.bodySmall,
+                                                  )
+                                                : null,
+                                            onTap: () => selectPatient(patient),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                ] else ...[
+                                  // Walk-in customer name
+                                  TextField(
+                                    controller: customerNameController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Customer name',
+                                      prefixIcon: Icon(Icons.person_outline),
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Enter customer name',
+                                    ),
+                                  ),
+                                ],
+                              ] else ...[
+                                // Selected patient display
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.primaryContainer
+                                        .withValues(alpha: 0.3),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        color: theme.colorScheme.primary
+                                            .withValues(alpha: 0.5)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 20,
+                                        backgroundColor:
+                                            theme.colorScheme.primary,
+                                        child: Text(
+                                          selectedPatient.value!.name.isNotEmpty
+                                              ? selectedPatient.value!.name[0]
+                                                  .toUpperCase()
+                                              : '?',
+                                          style: TextStyle(
+                                            color: theme.colorScheme.onPrimary,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              selectedPatient.value!.name,
+                                              style: theme.textTheme.titleSmall
+                                                  ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            if (selectedPatient.value!.owner !=
+                                                null)
+                                              Text(
+                                                'Owner: ${selectedPatient.value!.owner}',
+                                                style: theme.textTheme.bodySmall
+                                                    ?.copyWith(
+                                                  color: theme.colorScheme
+                                                      .onSurfaceVariant,
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.close),
+                                        onPressed: clearPatientSelection,
+                                        tooltip: 'Remove customer',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 24),
 
                       // Notes section
