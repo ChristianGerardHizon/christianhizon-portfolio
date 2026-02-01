@@ -290,82 +290,65 @@ class _MobileSystemLandingPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('System Settings'),
       ),
-      body: Padding(
+      body: ListView(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: _SystemOptionCard(
-                icon: Icons.pets,
-                title: 'Species & Breeds',
-                description: 'Manage patient species and their breeds',
-                color: theme.colorScheme.primary,
-                onTap: () => const SpeciesRoute().go(context),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: _SystemOptionCard(
-                icon: Icons.inventory_2,
-                title: 'Product Categories',
-                description: 'Manage product category hierarchy',
-                color: theme.colorScheme.secondary,
-                onTap: () => const ProductCategoriesRoute().go(context),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: _SystemOptionCard(
-                icon: Icons.chat_bubble,
-                title: 'Message Templates',
-                description: 'Manage SMS message templates',
-                color: theme.colorScheme.tertiary,
-                onTap: () => const MessageTemplatesRoute().go(context),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: _SystemOptionCard(
-                icon: Icons.medical_services,
-                title: 'Treatment Types',
-                description: 'Manage patient treatment categories',
-                color: Colors.teal,
-                onTap: () => const TreatmentTypesRoute().go(context),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: _SystemOptionCard(
-                icon: Icons.print,
-                title: 'Printers',
-                description: 'Configure thermal receipt printers',
-                color: Colors.orange,
-                onTap: () => const PrinterSettingsRoute().go(context),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: _SystemOptionCard(
-                icon: Icons.palette,
-                title: 'Appearance',
-                description: 'Customize app theme and colors',
-                color: Colors.purple,
-                onTap: () => const AppearanceRoute().go(context),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: _SystemOptionCard(
-                icon: Icons.file_upload,
-                title: 'Import',
-                description: 'Import products from CSV file',
-                color: Colors.indigo,
-                onTap: () => const ImportRoute().go(context),
-              ),
-            ),
-          ],
-        ),
+        children: [
+          _SystemOptionCard(
+            icon: Icons.pets,
+            title: 'Species & Breeds',
+            description: 'Manage patient species and their breeds',
+            color: theme.colorScheme.primary,
+            onTap: () => const SpeciesRoute().go(context),
+          ),
+          const SizedBox(height: 16),
+          _SystemOptionCard(
+            icon: Icons.inventory_2,
+            title: 'Product Categories',
+            description: 'Manage product category hierarchy',
+            color: theme.colorScheme.secondary,
+            onTap: () => const ProductCategoriesRoute().go(context),
+          ),
+          const SizedBox(height: 16),
+          _SystemOptionCard(
+            icon: Icons.chat_bubble,
+            title: 'Message Templates',
+            description: 'Manage SMS message templates',
+            color: theme.colorScheme.tertiary,
+            onTap: () => const MessageTemplatesRoute().go(context),
+          ),
+          const SizedBox(height: 16),
+          _SystemOptionCard(
+            icon: Icons.medical_services,
+            title: 'Treatment Types',
+            description: 'Manage patient treatment categories',
+            color: Colors.teal,
+            onTap: () => const TreatmentTypesRoute().go(context),
+          ),
+          const SizedBox(height: 16),
+          _SystemOptionCard(
+            icon: Icons.print,
+            title: 'Printers',
+            description: 'Configure thermal receipt printers',
+            color: Colors.orange,
+            onTap: () => const PrinterSettingsRoute().go(context),
+          ),
+          const SizedBox(height: 16),
+          _SystemOptionCard(
+            icon: Icons.palette,
+            title: 'Appearance',
+            description: 'Customize app theme and colors',
+            color: Colors.purple,
+            onTap: () => const AppearanceRoute().go(context),
+          ),
+          const SizedBox(height: 16),
+          _SystemOptionCard(
+            icon: Icons.file_upload,
+            title: 'Import',
+            description: 'Import products from CSV file',
+            color: Colors.indigo,
+            onTap: () => const ImportRoute().go(context),
+          ),
+        ],
       ),
     );
   }

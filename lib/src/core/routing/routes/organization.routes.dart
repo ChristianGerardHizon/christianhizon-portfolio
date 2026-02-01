@@ -194,39 +194,30 @@ class _MobileOrganizationLandingPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(t.navigation.organization),
       ),
-      body: Padding(
+      body: ListView(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: _OrganizationOptionCard(
-                icon: Icons.people,
-                title: t.navigation.users,
-                color: theme.colorScheme.primary,
-                onTap: () => const OrganizationUsersRoute().go(context),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: _OrganizationOptionCard(
-                icon: Icons.admin_panel_settings,
-                title: t.navigation.roles,
-                color: theme.colorScheme.secondary,
-                onTap: () => const OrganizationRolesRoute().go(context),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: _OrganizationOptionCard(
-                icon: Icons.store,
-                title: t.navigation.branches,
-                color: theme.colorScheme.tertiary,
-                onTap: () => const OrganizationBranchesRoute().go(context),
-              ),
-            ),
-          ],
-        ),
+        children: [
+          _OrganizationOptionCard(
+            icon: Icons.people,
+            title: t.navigation.users,
+            color: theme.colorScheme.primary,
+            onTap: () => const OrganizationUsersRoute().go(context),
+          ),
+          const SizedBox(height: 16),
+          _OrganizationOptionCard(
+            icon: Icons.admin_panel_settings,
+            title: t.navigation.roles,
+            color: theme.colorScheme.secondary,
+            onTap: () => const OrganizationRolesRoute().go(context),
+          ),
+          const SizedBox(height: 16),
+          _OrganizationOptionCard(
+            icon: Icons.store,
+            title: t.navigation.branches,
+            color: theme.colorScheme.tertiary,
+            onTap: () => const OrganizationBranchesRoute().go(context),
+          ),
+        ],
       ),
     );
   }
