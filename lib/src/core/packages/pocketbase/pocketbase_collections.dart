@@ -18,13 +18,19 @@ abstract class PocketBaseCollections {
   static const String productLots = 'productLots';
   static const String productAdjustments = 'productAdjustments';
 
+  // Services
+  static const String services = 'services';
+  static const String serviceCategories = 'serviceCategories';
+
   // Carts
   static const String carts = 'carts';
   static const String cartItems = 'cartItems';
+  static const String cartServiceItems = 'cartServiceItems';
 
   // Sales
   static const String sales = 'sales';
   static const String saleItems = 'saleItems';
+  static const String saleServiceItems = 'saleServiceItems';
 
   // View Collections (SQL Views for optimized queries)
   static const String vwInventoryStatus = 'vw_inventory_status';
