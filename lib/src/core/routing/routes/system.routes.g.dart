@@ -38,6 +38,16 @@ RouteBase get $systemShellRoute => ShellRouteData.$route(
               ],
             ),
             GoRouteData.$route(
+              path: 'cashier-groups',
+              factory: $CashierGroupsRoute._fromState,
+              routes: [
+                GoRouteData.$route(
+                  path: ':id',
+                  factory: $CashierGroupDetailRoute._fromState,
+                ),
+              ],
+            ),
+            GoRouteData.$route(
               path: 'appearance',
               factory: $AppearanceRoute._fromState,
             ),
@@ -161,6 +171,56 @@ mixin $PrinterDetailRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
         '/system/printers/${Uri.encodeComponent(_self.id)}',
+      );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $CashierGroupsRoute on GoRouteData {
+  static CashierGroupsRoute _fromState(GoRouterState state) =>
+      const CashierGroupsRoute();
+
+  @override
+  String get location => GoRouteData.$location(
+        '/system/cashier-groups',
+      );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $CashierGroupDetailRoute on GoRouteData {
+  static CashierGroupDetailRoute _fromState(GoRouterState state) =>
+      CashierGroupDetailRoute(
+        id: state.pathParameters['id']!,
+      );
+
+  CashierGroupDetailRoute get _self => this as CashierGroupDetailRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+        '/system/cashier-groups/${Uri.encodeComponent(_self.id)}',
       );
 
   @override

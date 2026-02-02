@@ -151,7 +151,7 @@ class ServiceDetailPage extends HookConsumerWidget {
 
   void _showEditSheet(BuildContext context, WidgetRef ref) async {
     final service =
-        ref.read(serviceProvider(serviceId)).valueOrNull;
+        ref.read(serviceProvider(serviceId)).value;
     if (service == null) return;
 
     final result = await showServiceFormSheet(

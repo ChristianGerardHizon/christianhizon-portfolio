@@ -18,6 +18,7 @@ import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../../settings/presentation/controllers/branch_provider.dart';
 import '../../../settings/presentation/controllers/printer_config_provider.dart';
+import '../../../services/domain/sale_service_item.dart';
 import '../../domain/sale.dart';
 import '../../domain/sale_item.dart';
 import '../services/thermal_print_service.dart';
@@ -155,6 +156,7 @@ Future<void> showReceiptDialog(
   BuildContext context, {
   required Sale sale,
   List<SaleItem> saleItems = const [],
+  List<SaleServiceItem> saleServiceItems = const [],
 }) {
   return showDialog(
     context: context,
@@ -166,6 +168,7 @@ Future<void> showReceiptDialog(
       child: ReceiptDialog(
         sale: sale,
         saleItems: saleItems,
+        saleServiceItems: saleServiceItems,
       ),
     ),
   );
@@ -177,10 +180,12 @@ class ReceiptDialog extends HookConsumerWidget {
     super.key,
     required this.sale,
     this.saleItems = const [],
+    this.saleServiceItems = const [],
   });
 
   final Sale sale;
   final List<SaleItem> saleItems;
+  final List<SaleServiceItem> saleServiceItems;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

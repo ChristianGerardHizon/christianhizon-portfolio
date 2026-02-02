@@ -62,6 +62,17 @@ Inventory and product management with lot tracking.
   - Hierarchical category organization
 - **Key Models**: `Product`, `ProductCategory`, `ProductLot`, `ProductAdjustment`
 
+#### Services (`/services`)
+Service management and POS integration for laundry services.
+
+- **Sub-features**:
+  - Services list with category filtering and search
+  - Service categories management
+  - Variable price and weight-based service support
+  - Estimated duration tracking
+- **Key Models**: `Service`, `ServiceCategory`, `CartServiceItem`, `SaleServiceItem`
+- **POS Integration**: Services appear in a separate tab in the cashier alongside products
+
 #### Dashboard (`/`)
 Home screen with quick summary and today's appointments.
 
@@ -74,20 +85,28 @@ Home screen with quick summary and today's appointments.
 ### Secondary Features
 
 #### Point of Sale / Cashier (`/cashier`)
-Complete POS system for processing sales.
+Complete POS system for processing sales of products and services.
 
 - **Features**:
+  - **Customizable Cashier Layout** (POS Groups): Create named groups of products/services per branch to define the cashier page layout. Groups display as scrollable sections with sticky headers. Items can belong to multiple groups. Falls back to default Products/Services tabs when no groups are configured.
+  - Products/Services tab toggle (SegmentedButton) — default mode when no groups exist
   - Product grid with search and category filtering
-  - Shopping cart management
+  - Service grid with search
+  - Search dropdown overlay (grouped mode) — searches across all products and services, results show in a dropdown with type icons
+  - Shopping cart with mixed product + service items
   - Lot selection with FEFO ordering for lot-tracked products
+  - Variable price support for both products and services
   - Multiple payment methods (cash, card, check, etc.)
   - Receipt generation and printing
 - **Components**:
-  - `ProductGrid` - Product selection
-  - `CartView` - Shopping cart
-  - `CheckoutSheet` - Payment processing
-  - `LotSelectionSheet` - FEFO lot selection
-  - `ReceiptSheet` - Receipt display/print
+  - `ProductGrid` - Product selection (default mode)
+  - `ServiceGrid` - Service selection (default mode)
+  - `GroupedCashierView` - Scrollable grouped sections with product/service cards (grouped mode)
+  - `CashierSearchDropdown` - Search overlay for grouped mode
+  - `CartView` - Shopping cart (products + services)
+  - `CheckoutDialog` - Payment processing
+  - `LotSelectionDialog` - FEFO lot selection
+  - `ReceiptDialog` - Receipt display/print
 
 #### Sales History (`/sales`)
 View and manage completed transactions.
@@ -140,6 +159,7 @@ Plan and track multi-visit treatment courses.
 - **Species & Breeds** (`/system/species`) - Pet species catalog with breeds linked to species
 - **Product Categories** (`/system/product-categories`) - Hierarchical product categories
 - **Message Templates** (`/system/message-templates`) - Pre-defined messages for appointments
+- **Cashier Layout** (`/system/cashier-groups`) - POS groups management per branch (create groups, add products/services, reorder)
 
 ---
 
@@ -223,12 +243,26 @@ Located in `/lib/src/core/`
 |------------|-------------|
 | `AppointmentSchedule` | Appointment bookings |
 
-#### Sales Domain (3 collections)
+#### Service Domain (2 collections)
+| Collection | Description |
+|------------|-------------|
+| `Service` | Laundry services (wash, dry, fold, etc.) |
+| `ServiceCategory` | Service categories |
+
+#### POS Domain (2 collections)
+| Collection | Description |
+|------------|-------------|
+| `PosGroup` | Named groups for cashier layout (per-branch) |
+| `PosGroupItem` | Many-to-many link between groups and products/services |
+
+#### Sales Domain (5 collections)
 | Collection | Description |
 |------------|-------------|
 | `Sale` | Transaction records |
-| `SaleItem` | Items in transaction |
-| `Cart` / `CartItem` | Shopping cart (temporary) |
+| `SaleItem` | Product items in transaction |
+| `SaleServiceItem` | Service items in transaction |
+| `Cart` / `CartItem` | Shopping cart (temporary, products) |
+| `CartServiceItem` | Shopping cart (temporary, services) |
 
 #### Treatment Plans Domain (3 collections)
 | Collection | Description |
@@ -351,6 +385,9 @@ App Root (Shell)
     │   ├── /products/:id (Detail)
     │   ├── /products/categories
     │   └── /products/adjustments
+    ├── /services
+    │   ├── /services (List)
+    │   └── /services/:id (Detail)
     ├── /cashier (POS)
     ├── /sales
     │   ├── /sales (List)
@@ -368,8 +405,10 @@ App Root (Shell)
         │   └── /system/species/:id
         ├── /system/product-categories
         │   └── /system/product-categories/:id
-        └── /system/message-templates
-            └── /system/message-templates/:id
+        ├── /system/message-templates
+        │   └── /system/message-templates/:id
+        └── /system/cashier-groups
+            └── /system/cashier-groups/:id
 ```
 
 ### Navigation Components
@@ -392,7 +431,7 @@ Organization and System sections use a 3-panel layout:
 | Panel 3 | Expanded | Detail panel or empty state |
 
 - **Organization modes**: Users, Roles, Branches
-- **System modes**: Species & Breeds, Product Categories, Message Templates
+- **System modes**: Species & Breeds, Product Categories, Message Templates, Cashier Layout (POS Groups)
 
 ### Primary Navigation
 1. 🏠 Dashboard - `/`
@@ -510,6 +549,8 @@ lib/src/
 
 | Date | Feature | Description |
 |------|---------|-------------|
+| Feb 02 | Cashier Groups | Customizable cashier layout with POS groups per branch — scrollable sections, search dropdown, settings page under System, falls back to default tabs when no groups configured |
+| Feb 02 | Services Feature | Full services CRUD (wash, dry, fold, iron) with categories, variable pricing, POS integration via Products/Services tab toggle, cart support, and checkout flow |
 | Jan 24 | 3-Panel Layouts | Organization and System now use 3-panel tablet layouts with nav rail, list, and detail panels |
 | Jan 24 | Branches Moved | Branches management moved from System to Organization section |
 | Jan 24 | Nav Panel Labels | Navigation panels now show icon + text labels for better clarity |

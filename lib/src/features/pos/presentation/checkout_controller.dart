@@ -9,6 +9,7 @@ import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../products/data/repositories/product_lot_repository.dart';
 import '../../products/data/repositories/product_repository.dart';
+import '../../services/domain/sale_service_item.dart';
 import '../data/repositories/sales_repository.dart';
 import '../domain/payment_method.dart';
 import '../domain/sale.dart';
@@ -58,8 +59,8 @@ class CheckoutController extends _$CheckoutController {
     final saleItems = cartState.items.map((cartItem) {
       final product = cartItem.product;
       return SaleItem(
-        id: '', // Will be assigned by backend
-        saleId: '', // Will be linked by backend
+        id: '',
+        saleId: '',
         productId: cartItem.productId,
         productName: product?.name ?? 'Unknown Product',
         quantity: cartItem.quantity,
@@ -67,6 +68,20 @@ class CheckoutController extends _$CheckoutController {
         subtotal: cartItem.total,
         productLotId: cartItem.productLotId,
         lotNumber: cartItem.lotNumber,
+      );
+    }).toList();
+
+    // Convert cart service items to sale service items
+    final saleServiceItems = cartState.serviceItems.map((cartServiceItem) {
+      final service = cartServiceItem.service;
+      return SaleServiceItem(
+        id: '',
+        saleId: '',
+        serviceId: cartServiceItem.serviceId,
+        serviceName: service?.name ?? 'Unknown Service',
+        quantity: cartServiceItem.quantity,
+        unitPrice: cartServiceItem.effectivePrice,
+        subtotal: cartServiceItem.total,
       );
     }).toList();
 
@@ -95,6 +110,7 @@ class CheckoutController extends _$CheckoutController {
     final result = await salesRepo.createSale(
       sale,
       saleItems,
+      serviceItems: saleServiceItems,
       paymentProofFile: paymentProofFile,
     );
 

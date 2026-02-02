@@ -15,6 +15,8 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../core/widgets/form_feedback.dart';
+import '../../../services/domain/cart_service_item.dart';
+import '../../../services/domain/sale_service_item.dart';
 import '../../domain/cart_item.dart';
 import '../../domain/payment_method.dart';
 import '../../domain/sale_item.dart';
@@ -63,7 +65,9 @@ class CheckoutDialog extends HookConsumerWidget {
     // Watch cart state
     final cartState = ref.watch(cartControllerProvider);
     final cartItems = cartState.value?.items ?? [];
+    final cartServiceItems = cartState.value?.serviceItems ?? [];
     final total = cartState.value?.total ?? 0;
+    final cartIsEmpty = cartState.value?.isEmpty ?? true;
 
     // Calculate change for cash payments
     final change = amountTendered.value - total;
@@ -171,11 +175,30 @@ class CheckoutDialog extends HookConsumerWidget {
                   ))
               .toList();
 
+          // Convert cart service items to sale service items for receipt
+          final saleServiceItems = cartServiceItems
+              .where((item) => item.service != null)
+              .map((item) => SaleServiceItem(
+                    id: '',
+                    saleId: sale.id,
+                    serviceId: item.serviceId,
+                    serviceName: item.service!.name,
+                    quantity: item.quantity,
+                    unitPrice: item.effectivePrice,
+                    subtotal: item.total,
+                  ))
+              .toList();
+
           // Close checkout dialog
           context.pop();
 
           // Show receipt with items
-          showReceiptDialog(context, sale: sale, saleItems: saleItems);
+          showReceiptDialog(
+            context,
+            sale: sale,
+            saleItems: saleItems,
+            saleServiceItems: saleServiceItems,
+          );
         },
       );
     }
@@ -209,7 +232,7 @@ class CheckoutDialog extends HookConsumerWidget {
                       ),
                     ),
                     FilledButton(
-                      onPressed: isSaving.value || cartItems.isEmpty
+                      onPressed: isSaving.value || cartIsEmpty
                           ? null
                           : handleCheckout,
                       child: isSaving.value
@@ -236,7 +259,8 @@ class CheckoutDialog extends HookConsumerWidget {
                       const SizedBox(height: 16),
 
                       // Order summary
-                      _buildOrderSummary(context, cartItems, total),
+                      _buildOrderSummary(
+                          context, cartItems, cartServiceItems, total),
                       const SizedBox(height: 24),
 
                       // Payment method selection
@@ -717,8 +741,15 @@ class CheckoutDialog extends HookConsumerWidget {
   }
 
   Widget _buildOrderSummary(
-      BuildContext context, List<CartItem> items, double total) {
+    BuildContext context,
+    List<CartItem> items,
+    List<CartServiceItem> serviceItems,
+    double total,
+  ) {
     final theme = Theme.of(context);
+    final totalQuantity =
+        items.fold<int>(0, (sum, item) => sum + item.quantity.toInt()) +
+        serviceItems.fold<int>(0, (sum, item) => sum + item.quantity.toInt());
 
     return Card(
       color: theme.colorScheme.surfaceContainerHighest,
@@ -744,7 +775,6 @@ class CheckoutDialog extends HookConsumerWidget {
                     ),
                   ),
                 ),
-                // Total items count
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -755,7 +785,7 @@ class CheckoutDialog extends HookConsumerWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    '${items.fold<int>(0, (sum, item) => sum + item.quantity.toInt())} items',
+                    '$totalQuantity items',
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: theme.colorScheme.primary,
                       fontWeight: FontWeight.w600,
@@ -766,64 +796,47 @@ class CheckoutDialog extends HookConsumerWidget {
             ),
             const SizedBox(height: 16),
 
-            // Item rows with enhanced styling
+            // Product item rows
             ...items.map((item) {
               final product = item.product;
               if (product == null) return const SizedBox.shrink();
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
+              return _buildSummaryRow(
+                theme,
+                name: product.name,
+                quantity: item.quantity,
+                unitPrice: item.effectivePrice,
+                subtotal: item.total,
+              );
+            }),
+
+            // Service item rows
+            if (serviceItems.isNotEmpty && items.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 4),
                 child: Row(
                   children: [
-                    // Quantity badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        '${item.quantity.toInt()}x',
-                        style: theme.textTheme.labelMedium?.copyWith(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-
-                    // Product name and unit price
+                    Icon(Icons.miscellaneous_services,
+                        size: 12, color: theme.colorScheme.onSurfaceVariant),
+                    const SizedBox(width: 6),
+                    Text('Services',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        )),
+                    const SizedBox(width: 8),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product.name,
-                            style: theme.textTheme.bodyMedium,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(
-                            '@ ${item.effectivePrice.toCurrency()}',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Subtotal
-                    Text(
-                      item.total.toCurrency(),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                        child:
+                            Divider(color: theme.colorScheme.outlineVariant)),
                   ],
                 ),
+              ),
+            ...serviceItems.map((item) {
+              final service = item.service;
+              return _buildSummaryRow(
+                theme,
+                name: service?.name ?? 'Service',
+                quantity: item.quantity,
+                unitPrice: item.effectivePrice,
+                subtotal: item.total,
               );
             }),
 
@@ -831,7 +844,7 @@ class CheckoutDialog extends HookConsumerWidget {
             const Divider(),
             const SizedBox(height: 12),
 
-            // Total row with primary container background
+            // Total row
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -860,6 +873,56 @@ class CheckoutDialog extends HookConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSummaryRow(
+    ThemeData theme, {
+    required String name,
+    required num quantity,
+    required num unitPrice,
+    required num subtotal,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              '${quantity.toInt()}x',
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name,
+                    style: theme.textTheme.bodyMedium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+                Text('@ ${unitPrice.toCurrency()}',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    )),
+              ],
+            ),
+          ),
+          Text(subtotal.toCurrency(),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w500,
+              )),
+        ],
       ),
     );
   }

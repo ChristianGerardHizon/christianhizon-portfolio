@@ -27,6 +27,11 @@ class EmptySystemState extends StatelessWidget {
           'Select a printer',
           'Choose a printer from the list to view and configure',
         ),
+      SystemMode.cashierGroups => (
+          Icons.point_of_sale_outlined,
+          'Select a group',
+          'Choose a group from the list to view and manage items',
+        ),
       SystemMode.appearance => (
           Icons.palette_outlined,
           'Appearance',

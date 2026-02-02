@@ -10,6 +10,8 @@ import '../../../../core/foundation/type_defs.dart';
 import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
+import '../../../services/data/dto/sale_service_item_dto.dart';
+import '../../../services/domain/sale_service_item.dart';
 import '../../domain/sale.dart';
 import '../../domain/sale_item.dart';
 import '../dto/sale_dto.dart';
@@ -21,11 +23,13 @@ abstract class SalesRepository {
   FutureEither<Sale> createSale(
     Sale sale,
     List<SaleItem> items, {
+    List<SaleServiceItem> serviceItems,
     http.MultipartFile? paymentProofFile,
   });
   FutureEither<Sale> getSale(String id);
   FutureEither<List<Sale>> getSales({String? branchId, DateTime? date});
   FutureEither<List<SaleItem>> getSaleItems(String saleId);
+  FutureEither<List<SaleServiceItem>> getSaleServiceItems(String saleId);
 
   /// Fetches sales with pagination.
   FutureEitherPaginated<Sale> fetchPaginated({
@@ -59,6 +63,8 @@ class SalesRepositoryImpl implements SalesRepository {
   RecordService get _sales => _pb.collection(PocketBaseCollections.sales);
   RecordService get _saleItems =>
       _pb.collection(PocketBaseCollections.saleItems);
+  RecordService get _saleServiceItems =>
+      _pb.collection(PocketBaseCollections.saleServiceItems);
 
   Sale _toSaleEntity(RecordModel record) {
     return SaleDto.fromRecord(record).toEntity(baseUrl: _pb.baseURL);
@@ -70,10 +76,17 @@ class SalesRepositoryImpl implements SalesRepository {
         .toEntity(productExpanded: productExpanded);
   }
 
+  SaleServiceItem _toSaleServiceItemEntity(RecordModel record) {
+    final serviceExpanded = record.get<RecordModel?>('expand.service');
+    return SaleServiceItemDto.fromRecord(record)
+        .toEntity(serviceExpanded: serviceExpanded);
+  }
+
   @override
   FutureEither<Sale> createSale(
     Sale sale,
     List<SaleItem> items, {
+    List<SaleServiceItem> serviceItems = const [],
     http.MultipartFile? paymentProofFile,
   }) async {
     return TaskEither.tryCatch(
@@ -96,23 +109,34 @@ class SalesRepositoryImpl implements SalesRepository {
           files: paymentProofFile != null ? [paymentProofFile] : [],
         );
 
-        // 2. Create Sale Items
-        // Ideally we should do this in batch or have backend logic, but for now loop
+        // 2. Create Sale Items (products)
         for (final item in items) {
           final itemBody = <String, dynamic>{
-            'sale': saleRecord.id, // Link to created sale
+            'sale': saleRecord.id,
             'product': item.productId,
             'productName': item.productName,
             'quantity': item.quantity,
             'unitPrice': item.unitPrice,
             'subtotal': item.subtotal,
           };
-          // Add lot fields if present (for lot-tracked products)
           if (item.productLotId != null && item.productLotId!.isNotEmpty) {
             itemBody['productLot'] = item.productLotId;
             itemBody['lotNumber'] = item.lotNumber;
           }
           await _saleItems.create(body: itemBody);
+        }
+
+        // 3. Create Sale Service Items
+        for (final item in serviceItems) {
+          final itemBody = <String, dynamic>{
+            'sale': saleRecord.id,
+            'service': item.serviceId,
+            'serviceName': item.serviceName,
+            'quantity': item.quantity,
+            'unitPrice': item.unitPrice,
+            'subtotal': item.subtotal,
+          };
+          await _saleServiceItems.create(body: itemBody);
         }
 
         return _toSaleEntity(saleRecord);
@@ -239,6 +263,21 @@ class SalesRepositoryImpl implements SalesRepository {
           totalItems: result.totalItems,
           totalPages: result.totalPages,
         );
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<List<SaleServiceItem>> getSaleServiceItems(
+      String saleId) async {
+    return TaskEither.tryCatch(
+      () async {
+        final records = await _saleServiceItems.getFullList(
+          filter: 'sale = "$saleId"',
+          expand: 'service',
+        );
+        return records.map(_toSaleServiceItemEntity).toList();
       },
       Failure.handle,
     ).run();

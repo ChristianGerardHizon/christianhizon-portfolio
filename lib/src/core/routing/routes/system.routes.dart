@@ -11,6 +11,8 @@ import '../../../features/settings/presentation/widgets/printer_config_detail_pa
 import '../../../features/settings/presentation/widgets/theme_settings_panel.dart';
 import '../../../features/settings/presentation/controllers/printer_configs_controller.dart';
 import '../../../features/settings/presentation/widgets/dialogs/printer_config_form_dialog.dart';
+import '../../../features/pos/presentation/pages/cashier_groups_settings_page.dart';
+import '../../../features/pos/presentation/widgets/cashier_group_detail_panel.dart';
 import '../../../features/settings/presentation/widgets/import_landing_panel.dart';
 import '../../utils/breakpoints.dart';
 
@@ -37,6 +39,13 @@ part 'system.routes.g.dart';
           path: 'printers',
           routes: [
             TypedGoRoute<PrinterDetailRoute>(path: ':id'),
+          ],
+        ),
+        // Cashier layout groups with detail
+        TypedGoRoute<CashierGroupsRoute>(
+          path: 'cashier-groups',
+          routes: [
+            TypedGoRoute<CashierGroupDetailRoute>(path: ':id'),
           ],
         ),
         // Appearance/theme settings
@@ -161,6 +170,34 @@ class ImportRoute extends GoRouteData with $ImportRoute {
   }
 }
 
+/// Cashier groups management route.
+class CashierGroupsRoute extends GoRouteData with $CashierGroupsRoute {
+  const CashierGroupsRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    // On tablet, handled by shell - return empty
+    if (Breakpoints.isTabletOrLarger(context)) {
+      return const SizedBox.shrink();
+    }
+    // Mobile: Show cashier groups list
+    return const CashierGroupsSettingsPage();
+  }
+}
+
+/// Cashier group detail route.
+class CashierGroupDetailRoute extends GoRouteData
+    with $CashierGroupDetailRoute {
+  const CashierGroupDetailRoute({required this.id});
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return CashierGroupDetailPanel(groupId: id);
+  }
+}
+
 // ============================================================================
 // Mobile Pages
 // ============================================================================
@@ -194,6 +231,14 @@ class _MobileSystemLandingPage extends StatelessWidget {
             description: 'Configure thermal receipt printers',
             color: Colors.orange,
             onTap: () => const PrinterSettingsRoute().go(context),
+          ),
+          const SizedBox(height: 16),
+          _SystemOptionCard(
+            icon: Icons.point_of_sale,
+            title: 'Cashier Layout',
+            description: 'Customize cashier page groups',
+            color: Colors.teal,
+            onTap: () => const CashierGroupsRoute().go(context),
           ),
           const SizedBox(height: 16),
           _SystemOptionCard(

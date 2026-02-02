@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/routing/routes/system.routes.dart';
+import '../../../pos/presentation/controllers/pos_groups_controller.dart';
+import '../../../pos/presentation/widgets/cashier_group_detail_panel.dart';
 import '../../../products/domain/product_category.dart';
 import '../controllers/product_categories_controller.dart';
 import '../controllers/printer_configs_controller.dart';
@@ -37,6 +40,8 @@ class TabletSystemLayout extends ConsumerWidget {
     final SystemMode currentMode;
     if (path.contains('/printers')) {
       currentMode = SystemMode.printers;
+    } else if (path.contains('/cashier-groups')) {
+      currentMode = SystemMode.cashierGroups;
     } else if (path.contains('/appearance')) {
       currentMode = SystemMode.appearance;
     } else if (path.contains('/import')) {
@@ -56,6 +61,8 @@ class TabletSystemLayout extends ConsumerWidget {
                 const ProductCategoriesRoute().go(context);
               case SystemMode.printers:
                 const PrinterSettingsRoute().go(context);
+              case SystemMode.cashierGroups:
+                const CashierGroupsRoute().go(context);
               case SystemMode.appearance:
                 const AppearanceRoute().go(context);
               case SystemMode.import:
@@ -72,6 +79,18 @@ class TabletSystemLayout extends ConsumerWidget {
         ] else if (currentMode == SystemMode.import) ...[
           // Import mode: Show landing panel directly (no list/detail split)
           const Expanded(child: ImportLandingPanel()),
+        ] else if (currentMode == SystemMode.cashierGroups) ...[
+          // Cashier groups mode: List + detail split
+          SizedBox(
+            width: 320,
+            child: _CashierGroupListWrapper(selectedId: selectedId),
+          ),
+          const VerticalDivider(width: 1),
+          Expanded(
+            child: selectedId != null
+                ? CashierGroupDetailPanel(groupId: selectedId)
+                : EmptySystemState(mode: currentMode),
+          ),
         ] else ...[
           SizedBox(
             width: 320,
@@ -83,6 +102,8 @@ class TabletSystemLayout extends ConsumerWidget {
               SystemMode.appearance =>
                 const SizedBox.shrink(), // Handled above
               SystemMode.import =>
+                const SizedBox.shrink(), // Handled above
+              SystemMode.cashierGroups =>
                 const SizedBox.shrink(), // Handled above
             },
           ),
@@ -396,5 +417,177 @@ class _PrinterListWrapper extends ConsumerWidget {
 
   void _showCreateSheet(BuildContext context) {
     showPrinterConfigFormDialog(context);
+  }
+}
+
+/// Wrapper for cashier group list in tablet layout.
+class _CashierGroupListWrapper extends ConsumerWidget {
+  const _CashierGroupListWrapper({required this.selectedId});
+
+  final String? selectedId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final groupsAsync = ref.watch(posGroupsControllerProvider);
+    final controller = ref.read(posGroupsControllerProvider.notifier);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Cashier Layout'),
+        automaticallyImplyLeading: false,
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'cashier_group_list_fab',
+        onPressed: () => _showCreateDialog(context),
+        tooltip: 'Add Group',
+        child: const Icon(Icons.add),
+      ),
+      body: groupsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error: ${error.toString()}'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => controller.refresh(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        data: (groups) {
+          if (groups.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.dashboard_customize_outlined,
+                    size: 64,
+                    color: theme.colorScheme.outline,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No groups yet',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap + to add a group',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () => controller.refresh(),
+            child: ListView.builder(
+              itemCount: groups.length,
+              itemBuilder: (context, index) {
+                final group = groups[index];
+                final isSelected = group.id == selectedId;
+
+                return ListTile(
+                  selected: isSelected,
+                  selectedTileColor:
+                      theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  leading: CircleAvatar(
+                    backgroundColor: isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.primaryContainer,
+                    child: Icon(
+                      Icons.dashboard_customize,
+                      color: isSelected
+                          ? theme.colorScheme.onPrimary
+                          : theme.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                  title: Text(group.name),
+                  subtitle: Text(
+                    '${group.items.length} item${group.items.length == 1 ? '' : 's'}',
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () =>
+                      CashierGroupDetailRoute(id: group.id).go(context),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showCreateDialog(BuildContext context) {
+    // Import is at the top of the file
+    showDialog(
+      context: context,
+      builder: (context) => const _CreateGroupDialog(),
+    );
+  }
+}
+
+class _CreateGroupDialog extends HookConsumerWidget {
+  const _CreateGroupDialog();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final nameController = useTextEditingController();
+    final isSaving = useState(false);
+
+    Future<void> handleSave() async {
+      final name = nameController.text.trim();
+      if (name.isEmpty) return;
+
+      isSaving.value = true;
+      final success = await ref
+          .read(posGroupsControllerProvider.notifier)
+          .createGroup(name);
+      isSaving.value = false;
+
+      if (success && context.mounted) {
+        Navigator.of(context).pop();
+      }
+    }
+
+    return AlertDialog(
+      title: const Text('New Group'),
+      content: TextField(
+        controller: nameController,
+        decoration: const InputDecoration(
+          labelText: 'Group Name *',
+          hintText: 'e.g., Detergents, Wash Services',
+        ),
+        autofocus: true,
+        onSubmitted: (_) => handleSave(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: isSaving.value ? null : handleSave,
+          child: isSaving.value
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text('Create'),
+        ),
+      ],
+    );
   }
 }
