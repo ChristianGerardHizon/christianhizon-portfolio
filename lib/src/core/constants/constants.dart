@@ -7,7 +7,7 @@ library;
 /// Application metadata and configuration
 abstract class AppConstants {
   /// Application name
-  static const String appName = 'SanJoseVet';
+  static const String appName = 'Hi-Zone Laundry';
 
   /// Application version (synced with pubspec.yaml)
   static const String version = '1.0.0';

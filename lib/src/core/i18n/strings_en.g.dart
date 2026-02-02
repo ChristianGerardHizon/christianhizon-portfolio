@@ -120,8 +120,8 @@ class TranslationsCommonEn {
 
 	// Translations
 
-	/// en: 'Sann Jose Animal Clinic'
-	String get appName => 'Sann Jose Animal Clinic';
+	/// en: 'Hi-Zone Laundry'
+	String get appName => 'Hi-Zone Laundry';
 
 	/// en: 'N/A'
 	String get placeholderText => 'N/A';
@@ -520,7 +520,7 @@ extension on Translations {
 			'auth.signInToContinue' => 'Sign in to continue',
 			'auth.signingIn' => 'Signing in...',
 			'auth.verificationEmailSent' => 'A verification email has been sent to your email address',
-			'common.appName' => 'Sann Jose Animal Clinic',
+			'common.appName' => 'Hi-Zone Laundry',
 			'common.placeholderText' => 'N/A',
 			'common.save' => 'Save',
 			'common.cancel' => 'Cancel',

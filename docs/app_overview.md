@@ -1,6 +1,6 @@
-# SanJoseVet - Application Overview
+# Hi-Zone Laundry - Application Overview
 
-A comprehensive Flutter multi-platform veterinary/pet care management system supporting Android, iOS, macOS, Linux, Windows, and Web.
+A comprehensive Flutter multi-platform laundry management system supporting Android, iOS, macOS, Linux, Windows, and Web.
 
 ---
 

@@ -769,7 +769,7 @@ class EditAppointmentDialog extends HookConsumerWidget {
 
   String _getDefaultReminderMessage(String patientName) {
     return 'Hello! This is a reminder about your appointment tomorrow for $patientName '
-        'at San Jose Vet Clinic. Please contact us if you need to reschedule.';
+        'at Hi-Zone Laundry. Please contact us if you need to reschedule.';
   }
 }
 

@@ -51,7 +51,7 @@ class MobileDrawer extends ConsumerWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Sann Jose Animal Clinic',
+                    'Hi-Zone Laundry',
                     style: theme.textTheme.titleLarge,
                   ),
                   Text(
