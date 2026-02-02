@@ -73,6 +73,18 @@ Service management and POS integration for laundry services.
 - **Key Models**: `Service`, `ServiceCategory`, `CartServiceItem`, `SaleServiceItem`
 - **POS Integration**: Services appear in a separate tab in the cashier alongside products
 
+#### Customers (`/customers`)
+Customer management with sales history tracking.
+
+- **Sub-features**:
+  - Customers list with search by name or phone
+  - Customer detail with info and full sales history
+  - Create/edit customer via bottom sheet form
+  - Inline customer creation from POS checkout
+- **Key Models**: `Customer`
+- **POS Integration**: Customer selection is required at checkout with search/autocomplete and quick "New Customer" creation
+- **Master-Detail Layout**: Tablet shows list + detail side-by-side; mobile navigates between pages
+
 #### Dashboard (`/`)
 Home screen with quick summary and today's appointments.
 
@@ -549,6 +561,7 @@ lib/src/
 
 | Date | Feature | Description |
 |------|---------|-------------|
+| Feb 02 | Customers Feature | Customer CRUD with sales history, required customer at POS checkout with search and inline creation |
 | Feb 02 | Cashier Groups | Customizable cashier layout with POS groups per branch — scrollable sections, search dropdown, settings page under System, falls back to default tabs when no groups configured |
 | Feb 02 | Services Feature | Full services CRUD (wash, dry, fold, iron) with categories, variable pricing, POS integration via Products/Services tab toggle, cart support, and checkout flow |
 | Jan 24 | 3-Panel Layouts | Organization and System now use 3-panel tablet layouts with nav rail, list, and detail panels |

@@ -31,6 +31,9 @@ abstract class SalesRepository {
   FutureEither<List<SaleItem>> getSaleItems(String saleId);
   FutureEither<List<SaleServiceItem>> getSaleServiceItems(String saleId);
 
+  /// Fetches all sales for a specific customer.
+  FutureEither<List<Sale>> getSalesByCustomer(String customerId);
+
   /// Fetches sales with pagination.
   FutureEitherPaginated<Sale> fetchPaginated({
     int page = 1,
@@ -99,7 +102,7 @@ class SalesRepositoryImpl implements SalesRepository {
           'totalAmount': sale.totalAmount,
           'paymentMethod': sale.paymentMethod,
           'status': sale.status,
-          'customer': sale.patient,
+          'customer': sale.customerId,
           'customerName': sale.customerName,
           'paymentRef': sale.paymentRef,
           'notes': sale.notes,
@@ -263,6 +266,20 @@ class SalesRepositoryImpl implements SalesRepository {
           totalItems: result.totalItems,
           totalPages: result.totalPages,
         );
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<List<Sale>> getSalesByCustomer(String customerId) async {
+    return TaskEither.tryCatch(
+      () async {
+        final records = await _sales.getFullList(
+          filter: 'customer = "$customerId"',
+          sort: '-created',
+        );
+        return records.map(_toSaleEntity).toList();
       },
       Failure.handle,
     ).run();

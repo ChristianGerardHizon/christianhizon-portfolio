@@ -384,6 +384,9 @@ class TranslationsNavigationEn {
 	/// en: 'Services'
 	String get services => 'Services';
 
+	/// en: 'Customers'
+	String get customers => 'Customers';
+
 	/// en: 'System'
 	String get system => 'System';
 
@@ -590,6 +593,7 @@ extension on Translations {
 			'navigation.salesHistory' => 'Sales',
 			'navigation.organization' => 'Organization',
 			'navigation.services' => 'Services',
+			'navigation.customers' => 'Customers',
 			'navigation.system' => 'System',
 			'navigation.account' => 'Account',
 			'navigation.noBranch' => 'No Branch',

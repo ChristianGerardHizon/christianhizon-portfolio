@@ -15,6 +15,9 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../core/widgets/form_feedback.dart';
+import '../../../customers/domain/customer.dart';
+import '../../../customers/presentation/controllers/customers_controller.dart';
+import '../../../customers/presentation/widgets/customer_form_sheet.dart';
 import '../../../services/domain/cart_service_item.dart';
 import '../../../services/domain/sale_service_item.dart';
 import '../../domain/cart_item.dart';
@@ -55,8 +58,8 @@ class CheckoutDialog extends HookConsumerWidget {
     final selectedPaymentMethod = useState<PaymentMethod>(PaymentMethod.cash);
     final amountTendered = useState<double>(0);
 
-    // Customer name state
-    final customerNameController = useTextEditingController();
+    // Customer selection state
+    final selectedCustomer = useState<Customer?>(null);
 
     // Payment proof image state
     final paymentProofBytes = useState<Uint8List?>(null);
@@ -92,6 +95,15 @@ class CheckoutDialog extends HookConsumerWidget {
     }
 
     Future<void> handleCheckout() async {
+      // Validate customer is selected
+      if (selectedCustomer.value == null) {
+        showFormErrorDialog(
+          context,
+          errors: ['Please select a customer before completing the sale'],
+        );
+        return;
+      }
+
       final isValid = formKey.currentState!.saveAndValidate();
       if (!isValid) {
         final errors = formKey.currentState?.errors ?? {};
@@ -120,10 +132,8 @@ class CheckoutDialog extends HookConsumerWidget {
       isSaving.value = true;
 
       // Determine customer info
-      final String? customerId = null;
-      final customerName = customerNameController.text.trim().isNotEmpty
-          ? customerNameController.text.trim()
-          : null;
+      final customerId = selectedCustomer.value?.id;
+      final customerName = selectedCustomer.value?.name;
 
       // Build payment proof file if image was picked
       http.MultipartFile? proofFile;
@@ -642,46 +652,10 @@ class CheckoutDialog extends HookConsumerWidget {
                       ],
                       const SizedBox(height: 24),
 
-                      // Customer section (optional)
-                      Card(
-                        color: theme.colorScheme.surfaceContainerHighest,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Section header with icon
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.person_outline,
-                                    color: theme.colorScheme.primary,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'Customer (Optional)',
-                                    style:
-                                        theme.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-
-                              TextField(
-                                controller: customerNameController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Customer name',
-                                  prefixIcon: Icon(Icons.person_outline),
-                                  border: OutlineInputBorder(),
-                                  hintText: 'Enter customer name',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                      // Customer section (required)
+                      _CustomerSelectionCard(
+                        selectedCustomer: selectedCustomer,
+                        ref: ref,
                       ),
                       const SizedBox(height: 24),
 
@@ -998,5 +972,226 @@ String _getPaymentRefHelperText(PaymentMethod method) {
       return 'Enter check number for records';
     default:
       return '';
+  }
+}
+
+/// Card widget for customer search/select with inline creation.
+class _CustomerSelectionCard extends HookConsumerWidget {
+  const _CustomerSelectionCard({
+    required this.selectedCustomer,
+    required this.ref,
+  });
+
+  final ValueNotifier<Customer?> selectedCustomer;
+  final WidgetRef ref;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final customersAsync = ref.watch(customersControllerProvider);
+    final searchController = useTextEditingController();
+    final searchQuery = useState('');
+    final isSearching = useState(false);
+
+    final customers = customersAsync.value ?? [];
+    final filteredCustomers = searchQuery.value.isEmpty
+        ? <Customer>[]
+        : customers.where((c) {
+            final query = searchQuery.value.toLowerCase();
+            return c.name.toLowerCase().contains(query) ||
+                c.phone.toLowerCase().contains(query);
+          }).toList();
+
+    return Card(
+      color: theme.colorScheme.surfaceContainerHighest,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Section header with icon
+            Row(
+              children: [
+                Icon(
+                  Icons.person,
+                  color: theme.colorScheme.primary,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Customer *',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const Spacer(),
+                TextButton.icon(
+                  icon: const Icon(Icons.add, size: 18),
+                  label: const Text('New'),
+                  onPressed: () async {
+                    final result = await showCustomerFormSheet(context);
+                    if (result == true) {
+                      // Refresh the customer list and auto-select the latest
+                      await ref
+                          .read(customersControllerProvider.notifier)
+                          .refresh();
+                      final updatedCustomers =
+                          ref.read(customersControllerProvider).value ?? [];
+                      if (updatedCustomers.isNotEmpty) {
+                        // Select the most recently created customer
+                        final newest = updatedCustomers.reduce((a, b) {
+                          final aTime =
+                              a.created ?? DateTime.fromMillisecondsSinceEpoch(0);
+                          final bTime =
+                              b.created ?? DateTime.fromMillisecondsSinceEpoch(0);
+                          return aTime.isAfter(bTime) ? a : b;
+                        });
+                        selectedCustomer.value = newest;
+                        searchController.text = newest.name;
+                        isSearching.value = false;
+                      }
+                    }
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            // Selected customer display or search field
+            if (selectedCustomer.value != null && !isSearching.value) ...[
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.person,
+                      size: 20,
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            selectedCustomer.value!.name,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: theme.colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                          Text(
+                            selectedCustomer.value!.phone,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onPrimaryContainer
+                                  .withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.close,
+                        size: 18,
+                        color: theme.colorScheme.onPrimaryContainer,
+                      ),
+                      onPressed: () {
+                        selectedCustomer.value = null;
+                        searchController.clear();
+                        searchQuery.value = '';
+                        isSearching.value = true;
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ] else ...[
+              TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  labelText: 'Search customer by name or phone',
+                  prefixIcon: const Icon(Icons.search),
+                  border: const OutlineInputBorder(),
+                  hintText: 'Type to search...',
+                  suffixIcon: searchQuery.value.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            searchController.clear();
+                            searchQuery.value = '';
+                          },
+                        )
+                      : null,
+                ),
+                onChanged: (value) {
+                  searchQuery.value = value;
+                  isSearching.value = true;
+                },
+              ),
+
+              // Search results dropdown
+              if (searchQuery.value.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Container(
+                  constraints: const BoxConstraints(maxHeight: 200),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: theme.colorScheme.outlineVariant,
+                    ),
+                  ),
+                  child: filteredCustomers.isEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            'No customers found',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: filteredCustomers.length,
+                          itemBuilder: (context, index) {
+                            final customer = filteredCustomers[index];
+                            return ListTile(
+                              dense: true,
+                              leading: CircleAvatar(
+                                radius: 16,
+                                backgroundColor:
+                                    theme.colorScheme.primaryContainer,
+                                child: Icon(
+                                  Icons.person,
+                                  size: 16,
+                                  color:
+                                      theme.colorScheme.onPrimaryContainer,
+                                ),
+                              ),
+                              title: Text(customer.name),
+                              subtitle: Text(customer.phone),
+                              onTap: () {
+                                selectedCustomer.value = customer;
+                                searchController.text = customer.name;
+                                searchQuery.value = '';
+                                isSearching.value = false;
+                              },
+                            );
+                          },
+                        ),
+                ),
+              ],
+            ],
+          ],
+        ),
+      ),
+    );
   }
 }

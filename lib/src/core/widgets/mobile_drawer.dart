@@ -105,6 +105,12 @@ class MobileDrawer extends ConsumerWidget {
               selected: selectedIndex == 3,
               onTap: () => _selectAndClose(context, 3),
             ),
+            _DrawerItem(
+              icon: Icons.people,
+              label: t.navigation.customers,
+              selected: selectedIndex == 4,
+              onTap: () => _selectAndClose(context, 4),
+            ),
 
             const Divider(),
 
@@ -112,26 +118,26 @@ class MobileDrawer extends ConsumerWidget {
             _DrawerItem(
               icon: Icons.receipt_long,
               label: t.navigation.salesHistory,
-              selected: selectedIndex == 4,
-              onTap: () => _selectAndClose(context, 4),
-            ),
-            _DrawerItem(
-              icon: Icons.analytics,
-              label: t.navigation.reports,
               selected: selectedIndex == 5,
               onTap: () => _selectAndClose(context, 5),
             ),
             _DrawerItem(
-              icon: Icons.business,
-              label: t.navigation.organization,
+              icon: Icons.analytics,
+              label: t.navigation.reports,
               selected: selectedIndex == 6,
               onTap: () => _selectAndClose(context, 6),
             ),
             _DrawerItem(
-              icon: Icons.settings,
-              label: t.navigation.system,
+              icon: Icons.business,
+              label: t.navigation.organization,
               selected: selectedIndex == 7,
               onTap: () => _selectAndClose(context, 7),
+            ),
+            _DrawerItem(
+              icon: Icons.settings,
+              label: t.navigation.system,
+              selected: selectedIndex == 8,
+              onTap: () => _selectAndClose(context, 8),
             ),
 
             const Divider(),

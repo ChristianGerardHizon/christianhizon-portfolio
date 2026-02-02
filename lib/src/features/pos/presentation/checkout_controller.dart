@@ -94,7 +94,7 @@ class CheckoutController extends _$CheckoutController {
       totalAmount: cartState.total,
       paymentMethod: paymentMethod.name,
       status: 'completed',
-      patient: customerId,
+      customerId: customerId,
       customerName: customerName,
       paymentRef: paymentRef,
       notes: notes,

@@ -47,10 +47,10 @@ class SaleMapper extends ClassMapperBase<Sale> {
   );
   static String _$status(Sale v) => v.status;
   static const Field<Sale, String> _f$status = Field('status', _$status);
-  static String? _$patient(Sale v) => v.patient;
-  static const Field<Sale, String> _f$patient = Field(
-    'patient',
-    _$patient,
+  static String? _$customerId(Sale v) => v.customerId;
+  static const Field<Sale, String> _f$customerId = Field(
+    'customerId',
+    _$customerId,
     opt: true,
   );
   static String? _$customerName(Sale v) => v.customerName;
@@ -99,7 +99,7 @@ class SaleMapper extends ClassMapperBase<Sale> {
     #totalAmount: _f$totalAmount,
     #paymentMethod: _f$paymentMethod,
     #status: _f$status,
-    #patient: _f$patient,
+    #customerId: _f$customerId,
     #customerName: _f$customerName,
     #paymentRef: _f$paymentRef,
     #paymentProofUrl: _f$paymentProofUrl,
@@ -117,7 +117,7 @@ class SaleMapper extends ClassMapperBase<Sale> {
       totalAmount: data.dec(_f$totalAmount),
       paymentMethod: data.dec(_f$paymentMethod),
       status: data.dec(_f$status),
-      patient: data.dec(_f$patient),
+      customerId: data.dec(_f$customerId),
       customerName: data.dec(_f$customerName),
       paymentRef: data.dec(_f$paymentRef),
       paymentProofUrl: data.dec(_f$paymentProofUrl),
@@ -181,7 +181,7 @@ abstract class SaleCopyWith<$R, $In extends Sale, $Out>
     num? totalAmount,
     String? paymentMethod,
     String? status,
-    String? patient,
+    String? customerId,
     String? customerName,
     String? paymentRef,
     String? paymentProofUrl,
@@ -207,7 +207,7 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
     num? totalAmount,
     String? paymentMethod,
     String? status,
-    Object? patient = $none,
+    Object? customerId = $none,
     Object? customerName = $none,
     Object? paymentRef = $none,
     Object? paymentProofUrl = $none,
@@ -223,7 +223,7 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
       if (totalAmount != null) #totalAmount: totalAmount,
       if (paymentMethod != null) #paymentMethod: paymentMethod,
       if (status != null) #status: status,
-      if (patient != $none) #patient: patient,
+      if (customerId != $none) #customerId: customerId,
       if (customerName != $none) #customerName: customerName,
       if (paymentRef != $none) #paymentRef: paymentRef,
       if (paymentProofUrl != $none) #paymentProofUrl: paymentProofUrl,
@@ -241,7 +241,7 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
     totalAmount: data.get(#totalAmount, or: $value.totalAmount),
     paymentMethod: data.get(#paymentMethod, or: $value.paymentMethod),
     status: data.get(#status, or: $value.status),
-    patient: data.get(#patient, or: $value.patient),
+    customerId: data.get(#customerId, or: $value.customerId),
     customerName: data.get(#customerName, or: $value.customerName),
     paymentRef: data.get(#paymentRef, or: $value.paymentRef),
     paymentProofUrl: data.get(#paymentProofUrl, or: $value.paymentProofUrl),
