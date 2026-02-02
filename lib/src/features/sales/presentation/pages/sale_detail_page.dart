@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import '../../../../core/routing/routes/sales_history.routes.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/utils/breakpoints.dart';
-import '../../../patients/presentation/controllers/patient_provider.dart';
 import '../../../pos/domain/sale.dart';
 import '../controllers/sale_items_provider.dart';
 import '../controllers/sale_provider.dart';
@@ -170,9 +169,7 @@ class _SaleDetailContent extends ConsumerWidget {
                       label: 'Payment Method',
                       value: _formatPaymentMethod(sale.paymentMethod),
                     ),
-                    if (sale.patient != null && sale.patient!.isNotEmpty)
-                      _PatientInfoRow(patientId: sale.patient!)
-                    else if (sale.customerName != null && sale.customerName!.isNotEmpty)
+                    if (sale.customerName != null && sale.customerName!.isNotEmpty)
                       _InfoRow(
                         icon: Icons.person,
                         label: 'Customer',
@@ -397,52 +394,3 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-/// Fetches and displays patient info for a sale.
-class _PatientInfoRow extends ConsumerWidget {
-  const _PatientInfoRow({required this.patientId});
-
-  final String patientId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final patientAsync = ref.watch(patientProvider(patientId));
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Icon(
-            Icons.pets,
-            size: 20,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            'Patient: ',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-          Expanded(
-            child: patientAsync.when(
-              loading: () => const SizedBox(
-                height: 16,
-                width: 16,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-              error: (_, __) => Text(
-                'Unknown patient',
-                style: theme.textTheme.bodyMedium,
-              ),
-              data: (patient) => Text(
-                patient?.name ?? 'Unknown patient',
-                style: theme.textTheme.bodyMedium,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

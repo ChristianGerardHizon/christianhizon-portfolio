@@ -178,8 +178,6 @@ class _TranslationsNavigationTl implements TranslationsNavigationEn {
 
 	// Translations
 	@override String get dashboard => 'Dashboard';
-	@override String get patients => 'Mga Pasyente';
-	@override String get appointments => 'Appts';
 	@override String get products => 'Mga Produkto';
 	@override String get inventory => 'Imbentaryo';
 	@override String get settings => 'Mga Setting';
@@ -191,10 +189,8 @@ class _TranslationsNavigationTl implements TranslationsNavigationEn {
 	@override String get more => 'Iba Pa';
 	@override String get sales => 'Cashier';
 	@override String get salesHistory => 'Mga Benta';
-	@override String get messages => 'Mga Mensahe';
 	@override String get organization => 'Organisasyon';
 	@override String get system => 'Sistema';
-	@override String get patientConfig => 'Config ng Pasyente';
 	@override String get account => 'Account';
 	@override String get noBranch => 'Walang Sangay';
 }
@@ -334,8 +330,6 @@ extension on TranslationsTl {
 			'fields.description' => 'Paglalarawan',
 			'fields.category' => 'Kategorya',
 			'navigation.dashboard' => 'Dashboard',
-			'navigation.patients' => 'Mga Pasyente',
-			'navigation.appointments' => 'Appts',
 			'navigation.products' => 'Mga Produkto',
 			'navigation.inventory' => 'Imbentaryo',
 			'navigation.settings' => 'Mga Setting',
@@ -347,10 +341,8 @@ extension on TranslationsTl {
 			'navigation.more' => 'Iba Pa',
 			'navigation.sales' => 'Cashier',
 			'navigation.salesHistory' => 'Mga Benta',
-			'navigation.messages' => 'Mga Mensahe',
 			'navigation.organization' => 'Organisasyon',
 			'navigation.system' => 'Sistema',
-			'navigation.patientConfig' => 'Config ng Pasyente',
 			'navigation.account' => 'Account',
 			'navigation.noBranch' => 'Walang Sangay',
 			'sort.sortBy' => 'Ayusin Ayon Sa',

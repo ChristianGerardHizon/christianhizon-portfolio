@@ -10,8 +10,8 @@ import 'branch_switcher.dart';
 /// Mobile drawer with full navigation menu.
 ///
 /// Contains all navigation sections:
-/// - Primary: Dashboard, Patients, Appointments, Products
-/// - Secondary: Sales, Messages, Organization, System
+/// - Primary: Dashboard, Cashier, Products
+/// - Secondary: Sales History, Reports, Organization, System
 /// - Actions: Logout
 class MobileDrawer extends ConsumerWidget {
   const MobileDrawer({
@@ -55,7 +55,7 @@ class MobileDrawer extends ConsumerWidget {
                     style: theme.textTheme.titleLarge,
                   ),
                   Text(
-                    'Veterinary Management System',
+                    'Laundry Management System',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onPrimaryContainer.withValues(
                         alpha: 0.7,
@@ -88,62 +88,44 @@ class MobileDrawer extends ConsumerWidget {
               onTap: () => _selectAndClose(context, 0),
             ),
             _DrawerItem(
-              icon: Icons.pets,
-              label: t.navigation.patients,
+              icon: Icons.point_of_sale,
+              label: t.navigation.sales,
               selected: selectedIndex == 1,
               onTap: () => _selectAndClose(context, 1),
             ),
             _DrawerItem(
-              icon: Icons.calendar_today,
-              label: t.navigation.appointments,
+              icon: Icons.inventory_2,
+              label: t.navigation.products,
               selected: selectedIndex == 2,
               onTap: () => _selectAndClose(context, 2),
-            ),
-            _DrawerItem(
-              icon: Icons.point_of_sale,
-              label: t.navigation.sales,
-              selected: selectedIndex == 3,
-              onTap: () => _selectAndClose(context, 3),
             ),
 
             const Divider(),
 
             // Secondary navigation
             _DrawerItem(
-              icon: Icons.inventory_2,
-              label: t.navigation.products,
-              selected: selectedIndex == 4,
-              onTap: () => _selectAndClose(context, 4),
-            ),
-            _DrawerItem(
               icon: Icons.receipt_long,
               label: t.navigation.salesHistory,
-              selected: selectedIndex == 5,
-              onTap: () => _selectAndClose(context, 5),
-            ),
-            _DrawerItem(
-              icon: Icons.message,
-              label: t.navigation.messages,
-              selected: selectedIndex == 6,
-              onTap: () => _selectAndClose(context, 6),
+              selected: selectedIndex == 3,
+              onTap: () => _selectAndClose(context, 3),
             ),
             _DrawerItem(
               icon: Icons.analytics,
               label: t.navigation.reports,
-              selected: selectedIndex == 7,
-              onTap: () => _selectAndClose(context, 7),
+              selected: selectedIndex == 4,
+              onTap: () => _selectAndClose(context, 4),
             ),
             _DrawerItem(
               icon: Icons.business,
               label: t.navigation.organization,
-              selected: selectedIndex == 8,
-              onTap: () => _selectAndClose(context, 8),
+              selected: selectedIndex == 5,
+              onTap: () => _selectAndClose(context, 5),
             ),
             _DrawerItem(
               icon: Icons.settings,
               label: t.navigation.system,
-              selected: selectedIndex == 9,
-              onTap: () => _selectAndClose(context, 9),
+              selected: selectedIndex == 6,
+              onTap: () => _selectAndClose(context, 6),
             ),
 
             const Divider(),

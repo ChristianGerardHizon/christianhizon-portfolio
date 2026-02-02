@@ -5,11 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../features/pos/presentation/cart_controller.dart';
 import '../../features/settings/presentation/controllers/current_branch_controller.dart';
-import '../routing/routes/appointments.routes.dart';
 import '../routing/routes/dashboard.routes.dart';
-import '../routing/routes/messages.routes.dart';
 import '../routing/routes/organization.routes.dart';
-import '../routing/routes/patients.routes.dart';
 import '../routing/routes/products.routes.dart';
 import '../routing/routes/reports.routes.dart';
 import '../routing/routes/sales.routes.dart';
@@ -46,29 +43,23 @@ class _AppRootState extends ConsumerState<AppRoot> {
   /// Route paths in order of navigation index.
   static const _routePaths = [
     DashboardRoute.path, // 0: /
-    PatientsRoute.path, // 1: /patients
-    AppointmentsRoute.path, // 2: /appointments
-    SalesRoute.path, // 3: /cashier
-    ProductsRoute.path, // 4: /products
-    SalesHistoryRoute.path, // 5: /sales
-    MessagesRoute.path, // 6: /messages
-    ReportsRoute.path, // 7: /reports
-    OrganizationRoute.path, // 8: /organization
-    SystemRoute.path, // 9: /system
+    SalesRoute.path, // 1: /cashier
+    ProductsRoute.path, // 2: /products
+    SalesHistoryRoute.path, // 3: /sales
+    ReportsRoute.path, // 4: /reports
+    OrganizationRoute.path, // 5: /organization
+    SystemRoute.path, // 6: /system
   ];
 
   /// Routes in order of navigation index.
   static const _routes = <GoRouteData>[
     DashboardRoute(), // 0
-    PatientsRoute(), // 1
-    AppointmentsRoute(), // 2
-    SalesRoute(), // 3
-    ProductsRoute(), // 4
-    SalesHistoryRoute(), // 5
-    MessagesRoute(), // 6
-    ReportsRoute(), // 7
-    OrganizationRoute(), // 8
-    SystemRoute(), // 9
+    SalesRoute(), // 1
+    ProductsRoute(), // 2
+    SalesHistoryRoute(), // 3
+    ReportsRoute(), // 4
+    OrganizationRoute(), // 5
+    SystemRoute(), // 6
   ];
 
   /// Gets the selected index based on current route location.

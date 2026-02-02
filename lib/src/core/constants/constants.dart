@@ -82,21 +82,3 @@ abstract class Pagination {
   static const int maxPageSize = 100;
 }
 
-/// Message template category constants
-abstract class MessageTemplateCategories {
-  /// Category for standard appointment reminders
-  static const String appointment = 'appointment';
-
-  /// Category for appointment reminders with treatment
-  static const String appointmentWithTreatment = 'appointmentWithTreatment';
-
-  /// Category for general appointment reminders
-  static const String appointmentReminder = 'appointmentReminder';
-
-  /// Display labels for category values
-  static const Map<String, String> labels = {
-    appointment: 'Appointment',
-    appointmentWithTreatment: 'Appointment with Treatment',
-    appointmentReminder: 'Appointment Reminder',
-  };
-}
