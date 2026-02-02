@@ -12,6 +12,7 @@
     "sales": "Cashier",
     "salesHistory": "Sales",
     "organization": "Organization",
+    "services": "Services",
     "system": "System",
     "account": "Account",
     "noBranch": "No Branch"
