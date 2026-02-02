@@ -93,14 +93,11 @@ jobs:
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: ${{ runner.os }}-pub-
 
-      - name: Cache Flutter build
-        uses: actions/cache@v4
-        with:
-          path: |
-            build/
-            .dart_tool/
-          key: ${{ runner.os }}-flutter-build-staging-${{ hashFiles('lib/**', 'pubspec.lock') }}
-          restore-keys: ${{ runner.os }}-flutter-build-staging-
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk/ndk /opt/ghc /usr/local/share/boost
+          sudo apt-get clean
+          df -h
 
       - name: Install dependencies
         run: flutter pub get
@@ -292,14 +289,11 @@ jobs:
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: ${{ runner.os }}-pub-
 
-      - name: Cache Flutter build
-        uses: actions/cache@v4
-        with:
-          path: |
-            build/
-            .dart_tool/
-          key: ${{ runner.os }}-flutter-build-prod-${{ hashFiles('lib/**', 'pubspec.lock') }}
-          restore-keys: ${{ runner.os }}-flutter-build-prod-
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk/ndk /opt/ghc /usr/local/share/boost
+          sudo apt-get clean
+          df -h
 
       - name: Install dependencies
         run: flutter pub get
