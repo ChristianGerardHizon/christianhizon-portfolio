@@ -48,9 +48,13 @@ class PosGroupsController extends _$PosGroupsController {
   }
 
   /// Creates a new group.
-  Future<bool> createGroup(String name) async {
+  ///
+  /// Returns `null` on success, or an error message string on failure.
+  Future<String?> createGroup(String name) async {
     final branchId = ref.read(currentBranchIdProvider);
-    if (branchId == null) return false;
+    if (branchId == null) {
+      return 'No branch selected';
+    }
 
     final currentList = state.value ?? [];
     final group = PosGroup(
@@ -62,16 +66,18 @@ class PosGroupsController extends _$PosGroupsController {
     final result = await _repository.createGroup(group);
 
     return result.fold(
-      (failure) => false,
+      (failure) => failure.messageString,
       (newGroup) {
         state = AsyncData([...currentList, newGroup]);
-        return true;
+        return null;
       },
     );
   }
 
   /// Updates a group's name.
-  Future<bool> updateGroup(String groupId, String name) async {
+  ///
+  /// Returns `null` on success, or an error message string on failure.
+  Future<String?> updateGroup(String groupId, String name) async {
     final currentList = state.value ?? [];
     final existing = currentList.firstWhere((g) => g.id == groupId);
 
@@ -79,7 +85,7 @@ class PosGroupsController extends _$PosGroupsController {
     final result = await _repository.updateGroup(updated);
 
     return result.fold(
-      (failure) => false,
+      (failure) => failure.messageString,
       (updatedGroup) {
         final updatedList = currentList.map((g) {
           return g.id == groupId
@@ -87,7 +93,7 @@ class PosGroupsController extends _$PosGroupsController {
               : g;
         }).toList();
         state = AsyncData(updatedList);
-        return true;
+        return null;
       },
     );
   }

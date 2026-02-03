@@ -15,6 +15,8 @@ class Sale with SaleMappable {
     required this.totalAmount,
     required this.paymentMethod,
     required this.status,
+    this.isPaid = false,
+    this.isPickedUp = false,
     this.customerId,
     this.customerName,
     this.paymentRef,
@@ -44,6 +46,12 @@ class Sale with SaleMappable {
 
   /// Transaction status.
   final String status;
+
+  /// Whether the customer has paid.
+  final bool isPaid;
+
+  /// Whether the order has been picked up.
+  final bool isPickedUp;
 
   /// Linked customer ID (optional).
   final String? customerId;

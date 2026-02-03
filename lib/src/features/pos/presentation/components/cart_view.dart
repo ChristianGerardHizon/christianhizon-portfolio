@@ -75,30 +75,26 @@ class CartView extends ConsumerWidget {
                   : ListView(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       children: [
-                        // Product items
-                        ...cartItems.map((item) {
-                          final product = item.product;
-                          if (product == null) return const SizedBox.shrink();
+                        // Service items
+                        ...serviceItems.map((item) =>
+                          _buildServiceItemCard(
+                            context, ref, theme, item, isSyncing)),
 
-                          return _buildProductItemCard(
-                            context, ref, theme, item, product, isSyncing);
-                        }),
-
-                        // Service items section
-                        if (serviceItems.isNotEmpty && cartItems.isNotEmpty)
+                        // Products section
+                        if (cartItems.isNotEmpty && serviceItems.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 4),
                             child: Row(
                               children: [
                                 Icon(
-                                  Icons.miscellaneous_services,
+                                  Icons.inventory_2,
                                   size: 14,
                                   color: theme.colorScheme.onSurfaceVariant,
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
-                                  'Services',
+                                  'Products',
                                   style: theme.textTheme.labelSmall?.copyWith(
                                     color: theme.colorScheme.onSurfaceVariant,
                                   ),
@@ -113,9 +109,13 @@ class CartView extends ConsumerWidget {
                             ),
                           ),
 
-                        ...serviceItems.map((item) =>
-                          _buildServiceItemCard(
-                            context, ref, theme, item, isSyncing)),
+                        ...cartItems.map((item) {
+                          final product = item.product;
+                          if (product == null) return const SizedBox.shrink();
+
+                          return _buildProductItemCard(
+                            context, ref, theme, item, product, isSyncing);
+                        }),
                       ],
                     ),
             ),

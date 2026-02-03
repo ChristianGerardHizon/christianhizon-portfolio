@@ -17,7 +17,6 @@ import '../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../customers/domain/customer.dart';
 import '../../../customers/presentation/controllers/customers_controller.dart';
-import '../../../customers/presentation/widgets/customer_form_sheet.dart';
 import '../../../services/domain/cart_service_item.dart';
 import '../../../services/domain/sale_service_item.dart';
 import '../../domain/cart_item.dart';
@@ -56,7 +55,6 @@ class CheckoutDialog extends HookConsumerWidget {
     // UI state
     final isSaving = useState(false);
     final selectedPaymentMethod = useState<PaymentMethod>(PaymentMethod.cash);
-    final amountTendered = useState<double>(0);
 
     // Customer selection state
     final selectedCustomer = useState<Customer?>(null);
@@ -71,9 +69,6 @@ class CheckoutDialog extends HookConsumerWidget {
     final cartServiceItems = cartState.value?.serviceItems ?? [];
     final total = cartState.value?.total ?? 0;
     final cartIsEmpty = cartState.value?.isEmpty ?? true;
-
-    // Calculate change for cash payments
-    final change = amountTendered.value - total;
 
     Future<void> pickPaymentProof(ImageSource source) async {
       final picker = ImagePicker();
@@ -116,19 +111,6 @@ class CheckoutDialog extends HookConsumerWidget {
 
       final values = formKey.currentState!.value;
 
-      // Validate cash payment
-      if (selectedPaymentMethod.value == PaymentMethod.cash) {
-        final tenderedStr = values['amountTendered'] as String?;
-        final tendered = double.tryParse(tenderedStr ?? '') ?? 0;
-        if (tendered < total) {
-          showFormErrorDialog(
-            context,
-            errors: ['Amount tendered must be at least ${total.toCurrency()}'],
-          );
-          return;
-        }
-      }
-
       isSaving.value = true;
 
       // Determine customer info
@@ -151,10 +133,6 @@ class CheckoutDialog extends HookConsumerWidget {
                 paymentMethod: selectedPaymentMethod.value,
                 paymentRef: values['paymentRef'] as String?,
                 notes: values['notes'] as String?,
-                amountTendered:
-                    selectedPaymentMethod.value == PaymentMethod.cash
-                        ? double.tryParse(values['amountTendered'] ?? '')
-                        : null,
                 customerId: customerId,
                 customerName: customerName,
                 paymentProofFile: proofFile,
@@ -273,6 +251,13 @@ class CheckoutDialog extends HookConsumerWidget {
                           context, cartItems, cartServiceItems, total),
                       const SizedBox(height: 24),
 
+                      // Customer section (required)
+                      _CustomerSelectionCard(
+                        selectedCustomer: selectedCustomer,
+                        ref: ref,
+                      ),
+                      const SizedBox(height: 24),
+
                       // Payment method selection
                       Card(
                         color: theme.colorScheme.surfaceContainerHighest,
@@ -374,152 +359,6 @@ class CheckoutDialog extends HookConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-
-                      // Cash payment fields
-                      if (selectedPaymentMethod.value ==
-                          PaymentMethod.cash) ...[
-                        Card(
-                          color: theme.colorScheme.surfaceContainerHighest,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Section header
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.payments,
-                                      color: theme.colorScheme.primary,
-                                      size: 20,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      'Cash Payment',
-                                      style:
-                                          theme.textTheme.titleMedium?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-
-                                // Amount tendered field
-                                FormBuilderTextField(
-                                  name: 'amountTendered',
-                                  decoration: InputDecoration(
-                                    labelText: 'Amount Tendered *',
-                                    prefixIcon: const Icon(Icons.money),
-                                    prefixText: '₱ ',
-                                    border: const OutlineInputBorder(),
-                                    helperText:
-                                        'Minimum: ${total.toCurrency()}',
-                                  ),
-                                  keyboardType:
-                                      const TextInputType.numberWithOptions(
-                                          decimal: true),
-                                  validator: FormBuilderValidators.compose([
-                                    FormBuilderValidators.required(),
-                                    FormBuilderValidators.numeric(),
-                                  ]),
-                                  onChanged: (value) {
-                                    amountTendered.value =
-                                        double.tryParse(value ?? '') ?? 0;
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Change preview card
-                        if (amountTendered.value > 0)
-                          Card(
-                            color: amountTendered.value >= total
-                                ? theme.colorScheme.primaryContainer
-                                : theme.colorScheme.errorContainer,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Row(
-                                children: [
-                                  // Status icon
-                                  Icon(
-                                    amountTendered.value >= total
-                                        ? Icons.check_circle_outline
-                                        : Icons.warning_amber_outlined,
-                                    color: amountTendered.value >= total
-                                        ? theme.colorScheme.primary
-                                        : theme.colorScheme.error,
-                                  ),
-                                  const SizedBox(width: 12),
-
-                                  // Change label and amount
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          amountTendered.value >= total
-                                              ? 'Change'
-                                              : 'Amount Short',
-                                          style: theme.textTheme.labelMedium
-                                              ?.copyWith(
-                                            color: amountTendered.value >= total
-                                                ? theme.colorScheme
-                                                    .onPrimaryContainer
-                                                : theme.colorScheme
-                                                    .onErrorContainer,
-                                          ),
-                                        ),
-                                        Text(
-                                          (amountTendered.value - total)
-                                              .abs()
-                                              .toCurrency(),
-                                          style: theme.textTheme.headlineMedium
-                                              ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: amountTendered.value >= total
-                                                ? theme.colorScheme.primary
-                                                : theme.colorScheme.error,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  // Delta badge
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: amountTendered.value >= total
-                                          ? Colors.green.withValues(alpha: 0.2)
-                                          : Colors.red.withValues(alpha: 0.2),
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Text(
-                                      amountTendered.value >= total
-                                          ? '+${change.toCurrency()}'
-                                          : '-${(total - amountTendered.value).toCurrency()}',
-                                      style:
-                                          theme.textTheme.titleMedium?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: amountTendered.value >= total
-                                            ? Colors.green
-                                            : Colors.red,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                      ],
 
                       // Card/Transfer payment reference
                       if (selectedPaymentMethod.value !=
@@ -650,13 +489,6 @@ class CheckoutDialog extends HookConsumerWidget {
                           ),
                         ),
                       ],
-                      const SizedBox(height: 24),
-
-                      // Customer section (required)
-                      _CustomerSelectionCard(
-                        selectedCustomer: selectedCustomer,
-                        ref: ref,
-                      ),
                       const SizedBox(height: 24),
 
                       // Notes section
@@ -904,7 +736,6 @@ class CheckoutDialog extends HookConsumerWidget {
 
 const _fieldLabels = {
   'paymentMethod': 'Payment Method',
-  'amountTendered': 'Amount Tendered',
   'paymentRef': 'Payment Reference',
   'notes': 'Notes',
 };
@@ -1027,29 +858,14 @@ class _CustomerSelectionCard extends HookConsumerWidget {
                 const Spacer(),
                 TextButton.icon(
                   icon: const Icon(Icons.add, size: 18),
-                  label: const Text('New'),
+                  label: const Text('Quick Add'),
                   onPressed: () async {
-                    final result = await showCustomerFormSheet(context);
-                    if (result == true) {
-                      // Refresh the customer list and auto-select the latest
-                      await ref
-                          .read(customersControllerProvider.notifier)
-                          .refresh();
-                      final updatedCustomers =
-                          ref.read(customersControllerProvider).value ?? [];
-                      if (updatedCustomers.isNotEmpty) {
-                        // Select the most recently created customer
-                        final newest = updatedCustomers.reduce((a, b) {
-                          final aTime =
-                              a.created ?? DateTime.fromMillisecondsSinceEpoch(0);
-                          final bTime =
-                              b.created ?? DateTime.fromMillisecondsSinceEpoch(0);
-                          return aTime.isAfter(bTime) ? a : b;
-                        });
-                        selectedCustomer.value = newest;
-                        searchController.text = newest.name;
-                        isSearching.value = false;
-                      }
+                    final customer = await _showQuickAddCustomerDialog(
+                      context, ref);
+                    if (customer != null) {
+                      selectedCustomer.value = customer;
+                      searchController.text = customer.name;
+                      isSearching.value = false;
                     }
                   },
                 ),
@@ -1192,6 +1008,104 @@ class _CustomerSelectionCard extends HookConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Future<Customer?> _showQuickAddCustomerDialog(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    return showDialog<Customer?>(
+      context: context,
+      builder: (context) => const _QuickAddCustomerDialog(),
+    );
+  }
+}
+
+class _QuickAddCustomerDialog extends HookConsumerWidget {
+  const _QuickAddCustomerDialog();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    final isSaving = useState(false);
+
+    Future<void> handleSave() async {
+      if (!formKey.currentState!.saveAndValidate()) return;
+
+      isSaving.value = true;
+      final values = formKey.currentState!.value;
+
+      final customerData = Customer(
+        id: '',
+        name: values['name'] as String,
+        phone: values['phone'] as String,
+      );
+
+      final controller = ref.read(customersControllerProvider.notifier);
+      final created = await controller.createCustomer(customerData);
+
+      isSaving.value = false;
+
+      if (created != null && context.mounted) {
+        Navigator.of(context).pop(created);
+      } else if (context.mounted) {
+        showErrorSnackBar(
+          context,
+          message: 'Failed to create customer',
+        );
+      }
+    }
+
+    return AlertDialog(
+      title: const Text('Quick Add Customer'),
+      content: FormBuilder(
+        key: formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FormBuilderTextField(
+              name: 'name',
+              decoration: const InputDecoration(
+                labelText: 'Name *',
+                border: OutlineInputBorder(),
+              ),
+              validator: FormBuilderValidators.required(),
+              autofocus: true,
+              textInputAction: TextInputAction.next,
+              textCapitalization: TextCapitalization.words,
+            ),
+            const SizedBox(height: 16),
+            FormBuilderTextField(
+              name: 'phone',
+              decoration: const InputDecoration(
+                labelText: 'Phone *',
+                border: OutlineInputBorder(),
+              ),
+              validator: FormBuilderValidators.required(),
+              keyboardType: TextInputType.phone,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => handleSave(),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: isSaving.value ? null : handleSave,
+          child: isSaving.value
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text('Save'),
+        ),
+      ],
     );
   }
 }

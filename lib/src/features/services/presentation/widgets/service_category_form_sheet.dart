@@ -9,22 +9,21 @@ import '../../data/repositories/service_category_repository.dart';
 import '../../domain/service_category.dart';
 import '../controllers/service_categories_provider.dart';
 
-/// Shows a bottom sheet form for creating or editing a service category.
+/// Shows a dialog form for creating or editing a service category.
 ///
 /// Returns `true` if the category was saved successfully.
 Future<bool?> showServiceCategoryFormSheet(
   BuildContext context, {
   ServiceCategory? category,
 }) {
-  return showModalBottomSheet<bool>(
+  return showDialog<bool>(
     context: context,
-    isScrollControlled: true,
-    builder: (context) => _ServiceCategoryFormSheet(category: category),
+    builder: (context) => _ServiceCategoryFormDialog(category: category),
   );
 }
 
-class _ServiceCategoryFormSheet extends HookConsumerWidget {
-  const _ServiceCategoryFormSheet({this.category});
+class _ServiceCategoryFormDialog extends HookConsumerWidget {
+  const _ServiceCategoryFormDialog({this.category});
 
   final ServiceCategory? category;
 
@@ -78,58 +77,37 @@ class _ServiceCategoryFormSheet extends HookConsumerWidget {
       );
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 16,
-        right: 16,
-        top: 16,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  isEditing ? 'Edit Category' : 'New Category',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
-              ),
-              const SizedBox(width: 8),
-              FilledButton(
-                onPressed: isSaving.value ? null : handleSave,
-                child: isSaving.value
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Save'),
-              ),
-            ],
+    return AlertDialog(
+      title: Text(isEditing ? 'Edit Category' : 'New Category'),
+      content: FormBuilder(
+        key: formKey,
+        child: FormBuilderTextField(
+          name: 'name',
+          initialValue: category?.name,
+          decoration: const InputDecoration(
+            labelText: 'Category Name *',
+            border: OutlineInputBorder(),
           ),
-          const SizedBox(height: 16),
-          FormBuilder(
-            key: formKey,
-            child: FormBuilderTextField(
-              name: 'name',
-              initialValue: category?.name,
-              decoration: const InputDecoration(
-                labelText: 'Category Name *',
-                border: OutlineInputBorder(),
-              ),
-              validator: FormBuilderValidators.required(),
-              autofocus: true,
-            ),
-          ),
-          const SizedBox(height: 24),
-        ],
+          validator: FormBuilderValidators.required(),
+          autofocus: true,
+        ),
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: isSaving.value ? null : handleSave,
+          child: isSaving.value
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text('Save'),
+        ),
+      ],
     );
   }
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/routing/routes/sales_history.routes.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/utils/breakpoints.dart';
+import '../../../pos/data/repositories/sales_repository.dart';
 import '../../../pos/domain/sale.dart';
 import '../controllers/sale_items_provider.dart';
 import '../controllers/sale_provider.dart';
@@ -80,7 +82,7 @@ class SaleDetailPage extends ConsumerWidget {
   }
 }
 
-class _SaleDetailContent extends ConsumerWidget {
+class _SaleDetailContent extends HookConsumerWidget {
   const _SaleDetailContent({
     required this.sale,
     required this.isTablet,
@@ -257,6 +259,10 @@ class _SaleDetailContent extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
 
+            // Payment & Pickup Status Card
+            _buildPaymentPickupCard(context, ref),
+            const SizedBox(height: 16),
+
             // Status Card
             SaleStatusCard(status: sale.status),
             const SizedBox(height: 16),
@@ -330,6 +336,126 @@ class _SaleDetailContent extends ConsumerWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentPickupCard(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final isUpdating = useState(false);
+
+    Future<void> updateSaleField(String field, bool value) async {
+      isUpdating.value = true;
+      final repo = ref.read(salesRepositoryProvider);
+      final result = await repo.updateSale(sale.id, {field: value});
+      isUpdating.value = false;
+
+      if (!context.mounted) return;
+
+      result.fold(
+        (failure) {
+          showErrorSnackBar(context, message: failure.message);
+        },
+        (_) {
+          ref.invalidate(saleProvider(sale.id));
+        },
+      );
+    }
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.checklist,
+                  color: theme.colorScheme.primary,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Order Status',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Paid status row
+            Row(
+              children: [
+                Icon(
+                  sale.isPaid ? Icons.check_circle : Icons.circle_outlined,
+                  color: sale.isPaid ? Colors.green : theme.colorScheme.outline,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    sale.isPaid ? 'Paid' : 'Not Paid',
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ),
+                if (!sale.isPaid)
+                  FilledButton.tonalIcon(
+                    onPressed: isUpdating.value
+                        ? null
+                        : () => updateSaleField('isPaid', true),
+                    icon: const Icon(Icons.payments, size: 18),
+                    label: const Text('Mark as Paid'),
+                  )
+                else
+                  TextButton.icon(
+                    onPressed: isUpdating.value
+                        ? null
+                        : () => updateSaleField('isPaid', false),
+                    icon: const Icon(Icons.undo, size: 18),
+                    label: const Text('Undo'),
+                  ),
+              ],
+            ),
+            const Divider(height: 24),
+            // Picked up status row
+            Row(
+              children: [
+                Icon(
+                  sale.isPickedUp ? Icons.check_circle : Icons.circle_outlined,
+                  color: sale.isPickedUp
+                      ? Colors.green
+                      : theme.colorScheme.outline,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    sale.isPickedUp ? 'Picked Up' : 'Not Picked Up',
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ),
+                if (!sale.isPickedUp)
+                  FilledButton.tonalIcon(
+                    onPressed: isUpdating.value
+                        ? null
+                        : () => updateSaleField('isPickedUp', true),
+                    icon: const Icon(Icons.local_shipping, size: 18),
+                    label: const Text('Mark as Picked Up'),
+                  )
+                else
+                  TextButton.icon(
+                    onPressed: isUpdating.value
+                        ? null
+                        : () => updateSaleField('isPickedUp', false),
+                    icon: const Icon(Icons.undo, size: 18),
+                    label: const Text('Undo'),
+                  ),
+              ],
+            ),
+          ],
         ),
       ),
     );

@@ -47,6 +47,20 @@ class SaleMapper extends ClassMapperBase<Sale> {
   );
   static String _$status(Sale v) => v.status;
   static const Field<Sale, String> _f$status = Field('status', _$status);
+  static bool _$isPaid(Sale v) => v.isPaid;
+  static const Field<Sale, bool> _f$isPaid = Field(
+    'isPaid',
+    _$isPaid,
+    opt: true,
+    def: false,
+  );
+  static bool _$isPickedUp(Sale v) => v.isPickedUp;
+  static const Field<Sale, bool> _f$isPickedUp = Field(
+    'isPickedUp',
+    _$isPickedUp,
+    opt: true,
+    def: false,
+  );
   static String? _$customerId(Sale v) => v.customerId;
   static const Field<Sale, String> _f$customerId = Field(
     'customerId',
@@ -99,6 +113,8 @@ class SaleMapper extends ClassMapperBase<Sale> {
     #totalAmount: _f$totalAmount,
     #paymentMethod: _f$paymentMethod,
     #status: _f$status,
+    #isPaid: _f$isPaid,
+    #isPickedUp: _f$isPickedUp,
     #customerId: _f$customerId,
     #customerName: _f$customerName,
     #paymentRef: _f$paymentRef,
@@ -117,6 +133,8 @@ class SaleMapper extends ClassMapperBase<Sale> {
       totalAmount: data.dec(_f$totalAmount),
       paymentMethod: data.dec(_f$paymentMethod),
       status: data.dec(_f$status),
+      isPaid: data.dec(_f$isPaid),
+      isPickedUp: data.dec(_f$isPickedUp),
       customerId: data.dec(_f$customerId),
       customerName: data.dec(_f$customerName),
       paymentRef: data.dec(_f$paymentRef),
@@ -181,6 +199,8 @@ abstract class SaleCopyWith<$R, $In extends Sale, $Out>
     num? totalAmount,
     String? paymentMethod,
     String? status,
+    bool? isPaid,
+    bool? isPickedUp,
     String? customerId,
     String? customerName,
     String? paymentRef,
@@ -207,6 +227,8 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
     num? totalAmount,
     String? paymentMethod,
     String? status,
+    bool? isPaid,
+    bool? isPickedUp,
     Object? customerId = $none,
     Object? customerName = $none,
     Object? paymentRef = $none,
@@ -223,6 +245,8 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
       if (totalAmount != null) #totalAmount: totalAmount,
       if (paymentMethod != null) #paymentMethod: paymentMethod,
       if (status != null) #status: status,
+      if (isPaid != null) #isPaid: isPaid,
+      if (isPickedUp != null) #isPickedUp: isPickedUp,
       if (customerId != $none) #customerId: customerId,
       if (customerName != $none) #customerName: customerName,
       if (paymentRef != $none) #paymentRef: paymentRef,
@@ -241,6 +265,8 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
     totalAmount: data.get(#totalAmount, or: $value.totalAmount),
     paymentMethod: data.get(#paymentMethod, or: $value.paymentMethod),
     status: data.get(#status, or: $value.status),
+    isPaid: data.get(#isPaid, or: $value.isPaid),
+    isPickedUp: data.get(#isPickedUp, or: $value.isPickedUp),
     customerId: data.get(#customerId, or: $value.customerId),
     customerName: data.get(#customerName, or: $value.customerName),
     paymentRef: data.get(#paymentRef, or: $value.paymentRef),

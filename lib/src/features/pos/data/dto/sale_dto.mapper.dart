@@ -54,6 +54,20 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
   );
   static String _$status(SaleDto v) => v.status;
   static const Field<SaleDto, String> _f$status = Field('status', _$status);
+  static bool _$isPaid(SaleDto v) => v.isPaid;
+  static const Field<SaleDto, bool> _f$isPaid = Field(
+    'isPaid',
+    _$isPaid,
+    opt: true,
+    def: false,
+  );
+  static bool _$isPickedUp(SaleDto v) => v.isPickedUp;
+  static const Field<SaleDto, bool> _f$isPickedUp = Field(
+    'isPickedUp',
+    _$isPickedUp,
+    opt: true,
+    def: false,
+  );
   static String? _$customer(SaleDto v) => v.customer;
   static const Field<SaleDto, String> _f$customer = Field(
     'customer',
@@ -108,6 +122,8 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
     #totalAmount: _f$totalAmount,
     #paymentMethod: _f$paymentMethod,
     #status: _f$status,
+    #isPaid: _f$isPaid,
+    #isPickedUp: _f$isPickedUp,
     #customer: _f$customer,
     #customerName: _f$customerName,
     #paymentRef: _f$paymentRef,
@@ -128,6 +144,8 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
       totalAmount: data.dec(_f$totalAmount),
       paymentMethod: data.dec(_f$paymentMethod),
       status: data.dec(_f$status),
+      isPaid: data.dec(_f$isPaid),
+      isPickedUp: data.dec(_f$isPickedUp),
       customer: data.dec(_f$customer),
       customerName: data.dec(_f$customerName),
       paymentRef: data.dec(_f$paymentRef),
@@ -205,6 +223,8 @@ abstract class SaleDtoCopyWith<$R, $In extends SaleDto, $Out>
     num? totalAmount,
     String? paymentMethod,
     String? status,
+    bool? isPaid,
+    bool? isPickedUp,
     String? customer,
     String? customerName,
     String? paymentRef,
@@ -235,6 +255,8 @@ class _SaleDtoCopyWithImpl<$R, $Out>
     num? totalAmount,
     String? paymentMethod,
     String? status,
+    bool? isPaid,
+    bool? isPickedUp,
     Object? customer = $none,
     Object? customerName = $none,
     Object? paymentRef = $none,
@@ -253,6 +275,8 @@ class _SaleDtoCopyWithImpl<$R, $Out>
       if (totalAmount != null) #totalAmount: totalAmount,
       if (paymentMethod != null) #paymentMethod: paymentMethod,
       if (status != null) #status: status,
+      if (isPaid != null) #isPaid: isPaid,
+      if (isPickedUp != null) #isPickedUp: isPickedUp,
       if (customer != $none) #customer: customer,
       if (customerName != $none) #customerName: customerName,
       if (paymentRef != $none) #paymentRef: paymentRef,
@@ -273,6 +297,8 @@ class _SaleDtoCopyWithImpl<$R, $Out>
     totalAmount: data.get(#totalAmount, or: $value.totalAmount),
     paymentMethod: data.get(#paymentMethod, or: $value.paymentMethod),
     status: data.get(#status, or: $value.status),
+    isPaid: data.get(#isPaid, or: $value.isPaid),
+    isPickedUp: data.get(#isPickedUp, or: $value.isPickedUp),
     customer: data.get(#customer, or: $value.customer),
     customerName: data.get(#customerName, or: $value.customerName),
     paymentRef: data.get(#paymentRef, or: $value.paymentRef),

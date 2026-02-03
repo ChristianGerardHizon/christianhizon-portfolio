@@ -31,6 +31,9 @@ abstract class SalesRepository {
   FutureEither<List<SaleItem>> getSaleItems(String saleId);
   FutureEither<List<SaleServiceItem>> getSaleServiceItems(String saleId);
 
+  /// Updates a sale record (e.g. marking as paid or picked up).
+  FutureEither<Sale> updateSale(String id, Map<String, dynamic> data);
+
   /// Fetches all sales for a specific customer.
   FutureEither<List<Sale>> getSalesByCustomer(String customerId);
 
@@ -102,6 +105,8 @@ class SalesRepositoryImpl implements SalesRepository {
           'totalAmount': sale.totalAmount,
           'paymentMethod': sale.paymentMethod,
           'status': sale.status,
+          'isPaid': sale.isPaid,
+          'isPickedUp': sale.isPickedUp,
           'customer': sale.customerId,
           'customerName': sale.customerName,
           'paymentRef': sale.paymentRef,
@@ -153,6 +158,17 @@ class SalesRepositoryImpl implements SalesRepository {
     return TaskEither.tryCatch(
       () async {
         final record = await _sales.getOne(id);
+        return _toSaleEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<Sale> updateSale(String id, Map<String, dynamic> data) async {
+    return TaskEither.tryCatch(
+      () async {
+        final record = await _sales.update(id, body: data);
         return _toSaleEntity(record);
       },
       Failure.handle,

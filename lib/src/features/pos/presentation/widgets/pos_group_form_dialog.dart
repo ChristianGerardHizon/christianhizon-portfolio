@@ -4,6 +4,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../../../core/widgets/form_feedback.dart';
 import '../controllers/pos_groups_controller.dart';
 
 /// Shows a dialog for creating or editing a POS group name.
@@ -45,18 +46,20 @@ class _PosGroupFormDialog extends HookConsumerWidget {
       isSaving.value = true;
 
       final controller = ref.read(posGroupsControllerProvider.notifier);
-      final bool success;
+      final String? error;
 
       if (isEditing) {
-        success = await controller.updateGroup(groupId!, name);
+        error = await controller.updateGroup(groupId!, name);
       } else {
-        success = await controller.createGroup(name);
+        error = await controller.createGroup(name);
       }
 
       isSaving.value = false;
 
-      if (success && context.mounted) {
+      if (error == null && context.mounted) {
         Navigator.of(context).pop(true);
+      } else if (context.mounted) {
+        showErrorSnackBar(context, message: error ?? 'Unknown error');
       }
     }
 

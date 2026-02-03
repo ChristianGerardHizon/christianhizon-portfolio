@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/routing/routes/system.routes.dart';
+import '../../../../core/widgets/form_feedback.dart';
 import '../../../pos/presentation/controllers/pos_groups_controller.dart';
 import '../../../pos/presentation/widgets/cashier_group_detail_panel.dart';
 import '../../../products/domain/product_category.dart';
@@ -551,13 +552,15 @@ class _CreateGroupDialog extends HookConsumerWidget {
       if (name.isEmpty) return;
 
       isSaving.value = true;
-      final success = await ref
+      final error = await ref
           .read(posGroupsControllerProvider.notifier)
           .createGroup(name);
       isSaving.value = false;
 
-      if (success && context.mounted) {
+      if (error == null && context.mounted) {
         Navigator.of(context).pop();
+      } else if (context.mounted) {
+        showErrorSnackBar(context, message: error ?? 'Unknown error');
       }
     }
 

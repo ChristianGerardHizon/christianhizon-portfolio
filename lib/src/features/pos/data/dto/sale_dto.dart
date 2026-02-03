@@ -17,6 +17,8 @@ class SaleDto with SaleDtoMappable {
   final num totalAmount;
   final String paymentMethod;
   final String status;
+  final bool isPaid;
+  final bool isPickedUp;
   final String? customer;
   final String? customerName;
   final String? paymentRef;
@@ -35,6 +37,8 @@ class SaleDto with SaleDtoMappable {
     required this.totalAmount,
     required this.paymentMethod,
     required this.status,
+    this.isPaid = false,
+    this.isPickedUp = false,
     this.customer,
     this.customerName,
     this.paymentRef,
@@ -55,6 +59,8 @@ class SaleDto with SaleDtoMappable {
       totalAmount: record.getDoubleValue('totalAmount'),
       paymentMethod: record.getStringValue('paymentMethod'),
       status: record.getStringValue('status'),
+      isPaid: record.getBoolValue('isPaid'),
+      isPickedUp: record.getBoolValue('isPickedUp'),
       customer: record.getStringValue('customer'),
       customerName: record.getStringValue('customerName'),
       paymentRef: record.getStringValue('paymentRef'),
@@ -74,6 +80,8 @@ class SaleDto with SaleDtoMappable {
       totalAmount: totalAmount,
       paymentMethod: paymentMethod,
       status: status,
+      isPaid: isPaid,
+      isPickedUp: isPickedUp,
       customerId: customer != null && customer!.isNotEmpty ? customer : null,
       customerName: customerName != null && customerName!.isNotEmpty ? customerName : null,
       paymentRef: paymentRef,

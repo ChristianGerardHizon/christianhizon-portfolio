@@ -49,4 +49,5 @@ abstract class PocketBaseCollections {
   static const String vwLowStockLotProducts = 'vw_low_stock_lot_products';
   static const String vwExpiredLots = 'vw_expired_lots';
   static const String vwNearExpirationLots = 'vw_near_expiration_lots';
+  static const String vwPosSearchItems = 'vw_pos_search_items';
 }

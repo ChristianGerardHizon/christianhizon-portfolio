@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
+import '../../../../core/packages/pocketbase/pb_filter.dart';
+import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
+import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../../../core/utils/currency_format.dart';
 import '../../../products/data/repositories/product_repository.dart';
 import '../../../products/domain/product.dart';
@@ -237,17 +239,10 @@ class _SearchResultsList extends StatelessWidget {
           itemCount: results.length,
           itemBuilder: (context, index) {
             final item = results[index];
-            return item.when(
-              product: (product) => _ProductResultTile(
-                product: product,
-                ref: ref,
-                onSelected: onItemSelected,
-              ),
-              service: (service) => _ServiceResultTile(
-                service: service,
-                ref: ref,
-                onSelected: onItemSelected,
-              ),
+            return _SearchResultTile(
+              item: item,
+              ref: ref,
+              onSelected: onItemSelected,
             );
           },
         );
@@ -256,6 +251,40 @@ class _SearchResultsList extends StatelessWidget {
   }
 
   Future<List<_SearchResult>> _searchAll() async {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) return [];
+
+    try {
+      final pb = ref.read(pocketbaseProvider);
+      final filter = PBFilter()
+          .searchFields(trimmed, ['name', 'description'])
+          .build();
+
+      final records = await pb
+          .collection(PocketBaseCollections.vwPosSearchItems)
+          .getFullList(
+            filter: filter,
+            sort: 'name',
+          );
+
+      return records
+          .map((r) => _SearchResult(
+                id: r.id,
+                type: r.getStringValue('type'),
+                name: r.getStringValue('name'),
+                description: r.getStringValue('description'),
+                price: (r.data['price'] as num?)?.toDouble() ?? 0,
+                branch: r.getStringValue('branch'),
+              ))
+          .toList();
+    } catch (_) {
+      // Fallback to dual-query if view is unavailable
+      return _searchAllFallback();
+    }
+  }
+
+  /// Fallback search using separate product/service repositories.
+  Future<List<_SearchResult>> _searchAllFallback() async {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return [];
 
@@ -274,7 +303,14 @@ class _SearchResultsList extends StatelessWidget {
       (products) {
         for (final product in (products as List<Product>)) {
           if (product.forSale && !product.isDeleted) {
-            items.add(_SearchResult.product(product));
+            items.add(_SearchResult(
+              id: product.id,
+              type: 'product',
+              name: product.name,
+              description: product.description,
+              price: product.price.toDouble(),
+              branch: product.branch,
+            ));
           }
         }
       },
@@ -285,7 +321,14 @@ class _SearchResultsList extends StatelessWidget {
       (services) {
         for (final service in (services as List<Service>)) {
           if (!service.isDeleted) {
-            items.add(_SearchResult.service(service));
+            items.add(_SearchResult(
+              id: service.id,
+              type: 'service',
+              name: service.name,
+              description: service.description,
+              price: service.price.toDouble(),
+              branch: service.branch,
+            ));
           }
         }
       },
@@ -295,149 +338,131 @@ class _SearchResultsList extends StatelessWidget {
   }
 }
 
-class _ProductResultTile extends StatelessWidget {
-  const _ProductResultTile({
-    required this.product,
+class _SearchResultTile extends StatelessWidget {
+  const _SearchResultTile({
+    required this.item,
     required this.ref,
     required this.onSelected,
   });
 
-  final Product product;
+  final _SearchResult item;
   final WidgetRef ref;
   final VoidCallback onSelected;
+
+  bool get isProduct => item.type == 'product';
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isVariablePrice = item.price <= 0;
 
     return ListTile(
       dense: true,
-      leading: Icon(Icons.inventory_2, color: theme.colorScheme.primary),
-      title: Text(product.name),
+      leading: Icon(
+        isProduct ? Icons.inventory_2 : Icons.miscellaneous_services,
+        color: isProduct ? theme.colorScheme.primary : theme.colorScheme.tertiary,
+      ),
+      title: Text(item.name),
       subtitle: Text(
-        product.isVariablePrice
-            ? 'Variable price'
-            : product.price.toCurrency(),
+        isVariablePrice ? 'Variable price' : item.price.toCurrency(),
       ),
       trailing: Text(
-        'Product',
+        isProduct ? 'Product' : 'Service',
         style: theme.textTheme.labelSmall?.copyWith(
           color: theme.colorScheme.outline,
         ),
       ),
-      onTap: () {
-        _handleTap(context);
-        onSelected();
-      },
+      onTap: () => _handleTap(context),
     );
   }
 
-  void _handleTap(BuildContext context) {
-    final cartNotifier = ref.read(cartControllerProvider.notifier);
+  Future<void> _handleTap(BuildContext context) async {
+    if (isProduct) {
+      await _handleProductTap(context);
+    } else {
+      await _handleServiceTap(context);
+    }
+    onSelected();
+  }
 
-    if (product.trackByLot) {
-      showLotSelectionDialog(
-        context,
-        product: product,
-        onLotSelected: (lot, quantity) {
-          if (product.isVariablePrice) {
-            showVariablePriceDialog(context, productName: product.name)
-                .then((price) {
-              if (price != null) {
-                cartNotifier.addToCartWithLot(product, lot, quantity,
-                    customPrice: price);
-              }
-            });
-          } else {
-            cartNotifier.addToCartWithLot(product, lot, quantity);
+  Future<void> _handleProductTap(BuildContext context) async {
+    // Fetch the full product object for cart logic (lot tracking, etc.)
+    final productRepo = ref.read(productRepositoryProvider);
+    final result = await productRepo.fetchOne(item.id);
+
+    result.fold((_) {}, (product) {
+      if (!context.mounted) return;
+      final cartNotifier = ref.read(cartControllerProvider.notifier);
+
+      if (product.trackByLot) {
+        showLotSelectionDialog(
+          context,
+          product: product,
+          onLotSelected: (lot, quantity) {
+            if (product.isVariablePrice) {
+              showVariablePriceDialog(context, productName: product.name)
+                  .then((price) {
+                if (price != null) {
+                  cartNotifier.addToCartWithLot(product, lot, quantity,
+                      customPrice: price);
+                }
+              });
+            } else {
+              cartNotifier.addToCartWithLot(product, lot, quantity);
+            }
+          },
+        );
+      } else if (product.isVariablePrice) {
+        showVariablePriceDialog(context, productName: product.name)
+            .then((price) {
+          if (price != null) {
+            cartNotifier.addToCart(product, customPrice: price);
           }
-        },
-      );
-    } else if (product.isVariablePrice) {
-      showVariablePriceDialog(context, productName: product.name)
-          .then((price) {
-        if (price != null) {
-          cartNotifier.addToCart(product, customPrice: price);
-        }
-      });
-    } else {
-      cartNotifier.addToCart(product);
-    }
+        });
+      } else {
+        cartNotifier.addToCart(product);
+      }
+    });
+  }
+
+  Future<void> _handleServiceTap(BuildContext context) async {
+    // Fetch the full service object for cart logic
+    final serviceRepo = ref.read(serviceRepositoryProvider);
+    final result = await serviceRepo.fetchOne(item.id);
+
+    result.fold((_) {}, (service) {
+      if (!context.mounted) return;
+      final cartNotifier = ref.read(cartControllerProvider.notifier);
+
+      if (service.hasVariablePrice) {
+        showVariablePriceDialog(context, productName: service.name)
+            .then((price) {
+          if (price != null) {
+            cartNotifier.addServiceToCart(service, customPrice: price);
+          }
+        });
+      } else {
+        cartNotifier.addServiceToCart(service);
+      }
+    });
   }
 }
 
-class _ServiceResultTile extends StatelessWidget {
-  const _ServiceResultTile({
-    required this.service,
-    required this.ref,
-    required this.onSelected,
-  });
-
-  final Service service;
-  final WidgetRef ref;
-  final VoidCallback onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return ListTile(
-      dense: true,
-      leading:
-          Icon(Icons.miscellaneous_services, color: theme.colorScheme.tertiary),
-      title: Text(service.name),
-      subtitle: Text(
-        service.hasVariablePrice
-            ? 'Variable price'
-            : service.price.toCurrency(),
-      ),
-      trailing: Text(
-        'Service',
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: theme.colorScheme.outline,
-        ),
-      ),
-      onTap: () {
-        _handleTap(context);
-        onSelected();
-      },
-    );
-  }
-
-  void _handleTap(BuildContext context) {
-    final cartNotifier = ref.read(cartControllerProvider.notifier);
-
-    if (service.hasVariablePrice) {
-      showVariablePriceDialog(context, productName: service.name)
-          .then((price) {
-        if (price != null) {
-          cartNotifier.addServiceToCart(service, customPrice: price);
-        }
-      });
-    } else {
-      cartNotifier.addServiceToCart(service);
-    }
-  }
-}
-
-/// A union type for search results.
+/// Lightweight search result from the combined view.
 class _SearchResult {
-  final Product? _product;
-  final Service? _service;
+  final String id;
+  final String type;
+  final String name;
+  final String? description;
+  final double price;
+  final String? branch;
 
-  const _SearchResult.product(Product product)
-      : _product = product,
-        _service = null;
-
-  const _SearchResult.service(Service service)
-      : _product = null,
-        _service = service;
-
-  T when<T>({
-    required T Function(Product product) product,
-    required T Function(Service service) service,
-  }) {
-    if (_product != null) return product(_product);
-    return service(_service!);
-  }
+  const _SearchResult({
+    required this.id,
+    required this.type,
+    required this.name,
+    this.description,
+    required this.price,
+    this.branch,
+  });
 }

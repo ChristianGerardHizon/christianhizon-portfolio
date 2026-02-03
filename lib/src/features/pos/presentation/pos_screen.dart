@@ -13,16 +13,11 @@ import 'components/product_grid.dart';
 import 'components/service_grid.dart';
 import 'controllers/pos_groups_controller.dart';
 
-enum PosTab { products, services }
-
 class PosScreen extends HookConsumerWidget {
   const PosScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchController = useTextEditingController();
-    final searchQuery = useState('');
-    final activeTab = useState(PosTab.products);
     final scaffoldKey = useMemoized(() => GlobalKey<ScaffoldState>());
 
     // Watch POS groups for the current branch
@@ -30,39 +25,17 @@ class PosScreen extends HookConsumerWidget {
     final groups = posGroupsAsync.value ?? [];
     final hasGroups = groups.isNotEmpty;
 
-    // Debounce search to avoid excessive API calls
-    useEffect(() {
-      void listener() {
-        searchQuery.value = searchController.text;
-      }
-
-      searchController.addListener(listener);
-      return () => searchController.removeListener(listener);
-    }, [searchController]);
-
     return ScreenTypeLayout.builder(
       mobile: (context) => _MobileLayout(
         scaffoldKey: scaffoldKey,
-        searchController: searchController,
-        searchQuery: searchQuery.value,
-        activeTab: activeTab.value,
-        onTabChanged: (tab) => activeTab.value = tab,
         hasGroups: hasGroups,
         groups: groups,
       ),
       tablet: (context) => _DesktopLayout(
-        searchController: searchController,
-        searchQuery: searchQuery.value,
-        activeTab: activeTab.value,
-        onTabChanged: (tab) => activeTab.value = tab,
         hasGroups: hasGroups,
         groups: groups,
       ),
       desktop: (context) => _DesktopLayout(
-        searchController: searchController,
-        searchQuery: searchQuery.value,
-        activeTab: activeTab.value,
-        onTabChanged: (tab) => activeTab.value = tab,
         hasGroups: hasGroups,
         groups: groups,
       ),
@@ -72,18 +45,10 @@ class PosScreen extends HookConsumerWidget {
 
 class _DesktopLayout extends StatelessWidget {
   const _DesktopLayout({
-    required this.searchController,
-    required this.searchQuery,
-    required this.activeTab,
-    required this.onTabChanged,
     required this.hasGroups,
     required this.groups,
   });
 
-  final TextEditingController searchController;
-  final String searchQuery;
-  final PosTab activeTab;
-  final ValueChanged<PosTab> onTabChanged;
   final bool hasGroups;
   final List<PosGroup> groups;
 
@@ -102,69 +67,37 @@ class _DesktopLayout extends StatelessWidget {
             flex: 6,
             child: Column(
               children: [
-                if (hasGroups) ...[
-                  // Grouped mode: search dropdown only
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
-                    child: CashierSearchDropdown(),
-                  ),
-                  const SizedBox(height: 12),
+                // Search dropdown (always shown)
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+                  child: CashierSearchDropdown(),
+                ),
+                const SizedBox(height: 12),
+                if (hasGroups)
                   Expanded(
                     child: GroupedCashierView(groups: groups),
-                  ),
-                ] else ...[
-                  // Default mode: Tab Toggle + Search Bar
+                  )
+                else ...[
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                    child: Row(
-                      children: [
-                        SegmentedButton<PosTab>(
-                          segments: const [
-                            ButtonSegment(
-                              value: PosTab.products,
-                              label: Text('Products'),
-                              icon: Icon(Icons.inventory_2),
-                            ),
-                            ButtonSegment(
-                              value: PosTab.services,
-                              label: Text('Services'),
-                              icon: Icon(Icons.miscellaneous_services),
-                            ),
-                          ],
-                          selected: {activeTab},
-                          onSelectionChanged: (selected) {
-                            onTabChanged(selected.first);
-                            searchController.clear();
-                          },
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: TextField(
-                            controller: searchController,
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.search),
-                              hintText: activeTab == PosTab.products
-                                  ? 'Search products...'
-                                  : 'Search services...',
-                              border: const OutlineInputBorder(),
-                              suffixIcon: searchQuery.isNotEmpty
-                                  ? IconButton(
-                                      icon: const Icon(Icons.clear),
-                                      onPressed: () =>
-                                          searchController.clear(),
-                                    )
-                                  : null,
-                            ),
-                          ),
-                        ),
-                      ],
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      'Services',
+                      style: theme.textTheme.titleMedium,
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  Expanded(
-                    child: activeTab == PosTab.products
-                        ? ProductGrid(searchQuery: searchQuery)
-                        : ServiceGrid(searchQuery: searchQuery),
+                  const Expanded(
+                    child: ServiceGrid(),
+                  ),
+                  const Divider(height: 1),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      'Products',
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
+                  const Expanded(
+                    child: ProductGrid(),
                   ),
                 ],
               ],
@@ -188,19 +121,11 @@ class _DesktopLayout extends StatelessWidget {
 class _MobileLayout extends ConsumerWidget {
   const _MobileLayout({
     required this.scaffoldKey,
-    required this.searchController,
-    required this.searchQuery,
-    required this.activeTab,
-    required this.onTabChanged,
     required this.hasGroups,
     required this.groups,
   });
 
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final TextEditingController searchController;
-  final String searchQuery;
-  final PosTab activeTab;
-  final ValueChanged<PosTab> onTabChanged;
   final bool hasGroups;
   final List<PosGroup> groups;
 
@@ -284,6 +209,7 @@ class _MobileLayout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final cartState = ref.watch(cartControllerProvider);
     final itemCount = cartState.value?.totalItemCount ?? 0;
     final total = cartState.value?.total ?? 0;
@@ -306,67 +232,36 @@ class _MobileLayout extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          if (hasGroups) ...[
-            // Grouped mode: search dropdown only
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: CashierSearchDropdown(isDense: true),
-            ),
+          // Search dropdown (always shown)
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: CashierSearchDropdown(isDense: true),
+          ),
+          if (hasGroups)
             Expanded(
               child: GroupedCashierView(groups: groups),
-            ),
-          ] else ...[
-            // Default mode: Tab Toggle + Search
+            )
+          else ...[
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-              child: SizedBox(
-                width: double.infinity,
-                child: SegmentedButton<PosTab>(
-                  segments: const [
-                    ButtonSegment(
-                      value: PosTab.products,
-                      label: Text('Products'),
-                      icon: Icon(Icons.inventory_2),
-                    ),
-                    ButtonSegment(
-                      value: PosTab.services,
-                      label: Text('Services'),
-                      icon: Icon(Icons.miscellaneous_services),
-                    ),
-                  ],
-                  selected: {activeTab},
-                  onSelectionChanged: (selected) {
-                    onTabChanged(selected.first);
-                    searchController.clear();
-                  },
-                ),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                'Services',
+                style: theme.textTheme.titleMedium,
               ),
             ),
-            // Search Bar
+            const Expanded(
+              child: ServiceGrid(),
+            ),
+            const Divider(height: 1),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: searchController,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  hintText: activeTab == PosTab.products
-                      ? 'Search products...'
-                      : 'Search services...',
-                  border: const OutlineInputBorder(),
-                  isDense: true,
-                  suffixIcon: searchQuery.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () => searchController.clear(),
-                        )
-                      : null,
-                ),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                'Products',
+                style: theme.textTheme.titleMedium,
               ),
             ),
-            Expanded(
-              child: activeTab == PosTab.products
-                  ? ProductGrid(searchQuery: searchQuery)
-                  : ServiceGrid(searchQuery: searchQuery),
+            const Expanded(
+              child: ProductGrid(),
             ),
           ],
         ],

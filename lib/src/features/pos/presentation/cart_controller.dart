@@ -179,7 +179,7 @@ class CartController extends _$CartController {
               ? createdItem.copyWith(customPrice: customPrice)
               : createdItem;
           final newItems = <CartItem>[...currentState.items, item];
-          state = AsyncData(CartState(
+          state = AsyncData(currentState.copyWith(
             cartId: cartId,
             items: newItems,
             isSyncing: false,
@@ -257,7 +257,7 @@ class CartController extends _$CartController {
               ? createdItem.copyWith(customPrice: customPrice)
               : createdItem;
           final newItems = <CartItem>[...currentState.items, item];
-          state = AsyncData(CartState(
+          state = AsyncData(currentState.copyWith(
             cartId: cartId,
             items: newItems,
             isSyncing: false,

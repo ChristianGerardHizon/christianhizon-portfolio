@@ -30,7 +30,6 @@ class CheckoutController extends _$CheckoutController {
     required PaymentMethod paymentMethod,
     String? paymentRef,
     String? notes,
-    double? amountTendered,
     String? customerId,
     String? customerName,
     http.MultipartFile? paymentProofFile,

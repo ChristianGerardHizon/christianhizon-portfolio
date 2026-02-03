@@ -11,23 +11,21 @@ import '../controllers/service_categories_provider.dart';
 import '../controllers/services_controller.dart';
 import 'service_category_form_sheet.dart';
 
-/// Shows a bottom sheet form for creating or editing a service.
+/// Shows a dialog form for creating or editing a service.
 ///
 /// Returns `true` if the service was saved successfully.
 Future<bool?> showServiceFormSheet(
   BuildContext context, {
   Service? service,
 }) {
-  return showModalBottomSheet<bool>(
+  return showDialog<bool>(
     context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
-    builder: (context) => _ServiceFormSheet(service: service),
+    builder: (context) => _ServiceFormDialog(service: service),
   );
 }
 
-class _ServiceFormSheet extends HookConsumerWidget {
-  const _ServiceFormSheet({this.service});
+class _ServiceFormDialog extends HookConsumerWidget {
+  const _ServiceFormDialog({this.service});
 
   final Service? service;
 
@@ -87,54 +85,35 @@ class _ServiceFormSheet extends HookConsumerWidget {
       }
     }
 
-    return DraggableScrollableSheet(
-      initialChildSize: 0.9,
-      minChildSize: 0.5,
-      maxChildSize: 0.95,
-      expand: false,
-      builder: (context, scrollController) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
+    return Dialog(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 500, maxHeight: 600),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               // Header
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        isEditing ? 'Edit Service' : 'New Service',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      isEditing ? 'Edit Service' : 'New Service',
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
-                    ),
-                    const SizedBox(width: 8),
-                    FilledButton(
-                      onPressed: isSaving.value ? null : handleSave,
-                      child: isSaving.value
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Text('Save'),
-                    ),
-                  ],
-                ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close),
+                  ),
+                ],
               ),
-              const Divider(height: 1),
+              const Divider(),
+              const SizedBox(height: 8),
 
               // Form
-              Expanded(
+              Flexible(
                 child: SingleChildScrollView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.all(16),
                   child: FormBuilder(
                     key: formKey,
                     child: Column(
@@ -259,16 +238,38 @@ class _ServiceFormSheet extends HookConsumerWidget {
                             FormBuilderValidators.numeric(),
                           ]),
                         ),
-                        const SizedBox(height: 32),
                       ],
                     ),
                   ),
                 ),
               ),
+              const SizedBox(height: 16),
+
+              // Actions
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: isSaving.value ? null : handleSave,
+                    child: isSaving.value
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Save'),
+                  ),
+                ],
+              ),
             ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
