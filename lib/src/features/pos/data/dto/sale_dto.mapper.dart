@@ -47,24 +47,19 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
     'totalAmount',
     _$totalAmount,
   );
-  static String _$paymentMethod(SaleDto v) => v.paymentMethod;
-  static const Field<SaleDto, String> _f$paymentMethod = Field(
-    'paymentMethod',
-    _$paymentMethod,
-  );
   static String _$status(SaleDto v) => v.status;
   static const Field<SaleDto, String> _f$status = Field('status', _$status);
+  static String _$orderStatus(SaleDto v) => v.orderStatus;
+  static const Field<SaleDto, String> _f$orderStatus = Field(
+    'orderStatus',
+    _$orderStatus,
+    opt: true,
+    def: 'pending',
+  );
   static bool _$isPaid(SaleDto v) => v.isPaid;
   static const Field<SaleDto, bool> _f$isPaid = Field(
     'isPaid',
     _$isPaid,
-    opt: true,
-    def: false,
-  );
-  static bool _$isPickedUp(SaleDto v) => v.isPickedUp;
-  static const Field<SaleDto, bool> _f$isPickedUp = Field(
-    'isPickedUp',
-    _$isPickedUp,
     opt: true,
     def: false,
   );
@@ -84,18 +79,6 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
   static const Field<SaleDto, String> _f$customerName = Field(
     'customerName',
     _$customerName,
-    opt: true,
-  );
-  static String? _$paymentRef(SaleDto v) => v.paymentRef;
-  static const Field<SaleDto, String> _f$paymentRef = Field(
-    'paymentRef',
-    _$paymentRef,
-    opt: true,
-  );
-  static String? _$paymentProof(SaleDto v) => v.paymentProof;
-  static const Field<SaleDto, String> _f$paymentProof = Field(
-    'paymentProof',
-    _$paymentProof,
     opt: true,
   );
   static String? _$notes(SaleDto v) => v.notes;
@@ -126,15 +109,12 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
     #branch: _f$branch,
     #cashier: _f$cashier,
     #totalAmount: _f$totalAmount,
-    #paymentMethod: _f$paymentMethod,
     #status: _f$status,
+    #orderStatus: _f$orderStatus,
     #isPaid: _f$isPaid,
-    #isPickedUp: _f$isPickedUp,
     #pickedUpAt: _f$pickedUpAt,
     #customer: _f$customer,
     #customerName: _f$customerName,
-    #paymentRef: _f$paymentRef,
-    #paymentProof: _f$paymentProof,
     #notes: _f$notes,
     #created: _f$created,
     #updated: _f$updated,
@@ -149,15 +129,12 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
       branch: data.dec(_f$branch),
       cashier: data.dec(_f$cashier),
       totalAmount: data.dec(_f$totalAmount),
-      paymentMethod: data.dec(_f$paymentMethod),
       status: data.dec(_f$status),
+      orderStatus: data.dec(_f$orderStatus),
       isPaid: data.dec(_f$isPaid),
-      isPickedUp: data.dec(_f$isPickedUp),
       pickedUpAt: data.dec(_f$pickedUpAt),
       customer: data.dec(_f$customer),
       customerName: data.dec(_f$customerName),
-      paymentRef: data.dec(_f$paymentRef),
-      paymentProof: data.dec(_f$paymentProof),
       notes: data.dec(_f$notes),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
@@ -229,15 +206,12 @@ abstract class SaleDtoCopyWith<$R, $In extends SaleDto, $Out>
     String? branch,
     String? cashier,
     num? totalAmount,
-    String? paymentMethod,
     String? status,
+    String? orderStatus,
     bool? isPaid,
-    bool? isPickedUp,
     String? pickedUpAt,
     String? customer,
     String? customerName,
-    String? paymentRef,
-    String? paymentProof,
     String? notes,
     String? created,
     String? updated,
@@ -262,15 +236,12 @@ class _SaleDtoCopyWithImpl<$R, $Out>
     String? branch,
     String? cashier,
     num? totalAmount,
-    String? paymentMethod,
     String? status,
+    String? orderStatus,
     bool? isPaid,
-    bool? isPickedUp,
     Object? pickedUpAt = $none,
     Object? customer = $none,
     Object? customerName = $none,
-    Object? paymentRef = $none,
-    Object? paymentProof = $none,
     Object? notes = $none,
     Object? created = $none,
     Object? updated = $none,
@@ -283,15 +254,12 @@ class _SaleDtoCopyWithImpl<$R, $Out>
       if (branch != null) #branch: branch,
       if (cashier != null) #cashier: cashier,
       if (totalAmount != null) #totalAmount: totalAmount,
-      if (paymentMethod != null) #paymentMethod: paymentMethod,
       if (status != null) #status: status,
+      if (orderStatus != null) #orderStatus: orderStatus,
       if (isPaid != null) #isPaid: isPaid,
-      if (isPickedUp != null) #isPickedUp: isPickedUp,
       if (pickedUpAt != $none) #pickedUpAt: pickedUpAt,
       if (customer != $none) #customer: customer,
       if (customerName != $none) #customerName: customerName,
-      if (paymentRef != $none) #paymentRef: paymentRef,
-      if (paymentProof != $none) #paymentProof: paymentProof,
       if (notes != $none) #notes: notes,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
@@ -306,15 +274,12 @@ class _SaleDtoCopyWithImpl<$R, $Out>
     branch: data.get(#branch, or: $value.branch),
     cashier: data.get(#cashier, or: $value.cashier),
     totalAmount: data.get(#totalAmount, or: $value.totalAmount),
-    paymentMethod: data.get(#paymentMethod, or: $value.paymentMethod),
     status: data.get(#status, or: $value.status),
+    orderStatus: data.get(#orderStatus, or: $value.orderStatus),
     isPaid: data.get(#isPaid, or: $value.isPaid),
-    isPickedUp: data.get(#isPickedUp, or: $value.isPickedUp),
     pickedUpAt: data.get(#pickedUpAt, or: $value.pickedUpAt),
     customer: data.get(#customer, or: $value.customer),
     customerName: data.get(#customerName, or: $value.customerName),
-    paymentRef: data.get(#paymentRef, or: $value.paymentRef),
-    paymentProof: data.get(#paymentProof, or: $value.paymentProof),
     notes: data.get(#notes, or: $value.notes),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),

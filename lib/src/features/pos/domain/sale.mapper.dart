@@ -14,6 +14,7 @@ class SaleMapper extends ClassMapperBase<Sale> {
   static SaleMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = SaleMapper._());
+      OrderStatusMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -40,24 +41,19 @@ class SaleMapper extends ClassMapperBase<Sale> {
     'totalAmount',
     _$totalAmount,
   );
-  static String _$paymentMethod(Sale v) => v.paymentMethod;
-  static const Field<Sale, String> _f$paymentMethod = Field(
-    'paymentMethod',
-    _$paymentMethod,
-  );
   static String _$status(Sale v) => v.status;
   static const Field<Sale, String> _f$status = Field('status', _$status);
+  static OrderStatus _$orderStatus(Sale v) => v.orderStatus;
+  static const Field<Sale, OrderStatus> _f$orderStatus = Field(
+    'orderStatus',
+    _$orderStatus,
+    opt: true,
+    def: OrderStatus.pending,
+  );
   static bool _$isPaid(Sale v) => v.isPaid;
   static const Field<Sale, bool> _f$isPaid = Field(
     'isPaid',
     _$isPaid,
-    opt: true,
-    def: false,
-  );
-  static bool _$isPickedUp(Sale v) => v.isPickedUp;
-  static const Field<Sale, bool> _f$isPickedUp = Field(
-    'isPickedUp',
-    _$isPickedUp,
     opt: true,
     def: false,
   );
@@ -77,18 +73,6 @@ class SaleMapper extends ClassMapperBase<Sale> {
   static const Field<Sale, String> _f$customerName = Field(
     'customerName',
     _$customerName,
-    opt: true,
-  );
-  static String? _$paymentRef(Sale v) => v.paymentRef;
-  static const Field<Sale, String> _f$paymentRef = Field(
-    'paymentRef',
-    _$paymentRef,
-    opt: true,
-  );
-  static String? _$paymentProofUrl(Sale v) => v.paymentProofUrl;
-  static const Field<Sale, String> _f$paymentProofUrl = Field(
-    'paymentProofUrl',
-    _$paymentProofUrl,
     opt: true,
   );
   static String? _$notes(Sale v) => v.notes;
@@ -117,15 +101,12 @@ class SaleMapper extends ClassMapperBase<Sale> {
     #branchId: _f$branchId,
     #cashierId: _f$cashierId,
     #totalAmount: _f$totalAmount,
-    #paymentMethod: _f$paymentMethod,
     #status: _f$status,
+    #orderStatus: _f$orderStatus,
     #isPaid: _f$isPaid,
-    #isPickedUp: _f$isPickedUp,
     #pickedUpAt: _f$pickedUpAt,
     #customerId: _f$customerId,
     #customerName: _f$customerName,
-    #paymentRef: _f$paymentRef,
-    #paymentProofUrl: _f$paymentProofUrl,
     #notes: _f$notes,
     #created: _f$created,
     #updated: _f$updated,
@@ -138,15 +119,12 @@ class SaleMapper extends ClassMapperBase<Sale> {
       branchId: data.dec(_f$branchId),
       cashierId: data.dec(_f$cashierId),
       totalAmount: data.dec(_f$totalAmount),
-      paymentMethod: data.dec(_f$paymentMethod),
       status: data.dec(_f$status),
+      orderStatus: data.dec(_f$orderStatus),
       isPaid: data.dec(_f$isPaid),
-      isPickedUp: data.dec(_f$isPickedUp),
       pickedUpAt: data.dec(_f$pickedUpAt),
       customerId: data.dec(_f$customerId),
       customerName: data.dec(_f$customerName),
-      paymentRef: data.dec(_f$paymentRef),
-      paymentProofUrl: data.dec(_f$paymentProofUrl),
       notes: data.dec(_f$notes),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
@@ -205,15 +183,12 @@ abstract class SaleCopyWith<$R, $In extends Sale, $Out>
     String? branchId,
     String? cashierId,
     num? totalAmount,
-    String? paymentMethod,
     String? status,
+    OrderStatus? orderStatus,
     bool? isPaid,
-    bool? isPickedUp,
     DateTime? pickedUpAt,
     String? customerId,
     String? customerName,
-    String? paymentRef,
-    String? paymentProofUrl,
     String? notes,
     DateTime? created,
     DateTime? updated,
@@ -234,15 +209,12 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
     String? branchId,
     String? cashierId,
     num? totalAmount,
-    String? paymentMethod,
     String? status,
+    OrderStatus? orderStatus,
     bool? isPaid,
-    bool? isPickedUp,
     Object? pickedUpAt = $none,
     Object? customerId = $none,
     Object? customerName = $none,
-    Object? paymentRef = $none,
-    Object? paymentProofUrl = $none,
     Object? notes = $none,
     Object? created = $none,
     Object? updated = $none,
@@ -253,15 +225,12 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
       if (branchId != null) #branchId: branchId,
       if (cashierId != null) #cashierId: cashierId,
       if (totalAmount != null) #totalAmount: totalAmount,
-      if (paymentMethod != null) #paymentMethod: paymentMethod,
       if (status != null) #status: status,
+      if (orderStatus != null) #orderStatus: orderStatus,
       if (isPaid != null) #isPaid: isPaid,
-      if (isPickedUp != null) #isPickedUp: isPickedUp,
       if (pickedUpAt != $none) #pickedUpAt: pickedUpAt,
       if (customerId != $none) #customerId: customerId,
       if (customerName != $none) #customerName: customerName,
-      if (paymentRef != $none) #paymentRef: paymentRef,
-      if (paymentProofUrl != $none) #paymentProofUrl: paymentProofUrl,
       if (notes != $none) #notes: notes,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
@@ -274,15 +243,12 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
     branchId: data.get(#branchId, or: $value.branchId),
     cashierId: data.get(#cashierId, or: $value.cashierId),
     totalAmount: data.get(#totalAmount, or: $value.totalAmount),
-    paymentMethod: data.get(#paymentMethod, or: $value.paymentMethod),
     status: data.get(#status, or: $value.status),
+    orderStatus: data.get(#orderStatus, or: $value.orderStatus),
     isPaid: data.get(#isPaid, or: $value.isPaid),
-    isPickedUp: data.get(#isPickedUp, or: $value.isPickedUp),
     pickedUpAt: data.get(#pickedUpAt, or: $value.pickedUpAt),
     customerId: data.get(#customerId, or: $value.customerId),
     customerName: data.get(#customerName, or: $value.customerName),
-    paymentRef: data.get(#paymentRef, or: $value.paymentRef),
-    paymentProofUrl: data.get(#paymentProofUrl, or: $value.paymentProofUrl),
     notes: data.get(#notes, or: $value.notes),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),

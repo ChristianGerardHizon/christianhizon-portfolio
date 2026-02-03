@@ -1,5 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
+import 'order_status.dart';
+
 part 'sale.mapper.dart';
 
 /// Sale domain model.
@@ -13,15 +15,12 @@ class Sale with SaleMappable {
     required this.branchId,
     required this.cashierId,
     required this.totalAmount,
-    required this.paymentMethod,
     required this.status,
+    this.orderStatus = OrderStatus.pending,
     this.isPaid = false,
-    this.isPickedUp = false,
     this.pickedUpAt,
     this.customerId,
     this.customerName,
-    this.paymentRef,
-    this.paymentProofUrl,
     this.notes,
     this.created,
     this.updated,
@@ -42,17 +41,14 @@ class Sale with SaleMappable {
   /// Total amount charged.
   final num totalAmount;
 
-  /// Payment method (cash, card, etc.).
-  final String paymentMethod;
-
-  /// Transaction status.
+  /// Transaction status (completed, refunded, voided).
   final String status;
 
-  /// Whether the customer has paid.
-  final bool isPaid;
+  /// Order fulfillment status (pending, processing, ready, pickedUp).
+  final OrderStatus orderStatus;
 
-  /// Whether the order has been picked up.
-  final bool isPickedUp;
+  /// Whether the customer has fully paid (auto-calculated from payments).
+  final bool isPaid;
 
   /// Timestamp when the order was picked up.
   final DateTime? pickedUpAt;
@@ -62,12 +58,6 @@ class Sale with SaleMappable {
 
   /// Customer name (for display).
   final String? customerName;
-
-  /// External payment reference.
-  final String? paymentRef;
-
-  /// URL of the payment proof image (screenshot of transaction).
-  final String? paymentProofUrl;
 
   /// Internal notes.
   final String? notes;
@@ -80,4 +70,7 @@ class Sale with SaleMappable {
 
   /// Returns display name for customer.
   String? get customerDisplay => customerName;
+
+  /// Returns true if order has been picked up.
+  bool get isPickedUp => orderStatus == OrderStatus.pickedUp;
 }

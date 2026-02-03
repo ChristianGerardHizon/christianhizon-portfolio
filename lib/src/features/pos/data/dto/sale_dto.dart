@@ -2,6 +2,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 import '../../../../core/utils/date_utils.dart';
+import '../../domain/order_status.dart';
 import '../../domain/sale.dart';
 
 part 'sale_dto.mapper.dart';
@@ -15,15 +16,12 @@ class SaleDto with SaleDtoMappable {
   final String branch;
   final String cashier;
   final num totalAmount;
-  final String paymentMethod;
   final String status;
+  final String orderStatus;
   final bool isPaid;
-  final bool isPickedUp;
   final String? pickedUpAt;
   final String? customer;
   final String? customerName;
-  final String? paymentRef;
-  final String? paymentProof;
   final String? notes;
   final String? created;
   final String? updated;
@@ -36,15 +34,12 @@ class SaleDto with SaleDtoMappable {
     required this.branch,
     required this.cashier,
     required this.totalAmount,
-    required this.paymentMethod,
     required this.status,
+    this.orderStatus = 'pending',
     this.isPaid = false,
-    this.isPickedUp = false,
     this.pickedUpAt,
     this.customer,
     this.customerName,
-    this.paymentRef,
-    this.paymentProof,
     this.notes,
     this.created,
     this.updated,
@@ -59,47 +54,49 @@ class SaleDto with SaleDtoMappable {
       branch: record.getStringValue('branch'),
       cashier: record.getStringValue('cashier'),
       totalAmount: record.getDoubleValue('totalAmount'),
-      paymentMethod: record.getStringValue('paymentMethod'),
       status: record.getStringValue('status'),
+      orderStatus: record.getStringValue('orderStatus'),
       isPaid: record.getBoolValue('isPaid'),
-      isPickedUp: record.getBoolValue('isPickedUp'),
       pickedUpAt: record.get<String>('pickedUpAt'),
       customer: record.getStringValue('customer'),
       customerName: record.getStringValue('customerName'),
-      paymentRef: record.getStringValue('paymentRef'),
-      paymentProof: record.getStringValue('paymentProof'),
       notes: record.getStringValue('notes'),
       created: record.get<String>('created'),
       updated: record.get<String>('updated'),
     );
   }
 
-  Sale toEntity({String? baseUrl}) {
+  Sale toEntity() {
     return Sale(
       id: id,
       receiptNumber: receiptNumber,
       branchId: branch,
       cashierId: cashier,
       totalAmount: totalAmount,
-      paymentMethod: paymentMethod,
       status: status,
+      orderStatus: _parseOrderStatus(orderStatus),
       isPaid: isPaid,
-      isPickedUp: isPickedUp,
       pickedUpAt: parseToLocal(pickedUpAt),
       customerId: customer != null && customer!.isNotEmpty ? customer : null,
       customerName: customerName != null && customerName!.isNotEmpty ? customerName : null,
-      paymentRef: paymentRef,
-      paymentProofUrl: _buildPaymentProofUrl(baseUrl),
       notes: notes,
       created: parseToLocal(created),
       updated: parseToLocal(updated),
     );
   }
 
-  String? _buildPaymentProofUrl(String? baseUrl) {
-    if (paymentProof == null || paymentProof!.isEmpty || baseUrl == null) {
-      return null;
+  OrderStatus _parseOrderStatus(String status) {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return OrderStatus.pending;
+      case 'processing':
+        return OrderStatus.processing;
+      case 'ready':
+        return OrderStatus.ready;
+      case 'pickedup':
+        return OrderStatus.pickedUp;
+      default:
+        return OrderStatus.pending;
     }
-    return '$baseUrl/api/files/$collectionName/$id/$paymentProof';
   }
 }
