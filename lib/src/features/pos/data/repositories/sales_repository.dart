@@ -1,5 +1,4 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:http/http.dart' as http;
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -12,6 +11,7 @@ import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../../services/data/dto/sale_service_item_dto.dart';
 import '../../../services/domain/sale_service_item.dart';
+import '../../domain/order_status.dart';
 import '../../domain/sale.dart';
 import '../../domain/sale_item.dart';
 import '../dto/sale_dto.dart';
@@ -24,15 +24,20 @@ abstract class SalesRepository {
     Sale sale,
     List<SaleItem> items, {
     List<SaleServiceItem> serviceItems,
-    http.MultipartFile? paymentProofFile,
   });
   FutureEither<Sale> getSale(String id);
   FutureEither<List<Sale>> getSales({String? branchId, DateTime? date});
   FutureEither<List<SaleItem>> getSaleItems(String saleId);
   FutureEither<List<SaleServiceItem>> getSaleServiceItems(String saleId);
 
-  /// Updates a sale record (e.g. marking as paid or picked up).
+  /// Updates a sale record.
   FutureEither<Sale> updateSale(String id, Map<String, dynamic> data);
+
+  /// Updates the order status of a sale.
+  FutureEither<Sale> updateOrderStatus(String id, OrderStatus status);
+
+  /// Updates the sale status (completed, refunded, voided).
+  FutureEither<Sale> updateSaleStatus(String id, String status);
 
   /// Fetches all sales for a specific customer.
   FutureEither<List<Sale>> getSalesByCustomer(String customerId);
@@ -73,7 +78,7 @@ class SalesRepositoryImpl implements SalesRepository {
       _pb.collection(PocketBaseCollections.saleServiceItems);
 
   Sale _toSaleEntity(RecordModel record) {
-    return SaleDto.fromRecord(record).toEntity(baseUrl: _pb.baseURL);
+    return SaleDto.fromRecord(record).toEntity();
   }
 
   SaleItem _toSaleItemEntity(RecordModel record) {
@@ -93,33 +98,23 @@ class SalesRepositoryImpl implements SalesRepository {
     Sale sale,
     List<SaleItem> items, {
     List<SaleServiceItem> serviceItems = const [],
-    http.MultipartFile? paymentProofFile,
   }) async {
     return TaskEither.tryCatch(
       () async {
-        // 1. Create Sale Record
+        // 1. Create Sale Record with initial orderStatus: pending
         final saleBody = {
           'receiptNumber': sale.receiptNumber,
           'branch': sale.branchId,
           'cashier': sale.cashierId,
           'totalAmount': sale.totalAmount,
-          'paymentMethod': sale.paymentMethod,
           'status': sale.status,
+          'orderStatus': sale.orderStatus.name,
           'isPaid': sale.isPaid,
-          'isPickedUp': sale.isPickedUp,
-          // Set pickedUpAt to current time if isPickedUp is true
-          'pickedUpAt': sale.isPickedUp
-              ? (sale.pickedUpAt ?? DateTime.now()).toUtc().toIso8601String()
-              : null,
           'customer': sale.customerId,
           'customerName': sale.customerName,
-          'paymentRef': sale.paymentRef,
           'notes': sale.notes,
         };
-        final saleRecord = await _sales.create(
-          body: saleBody,
-          files: paymentProofFile != null ? [paymentProofFile] : [],
-        );
+        final saleRecord = await _sales.create(body: saleBody);
 
         // 2. Create Sale Items (products)
         for (final item in items) {
@@ -173,6 +168,35 @@ class SalesRepositoryImpl implements SalesRepository {
     return TaskEither.tryCatch(
       () async {
         final record = await _sales.update(id, body: data);
+        return _toSaleEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<Sale> updateOrderStatus(String id, OrderStatus status) async {
+    return TaskEither.tryCatch(
+      () async {
+        final data = <String, dynamic>{
+          'orderStatus': status.name,
+        };
+        // Set pickedUpAt when status changes to pickedUp
+        if (status == OrderStatus.pickedUp) {
+          data['pickedUpAt'] = DateTime.now().toUtc().toIso8601String();
+        }
+        final record = await _sales.update(id, body: data);
+        return _toSaleEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<Sale> updateSaleStatus(String id, String status) async {
+    return TaskEither.tryCatch(
+      () async {
+        final record = await _sales.update(id, body: {'status': status});
         return _toSaleEntity(record);
       },
       Failure.handle,
