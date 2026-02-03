@@ -121,12 +121,24 @@ class _ServiceFormDialog extends HookConsumerWidget {
                 child: SingleChildScrollView(
                   child: FormBuilder(
                     key: formKey,
+                    initialValue: {
+                      'name': service?.name ?? '',
+                      'description': service?.description ?? '',
+                      'category': service?.categoryId,
+                      'price': service?.price.toString() ?? '0',
+                      'isVariablePrice': service?.isVariablePrice ?? false,
+                      'weightBased': service?.weightBased ?? false,
+                      'showPrompt': service?.showPrompt ?? false,
+                      'maxQuantity': service?.maxQuantity?.toString() ?? '',
+                      'quantityUnit': service?.quantityUnitId,
+                      'estimatedDuration':
+                          service?.estimatedDuration?.toString() ?? '',
+                    },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         FormBuilderTextField(
                           name: 'name',
-                          initialValue: service?.name,
                           decoration:
                               const InputDecoration(labelText: 'Name *'),
                           validator: FormBuilderValidators.required(),
@@ -135,7 +147,6 @@ class _ServiceFormDialog extends HookConsumerWidget {
                         const SizedBox(height: 16),
                         FormBuilderTextField(
                           name: 'description',
-                          initialValue: service?.description,
                           decoration:
                               const InputDecoration(labelText: 'Description'),
                           maxLines: 3,
@@ -152,7 +163,6 @@ class _ServiceFormDialog extends HookConsumerWidget {
                                 data: (categories) =>
                                     FormBuilderDropdown<String>(
                                   name: 'category',
-                                  initialValue: service?.categoryId,
                                   decoration: const InputDecoration(
                                     labelText: 'Category',
                                   ),
@@ -197,7 +207,6 @@ class _ServiceFormDialog extends HookConsumerWidget {
 
                         FormBuilderTextField(
                           name: 'price',
-                          initialValue: service?.price.toString() ?? '0',
                           decoration: const InputDecoration(
                             labelText: 'Price',
                             prefixText: '₱ ',
@@ -212,7 +221,6 @@ class _ServiceFormDialog extends HookConsumerWidget {
 
                         FormBuilderSwitch(
                           name: 'isVariablePrice',
-                          initialValue: service?.isVariablePrice ?? false,
                           title: const Text('Variable Price'),
                           subtitle: const Text(
                             'Price will be entered at the cashier',
@@ -222,7 +230,6 @@ class _ServiceFormDialog extends HookConsumerWidget {
 
                         FormBuilderSwitch(
                           name: 'weightBased',
-                          initialValue: service?.weightBased ?? false,
                           title: const Text('Weight Based'),
                           subtitle: const Text(
                             'Pricing depends on weight',
@@ -232,7 +239,6 @@ class _ServiceFormDialog extends HookConsumerWidget {
 
                         FormBuilderSwitch(
                           name: 'showPrompt',
-                          initialValue: service?.showPrompt ?? false,
                           title: const Text('Show Quantity Prompt'),
                           subtitle: const Text(
                             'Prompt for quantity when adding to cart',
@@ -242,7 +248,6 @@ class _ServiceFormDialog extends HookConsumerWidget {
 
                         FormBuilderTextField(
                           name: 'maxQuantity',
-                          initialValue: service?.maxQuantity?.toString(),
                           decoration: const InputDecoration(
                             labelText: 'Max Quantity (optional)',
                             hintText: 'Leave empty for unlimited',
@@ -270,7 +275,6 @@ class _ServiceFormDialog extends HookConsumerWidget {
                         quantityUnitsAsync.when(
                           data: (units) => FormBuilderDropdown<String>(
                             name: 'quantityUnit',
-                            initialValue: service?.quantityUnitId,
                             decoration: const InputDecoration(
                               labelText: 'Quantity Unit',
                               hintText: 'e.g., kg, pcs, loads',
@@ -301,8 +305,6 @@ class _ServiceFormDialog extends HookConsumerWidget {
 
                         FormBuilderTextField(
                           name: 'estimatedDuration',
-                          initialValue:
-                              service?.estimatedDuration?.toString(),
                           decoration: const InputDecoration(
                             labelText: 'Estimated Duration (minutes)',
                             suffixText: 'min',

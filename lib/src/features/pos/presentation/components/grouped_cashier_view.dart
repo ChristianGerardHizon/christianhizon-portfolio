@@ -11,6 +11,7 @@ import '../../domain/pos_group_item.dart';
 import '../cart_controller.dart';
 import '../providers/pos_product_stock_provider.dart';
 import 'lot_selection_dialog.dart';
+import 'quantity_prompt_dialog.dart';
 import 'variable_price_dialog.dart';
 
 /// Displays POS groups as scrollable sections with sticky headers.
@@ -359,13 +360,46 @@ class _ServiceGroupCard extends ConsumerWidget {
   void _handleServiceTap(BuildContext context, WidgetRef ref) {
     final cartNotifier = ref.read(cartControllerProvider.notifier);
 
+    // Debug: Print service showPrompt value
+    debugPrint(
+        'Service "${service.name}" showPrompt: ${service.showPrompt}, maxQuantity: ${service.maxQuantity}');
+
     if (service.hasVariablePrice) {
+      // Variable price services always show price dialog first
       showVariablePriceDialog(
         context,
         productName: service.name,
       ).then((price) {
         if (price != null) {
-          cartNotifier.addServiceToCart(service, customPrice: price);
+          if (service.showPrompt) {
+            // Also prompt for quantity after price
+            showQuantityPromptDialog(
+              context,
+              serviceName: service.name,
+              maxQuantity: service.maxQuantity,
+            ).then((quantity) {
+              if (quantity != null) {
+                cartNotifier.addServiceToCart(
+                  service,
+                  customPrice: price,
+                  quantity: quantity,
+                );
+              }
+            });
+          } else {
+            cartNotifier.addServiceToCart(service, customPrice: price);
+          }
+        }
+      });
+    } else if (service.showPrompt) {
+      // Show quantity prompt for non-variable price services
+      showQuantityPromptDialog(
+        context,
+        serviceName: service.name,
+        maxQuantity: service.maxQuantity,
+      ).then((quantity) {
+        if (quantity != null) {
+          cartNotifier.addServiceToCart(service, quantity: quantity);
         }
       });
     } else {
