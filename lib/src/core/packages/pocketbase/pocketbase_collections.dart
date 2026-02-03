@@ -22,6 +22,9 @@ abstract class PocketBaseCollections {
   static const String services = 'services';
   static const String serviceCategories = 'serviceCategories';
 
+  // Quantity Units
+  static const String quantityUnits = 'quantityUnits';
+
   // Carts
   static const String carts = 'carts';
   static const String cartItems = 'cartItems';
@@ -34,6 +37,7 @@ abstract class PocketBaseCollections {
   static const String sales = 'sales';
   static const String saleItems = 'saleItems';
   static const String saleServiceItems = 'saleServiceItems';
+  static const String payments = 'payments';
 
   // POS Groups
   static const String posGroups = 'posGroups';

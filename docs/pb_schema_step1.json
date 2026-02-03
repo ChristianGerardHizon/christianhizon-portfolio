@@ -2915,6 +2915,22 @@
         "presentable": false,
         "system": false,
         "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "select_paymentmethod_temp",
+        "maxSelect": 1,
+        "name": "paymentMethod",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "select",
+        "values": [
+          "cash",
+          "card",
+          "bankTransfer",
+          "check"
+        ]
       }
     ],
     "indexes": [],
@@ -4368,7 +4384,7 @@
     ],
     "indexes": [],
     "system": false,
-    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  DATE(s.created) AS sale_date,\n  p.paymentMethod,\n  s.branch,\n  COUNT(DISTINCT s.id) AS transaction_count,\n  SUM(p.amount) AS total_revenue,\n  AVG(p.amount) AS avg_transaction_value\nFROM sales s\nLEFT JOIN payments p ON s.id = p.sale\nWHERE (s.isDeleted = false OR s.isDeleted IS NULL)\n  AND s.status = 'completed'\nGROUP BY DATE(s.created), p.paymentMethod, s.branch\nORDER BY sale_date DESC"
+    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  DATE(s.created) AS sale_date,\n  s.paymentMethod,\n  s.branch,\n  COUNT(*) AS transaction_count,\n  SUM(s.totalAmount) AS total_revenue,\n  AVG(s.totalAmount) AS avg_transaction_value\nFROM sales s\nWHERE (s.isDeleted = false OR s.isDeleted IS NULL)\n  AND s.status = 'completed'\nGROUP BY DATE(s.created), s.paymentMethod, s.branch\nORDER BY sale_date DESC"
   },
   {
     "id": "pbc_1231561320",
