@@ -289,11 +289,22 @@ class _CustomerSalesHistory extends ConsumerWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      Text(
-                        _formatPaymentMethod(sale.paymentMethod),
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            sale.isPaid ? Icons.check_circle : Icons.pending,
+                            size: 12,
+                            color: sale.isPaid ? Colors.green : Colors.orange,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            sale.isPaid ? 'Paid' : 'Unpaid',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: sale.isPaid ? Colors.green : Colors.orange,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -318,21 +329,6 @@ class _CustomerSalesHistory extends ConsumerWidget {
       (failure) => [],
       (sales) => sales,
     );
-  }
-
-  String _formatPaymentMethod(String method) {
-    switch (method) {
-      case 'cash':
-        return 'Cash';
-      case 'card':
-        return 'Card';
-      case 'bankTransfer':
-        return 'Transfer';
-      case 'check':
-        return 'Check';
-      default:
-        return method;
-    }
   }
 }
 
