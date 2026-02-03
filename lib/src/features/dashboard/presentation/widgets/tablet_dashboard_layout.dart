@@ -6,6 +6,7 @@ import 'dashboard_footer.dart';
 import 'inventory_alerts_section.dart';
 import 'kpi_summary_section.dart';
 import 'quick_actions_section.dart';
+import 'ready_for_pickup_section.dart';
 
 /// Single-pane tablet layout for the dashboard.
 ///
@@ -68,6 +69,10 @@ class TabletDashboardLayout extends HookConsumerWidget {
 
           // KPI Summary Section
           const KpiSummarySection(),
+          const SizedBox(height: 24),
+
+          // Ready for Pickup Section
+          const ReadyForPickupSection(),
           const SizedBox(height: 24),
 
           // Inventory Alerts Section
