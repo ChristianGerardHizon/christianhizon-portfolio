@@ -44,7 +44,7 @@ class _CustomerFormSheet extends HookConsumerWidget {
       final customerData = Customer(
         id: customer?.id ?? '',
         name: values['name'] as String,
-        phone: values['phone'] as String,
+        phone: values['phone'] as String?,
         address: values['address'] as String?,
         notes: values['notes'] as String?,
       );
@@ -144,8 +144,7 @@ class _CustomerFormSheet extends HookConsumerWidget {
                           name: 'phone',
                           initialValue: customer?.phone,
                           decoration:
-                              const InputDecoration(labelText: 'Phone *'),
-                          validator: FormBuilderValidators.required(),
+                              const InputDecoration(labelText: 'Phone'),
                           keyboardType: TextInputType.phone,
                           textInputAction: TextInputAction.next,
                         ),

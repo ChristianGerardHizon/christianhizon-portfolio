@@ -96,7 +96,8 @@ class CustomerDetailPage extends HookConsumerWidget {
                       ),
                       const SizedBox(height: 16),
                       _InfoRow(label: 'Name', value: customer.name),
-                      _InfoRow(label: 'Phone', value: customer.phone),
+                      if (customer.phone != null && customer.phone!.isNotEmpty)
+                        _InfoRow(label: 'Phone', value: customer.phone!),
                       if (customer.address != null &&
                           customer.address!.isNotEmpty)
                         _InfoRow(label: 'Address', value: customer.address!),

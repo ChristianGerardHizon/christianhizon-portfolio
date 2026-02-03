@@ -25,8 +25,12 @@ class CustomerMapper extends ClassMapperBase<Customer> {
   static const Field<Customer, String> _f$id = Field('id', _$id);
   static String _$name(Customer v) => v.name;
   static const Field<Customer, String> _f$name = Field('name', _$name);
-  static String _$phone(Customer v) => v.phone;
-  static const Field<Customer, String> _f$phone = Field('phone', _$phone);
+  static String? _$phone(Customer v) => v.phone;
+  static const Field<Customer, String> _f$phone = Field(
+    'phone',
+    _$phone,
+    opt: true,
+  );
   static String? _$address(Customer v) => v.address;
   static const Field<Customer, String> _f$address = Field(
     'address',
@@ -156,7 +160,7 @@ class _CustomerCopyWithImpl<$R, $Out>
   $R call({
     String? id,
     String? name,
-    String? phone,
+    Object? phone = $none,
     Object? address = $none,
     Object? notes = $none,
     Object? created = $none,
@@ -165,7 +169,7 @@ class _CustomerCopyWithImpl<$R, $Out>
     FieldCopyWithData({
       if (id != null) #id: id,
       if (name != null) #name: name,
-      if (phone != null) #phone: phone,
+      if (phone != $none) #phone: phone,
       if (address != $none) #address: address,
       if (notes != $none) #notes: notes,
       if (created != $none) #created: created,

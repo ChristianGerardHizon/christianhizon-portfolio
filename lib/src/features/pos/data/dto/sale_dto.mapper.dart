@@ -68,6 +68,12 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
     opt: true,
     def: false,
   );
+  static String? _$pickedUpAt(SaleDto v) => v.pickedUpAt;
+  static const Field<SaleDto, String> _f$pickedUpAt = Field(
+    'pickedUpAt',
+    _$pickedUpAt,
+    opt: true,
+  );
   static String? _$customer(SaleDto v) => v.customer;
   static const Field<SaleDto, String> _f$customer = Field(
     'customer',
@@ -124,6 +130,7 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
     #status: _f$status,
     #isPaid: _f$isPaid,
     #isPickedUp: _f$isPickedUp,
+    #pickedUpAt: _f$pickedUpAt,
     #customer: _f$customer,
     #customerName: _f$customerName,
     #paymentRef: _f$paymentRef,
@@ -146,6 +153,7 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
       status: data.dec(_f$status),
       isPaid: data.dec(_f$isPaid),
       isPickedUp: data.dec(_f$isPickedUp),
+      pickedUpAt: data.dec(_f$pickedUpAt),
       customer: data.dec(_f$customer),
       customerName: data.dec(_f$customerName),
       paymentRef: data.dec(_f$paymentRef),
@@ -225,6 +233,7 @@ abstract class SaleDtoCopyWith<$R, $In extends SaleDto, $Out>
     String? status,
     bool? isPaid,
     bool? isPickedUp,
+    String? pickedUpAt,
     String? customer,
     String? customerName,
     String? paymentRef,
@@ -257,6 +266,7 @@ class _SaleDtoCopyWithImpl<$R, $Out>
     String? status,
     bool? isPaid,
     bool? isPickedUp,
+    Object? pickedUpAt = $none,
     Object? customer = $none,
     Object? customerName = $none,
     Object? paymentRef = $none,
@@ -277,6 +287,7 @@ class _SaleDtoCopyWithImpl<$R, $Out>
       if (status != null) #status: status,
       if (isPaid != null) #isPaid: isPaid,
       if (isPickedUp != null) #isPickedUp: isPickedUp,
+      if (pickedUpAt != $none) #pickedUpAt: pickedUpAt,
       if (customer != $none) #customer: customer,
       if (customerName != $none) #customerName: customerName,
       if (paymentRef != $none) #paymentRef: paymentRef,
@@ -299,6 +310,7 @@ class _SaleDtoCopyWithImpl<$R, $Out>
     status: data.get(#status, or: $value.status),
     isPaid: data.get(#isPaid, or: $value.isPaid),
     isPickedUp: data.get(#isPickedUp, or: $value.isPickedUp),
+    pickedUpAt: data.get(#pickedUpAt, or: $value.pickedUpAt),
     customer: data.get(#customer, or: $value.customer),
     customerName: data.get(#customerName, or: $value.customerName),
     paymentRef: data.get(#paymentRef, or: $value.paymentRef),

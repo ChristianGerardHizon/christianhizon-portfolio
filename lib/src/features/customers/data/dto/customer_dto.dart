@@ -13,7 +13,7 @@ class CustomerDto with CustomerDtoMappable {
   final String collectionId;
   final String collectionName;
   final String name;
-  final String phone;
+  final String? phone;
   final String? address;
   final String? notes;
   final String? created;
@@ -24,7 +24,7 @@ class CustomerDto with CustomerDtoMappable {
     required this.collectionId,
     required this.collectionName,
     required this.name,
-    required this.phone,
+    this.phone,
     this.address,
     this.notes,
     this.created,
@@ -51,7 +51,7 @@ class CustomerDto with CustomerDtoMappable {
     return Customer(
       id: id,
       name: name,
-      phone: phone,
+      phone: phone != null && phone!.isNotEmpty ? phone : null,
       address: address != null && address!.isNotEmpty ? address : null,
       notes: notes != null && notes!.isNotEmpty ? notes : null,
       created: parseToLocal(created),

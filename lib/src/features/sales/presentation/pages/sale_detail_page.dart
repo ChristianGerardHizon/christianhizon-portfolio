@@ -363,6 +363,33 @@ class _SaleDetailContent extends HookConsumerWidget {
       );
     }
 
+    Future<void> updatePickedUp(bool value) async {
+      isUpdating.value = true;
+      final repo = ref.read(salesRepositoryProvider);
+      final data = <String, dynamic>{
+        'isPickedUp': value,
+      };
+      // Set pickedUpAt to current time when marking as picked up, clear it when undoing
+      if (value) {
+        data['pickedUpAt'] = DateTime.now().toUtc().toIso8601String();
+      } else {
+        data['pickedUpAt'] = null;
+      }
+      final result = await repo.updateSale(sale.id, data);
+      isUpdating.value = false;
+
+      if (!context.mounted) return;
+
+      result.fold(
+        (failure) {
+          showErrorSnackBar(context, message: failure.message);
+        },
+        (_) {
+          ref.invalidate(saleProvider(sale.id));
+        },
+      );
+    }
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -432,16 +459,28 @@ class _SaleDetailContent extends HookConsumerWidget {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
-                    sale.isPickedUp ? 'Picked Up' : 'Not Picked Up',
-                    style: theme.textTheme.bodyMedium,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        sale.isPickedUp ? 'Picked Up' : 'Not Picked Up',
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                      if (sale.isPickedUp && sale.pickedUpAt != null)
+                        Text(
+                          DateFormat('MMM dd, yyyy hh:mm a').format(sale.pickedUpAt!),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                    ],
                   ),
                 ),
                 if (!sale.isPickedUp)
                   FilledButton.tonalIcon(
                     onPressed: isUpdating.value
                         ? null
-                        : () => updateSaleField('isPickedUp', true),
+                        : () => updatePickedUp(true),
                     icon: const Icon(Icons.local_shipping, size: 18),
                     label: const Text('Mark as Picked Up'),
                   )
@@ -449,7 +488,7 @@ class _SaleDetailContent extends HookConsumerWidget {
                   TextButton.icon(
                     onPressed: isUpdating.value
                         ? null
-                        : () => updateSaleField('isPickedUp', false),
+                        : () => updatePickedUp(false),
                     icon: const Icon(Icons.undo, size: 18),
                     label: const Text('Undo'),
                   ),

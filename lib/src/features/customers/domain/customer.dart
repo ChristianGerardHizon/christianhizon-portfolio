@@ -10,7 +10,7 @@ class Customer with CustomerMappable {
   const Customer({
     required this.id,
     required this.name,
-    required this.phone,
+    this.phone,
     this.address,
     this.notes,
     this.created,
@@ -23,8 +23,8 @@ class Customer with CustomerMappable {
   /// Customer name.
   final String name;
 
-  /// Customer phone number.
-  final String phone;
+  /// Customer phone number (optional).
+  final String? phone;
 
   /// Customer address (optional).
   final String? address;
@@ -39,5 +39,5 @@ class Customer with CustomerMappable {
   final DateTime? updated;
 
   /// Display string for list tiles.
-  String get subtitle => phone;
+  String get subtitle => phone ?? '';
 }

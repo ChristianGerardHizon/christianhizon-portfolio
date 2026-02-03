@@ -35,7 +35,7 @@ class CustomerListPanel extends HookConsumerWidget {
         : customers.where((c) {
             final query = searchQuery.value.toLowerCase();
             return c.name.toLowerCase().contains(query) ||
-                c.phone.toLowerCase().contains(query);
+                (c.phone?.toLowerCase().contains(query) ?? false);
           }).toList();
 
     return Scaffold(
@@ -144,12 +144,14 @@ class _CustomerListTile extends StatelessWidget {
         ),
       ),
       title: Text(customer.name),
-      subtitle: Text(
-        customer.phone,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
-        ),
-      ),
+      subtitle: customer.phone != null && customer.phone!.isNotEmpty
+          ? Text(
+              customer.phone!,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            )
+          : null,
       onTap: () => CustomerDetailRoute(id: customer.id).go(context),
     );
   }

@@ -35,8 +35,12 @@ class CustomerDtoMapper extends ClassMapperBase<CustomerDto> {
   );
   static String _$name(CustomerDto v) => v.name;
   static const Field<CustomerDto, String> _f$name = Field('name', _$name);
-  static String _$phone(CustomerDto v) => v.phone;
-  static const Field<CustomerDto, String> _f$phone = Field('phone', _$phone);
+  static String? _$phone(CustomerDto v) => v.phone;
+  static const Field<CustomerDto, String> _f$phone = Field(
+    'phone',
+    _$phone,
+    opt: true,
+  );
   static String? _$address(CustomerDto v) => v.address;
   static const Field<CustomerDto, String> _f$address = Field(
     'address',
@@ -177,7 +181,7 @@ class _CustomerDtoCopyWithImpl<$R, $Out>
     String? collectionId,
     String? collectionName,
     String? name,
-    String? phone,
+    Object? phone = $none,
     Object? address = $none,
     Object? notes = $none,
     Object? created = $none,
@@ -188,7 +192,7 @@ class _CustomerDtoCopyWithImpl<$R, $Out>
       if (collectionId != null) #collectionId: collectionId,
       if (collectionName != null) #collectionName: collectionName,
       if (name != null) #name: name,
-      if (phone != null) #phone: phone,
+      if (phone != $none) #phone: phone,
       if (address != $none) #address: address,
       if (notes != $none) #notes: notes,
       if (created != $none) #created: created,

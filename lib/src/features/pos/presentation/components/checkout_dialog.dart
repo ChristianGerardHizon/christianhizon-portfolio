@@ -830,7 +830,7 @@ class _CustomerSelectionCard extends HookConsumerWidget {
         : customers.where((c) {
             final query = searchQuery.value.toLowerCase();
             return c.name.toLowerCase().contains(query) ||
-                c.phone.toLowerCase().contains(query);
+                (c.phone?.toLowerCase().contains(query) ?? false);
           }).toList();
 
     return Card(
@@ -901,13 +901,14 @@ class _CustomerSelectionCard extends HookConsumerWidget {
                               color: theme.colorScheme.onPrimaryContainer,
                             ),
                           ),
-                          Text(
-                            selectedCustomer.value!.phone,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onPrimaryContainer
-                                  .withValues(alpha: 0.7),
+                          if (selectedCustomer.value!.phone != null)
+                            Text(
+                              selectedCustomer.value!.phone!,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onPrimaryContainer
+                                    .withValues(alpha: 0.7),
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
@@ -992,7 +993,7 @@ class _CustomerSelectionCard extends HookConsumerWidget {
                                 ),
                               ),
                               title: Text(customer.name),
-                              subtitle: Text(customer.phone),
+                              subtitle: Text(customer.phone ?? ''),
                               onTap: () {
                                 selectedCustomer.value = customer;
                                 searchController.text = customer.name;

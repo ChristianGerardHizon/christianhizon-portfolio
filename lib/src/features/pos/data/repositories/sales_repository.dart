@@ -107,6 +107,10 @@ class SalesRepositoryImpl implements SalesRepository {
           'status': sale.status,
           'isPaid': sale.isPaid,
           'isPickedUp': sale.isPickedUp,
+          // Set pickedUpAt to current time if isPickedUp is true
+          'pickedUpAt': sale.isPickedUp
+              ? (sale.pickedUpAt ?? DateTime.now()).toUtc().toIso8601String()
+              : null,
           'customer': sale.customerId,
           'customerName': sale.customerName,
           'paymentRef': sale.paymentRef,

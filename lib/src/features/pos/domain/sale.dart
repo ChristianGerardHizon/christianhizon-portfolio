@@ -17,6 +17,7 @@ class Sale with SaleMappable {
     required this.status,
     this.isPaid = false,
     this.isPickedUp = false,
+    this.pickedUpAt,
     this.customerId,
     this.customerName,
     this.paymentRef,
@@ -52,6 +53,9 @@ class Sale with SaleMappable {
 
   /// Whether the order has been picked up.
   final bool isPickedUp;
+
+  /// Timestamp when the order was picked up.
+  final DateTime? pickedUpAt;
 
   /// Linked customer ID (optional).
   final String? customerId;
