@@ -11,6 +11,7 @@ import '../../../services/data/repositories/service_repository.dart';
 import '../../../services/domain/service.dart';
 import '../cart_controller.dart';
 import 'lot_selection_dialog.dart';
+import 'quantity_prompt_dialog.dart';
 import 'variable_price_dialog.dart';
 
 /// A search field with a dropdown overlay that shows matching products/services.
@@ -41,19 +42,23 @@ class CashierSearchDropdown extends HookConsumerWidget {
     }, [searchController]);
 
     // Show/hide overlay based on search query and focus
+    // Use addPostFrameCallback to avoid calling during build
     useEffect(() {
-      if (searchQuery.value.trim().isNotEmpty && focusNode.hasFocus) {
-        _showOverlay(
-          context,
-          ref,
-          layerLink,
-          overlayEntry,
-          searchQuery.value,
-          searchController,
-        );
-      } else {
-        _removeOverlay(overlayEntry);
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        if (searchQuery.value.trim().isNotEmpty && focusNode.hasFocus) {
+          _showOverlay(
+            context,
+            ref,
+            layerLink,
+            overlayEntry,
+            searchQuery.value,
+            searchController,
+          );
+        } else {
+          _removeOverlay(overlayEntry);
+        }
+      });
       return null;
     }, [searchQuery.value]);
 
@@ -435,10 +440,39 @@ class _SearchResultTile extends StatelessWidget {
       final cartNotifier = ref.read(cartControllerProvider.notifier);
 
       if (service.hasVariablePrice) {
+        // Variable price services always show price dialog
         showVariablePriceDialog(context, productName: service.name)
             .then((price) {
           if (price != null) {
-            cartNotifier.addServiceToCart(service, customPrice: price);
+            if (service.showPrompt) {
+              // Also prompt for quantity after price
+              showQuantityPromptDialog(
+                context,
+                serviceName: service.name,
+                maxQuantity: service.maxQuantity,
+              ).then((quantity) {
+                if (quantity != null) {
+                  cartNotifier.addServiceToCart(
+                    service,
+                    customPrice: price,
+                    quantity: quantity,
+                  );
+                }
+              });
+            } else {
+              cartNotifier.addServiceToCart(service, customPrice: price);
+            }
+          }
+        });
+      } else if (service.showPrompt) {
+        // Show quantity prompt for non-variable price services
+        showQuantityPromptDialog(
+          context,
+          serviceName: service.name,
+          maxQuantity: service.maxQuantity,
+        ).then((quantity) {
+          if (quantity != null) {
+            cartNotifier.addServiceToCart(service, quantity: quantity);
           }
         });
       } else {

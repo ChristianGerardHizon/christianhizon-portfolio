@@ -21,6 +21,7 @@ import '../../../services/domain/cart_service_item.dart';
 import '../../../services/domain/sale_service_item.dart';
 import '../../domain/cart_item.dart';
 import '../../domain/payment_method.dart';
+import '../../domain/payment_type.dart';
 import '../../domain/sale_item.dart';
 import '../cart_controller.dart';
 import '../checkout_controller.dart';
@@ -127,10 +128,13 @@ class CheckoutDialog extends HookConsumerWidget {
         );
       }
 
-      // Process checkout
+      // Process checkout - always collect payment at checkout
       final result =
           await ref.read(checkoutControllerProvider.notifier).processCheckout(
+                payNow: true,
                 paymentMethod: selectedPaymentMethod.value,
+                paymentAmount: total,
+                paymentType: PaymentType.payment,
                 paymentRef: values['paymentRef'] as String?,
                 notes: values['notes'] as String?,
                 customerId: customerId,

@@ -511,7 +511,12 @@ class CartController extends _$CartController {
 
   /// Adds a service to the cart.
   /// For variable-price services, [customPrice] must be provided.
-  Future<void> addServiceToCart(Service service, {num? customPrice}) async {
+  /// [quantity] defaults to 1 if not specified.
+  Future<void> addServiceToCart(
+    Service service, {
+    num? customPrice,
+    int quantity = 1,
+  }) async {
     final currentState = state.value;
     if (currentState == null) return;
 
@@ -525,7 +530,7 @@ class CartController extends _$CartController {
     if (existingIndex >= 0) {
       // Update quantity of existing item
       final existingItem = currentState.serviceItems[existingIndex];
-      final newQuantity = existingItem.quantity + 1;
+      final newQuantity = existingItem.quantity + quantity;
       await updateServiceQuantityById(existingItem.id, newQuantity.toInt());
     } else {
       // Add new item
@@ -541,7 +546,7 @@ class CartController extends _$CartController {
         cartId: cartId,
         serviceId: service.id,
         service: service,
-        quantity: 1,
+        quantity: quantity,
         customPrice: customPrice,
       );
 
