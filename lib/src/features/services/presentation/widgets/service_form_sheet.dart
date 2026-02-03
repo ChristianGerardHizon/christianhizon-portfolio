@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/widgets/form_feedback.dart';
+import '../../../quantity_units/presentation/providers/quantity_units_provider.dart';
 import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../domain/service.dart';
 import '../controllers/service_categories_provider.dart';
@@ -36,6 +37,7 @@ class _ServiceFormDialog extends HookConsumerWidget {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isSaving = useState(false);
     final categoriesAsync = ref.watch(serviceCategoriesProvider);
+    final quantityUnitsAsync = ref.watch(quantityUnitsProvider);
 
     Future<void> handleSave() async {
       if (!formKey.currentState!.saveAndValidate()) return;
@@ -55,6 +57,9 @@ class _ServiceFormDialog extends HookConsumerWidget {
         estimatedDuration:
             num.tryParse(values['estimatedDuration']?.toString() ?? ''),
         weightBased: values['weightBased'] as bool? ?? false,
+        showPrompt: values['showPrompt'] as bool? ?? false,
+        maxQuantity: int.tryParse(values['maxQuantity']?.toString() ?? ''),
+        quantityUnitId: values['quantityUnit'] as String?,
       );
 
       final controller = ref.read(servicesControllerProvider.notifier);
@@ -221,6 +226,75 @@ class _ServiceFormDialog extends HookConsumerWidget {
                           title: const Text('Weight Based'),
                           subtitle: const Text(
                             'Pricing depends on weight',
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+
+                        FormBuilderSwitch(
+                          name: 'showPrompt',
+                          initialValue: service?.showPrompt ?? false,
+                          title: const Text('Show Quantity Prompt'),
+                          subtitle: const Text(
+                            'Prompt for quantity when adding to cart',
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        FormBuilderTextField(
+                          name: 'maxQuantity',
+                          initialValue: service?.maxQuantity?.toString(),
+                          decoration: const InputDecoration(
+                            labelText: 'Max Quantity (optional)',
+                            hintText: 'Leave empty for unlimited',
+                          ),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            // Only validate if a value is provided
+                            if (value == null || value.isEmpty) {
+                              return null; // Optional field, no error
+                            }
+                            final intValue = int.tryParse(value);
+                            if (intValue == null) {
+                              return 'Must be a valid number';
+                            }
+                            if (intValue < 1) {
+                              return 'Must be at least 1';
+                            }
+                            return null;
+                          },
+                          textInputAction: TextInputAction.next,
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Quantity Unit dropdown
+                        quantityUnitsAsync.when(
+                          data: (units) => FormBuilderDropdown<String>(
+                            name: 'quantityUnit',
+                            initialValue: service?.quantityUnitId,
+                            decoration: const InputDecoration(
+                              labelText: 'Quantity Unit',
+                              hintText: 'e.g., kg, pcs, loads',
+                            ),
+                            items: units
+                                .map((u) => DropdownMenuItem(
+                                      value: u.id,
+                                      child: Text(u.displayName),
+                                    ))
+                                .toList(),
+                          ),
+                          loading: () => FormBuilderDropdown<String>(
+                            name: 'quantityUnit',
+                            decoration: const InputDecoration(
+                              labelText: 'Quantity Unit',
+                            ),
+                            items: const [],
+                          ),
+                          error: (_, __) => FormBuilderDropdown<String>(
+                            name: 'quantityUnit',
+                            decoration: const InputDecoration(
+                              labelText: 'Quantity Unit',
+                            ),
+                            items: const [],
                           ),
                         ),
                         const SizedBox(height: 16),
