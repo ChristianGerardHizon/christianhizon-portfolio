@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/routing/routes/sales_history.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/form_feedback.dart';
@@ -275,24 +276,35 @@ class _CustomerSalesHistory extends ConsumerWidget {
                     : 'Unknown date',
                 style: theme.textTheme.bodySmall,
               ),
-              trailing: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    sale.totalAmount.toCurrency(),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        sale.totalAmount.toCurrency(),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        _formatPaymentMethod(sale.paymentMethod),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    _formatPaymentMethod(sale.paymentMethod),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.chevron_right,
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ],
               ),
+              onTap: () => SaleDetailRoute(id: sale.id).go(context),
             );
           },
         );

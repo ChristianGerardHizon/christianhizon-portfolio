@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/routing/routes/customers.routes.dart';
 import '../../../../core/routing/routes/sales_history.routes.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/utils/breakpoints.dart';
@@ -172,10 +173,9 @@ class _SaleDetailContent extends HookConsumerWidget {
                       value: _formatPaymentMethod(sale.paymentMethod),
                     ),
                     if (sale.customerName != null && sale.customerName!.isNotEmpty)
-                      _InfoRow(
-                        icon: Icons.person,
-                        label: 'Customer',
-                        value: sale.customerName!,
+                      _CustomerInfoRow(
+                        customerName: sale.customerName!,
+                        customerId: sale.customerId,
                       ),
                     if (sale.paymentRef != null && sale.paymentRef!.isNotEmpty)
                       _InfoRow(
@@ -552,6 +552,78 @@ class _InfoRow extends StatelessWidget {
               value,
               style: theme.textTheme.bodyMedium,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Clickable customer info row that navigates to customer detail.
+class _CustomerInfoRow extends StatelessWidget {
+  const _CustomerInfoRow({
+    required this.customerName,
+    this.customerId,
+  });
+
+  final String customerName;
+  final String? customerId;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final hasCustomerId = customerId != null && customerId!.isNotEmpty;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(
+            Icons.person,
+            size: 20,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'Customer: ',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          Expanded(
+            child: hasCustomerId
+                ? InkWell(
+                    onTap: () => CustomerDetailRoute(id: customerId!).go(context),
+                    borderRadius: BorderRadius.circular(4),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              customerName,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.primary,
+                                decoration: TextDecoration.underline,
+                                decorationColor: theme.colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.open_in_new,
+                            size: 14,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : Text(
+                    customerName,
+                    style: theme.textTheme.bodyMedium,
+                  ),
           ),
         ],
       ),
