@@ -42,6 +42,10 @@ class GroupedCashierView extends StatelessWidget {
                     ? 5
                     : 6;
 
+        // Adjust aspect ratio based on column count
+        // More columns = wider cards, fewer columns = taller cards
+        final childAspectRatio = crossAxisCount <= 3 ? 0.9 : 1.3;
+
         return CustomScrollView(
           slivers: [
             for (final group in groups) ...[
@@ -71,7 +75,7 @@ class GroupedCashierView extends StatelessWidget {
                   sliver: SliverGrid(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: crossAxisCount,
-                      childAspectRatio: 1.3,
+                      childAspectRatio: childAspectRatio,
                       crossAxisSpacing: 6,
                       mainAxisSpacing: 6,
                     ),
