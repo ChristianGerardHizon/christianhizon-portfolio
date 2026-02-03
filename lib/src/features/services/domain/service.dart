@@ -1,5 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
+import '../../quantity_units/domain/quantity_unit.dart';
+
 part 'service.mapper.dart';
 
 /// Service domain model.
@@ -18,6 +20,10 @@ class Service with ServiceMappable {
     this.isVariablePrice = false,
     this.estimatedDuration,
     this.weightBased = false,
+    this.showPrompt = false,
+    this.maxQuantity,
+    this.quantityUnitId,
+    this.quantityUnit,
     this.isDeleted = false,
     this.created,
     this.updated,
@@ -53,6 +59,18 @@ class Service with ServiceMappable {
   /// Whether pricing is weight-based.
   final bool weightBased;
 
+  /// Whether to show a quantity prompt when adding this service to cart.
+  final bool showPrompt;
+
+  /// Maximum quantity allowed for this service (optional).
+  final int? maxQuantity;
+
+  /// Quantity unit FK ID.
+  final String? quantityUnitId;
+
+  /// Quantity unit (expanded from FK).
+  final QuantityUnit? quantityUnit;
+
   /// Soft delete flag.
   final bool isDeleted;
 
@@ -79,5 +97,20 @@ class Service with ServiceMappable {
     final mins = estimatedDuration!.toInt() % 60;
     if (hours > 0) return '${hours}h ${mins}m';
     return '${mins}m';
+  }
+
+  /// Formats a quantity with the appropriate unit label.
+  ///
+  /// Uses the assigned quantity unit if available, otherwise falls back to
+  /// "kg" if weight-based or plain number.
+  String formatQuantity(num quantity, {bool useShort = true}) {
+    if (quantityUnit != null) {
+      return quantityUnit!.format(quantity, useShort: useShort);
+    }
+    // Fallback for services without a quantity unit
+    if (weightBased) {
+      return '$quantity kg';
+    }
+    return '$quantity';
   }
 }

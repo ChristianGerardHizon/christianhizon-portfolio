@@ -14,6 +14,7 @@ class ServiceDtoMapper extends ClassMapperBase<ServiceDto> {
   static ServiceDtoMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ServiceDtoMapper._());
+      QuantityUnitMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -86,6 +87,32 @@ class ServiceDtoMapper extends ClassMapperBase<ServiceDto> {
     opt: true,
     def: false,
   );
+  static bool _$showPrompt(ServiceDto v) => v.showPrompt;
+  static const Field<ServiceDto, bool> _f$showPrompt = Field(
+    'showPrompt',
+    _$showPrompt,
+    opt: true,
+    def: false,
+  );
+  static int? _$maxQuantity(ServiceDto v) => v.maxQuantity;
+  static const Field<ServiceDto, int> _f$maxQuantity = Field(
+    'maxQuantity',
+    _$maxQuantity,
+    opt: true,
+  );
+  static String? _$quantityUnit(ServiceDto v) => v.quantityUnit;
+  static const Field<ServiceDto, String> _f$quantityUnit = Field(
+    'quantityUnit',
+    _$quantityUnit,
+    opt: true,
+  );
+  static QuantityUnit? _$quantityUnitExpanded(ServiceDto v) =>
+      v.quantityUnitExpanded;
+  static const Field<ServiceDto, QuantityUnit> _f$quantityUnitExpanded = Field(
+    'quantityUnitExpanded',
+    _$quantityUnitExpanded,
+    opt: true,
+  );
   static bool _$isDeleted(ServiceDto v) => v.isDeleted;
   static const Field<ServiceDto, bool> _f$isDeleted = Field(
     'isDeleted',
@@ -120,6 +147,10 @@ class ServiceDtoMapper extends ClassMapperBase<ServiceDto> {
     #isVariablePrice: _f$isVariablePrice,
     #estimatedDuration: _f$estimatedDuration,
     #weightBased: _f$weightBased,
+    #showPrompt: _f$showPrompt,
+    #maxQuantity: _f$maxQuantity,
+    #quantityUnit: _f$quantityUnit,
+    #quantityUnitExpanded: _f$quantityUnitExpanded,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
@@ -139,6 +170,10 @@ class ServiceDtoMapper extends ClassMapperBase<ServiceDto> {
       isVariablePrice: data.dec(_f$isVariablePrice),
       estimatedDuration: data.dec(_f$estimatedDuration),
       weightBased: data.dec(_f$weightBased),
+      showPrompt: data.dec(_f$showPrompt),
+      maxQuantity: data.dec(_f$maxQuantity),
+      quantityUnit: data.dec(_f$quantityUnit),
+      quantityUnitExpanded: data.dec(_f$quantityUnitExpanded),
       isDeleted: data.dec(_f$isDeleted),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
@@ -205,6 +240,8 @@ extension ServiceDtoValueCopy<$R, $Out>
 
 abstract class ServiceDtoCopyWith<$R, $In extends ServiceDto, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
+  QuantityUnitCopyWith<$R, QuantityUnit, QuantityUnit>?
+  get quantityUnitExpanded;
   $R call({
     String? id,
     String? collectionId,
@@ -218,6 +255,10 @@ abstract class ServiceDtoCopyWith<$R, $In extends ServiceDto, $Out>
     bool? isVariablePrice,
     num? estimatedDuration,
     bool? weightBased,
+    bool? showPrompt,
+    int? maxQuantity,
+    String? quantityUnit,
+    QuantityUnit? quantityUnitExpanded,
     bool? isDeleted,
     String? created,
     String? updated,
@@ -234,6 +275,11 @@ class _ServiceDtoCopyWithImpl<$R, $Out>
   late final ClassMapperBase<ServiceDto> $mapper =
       ServiceDtoMapper.ensureInitialized();
   @override
+  QuantityUnitCopyWith<$R, QuantityUnit, QuantityUnit>?
+  get quantityUnitExpanded => $value.quantityUnitExpanded?.copyWith.$chain(
+    (v) => call(quantityUnitExpanded: v),
+  );
+  @override
   $R call({
     String? id,
     String? collectionId,
@@ -247,6 +293,10 @@ class _ServiceDtoCopyWithImpl<$R, $Out>
     bool? isVariablePrice,
     Object? estimatedDuration = $none,
     bool? weightBased,
+    bool? showPrompt,
+    Object? maxQuantity = $none,
+    Object? quantityUnit = $none,
+    Object? quantityUnitExpanded = $none,
     bool? isDeleted,
     Object? created = $none,
     Object? updated = $none,
@@ -264,6 +314,11 @@ class _ServiceDtoCopyWithImpl<$R, $Out>
       if (isVariablePrice != null) #isVariablePrice: isVariablePrice,
       if (estimatedDuration != $none) #estimatedDuration: estimatedDuration,
       if (weightBased != null) #weightBased: weightBased,
+      if (showPrompt != null) #showPrompt: showPrompt,
+      if (maxQuantity != $none) #maxQuantity: maxQuantity,
+      if (quantityUnit != $none) #quantityUnit: quantityUnit,
+      if (quantityUnitExpanded != $none)
+        #quantityUnitExpanded: quantityUnitExpanded,
       if (isDeleted != null) #isDeleted: isDeleted,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
@@ -286,6 +341,13 @@ class _ServiceDtoCopyWithImpl<$R, $Out>
       or: $value.estimatedDuration,
     ),
     weightBased: data.get(#weightBased, or: $value.weightBased),
+    showPrompt: data.get(#showPrompt, or: $value.showPrompt),
+    maxQuantity: data.get(#maxQuantity, or: $value.maxQuantity),
+    quantityUnit: data.get(#quantityUnit, or: $value.quantityUnit),
+    quantityUnitExpanded: data.get(
+      #quantityUnitExpanded,
+      or: $value.quantityUnitExpanded,
+    ),
     isDeleted: data.get(#isDeleted, or: $value.isDeleted),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),

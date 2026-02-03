@@ -126,6 +126,15 @@ class ServiceDetailPage extends HookConsumerWidget {
                         label: 'Variable Price',
                         value: service.isVariablePrice ? 'Yes' : 'No',
                       ),
+                      _InfoRow(
+                        label: 'Quantity Prompt',
+                        value: service.showPrompt ? 'Yes' : 'No',
+                      ),
+                      if (service.maxQuantity != null)
+                        _InfoRow(
+                          label: 'Max Quantity',
+                          value: service.maxQuantity.toString(),
+                        ),
                     ],
                   ),
                 ),

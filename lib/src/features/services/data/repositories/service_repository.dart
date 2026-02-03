@@ -50,7 +50,7 @@ class ServiceRepositoryImpl implements ServiceRepository {
 
   RecordService get _collection =>
       _pb.collection(PocketBaseCollections.services);
-  String get _expand => 'category';
+  String get _expand => 'category,quantityUnit';
 
   // Cache for service list
   List<Service>? _cachedServices;
@@ -147,6 +147,9 @@ class ServiceRepositoryImpl implements ServiceRepository {
           'isVariablePrice': service.isVariablePrice,
           'estimatedDuration': service.estimatedDuration,
           'weightBased': service.weightBased,
+          'showPrompt': service.showPrompt,
+          'maxQuantity': service.maxQuantity,
+          'quantityUnit': service.quantityUnitId,
           'isDeleted': false,
         };
 
@@ -171,6 +174,9 @@ class ServiceRepositoryImpl implements ServiceRepository {
           'isVariablePrice': service.isVariablePrice,
           'estimatedDuration': service.estimatedDuration,
           'weightBased': service.weightBased,
+          'showPrompt': service.showPrompt,
+          'maxQuantity': service.maxQuantity,
+          'quantityUnit': service.quantityUnitId,
         };
 
         final record =

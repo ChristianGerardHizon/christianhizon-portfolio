@@ -14,6 +14,7 @@ class ServiceMapper extends ClassMapperBase<Service> {
   static ServiceMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ServiceMapper._());
+      QuantityUnitMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -76,6 +77,31 @@ class ServiceMapper extends ClassMapperBase<Service> {
     opt: true,
     def: false,
   );
+  static bool _$showPrompt(Service v) => v.showPrompt;
+  static const Field<Service, bool> _f$showPrompt = Field(
+    'showPrompt',
+    _$showPrompt,
+    opt: true,
+    def: false,
+  );
+  static int? _$maxQuantity(Service v) => v.maxQuantity;
+  static const Field<Service, int> _f$maxQuantity = Field(
+    'maxQuantity',
+    _$maxQuantity,
+    opt: true,
+  );
+  static String? _$quantityUnitId(Service v) => v.quantityUnitId;
+  static const Field<Service, String> _f$quantityUnitId = Field(
+    'quantityUnitId',
+    _$quantityUnitId,
+    opt: true,
+  );
+  static QuantityUnit? _$quantityUnit(Service v) => v.quantityUnit;
+  static const Field<Service, QuantityUnit> _f$quantityUnit = Field(
+    'quantityUnit',
+    _$quantityUnit,
+    opt: true,
+  );
   static bool _$isDeleted(Service v) => v.isDeleted;
   static const Field<Service, bool> _f$isDeleted = Field(
     'isDeleted',
@@ -108,6 +134,10 @@ class ServiceMapper extends ClassMapperBase<Service> {
     #isVariablePrice: _f$isVariablePrice,
     #estimatedDuration: _f$estimatedDuration,
     #weightBased: _f$weightBased,
+    #showPrompt: _f$showPrompt,
+    #maxQuantity: _f$maxQuantity,
+    #quantityUnitId: _f$quantityUnitId,
+    #quantityUnit: _f$quantityUnit,
     #isDeleted: _f$isDeleted,
     #created: _f$created,
     #updated: _f$updated,
@@ -125,6 +155,10 @@ class ServiceMapper extends ClassMapperBase<Service> {
       isVariablePrice: data.dec(_f$isVariablePrice),
       estimatedDuration: data.dec(_f$estimatedDuration),
       weightBased: data.dec(_f$weightBased),
+      showPrompt: data.dec(_f$showPrompt),
+      maxQuantity: data.dec(_f$maxQuantity),
+      quantityUnitId: data.dec(_f$quantityUnitId),
+      quantityUnit: data.dec(_f$quantityUnit),
       isDeleted: data.dec(_f$isDeleted),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
@@ -188,6 +222,7 @@ extension ServiceValueCopy<$R, $Out> on ObjectCopyWith<$R, Service, $Out> {
 
 abstract class ServiceCopyWith<$R, $In extends Service, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
+  QuantityUnitCopyWith<$R, QuantityUnit, QuantityUnit>? get quantityUnit;
   $R call({
     String? id,
     String? name,
@@ -199,6 +234,10 @@ abstract class ServiceCopyWith<$R, $In extends Service, $Out>
     bool? isVariablePrice,
     num? estimatedDuration,
     bool? weightBased,
+    bool? showPrompt,
+    int? maxQuantity,
+    String? quantityUnitId,
+    QuantityUnit? quantityUnit,
     bool? isDeleted,
     DateTime? created,
     DateTime? updated,
@@ -215,6 +254,9 @@ class _ServiceCopyWithImpl<$R, $Out>
   late final ClassMapperBase<Service> $mapper =
       ServiceMapper.ensureInitialized();
   @override
+  QuantityUnitCopyWith<$R, QuantityUnit, QuantityUnit>? get quantityUnit =>
+      $value.quantityUnit?.copyWith.$chain((v) => call(quantityUnit: v));
+  @override
   $R call({
     String? id,
     String? name,
@@ -226,6 +268,10 @@ class _ServiceCopyWithImpl<$R, $Out>
     bool? isVariablePrice,
     Object? estimatedDuration = $none,
     bool? weightBased,
+    bool? showPrompt,
+    Object? maxQuantity = $none,
+    Object? quantityUnitId = $none,
+    Object? quantityUnit = $none,
     bool? isDeleted,
     Object? created = $none,
     Object? updated = $none,
@@ -241,6 +287,10 @@ class _ServiceCopyWithImpl<$R, $Out>
       if (isVariablePrice != null) #isVariablePrice: isVariablePrice,
       if (estimatedDuration != $none) #estimatedDuration: estimatedDuration,
       if (weightBased != null) #weightBased: weightBased,
+      if (showPrompt != null) #showPrompt: showPrompt,
+      if (maxQuantity != $none) #maxQuantity: maxQuantity,
+      if (quantityUnitId != $none) #quantityUnitId: quantityUnitId,
+      if (quantityUnit != $none) #quantityUnit: quantityUnit,
       if (isDeleted != null) #isDeleted: isDeleted,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
@@ -261,6 +311,10 @@ class _ServiceCopyWithImpl<$R, $Out>
       or: $value.estimatedDuration,
     ),
     weightBased: data.get(#weightBased, or: $value.weightBased),
+    showPrompt: data.get(#showPrompt, or: $value.showPrompt),
+    maxQuantity: data.get(#maxQuantity, or: $value.maxQuantity),
+    quantityUnitId: data.get(#quantityUnitId, or: $value.quantityUnitId),
+    quantityUnit: data.get(#quantityUnit, or: $value.quantityUnit),
     isDeleted: data.get(#isDeleted, or: $value.isDeleted),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),
