@@ -813,16 +813,6 @@ class _OrganizationBranchDetailPage extends ConsumerWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          if (branch.displayName != null &&
-                              branch.displayName!.isNotEmpty) ...[
-                            const SizedBox(height: 4),
-                            Text(
-                              branch.displayName!,
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
                         ],
                       ),
                     ),
@@ -851,14 +841,6 @@ class _OrganizationBranchDetailPage extends ConsumerWidget {
                       label: 'Name',
                       value: branch.name,
                     ),
-                    if (branch.displayName != null &&
-                        branch.displayName!.isNotEmpty)
-                      _buildDetailRow(
-                        theme,
-                        icon: Icons.badge,
-                        label: 'Display Name',
-                        value: branch.displayName!,
-                      ),
                     _buildDetailRow(
                       theme,
                       icon: Icons.location_on,
