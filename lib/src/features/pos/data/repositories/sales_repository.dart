@@ -39,6 +39,20 @@ abstract class SalesRepository {
   /// Updates the sale status (completed, refunded, voided).
   FutureEither<Sale> updateSaleStatus(String id, String status);
 
+  /// Assigns a machine to a sale service item.
+  FutureEither<void> assignMachineToServiceItem(
+    String itemId,
+    String machineId,
+    String machineName,
+  );
+
+  /// Assigns a storage location to a sale service item.
+  FutureEither<void> assignStorageToServiceItem(
+    String itemId,
+    String storageId,
+    String storageName,
+  );
+
   /// Fetches all sales for a specific customer.
   FutureEither<List<Sale>> getSalesByCustomer(String customerId);
 
@@ -89,8 +103,13 @@ class SalesRepositoryImpl implements SalesRepository {
 
   SaleServiceItem _toSaleServiceItemEntity(RecordModel record) {
     final serviceExpanded = record.get<RecordModel?>('expand.service');
-    return SaleServiceItemDto.fromRecord(record)
-        .toEntity(serviceExpanded: serviceExpanded);
+    final machineExpanded = record.get<RecordModel?>('expand.machine');
+    final storageExpanded = record.get<RecordModel?>('expand.storage');
+    return SaleServiceItemDto.fromRecord(record).toEntity(
+      serviceExpanded: serviceExpanded,
+      machineExpanded: machineExpanded,
+      storageExpanded: storageExpanded,
+    );
   }
 
   @override
@@ -316,6 +335,40 @@ class SalesRepositoryImpl implements SalesRepository {
   }
 
   @override
+  FutureEither<void> assignMachineToServiceItem(
+    String itemId,
+    String machineId,
+    String machineName,
+  ) async {
+    return TaskEither.tryCatch(
+      () async {
+        await _saleServiceItems.update(itemId, body: {
+          'machine': machineId,
+          'machineName': machineName,
+        });
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<void> assignStorageToServiceItem(
+    String itemId,
+    String storageId,
+    String storageName,
+  ) async {
+    return TaskEither.tryCatch(
+      () async {
+        await _saleServiceItems.update(itemId, body: {
+          'storage': storageId,
+          'storageName': storageName,
+        });
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
   FutureEither<List<Sale>> getSalesByCustomer(String customerId) async {
     return TaskEither.tryCatch(
       () async {
@@ -336,7 +389,7 @@ class SalesRepositoryImpl implements SalesRepository {
       () async {
         final records = await _saleServiceItems.getFullList(
           filter: 'sale = "$saleId"',
-          expand: 'service',
+          expand: 'service,machine,storage',
         );
         return records.map(_toSaleServiceItemEntity).toList();
       },

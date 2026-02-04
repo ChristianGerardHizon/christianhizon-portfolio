@@ -2,6 +2,8 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 import '../../../../core/utils/date_utils.dart';
+import '../../../machines/data/dto/machine_dto.dart';
+import '../../../storages/data/dto/storage_location_dto.dart';
 import '../../domain/sale_service_item.dart';
 import 'service_dto.dart';
 
@@ -18,6 +20,10 @@ class SaleServiceItemDto with SaleServiceItemDtoMappable {
   final num quantity;
   final num unitPrice;
   final num subtotal;
+  final String? machine;
+  final String? machineName;
+  final String? storage;
+  final String? storageName;
   final String? created;
   final String? updated;
 
@@ -31,6 +37,10 @@ class SaleServiceItemDto with SaleServiceItemDtoMappable {
     required this.quantity,
     required this.unitPrice,
     required this.subtotal,
+    this.machine,
+    this.machineName,
+    this.storage,
+    this.storageName,
     this.created,
     this.updated,
   });
@@ -46,12 +56,20 @@ class SaleServiceItemDto with SaleServiceItemDtoMappable {
       quantity: record.getDoubleValue('quantity'),
       unitPrice: record.getDoubleValue('unitPrice'),
       subtotal: record.getDoubleValue('subtotal'),
+      machine: record.getStringValue('machine'),
+      machineName: record.getStringValue('machineName'),
+      storage: record.getStringValue('storage'),
+      storageName: record.getStringValue('storageName'),
       created: record.get<String>('created'),
       updated: record.get<String>('updated'),
     );
   }
 
-  SaleServiceItem toEntity({RecordModel? serviceExpanded}) {
+  SaleServiceItem toEntity({
+    RecordModel? serviceExpanded,
+    RecordModel? machineExpanded,
+    RecordModel? storageExpanded,
+  }) {
     return SaleServiceItem(
       id: id,
       saleId: sale,
@@ -62,6 +80,16 @@ class SaleServiceItemDto with SaleServiceItemDtoMappable {
       subtotal: subtotal,
       service: serviceExpanded != null
           ? ServiceDto.fromRecord(serviceExpanded).toEntity()
+          : null,
+      machineId: machine != null && machine!.isNotEmpty ? machine : null,
+      machineName: machineName,
+      machine: machineExpanded != null
+          ? MachineDto.fromRecord(machineExpanded).toEntity()
+          : null,
+      storageId: storage != null && storage!.isNotEmpty ? storage : null,
+      storageName: storageName,
+      storageLocation: storageExpanded != null
+          ? StorageLocationDto.fromRecord(storageExpanded).toEntity()
           : null,
       created: parseToLocal(created),
       updated: parseToLocal(updated),

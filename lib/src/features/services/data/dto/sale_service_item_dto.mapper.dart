@@ -63,6 +63,30 @@ class SaleServiceItemDtoMapper extends ClassMapperBase<SaleServiceItemDto> {
     'subtotal',
     _$subtotal,
   );
+  static String? _$machine(SaleServiceItemDto v) => v.machine;
+  static const Field<SaleServiceItemDto, String> _f$machine = Field(
+    'machine',
+    _$machine,
+    opt: true,
+  );
+  static String? _$machineName(SaleServiceItemDto v) => v.machineName;
+  static const Field<SaleServiceItemDto, String> _f$machineName = Field(
+    'machineName',
+    _$machineName,
+    opt: true,
+  );
+  static String? _$storage(SaleServiceItemDto v) => v.storage;
+  static const Field<SaleServiceItemDto, String> _f$storage = Field(
+    'storage',
+    _$storage,
+    opt: true,
+  );
+  static String? _$storageName(SaleServiceItemDto v) => v.storageName;
+  static const Field<SaleServiceItemDto, String> _f$storageName = Field(
+    'storageName',
+    _$storageName,
+    opt: true,
+  );
   static String? _$created(SaleServiceItemDto v) => v.created;
   static const Field<SaleServiceItemDto, String> _f$created = Field(
     'created',
@@ -87,6 +111,10 @@ class SaleServiceItemDtoMapper extends ClassMapperBase<SaleServiceItemDto> {
     #quantity: _f$quantity,
     #unitPrice: _f$unitPrice,
     #subtotal: _f$subtotal,
+    #machine: _f$machine,
+    #machineName: _f$machineName,
+    #storage: _f$storage,
+    #storageName: _f$storageName,
     #created: _f$created,
     #updated: _f$updated,
   };
@@ -102,6 +130,10 @@ class SaleServiceItemDtoMapper extends ClassMapperBase<SaleServiceItemDto> {
       quantity: data.dec(_f$quantity),
       unitPrice: data.dec(_f$unitPrice),
       subtotal: data.dec(_f$subtotal),
+      machine: data.dec(_f$machine),
+      machineName: data.dec(_f$machineName),
+      storage: data.dec(_f$storage),
+      storageName: data.dec(_f$storageName),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
     );
@@ -188,6 +220,10 @@ abstract class SaleServiceItemDtoCopyWith<
     num? quantity,
     num? unitPrice,
     num? subtotal,
+    String? machine,
+    String? machineName,
+    String? storage,
+    String? storageName,
     String? created,
     String? updated,
   });
@@ -215,6 +251,10 @@ class _SaleServiceItemDtoCopyWithImpl<$R, $Out>
     num? quantity,
     num? unitPrice,
     num? subtotal,
+    Object? machine = $none,
+    Object? machineName = $none,
+    Object? storage = $none,
+    Object? storageName = $none,
     Object? created = $none,
     Object? updated = $none,
   }) => $apply(
@@ -228,6 +268,10 @@ class _SaleServiceItemDtoCopyWithImpl<$R, $Out>
       if (quantity != null) #quantity: quantity,
       if (unitPrice != null) #unitPrice: unitPrice,
       if (subtotal != null) #subtotal: subtotal,
+      if (machine != $none) #machine: machine,
+      if (machineName != $none) #machineName: machineName,
+      if (storage != $none) #storage: storage,
+      if (storageName != $none) #storageName: storageName,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
     }),
@@ -243,6 +287,10 @@ class _SaleServiceItemDtoCopyWithImpl<$R, $Out>
     quantity: data.get(#quantity, or: $value.quantity),
     unitPrice: data.get(#unitPrice, or: $value.unitPrice),
     subtotal: data.get(#subtotal, or: $value.subtotal),
+    machine: data.get(#machine, or: $value.machine),
+    machineName: data.get(#machineName, or: $value.machineName),
+    storage: data.get(#storage, or: $value.storage),
+    storageName: data.get(#storageName, or: $value.storageName),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),
   );

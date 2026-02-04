@@ -7,19 +7,11 @@ part 'payment_type.mapper.dart';
 enum PaymentType {
   payment,
   deposit,
-  refund,
-}
+  refund;
 
-/// Extension to get display names for payment types.
-extension PaymentTypeX on PaymentType {
-  String get displayName {
-    switch (this) {
-      case PaymentType.payment:
-        return 'Payment';
-      case PaymentType.deposit:
-        return 'GCash/Bank';
-      case PaymentType.refund:
-        return 'Refund';
-    }
-  }
+  String get displayName => switch (this) {
+        PaymentType.payment => 'Payment',
+        PaymentType.deposit => 'GCash/Bank',
+        PaymentType.refund => 'Refund',
+      };
 }

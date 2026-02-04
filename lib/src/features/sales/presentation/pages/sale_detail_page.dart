@@ -14,6 +14,9 @@ import '../../../pos/domain/sale.dart';
 import '../../../pos/presentation/payments_controller.dart';
 import '../controllers/sale_items_provider.dart';
 import '../controllers/sale_provider.dart';
+import '../controllers/sale_service_items_provider.dart';
+import '../widgets/assign_machines_dialog.dart';
+import '../widgets/assign_storages_dialog.dart';
 import '../widgets/record_payment_sheet.dart';
 import '../widgets/sale_highlight_banner.dart';
 import '../widgets/sale_status_chip.dart';
@@ -100,6 +103,7 @@ class _SaleDetailContent extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final saleItemsAsync = ref.watch(saleItemsProvider(sale.id));
+    final serviceItemsAsync = ref.watch(saleServiceItemsProvider(sale.id));
     final paymentsAsync = ref.watch(salePaymentsProvider(sale.id));
     final dateFormat = DateFormat('MMM dd, yyyy hh:mm a');
     final currencyFormat = NumberFormat.currency(symbol: '₱');
@@ -129,10 +133,12 @@ class _SaleDetailContent extends HookConsumerWidget {
         onRefresh: () async {
           ref.invalidate(saleProvider(sale.id));
           ref.invalidate(saleItemsProvider(sale.id));
+          ref.invalidate(saleServiceItemsProvider(sale.id));
           ref.invalidate(salePaymentsProvider(sale.id));
           await Future.wait([
             ref.read(saleProvider(sale.id).future),
             ref.read(saleItemsProvider(sale.id).future),
+            ref.read(saleServiceItemsProvider(sale.id).future),
             ref.read(salePaymentsProvider(sale.id).future),
           ]);
         },
@@ -252,6 +258,96 @@ class _SaleDetailContent extends HookConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
+
+              // Service Items Section
+              serviceItemsAsync.when(
+                loading: () => const SizedBox.shrink(),
+                error: (_, __) => const SizedBox.shrink(),
+                data: (serviceItems) {
+                  if (serviceItems.isEmpty) return const SizedBox.shrink();
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Service Items',
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 8),
+                      Card(
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: serviceItems.length,
+                          separatorBuilder: (_, __) =>
+                              const Divider(height: 1),
+                          itemBuilder: (context, index) {
+                            final item = serviceItems[index];
+                            return ListTile(
+                              title: Text(item.serviceName),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${currencyFormat.format(item.unitPrice)} x ${item.quantity}',
+                                  ),
+                                  if (item.machineName != null &&
+                                      item.machineName!.isNotEmpty)
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.local_laundry_service,
+                                          size: 14,
+                                          color: theme
+                                              .colorScheme.onSurfaceVariant,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          'Machine: ${item.machineName}',
+                                          style: theme.textTheme.bodySmall
+                                              ?.copyWith(
+                                            color: theme.colorScheme
+                                                .onSurfaceVariant,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  if (item.storageName != null &&
+                                      item.storageName!.isNotEmpty)
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.inventory_2,
+                                          size: 14,
+                                          color: theme
+                                              .colorScheme.onSurfaceVariant,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          'Storage: ${item.storageName}',
+                                          style: theme.textTheme.bodySmall
+                                              ?.copyWith(
+                                            color: theme.colorScheme
+                                                .onSurfaceVariant,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                              trailing: Text(
+                                currencyFormat.format(item.subtotal),
+                                style: theme.textTheme.titleSmall,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  );
+                },
+              ),
 
               // Total Card
               Card(
@@ -441,6 +537,29 @@ class _SaleDetailContent extends HookConsumerWidget {
     final isUpdating = useState(false);
 
     Future<void> updateOrderStatus(OrderStatus status) async {
+      // Show assignment dialogs for processing/ready transitions
+      if (status == OrderStatus.processing) {
+        final serviceItems =
+            ref.read(saleServiceItemsProvider(sale.id)).value ?? [];
+        if (serviceItems.isNotEmpty) {
+          final result = await showAssignMachinesDialog(
+            context,
+            serviceItems: serviceItems,
+          );
+          if (result == null || !context.mounted) return;
+        }
+      } else if (status == OrderStatus.ready) {
+        final serviceItems =
+            ref.read(saleServiceItemsProvider(sale.id)).value ?? [];
+        if (serviceItems.isNotEmpty) {
+          final result = await showAssignStoragesDialog(
+            context,
+            serviceItems: serviceItems,
+          );
+          if (result == null || !context.mounted) return;
+        }
+      }
+
       isUpdating.value = true;
       final repo = ref.read(salesRepositoryProvider);
       final result = await repo.updateOrderStatus(sale.id, status);
@@ -454,6 +573,7 @@ class _SaleDetailContent extends HookConsumerWidget {
         },
         (_) {
           ref.invalidate(saleProvider(sale.id));
+          ref.invalidate(saleServiceItemsProvider(sale.id));
         },
       );
     }

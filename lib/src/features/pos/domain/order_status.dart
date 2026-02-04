@@ -8,35 +8,20 @@ enum OrderStatus {
   pending,
   processing,
   ready,
-  pickedUp,
-}
+  pickedUp;
 
-/// Extension to get display names for order statuses.
-extension OrderStatusX on OrderStatus {
-  String get displayName {
-    switch (this) {
-      case OrderStatus.pending:
-        return 'Pending';
-      case OrderStatus.processing:
-        return 'Processing';
-      case OrderStatus.ready:
-        return 'Ready';
-      case OrderStatus.pickedUp:
-        return 'Picked Up';
-    }
-  }
+  String get displayName => switch (this) {
+        OrderStatus.pending => 'Pending',
+        OrderStatus.processing => 'Processing',
+        OrderStatus.ready => 'Ready',
+        OrderStatus.pickedUp => 'Picked Up',
+      };
 
   /// Returns the icon for this order status.
-  String get iconName {
-    switch (this) {
-      case OrderStatus.pending:
-        return 'schedule';
-      case OrderStatus.processing:
-        return 'autorenew';
-      case OrderStatus.ready:
-        return 'check_circle';
-      case OrderStatus.pickedUp:
-        return 'local_shipping';
-    }
-  }
+  String get iconName => switch (this) {
+        OrderStatus.pending => 'schedule',
+        OrderStatus.processing => 'autorenew',
+        OrderStatus.ready => 'check_circle',
+        OrderStatus.pickedUp => 'local_shipping',
+      };
 }

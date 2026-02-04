@@ -25,6 +25,10 @@ abstract class PocketBaseCollections {
   // Quantity Units
   static const String quantityUnits = 'quantityUnits';
 
+  // Machines & Storages
+  static const String machines = 'machines';
+  static const String storages = 'storages';
+
   // Carts
   static const String carts = 'carts';
   static const String cartItems = 'cartItems';
