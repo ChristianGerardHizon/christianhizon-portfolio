@@ -338,6 +338,7 @@ Future<bool?> showRecordPaymentSheet(
   return showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
+    useRootNavigator: true,
     builder: (context) => RecordPaymentSheet(
       sale: sale,
       balanceDue: balanceDue,

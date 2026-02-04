@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/routing/routes/sales.routes.dart';
+import '../../../customers/presentation/widgets/customer_form_sheet.dart';
 
 /// Section displaying quick action buttons on the dashboard.
 ///
@@ -51,6 +52,13 @@ class QuickActionsSection extends ConsumerWidget {
                   label: 'New Sale',
                   color: Colors.green,
                   onTap: () => const SalesRoute().go(context),
+                ),
+                const SizedBox(width: 12),
+                _QuickActionButton(
+                  icon: Icons.person_add,
+                  label: 'New Customer',
+                  color: Colors.blue,
+                  onTap: () => showCustomerFormSheet(context),
                 ),
               ],
             ),
