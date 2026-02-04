@@ -1032,6 +1032,18 @@
       },
       {
         "hidden": false,
+        "id": "number_customprice",
+        "max": null,
+        "min": null,
+        "name": "customPrice",
+        "onlyInt": false,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "hidden": false,
         "id": "autodate2990389176",
         "name": "created",
         "onCreate": true,
@@ -1134,6 +1146,18 @@
         "max": null,
         "min": null,
         "name": "subtotal",
+        "onlyInt": false,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "hidden": false,
+        "id": "number_csvi_customprice",
+        "max": null,
+        "min": null,
+        "name": "customPrice",
         "onlyInt": false,
         "presentable": false,
         "required": false,
@@ -1367,6 +1391,160 @@
       }
     ],
     "indexes": [],
+    "system": false
+  },
+  {
+    "id": "pbc_payments001",
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "",
+    "updateRule": "",
+    "deleteRule": "",
+    "name": "payments",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2697449135",
+        "hidden": false,
+        "id": "relation_payment_sale",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "sale",
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "hidden": false,
+        "id": "number_payment_amount",
+        "max": null,
+        "min": 0,
+        "name": "amount",
+        "onlyInt": false,
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "hidden": false,
+        "id": "select_payment_method",
+        "maxSelect": 1,
+        "name": "paymentMethod",
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "select",
+        "values": [
+          "cash",
+          "card",
+          "bankTransfer",
+          "check"
+        ]
+      },
+      {
+        "hidden": false,
+        "id": "select_payment_type",
+        "maxSelect": 1,
+        "name": "type",
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "select",
+        "values": [
+          "payment",
+          "deposit",
+          "refund"
+        ]
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text_payment_ref",
+        "max": 0,
+        "min": 0,
+        "name": "paymentRef",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "file_payment_proof",
+        "maxSelect": 1,
+        "maxSize": 5242880,
+        "mimeTypes": [
+          "image/jpeg",
+          "image/png",
+          "image/webp"
+        ],
+        "name": "paymentProof",
+        "presentable": false,
+        "protected": false,
+        "required": false,
+        "system": false,
+        "thumbs": [
+          "100x100"
+        ],
+        "type": "file"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text_payment_notes",
+        "max": 0,
+        "min": 0,
+        "name": "notes",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [
+      "CREATE INDEX `idx_payments_sale` ON `payments` (`sale`)"
+    ],
     "system": false
   },
   {
@@ -2266,20 +2444,6 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "text261109956",
-        "max": 0,
-        "min": 0,
-        "name": "sku",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
         "id": "text1843675174",
         "max": 0,
         "min": 0,
@@ -2302,20 +2466,6 @@
         "required": false,
         "system": false,
         "type": "number"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text3703245907",
-        "max": 0,
-        "min": 0,
-        "name": "unit",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
       },
       {
         "hidden": false,
@@ -2398,13 +2548,17 @@
         "type": "number"
       },
       {
+        "cascadeDelete": false,
+        "collectionId": "pbc_quantityunits",
         "hidden": false,
-        "id": "bool2808932770",
-        "name": "isDisposed",
+        "id": "relation_product_quantity_unit",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "quantityUnit",
         "presentable": false,
         "required": false,
         "system": false,
-        "type": "bool"
+        "type": "relation"
       },
       {
         "hidden": false,
@@ -2437,6 +2591,133 @@
       {
         "hidden": false,
         "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [],
+    "system": false
+  },
+  {
+    "id": "pbc_quantityunits",
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "",
+    "updateRule": "",
+    "deleteRule": "@request.auth.id != ''",
+    "name": "quantityUnits",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text1579384326",
+        "max": 0,
+        "min": 0,
+        "name": "name",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text3110205892",
+        "max": 0,
+        "min": 0,
+        "name": "shortSingular",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text3636847748",
+        "max": 0,
+        "min": 0,
+        "name": "shortPlural",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text1629965774",
+        "max": 0,
+        "min": 0,
+        "name": "longSingular",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text1136724897",
+        "max": 0,
+        "min": 0,
+        "name": "longPlural",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "bool2382110195",
+        "name": "isDeleted",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3946532403",
         "name": "updated",
         "onCreate": true,
         "onUpdate": true,
@@ -2814,22 +3095,6 @@
       },
       {
         "hidden": false,
-        "id": "select_orderstatus",
-        "maxSelect": 1,
-        "name": "orderStatus",
-        "presentable": false,
-        "required": false,
-        "system": false,
-        "type": "select",
-        "values": [
-          "pending",
-          "processing",
-          "ready",
-          "pickedUp"
-        ]
-      },
-      {
-        "hidden": false,
         "id": "bool_ispaid",
         "name": "isPaid",
         "presentable": false,
@@ -2840,6 +3105,8 @@
       {
         "hidden": false,
         "id": "date_pickedupat",
+        "max": "",
+        "min": "",
         "name": "pickedUpAt",
         "presentable": false,
         "required": false,
@@ -2918,176 +3185,22 @@
       },
       {
         "hidden": false,
-        "id": "select_paymentmethod_temp",
+        "id": "select_orderstatus",
         "maxSelect": 1,
-        "name": "paymentMethod",
+        "name": "orderStatus",
         "presentable": false,
         "required": false,
         "system": false,
         "type": "select",
         "values": [
-          "cash",
-          "card",
-          "bankTransfer",
-          "check"
+          "pending",
+          "processing",
+          "ready",
+          "pickedUp"
         ]
       }
     ],
     "indexes": [],
-    "system": false
-  },
-  {
-    "id": "pbc_payments001",
-    "listRule": "",
-    "viewRule": "",
-    "createRule": "",
-    "updateRule": "",
-    "deleteRule": "",
-    "name": "payments",
-    "type": "base",
-    "fields": [
-      {
-        "autogeneratePattern": "[a-z0-9]{15}",
-        "hidden": false,
-        "id": "text3208210256",
-        "max": 15,
-        "min": 15,
-        "name": "id",
-        "pattern": "^[a-z0-9]+$",
-        "presentable": false,
-        "primaryKey": true,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "cascadeDelete": false,
-        "collectionId": "pbc_2697449135",
-        "hidden": false,
-        "id": "relation_payment_sale",
-        "maxSelect": 1,
-        "minSelect": 0,
-        "name": "sale",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "relation"
-      },
-      {
-        "hidden": false,
-        "id": "number_payment_amount",
-        "max": null,
-        "min": 0,
-        "name": "amount",
-        "onlyInt": false,
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "number"
-      },
-      {
-        "hidden": false,
-        "id": "select_payment_method",
-        "maxSelect": 1,
-        "name": "paymentMethod",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "select",
-        "values": [
-          "cash",
-          "card",
-          "bankTransfer",
-          "check"
-        ]
-      },
-      {
-        "hidden": false,
-        "id": "select_payment_type",
-        "maxSelect": 1,
-        "name": "type",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "select",
-        "values": [
-          "payment",
-          "deposit",
-          "refund"
-        ]
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text_payment_ref",
-        "max": 0,
-        "min": 0,
-        "name": "paymentRef",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "hidden": false,
-        "id": "file_payment_proof",
-        "maxSelect": 1,
-        "maxSize": 5242880,
-        "mimeTypes": [
-          "image/jpeg",
-          "image/png",
-          "image/webp"
-        ],
-        "name": "paymentProof",
-        "presentable": false,
-        "protected": false,
-        "required": false,
-        "system": false,
-        "thumbs": [
-          "100x100"
-        ],
-        "type": "file"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text_payment_notes",
-        "max": 0,
-        "min": 0,
-        "name": "notes",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "hidden": false,
-        "id": "autodate2990389176",
-        "name": "created",
-        "onCreate": true,
-        "onUpdate": false,
-        "presentable": false,
-        "system": false,
-        "type": "autodate"
-      },
-      {
-        "hidden": false,
-        "id": "autodate3332085495",
-        "name": "updated",
-        "onCreate": true,
-        "onUpdate": true,
-        "presentable": false,
-        "system": false,
-        "type": "autodate"
-      }
-    ],
-    "indexes": [
-      "CREATE INDEX `idx_payments_sale` ON `payments` (`sale`)"
-    ],
     "system": false
   },
   {
@@ -3309,6 +3422,49 @@
         "presentable": false,
         "system": false,
         "type": "autodate"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_quantityunits",
+        "hidden": false,
+        "id": "relation_quantity_unit",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "quantityUnit",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "hidden": false,
+        "id": "bool3989496142",
+        "name": "showPrompt",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "hidden": false,
+        "id": "number2252263257",
+        "max": null,
+        "min": null,
+        "name": "maxQuantity",
+        "onlyInt": false,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "hidden": false,
+        "id": "bool3849275849",
+        "name": "allowExcess",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
       }
     ],
     "indexes": [],
@@ -3541,7 +3697,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_5Kmn",
+        "id": "_clone_UyFy",
         "max": 0,
         "min": 0,
         "name": "productName",
@@ -3574,7 +3730,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_r3TT",
+        "id": "_clone_hJIc",
         "max": null,
         "min": null,
         "name": "stockThreshold",
@@ -3596,7 +3752,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_WgIk",
+        "id": "_clone_SYXa",
         "name": "forSale",
         "presentable": false,
         "required": false,
@@ -3605,7 +3761,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_YWVn",
+        "id": "_clone_bhTU",
         "name": "isDeleted",
         "presentable": false,
         "required": false,
@@ -3614,7 +3770,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_UNbw",
+        "id": "_clone_G618",
         "name": "created",
         "onCreate": true,
         "onUpdate": false,
@@ -3624,7 +3780,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_uWJE",
+        "id": "_clone_Pbdv",
         "name": "updated",
         "onCreate": true,
         "onUpdate": true,
@@ -3677,7 +3833,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_ZkQS",
+        "id": "_clone_vuAk",
         "max": 0,
         "min": 0,
         "name": "product_name",
@@ -3691,7 +3847,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_mtmQ",
+        "id": "_clone_2ONR",
         "max": 0,
         "min": 0,
         "name": "lotNumber",
@@ -3704,7 +3860,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_igL1",
+        "id": "_clone_JAbE",
         "max": null,
         "min": null,
         "name": "quantity",
@@ -3716,7 +3872,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_eXTn",
+        "id": "_clone_kzdO",
         "max": "",
         "min": "",
         "name": "expiration",
@@ -3729,7 +3885,7 @@
         "cascadeDelete": false,
         "collectionId": "pbc_2358601297",
         "hidden": false,
-        "id": "_clone_wlYU",
+        "id": "_clone_Auze",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "branch",
@@ -3770,7 +3926,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_PJep",
+        "id": "_clone_H9Ro",
         "max": 0,
         "min": 0,
         "name": "name",
@@ -3783,7 +3939,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_Sqdn",
+        "id": "_clone_J4qh",
         "name": "trackByLot",
         "presentable": false,
         "required": false,
@@ -3792,7 +3948,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_v7XA",
+        "id": "_clone_WeIH",
         "max": null,
         "min": null,
         "name": "stockThreshold",
@@ -3804,7 +3960,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_dEnu",
+        "id": "_clone_tVwx",
         "max": null,
         "min": 0,
         "name": "price",
@@ -3818,7 +3974,7 @@
         "cascadeDelete": false,
         "collectionId": "pbc_3292755704",
         "hidden": false,
-        "id": "_clone_xtJH",
+        "id": "_clone_KT3B",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "category",
@@ -3831,7 +3987,7 @@
         "cascadeDelete": false,
         "collectionId": "pbc_2358601297",
         "hidden": false,
-        "id": "_clone_ZN8K",
+        "id": "_clone_vxXF",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "branch",
@@ -3842,7 +3998,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_vJML",
+        "id": "_clone_afy3",
         "max": "",
         "min": "",
         "name": "expiration",
@@ -3853,7 +4009,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_wx35",
+        "id": "_clone_oJ0A",
         "max": null,
         "min": null,
         "name": "quantity",
@@ -3915,7 +4071,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_lIQQ",
+        "id": "_clone_jCvi",
         "name": "created",
         "onCreate": true,
         "onUpdate": false,
@@ -3925,7 +4081,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_cNhf",
+        "id": "_clone_79Tp",
         "name": "updated",
         "onCreate": true,
         "onUpdate": true,
@@ -3966,7 +4122,7 @@
         "cascadeDelete": false,
         "collectionId": "pbc_2358601297",
         "hidden": false,
-        "id": "_clone_Sgjf",
+        "id": "_clone_Ytkg",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "branch",
@@ -4049,7 +4205,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_VHH8",
+        "id": "_clone_I5iU",
         "max": 0,
         "min": 0,
         "name": "name",
@@ -4062,7 +4218,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_nHOq",
+        "id": "_clone_qHuH",
         "max": null,
         "min": null,
         "name": "stockThreshold",
@@ -4076,7 +4232,7 @@
         "cascadeDelete": false,
         "collectionId": "pbc_2358601297",
         "hidden": false,
-        "id": "_clone_MXSQ",
+        "id": "_clone_UQpE",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "branch",
@@ -4127,7 +4283,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_0q2F",
+        "id": "_clone_7pmk",
         "max": 0,
         "min": 0,
         "name": "name",
@@ -4140,7 +4296,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_vmy0",
+        "id": "_clone_iocv",
         "max": null,
         "min": null,
         "name": "quantity",
@@ -4152,7 +4308,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_bVCV",
+        "id": "_clone_chuy",
         "max": null,
         "min": null,
         "name": "stockThreshold",
@@ -4166,7 +4322,7 @@
         "cascadeDelete": false,
         "collectionId": "pbc_2358601297",
         "hidden": false,
-        "id": "_clone_zbaL",
+        "id": "_clone_0pAw",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "branch",
@@ -4220,7 +4376,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_Fz3h",
+        "id": "_clone_QZPx",
         "max": 0,
         "min": 0,
         "name": "product_name",
@@ -4234,7 +4390,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_QZ2n",
+        "id": "_clone_Q5rd",
         "max": 0,
         "min": 0,
         "name": "lotNumber",
@@ -4247,7 +4403,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_M2qL",
+        "id": "_clone_CP5G",
         "max": null,
         "min": null,
         "name": "quantity",
@@ -4259,7 +4415,7 @@
       },
       {
         "hidden": false,
-        "id": "_clone_KJfi",
+        "id": "_clone_qAdO",
         "max": "",
         "min": "",
         "name": "expiration",
@@ -4272,7 +4428,7 @@
         "cascadeDelete": false,
         "collectionId": "pbc_2358601297",
         "hidden": false,
-        "id": "_clone_XRXY",
+        "id": "_clone_ekW4",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "branch",
@@ -4322,11 +4478,11 @@
       },
       {
         "hidden": false,
-        "id": "_clone_ZZ8Q",
+        "id": "_clone_SEXE",
         "maxSelect": 1,
         "name": "paymentMethod",
         "presentable": false,
-        "required": false,
+        "required": true,
         "system": false,
         "type": "select",
         "values": [
@@ -4340,7 +4496,7 @@
         "cascadeDelete": false,
         "collectionId": "pbc_2358601297",
         "hidden": false,
-        "id": "_clone_jeEJ",
+        "id": "_clone_KAJc",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "branch",
@@ -4384,7 +4540,7 @@
     ],
     "indexes": [],
     "system": false,
-    "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  DATE(s.created) AS sale_date,\n  s.paymentMethod,\n  s.branch,\n  COUNT(*) AS transaction_count,\n  SUM(s.totalAmount) AS total_revenue,\n  AVG(s.totalAmount) AS avg_transaction_value\nFROM sales s\nWHERE (s.isDeleted = false OR s.isDeleted IS NULL)\n  AND s.status = 'completed'\nGROUP BY DATE(s.created), s.paymentMethod, s.branch\nORDER BY sale_date DESC"
+    "viewQuery": "\n    SELECT\n      (ROW_NUMBER() OVER()) AS id,\n      DATE(s.created) AS sale_date,\n      p.paymentMethod,\n      s.branch,\n      COUNT(DISTINCT s.id) AS transaction_count,\n      SUM(p.amount) AS total_revenue,\n      AVG(p.amount) AS avg_transaction_value\n    FROM sales s\n    LEFT JOIN payments p ON s.id = p.sale\n    WHERE (s.isDeleted = false OR s.isDeleted IS NULL)\n      AND s.status = 'completed'\n    GROUP BY DATE(s.created), p.paymentMethod, s.branch\n    ORDER BY sale_date DESC\n  "
   },
   {
     "id": "pbc_1231561320",
@@ -4414,7 +4570,7 @@
         "cascadeDelete": false,
         "collectionId": "pbc_2358601297",
         "hidden": false,
-        "id": "_clone_N20Q",
+        "id": "_clone_pAyF",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "branch",
@@ -4477,7 +4633,7 @@
       {
         "autogeneratePattern": "",
         "hidden": false,
-        "id": "_clone_D8Dh",
+        "id": "_clone_tzts",
         "max": 0,
         "min": 0,
         "name": "productName",
@@ -4492,7 +4648,7 @@
         "cascadeDelete": false,
         "collectionId": "pbc_4092854851",
         "hidden": false,
-        "id": "_clone_rww4",
+        "id": "_clone_mhtx",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "product_id",
@@ -4505,7 +4661,7 @@
         "cascadeDelete": false,
         "collectionId": "pbc_2358601297",
         "hidden": false,
-        "id": "_clone_0Dez",
+        "id": "_clone_3SQG",
         "maxSelect": 1,
         "minSelect": 0,
         "name": "branch",
@@ -4560,5 +4716,87 @@
     "indexes": [],
     "system": false,
     "viewQuery": "SELECT\n  (ROW_NUMBER() OVER()) AS id,\n  si.productName,\n  si.product AS product_id,\n  s.branch,\n  DATE(s.created) AS sale_date,\n  SUM(si.quantity) AS total_quantity_sold,\n  SUM(si.subtotal) AS total_revenue,\n  COUNT(DISTINCT s.id) AS transaction_count\nFROM saleItems si\nJOIN sales s ON si.sale = s.id\nWHERE (s.isDeleted = false OR s.isDeleted IS NULL)\n  AND s.status = 'completed'\nGROUP BY si.productName, si.product, s.branch, DATE(s.created)\nORDER BY total_revenue DESC"
+  },
+  {
+    "id": "pbc_vw_pos_search",
+    "listRule": "",
+    "viewRule": "",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "name": "vw_pos_search_items",
+    "type": "view",
+    "fields": [
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 0,
+        "min": 0,
+        "name": "id",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": true,
+        "required": false,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text_vw_name",
+        "max": 0,
+        "min": 0,
+        "name": "name",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "number_vw_price",
+        "max": null,
+        "min": null,
+        "name": "price",
+        "onlyInt": false,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text_vw_type",
+        "max": 0,
+        "min": 0,
+        "name": "type",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2358601297",
+        "hidden": false,
+        "id": "relation_vw_branch",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "branch",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      }
+    ],
+    "indexes": [],
+    "system": false,
+    "viewQuery": "SELECT id, name, price, 'product' AS type, branch FROM products WHERE isDeleted = FALSE AND forSale = TRUE UNION ALL SELECT id, name, price, 'service' AS type, branch FROM services WHERE isDeleted = FALSE"
   }
 ]
