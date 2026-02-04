@@ -143,7 +143,7 @@ class CartRepositoryImpl implements CartRepository {
       () async {
         final records = await _cartItems.getFullList(
           filter: 'cart = "$cartId"',
-          expand: 'product',
+          expand: 'product.quantityUnit',
         );
         return records.map(_toCartItemEntity).toList();
       },
@@ -169,7 +169,7 @@ class CartRepositoryImpl implements CartRepository {
           body['productLot'] = item.productLotId;
           body['lotNumber'] = item.lotNumber;
         }
-        final record = await _cartItems.create(body: body, expand: 'product');
+        final record = await _cartItems.create(body: body, expand: 'product.quantityUnit');
         return _toCartItemEntity(record);
       },
       Failure.handle,
@@ -191,7 +191,7 @@ class CartRepositoryImpl implements CartRepository {
           body['lotNumber'] = item.lotNumber;
         }
         final record =
-            await _cartItems.update(item.id, body: body, expand: 'product');
+            await _cartItems.update(item.id, body: body, expand: 'product.quantityUnit');
         return _toCartItemEntity(record);
       },
       Failure.handle,
@@ -216,7 +216,7 @@ class CartRepositoryImpl implements CartRepository {
       () async {
         final records = await _cartServiceItems.getFullList(
           filter: 'cart = "$cartId"',
-          expand: 'service',
+          expand: 'service.quantityUnit',
         );
         return records.map(_toCartServiceItemEntity).toList();
       },
@@ -238,7 +238,7 @@ class CartRepositoryImpl implements CartRepository {
           body['customPrice'] = item.customPrice;
         }
         final record =
-            await _cartServiceItems.create(body: body, expand: 'service');
+            await _cartServiceItems.create(body: body, expand: 'service.quantityUnit');
         return _toCartServiceItemEntity(record);
       },
       Failure.handle,
@@ -255,7 +255,7 @@ class CartRepositoryImpl implements CartRepository {
           'customPrice': item.customPrice ?? 0,
         };
         final record = await _cartServiceItems.update(item.id,
-            body: body, expand: 'service');
+            body: body, expand: 'service.quantityUnit');
         return _toCartServiceItemEntity(record);
       },
       Failure.handle,

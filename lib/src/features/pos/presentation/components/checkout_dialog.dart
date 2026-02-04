@@ -641,12 +641,17 @@ class CheckoutDialog extends HookConsumerWidget {
               ),
             ...serviceItems.map((item) {
               final service = item.service;
+              final unit = service?.quantityUnit;
+              final unitLabel = unit != null
+                  ? (item.quantity == 1 ? unit.shortSingular : unit.shortPlural)
+                  : null;
               return _buildSummaryRow(
                 theme,
                 name: service?.name ?? 'Service',
                 quantity: item.quantity,
                 unitPrice: item.effectivePrice,
                 subtotal: item.total,
+                unitLabel: unitLabel,
               );
             }),
 
@@ -693,6 +698,7 @@ class CheckoutDialog extends HookConsumerWidget {
     required num quantity,
     required num unitPrice,
     required num subtotal,
+    String? unitLabel,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -705,7 +711,9 @@ class CheckoutDialog extends HookConsumerWidget {
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
-              '${quantity.toInt()}x',
+              unitLabel != null
+                  ? '${quantity.toInt()}$unitLabel'
+                  : '${quantity.toInt()}x',
               style: theme.textTheme.labelMedium?.copyWith(
                 color: theme.colorScheme.primary,
                 fontWeight: FontWeight.w600,

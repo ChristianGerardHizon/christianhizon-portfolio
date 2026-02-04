@@ -311,6 +311,7 @@ class CartView extends ConsumerWidget {
               total: item.total,
               isVariablePrice: item.hasCustomPrice || product.isVariablePrice,
               itemName: product.name,
+              unitLabel: product.quantityUnit?.shortSingular,
               onUpdateQuantity: (q) => ref
                   .read(cartControllerProvider.notifier)
                   .updateQuantityById(item.id, q),
@@ -402,6 +403,8 @@ class CartView extends ConsumerWidget {
               total: item.total,
               isVariablePrice: isVariablePrice,
               itemName: serviceName,
+              unitLabel: service?.quantityUnit?.shortSingular,
+              maxQuantity: service?.maxQuantity,
               onUpdateQuantity: (q) => ref
                   .read(cartControllerProvider.notifier)
                   .updateServiceQuantityById(item.id, q),
@@ -426,9 +429,18 @@ class CartView extends ConsumerWidget {
     required num total,
     required bool isVariablePrice,
     required String itemName,
+    String? unitLabel,
+    int? maxQuantity,
     required void Function(int) onUpdateQuantity,
     required void Function(num) onUpdatePrice,
   }) {
+    // Build the "per unit" text - use unit label if available, otherwise "each"
+    final perUnitText = unitLabel != null && unitLabel.isNotEmpty
+        ? '${effectivePrice.toCurrency()} per $unitLabel'
+        : '${effectivePrice.toCurrency()} each';
+
+    final atMax = maxQuantity != null && quantity.toInt() >= maxQuantity;
+
     return Row(
       children: [
         // Unit price (tappable to edit for variable-price items)
@@ -451,7 +463,7 @@ class CartView extends ConsumerWidget {
               children: [
                 Flexible(
                   child: Text(
-                    '${effectivePrice.toCurrency()} each',
+                    perUnitText,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -506,6 +518,8 @@ class CartView extends ConsumerWidget {
                         final newQuantity = await _showQuantityDialog(
                           context,
                           quantity.toInt(),
+                          unitLabel: unitLabel,
+                          maxQuantity: maxQuantity,
                         );
                         if (newQuantity != null &&
                             newQuantity != quantity.toInt()) {
@@ -526,7 +540,7 @@ class CartView extends ConsumerWidget {
                 ),
               ),
               InkWell(
-                onTap: isSyncing
+                onTap: isSyncing || atMax
                     ? null
                     : () => onUpdateQuantity(quantity.toInt() + 1),
                 borderRadius: const BorderRadius.horizontal(
@@ -537,7 +551,7 @@ class CartView extends ConsumerWidget {
                   child: Icon(
                     Icons.add,
                     size: 16,
-                    color: isSyncing
+                    color: isSyncing || atMax
                         ? theme.colorScheme.onSurfaceVariant
                             .withValues(alpha: 0.5)
                         : theme.colorScheme.primary,
@@ -566,7 +580,14 @@ class CartView extends ConsumerWidget {
 }
 
 /// Shows a dialog to edit the quantity of a cart item.
-Future<int?> _showQuantityDialog(BuildContext context, int currentQuantity) async {
+///
+/// If [unitLabel] is provided, it will be shown as a suffix in the input field.
+Future<int?> _showQuantityDialog(
+  BuildContext context,
+  int currentQuantity, {
+  String? unitLabel,
+  int? maxQuantity,
+}) async {
   final formKey = GlobalKey<FormBuilderState>();
 
   return showDialog<int>(
@@ -578,9 +599,11 @@ Future<int?> _showQuantityDialog(BuildContext context, int currentQuantity) asyn
         child: FormBuilderTextField(
           name: 'quantity',
           initialValue: currentQuantity.toString(),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             labelText: 'Quantity',
             hintText: 'Enter quantity',
+            suffixText: unitLabel != null && unitLabel.isNotEmpty ? unitLabel : null,
+            helperText: maxQuantity != null ? 'Max: $maxQuantity' : null,
           ),
           keyboardType: TextInputType.number,
           autofocus: true,
@@ -588,6 +611,8 @@ Future<int?> _showQuantityDialog(BuildContext context, int currentQuantity) asyn
             FormBuilderValidators.required(),
             FormBuilderValidators.numeric(),
             FormBuilderValidators.min(0),
+            if (maxQuantity != null)
+              FormBuilderValidators.max(maxQuantity),
           ]),
         ),
       ),

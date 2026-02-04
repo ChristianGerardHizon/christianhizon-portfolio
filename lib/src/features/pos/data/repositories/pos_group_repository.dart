@@ -107,11 +107,11 @@ class PosGroupRepositoryImpl implements PosGroupRepository {
         final groups = <PosGroup>[];
 
         for (final groupRecord in groupRecords) {
-          // Fetch items for each group with product/service expansion
+          // Fetch items for each group with product/service expansion (including quantityUnit)
           final itemRecords = await _groupItems.getFullList(
             filter: 'group = "${groupRecord.id}"',
             sort: 'sortOrder',
-            expand: 'product,service',
+            expand: 'product.quantityUnit,service.quantityUnit',
           );
 
           final items = itemRecords
@@ -207,7 +207,7 @@ class PosGroupRepositoryImpl implements PosGroupRepository {
         final records = await _groupItems.getFullList(
           filter: 'group = "$groupId"',
           sort: 'sortOrder',
-          expand: 'product,service',
+          expand: 'product.quantityUnit,service.quantityUnit',
         );
         return records.map(_toGroupItemEntity).toList();
       },
@@ -232,10 +232,10 @@ class PosGroupRepositoryImpl implements PosGroupRepository {
         final record = await _groupItems.create(body: body);
         invalidateCache();
 
-        // Re-fetch with expansion to get product/service data
+        // Re-fetch with expansion to get product/service data (including quantityUnit)
         final expanded = await _groupItems.getOne(
           record.id,
-          expand: 'product,service',
+          expand: 'product.quantityUnit,service.quantityUnit',
         );
         return _toGroupItemEntity(expanded);
       },
