@@ -1,16 +1,9 @@
-import 'dart:typed_data';
-
-import 'dart:io' show Platform;
-
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/dialog_close_handler.dart';
@@ -20,8 +13,6 @@ import '../../../customers/presentation/controllers/customers_controller.dart';
 import '../../../services/domain/cart_service_item.dart';
 import '../../../services/domain/sale_service_item.dart';
 import '../../domain/cart_item.dart';
-import '../../domain/payment_method.dart';
-import '../../domain/payment_type.dart';
 import '../../domain/sale_item.dart';
 import '../cart_controller.dart';
 import '../checkout_controller.dart';
@@ -55,14 +46,9 @@ class CheckoutDialog extends HookConsumerWidget {
 
     // UI state
     final isSaving = useState(false);
-    final selectedPaymentMethod = useState<PaymentMethod>(PaymentMethod.cash);
 
     // Customer selection state
     final selectedCustomer = useState<Customer?>(null);
-
-    // Payment proof image state
-    final paymentProofBytes = useState<Uint8List?>(null);
-    final paymentProofFileName = useState<String?>(null);
 
     // Watch cart state
     final cartState = ref.watch(cartControllerProvider);
@@ -70,25 +56,6 @@ class CheckoutDialog extends HookConsumerWidget {
     final cartServiceItems = cartState.value?.serviceItems ?? [];
     final total = cartState.value?.total ?? 0;
     final cartIsEmpty = cartState.value?.isEmpty ?? true;
-
-    Future<void> pickPaymentProof(ImageSource source) async {
-      final picker = ImagePicker();
-      final image = await picker.pickImage(
-        source: source,
-        maxWidth: 1200,
-        maxHeight: 1200,
-        imageQuality: 85,
-      );
-      if (image == null) return;
-      final bytes = await image.readAsBytes();
-      paymentProofBytes.value = bytes;
-      paymentProofFileName.value = image.name;
-    }
-
-    void clearPaymentProof() {
-      paymentProofBytes.value = null;
-      paymentProofFileName.value = null;
-    }
 
     Future<void> handleCheckout() async {
       // Validate customer is selected
@@ -118,28 +85,13 @@ class CheckoutDialog extends HookConsumerWidget {
       final customerId = selectedCustomer.value?.id;
       final customerName = selectedCustomer.value?.name;
 
-      // Build payment proof file if image was picked
-      http.MultipartFile? proofFile;
-      if (paymentProofBytes.value != null) {
-        proofFile = http.MultipartFile.fromBytes(
-          'paymentProof',
-          paymentProofBytes.value!,
-          filename: paymentProofFileName.value ?? 'payment_proof.jpg',
-        );
-      }
-
-      // Process checkout - always collect payment at checkout
+      // Process checkout - create unpaid sale (payment handled separately)
       final result =
           await ref.read(checkoutControllerProvider.notifier).processCheckout(
-                payNow: true,
-                paymentMethod: selectedPaymentMethod.value,
-                paymentAmount: total,
-                paymentType: PaymentType.payment,
-                paymentRef: values['paymentRef'] as String?,
+                payNow: false,
                 notes: values['notes'] as String?,
                 customerId: customerId,
                 customerName: customerName,
-                paymentProofFile: proofFile,
               );
 
       isSaving.value = false;
@@ -260,239 +212,6 @@ class CheckoutDialog extends HookConsumerWidget {
                         selectedCustomer: selectedCustomer,
                         ref: ref,
                       ),
-                      const SizedBox(height: 24),
-
-                      // Payment method selection
-                      Card(
-                        color: theme.colorScheme.surfaceContainerHighest,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Section header with icon
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.payment,
-                                    color: theme.colorScheme.primary,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'Payment Method',
-                                    style:
-                                        theme.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              FormBuilderChoiceChips<PaymentMethod>(
-                                name: 'paymentMethod',
-                                initialValue: PaymentMethod.cash,
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.zero,
-                                ),
-                                spacing: 8,
-                                runSpacing: 8,
-                                options: [
-                                  FormBuilderChipOption(
-                                    value: PaymentMethod.cash,
-                                    avatar: Icon(
-                                      Icons.payments_outlined,
-                                      size: 18,
-                                      color: selectedPaymentMethod.value ==
-                                              PaymentMethod.cash
-                                          ? theme
-                                              .colorScheme.onSecondaryContainer
-                                          : theme.colorScheme.onSurfaceVariant,
-                                    ),
-                                    child: const Text('Cash'),
-                                  ),
-                                  FormBuilderChipOption(
-                                    value: PaymentMethod.card,
-                                    avatar: Icon(
-                                      Icons.credit_card_outlined,
-                                      size: 18,
-                                      color: selectedPaymentMethod.value ==
-                                              PaymentMethod.card
-                                          ? theme
-                                              .colorScheme.onSecondaryContainer
-                                          : theme.colorScheme.onSurfaceVariant,
-                                    ),
-                                    child: const Text('Card'),
-                                  ),
-                                  FormBuilderChipOption(
-                                    value: PaymentMethod.bankTransfer,
-                                    avatar: Icon(
-                                      Icons.account_balance_outlined,
-                                      size: 18,
-                                      color: selectedPaymentMethod.value ==
-                                              PaymentMethod.bankTransfer
-                                          ? theme
-                                              .colorScheme.onSecondaryContainer
-                                          : theme.colorScheme.onSurfaceVariant,
-                                    ),
-                                    child: const Text('Transfer'),
-                                  ),
-                                  FormBuilderChipOption(
-                                    value: PaymentMethod.check,
-                                    avatar: Icon(
-                                      Icons.receipt_long_outlined,
-                                      size: 18,
-                                      color: selectedPaymentMethod.value ==
-                                              PaymentMethod.check
-                                          ? theme
-                                              .colorScheme.onSecondaryContainer
-                                          : theme.colorScheme.onSurfaceVariant,
-                                    ),
-                                    child: const Text('Check'),
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    selectedPaymentMethod.value = value;
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Card/Transfer payment reference
-                      if (selectedPaymentMethod.value !=
-                          PaymentMethod.cash) ...[
-                        Card(
-                          color: theme.colorScheme.surfaceContainerHighest,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Section header with dynamic icon
-                                Row(
-                                  children: [
-                                    Icon(
-                                      _getPaymentSectionIcon(
-                                          selectedPaymentMethod.value),
-                                      color: theme.colorScheme.primary,
-                                      size: 20,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      _getPaymentSectionTitle(
-                                          selectedPaymentMethod.value),
-                                      style:
-                                          theme.textTheme.titleMedium?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-
-                                FormBuilderTextField(
-                                  name: 'paymentRef',
-                                  decoration: InputDecoration(
-                                    labelText: _getPaymentRefLabel(
-                                        selectedPaymentMethod.value),
-                                    prefixIcon: Icon(_getPaymentRefIcon(
-                                        selectedPaymentMethod.value)),
-                                    border: const OutlineInputBorder(),
-                                    helperText: _getPaymentRefHelperText(
-                                        selectedPaymentMethod.value),
-                                  ),
-                                ),
-
-                                // OR divider
-                                const SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    const Expanded(child: Divider()),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      child: Text('OR',
-                                          style: theme.textTheme.bodySmall),
-                                    ),
-                                    const Expanded(child: Divider()),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-
-                                // Payment proof image
-                                Text(
-                                  'Payment Proof Image',
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                if (paymentProofBytes.value != null) ...[
-                                  Stack(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(8),
-                                        child: Image.memory(
-                                          paymentProofBytes.value!,
-                                          height: 150,
-                                          width: double.infinity,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: 4,
-                                        right: 4,
-                                        child: IconButton.filledTonal(
-                                          icon: const Icon(Icons.close,
-                                              size: 18),
-                                          onPressed: clearPaymentProof,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ] else ...[
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: OutlinedButton.icon(
-                                          icon: const Icon(
-                                              Icons.photo_library),
-                                          label: const Text('Gallery'),
-                                          onPressed: () =>
-                                              pickPaymentProof(
-                                                  ImageSource.gallery),
-                                        ),
-                                      ),
-                                      if (!kIsWeb &&
-                                          (Platform.isAndroid ||
-                                              Platform.isIOS)) ...[
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          child: OutlinedButton.icon(
-                                            icon: const Icon(
-                                                Icons.camera_alt),
-                                            label: const Text('Camera'),
-                                            onPressed: () =>
-                                                pickPaymentProof(
-                                                    ImageSource.camera),
-                                          ),
-                                        ),
-                                      ],
-                                    ],
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
                       const SizedBox(height: 24),
 
                       // Notes section
@@ -747,76 +466,8 @@ class CheckoutDialog extends HookConsumerWidget {
 }
 
 const _fieldLabels = {
-  'paymentMethod': 'Payment Method',
-  'paymentRef': 'Payment Reference',
   'notes': 'Notes',
 };
-
-// Helper methods for payment section
-IconData _getPaymentSectionIcon(PaymentMethod method) {
-  switch (method) {
-    case PaymentMethod.card:
-      return Icons.credit_card;
-    case PaymentMethod.bankTransfer:
-      return Icons.account_balance;
-    case PaymentMethod.check:
-      return Icons.receipt_long;
-    default:
-      return Icons.payment;
-  }
-}
-
-String _getPaymentSectionTitle(PaymentMethod method) {
-  switch (method) {
-    case PaymentMethod.card:
-      return 'Card Details';
-    case PaymentMethod.bankTransfer:
-      return 'Transfer Details';
-    case PaymentMethod.check:
-      return 'Check Details';
-    default:
-      return 'Payment Details';
-  }
-}
-
-String _getPaymentRefLabel(PaymentMethod method) {
-  switch (method) {
-    case PaymentMethod.card:
-      return 'Card Reference / Last 4 Digits';
-    case PaymentMethod.bankTransfer:
-      return 'Transaction Reference Number';
-    case PaymentMethod.check:
-      return 'Check Number';
-    default:
-      return 'Reference';
-  }
-}
-
-IconData _getPaymentRefIcon(PaymentMethod method) {
-  switch (method) {
-    case PaymentMethod.card:
-      return Icons.pin;
-    case PaymentMethod.bankTransfer:
-      return Icons.tag;
-    case PaymentMethod.check:
-      return Icons.numbers;
-    default:
-      return Icons.info_outline;
-  }
-}
-
-String _getPaymentRefHelperText(PaymentMethod method) {
-  switch (method) {
-    case PaymentMethod.card:
-      return 'Enter card last 4 digits or approval code';
-    case PaymentMethod.bankTransfer:
-      return 'Enter GCash, Maya, or bank reference number';
-    case PaymentMethod.check:
-      return 'Enter check number for records';
-    default:
-      return '';
-  }
-}
 
 /// Card widget for customer search/select with inline creation.
 class _CustomerSelectionCard extends HookConsumerWidget {
