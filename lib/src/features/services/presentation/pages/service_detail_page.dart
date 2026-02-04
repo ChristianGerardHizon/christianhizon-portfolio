@@ -130,10 +130,16 @@ class ServiceDetailPage extends HookConsumerWidget {
                         label: 'Quantity Prompt',
                         value: service.showPrompt ? 'Yes' : 'No',
                       ),
-                      if (service.maxQuantity != null)
+                      _InfoRow(
+                        label: 'Max Quantity',
+                        value: (service.maxQuantity != null && service.maxQuantity! > 0)
+                            ? service.maxQuantity.toString()
+                            : 'N/A',
+                      ),
+                      if (service.maxQuantity != null && service.maxQuantity! > 0)
                         _InfoRow(
-                          label: 'Max Quantity',
-                          value: service.maxQuantity.toString(),
+                          label: 'Allow Excess',
+                          value: service.allowExcess ? 'Yes' : 'No',
                         ),
                     ],
                   ),

@@ -100,6 +100,13 @@ class ServiceDtoMapper extends ClassMapperBase<ServiceDto> {
     _$maxQuantity,
     opt: true,
   );
+  static bool _$allowExcess(ServiceDto v) => v.allowExcess;
+  static const Field<ServiceDto, bool> _f$allowExcess = Field(
+    'allowExcess',
+    _$allowExcess,
+    opt: true,
+    def: false,
+  );
   static String? _$quantityUnit(ServiceDto v) => v.quantityUnit;
   static const Field<ServiceDto, String> _f$quantityUnit = Field(
     'quantityUnit',
@@ -149,6 +156,7 @@ class ServiceDtoMapper extends ClassMapperBase<ServiceDto> {
     #weightBased: _f$weightBased,
     #showPrompt: _f$showPrompt,
     #maxQuantity: _f$maxQuantity,
+    #allowExcess: _f$allowExcess,
     #quantityUnit: _f$quantityUnit,
     #quantityUnitExpanded: _f$quantityUnitExpanded,
     #isDeleted: _f$isDeleted,
@@ -172,6 +180,7 @@ class ServiceDtoMapper extends ClassMapperBase<ServiceDto> {
       weightBased: data.dec(_f$weightBased),
       showPrompt: data.dec(_f$showPrompt),
       maxQuantity: data.dec(_f$maxQuantity),
+      allowExcess: data.dec(_f$allowExcess),
       quantityUnit: data.dec(_f$quantityUnit),
       quantityUnitExpanded: data.dec(_f$quantityUnitExpanded),
       isDeleted: data.dec(_f$isDeleted),
@@ -257,6 +266,7 @@ abstract class ServiceDtoCopyWith<$R, $In extends ServiceDto, $Out>
     bool? weightBased,
     bool? showPrompt,
     int? maxQuantity,
+    bool? allowExcess,
     String? quantityUnit,
     QuantityUnit? quantityUnitExpanded,
     bool? isDeleted,
@@ -295,6 +305,7 @@ class _ServiceDtoCopyWithImpl<$R, $Out>
     bool? weightBased,
     bool? showPrompt,
     Object? maxQuantity = $none,
+    bool? allowExcess,
     Object? quantityUnit = $none,
     Object? quantityUnitExpanded = $none,
     bool? isDeleted,
@@ -316,6 +327,7 @@ class _ServiceDtoCopyWithImpl<$R, $Out>
       if (weightBased != null) #weightBased: weightBased,
       if (showPrompt != null) #showPrompt: showPrompt,
       if (maxQuantity != $none) #maxQuantity: maxQuantity,
+      if (allowExcess != null) #allowExcess: allowExcess,
       if (quantityUnit != $none) #quantityUnit: quantityUnit,
       if (quantityUnitExpanded != $none)
         #quantityUnitExpanded: quantityUnitExpanded,
@@ -343,6 +355,7 @@ class _ServiceDtoCopyWithImpl<$R, $Out>
     weightBased: data.get(#weightBased, or: $value.weightBased),
     showPrompt: data.get(#showPrompt, or: $value.showPrompt),
     maxQuantity: data.get(#maxQuantity, or: $value.maxQuantity),
+    allowExcess: data.get(#allowExcess, or: $value.allowExcess),
     quantityUnit: data.get(#quantityUnit, or: $value.quantityUnit),
     quantityUnitExpanded: data.get(
       #quantityUnitExpanded,

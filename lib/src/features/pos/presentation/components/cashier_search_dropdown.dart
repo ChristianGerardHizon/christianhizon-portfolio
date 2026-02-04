@@ -450,6 +450,7 @@ class _SearchResultTile extends StatelessWidget {
                 context,
                 serviceName: service.name,
                 maxQuantity: service.maxQuantity,
+                unitLabel: service.quantityUnit?.shortPlural,
               ).then((quantity) {
                 if (quantity != null) {
                   cartNotifier.addServiceToCart(
@@ -470,6 +471,7 @@ class _SearchResultTile extends StatelessWidget {
           context,
           serviceName: service.name,
           maxQuantity: service.maxQuantity,
+          unitLabel: service.quantityUnit?.shortPlural,
         ).then((quantity) {
           if (quantity != null) {
             cartNotifier.addServiceToCart(service, quantity: quantity);

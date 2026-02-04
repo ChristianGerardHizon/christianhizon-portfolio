@@ -5,13 +5,24 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 /// Shows a dialog to enter a quantity for a service.
 ///
 /// Returns the entered quantity, or `null` if cancelled.
+///
+/// If [unitLabel] is provided, it will be shown as a suffix in the input field
+/// (e.g., "kg" for kilograms).
+///
+/// When [allowExcess] is true and [maxQuantity] is set, the user can enter
+/// quantities above the max. Excess will be split into multiple cart lines.
 Future<int?> showQuantityPromptDialog(
   BuildContext context, {
   required String serviceName,
   int? maxQuantity,
+  bool allowExcess = false,
   int initialQuantity = 1,
+  String? unitLabel,
 }) async {
   final formKey = GlobalKey<FormBuilderState>();
+
+  // Treat 0 or null as no max limit
+  final effectiveMax = (maxQuantity == null || maxQuantity <= 0) ? null : maxQuantity;
 
   return showDialog<int>(
     context: context,
@@ -29,10 +40,12 @@ Future<int?> showQuantityPromptDialog(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
             ),
-            if (maxQuantity != null) ...[
+            if (effectiveMax != null) ...[
               const SizedBox(height: 4),
               Text(
-                'Max: $maxQuantity',
+                allowExcess
+                    ? 'Max per line: $effectiveMax${unitLabel != null && unitLabel.isNotEmpty ? ' $unitLabel' : ''} (excess splits into multiple lines)'
+                    : 'Max: $effectiveMax${unitLabel != null && unitLabel.isNotEmpty ? ' $unitLabel' : ''}',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(context).colorScheme.outline,
                     ),
@@ -45,9 +58,10 @@ Future<int?> showQuantityPromptDialog(
               decoration: InputDecoration(
                 labelText: 'Quantity *',
                 border: const OutlineInputBorder(),
-                hintText: maxQuantity != null
-                    ? 'Enter quantity (1-$maxQuantity)'
+                hintText: effectiveMax != null && !allowExcess
+                    ? 'Enter quantity (1-$effectiveMax)'
                     : 'Enter quantity',
+                suffixText: unitLabel != null && unitLabel.isNotEmpty ? unitLabel : null,
               ),
               keyboardType: TextInputType.number,
               autofocus: true,
@@ -62,10 +76,11 @@ Future<int?> showQuantityPromptDialog(
                   1,
                   errorText: 'Quantity must be at least 1',
                 ),
-                if (maxQuantity != null)
+                // Only enforce max when allowExcess is false
+                if (effectiveMax != null && !allowExcess)
                   FormBuilderValidators.max(
-                    maxQuantity,
-                    errorText: 'Maximum quantity is $maxQuantity',
+                    effectiveMax,
+                    errorText: 'Maximum quantity is $effectiveMax',
                   ),
               ]),
             ),

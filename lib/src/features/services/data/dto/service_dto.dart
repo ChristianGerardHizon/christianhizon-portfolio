@@ -27,6 +27,7 @@ class ServiceDto with ServiceDtoMappable {
   final bool weightBased;
   final bool showPrompt;
   final int? maxQuantity;
+  final bool allowExcess;
   final String? quantityUnit;
   final QuantityUnit? quantityUnitExpanded;
   final bool isDeleted;
@@ -48,6 +49,7 @@ class ServiceDto with ServiceDtoMappable {
     this.weightBased = false,
     this.showPrompt = false,
     this.maxQuantity,
+    this.allowExcess = false,
     this.quantityUnit,
     this.quantityUnitExpanded,
     this.isDeleted = false,
@@ -87,6 +89,7 @@ class ServiceDto with ServiceDtoMappable {
       weightBased: json['weightBased'] as bool? ?? false,
       showPrompt: json['showPrompt'] as bool? ?? false,
       maxQuantity: json['maxQuantity'] as int?,
+      allowExcess: json['allowExcess'] as bool? ?? false,
       quantityUnit: json['quantityUnit'] as String?,
       quantityUnitExpanded: quantityUnitExpanded,
       isDeleted: json['isDeleted'] as bool? ?? false,
@@ -110,6 +113,7 @@ class ServiceDto with ServiceDtoMappable {
       weightBased: weightBased,
       showPrompt: showPrompt,
       maxQuantity: maxQuantity,
+      allowExcess: allowExcess,
       quantityUnitId: quantityUnit,
       quantityUnit: quantityUnitExpanded,
       isDeleted: isDeleted,

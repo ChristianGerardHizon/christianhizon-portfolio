@@ -90,6 +90,13 @@ class ServiceMapper extends ClassMapperBase<Service> {
     _$maxQuantity,
     opt: true,
   );
+  static bool _$allowExcess(Service v) => v.allowExcess;
+  static const Field<Service, bool> _f$allowExcess = Field(
+    'allowExcess',
+    _$allowExcess,
+    opt: true,
+    def: false,
+  );
   static String? _$quantityUnitId(Service v) => v.quantityUnitId;
   static const Field<Service, String> _f$quantityUnitId = Field(
     'quantityUnitId',
@@ -136,6 +143,7 @@ class ServiceMapper extends ClassMapperBase<Service> {
     #weightBased: _f$weightBased,
     #showPrompt: _f$showPrompt,
     #maxQuantity: _f$maxQuantity,
+    #allowExcess: _f$allowExcess,
     #quantityUnitId: _f$quantityUnitId,
     #quantityUnit: _f$quantityUnit,
     #isDeleted: _f$isDeleted,
@@ -157,6 +165,7 @@ class ServiceMapper extends ClassMapperBase<Service> {
       weightBased: data.dec(_f$weightBased),
       showPrompt: data.dec(_f$showPrompt),
       maxQuantity: data.dec(_f$maxQuantity),
+      allowExcess: data.dec(_f$allowExcess),
       quantityUnitId: data.dec(_f$quantityUnitId),
       quantityUnit: data.dec(_f$quantityUnit),
       isDeleted: data.dec(_f$isDeleted),
@@ -236,6 +245,7 @@ abstract class ServiceCopyWith<$R, $In extends Service, $Out>
     bool? weightBased,
     bool? showPrompt,
     int? maxQuantity,
+    bool? allowExcess,
     String? quantityUnitId,
     QuantityUnit? quantityUnit,
     bool? isDeleted,
@@ -270,6 +280,7 @@ class _ServiceCopyWithImpl<$R, $Out>
     bool? weightBased,
     bool? showPrompt,
     Object? maxQuantity = $none,
+    bool? allowExcess,
     Object? quantityUnitId = $none,
     Object? quantityUnit = $none,
     bool? isDeleted,
@@ -289,6 +300,7 @@ class _ServiceCopyWithImpl<$R, $Out>
       if (weightBased != null) #weightBased: weightBased,
       if (showPrompt != null) #showPrompt: showPrompt,
       if (maxQuantity != $none) #maxQuantity: maxQuantity,
+      if (allowExcess != null) #allowExcess: allowExcess,
       if (quantityUnitId != $none) #quantityUnitId: quantityUnitId,
       if (quantityUnit != $none) #quantityUnit: quantityUnit,
       if (isDeleted != null) #isDeleted: isDeleted,
@@ -313,6 +325,7 @@ class _ServiceCopyWithImpl<$R, $Out>
     weightBased: data.get(#weightBased, or: $value.weightBased),
     showPrompt: data.get(#showPrompt, or: $value.showPrompt),
     maxQuantity: data.get(#maxQuantity, or: $value.maxQuantity),
+    allowExcess: data.get(#allowExcess, or: $value.allowExcess),
     quantityUnitId: data.get(#quantityUnitId, or: $value.quantityUnitId),
     quantityUnit: data.get(#quantityUnit, or: $value.quantityUnit),
     isDeleted: data.get(#isDeleted, or: $value.isDeleted),

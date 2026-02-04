@@ -22,6 +22,7 @@ class Service with ServiceMappable {
     this.weightBased = false,
     this.showPrompt = false,
     this.maxQuantity,
+    this.allowExcess = false,
     this.quantityUnitId,
     this.quantityUnit,
     this.isDeleted = false,
@@ -64,6 +65,9 @@ class Service with ServiceMappable {
 
   /// Maximum quantity allowed for this service (optional).
   final int? maxQuantity;
+
+  /// Whether to allow quantities exceeding maxQuantity by splitting into multiple cart items.
+  final bool allowExcess;
 
   /// Quantity unit FK ID.
   final String? quantityUnitId;

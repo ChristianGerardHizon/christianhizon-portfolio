@@ -59,6 +59,7 @@ class _ServiceFormDialog extends HookConsumerWidget {
         weightBased: values['weightBased'] as bool? ?? false,
         showPrompt: values['showPrompt'] as bool? ?? false,
         maxQuantity: int.tryParse(values['maxQuantity']?.toString() ?? ''),
+        allowExcess: values['allowExcess'] as bool? ?? false,
         quantityUnitId: values['quantityUnit'] as String?,
       );
 
@@ -124,13 +125,14 @@ class _ServiceFormDialog extends HookConsumerWidget {
                     initialValue: {
                       'name': service?.name ?? '',
                       'description': service?.description ?? '',
-                      'category': service?.categoryId,
+                      // 'category' is set on the dropdown after validating it exists
                       'price': service?.price.toString() ?? '0',
                       'isVariablePrice': service?.isVariablePrice ?? false,
                       'weightBased': service?.weightBased ?? false,
                       'showPrompt': service?.showPrompt ?? false,
                       'maxQuantity': service?.maxQuantity?.toString() ?? '',
-                      'quantityUnit': service?.quantityUnitId,
+                      'allowExcess': service?.allowExcess ?? false,
+                      // 'quantityUnit' is set on the dropdown after validating it exists
                       'estimatedDuration':
                           service?.estimatedDuration?.toString() ?? '',
                     },
@@ -160,19 +162,28 @@ class _ServiceFormDialog extends HookConsumerWidget {
                           children: [
                             Expanded(
                               child: categoriesAsync.when(
-                                data: (categories) =>
-                                    FormBuilderDropdown<String>(
-                                  name: 'category',
-                                  decoration: const InputDecoration(
-                                    labelText: 'Category',
-                                  ),
-                                  items: categories
-                                      .map((c) => DropdownMenuItem(
-                                            value: c.id,
-                                            child: Text(c.name),
-                                          ))
-                                      .toList(),
-                                ),
+                                data: (categories) {
+                                  // Validate initial value exists in items
+                                  final categoryIds = categories.map((c) => c.id).toSet();
+                                  final initialCategory = service?.categoryId;
+                                  final validInitialCategory = initialCategory != null && categoryIds.contains(initialCategory)
+                                      ? initialCategory
+                                      : null;
+
+                                  return FormBuilderDropdown<String>(
+                                    name: 'category',
+                                    initialValue: validInitialCategory,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Category',
+                                    ),
+                                    items: categories
+                                        .map((c) => DropdownMenuItem(
+                                              value: c.id,
+                                              child: Text(c.name),
+                                            ))
+                                        .toList(),
+                                  );
+                                },
                                 loading: () =>
                                     FormBuilderDropdown<String>(
                                   name: 'category',
@@ -269,23 +280,42 @@ class _ServiceFormDialog extends HookConsumerWidget {
                           },
                           textInputAction: TextInputAction.next,
                         ),
+                        const SizedBox(height: 8),
+
+                        FormBuilderSwitch(
+                          name: 'allowExcess',
+                          title: const Text('Allow Excess Quantity'),
+                          subtitle: const Text(
+                            'Split into multiple cart items when quantity exceeds max',
+                          ),
+                        ),
                         const SizedBox(height: 16),
 
                         // Quantity Unit dropdown
                         quantityUnitsAsync.when(
-                          data: (units) => FormBuilderDropdown<String>(
-                            name: 'quantityUnit',
-                            decoration: const InputDecoration(
-                              labelText: 'Quantity Unit',
-                              hintText: 'e.g., kg, pcs, loads',
-                            ),
-                            items: units
-                                .map((u) => DropdownMenuItem(
-                                      value: u.id,
-                                      child: Text(u.displayName),
-                                    ))
-                                .toList(),
-                          ),
+                          data: (units) {
+                            // Validate initial value exists in items
+                            final unitIds = units.map((u) => u.id).toSet();
+                            final initialUnit = service?.quantityUnitId;
+                            final validInitialUnit = initialUnit != null && unitIds.contains(initialUnit)
+                                ? initialUnit
+                                : null;
+
+                            return FormBuilderDropdown<String>(
+                              name: 'quantityUnit',
+                              initialValue: validInitialUnit,
+                              decoration: const InputDecoration(
+                                labelText: 'Quantity Unit',
+                                hintText: 'e.g., kg, pcs, loads',
+                              ),
+                              items: units
+                                  .map((u) => DropdownMenuItem(
+                                        value: u.id,
+                                        child: Text(u.displayName),
+                                      ))
+                                  .toList(),
+                            );
+                          },
                           loading: () => FormBuilderDropdown<String>(
                             name: 'quantityUnit',
                             decoration: const InputDecoration(

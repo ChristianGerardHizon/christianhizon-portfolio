@@ -149,6 +149,7 @@ class ServiceRepositoryImpl implements ServiceRepository {
           'weightBased': service.weightBased,
           'showPrompt': service.showPrompt,
           'maxQuantity': service.maxQuantity,
+          'allowExcess': service.allowExcess,
           'quantityUnit': service.quantityUnitId,
           'isDeleted': false,
         };
@@ -176,6 +177,7 @@ class ServiceRepositoryImpl implements ServiceRepository {
           'weightBased': service.weightBased,
           'showPrompt': service.showPrompt,
           'maxQuantity': service.maxQuantity,
+          'allowExcess': service.allowExcess,
           'quantityUnit': service.quantityUnitId,
         };
 
