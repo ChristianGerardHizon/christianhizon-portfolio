@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../settings/presentation/controllers/current_branch_controller.dart';
+import '../controllers/top_selling_controller.dart';
 import 'dashboard_footer.dart';
 import 'inventory_alerts_section.dart';
 import 'kanban_board_section.dart';

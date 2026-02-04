@@ -3,9 +3,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/storage/secure_storage_provider.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
-import '../../../dashboard/presentation/controllers/dashboard_kpi_provider.dart';
 import '../../../dashboard/presentation/controllers/inventory_alerts_controller.dart';
 import '../../../dashboard/presentation/controllers/todays_sales_controller.dart';
+import '../../../dashboard/presentation/controllers/top_selling_controller.dart';
 import '../../../products/presentation/controllers/paginated_products_controller.dart';
 import '../../../reports/presentation/controllers/inventory_report_controller.dart';
 import '../../../reports/presentation/controllers/sales_report_controller.dart';
@@ -102,9 +102,8 @@ class CurrentBranchController extends _$CurrentBranchController {
     ref.invalidate(todaySalesSummaryProvider);
     ref.invalidate(todaySalesProvider);
     ref.invalidate(inventoryAlertsSummaryProvider);
-    ref.invalidate(productsNearExpirationCountProvider);
-    ref.invalidate(productsExpiredCountProvider);
-    ref.invalidate(lowStockProductsCountProvider);
+    ref.invalidate(topSellingProductsProvider);
+    ref.invalidate(topSellingServicesProvider);
 
     // Invalidate report providers
     ref.invalidate(salesReportProvider);
