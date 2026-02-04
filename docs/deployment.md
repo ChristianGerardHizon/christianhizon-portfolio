@@ -11,11 +11,12 @@ This document describes the GitHub Actions deployment pipeline, branching strate
 3. [Deployment Flows](#deployment-flows)
 4. [Required GitHub Secrets](#required-github-secrets)
 5. [GitHub Environment Setup](#github-environment-setup)
-6. [Build-Time Dart Defines](#build-time-dart-defines)
-7. [Android Signing](#android-signing)
-8. [Version Management](#version-management)
-9. [Build Artifacts & Caching](#build-artifacts--caching)
-10. [Platform Support](#platform-support)
+6. [Server-Side Requirements](#server-side-requirements)
+7. [Build-Time Dart Defines](#build-time-dart-defines)
+8. [Android Signing](#android-signing)
+9. [Version Management](#version-management)
+10. [Build Artifacts & Caching](#build-artifacts--caching)
+11. [Platform Support](#platform-support)
 
 ---
 
@@ -69,6 +70,11 @@ PR merged to staging (or manual dispatch)
   │   --dart-define=ENV=staging
   │   --dart-define=API_URL=$POCKETBASE_URL_STAGING
   │
+  ├─ Setup SSH agent + known_hosts
+  ├─ rsync web build → staging server pb_public/
+  ├─ rsync migrations → staging server pb_migrations/
+  ├─ Restart PocketBase staging service
+  │
   └─ Create GitHub Release (prerelease)
       Tag: staging-X.Y.Z[-build.N]
       Artifact: app-release.apk
@@ -101,6 +107,11 @@ PR merged to main
   │   ├─ Build APK (--release, signed)
   │   │   --dart-define=ENV=prod
   │   │   --dart-define=API_URL=$POCKETBASE_URL_PROD
+  │   │
+  │   ├─ Setup SSH agent + known_hosts
+  │   ├─ rsync web build → production server pb_public/
+  │   ├─ rsync migrations → production server pb_migrations/
+  │   ├─ Restart PocketBase production service
   │   │
   │   └─ Upload APK as GitHub Actions artifact
   │
@@ -143,6 +154,9 @@ These must be configured in **Settings → Secrets and variables → Actions**.
 | `KEYSTORE_PASSWORD` | Yes | Staging & Production | Keystore store password |
 | `KEY_ALIAS` | Yes | Staging & Production | Key alias within the keystore |
 | `KEY_PASSWORD` | Yes | Staging & Production | Key password |
+| `SSH_HOST` | Yes | Staging & Production | Server hostname or IP for SSH deployment |
+| `SSH_USER` | Yes | Staging & Production | SSH username (e.g., `deploy`) |
+| `SSH_PRIVATE_KEY` | Yes | Staging & Production | Ed25519 or RSA private key (PEM format) for SSH authentication |
 | `PB_TOKEN` | Optional | Production (release-and-sync) | Auth token for PATCH-ing the Version Manager after release |
 
 `GITHUB_TOKEN` is provided automatically by GitHub Actions.
@@ -156,6 +170,36 @@ A **"Production"** environment must be created in the repository:
 **Settings → Environments → New environment → "Production"**
 
 This environment acts as an approval gate — production deploys require manual approval before running.
+
+---
+
+## Server-Side Requirements
+
+Both staging and production deploy to the **same server** via SSH. The following must be configured on the server:
+
+### SSH Access
+- The `SSH_USER` must have `authorized_keys` configured with the public key matching `SSH_PRIVATE_KEY`
+- `rsync` must be installed on the server
+
+### Directory Permissions
+
+The SSH user needs write access to:
+
+| Path | Purpose |
+|------|---------|
+| `/opt/pocketbase/hizonelaundry-staging/pb_public/` | Staging web build |
+| `/opt/pocketbase/hizonelaundry-staging/pb_migrations/` | Staging PocketBase migrations |
+| `/opt/pocketbase/hizonelaundry/pb_public/` | Production web build |
+| `/opt/pocketbase/hizonelaundry/pb_migrations/` | Production PocketBase migrations |
+
+### Passwordless Sudo
+
+The SSH user needs passwordless sudo for restarting PocketBase services. Add to `/etc/sudoers.d/deploy`:
+
+```
+deploy ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart pocketbase_hizonelaundry-staging.service
+deploy ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart pocketbase_hizonelaundry.service
+```
 
 ---
 
@@ -235,7 +279,7 @@ Staging and production have **separate** Flutter build caches to prevent conflic
 |-------------|----------|-------------|
 | Staging | APK | GitHub Release (prerelease) |
 | Production | APK | GitHub Actions artifact → GitHub Release (public) |
-| Both | Web build | Built but **not automatically deployed** |
+| Both | Web build | Auto-deployed to server via SSH (rsync) |
 
 ---
 
@@ -244,7 +288,7 @@ Staging and production have **separate** Flutter build caches to prevent conflic
 | Platform | CI/CD Status | Notes |
 |----------|-------------|-------|
 | Android (APK) | Fully automated | Signed release builds for both environments |
-| Web | Built only | WASM for staging, standard for production. No hosting deployment step. |
+| Web | Fully automated | WASM for staging, standard for production. Auto-deployed via SSH/rsync to PocketBase `pb_public/`. |
 | iOS | Not configured | Would require macOS runner + signing certificates |
 | macOS | Not configured | Would require macOS runner |
 | Linux | Not configured | Could use standard Ubuntu runner |
@@ -261,5 +305,5 @@ Staging and production have **separate** Flutter build caches to prevent conflic
 | **Approval gate** | None | "Production" environment approval |
 | **Version suffix** | `-staging` | None |
 | **Release type** | Prerelease | Public release |
-| **Web build** | `--wasm` | Standard |
+| **Web build** | `--wasm`, deployed via SSH | Standard, deployed via SSH |
 | **Version Manager** | Not updated | Updated after release |

@@ -561,6 +561,7 @@ lib/src/
 
 | Date | Feature | Description |
 |------|---------|-------------|
+| Feb 04 | SSH Web Deployment | Added SSH-based auto-deployment of web builds and PocketBase migrations to staging/production servers via rsync in CI/CD pipeline |
 | Feb 04 | Deployment Docs | Added CI/CD and deployment documentation (`docs/deployment.md`) covering GitHub Actions workflows, secrets, version management, and branching strategy |
 | Feb 02 | Customers Feature | Customer CRUD with sales history, required customer at POS checkout with search and inline creation |
 | Feb 02 | Cashier Groups | Customizable cashier layout with POS groups per branch — scrollable sections, search dropdown, settings page under System, falls back to default tabs when no groups configured |

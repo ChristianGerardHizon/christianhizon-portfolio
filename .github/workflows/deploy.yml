@@ -36,6 +36,9 @@ jobs:
           if [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ]; then MISSING="$MISSING KEYSTORE_PASSWORD"; fi
           if [ -z "${{ secrets.KEY_ALIAS }}" ]; then MISSING="$MISSING KEY_ALIAS"; fi
           if [ -z "${{ secrets.KEY_PASSWORD }}" ]; then MISSING="$MISSING KEY_PASSWORD"; fi
+          if [ -z "${{ secrets.SSH_HOST }}" ]; then MISSING="$MISSING SSH_HOST"; fi
+          if [ -z "${{ secrets.SSH_USER }}" ]; then MISSING="$MISSING SSH_USER"; fi
+          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then MISSING="$MISSING SSH_PRIVATE_KEY"; fi
           if [ -n "$MISSING" ]; then
             echo "::error::Missing required secrets:$MISSING"
             exit 1
@@ -138,6 +141,35 @@ jobs:
           CM_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: flutter build apk --release --build-name=${{ env.STAGING_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
+      # --- SSH DEPLOY START ---
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy web build to staging server
+        run: |
+          rsync -avz --delete \
+            build/web/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry-staging/pb_public/
+
+      - name: Deploy migrations to staging server
+        run: |
+          rsync -avz --delete \
+            server/pb_migrations/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry-staging/pb_migrations/
+
+      - name: Restart PocketBase staging service
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            'sudo systemctl restart pocketbase_hizonelaundry-staging.service'
+      # --- SSH DEPLOY END ---
+
       # RELEASE
       - name: Create Staging Release
         uses: softprops/action-gh-release@v2
@@ -184,6 +216,9 @@ jobs:
           if [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ]; then MISSING="$MISSING KEYSTORE_PASSWORD"; fi
           if [ -z "${{ secrets.KEY_ALIAS }}" ]; then MISSING="$MISSING KEY_ALIAS"; fi
           if [ -z "${{ secrets.KEY_PASSWORD }}" ]; then MISSING="$MISSING KEY_PASSWORD"; fi
+          if [ -z "${{ secrets.SSH_HOST }}" ]; then MISSING="$MISSING SSH_HOST"; fi
+          if [ -z "${{ secrets.SSH_USER }}" ]; then MISSING="$MISSING SSH_USER"; fi
+          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then MISSING="$MISSING SSH_PRIVATE_KEY"; fi
           if [ -n "$MISSING" ]; then
             echo "::error::Missing required secrets:$MISSING"
             exit 1
@@ -265,6 +300,35 @@ jobs:
           CM_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           CM_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: flutter build apk --release --build-name=${{ env.PROD_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
+
+      # --- SSH DEPLOY START ---
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy web build to production server
+        run: |
+          rsync -avz --delete \
+            build/web/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry/pb_public/
+
+      - name: Deploy migrations to production server
+        run: |
+          rsync -avz --delete \
+            server/pb_migrations/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry/pb_migrations/
+
+      - name: Restart PocketBase production service
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            'sudo systemctl restart pocketbase_hizonelaundry.service'
+      # --- SSH DEPLOY END ---
 
       # UPLOAD & DEPLOY
       - name: Upload APK Artifact
