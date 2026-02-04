@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/foundation/failure.dart';
 import '../../../../core/utils/currency_format.dart';
+import '../../../../core/widgets/form_feedback.dart';
 import '../../../services/data/repositories/service_repository.dart';
 import '../../../services/domain/service.dart';
 import '../cart_controller.dart';
@@ -166,7 +167,7 @@ class _ServiceCard extends ConsumerWidget {
     );
   }
 
-  void _handleServiceTap(BuildContext context, WidgetRef ref) {
+  Future<void> _handleServiceTap(BuildContext context, WidgetRef ref) async {
     final cartNotifier = ref.read(cartControllerProvider.notifier);
 
     if (service.isVariablePrice) {
@@ -182,12 +183,14 @@ class _ServiceCard extends ConsumerWidget {
               context,
               serviceName: service.name,
               maxQuantity: service.maxQuantity,
+              allowExcess: service.allowExcess,
+              unitLabel: service.quantityUnit?.shortPlural,
             ).then((quantity) {
               if (quantity != null) {
-                cartNotifier.addServiceToCart(
-                  service,
+                _addServiceWithPossibleSplit(
+                  cartNotifier,
+                  quantity,
                   customPrice: price,
-                  quantity: quantity,
                 );
               }
             });
@@ -202,13 +205,70 @@ class _ServiceCard extends ConsumerWidget {
         context,
         serviceName: service.name,
         maxQuantity: service.maxQuantity,
+        allowExcess: service.allowExcess,
+        unitLabel: service.quantityUnit?.shortPlural,
       ).then((quantity) {
         if (quantity != null) {
-          cartNotifier.addServiceToCart(service, quantity: quantity);
+          _addServiceWithPossibleSplit(cartNotifier, quantity);
         }
       });
     } else {
-      cartNotifier.addServiceToCart(service);
+      final result = await cartNotifier.addServiceToCart(service);
+      if (result == AddServiceResult.maxReached && context.mounted) {
+        showErrorSnackBar(
+          context,
+          message:
+              '${service.name} has reached the maximum quantity of ${service.maxQuantity} per order',
+          duration: const Duration(seconds: 2),
+        );
+      }
+    }
+  }
+
+  /// Adds a service to the cart, splitting into multiple items if necessary.
+  ///
+  /// When [service.allowExcess] is true and [quantity] exceeds [service.maxQuantity],
+  /// creates multiple cart items (e.g., quantity=12 with max=5 creates items of 5, 5, 2).
+  /// Each call is awaited sequentially to avoid state race conditions.
+  Future<void> _addServiceWithPossibleSplit(
+    CartController cartNotifier,
+    int quantity, {
+    num? customPrice,
+  }) async {
+    final max = service.maxQuantity;
+
+    // If no max, allowExcess is false, or quantity is within max, add normally
+    if (max == null || max <= 0 || !service.allowExcess || quantity <= max) {
+      await cartNotifier.addServiceToCart(
+        service,
+        customPrice: customPrice,
+        quantity: quantity,
+      );
+      return;
+    }
+
+    // Split into multiple cart items, each as a separate line
+    final fullItems = quantity ~/ max;
+    final remainder = quantity % max;
+
+    // Add full items — must be sequential so each sees the updated state
+    for (var i = 0; i < fullItems; i++) {
+      await cartNotifier.addServiceToCart(
+        service,
+        customPrice: customPrice,
+        quantity: max,
+        forceNewLine: true,
+      );
+    }
+
+    // Add remainder if any
+    if (remainder > 0) {
+      await cartNotifier.addServiceToCart(
+        service,
+        customPrice: customPrice,
+        quantity: remainder,
+        forceNewLine: true,
+      );
     }
   }
 }

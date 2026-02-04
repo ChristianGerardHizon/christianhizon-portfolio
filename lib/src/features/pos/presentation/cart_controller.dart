@@ -14,6 +14,9 @@ import '../domain/cart_item.dart';
 part 'cart_controller.g.dart';
 part 'cart_controller.mapper.dart';
 
+/// Result of attempting to add a service to the cart.
+enum AddServiceResult { success, maxReached }
+
 /// State for the shopping cart.
 @MappableClass()
 class CartState with CartStateMappable {
@@ -512,26 +515,54 @@ class CartController extends _$CartController {
   /// Adds a service to the cart.
   /// For variable-price services, [customPrice] must be provided.
   /// [quantity] defaults to 1 if not specified.
-  Future<void> addServiceToCart(
+  /// When [forceNewLine] is true, always creates a new cart line instead of
+  /// merging into an existing one (used for excess quantity splitting).
+  ///
+  /// Returns [AddServiceResult.maxReached] when the service has a
+  /// `maxQuantity` limit, `allowExcess` is false, and the existing cart
+  /// line is already at or above that limit.
+  Future<AddServiceResult> addServiceToCart(
     Service service, {
     num? customPrice,
     int quantity = 1,
+    bool forceNewLine = false,
   }) async {
     final currentState = state.value;
-    if (currentState == null) return;
+    if (currentState == null) return AddServiceResult.success;
 
     // Check if a matching service item already exists
-    final existingIndex = currentState.serviceItems.indexWhere((item) {
-      if (item.serviceId != service.id) return false;
-      if (customPrice != null) return item.customPrice == customPrice;
-      return !item.hasCustomPrice;
-    });
+    final existingIndex = forceNewLine
+        ? -1
+        : currentState.serviceItems.indexWhere((item) {
+            if (item.serviceId != service.id) return false;
+            if (customPrice != null) return item.customPrice == customPrice;
+            return !item.hasCustomPrice;
+          });
 
     if (existingIndex >= 0) {
       // Update quantity of existing item
       final existingItem = currentState.serviceItems[existingIndex];
       final newQuantity = existingItem.quantity + quantity;
+      final maxQty = service.maxQuantity;
+
+      // Check if the new quantity would exceed the max
+      if (maxQty != null && newQuantity > maxQty) {
+        if (service.allowExcess) {
+          // Create a new cart line with the requested quantity
+          return addServiceToCart(
+            service,
+            customPrice: customPrice,
+            quantity: quantity,
+            forceNewLine: true,
+          );
+        } else {
+          // Max reached and excess not allowed
+          return AddServiceResult.maxReached;
+        }
+      }
+
       await updateServiceQuantityById(existingItem.id, newQuantity.toInt());
+      return AddServiceResult.success;
     } else {
       // Add new item
       state = AsyncData(currentState.copyWith(isSyncing: true));
@@ -539,7 +570,7 @@ class CartController extends _$CartController {
       final cartId = await _ensureCart();
       if (cartId == null) {
         state = AsyncData(currentState.copyWith(isSyncing: false));
-        return;
+        return AddServiceResult.success;
       }
 
       final cartServiceItem = CartServiceItem(
@@ -570,6 +601,7 @@ class CartController extends _$CartController {
           ));
         },
       );
+      return AddServiceResult.success;
     }
   }
 
@@ -589,6 +621,13 @@ class CartController extends _$CartController {
     if (index < 0) return;
 
     final item = currentState.serviceItems[index];
+
+    // Cap quantity at maxQuantity if the service doesn't allow excess.
+    // Overflow / splitting is handled upstream by addServiceToCart.
+    final maxQty = item.service?.maxQuantity;
+    if (maxQty != null && quantity > maxQty) {
+      quantity = maxQty;
+    }
     state = AsyncData(currentState.copyWith(isSyncing: true));
 
     final updatedItem = item.copyWith(quantity: quantity);
