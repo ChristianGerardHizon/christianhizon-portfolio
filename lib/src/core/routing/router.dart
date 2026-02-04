@@ -5,13 +5,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../pages/app_root.dart';
 import 'router_utils.dart';
-import 'routes/appointments.routes.dart';
 import 'routes/auth.routes.dart';
 import 'routes/dashboard.routes.dart';
-import 'routes/messages.routes.dart';
 import 'routes/organization.routes.dart';
-import 'routes/patients.routes.dart';
 import 'routes/products.routes.dart';
+import 'routes/customers.routes.dart';
+import 'routes/services.routes.dart';
 import 'routes/sales.routes.dart';
 import 'routes/sales_history.routes.dart';
 import 'routes/reports.routes.dart';
@@ -48,12 +47,11 @@ GoRouter router(Ref ref) {
         builder: (context, state, child) => AppRoot(child: child),
         routes: [
           $dashboardRoute,
-          $patientsShellRoute,
-          $appointmentsShellRoute,
           $productsShellRoute,
+          $servicesShellRoute,
+          $customersShellRoute,
           $salesRoute,
           $salesShellRoute,
-          $messagesShellRoute,
           $reportsRoute,
           $organizationShellRoute,
           $systemShellRoute,

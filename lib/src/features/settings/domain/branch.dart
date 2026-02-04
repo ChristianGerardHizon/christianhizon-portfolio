@@ -32,7 +32,7 @@ class Branch with BranchMappable {
   /// Branch contact number.
   final String contactNumber;
 
-  /// Display name for formal/external use (e.g., "San Jose Veterinary Clinic").
+  /// Display name for formal/external use (e.g., "Hi-Zone Laundry").
   final String? displayName;
 
   /// Operating hours (e.g., "Mon-Sat 8:00 AM - 5:00 PM").

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/routing/routes/appointments.routes.dart';
-import '../../../../core/routing/routes/patients.routes.dart';
 import '../../../../core/routing/routes/products.routes.dart';
 import '../../../../core/routing/routes/sales_history.routes.dart';
 import '../controllers/dashboard_kpi_provider.dart';
@@ -13,71 +11,24 @@ import 'kpi_card.dart';
 /// Section displaying KPI summary cards on the dashboard.
 ///
 /// Shows:
-/// - Active patients count
-/// - Today's appointments breakdown
-/// - Products near expiration (warning color if > 0)
 /// - Today's sales count and total
 /// - Low stock items (warning color if > 0)
+/// - Products near expiration (warning color if > 0)
+/// - Expired products (error color if > 0)
 class KpiSummarySection extends ConsumerWidget {
   const KpiSummarySection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activePatientsAsync = ref.watch(activePatientsCountProvider);
-    final appointmentsBreakdown = ref.watch(todayAppointmentsBreakdownProvider);
     final nearExpirationAsync = ref.watch(productsNearExpirationCountProvider);
     final expiredAsync = ref.watch(productsExpiredCountProvider);
     final lowStockAsync = ref.watch(lowStockProductsCountProvider);
     final salesSummaryAsync = ref.watch(todaySalesSummaryProvider);
 
-    // Use Column with Rows to fill width with 3 columns
+    // Use Column with Rows to fill width with 2 columns per row
     const spacing = 12.0;
 
-    // Build KPI cards (6 total, 2 rows of 3)
     final row1Cards = <Widget>[
-      // Active patients
-      Expanded(
-        child: activePatientsAsync.when(
-          data: (count) => KpiCard(
-            title: 'Active Patients',
-            value: count.toString(),
-            icon: Icons.pets,
-            subtitle: 'Total registered',
-            compact: true,
-            onTap: () => const PatientsRoute().go(context),
-          ),
-          loading: () => _buildLoadingCard(),
-          error: (_, __) => _buildErrorCard(
-            context,
-            'Active Patients',
-            Icons.pets,
-          ),
-        ),
-      ),
-      const SizedBox(width: spacing),
-      // Today's appointments
-      Expanded(
-        child: appointmentsBreakdown.when(
-          data: (breakdown) => KpiCard(
-            title: "Today's Appts",
-            value: breakdown.total.toString(),
-            icon: Icons.calendar_today,
-            subtitle: '${breakdown.scheduled} pending',
-            compact: true,
-            color: breakdown.scheduled > 0
-                ? Theme.of(context).colorScheme.primary
-                : null,
-            onTap: () => const AppointmentsRoute().go(context),
-          ),
-          loading: () => _buildLoadingCard(),
-          error: (_, __) => _buildErrorCard(
-            context,
-            "Today's Appts",
-            Icons.calendar_today,
-          ),
-        ),
-      ),
-      const SizedBox(width: spacing),
       // Today's sales
       Expanded(
         child: salesSummaryAsync.when(
@@ -98,9 +49,7 @@ class KpiSummarySection extends ConsumerWidget {
           ),
         ),
       ),
-    ];
-
-    final row2Cards = <Widget>[
+      const SizedBox(width: spacing),
       // Low stock items
       Expanded(
         child: lowStockAsync.when(
@@ -121,7 +70,9 @@ class KpiSummarySection extends ConsumerWidget {
           ),
         ),
       ),
-      const SizedBox(width: spacing),
+    ];
+
+    final row2Cards = <Widget>[
       // Products near expiration
       Expanded(
         child: nearExpirationAsync.when(

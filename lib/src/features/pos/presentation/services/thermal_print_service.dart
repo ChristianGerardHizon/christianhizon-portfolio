@@ -321,12 +321,7 @@ class ThermalPrintService extends _$ThermalPrintService {
     bytes += generator.hr();
 
     // Payment info
-    bytes +=
-        generator.text('Payment: ${_formatPaymentMethod(sale.paymentMethod)}');
-
-    if (sale.paymentRef != null && sale.paymentRef!.isNotEmpty) {
-      bytes += generator.text('Ref: ${sale.paymentRef}');
-    }
+    bytes += generator.text('Status: ${sale.isPaid ? 'PAID' : 'UNPAID'}');
 
     if (sale.customerName != null && sale.customerName!.isNotEmpty) {
       bytes += generator.text('Customer: ${sale.customerName}');
@@ -398,18 +393,4 @@ class ThermalPrintService extends _$ThermalPrintService {
     return bytes;
   }
 
-  String _formatPaymentMethod(String method) {
-    switch (method) {
-      case 'cash':
-        return 'Cash';
-      case 'card':
-        return 'Card';
-      case 'bankTransfer':
-        return 'Bank Transfer';
-      case 'check':
-        return 'Check';
-      default:
-        return method;
-    }
-  }
 }

@@ -29,7 +29,6 @@ jobs:
       - name: Verify deploy secrets exist
         run: |
           MISSING=""
-          if [ -z "${{ secrets.DEPLOY_PAT }}" ]; then MISSING="$MISSING DEPLOY_PAT"; fi
           if [ -z "${{ secrets.VERSION_MANAGER_URL }}" ]; then MISSING="$MISSING VERSION_MANAGER_URL"; fi
           if [ -z "${{ secrets.VERSION_COLLECTION_ID }}" ]; then MISSING="$MISSING VERSION_COLLECTION_ID"; fi
           if [ -z "${{ secrets.POCKETBASE_URL_STAGING }}" ]; then MISSING="$MISSING POCKETBASE_URL_STAGING"; fi
@@ -37,38 +36,12 @@ jobs:
           if [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ]; then MISSING="$MISSING KEYSTORE_PASSWORD"; fi
           if [ -z "${{ secrets.KEY_ALIAS }}" ]; then MISSING="$MISSING KEY_ALIAS"; fi
           if [ -z "${{ secrets.KEY_PASSWORD }}" ]; then MISSING="$MISSING KEY_PASSWORD"; fi
+          if [ -z "${{ secrets.SSH_HOST }}" ]; then MISSING="$MISSING SSH_HOST"; fi
+          if [ -z "${{ secrets.SSH_USER }}" ]; then MISSING="$MISSING SSH_USER"; fi
+          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then MISSING="$MISSING SSH_PRIVATE_KEY"; fi
           if [ -n "$MISSING" ]; then
             echo "::error::Missing required secrets:$MISSING"
             exit 1
-          fi
-
-      - name: Verify destination repository is accessible
-        env:
-          GH_TOKEN: ${{ secrets.DEPLOY_PAT }}
-        run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/ChristianGerardHizon/sannjose_server")
-
-          if [ "$STATUS" != "200" ]; then
-            echo "::error::Cannot access destination repo ChristianGerardHizon/sannjose_server (HTTP $STATUS)."
-            echo "::error::Verify that DEPLOY_PAT is valid and has repo access."
-            exit 1
-          fi
-          echo "Destination repository is accessible."
-
-      - name: Verify destination branch exists
-        env:
-          GH_TOKEN: ${{ secrets.DEPLOY_PAT }}
-        run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/ChristianGerardHizon/sannjose_server/branches/staging")
-
-          if [ "$STATUS" != "200" ]; then
-            echo "::warning::Branch 'staging' not found (HTTP $STATUS). The deploy action will attempt to create it."
-          else
-            echo "Destination branch 'staging' exists."
           fi
       # --- PREFLIGHT CHECKS END ---
 
@@ -168,23 +141,34 @@ jobs:
           CM_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: flutter build apk --release --build-name=${{ env.STAGING_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
-      # DEPLOY
-      - name: Prepare Folder
-        run: mv build/web pb_public
-
-      - name: Deploy to Server Staging
-        uses: cpina/github-action-push-to-another-repository@v1.7.2
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.DEPLOY_PAT }}
+      # --- SSH DEPLOY START ---
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          source-directory: 'pb_public'
-          destination-github-username: 'ChristianGerardHizon'
-          destination-repository-name: 'sannjose_server'
-          target-branch: 'staging'
-          target-directory: 'pb_public'
-          create-target-branch-if-needed: true
-          commit-message: "Deploy Staging: ${{ env.STAGING_VER }}"
-          user-email: 'bot@gymsystem.com'
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy web build to staging server
+        run: |
+          rsync -avz --delete \
+            build/web/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry-staging/pb_public/
+
+      - name: Deploy migrations to staging server
+        run: |
+          rsync -avz --delete \
+            server/pb_migrations/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry-staging/pb_migrations/
+
+      - name: Restart PocketBase staging service
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            'sudo systemctl restart pocketbase_hizonelaundry-staging.service'
+      # --- SSH DEPLOY END ---
 
       # RELEASE
       - name: Create Staging Release
@@ -225,7 +209,6 @@ jobs:
       - name: Verify deploy secrets exist
         run: |
           MISSING=""
-          if [ -z "${{ secrets.DEPLOY_PAT }}" ]; then MISSING="$MISSING DEPLOY_PAT"; fi
           if [ -z "${{ secrets.VERSION_MANAGER_URL }}" ]; then MISSING="$MISSING VERSION_MANAGER_URL"; fi
           if [ -z "${{ secrets.VERSION_COLLECTION_ID }}" ]; then MISSING="$MISSING VERSION_COLLECTION_ID"; fi
           if [ -z "${{ secrets.POCKETBASE_URL_PROD }}" ]; then MISSING="$MISSING POCKETBASE_URL_PROD"; fi
@@ -233,38 +216,12 @@ jobs:
           if [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ]; then MISSING="$MISSING KEYSTORE_PASSWORD"; fi
           if [ -z "${{ secrets.KEY_ALIAS }}" ]; then MISSING="$MISSING KEY_ALIAS"; fi
           if [ -z "${{ secrets.KEY_PASSWORD }}" ]; then MISSING="$MISSING KEY_PASSWORD"; fi
+          if [ -z "${{ secrets.SSH_HOST }}" ]; then MISSING="$MISSING SSH_HOST"; fi
+          if [ -z "${{ secrets.SSH_USER }}" ]; then MISSING="$MISSING SSH_USER"; fi
+          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then MISSING="$MISSING SSH_PRIVATE_KEY"; fi
           if [ -n "$MISSING" ]; then
             echo "::error::Missing required secrets:$MISSING"
             exit 1
-          fi
-
-      - name: Verify destination repository is accessible
-        env:
-          GH_TOKEN: ${{ secrets.DEPLOY_PAT }}
-        run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/ChristianGerardHizon/sannjose_server")
-
-          if [ "$STATUS" != "200" ]; then
-            echo "::error::Cannot access destination repo ChristianGerardHizon/sannjose_server (HTTP $STATUS)."
-            echo "::error::Verify that DEPLOY_PAT is valid and has repo access."
-            exit 1
-          fi
-          echo "Destination repository is accessible."
-
-      - name: Verify destination branch exists
-        env:
-          GH_TOKEN: ${{ secrets.DEPLOY_PAT }}
-        run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/ChristianGerardHizon/sannjose_server/branches/main")
-
-          if [ "$STATUS" != "200" ]; then
-            echo "::warning::Branch 'main' not found on destination repo (HTTP $STATUS). Deploy may fail."
-          else
-            echo "Destination branch 'main' exists."
           fi
       # --- PREFLIGHT CHECKS END ---
 
@@ -344,28 +301,41 @@ jobs:
           CM_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: flutter build apk --release --build-name=${{ env.PROD_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
+      # --- SSH DEPLOY START ---
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy web build to production server
+        run: |
+          rsync -avz --delete \
+            build/web/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry/pb_public/
+
+      - name: Deploy migrations to production server
+        run: |
+          rsync -avz --delete \
+            server/pb_migrations/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry/pb_migrations/
+
+      - name: Restart PocketBase production service
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            'sudo systemctl restart pocketbase_hizonelaundry.service'
+      # --- SSH DEPLOY END ---
+
       # UPLOAD & DEPLOY
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
-
-      - name: Prepare Folder
-        run: mv build/web pb_public
-
-      - name: Deploy to Server Main
-        uses: cpina/github-action-push-to-another-repository@v1.7.2
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.DEPLOY_PAT }}
-        with:
-          source-directory: 'pb_public'
-          destination-github-username: 'ChristianGerardHizon'
-          destination-repository-name: 'sannjose_server'
-          target-branch: 'main'
-          target-directory: 'pb_public'
-          commit-message: "Deploy Production: ${{ env.PROD_VER }}"
-          user-email: 'bot@gymsystem.com'
 
   # ==========================================
   # JOB 3: RELEASE & SYNC

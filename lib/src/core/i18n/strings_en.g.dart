@@ -120,8 +120,8 @@ class TranslationsCommonEn {
 
 	// Translations
 
-	/// en: 'Sann Jose Animal Clinic'
-	String get appName => 'Sann Jose Animal Clinic';
+	/// en: 'Hi-Zone Laundry'
+	String get appName => 'Hi-Zone Laundry';
 
 	/// en: 'N/A'
 	String get placeholderText => 'N/A';
@@ -345,12 +345,6 @@ class TranslationsNavigationEn {
 	/// en: 'Dashboard'
 	String get dashboard => 'Dashboard';
 
-	/// en: 'Patients'
-	String get patients => 'Patients';
-
-	/// en: 'Appts'
-	String get appointments => 'Appts';
-
 	/// en: 'Products'
 	String get products => 'Products';
 
@@ -384,17 +378,17 @@ class TranslationsNavigationEn {
 	/// en: 'Sales'
 	String get salesHistory => 'Sales';
 
-	/// en: 'Messages'
-	String get messages => 'Messages';
-
 	/// en: 'Organization'
 	String get organization => 'Organization';
 
+	/// en: 'Services'
+	String get services => 'Services';
+
+	/// en: 'Customers'
+	String get customers => 'Customers';
+
 	/// en: 'System'
 	String get system => 'System';
-
-	/// en: 'Patient Config'
-	String get patientConfig => 'Patient Config';
 
 	/// en: 'Account'
 	String get account => 'Account';
@@ -520,7 +514,7 @@ extension on Translations {
 			'auth.signInToContinue' => 'Sign in to continue',
 			'auth.signingIn' => 'Signing in...',
 			'auth.verificationEmailSent' => 'A verification email has been sent to your email address',
-			'common.appName' => 'Sann Jose Animal Clinic',
+			'common.appName' => 'Hi-Zone Laundry',
 			'common.placeholderText' => 'N/A',
 			'common.save' => 'Save',
 			'common.cancel' => 'Cancel',
@@ -586,8 +580,6 @@ extension on Translations {
 			'fields.description' => 'Description',
 			'fields.category' => 'Category',
 			'navigation.dashboard' => 'Dashboard',
-			'navigation.patients' => 'Patients',
-			'navigation.appointments' => 'Appts',
 			'navigation.products' => 'Products',
 			'navigation.inventory' => 'Inventory',
 			'navigation.settings' => 'Settings',
@@ -599,10 +591,10 @@ extension on Translations {
 			'navigation.more' => 'More',
 			'navigation.sales' => 'Cashier',
 			'navigation.salesHistory' => 'Sales',
-			'navigation.messages' => 'Messages',
 			'navigation.organization' => 'Organization',
+			'navigation.services' => 'Services',
+			'navigation.customers' => 'Customers',
 			'navigation.system' => 'System',
-			'navigation.patientConfig' => 'Patient Config',
 			'navigation.account' => 'Account',
 			'navigation.noBranch' => 'No Branch',
 			'sort.sortBy' => 'Sort By',

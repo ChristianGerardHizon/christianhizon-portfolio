@@ -1,4 +1,4 @@
-name: sannjosevet
+name: hizonelaundry
 description: "A template application"
 
 publish_to: 'none' 
@@ -104,7 +104,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icons/
-    - shorebird.yaml
 
 flutter_gen:
   output: lib/src/core/assets/

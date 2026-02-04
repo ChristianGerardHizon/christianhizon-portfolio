@@ -18,6 +18,7 @@ import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../../settings/presentation/controllers/branch_provider.dart';
 import '../../../settings/presentation/controllers/printer_config_provider.dart';
+import '../../../services/domain/sale_service_item.dart';
 import '../../domain/sale.dart';
 import '../../domain/sale_item.dart';
 import '../services/thermal_print_service.dart';
@@ -27,17 +28,15 @@ class _ReceiptPdfPayload {
   _ReceiptPdfPayload({
     required this.receiptNumber,
     required this.createdDate,
-    required this.paymentMethod,
     required this.totalAmount,
-    this.paymentRef,
+    required this.isPaid,
     this.notes,
   });
 
   final String receiptNumber;
   final DateTime createdDate;
-  final String paymentMethod;
   final double totalAmount;
-  final String? paymentRef;
+  final bool isPaid;
   final String? notes;
 }
 
@@ -79,13 +78,8 @@ Future<Uint8List> _buildReceiptPdfBytes(_ReceiptPdfPayload payload) async {
           ),
           pw.SizedBox(height: 4),
           pw.Text(
-            'Payment: ${_formatPaymentMethodLabel(payload.paymentMethod)}',
+            'Status: ${payload.isPaid ? 'Paid' : 'Unpaid'}',
           ),
-          if (payload.paymentRef != null &&
-              payload.paymentRef!.isNotEmpty) ...[
-            pw.SizedBox(height: 4),
-            pw.Text('Reference: ${payload.paymentRef}'),
-          ],
           pw.SizedBox(height: 10),
           pw.Divider(),
           pw.SizedBox(height: 10),
@@ -135,26 +129,12 @@ Future<Uint8List> _buildReceiptPdfBytes(_ReceiptPdfPayload payload) async {
   return await pdf.save();
 }
 
-String _formatPaymentMethodLabel(String method) {
-  switch (method) {
-    case 'cash':
-      return 'Cash';
-    case 'card':
-      return 'Card';
-    case 'bankTransfer':
-      return 'Bank Transfer';
-    case 'check':
-      return 'Check';
-    default:
-      return method;
-  }
-}
-
 /// Shows the receipt dialog after successful checkout.
 Future<void> showReceiptDialog(
   BuildContext context, {
   required Sale sale,
   List<SaleItem> saleItems = const [],
+  List<SaleServiceItem> saleServiceItems = const [],
 }) {
   return showDialog(
     context: context,
@@ -166,6 +146,7 @@ Future<void> showReceiptDialog(
       child: ReceiptDialog(
         sale: sale,
         saleItems: saleItems,
+        saleServiceItems: saleServiceItems,
       ),
     ),
   );
@@ -177,10 +158,12 @@ class ReceiptDialog extends HookConsumerWidget {
     super.key,
     required this.sale,
     this.saleItems = const [],
+    this.saleServiceItems = const [],
   });
 
   final Sale sale;
   final List<SaleItem> saleItems;
+  final List<SaleServiceItem> saleServiceItems;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -288,9 +271,8 @@ class ReceiptDialog extends HookConsumerWidget {
         preload: () async => _ReceiptPdfPayload(
           receiptNumber: sale.receiptNumber,
           createdDate: sale.created ?? DateTime.now(),
-          paymentMethod: sale.paymentMethod,
           totalAmount: sale.totalAmount.toDouble(),
-          paymentRef: sale.paymentRef,
+          isPaid: sale.isPaid,
           notes: sale.notes,
         ),
         generate: _buildReceiptPdfBytes,
@@ -421,47 +403,9 @@ class ReceiptDialog extends HookConsumerWidget {
                     const SizedBox(height: 12),
                     _buildDetailRow(
                       context,
-                      'Payment Method',
-                      _formatPaymentMethod(sale.paymentMethod),
+                      'Payment Status',
+                      sale.isPaid ? 'Paid' : 'Unpaid',
                     ),
-                    if (sale.paymentRef != null &&
-                        sale.paymentRef!.isNotEmpty) ...[
-                      const SizedBox(height: 12),
-                      _buildDetailRow(
-                        context,
-                        'Reference',
-                        sale.paymentRef!,
-                      ),
-                    ],
-                    if (sale.paymentProofUrl != null &&
-                        sale.paymentProofUrl!.isNotEmpty) ...[
-                      const SizedBox(height: 12),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Payment Proof',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          sale.paymentProofUrl!,
-                          height: 150,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => const SizedBox(
-                            height: 50,
-                            child: Center(
-                              child: Icon(Icons.broken_image),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
                     const SizedBox(height: 16),
                     // Prominent total display
                     Container(
@@ -584,6 +528,4 @@ class ReceiptDialog extends HookConsumerWidget {
     );
   }
 
-  String _formatPaymentMethod(String method) =>
-      _formatPaymentMethodLabel(method);
 }

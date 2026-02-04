@@ -24,6 +24,10 @@ This document contains all entities (domain models) in the project with their fi
 | Product | ProductStock | `product_stocks` | Stock lots with expiration |
 | Product | ProductInventory | `product_inventories` | Inventory status view |
 | Product | ProductAdjustment | `product_adjustments` | Stock adjustments |
+| Service | Service | `services` | Laundry services (wash, dry, fold, iron) |
+| Service | ServiceCategory | `service_categories` | Service categories |
+| Service | CartServiceItem | `cart_service_items` | Service items in shopping cart |
+| Service | SaleServiceItem | `sale_service_items` | Service items in completed sale |
 | Appointment | AppointmentSchedule | `appointment_schedules` | Appointment bookings |
 | System | ChangeLog | `change_logs` | Audit trail |
 | System | SystemVersion | `system_versions` | App version tracking |

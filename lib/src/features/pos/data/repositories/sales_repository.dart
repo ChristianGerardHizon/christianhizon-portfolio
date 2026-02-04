@@ -1,5 +1,4 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:http/http.dart' as http;
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -10,6 +9,9 @@ import '../../../../core/foundation/type_defs.dart';
 import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
+import '../../../services/data/dto/sale_service_item_dto.dart';
+import '../../../services/domain/sale_service_item.dart';
+import '../../domain/order_status.dart';
 import '../../domain/sale.dart';
 import '../../domain/sale_item.dart';
 import '../dto/sale_dto.dart';
@@ -21,11 +23,24 @@ abstract class SalesRepository {
   FutureEither<Sale> createSale(
     Sale sale,
     List<SaleItem> items, {
-    http.MultipartFile? paymentProofFile,
+    List<SaleServiceItem> serviceItems,
   });
   FutureEither<Sale> getSale(String id);
   FutureEither<List<Sale>> getSales({String? branchId, DateTime? date});
   FutureEither<List<SaleItem>> getSaleItems(String saleId);
+  FutureEither<List<SaleServiceItem>> getSaleServiceItems(String saleId);
+
+  /// Updates a sale record.
+  FutureEither<Sale> updateSale(String id, Map<String, dynamic> data);
+
+  /// Updates the order status of a sale.
+  FutureEither<Sale> updateOrderStatus(String id, OrderStatus status);
+
+  /// Updates the sale status (completed, refunded, voided).
+  FutureEither<Sale> updateSaleStatus(String id, String status);
+
+  /// Fetches all sales for a specific customer.
+  FutureEither<List<Sale>> getSalesByCustomer(String customerId);
 
   /// Fetches sales with pagination.
   FutureEitherPaginated<Sale> fetchPaginated({
@@ -59,9 +74,11 @@ class SalesRepositoryImpl implements SalesRepository {
   RecordService get _sales => _pb.collection(PocketBaseCollections.sales);
   RecordService get _saleItems =>
       _pb.collection(PocketBaseCollections.saleItems);
+  RecordService get _saleServiceItems =>
+      _pb.collection(PocketBaseCollections.saleServiceItems);
 
   Sale _toSaleEntity(RecordModel record) {
-    return SaleDto.fromRecord(record).toEntity(baseUrl: _pb.baseURL);
+    return SaleDto.fromRecord(record).toEntity();
   }
 
   SaleItem _toSaleItemEntity(RecordModel record) {
@@ -70,49 +87,63 @@ class SalesRepositoryImpl implements SalesRepository {
         .toEntity(productExpanded: productExpanded);
   }
 
+  SaleServiceItem _toSaleServiceItemEntity(RecordModel record) {
+    final serviceExpanded = record.get<RecordModel?>('expand.service');
+    return SaleServiceItemDto.fromRecord(record)
+        .toEntity(serviceExpanded: serviceExpanded);
+  }
+
   @override
   FutureEither<Sale> createSale(
     Sale sale,
     List<SaleItem> items, {
-    http.MultipartFile? paymentProofFile,
+    List<SaleServiceItem> serviceItems = const [],
   }) async {
     return TaskEither.tryCatch(
       () async {
-        // 1. Create Sale Record
+        // 1. Create Sale Record with initial orderStatus: pending
         final saleBody = {
           'receiptNumber': sale.receiptNumber,
           'branch': sale.branchId,
           'cashier': sale.cashierId,
           'totalAmount': sale.totalAmount,
-          'paymentMethod': sale.paymentMethod,
           'status': sale.status,
-          'customer': sale.patient,
+          'orderStatus': sale.orderStatus.name,
+          'isPaid': sale.isPaid,
+          'customer': sale.customerId,
           'customerName': sale.customerName,
-          'paymentRef': sale.paymentRef,
           'notes': sale.notes,
         };
-        final saleRecord = await _sales.create(
-          body: saleBody,
-          files: paymentProofFile != null ? [paymentProofFile] : [],
-        );
+        final saleRecord = await _sales.create(body: saleBody);
 
-        // 2. Create Sale Items
-        // Ideally we should do this in batch or have backend logic, but for now loop
+        // 2. Create Sale Items (products)
         for (final item in items) {
           final itemBody = <String, dynamic>{
-            'sale': saleRecord.id, // Link to created sale
+            'sale': saleRecord.id,
             'product': item.productId,
             'productName': item.productName,
             'quantity': item.quantity,
             'unitPrice': item.unitPrice,
             'subtotal': item.subtotal,
           };
-          // Add lot fields if present (for lot-tracked products)
           if (item.productLotId != null && item.productLotId!.isNotEmpty) {
             itemBody['productLot'] = item.productLotId;
             itemBody['lotNumber'] = item.lotNumber;
           }
           await _saleItems.create(body: itemBody);
+        }
+
+        // 3. Create Sale Service Items
+        for (final item in serviceItems) {
+          final itemBody = <String, dynamic>{
+            'sale': saleRecord.id,
+            'service': item.serviceId,
+            'serviceName': item.serviceName,
+            'quantity': item.quantity,
+            'unitPrice': item.unitPrice,
+            'subtotal': item.subtotal,
+          };
+          await _saleServiceItems.create(body: itemBody);
         }
 
         return _toSaleEntity(saleRecord);
@@ -126,6 +157,46 @@ class SalesRepositoryImpl implements SalesRepository {
     return TaskEither.tryCatch(
       () async {
         final record = await _sales.getOne(id);
+        return _toSaleEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<Sale> updateSale(String id, Map<String, dynamic> data) async {
+    return TaskEither.tryCatch(
+      () async {
+        final record = await _sales.update(id, body: data);
+        return _toSaleEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<Sale> updateOrderStatus(String id, OrderStatus status) async {
+    return TaskEither.tryCatch(
+      () async {
+        final data = <String, dynamic>{
+          'orderStatus': status.name,
+        };
+        // Set pickedUpAt when status changes to pickedUp
+        if (status == OrderStatus.pickedUp) {
+          data['pickedUpAt'] = DateTime.now().toUtc().toIso8601String();
+        }
+        final record = await _sales.update(id, body: data);
+        return _toSaleEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<Sale> updateSaleStatus(String id, String status) async {
+    return TaskEither.tryCatch(
+      () async {
+        final record = await _sales.update(id, body: {'status': status});
         return _toSaleEntity(record);
       },
       Failure.handle,
@@ -239,6 +310,35 @@ class SalesRepositoryImpl implements SalesRepository {
           totalItems: result.totalItems,
           totalPages: result.totalPages,
         );
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<List<Sale>> getSalesByCustomer(String customerId) async {
+    return TaskEither.tryCatch(
+      () async {
+        final records = await _sales.getFullList(
+          filter: 'customer = "$customerId"',
+          sort: '-created',
+        );
+        return records.map(_toSaleEntity).toList();
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<List<SaleServiceItem>> getSaleServiceItems(
+      String saleId) async {
+    return TaskEither.tryCatch(
+      () async {
+        final records = await _saleServiceItems.getFullList(
+          filter: 'sale = "$saleId"',
+          expand: 'service',
+        );
+        return records.map(_toSaleServiceItemEntity).toList();
       },
       Failure.handle,
     ).run();
