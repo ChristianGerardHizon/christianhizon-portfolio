@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../features/dashboard/presentation/controllers/dashboard_kpi_provider.dart';
 import '../../../features/dashboard/presentation/controllers/inventory_alerts_controller.dart';
+import '../../../features/dashboard/presentation/controllers/new_customers_controller.dart';
 import '../../../features/dashboard/presentation/controllers/ready_for_pickup_controller.dart';
 import '../../../features/dashboard/presentation/controllers/todays_sales_controller.dart';
+import '../../../features/dashboard/presentation/controllers/top_selling_controller.dart';
 import '../../../features/dashboard/presentation/widgets/inventory_alerts_section.dart';
 import '../../../features/dashboard/presentation/widgets/kpi_summary_section.dart';
 import '../../../features/dashboard/presentation/widgets/quick_actions_section.dart';
 import '../../../features/dashboard/presentation/widgets/ready_for_pickup_section.dart';
 import '../../../features/dashboard/presentation/widgets/tablet_dashboard_layout.dart';
 import '../../../features/dashboard/presentation/widgets/dashboard_footer.dart';
+import '../../../features/dashboard/presentation/widgets/top_selling_section.dart';
 import '../../../features/settings/presentation/controllers/current_branch_controller.dart';
 import '../../utils/breakpoints.dart';
 
@@ -58,39 +60,55 @@ class DashboardPage extends ConsumerWidget {
           ref.invalidate(inventoryAlertsSummaryProvider);
           ref.invalidate(todaySalesSummaryProvider);
           ref.invalidate(readyForPickupSummaryProvider);
-          ref.invalidate(productsNearExpirationCountProvider);
-          ref.invalidate(productsExpiredCountProvider);
-          ref.invalidate(lowStockProductsCountProvider);
+          ref.invalidate(topSellingProductsProvider);
+          ref.invalidate(topSellingServicesProvider);
+          ref.invalidate(todaysNewCustomersCountProvider);
         },
-        child: const SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.symmetric(vertical: 16),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Dashboard Header
-              _MobileDashboardHeader(),
-              SizedBox(height: 16),
+              const _MobileDashboardHeader(),
+              const SizedBox(height: 16),
 
               // KPI Summary Section
-              KpiSummarySection(),
-              SizedBox(height: 20),
+              const KpiSummarySection(),
+              const SizedBox(height: 20),
 
               // Quick Actions Section
-              QuickActionsSection(),
-              SizedBox(height: 24),
+              const QuickActionsSection(),
+              const SizedBox(height: 24),
+
+              // Top Selling Services Section
+              TopSellingSection(
+                title: 'Top Selling Services',
+                icon: Icons.local_laundry_service,
+                provider: topSellingServicesProvider,
+              ),
+              const SizedBox(height: 24),
+
+              // Top Selling Products Section
+              TopSellingSection(
+                title: 'Top Selling Products',
+                icon: Icons.inventory_2,
+                provider: topSellingProductsProvider,
+              ),
+              const SizedBox(height: 24),
 
               // Ready for Pickup Section
-              ReadyForPickupSection(),
-              SizedBox(height: 24),
+              const ReadyForPickupSection(),
+              const SizedBox(height: 24),
 
               // Inventory Alerts Section
-              InventoryAlertsSection(),
-              SizedBox(height: 24),
+              const InventoryAlertsSection(),
+              const SizedBox(height: 24),
 
               // App Version Footer
-              DashboardFooter(),
-              SizedBox(height: 16),
+              const DashboardFooter(),
+              const SizedBox(height: 16),
             ],
           ),
         ),

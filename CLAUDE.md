@@ -257,6 +257,30 @@ FormBuilderTextField(
 - **All PRs must target the `staging` branch**, not `main`.
 - When creating PRs with `gh pr create`, always use `--base staging`.
 
+### QA Notes
+
+When creating a PR, always include a **QA Notes** section in the PR description that tells testers what to verify. Generate these notes based on the actual changes in the PR:
+
+1. **Analyze the diff** — look at every file changed in the PR
+2. **Identify user-facing changes** — UI updates, new screens, changed behavior, updated URLs/configs
+3. **List specific test steps** — concrete actions a QA tester should perform, not vague descriptions
+4. **Include environment details** — if configs/URLs changed, note what the expected values should be
+5. **Call out regressions to watch for** — areas that might break due to the changes
+
+**Format:**
+```markdown
+## QA Notes
+### What changed
+- Brief summary of each change
+
+### Test steps
+- [ ] Step-by-step actions to verify each change
+- [ ] Include expected results for each step
+
+### Regression risks
+- Areas that could be affected by these changes
+```
+
 ## Testing
 
 Tests are located in `/test` directory mirroring the `lib/` structure.

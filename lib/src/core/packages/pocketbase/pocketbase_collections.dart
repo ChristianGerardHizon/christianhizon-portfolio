@@ -47,6 +47,7 @@ abstract class PocketBaseCollections {
   static const String vwInventoryStatus = 'vw_inventory_status';
   static const String vwSalesDailySummary = 'vw_sales_daily_summary';
   static const String vwTopSellingProducts = 'vw_top_selling_products';
+  static const String vwTopSellingServices = 'vw_top_selling_services';
   static const String vwTodaysSales = 'vw_todays_sales';
   static const String vwLotQuantityTotals = 'vw_lot_quantity_totals';
   static const String vwLowStockProducts = 'vw_low_stock_products';
