@@ -14,6 +14,10 @@ import '../../../features/settings/presentation/widgets/dialogs/printer_config_f
 import '../../../features/pos/presentation/pages/cashier_groups_settings_page.dart';
 import '../../../features/pos/presentation/widgets/cashier_group_detail_panel.dart';
 import '../../../features/settings/presentation/widgets/import_landing_panel.dart';
+import '../../../features/settings/presentation/widgets/quantity_unit_detail_panel.dart';
+import '../../../features/settings/presentation/controllers/quantity_units_controller.dart';
+import '../../../features/settings/presentation/widgets/dialogs/quantity_unit_form_dialog.dart';
+import '../../../features/quantity_units/domain/quantity_unit.dart';
 import '../../utils/breakpoints.dart';
 
 part 'system.routes.g.dart';
@@ -32,6 +36,13 @@ part 'system.routes.g.dart';
           path: 'product-categories',
           routes: [
             TypedGoRoute<ProductCategoryDetailRoute>(path: ':id'),
+          ],
+        ),
+        // Quantity units with detail
+        TypedGoRoute<QuantityUnitsRoute>(
+          path: 'quantity-units',
+          routes: [
+            TypedGoRoute<QuantityUnitDetailRoute>(path: ':id'),
           ],
         ),
         // Printer settings with detail
@@ -115,6 +126,34 @@ class ProductCategoryDetailRoute extends GoRouteData
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ProductCategoryDetailPanel(categoryId: id);
+  }
+}
+
+/// Quantity units management route.
+class QuantityUnitsRoute extends GoRouteData with $QuantityUnitsRoute {
+  const QuantityUnitsRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    // On tablet, handled by shell - return empty
+    if (Breakpoints.isTabletOrLarger(context)) {
+      return const SizedBox.shrink();
+    }
+    // Mobile: Show quantity units list
+    return const _MobileQuantityUnitsListPage();
+  }
+}
+
+/// Quantity unit detail route.
+class QuantityUnitDetailRoute extends GoRouteData
+    with $QuantityUnitDetailRoute {
+  const QuantityUnitDetailRoute({required this.id});
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return QuantityUnitDetailPanel(unitId: id);
   }
 }
 
@@ -223,6 +262,14 @@ class _MobileSystemLandingPage extends StatelessWidget {
             description: 'Manage product category hierarchy',
             color: theme.colorScheme.secondary,
             onTap: () => const ProductCategoriesRoute().go(context),
+          ),
+          const SizedBox(height: 16),
+          _SystemOptionCard(
+            icon: Icons.straighten,
+            title: 'Quantity Units',
+            description: 'Manage units of measurement',
+            color: Colors.cyan,
+            onTap: () => const QuantityUnitsRoute().go(context),
           ),
           const SizedBox(height: 16),
           _SystemOptionCard(
@@ -615,6 +662,122 @@ class _MobileImportPage extends StatelessWidget {
         title: const Text('Import Products'),
       ),
       body: const ImportLandingPanel(),
+    );
+  }
+}
+
+/// Mobile quantity units list page.
+class _MobileQuantityUnitsListPage extends ConsumerWidget {
+  const _MobileQuantityUnitsListPage();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final unitsAsync = ref.watch(quantityUnitsControllerProvider);
+    final controller = ref.read(quantityUnitsControllerProvider.notifier);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Quantity Units'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'quantity_unit_fab',
+        onPressed: () => showQuantityUnitFormDialog(context),
+        tooltip: 'Add Unit',
+        child: const Icon(Icons.add),
+      ),
+      body: unitsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error: ${error.toString()}'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => controller.refresh(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        data: (units) {
+          if (units.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.straighten_outlined,
+                    size: 64,
+                    color: theme.colorScheme.outline,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No quantity units yet',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap + to add a unit',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () => controller.refresh(),
+            child: ListView.builder(
+              itemCount: units.length,
+              itemBuilder: (context, index) {
+                final unit = units[index];
+                return _MobileQuantityUnitListTile(
+                  unit: unit,
+                  onTap: () =>
+                      QuantityUnitDetailRoute(id: unit.id).push(context),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _MobileQuantityUnitListTile extends StatelessWidget {
+  const _MobileQuantityUnitListTile({
+    required this.unit,
+    required this.onTap,
+  });
+
+  final QuantityUnit unit;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundColor: theme.colorScheme.primaryContainer,
+        child: Icon(
+          Icons.straighten,
+          color: theme.colorScheme.onPrimaryContainer,
+        ),
+      ),
+      title: Text(unit.name),
+      subtitle: Text(unit.shortPlural),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: onTap,
     );
   }
 }

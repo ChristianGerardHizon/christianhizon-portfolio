@@ -28,6 +28,16 @@ RouteBase get $systemShellRoute => ShellRouteData.$route(
               ],
             ),
             GoRouteData.$route(
+              path: 'quantity-units',
+              factory: $QuantityUnitsRoute._fromState,
+              routes: [
+                GoRouteData.$route(
+                  path: ':id',
+                  factory: $QuantityUnitDetailRoute._fromState,
+                ),
+              ],
+            ),
+            GoRouteData.$route(
               path: 'printers',
               factory: $PrinterSettingsRoute._fromState,
               routes: [
@@ -121,6 +131,56 @@ mixin $ProductCategoryDetailRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
         '/system/product-categories/${Uri.encodeComponent(_self.id)}',
+      );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $QuantityUnitsRoute on GoRouteData {
+  static QuantityUnitsRoute _fromState(GoRouterState state) =>
+      const QuantityUnitsRoute();
+
+  @override
+  String get location => GoRouteData.$location(
+        '/system/quantity-units',
+      );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $QuantityUnitDetailRoute on GoRouteData {
+  static QuantityUnitDetailRoute _fromState(GoRouterState state) =>
+      QuantityUnitDetailRoute(
+        id: state.pathParameters['id']!,
+      );
+
+  QuantityUnitDetailRoute get _self => this as QuantityUnitDetailRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+        '/system/quantity-units/${Uri.encodeComponent(_self.id)}',
       );
 
   @override

@@ -22,6 +22,11 @@ class EmptySystemState extends StatelessWidget {
           'Select a category',
           'Choose a category from the list to view details',
         ),
+      SystemMode.quantityUnits => (
+          Icons.straighten_outlined,
+          'Select a unit',
+          'Choose a quantity unit from the list to view details',
+        ),
       SystemMode.printers => (
           Icons.print_outlined,
           'Select a printer',

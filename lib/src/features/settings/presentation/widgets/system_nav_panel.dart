@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 /// System management modes.
 enum SystemMode {
   productCategories,
+  quantityUnits,
   printers,
   cashierGroups,
   appearance,
@@ -53,6 +54,15 @@ class SystemNavPanel extends StatelessWidget {
             label: 'Categories',
             isSelected: currentMode == SystemMode.productCategories,
             onTap: () => onModeChanged(SystemMode.productCategories),
+          ),
+          const SizedBox(height: 4),
+          // Quantity Units button
+          _NavButton(
+            icon: Icons.straighten_outlined,
+            selectedIcon: Icons.straighten,
+            label: 'Units',
+            isSelected: currentMode == SystemMode.quantityUnits,
+            onTap: () => onModeChanged(SystemMode.quantityUnits),
           ),
           const SizedBox(height: 4),
           // Printers button

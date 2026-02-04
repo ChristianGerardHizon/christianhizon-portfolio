@@ -10,7 +10,9 @@ import '../../../pos/presentation/widgets/cashier_group_detail_panel.dart';
 import '../../../products/domain/product_category.dart';
 import '../controllers/product_categories_controller.dart';
 import '../controllers/printer_configs_controller.dart';
+import '../controllers/quantity_units_controller.dart';
 import 'empty_system_state.dart';
+import 'dialogs/quantity_unit_form_dialog.dart';
 import 'dialogs/printer_config_form_dialog.dart';
 import 'dialogs/product_category_form_dialog.dart';
 import 'import_landing_panel.dart';
@@ -39,7 +41,9 @@ class TabletSystemLayout extends ConsumerWidget {
 
     // Determine current mode from path
     final SystemMode currentMode;
-    if (path.contains('/printers')) {
+    if (path.contains('/quantity-units')) {
+      currentMode = SystemMode.quantityUnits;
+    } else if (path.contains('/printers')) {
       currentMode = SystemMode.printers;
     } else if (path.contains('/cashier-groups')) {
       currentMode = SystemMode.cashierGroups;
@@ -60,6 +64,8 @@ class TabletSystemLayout extends ConsumerWidget {
             switch (mode) {
               case SystemMode.productCategories:
                 const ProductCategoriesRoute().go(context);
+              case SystemMode.quantityUnits:
+                const QuantityUnitsRoute().go(context);
               case SystemMode.printers:
                 const PrinterSettingsRoute().go(context);
               case SystemMode.cashierGroups:
@@ -98,6 +104,8 @@ class TabletSystemLayout extends ConsumerWidget {
             child: switch (currentMode) {
               SystemMode.productCategories =>
                 _ProductCategoryListWrapper(selectedId: selectedId),
+              SystemMode.quantityUnits =>
+                _QuantityUnitListWrapper(selectedId: selectedId),
               SystemMode.printers =>
                 _PrinterListWrapper(selectedId: selectedId),
               SystemMode.appearance =>
@@ -418,6 +426,113 @@ class _PrinterListWrapper extends ConsumerWidget {
 
   void _showCreateSheet(BuildContext context) {
     showPrinterConfigFormDialog(context);
+  }
+}
+
+/// Wrapper for QuantityUnitListPanel with system-specific navigation.
+class _QuantityUnitListWrapper extends ConsumerWidget {
+  const _QuantityUnitListWrapper({required this.selectedId});
+
+  final String? selectedId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final unitsAsync = ref.watch(quantityUnitsControllerProvider);
+    final controller = ref.read(quantityUnitsControllerProvider.notifier);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Quantity Units'),
+        automaticallyImplyLeading: false,
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'quantity_unit_fab',
+        onPressed: () => showQuantityUnitFormDialog(context),
+        tooltip: 'Add Unit',
+        child: const Icon(Icons.add),
+      ),
+      body: unitsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 16),
+              Text('Error: ${error.toString()}'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => controller.refresh(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        data: (units) {
+          if (units.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.straighten_outlined,
+                    size: 64,
+                    color: theme.colorScheme.outline,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No quantity units yet',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap + to add a unit',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () => controller.refresh(),
+            child: ListView.builder(
+              itemCount: units.length,
+              itemBuilder: (context, index) {
+                final unit = units[index];
+                final isSelected = unit.id == selectedId;
+
+                return ListTile(
+                  selected: isSelected,
+                  selectedTileColor:
+                      theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  leading: CircleAvatar(
+                    backgroundColor: isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.primaryContainer,
+                    child: Icon(
+                      Icons.straighten,
+                      color: isSelected
+                          ? theme.colorScheme.onPrimary
+                          : theme.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                  title: Text(unit.name),
+                  subtitle: Text(unit.shortPlural),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => QuantityUnitDetailRoute(id: unit.id).go(context),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
