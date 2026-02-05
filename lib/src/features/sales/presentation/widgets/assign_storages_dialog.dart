@@ -46,8 +46,8 @@ class AssignStoragesDialog extends HookConsumerWidget {
             if (context.mounted) {
               isSaving.value = false;
               showErrorSnackBar(context,
-                  message:
-                      'Failed to assign storage to ${item.serviceName}');
+                  message: 'Failed to assign storage to ${item.serviceName}',
+                  useRootMessenger: false);
               return;
             }
           }
@@ -60,81 +60,85 @@ class AssignStoragesDialog extends HookConsumerWidget {
       }
     }
 
-    return AlertDialog(
-      title: const Text('Assign Storage Locations'),
-      content: SizedBox(
-        width: 400,
-        child: storagesAsync.when(
-          loading: () => const SizedBox(
-            height: 100,
-            child: Center(child: CircularProgressIndicator()),
-          ),
-          error: (error, _) => Text('Error loading storages: $error'),
-          data: (storages) {
-            if (storages.isEmpty) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  'No storage locations available. You can skip this step and assign storage later.',
-                ),
-              );
-            }
-
-            return SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Assign a storage location to each service item:',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ...serviceItems.map((item) => Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: _ServiceItemStorageRow(
-                          item: item,
-                          storages: storages,
-                          selectedStorageId: assignments.value[item.id],
-                          onChanged: isSaving.value
-                              ? null
-                              : (storageId) {
-                                  final newAssignments =
-                                      Map<String, String?>.from(
-                                          assignments.value);
-                                  newAssignments[item.id] = storageId;
-                                  assignments.value = newAssignments;
-                                },
-                        ),
-                      )),
-                ],
+    return ScaffoldMessenger(
+      child: Builder(
+        builder: (context) => AlertDialog(
+          title: const Text('Assign Storage Locations'),
+          content: SizedBox(
+            width: 400,
+            child: storagesAsync.when(
+              loading: () => const SizedBox(
+                height: 100,
+                child: Center(child: CircularProgressIndicator()),
               ),
-            );
-          },
+              error: (error, _) => Text('Error loading storages: $error'),
+              data: (storages) {
+                if (storages.isEmpty) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      'No storage locations available. You can skip this step and assign storage later.',
+                    ),
+                  );
+                }
+
+                return SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Assign a storage location to each service item:',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ...serviceItems.map((item) => Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: _ServiceItemStorageRow(
+                              item: item,
+                              storages: storages,
+                              selectedStorageId: assignments.value[item.id],
+                              onChanged: isSaving.value
+                                  ? null
+                                  : (storageId) {
+                                      final newAssignments =
+                                          Map<String, String?>.from(
+                                              assignments.value);
+                                      newAssignments[item.id] = storageId;
+                                      assignments.value = newAssignments;
+                                    },
+                            ),
+                          )),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: isSaving.value ? null : () => context.pop(null),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: isSaving.value ? null : () => context.pop(true),
+              child: const Text('Skip'),
+            ),
+            FilledButton(
+              onPressed: isSaving.value ? null : handleAssign,
+              child: isSaving.value
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Assign & Continue'),
+            ),
+          ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: isSaving.value ? null : () => context.pop(null),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: isSaving.value ? null : () => context.pop(true),
-          child: const Text('Skip'),
-        ),
-        FilledButton(
-          onPressed: isSaving.value ? null : handleAssign,
-          child: isSaving.value
-              ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Text('Assign & Continue'),
-        ),
-      ],
     );
   }
 }

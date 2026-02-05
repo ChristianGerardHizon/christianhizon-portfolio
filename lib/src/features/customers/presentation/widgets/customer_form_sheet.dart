@@ -65,6 +65,7 @@ class _CustomerFormSheet extends HookConsumerWidget {
         showSuccessSnackBar(
           context,
           message: isEditing ? 'Customer updated' : 'Customer created',
+          useRootMessenger: false,
         );
         Navigator.of(context).pop(true);
       } else if (context.mounted) {
@@ -73,109 +74,116 @@ class _CustomerFormSheet extends HookConsumerWidget {
           message: isEditing
               ? 'Failed to update customer'
               : 'Failed to create customer',
+          useRootMessenger: false,
         );
       }
     }
 
-    return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.5,
-      maxChildSize: 0.95,
-      expand: false,
-      builder: (context, scrollController) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Column(
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        isEditing ? 'Edit Customer' : 'New Customer',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
-                    ),
-                    const SizedBox(width: 8),
-                    FilledButton(
-                      onPressed: isSaving.value ? null : handleSave,
-                      child: isSaving.value
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Text('Save'),
-                    ),
-                  ],
-                ),
+    return ScaffoldMessenger(
+      child: Builder(
+        builder: (context) => DraggableScrollableSheet(
+          initialChildSize: 0.7,
+          minChildSize: 0.5,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (context, scrollController) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
-              const Divider(height: 1),
-
-              // Form
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.all(16),
-                  child: FormBuilder(
-                    key: formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+              child: Column(
+                children: [
+                  // Header
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
                       children: [
-                        FormBuilderTextField(
-                          name: 'name',
-                          initialValue: customer?.name,
-                          decoration:
-                              const InputDecoration(labelText: 'Name *'),
-                          validator: FormBuilderValidators.required(),
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.words,
+                        Expanded(
+                          child: Text(
+                            isEditing ? 'Edit Customer' : 'New Customer',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
                         ),
-                        const SizedBox(height: 16),
-                        FormBuilderTextField(
-                          name: 'phone',
-                          initialValue: customer?.phone,
-                          decoration:
-                              const InputDecoration(labelText: 'Phone'),
-                          keyboardType: TextInputType.phone,
-                          textInputAction: TextInputAction.next,
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('Cancel'),
                         ),
-                        const SizedBox(height: 16),
-                        FormBuilderTextField(
-                          name: 'address',
-                          initialValue: customer?.address,
-                          decoration:
-                              const InputDecoration(labelText: 'Address'),
-                          maxLines: 2,
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.sentences,
+                        const SizedBox(width: 8),
+                        FilledButton(
+                          onPressed: isSaving.value ? null : handleSave,
+                          child: isSaving.value
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2),
+                                )
+                              : const Text('Save'),
                         ),
-                        const SizedBox(height: 16),
-                        FormBuilderTextField(
-                          name: 'notes',
-                          initialValue: customer?.notes,
-                          decoration: const InputDecoration(labelText: 'Notes'),
-                          maxLines: 3,
-                          textCapitalization: TextCapitalization.sentences,
-                        ),
-                        const SizedBox(height: 32),
                       ],
                     ),
                   ),
-                ),
+                  const Divider(height: 1),
+
+                  // Form
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      padding: const EdgeInsets.all(16),
+                      child: FormBuilder(
+                        key: formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            FormBuilderTextField(
+                              name: 'name',
+                              initialValue: customer?.name,
+                              decoration:
+                                  const InputDecoration(labelText: 'Name *'),
+                              validator: FormBuilderValidators.required(),
+                              textInputAction: TextInputAction.next,
+                              textCapitalization: TextCapitalization.words,
+                            ),
+                            const SizedBox(height: 16),
+                            FormBuilderTextField(
+                              name: 'phone',
+                              initialValue: customer?.phone,
+                              decoration:
+                                  const InputDecoration(labelText: 'Phone'),
+                              keyboardType: TextInputType.phone,
+                              textInputAction: TextInputAction.next,
+                            ),
+                            const SizedBox(height: 16),
+                            FormBuilderTextField(
+                              name: 'address',
+                              initialValue: customer?.address,
+                              decoration:
+                                  const InputDecoration(labelText: 'Address'),
+                              maxLines: 2,
+                              textInputAction: TextInputAction.next,
+                              textCapitalization: TextCapitalization.sentences,
+                            ),
+                            const SizedBox(height: 16),
+                            FormBuilderTextField(
+                              name: 'notes',
+                              initialValue: customer?.notes,
+                              decoration:
+                                  const InputDecoration(labelText: 'Notes'),
+                              maxLines: 3,
+                              textCapitalization: TextCapitalization.sentences,
+                            ),
+                            const SizedBox(height: 32),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
     );
   }
 }

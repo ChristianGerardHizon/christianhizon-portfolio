@@ -46,7 +46,8 @@ class AssignMachinesDialog extends HookConsumerWidget {
             if (context.mounted) {
               isSaving.value = false;
               showErrorSnackBar(context,
-                  message: 'Failed to assign machine to ${item.serviceName}');
+                  message: 'Failed to assign machine to ${item.serviceName}',
+                  useRootMessenger: false);
               return;
             }
           }
@@ -59,81 +60,85 @@ class AssignMachinesDialog extends HookConsumerWidget {
       }
     }
 
-    return AlertDialog(
-      title: const Text('Assign Machines'),
-      content: SizedBox(
-        width: 400,
-        child: machinesAsync.when(
-          loading: () => const SizedBox(
-            height: 100,
-            child: Center(child: CircularProgressIndicator()),
-          ),
-          error: (error, _) => Text('Error loading machines: $error'),
-          data: (machines) {
-            if (machines.isEmpty) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  'No machines available. You can skip this step and assign machines later.',
-                ),
-              );
-            }
-
-            return SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Assign a machine to each service item:',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ...serviceItems.map((item) => Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: _ServiceItemMachineRow(
-                          item: item,
-                          machines: machines,
-                          selectedMachineId: assignments.value[item.id],
-                          onChanged: isSaving.value
-                              ? null
-                              : (machineId) {
-                                  final newAssignments =
-                                      Map<String, String?>.from(
-                                          assignments.value);
-                                  newAssignments[item.id] = machineId;
-                                  assignments.value = newAssignments;
-                                },
-                        ),
-                      )),
-                ],
+    return ScaffoldMessenger(
+      child: Builder(
+        builder: (context) => AlertDialog(
+          title: const Text('Assign Machines'),
+          content: SizedBox(
+            width: 400,
+            child: machinesAsync.when(
+              loading: () => const SizedBox(
+                height: 100,
+                child: Center(child: CircularProgressIndicator()),
               ),
-            );
-          },
+              error: (error, _) => Text('Error loading machines: $error'),
+              data: (machines) {
+                if (machines.isEmpty) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      'No machines available. You can skip this step and assign machines later.',
+                    ),
+                  );
+                }
+
+                return SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Assign a machine to each service item:',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ...serviceItems.map((item) => Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: _ServiceItemMachineRow(
+                              item: item,
+                              machines: machines,
+                              selectedMachineId: assignments.value[item.id],
+                              onChanged: isSaving.value
+                                  ? null
+                                  : (machineId) {
+                                      final newAssignments =
+                                          Map<String, String?>.from(
+                                              assignments.value);
+                                      newAssignments[item.id] = machineId;
+                                      assignments.value = newAssignments;
+                                    },
+                            ),
+                          )),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: isSaving.value ? null : () => context.pop(null),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: isSaving.value ? null : () => context.pop(true),
+              child: const Text('Skip'),
+            ),
+            FilledButton(
+              onPressed: isSaving.value ? null : handleAssign,
+              child: isSaving.value
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Assign & Continue'),
+            ),
+          ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: isSaving.value ? null : () => context.pop(null),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: isSaving.value ? null : () => context.pop(true),
-          child: const Text('Skip'),
-        ),
-        FilledButton(
-          onPressed: isSaving.value ? null : handleAssign,
-          child: isSaving.value
-              ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Text('Assign & Continue'),
-        ),
-      ],
     );
   }
 }

@@ -59,42 +59,47 @@ class _PosGroupFormDialog extends HookConsumerWidget {
       if (error == null && context.mounted) {
         Navigator.of(context).pop(true);
       } else if (context.mounted) {
-        showErrorSnackBar(context, message: error ?? 'Unknown error');
+        showErrorSnackBar(context,
+            message: error ?? 'Unknown error', useRootMessenger: false);
       }
     }
 
-    return AlertDialog(
-      title: Text(isEditing ? 'Edit Group' : 'New Group'),
-      content: FormBuilder(
-        key: formKey,
-        child: FormBuilderTextField(
-          name: 'name',
-          initialValue: initialName,
-          decoration: const InputDecoration(
-            labelText: 'Group Name *',
-            hintText: 'e.g., Detergents, Wash Services',
+    return ScaffoldMessenger(
+      child: Builder(
+        builder: (context) => AlertDialog(
+          title: Text(isEditing ? 'Edit Group' : 'New Group'),
+          content: FormBuilder(
+            key: formKey,
+            child: FormBuilderTextField(
+              name: 'name',
+              initialValue: initialName,
+              decoration: const InputDecoration(
+                labelText: 'Group Name *',
+                hintText: 'e.g., Detergents, Wash Services',
+              ),
+              autofocus: true,
+              validator: FormBuilderValidators.required(),
+              onSubmitted: (_) => handleSave(),
+            ),
           ),
-          autofocus: true,
-          validator: FormBuilderValidators.required(),
-          onSubmitted: (_) => handleSave(),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: isSaving.value ? null : handleSave,
+              child: isSaving.value
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Text(isEditing ? 'Save' : 'Create'),
+            ),
+          ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: isSaving.value ? null : handleSave,
-          child: isSaving.value
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text(isEditing ? 'Save' : 'Create'),
-        ),
-      ],
     );
   }
 }

@@ -27,9 +27,25 @@ Future<void> showCheckoutDialog(BuildContext context) {
     builder: (context) => const Dialog(
       insetPadding: EdgeInsets.all(8),
       clipBehavior: Clip.antiAlias,
-      child: CheckoutDialog(),
+      child: _CheckoutDialogScaffold(),
     ),
   );
+}
+
+/// Wraps [CheckoutDialog] in a [ScaffoldMessenger] + [Scaffold] so that
+/// snackbars rendered inside the dialog appear above it.
+class _CheckoutDialogScaffold extends StatelessWidget {
+  const _CheckoutDialogScaffold();
+
+  @override
+  Widget build(BuildContext context) {
+    return const ScaffoldMessenger(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: CheckoutDialog(),
+      ),
+    );
+  }
 }
 
 /// Checkout dialog for completing a sale.
@@ -100,7 +116,8 @@ class CheckoutDialog extends HookConsumerWidget {
 
       result.fold(
         (failure) {
-          showErrorSnackBar(context, message: failure.message);
+          showErrorSnackBar(context,
+              message: failure.messageString, useRootMessenger: false);
         },
         (sale) {
           // Convert cart items to sale items for receipt
@@ -176,9 +193,8 @@ class CheckoutDialog extends HookConsumerWidget {
                       ),
                     ),
                     FilledButton(
-                      onPressed: isSaving.value || cartIsEmpty
-                          ? null
-                          : handleCheckout,
+                      onPressed:
+                          isSaving.value || cartIsEmpty ? null : handleCheckout,
                       child: isSaving.value
                           ? const SizedBox(
                               height: 20,
@@ -276,8 +292,8 @@ class CheckoutDialog extends HookConsumerWidget {
     double total,
   ) {
     final theme = Theme.of(context);
-    final totalQuantity =
-        items.fold<int>(0, (sum, item) => sum + item.quantity.toInt()) +
+    final totalQuantity = items.fold<int>(
+            0, (sum, item) => sum + item.quantity.toInt()) +
         serviceItems.fold<int>(0, (sum, item) => sum + item.quantity.toInt());
 
     return Card(
@@ -523,8 +539,8 @@ class _CustomerSelectionCard extends HookConsumerWidget {
                   icon: const Icon(Icons.add, size: 18),
                   label: const Text('Quick Add'),
                   onPressed: () async {
-                    final customer = await _showQuickAddCustomerDialog(
-                      context, ref);
+                    final customer =
+                        await _showQuickAddCustomerDialog(context, ref);
                     if (customer != null) {
                       selectedCustomer.value = customer;
                       searchController.text = customer.name;
@@ -651,8 +667,7 @@ class _CustomerSelectionCard extends HookConsumerWidget {
                                 child: Icon(
                                   Icons.person,
                                   size: 16,
-                                  color:
-                                      theme.colorScheme.onPrimaryContainer,
+                                  color: theme.colorScheme.onPrimaryContainer,
                                 ),
                               ),
                               title: Text(customer.name),
@@ -717,59 +732,64 @@ class _QuickAddCustomerDialog extends HookConsumerWidget {
         showErrorSnackBar(
           context,
           message: 'Failed to create customer',
+          useRootMessenger: false,
         );
       }
     }
 
-    return AlertDialog(
-      title: const Text('Quick Add Customer'),
-      content: FormBuilder(
-        key: formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            FormBuilderTextField(
-              name: 'name',
-              decoration: const InputDecoration(
-                labelText: 'Name *',
-                border: OutlineInputBorder(),
-              ),
-              validator: FormBuilderValidators.required(),
-              autofocus: true,
-              textInputAction: TextInputAction.next,
-              textCapitalization: TextCapitalization.words,
+    return ScaffoldMessenger(
+      child: Builder(
+        builder: (context) => AlertDialog(
+          title: const Text('Quick Add Customer'),
+          content: FormBuilder(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FormBuilderTextField(
+                  name: 'name',
+                  decoration: const InputDecoration(
+                    labelText: 'Name *',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.required(),
+                  autofocus: true,
+                  textInputAction: TextInputAction.next,
+                  textCapitalization: TextCapitalization.words,
+                ),
+                const SizedBox(height: 16),
+                FormBuilderTextField(
+                  name: 'phone',
+                  decoration: const InputDecoration(
+                    labelText: 'Phone *',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: FormBuilderValidators.required(),
+                  keyboardType: TextInputType.phone,
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) => handleSave(),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            FormBuilderTextField(
-              name: 'phone',
-              decoration: const InputDecoration(
-                labelText: 'Phone *',
-                border: OutlineInputBorder(),
-              ),
-              validator: FormBuilderValidators.required(),
-              keyboardType: TextInputType.phone,
-              textInputAction: TextInputAction.done,
-              onSubmitted: (_) => handleSave(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: isSaving.value ? null : handleSave,
+              child: isSaving.value
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Save'),
             ),
           ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: isSaving.value ? null : handleSave,
-          child: isSaving.value
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Text('Save'),
-        ),
-      ],
     );
   }
 }

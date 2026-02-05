@@ -60,6 +60,7 @@ class _ServiceCategoryFormDialog extends HookConsumerWidget {
               message: isEditing
                   ? 'Failed to update category'
                   : 'Failed to create category',
+              useRootMessenger: false,
             );
           }
         },
@@ -68,8 +69,8 @@ class _ServiceCategoryFormDialog extends HookConsumerWidget {
           if (context.mounted) {
             showSuccessSnackBar(
               context,
-              message:
-                  isEditing ? 'Category updated' : 'Category created',
+              message: isEditing ? 'Category updated' : 'Category created',
+              useRootMessenger: false,
             );
             Navigator.of(context).pop(true);
           }
@@ -77,37 +78,41 @@ class _ServiceCategoryFormDialog extends HookConsumerWidget {
       );
     }
 
-    return AlertDialog(
-      title: Text(isEditing ? 'Edit Category' : 'New Category'),
-      content: FormBuilder(
-        key: formKey,
-        child: FormBuilderTextField(
-          name: 'name',
-          initialValue: category?.name,
-          decoration: const InputDecoration(
-            labelText: 'Category Name *',
-            border: OutlineInputBorder(),
+    return ScaffoldMessenger(
+      child: Builder(
+        builder: (context) => AlertDialog(
+          title: Text(isEditing ? 'Edit Category' : 'New Category'),
+          content: FormBuilder(
+            key: formKey,
+            child: FormBuilderTextField(
+              name: 'name',
+              initialValue: category?.name,
+              decoration: const InputDecoration(
+                labelText: 'Category Name *',
+                border: OutlineInputBorder(),
+              ),
+              validator: FormBuilderValidators.required(),
+              autofocus: true,
+            ),
           ),
-          validator: FormBuilderValidators.required(),
-          autofocus: true,
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: isSaving.value ? null : handleSave,
+              child: isSaving.value
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Save'),
+            ),
+          ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: isSaving.value ? null : handleSave,
-          child: isSaving.value
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Text('Save'),
-        ),
-      ],
     );
   }
 }
