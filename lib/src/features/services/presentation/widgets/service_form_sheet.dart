@@ -79,6 +79,7 @@ class _ServiceFormDialog extends HookConsumerWidget {
         showSuccessSnackBar(
           context,
           message: isEditing ? 'Service updated' : 'Service created',
+          useRootMessenger: false,
         );
         Navigator.of(context).pop(true);
       } else if (context.mounted) {
@@ -87,292 +88,303 @@ class _ServiceFormDialog extends HookConsumerWidget {
           message: isEditing
               ? 'Failed to update service'
               : 'Failed to create service',
+          useRootMessenger: false,
         );
       }
     }
 
-    return Dialog(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 500, maxHeight: 600),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header
-              Row(
+    return ScaffoldMessenger(
+      child: Builder(
+        builder: (context) => Dialog(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 500, maxHeight: 600),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: Text(
-                      isEditing ? 'Edit Service' : 'New Service',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close),
-                  ),
-                ],
-              ),
-              const Divider(),
-              const SizedBox(height: 8),
-
-              // Form
-              Flexible(
-                child: SingleChildScrollView(
-                  child: FormBuilder(
-                    key: formKey,
-                    initialValue: {
-                      'name': service?.name ?? '',
-                      'description': service?.description ?? '',
-                      // 'category' is set on the dropdown after validating it exists
-                      'price': service?.price.toString() ?? '0',
-                      'isVariablePrice': service?.isVariablePrice ?? false,
-                      'weightBased': service?.weightBased ?? false,
-                      'showPrompt': service?.showPrompt ?? false,
-                      'maxQuantity': service?.maxQuantity?.toString() ?? '',
-                      'allowExcess': service?.allowExcess ?? false,
-                      // 'quantityUnit' is set on the dropdown after validating it exists
-                      'estimatedDuration':
-                          service?.estimatedDuration?.toString() ?? '',
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        FormBuilderTextField(
-                          name: 'name',
-                          decoration:
-                              const InputDecoration(labelText: 'Name *'),
-                          validator: FormBuilderValidators.required(),
-                          textInputAction: TextInputAction.next,
+                  // Header
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          isEditing ? 'Edit Service' : 'New Service',
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        const SizedBox(height: 16),
-                        FormBuilderTextField(
-                          name: 'description',
-                          decoration:
-                              const InputDecoration(labelText: 'Description'),
-                          maxLines: 3,
-                          textInputAction: TextInputAction.next,
-                        ),
-                        const SizedBox(height: 16),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                  const Divider(),
+                  const SizedBox(height: 8),
 
-                        // Category dropdown with add button
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  // Form
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: FormBuilder(
+                        key: formKey,
+                        initialValue: {
+                          'name': service?.name ?? '',
+                          'description': service?.description ?? '',
+                          // 'category' is set on the dropdown after validating it exists
+                          'price': service?.price.toString() ?? '0',
+                          'isVariablePrice': service?.isVariablePrice ?? false,
+                          'weightBased': service?.weightBased ?? false,
+                          'showPrompt': service?.showPrompt ?? false,
+                          'maxQuantity': service?.maxQuantity?.toString() ?? '',
+                          'allowExcess': service?.allowExcess ?? false,
+                          // 'quantityUnit' is set on the dropdown after validating it exists
+                          'estimatedDuration':
+                              service?.estimatedDuration?.toString() ?? '',
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Expanded(
-                              child: categoriesAsync.when(
-                                data: (categories) {
-                                  // Validate initial value exists in items
-                                  final categoryIds = categories.map((c) => c.id).toSet();
-                                  final initialCategory = service?.categoryId;
-                                  final validInitialCategory = initialCategory != null && categoryIds.contains(initialCategory)
-                                      ? initialCategory
-                                      : null;
+                            FormBuilderTextField(
+                              name: 'name',
+                              decoration:
+                                  const InputDecoration(labelText: 'Name *'),
+                              validator: FormBuilderValidators.required(),
+                              textInputAction: TextInputAction.next,
+                            ),
+                            const SizedBox(height: 16),
+                            FormBuilderTextField(
+                              name: 'description',
+                              decoration: const InputDecoration(
+                                  labelText: 'Description'),
+                              maxLines: 3,
+                              textInputAction: TextInputAction.next,
+                            ),
+                            const SizedBox(height: 16),
 
-                                  return FormBuilderDropdown<String>(
-                                    name: 'category',
-                                    initialValue: validInitialCategory,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Category',
+                            // Category dropdown with add button
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: categoriesAsync.when(
+                                    data: (categories) {
+                                      // Validate initial value exists in items
+                                      final categoryIds =
+                                          categories.map((c) => c.id).toSet();
+                                      final initialCategory =
+                                          service?.categoryId;
+                                      final validInitialCategory =
+                                          initialCategory != null &&
+                                                  categoryIds
+                                                      .contains(initialCategory)
+                                              ? initialCategory
+                                              : null;
+
+                                      return FormBuilderDropdown<String>(
+                                        name: 'category',
+                                        initialValue: validInitialCategory,
+                                        decoration: const InputDecoration(
+                                          labelText: 'Category',
+                                        ),
+                                        items: categories
+                                            .map((c) => DropdownMenuItem(
+                                                  value: c.id,
+                                                  child: Text(c.name),
+                                                ))
+                                            .toList(),
+                                      );
+                                    },
+                                    loading: () => FormBuilderDropdown<String>(
+                                      name: 'category',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Category',
+                                      ),
+                                      items: const [],
                                     ),
-                                    items: categories
-                                        .map((c) => DropdownMenuItem(
-                                              value: c.id,
-                                              child: Text(c.name),
-                                            ))
-                                        .toList(),
-                                  );
-                                },
-                                loading: () =>
-                                    FormBuilderDropdown<String>(
-                                  name: 'category',
-                                  decoration: const InputDecoration(
-                                    labelText: 'Category',
+                                    error: (_, __) =>
+                                        FormBuilderDropdown<String>(
+                                      name: 'category',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Category',
+                                      ),
+                                      items: const [],
+                                    ),
                                   ),
-                                  items: const [],
                                 ),
-                                error: (_, __) =>
-                                    FormBuilderDropdown<String>(
-                                  name: 'category',
-                                  decoration: const InputDecoration(
-                                    labelText: 'Category',
+                                const SizedBox(width: 8),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: IconButton(
+                                    icon: const Icon(Icons.add),
+                                    tooltip: 'Add Category',
+                                    onPressed: () =>
+                                        _showAddCategory(context, ref),
                                   ),
-                                  items: const [],
                                 ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+
+                            FormBuilderTextField(
+                              name: 'price',
+                              decoration: const InputDecoration(
+                                labelText: 'Price',
+                                prefixText: '₱ ',
+                              ),
+                              keyboardType: TextInputType.number,
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.numeric(),
+                              ]),
+                              textInputAction: TextInputAction.next,
+                            ),
+                            const SizedBox(height: 16),
+
+                            FormBuilderSwitch(
+                              name: 'isVariablePrice',
+                              title: const Text('Variable Price'),
+                              subtitle: const Text(
+                                'Price will be entered at the cashier',
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: IconButton(
-                                icon: const Icon(Icons.add),
-                                tooltip: 'Add Category',
-                                onPressed: () =>
-                                    _showAddCategory(context, ref),
+                            const SizedBox(height: 8),
+
+                            FormBuilderSwitch(
+                              name: 'weightBased',
+                              title: const Text('Weight Based'),
+                              subtitle: const Text(
+                                'Pricing depends on weight',
                               ),
+                            ),
+                            const SizedBox(height: 8),
+
+                            FormBuilderSwitch(
+                              name: 'showPrompt',
+                              title: const Text('Show Quantity Prompt'),
+                              subtitle: const Text(
+                                'Prompt for quantity when adding to cart',
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            FormBuilderTextField(
+                              name: 'maxQuantity',
+                              decoration: const InputDecoration(
+                                labelText: 'Max Quantity (optional)',
+                                hintText: 'Leave empty for unlimited',
+                              ),
+                              keyboardType: TextInputType.number,
+                              validator: (value) {
+                                // Only validate if a value is provided
+                                if (value == null || value.isEmpty) {
+                                  return null; // Optional field, no error
+                                }
+                                final intValue = int.tryParse(value);
+                                if (intValue == null) {
+                                  return 'Must be a valid number';
+                                }
+                                if (intValue < 1) {
+                                  return 'Must be at least 1';
+                                }
+                                return null;
+                              },
+                              textInputAction: TextInputAction.next,
+                            ),
+                            const SizedBox(height: 8),
+
+                            FormBuilderSwitch(
+                              name: 'allowExcess',
+                              title: const Text('Allow Excess Quantity'),
+                              subtitle: const Text(
+                                'Split into multiple cart items when quantity exceeds max',
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Quantity Unit dropdown
+                            quantityUnitsAsync.when(
+                              data: (units) {
+                                // Validate initial value exists in items
+                                final unitIds = units.map((u) => u.id).toSet();
+                                final initialUnit = service?.quantityUnitId;
+                                final validInitialUnit = initialUnit != null &&
+                                        unitIds.contains(initialUnit)
+                                    ? initialUnit
+                                    : null;
+
+                                return FormBuilderDropdown<String>(
+                                  name: 'quantityUnit',
+                                  initialValue: validInitialUnit,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Quantity Unit',
+                                    hintText: 'e.g., kg, pcs, loads',
+                                  ),
+                                  items: units
+                                      .map((u) => DropdownMenuItem(
+                                            value: u.id,
+                                            child: Text(u.displayName),
+                                          ))
+                                      .toList(),
+                                );
+                              },
+                              loading: () => FormBuilderDropdown<String>(
+                                name: 'quantityUnit',
+                                decoration: const InputDecoration(
+                                  labelText: 'Quantity Unit',
+                                ),
+                                items: const [],
+                              ),
+                              error: (_, __) => FormBuilderDropdown<String>(
+                                name: 'quantityUnit',
+                                decoration: const InputDecoration(
+                                  labelText: 'Quantity Unit',
+                                ),
+                                items: const [],
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            FormBuilderTextField(
+                              name: 'estimatedDuration',
+                              decoration: const InputDecoration(
+                                labelText: 'Estimated Duration (minutes)',
+                                suffixText: 'min',
+                              ),
+                              keyboardType: TextInputType.number,
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.numeric(),
+                              ]),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
-
-                        FormBuilderTextField(
-                          name: 'price',
-                          decoration: const InputDecoration(
-                            labelText: 'Price',
-                            prefixText: '₱ ',
-                          ),
-                          keyboardType: TextInputType.number,
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.numeric(),
-                          ]),
-                          textInputAction: TextInputAction.next,
-                        ),
-                        const SizedBox(height: 16),
-
-                        FormBuilderSwitch(
-                          name: 'isVariablePrice',
-                          title: const Text('Variable Price'),
-                          subtitle: const Text(
-                            'Price will be entered at the cashier',
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-
-                        FormBuilderSwitch(
-                          name: 'weightBased',
-                          title: const Text('Weight Based'),
-                          subtitle: const Text(
-                            'Pricing depends on weight',
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-
-                        FormBuilderSwitch(
-                          name: 'showPrompt',
-                          title: const Text('Show Quantity Prompt'),
-                          subtitle: const Text(
-                            'Prompt for quantity when adding to cart',
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        FormBuilderTextField(
-                          name: 'maxQuantity',
-                          decoration: const InputDecoration(
-                            labelText: 'Max Quantity (optional)',
-                            hintText: 'Leave empty for unlimited',
-                          ),
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            // Only validate if a value is provided
-                            if (value == null || value.isEmpty) {
-                              return null; // Optional field, no error
-                            }
-                            final intValue = int.tryParse(value);
-                            if (intValue == null) {
-                              return 'Must be a valid number';
-                            }
-                            if (intValue < 1) {
-                              return 'Must be at least 1';
-                            }
-                            return null;
-                          },
-                          textInputAction: TextInputAction.next,
-                        ),
-                        const SizedBox(height: 8),
-
-                        FormBuilderSwitch(
-                          name: 'allowExcess',
-                          title: const Text('Allow Excess Quantity'),
-                          subtitle: const Text(
-                            'Split into multiple cart items when quantity exceeds max',
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Quantity Unit dropdown
-                        quantityUnitsAsync.when(
-                          data: (units) {
-                            // Validate initial value exists in items
-                            final unitIds = units.map((u) => u.id).toSet();
-                            final initialUnit = service?.quantityUnitId;
-                            final validInitialUnit = initialUnit != null && unitIds.contains(initialUnit)
-                                ? initialUnit
-                                : null;
-
-                            return FormBuilderDropdown<String>(
-                              name: 'quantityUnit',
-                              initialValue: validInitialUnit,
-                              decoration: const InputDecoration(
-                                labelText: 'Quantity Unit',
-                                hintText: 'e.g., kg, pcs, loads',
-                              ),
-                              items: units
-                                  .map((u) => DropdownMenuItem(
-                                        value: u.id,
-                                        child: Text(u.displayName),
-                                      ))
-                                  .toList(),
-                            );
-                          },
-                          loading: () => FormBuilderDropdown<String>(
-                            name: 'quantityUnit',
-                            decoration: const InputDecoration(
-                              labelText: 'Quantity Unit',
-                            ),
-                            items: const [],
-                          ),
-                          error: (_, __) => FormBuilderDropdown<String>(
-                            name: 'quantityUnit',
-                            decoration: const InputDecoration(
-                              labelText: 'Quantity Unit',
-                            ),
-                            items: const [],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        FormBuilderTextField(
-                          name: 'estimatedDuration',
-                          decoration: const InputDecoration(
-                            labelText: 'Estimated Duration (minutes)',
-                            suffixText: 'min',
-                          ),
-                          keyboardType: TextInputType.number,
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.numeric(),
-                          ]),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
-              // Actions
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Cancel'),
-                  ),
-                  const SizedBox(width: 8),
-                  FilledButton(
-                    onPressed: isSaving.value ? null : handleSave,
-                    child: isSaving.value
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text('Save'),
+                  // Actions
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('Cancel'),
+                      ),
+                      const SizedBox(width: 8),
+                      FilledButton(
+                        onPressed: isSaving.value ? null : handleSave,
+                        child: isSaving.value
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Text('Save'),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),

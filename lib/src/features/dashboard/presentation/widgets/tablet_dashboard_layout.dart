@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../settings/presentation/controllers/current_branch_controller.dart';
-import '../controllers/top_selling_controller.dart';
 import 'dashboard_footer.dart';
 import 'inventory_alerts_section.dart';
+import 'kanban_board_section.dart';
 import 'kpi_summary_section.dart';
 import 'quick_actions_section.dart';
-import 'ready_for_pickup_section.dart';
-import 'top_selling_section.dart';
 
 /// Single-pane tablet layout for the dashboard.
 ///
@@ -55,7 +53,7 @@ class TabletDashboardLayout extends HookConsumerWidget {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    branch.displayName ?? branch.name,
+                    branch.name,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.outline,
                     ),
@@ -73,24 +71,8 @@ class TabletDashboardLayout extends HookConsumerWidget {
           const KpiSummarySection(),
           const SizedBox(height: 24),
 
-          // Top Selling Services Section
-          TopSellingSection(
-            title: 'Top Selling Services',
-            icon: Icons.local_laundry_service,
-            provider: topSellingServicesProvider,
-          ),
-          const SizedBox(height: 24),
-
-          // Top Selling Products Section
-          TopSellingSection(
-            title: 'Top Selling Products',
-            icon: Icons.inventory_2,
-            provider: topSellingProductsProvider,
-          ),
-          const SizedBox(height: 24),
-
-          // Ready for Pickup Section
-          const ReadyForPickupSection(),
+          // Order Board (Kanban)
+          const KanbanBoardSection(),
           const SizedBox(height: 24),
 
           // Inventory Alerts Section

@@ -9,11 +9,16 @@ import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../../pos/data/repositories/sales_repository.dart';
 import '../../../pos/domain/order_status.dart';
+import '../../../pos/domain/order_status_history.dart';
 import '../../../pos/domain/payment_type.dart';
 import '../../../pos/domain/sale.dart';
 import '../../../pos/presentation/payments_controller.dart';
+import '../controllers/order_status_history_provider.dart';
 import '../controllers/sale_items_provider.dart';
 import '../controllers/sale_provider.dart';
+import '../controllers/sale_service_items_provider.dart';
+import '../widgets/assign_machines_dialog.dart';
+import '../widgets/assign_storages_dialog.dart';
 import '../widgets/record_payment_sheet.dart';
 import '../widgets/sale_highlight_banner.dart';
 import '../widgets/sale_status_chip.dart';
@@ -100,7 +105,10 @@ class _SaleDetailContent extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final saleItemsAsync = ref.watch(saleItemsProvider(sale.id));
+    final serviceItemsAsync = ref.watch(saleServiceItemsProvider(sale.id));
     final paymentsAsync = ref.watch(salePaymentsProvider(sale.id));
+    final statusHistoryAsync =
+        ref.watch(orderStatusHistoryProvider(sale.id));
     final dateFormat = DateFormat('MMM dd, yyyy hh:mm a');
     final currencyFormat = NumberFormat.currency(symbol: '₱');
 
@@ -129,11 +137,15 @@ class _SaleDetailContent extends HookConsumerWidget {
         onRefresh: () async {
           ref.invalidate(saleProvider(sale.id));
           ref.invalidate(saleItemsProvider(sale.id));
+          ref.invalidate(saleServiceItemsProvider(sale.id));
           ref.invalidate(salePaymentsProvider(sale.id));
+          ref.invalidate(orderStatusHistoryProvider(sale.id));
           await Future.wait([
             ref.read(saleProvider(sale.id).future),
             ref.read(saleItemsProvider(sale.id).future),
+            ref.read(saleServiceItemsProvider(sale.id).future),
             ref.read(salePaymentsProvider(sale.id).future),
+            ref.read(orderStatusHistoryProvider(sale.id).future),
           ]);
         },
         child: SingleChildScrollView(
@@ -209,6 +221,11 @@ class _SaleDetailContent extends HookConsumerWidget {
               _buildOrderStatusCard(context, ref),
               const SizedBox(height: 16),
 
+              // Status History Timeline
+              _buildStatusHistoryCard(
+                  context, statusHistoryAsync, dateFormat),
+              const SizedBox(height: 16),
+
               // Items Section
               Text(
                 'Items',
@@ -253,6 +270,96 @@ class _SaleDetailContent extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
 
+              // Service Items Section
+              serviceItemsAsync.when(
+                loading: () => const SizedBox.shrink(),
+                error: (_, __) => const SizedBox.shrink(),
+                data: (serviceItems) {
+                  if (serviceItems.isEmpty) return const SizedBox.shrink();
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Service Items',
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 8),
+                      Card(
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: serviceItems.length,
+                          separatorBuilder: (_, __) =>
+                              const Divider(height: 1),
+                          itemBuilder: (context, index) {
+                            final item = serviceItems[index];
+                            return ListTile(
+                              title: Text(item.serviceName),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${currencyFormat.format(item.unitPrice)} x ${item.quantity}',
+                                  ),
+                                  if (item.machineName != null &&
+                                      item.machineName!.isNotEmpty)
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.local_laundry_service,
+                                          size: 14,
+                                          color: theme
+                                              .colorScheme.onSurfaceVariant,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          'Machine: ${item.machineName}',
+                                          style: theme.textTheme.bodySmall
+                                              ?.copyWith(
+                                            color: theme.colorScheme
+                                                .onSurfaceVariant,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  if (item.storageName != null &&
+                                      item.storageName!.isNotEmpty)
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.inventory_2,
+                                          size: 14,
+                                          color: theme
+                                              .colorScheme.onSurfaceVariant,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          'Storage: ${item.storageName}',
+                                          style: theme.textTheme.bodySmall
+                                              ?.copyWith(
+                                            color: theme.colorScheme
+                                                .onSurfaceVariant,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                              trailing: Text(
+                                currencyFormat.format(item.subtotal),
+                                style: theme.textTheme.titleSmall,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  );
+                },
+              ),
+
               // Total Card
               Card(
                 color: theme.colorScheme.primaryContainer,
@@ -292,6 +399,7 @@ class _SaleDetailContent extends HookConsumerWidget {
     final isUpdating = useState(false);
     final isRefunded = sale.status.toLowerCase() == 'refunded';
     final isVoided = sale.status.toLowerCase() == 'voided';
+    final isPending = sale.status.toLowerCase() == 'pending';
 
     // Don't show actions for voided sales
     if (isVoided) {
@@ -309,7 +417,7 @@ class _SaleDetailContent extends HookConsumerWidget {
           content: Text(
             newStatus == 'refunded'
                 ? 'Are you sure you want to mark this sale as refunded? This will update the sale status.'
-                : 'Are you sure you want to remove the refund status and mark this sale as completed?',
+                : 'Are you sure you want to remove the refund status and mark this sale as $newStatus?',
           ),
           actions: [
             TextButton(
@@ -378,13 +486,23 @@ class _SaleDetailContent extends HookConsumerWidget {
               decoration: BoxDecoration(
                 color: isRefunded
                     ? Colors.orange.withValues(alpha: 0.1)
-                    : Colors.green.withValues(alpha: 0.1),
+                    : isPending
+                        ? Colors.amber.withValues(alpha: 0.1)
+                        : Colors.green.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
-                isRefunded ? 'Refunded' : 'Completed',
+                isRefunded
+                    ? 'Refunded'
+                    : isPending
+                        ? 'Pending'
+                        : 'Completed',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: isRefunded ? Colors.orange : Colors.green,
+                  color: isRefunded
+                      ? Colors.orange
+                      : isPending
+                          ? Colors.amber.shade700
+                          : Colors.green,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -404,7 +522,11 @@ class _SaleDetailContent extends HookConsumerWidget {
                 if (value == 'refund') {
                   updateSaleStatus('refunded');
                 } else if (value == 'unrefund') {
-                  updateSaleStatus('completed');
+                  final revertStatus =
+                      sale.orderStatus == OrderStatus.pickedUp
+                          ? 'completed'
+                          : 'pending';
+                  updateSaleStatus(revertStatus);
                 }
               },
               itemBuilder: (context) => [
@@ -441,6 +563,29 @@ class _SaleDetailContent extends HookConsumerWidget {
     final isUpdating = useState(false);
 
     Future<void> updateOrderStatus(OrderStatus status) async {
+      // Show assignment dialogs for processing/ready transitions
+      if (status == OrderStatus.processing) {
+        final serviceItems =
+            ref.read(saleServiceItemsProvider(sale.id)).value ?? [];
+        if (serviceItems.isNotEmpty) {
+          final result = await showAssignMachinesDialog(
+            context,
+            serviceItems: serviceItems,
+          );
+          if (result == null || !context.mounted) return;
+        }
+      } else if (status == OrderStatus.ready) {
+        final serviceItems =
+            ref.read(saleServiceItemsProvider(sale.id)).value ?? [];
+        if (serviceItems.isNotEmpty) {
+          final result = await showAssignStoragesDialog(
+            context,
+            serviceItems: serviceItems,
+          );
+          if (result == null || !context.mounted) return;
+        }
+      }
+
       isUpdating.value = true;
       final repo = ref.read(salesRepositoryProvider);
       final result = await repo.updateOrderStatus(sale.id, status);
@@ -454,6 +599,7 @@ class _SaleDetailContent extends HookConsumerWidget {
         },
         (_) {
           ref.invalidate(saleProvider(sale.id));
+          ref.invalidate(saleServiceItemsProvider(sale.id));
         },
       );
     }
@@ -572,6 +718,107 @@ class _SaleDetailContent extends HookConsumerWidget {
       case OrderStatus.pickedUp:
         return Icons.local_shipping;
     }
+  }
+
+  Widget _buildStatusHistoryCard(
+    BuildContext context,
+    AsyncValue<List<OrderStatusHistory>> historyAsync,
+    DateFormat dateFormat,
+  ) {
+    final theme = Theme.of(context);
+
+    return historyAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (history) {
+        if (history.isEmpty) return const SizedBox.shrink();
+
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.history,
+                      color: theme.colorScheme.primary,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Status History',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: history.length,
+                  itemBuilder: (context, index) {
+                    final entry = history[index];
+                    final isOrderStatus =
+                        entry.statusType == StatusType.orderStatus;
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CircleAvatar(
+                            radius: 16,
+                            backgroundColor: isOrderStatus
+                                ? Colors.blue.withValues(alpha: 0.1)
+                                : Colors.purple.withValues(alpha: 0.1),
+                            child: Icon(
+                              isOrderStatus
+                                  ? Icons.local_shipping
+                                  : Icons.receipt_long,
+                              size: 16,
+                              color: isOrderStatus
+                                  ? Colors.blue
+                                  : Colors.purple,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  entry.description ?? '',
+                                  style: theme.textTheme.bodyMedium,
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  entry.created != null
+                                      ? dateFormat.format(entry.created!)
+                                      : '',
+                                  style:
+                                      theme.textTheme.bodySmall?.copyWith(
+                                    color: theme
+                                        .colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildPaymentCard(

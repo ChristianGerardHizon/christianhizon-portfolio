@@ -228,6 +228,34 @@ FormBuilderTextField(
 - Use `Failure` class from `core/foundation/failure.dart`
 - Return `Either<Failure, T>` for operations that can fail (using fpdart)
 
+### Snackbars in Dialogs & Bottom Sheets
+- **IMPORTANT:** Dialogs and bottom sheets that show snackbars **must** wrap their content in `ScaffoldMessenger` so snackbars render above the dialog overlay instead of behind it.
+- Use `useRootMessenger: false` on all snackbar utility calls (`showSuccessSnackBar`, `showErrorSnackBar`, etc.) inside dialogs/sheets so they target the local `ScaffoldMessenger`.
+- Use `Builder` to get a new `BuildContext` below the `ScaffoldMessenger`.
+- **Skip this pattern** if the dialog never shows snackbars, or if wrapping would cause layout issues (e.g., conflicts with `IntrinsicHeight`). In those cases, note why it was skipped.
+
+**Pattern for AlertDialog / Dialog:**
+```dart
+return ScaffoldMessenger(
+  child: Builder(
+    builder: (context) => AlertDialog(
+      // ... dialog content
+    ),
+  ),
+);
+```
+
+**Pattern for full-screen dialogs or bottom sheets:**
+```dart
+return ScaffoldMessenger(
+  child: Builder(
+    builder: (context) => Padding(
+      // ... sheet content
+    ),
+  ),
+);
+```
+
 ### Unimplemented Features
 - **IMPORTANT:** Always add a `// TODO:` comment when a feature is not yet implemented
 - Use descriptive TODO comments that explain what needs to be done

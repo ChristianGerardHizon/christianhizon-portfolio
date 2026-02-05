@@ -53,9 +53,9 @@ class MobileBottomNav extends StatelessWidget {
           label: t.navigation.sales,
         ),
         NavigationDestination(
-          icon: const Icon(Icons.inventory_2_outlined),
-          selectedIcon: const Icon(Icons.inventory_2),
-          label: t.navigation.products,
+          icon: const Icon(Icons.receipt_long_outlined),
+          selectedIcon: const Icon(Icons.receipt_long),
+          label: t.navigation.salesHistory,
         ),
         NavigationDestination(
           icon: const Icon(Icons.more_horiz),

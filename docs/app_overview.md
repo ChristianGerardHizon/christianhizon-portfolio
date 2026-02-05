@@ -158,6 +158,8 @@ Plan and track multi-visit treatment courses.
 - **Users** (`/organization/users`) - User CRUD, role assignment, branch association
 - **Roles** (`/organization/roles`) - Role and permission management (Admin, Veterinarian, Staff, Cashier)
 - **Branches** (`/organization/branches`) - Multi-location support with address and contact info
+- **Machines** (`/organization/machines`) - Laundry machine management (washer, dryer, other) with availability tracking
+- **Storages** (`/organization/storages`) - Storage location management for ready laundry items
 
 #### System Settings (`/system`)
 3-panel tablet layout for system configuration.
@@ -222,12 +224,14 @@ Located in `/lib/src/core/`
 
 ### 18+ Collections across 6 Domains
 
-#### Organization Domain (3 collections)
+#### Organization Domain (5 collections)
 | Collection | Description |
 |------------|-------------|
 | `User` | System users (all types) |
 | `UserRole` | Role definitions with permissions |
 | `Branch` | Business branches/locations |
+| `Machine` | Laundry machines (washer, dryer, other) |
+| `StorageLocation` | Storage locations for laundry items |
 
 #### Patient Domain (8 collections)
 | Collection | Description |
@@ -313,7 +317,7 @@ Located in `/lib/src/core/`
 - **Appointment Detail**: Full appointment info
 - **Cashier/POS**: Product grid and checkout
 - **Sales List**: Transaction history
-- **Sale Detail**: Receipt view
+- **Sale Detail**: Receipt view with status history timeline
 
 ### Organization (3-panel layout)
 - Users Management (list/detail)
@@ -442,7 +446,7 @@ Organization and System sections use a 3-panel layout:
 | Panel 2 | 320px | List panel with AppBar title and FAB |
 | Panel 3 | Expanded | Detail panel or empty state |
 
-- **Organization modes**: Users, Roles, Branches
+- **Organization modes**: Users, Roles, Branches, Machines, Storages
 - **System modes**: Species & Breeds, Product Categories, Message Templates, Cashier Layout (POS Groups)
 
 ### Primary Navigation
@@ -561,6 +565,8 @@ lib/src/
 
 | Date | Feature | Description |
 |------|---------|-------------|
+| Feb 05 | Order Status History | Added orderStatusHistory collection and timeline UI on sale detail page to track every status change (sale status and order status) with auto-logging on create and update |
+| Feb 05 | Machines & Storages | Added machines and storage locations management under Organization with CRUD, plus machine/storage assignment dialogs when transitioning sale order status to processing/ready |
 | Feb 04 | SSH Web Deployment | Added SSH-based auto-deployment of web builds and PocketBase migrations to staging/production servers via rsync in CI/CD pipeline |
 | Feb 04 | Deployment Docs | Added CI/CD and deployment documentation (`docs/deployment.md`) covering GitHub Actions workflows, secrets, version management, and branching strategy |
 | Feb 02 | Customers Feature | Customer CRUD with sales history, required customer at POS checkout with search and inline creation |

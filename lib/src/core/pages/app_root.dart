@@ -46,10 +46,10 @@ class _AppRootState extends ConsumerState<AppRoot> {
   static const _routePaths = [
     DashboardRoute.path, // 0: /
     SalesRoute.path, // 1: /cashier
-    ProductsRoute.path, // 2: /products
-    ServicesRoute.path, // 3: /services
-    CustomersRoute.path, // 4: /customers
-    SalesHistoryRoute.path, // 5: /sales
+    SalesHistoryRoute.path, // 2: /sales
+    ProductsRoute.path, // 3: /products
+    ServicesRoute.path, // 4: /services
+    CustomersRoute.path, // 5: /customers
     ReportsRoute.path, // 6: /reports
     OrganizationRoute.path, // 7: /organization
     SystemRoute.path, // 8: /system
@@ -59,10 +59,10 @@ class _AppRootState extends ConsumerState<AppRoot> {
   static const _routes = <GoRouteData>[
     DashboardRoute(), // 0
     SalesRoute(), // 1
-    ProductsRoute(), // 2
-    ServicesRoute(), // 3
-    CustomersRoute(), // 4
-    SalesHistoryRoute(), // 5
+    SalesHistoryRoute(), // 2
+    ProductsRoute(), // 3
+    ServicesRoute(), // 4
+    CustomersRoute(), // 5
     ReportsRoute(), // 6
     OrganizationRoute(), // 7
     SystemRoute(), // 8

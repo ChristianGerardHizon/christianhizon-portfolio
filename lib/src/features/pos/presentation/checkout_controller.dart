@@ -113,7 +113,7 @@ class CheckoutController extends _$CheckoutController {
       branchId: branchId,
       cashierId: cashierId,
       totalAmount: cartState.total,
-      status: 'completed',
+      status: 'pending',
       orderStatus: OrderStatus.pending,
       isPaid: false, // Will be updated when payment is recorded
       customerId: customerId,

@@ -1,5 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
+import '../../machines/domain/machine.dart';
+import '../../storages/domain/storage_location.dart';
 import 'service.dart';
 
 part 'sale_service_item.mapper.dart';
@@ -18,6 +20,12 @@ class SaleServiceItem with SaleServiceItemMappable {
     required this.unitPrice,
     required this.subtotal,
     this.service,
+    this.machineId,
+    this.machineName,
+    this.machine,
+    this.storageId,
+    this.storageName,
+    this.storageLocation,
     this.created,
     this.updated,
   });
@@ -45,6 +53,24 @@ class SaleServiceItem with SaleServiceItemMappable {
 
   /// Expanded Service (optional).
   final Service? service;
+
+  /// Assigned machine ID.
+  final String? machineId;
+
+  /// Snapshot of machine name at time of assignment.
+  final String? machineName;
+
+  /// Expanded Machine (optional).
+  final Machine? machine;
+
+  /// Assigned storage ID.
+  final String? storageId;
+
+  /// Snapshot of storage name at time of assignment.
+  final String? storageName;
+
+  /// Expanded StorageLocation (optional).
+  final StorageLocation? storageLocation;
 
   /// Creation timestamp.
   final DateTime? created;
