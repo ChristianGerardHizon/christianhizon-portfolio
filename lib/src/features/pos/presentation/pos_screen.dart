@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 
+import '../../../core/utils/breakpoints.dart';
 import '../../../core/utils/currency_format.dart';
 import '../domain/pos_group.dart';
 import 'cart_controller.dart';
@@ -25,21 +25,18 @@ class PosScreen extends HookConsumerWidget {
     final groups = posGroupsAsync.value ?? [];
     final hasGroups = groups.isNotEmpty;
 
-    return ScreenTypeLayout.builder(
-      mobile: (context) => _MobileLayout(
-        scaffoldKey: scaffoldKey,
-        hasGroups: hasGroups,
-        groups: groups,
-      ),
-      tablet: (context) => _DesktopLayout(
-        hasGroups: hasGroups,
-        groups: groups,
-      ),
-      desktop: (context) => _DesktopLayout(
-        hasGroups: hasGroups,
-        groups: groups,
-      ),
-    );
+    final isMobile = Breakpoints.isMobile(context);
+
+    return isMobile
+        ? _MobileLayout(
+            scaffoldKey: scaffoldKey,
+            hasGroups: hasGroups,
+            groups: groups,
+          )
+        : _DesktopLayout(
+            hasGroups: hasGroups,
+            groups: groups,
+          );
   }
 }
 
