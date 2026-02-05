@@ -388,6 +388,7 @@ class _SaleDetailContent extends HookConsumerWidget {
     final isUpdating = useState(false);
     final isRefunded = sale.status.toLowerCase() == 'refunded';
     final isVoided = sale.status.toLowerCase() == 'voided';
+    final isPending = sale.status.toLowerCase() == 'pending';
 
     // Don't show actions for voided sales
     if (isVoided) {
@@ -405,7 +406,7 @@ class _SaleDetailContent extends HookConsumerWidget {
           content: Text(
             newStatus == 'refunded'
                 ? 'Are you sure you want to mark this sale as refunded? This will update the sale status.'
-                : 'Are you sure you want to remove the refund status and mark this sale as completed?',
+                : 'Are you sure you want to remove the refund status and mark this sale as $newStatus?',
           ),
           actions: [
             TextButton(
@@ -474,13 +475,23 @@ class _SaleDetailContent extends HookConsumerWidget {
               decoration: BoxDecoration(
                 color: isRefunded
                     ? Colors.orange.withValues(alpha: 0.1)
-                    : Colors.green.withValues(alpha: 0.1),
+                    : isPending
+                        ? Colors.amber.withValues(alpha: 0.1)
+                        : Colors.green.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
-                isRefunded ? 'Refunded' : 'Completed',
+                isRefunded
+                    ? 'Refunded'
+                    : isPending
+                        ? 'Pending'
+                        : 'Completed',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: isRefunded ? Colors.orange : Colors.green,
+                  color: isRefunded
+                      ? Colors.orange
+                      : isPending
+                          ? Colors.amber.shade700
+                          : Colors.green,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -500,7 +511,11 @@ class _SaleDetailContent extends HookConsumerWidget {
                 if (value == 'refund') {
                   updateSaleStatus('refunded');
                 } else if (value == 'unrefund') {
-                  updateSaleStatus('completed');
+                  final revertStatus =
+                      sale.orderStatus == OrderStatus.pickedUp
+                          ? 'completed'
+                          : 'pending';
+                  updateSaleStatus(revertStatus);
                 }
               },
               itemBuilder: (context) => [
