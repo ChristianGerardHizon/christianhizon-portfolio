@@ -294,61 +294,85 @@ class _SaleDetailContent extends HookConsumerWidget {
                               const Divider(height: 1),
                           itemBuilder: (context, index) {
                             final item = serviceItems[index];
-                            return ListTile(
-                              title: Text(item.serviceName),
-                              subtitle: Column(
+                            final hasMachine = item.machineName != null &&
+                                item.machineName!.isNotEmpty;
+                            final hasStorage = item.storageName != null &&
+                                item.storageName!.isNotEmpty;
+
+                            return Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    '${currencyFormat.format(item.unitPrice)} x ${item.quantity}',
+                                  // Service name + price row
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              item.serviceName,
+                                              style: theme
+                                                  .textTheme.titleSmall,
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              '${currencyFormat.format(item.unitPrice)} x ${item.quantity}',
+                                              style: theme
+                                                  .textTheme.bodySmall
+                                                  ?.copyWith(
+                                                color: theme.colorScheme
+                                                    .onSurfaceVariant,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                        currencyFormat
+                                            .format(item.subtotal),
+                                        style:
+                                            theme.textTheme.titleSmall,
+                                      ),
+                                    ],
                                   ),
-                                  if (item.machineName != null &&
-                                      item.machineName!.isNotEmpty)
+
+                                  // Machine & Storage assignment section
+                                  if (hasMachine || hasStorage) ...[
+                                    const SizedBox(height: 12),
                                     Row(
                                       children: [
-                                        Icon(
-                                          Icons.local_laundry_service,
-                                          size: 14,
-                                          color: theme
-                                              .colorScheme.onSurfaceVariant,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          'Machine: ${item.machineName}',
-                                          style: theme.textTheme.bodySmall
-                                              ?.copyWith(
-                                            color: theme.colorScheme
-                                                .onSurfaceVariant,
+                                        if (hasMachine)
+                                          Expanded(
+                                            child:
+                                                _AssignmentInfoCard(
+                                              icon: Icons
+                                                  .local_laundry_service,
+                                              label: 'Machine',
+                                              name:
+                                                  item.machineName!,
+                                              color: Colors.blue,
+                                            ),
                                           ),
-                                        ),
+                                        if (hasMachine && hasStorage)
+                                          const SizedBox(width: 12),
+                                        if (hasStorage)
+                                          Expanded(
+                                            child:
+                                                _AssignmentInfoCard(
+                                              icon: Icons.inventory_2,
+                                              label: 'Storage',
+                                              name:
+                                                  item.storageName!,
+                                              color: Colors.teal,
+                                            ),
+                                          ),
                                       ],
                                     ),
-                                  if (item.storageName != null &&
-                                      item.storageName!.isNotEmpty)
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.inventory_2,
-                                          size: 14,
-                                          color: theme
-                                              .colorScheme.onSurfaceVariant,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          'Storage: ${item.storageName}',
-                                          style: theme.textTheme.bodySmall
-                                              ?.copyWith(
-                                            color: theme.colorScheme
-                                                .onSurfaceVariant,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                  ],
                                 ],
-                              ),
-                              trailing: Text(
-                                currencyFormat.format(item.subtotal),
-                                style: theme.textTheme.titleSmall,
                               ),
                             );
                           },
@@ -1282,6 +1306,64 @@ class _CustomerInfoRow extends StatelessWidget {
                     customerName,
                     style: theme.textTheme.bodyMedium,
                   ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Card showing a machine or storage assignment with a large icon.
+class _AssignmentInfoCard extends StatelessWidget {
+  const _AssignmentInfoCard({
+    required this.icon,
+    required this.label,
+    required this.name,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final String name;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: color.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            size: 32,
+            color: color,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            name,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
