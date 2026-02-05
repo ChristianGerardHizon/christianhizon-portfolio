@@ -26,6 +26,8 @@ class SaleStatusMapper extends EnumMapper<SaleStatus> {
   @override
   SaleStatus decode(dynamic value) {
     switch (value) {
+      case r'pending':
+        return SaleStatus.pending;
       case r'completed':
         return SaleStatus.completed;
       case r'refunded':
@@ -40,6 +42,8 @@ class SaleStatusMapper extends EnumMapper<SaleStatus> {
   @override
   dynamic encode(SaleStatus self) {
     switch (self) {
+      case SaleStatus.pending:
+        return r'pending';
       case SaleStatus.completed:
         return r'completed';
       case SaleStatus.refunded:

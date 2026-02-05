@@ -10,6 +10,9 @@ import '../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../customers/domain/customer.dart';
 import '../../../customers/presentation/controllers/customers_controller.dart';
+import '../../../dashboard/presentation/controllers/kanban_sales_controller.dart';
+import '../../../dashboard/presentation/controllers/todays_sales_controller.dart';
+import '../../../sales/presentation/controllers/paginated_sales_controller.dart';
 import '../../../services/domain/cart_service_item.dart';
 import '../../../services/domain/sale_service_item.dart';
 import '../../domain/cart_item.dart';
@@ -149,6 +152,11 @@ class CheckoutDialog extends HookConsumerWidget {
                     subtotal: item.total,
                   ))
               .toList();
+
+          // Refresh sales list & dashboard
+          ref.invalidate(paginatedSalesControllerProvider);
+          ref.invalidate(todaySalesSummaryProvider);
+          ref.invalidate(kanbanSalesProvider);
 
           // Close checkout dialog
           context.pop();
