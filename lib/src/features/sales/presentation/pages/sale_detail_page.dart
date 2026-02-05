@@ -9,9 +9,11 @@ import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../../pos/data/repositories/sales_repository.dart';
 import '../../../pos/domain/order_status.dart';
+import '../../../pos/domain/order_status_history.dart';
 import '../../../pos/domain/payment_type.dart';
 import '../../../pos/domain/sale.dart';
 import '../../../pos/presentation/payments_controller.dart';
+import '../controllers/order_status_history_provider.dart';
 import '../controllers/sale_items_provider.dart';
 import '../controllers/sale_provider.dart';
 import '../controllers/sale_service_items_provider.dart';
@@ -105,6 +107,8 @@ class _SaleDetailContent extends HookConsumerWidget {
     final saleItemsAsync = ref.watch(saleItemsProvider(sale.id));
     final serviceItemsAsync = ref.watch(saleServiceItemsProvider(sale.id));
     final paymentsAsync = ref.watch(salePaymentsProvider(sale.id));
+    final statusHistoryAsync =
+        ref.watch(orderStatusHistoryProvider(sale.id));
     final dateFormat = DateFormat('MMM dd, yyyy hh:mm a');
     final currencyFormat = NumberFormat.currency(symbol: '₱');
 
@@ -135,11 +139,13 @@ class _SaleDetailContent extends HookConsumerWidget {
           ref.invalidate(saleItemsProvider(sale.id));
           ref.invalidate(saleServiceItemsProvider(sale.id));
           ref.invalidate(salePaymentsProvider(sale.id));
+          ref.invalidate(orderStatusHistoryProvider(sale.id));
           await Future.wait([
             ref.read(saleProvider(sale.id).future),
             ref.read(saleItemsProvider(sale.id).future),
             ref.read(saleServiceItemsProvider(sale.id).future),
             ref.read(salePaymentsProvider(sale.id).future),
+            ref.read(orderStatusHistoryProvider(sale.id).future),
           ]);
         },
         child: SingleChildScrollView(
@@ -213,6 +219,11 @@ class _SaleDetailContent extends HookConsumerWidget {
 
               // Order Status Card
               _buildOrderStatusCard(context, ref),
+              const SizedBox(height: 16),
+
+              // Status History Timeline
+              _buildStatusHistoryCard(
+                  context, statusHistoryAsync, dateFormat),
               const SizedBox(height: 16),
 
               // Items Section
@@ -707,6 +718,107 @@ class _SaleDetailContent extends HookConsumerWidget {
       case OrderStatus.pickedUp:
         return Icons.local_shipping;
     }
+  }
+
+  Widget _buildStatusHistoryCard(
+    BuildContext context,
+    AsyncValue<List<OrderStatusHistory>> historyAsync,
+    DateFormat dateFormat,
+  ) {
+    final theme = Theme.of(context);
+
+    return historyAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (history) {
+        if (history.isEmpty) return const SizedBox.shrink();
+
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.history,
+                      color: theme.colorScheme.primary,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Status History',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: history.length,
+                  itemBuilder: (context, index) {
+                    final entry = history[index];
+                    final isOrderStatus =
+                        entry.statusType == StatusType.orderStatus;
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CircleAvatar(
+                            radius: 16,
+                            backgroundColor: isOrderStatus
+                                ? Colors.blue.withValues(alpha: 0.1)
+                                : Colors.purple.withValues(alpha: 0.1),
+                            child: Icon(
+                              isOrderStatus
+                                  ? Icons.local_shipping
+                                  : Icons.receipt_long,
+                              size: 16,
+                              color: isOrderStatus
+                                  ? Colors.blue
+                                  : Colors.purple,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  entry.description ?? '',
+                                  style: theme.textTheme.bodyMedium,
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  entry.created != null
+                                      ? dateFormat.format(entry.created!)
+                                      : '',
+                                  style:
+                                      theme.textTheme.bodySmall?.copyWith(
+                                    color: theme
+                                        .colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildPaymentCard(

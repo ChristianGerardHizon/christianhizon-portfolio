@@ -42,6 +42,7 @@ abstract class PocketBaseCollections {
   static const String saleItems = 'saleItems';
   static const String saleServiceItems = 'saleServiceItems';
   static const String payments = 'payments';
+  static const String orderStatusHistory = 'orderStatusHistory';
 
   // POS Groups
   static const String posGroups = 'posGroups';

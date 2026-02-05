@@ -28,6 +28,7 @@ This document contains all entities (domain models) in the project with their fi
 | Service | ServiceCategory | `service_categories` | Service categories |
 | Service | CartServiceItem | `cart_service_items` | Service items in shopping cart |
 | Service | SaleServiceItem | `sale_service_items` | Service items in completed sale |
+| Sales | OrderStatusHistory | `orderStatusHistory` | Status change audit trail for sales |
 | Machine | Machine | `machines` | Laundry machines (washer, dryer, etc.) |
 | Storage | StorageLocation | `storages` | Storage locations for laundry items |
 | Appointment | AppointmentSchedule | `appointment_schedules` | Appointment bookings |
@@ -512,6 +513,32 @@ Stock adjustment records.
 
 ---
 
+## Sales Domain
+
+### OrderStatusHistory
+
+Audit trail for status changes on sales (both sale status and order status).
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | String | Yes | PocketBase record ID |
+| `sale` | String (FK) | Yes | FK to Sale (cascade delete) |
+| `statusType` | StatusType | Yes | Type of status changed |
+| `fromStatus` | String | Yes | Previous status value |
+| `toStatus` | String | Yes | New status value |
+| `description` | String | No | Human-readable description |
+| `created` | DateTime | No | Creation timestamp |
+| `updated` | DateTime | No | Last update timestamp |
+
+**Collection:** `orderStatusHistory`
+
+**Relationships:**
+- `sale` -> Sale (cascade delete)
+
+**Enum:** `StatusType { saleStatus, orderStatus }`
+
+---
+
 ## Machine & Storage Domain
 
 ### Machine
@@ -666,8 +693,8 @@ Embedded artifact information (not a separate collection).
 
 ## Summary
 
-**Total Collections:** 18
-**Total Enums:** 5
+**Total Collections:** 19
+**Total Enums:** 6
 
 | Enum | Values |
 |------|--------|
@@ -676,3 +703,4 @@ Embedded artifact information (not a separate collection).
 | ProductAdjustmentType | product, productStock |
 | AppointmentScheduleStatus | scheduled, completed, missed, cancelled |
 | ChangeLogType | create, update, delete |
+| StatusType | saleStatus, orderStatus |

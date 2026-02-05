@@ -317,7 +317,7 @@ Located in `/lib/src/core/`
 - **Appointment Detail**: Full appointment info
 - **Cashier/POS**: Product grid and checkout
 - **Sales List**: Transaction history
-- **Sale Detail**: Receipt view
+- **Sale Detail**: Receipt view with status history timeline
 
 ### Organization (3-panel layout)
 - Users Management (list/detail)
@@ -565,6 +565,7 @@ lib/src/
 
 | Date | Feature | Description |
 |------|---------|-------------|
+| Feb 05 | Order Status History | Added orderStatusHistory collection and timeline UI on sale detail page to track every status change (sale status and order status) with auto-logging on create and update |
 | Feb 05 | Machines & Storages | Added machines and storage locations management under Organization with CRUD, plus machine/storage assignment dialogs when transitioning sale order status to processing/ready |
 | Feb 04 | SSH Web Deployment | Added SSH-based auto-deployment of web builds and PocketBase migrations to staging/production servers via rsync in CI/CD pipeline |
 | Feb 04 | Deployment Docs | Added CI/CD and deployment documentation (`docs/deployment.md`) covering GitHub Actions workflows, secrets, version management, and branching strategy |
