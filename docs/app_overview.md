@@ -1,6 +1,6 @@
-# Hi-Zone Laundry - Application Overview
+# Ebe Gym - Application Overview
 
-A comprehensive Flutter multi-platform laundry management system supporting Android, iOS, macOS, Linux, Windows, and Web.
+A comprehensive Flutter multi-platform gym management system supporting Android, iOS, macOS, Linux, Windows, and Web.
 
 ---
 

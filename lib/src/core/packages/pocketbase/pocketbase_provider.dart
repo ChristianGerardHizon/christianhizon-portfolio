@@ -10,8 +10,9 @@ part 'pocketbase_provider.g.dart';
 /// Environment URLs for PocketBase
 abstract class PocketBaseUrls {
   static const String dev = 'http://127.0.0.1:8090';
-  static const String staging = 'https://staging.hizonelaundry.sannjoseanimalclinic.com';
-  static const String prod = 'https://hizonelaundry.sannjoseanimalclinic.com';
+  // TODO: Update these URLs when new backend is set up
+  static const String staging = 'https://staging.ebegym.com';
+  static const String prod = 'https://ebegym.com';
 }
 
 /// Environment passed via --dart-define=ENV=<value>
@@ -47,17 +48,17 @@ String get currentEnvironment {
 }
 
 /// Returns the app title based on environment.
-/// - Dev: "Hi-Zone Laundry [Dev]"
-/// - Staging: "Hi-Zone Laundry [Stg]"
-/// - Production: "Hi-Zone Laundry"
+/// - Dev: "Ebe Gym [Dev]"
+/// - Staging: "Ebe Gym [Stg]"
+/// - Production: "Ebe Gym"
 String get appTitle {
   switch (currentEnvironment) {
     case 'dev':
-      return 'Hi-Zone Laundry [Dev]';
+      return 'Ebe Gym [Dev]';
     case 'staging':
-      return 'Hi-Zone Laundry [Stg]';
+      return 'Ebe Gym [Stg]';
     default:
-      return 'Hi-Zone Laundry';
+      return 'Ebe Gym';
   }
 }
 

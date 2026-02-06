@@ -16,8 +16,5 @@
       "mcp__dart__*"
     ],
     "deny": []
-  },
-  "enabledPlugins": {
-    "github@claude-plugins-official": true
   }
 }

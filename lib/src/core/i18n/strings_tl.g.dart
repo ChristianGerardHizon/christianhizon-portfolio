@@ -85,7 +85,7 @@ class _TranslationsCommonTl implements TranslationsCommonEn {
 	final TranslationsTl _root; // ignore: unused_field
 
 	// Translations
-	@override String get appName => 'Hi-Zone Laundry';
+	@override String get appName => 'Ebe Gym';
 	@override String get placeholderText => 'N/A';
 	@override String get save => 'I-save';
 	@override String get cancel => 'Kanselahin';
@@ -266,7 +266,7 @@ extension on TranslationsTl {
 			'auth.signInToContinue' => 'Mag-sign in upang magpatuloy',
 			'auth.signingIn' => 'Nagsa-sign in...',
 			'auth.verificationEmailSent' => 'Naipadala na ang verification email sa iyong email address',
-			'common.appName' => 'Hi-Zone Laundry',
+			'common.appName' => 'Ebe Gym',
 			'common.placeholderText' => 'N/A',
 			'common.save' => 'I-save',
 			'common.cancel' => 'Kanselahin',

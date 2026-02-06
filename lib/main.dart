@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hizonelaundry/src/core/utils/window_utils.dart';
-import 'package:hizonelaundry/src/application.dart';
-import 'package:hizonelaundry/src/core/i18n/strings.g.dart';
+import 'package:ebe_gym/src/core/utils/window_utils.dart';
+import 'package:ebe_gym/src/application.dart';
+import 'package:ebe_gym/src/core/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 Future<void> main() async {

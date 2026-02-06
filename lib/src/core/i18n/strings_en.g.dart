@@ -120,8 +120,8 @@ class TranslationsCommonEn {
 
 	// Translations
 
-	/// en: 'Hi-Zone Laundry'
-	String get appName => 'Hi-Zone Laundry';
+	/// en: 'Ebe Gym'
+	String get appName => 'Ebe Gym';
 
 	/// en: 'N/A'
 	String get placeholderText => 'N/A';
@@ -514,7 +514,7 @@ extension on Translations {
 			'auth.signInToContinue' => 'Sign in to continue',
 			'auth.signingIn' => 'Signing in...',
 			'auth.verificationEmailSent' => 'A verification email has been sent to your email address',
-			'common.appName' => 'Hi-Zone Laundry',
+			'common.appName' => 'Ebe Gym',
 			'common.placeholderText' => 'N/A',
 			'common.save' => 'Save',
 			'common.cancel' => 'Cancel',

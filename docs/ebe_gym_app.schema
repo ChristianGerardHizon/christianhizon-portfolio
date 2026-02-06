@@ -1,5 +1,5 @@
 # ============================================================================
-# Hi-Zone Laundry App - Database Schema
+# Ebe Gym App - Database Schema
 # Backend: PocketBase
 # Field Naming: camelCase
 # DateTime: ISO8601 UTC (converted to local in app)

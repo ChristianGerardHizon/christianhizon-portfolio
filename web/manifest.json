@@ -1,11 +1,11 @@
 {
-    "name": "Hi-Zone Laundry",
-    "short_name": "Hi-Zone Laundry",
+    "name": "Ebe Gym",
+    "short_name": "Ebe Gym",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#hexcode",
     "theme_color": "#hexcode",
-    "description": "Hi-Zone Laundry",
+    "description": "Ebe Gym",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

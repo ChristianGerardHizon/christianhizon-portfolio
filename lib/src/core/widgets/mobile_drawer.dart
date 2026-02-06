@@ -51,11 +51,11 @@ class MobileDrawer extends ConsumerWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Hi-Zone Laundry',
+                    'Ebe Gym',
                     style: theme.textTheme.titleLarge,
                   ),
                   Text(
-                    'Laundry Management System',
+                    'Gym Management System',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onPrimaryContainer.withValues(
                         alpha: 0.7,

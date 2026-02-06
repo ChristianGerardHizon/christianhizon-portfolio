@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/claude-code) when working 
 
 ## Project Overview
 
-This is **hizonelaundry** - a Flutter multi-platform laundry management system. The application supports Android, iOS, macOS, Linux, Windows, and Web platforms.
+This is **ebe_gym** - a Flutter multi-platform gym management system. The application supports Android, iOS, macOS, Linux, Windows, and Web platforms.
 
 ## Tech Stack
 

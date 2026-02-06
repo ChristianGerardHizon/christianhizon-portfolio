@@ -1,6 +1,6 @@
 # Folder Structure
 
-This document describes the architecture and folder organization for the Hi-Zone Laundry Flutter application.
+This document describes the architecture and folder organization for the Ebe Gym Flutter application.
 
 ---
 
