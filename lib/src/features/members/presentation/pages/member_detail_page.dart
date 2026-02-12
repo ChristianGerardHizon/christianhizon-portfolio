@@ -9,13 +9,13 @@ import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../memberships/domain/member_membership.dart';
 import '../../../memberships/presentation/controllers/member_memberships_controller.dart';
-import '../../../memberships/presentation/widgets/purchase_membership_sheet.dart';
+import '../../../memberships/presentation/widgets/purchase_membership_dialog.dart';
 import '../../../check_in/presentation/controllers/member_check_ins_controller.dart';
 import '../../../pos/data/repositories/sales_repository.dart';
 import '../../../pos/domain/sale.dart';
 import '../controllers/member_provider.dart';
 import '../controllers/members_controller.dart';
-import '../widgets/member_form_sheet.dart';
+import '../widgets/member_form_dialog.dart';
 
 /// Member detail page showing member information and sales history.
 class MemberDetailPage extends HookConsumerWidget {
@@ -154,7 +154,7 @@ class MemberDetailPage extends HookConsumerWidget {
                           FilledButton.tonalIcon(
                             onPressed: () async {
                               final result =
-                                  await showPurchaseMembershipSheet(
+                                  await showPurchaseMembershipDialog(
                                 context,
                                 memberId: memberId,
                                 memberName: member.name,
@@ -234,7 +234,7 @@ class MemberDetailPage extends HookConsumerWidget {
     final member = ref.read(memberProvider(memberId)).value;
     if (member == null) return;
 
-    final result = await showMemberFormSheet(
+    final result = await showMemberFormDialog(
       context,
       member: member,
     );

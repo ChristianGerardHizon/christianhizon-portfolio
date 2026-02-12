@@ -147,22 +147,28 @@ class UserDetailPage extends HookConsumerWidget {
   void _showMoreOptions(BuildContext context, WidgetRef ref, User user) {
     final t = Translations.of(context);
 
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      useRootNavigator: true,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.lock_reset),
-              title: const Text('Reset Password'),
-              onTap: () {
-                Navigator.pop(context);
-                _showResetPasswordDialog(context, ref, user);
-              },
+      builder: (context) => SimpleDialog(
+        title: const Text('More Options'),
+        children: [
+          SimpleDialogOption(
+            onPressed: () {
+              Navigator.pop(context);
+              _showResetPasswordDialog(context, ref, user);
+            },
+            child: const ListTile(
+              leading: Icon(Icons.lock_reset),
+              title: Text('Reset Password'),
+              contentPadding: EdgeInsets.zero,
             ),
-            ListTile(
+          ),
+          SimpleDialogOption(
+            onPressed: () {
+              Navigator.pop(context);
+              _showToggleVerificationDialog(context, ref, user);
+            },
+            child: ListTile(
               leading: Icon(
                 user.verified ? Icons.verified : Icons.verified_outlined,
                 color: user.verified ? Colors.green : null,
@@ -171,24 +177,24 @@ class UserDetailPage extends HookConsumerWidget {
               subtitle: Text(user.verified
                   ? 'Remove verification status'
                   : 'Manually verify this user\'s account'),
-              onTap: () {
-                Navigator.pop(context);
-                _showToggleVerificationDialog(context, ref, user);
-              },
+              contentPadding: EdgeInsets.zero,
             ),
-            ListTile(
+          ),
+          SimpleDialogOption(
+            onPressed: () {
+              Navigator.pop(context);
+              _showDeleteConfirmation(context, ref, user);
+            },
+            child: ListTile(
               leading:
                   Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
               title: Text(t.common.delete,
                   style:
                       TextStyle(color: Theme.of(context).colorScheme.error)),
-              onTap: () {
-                Navigator.pop(context);
-                _showDeleteConfirmation(context, ref, user);
-              },
+              contentPadding: EdgeInsets.zero,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

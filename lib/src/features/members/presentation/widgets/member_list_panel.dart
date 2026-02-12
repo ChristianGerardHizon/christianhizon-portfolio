@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/routing/routes/members.routes.dart';
 import '../../domain/member.dart';
 import '../controllers/members_controller.dart';
-import 'member_form_sheet.dart';
+import 'member_form_dialog.dart';
 
 /// List panel for displaying members with search and create.
 class MemberListPanel extends HookConsumerWidget {
@@ -119,7 +119,7 @@ class MemberListPanel extends HookConsumerWidget {
   }
 
   void _showCreateSheet(BuildContext context, WidgetRef ref) async {
-    final result = await showMemberFormSheet(context);
+    final result = await showMemberFormDialog(context);
     if (result == true) {
       ref.read(membersControllerProvider.notifier).refresh();
     }

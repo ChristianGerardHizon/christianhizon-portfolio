@@ -7,7 +7,7 @@ import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../controllers/membership_provider.dart';
 import '../controllers/memberships_controller.dart';
-import '../widgets/membership_form_sheet.dart';
+import '../widgets/membership_form_dialog.dart';
 
 /// Membership plan detail page.
 class MembershipDetailPage extends HookConsumerWidget {
@@ -134,7 +134,7 @@ class MembershipDetailPage extends HookConsumerWidget {
     final membership = ref.read(membershipProvider(membershipId)).value;
     if (membership == null) return;
 
-    final result = await showMembershipFormSheet(
+    final result = await showMembershipFormDialog(
       context,
       membership: membership,
     );

@@ -6,7 +6,7 @@ import '../../../../core/routing/routes/memberships.routes.dart';
 import '../../../../core/utils/currency_format.dart';
 import '../../domain/membership.dart';
 import '../controllers/memberships_controller.dart';
-import 'membership_form_sheet.dart';
+import 'membership_form_dialog.dart';
 
 /// List panel for displaying membership plans with search and create.
 class MembershipListPanel extends HookConsumerWidget {
@@ -120,7 +120,7 @@ class MembershipListPanel extends HookConsumerWidget {
   }
 
   void _showCreateSheet(BuildContext context, WidgetRef ref) async {
-    final result = await showMembershipFormSheet(context);
+    final result = await showMembershipFormDialog(context);
     if (result == true) {
       ref.read(membershipsControllerProvider.notifier).refresh();
     }

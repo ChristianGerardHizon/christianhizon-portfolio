@@ -13,7 +13,7 @@ import '../../../pos/domain/sale.dart';
 import '../../../pos/presentation/payments_controller.dart';
 import '../controllers/sale_items_provider.dart';
 import '../controllers/sale_provider.dart';
-import '../widgets/record_payment_sheet.dart';
+import '../widgets/record_payment_dialog.dart';
 import '../widgets/sale_status_chip.dart';
 
 /// Sale detail page showing sale information and items.
@@ -701,7 +701,7 @@ class _SaleDetailContent extends HookConsumerWidget {
                         width: double.infinity,
                         child: FilledButton.tonalIcon(
                           onPressed: () async {
-                            final result = await showRecordPaymentSheet(
+                            final result = await showRecordPaymentDialog(
                               context,
                               sale: sale,
                               balanceDue: balanceDue,

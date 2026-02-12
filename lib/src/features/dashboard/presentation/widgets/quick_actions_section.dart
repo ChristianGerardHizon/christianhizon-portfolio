@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/routing/routes/check_in.routes.dart';
 import '../../../../core/routing/routes/sales.routes.dart';
-import '../../../members/presentation/widgets/member_form_sheet.dart';
+import '../../../members/presentation/widgets/member_form_dialog.dart';
 
 /// Section displaying quick action buttons on the dashboard.
 ///
@@ -66,7 +66,7 @@ class QuickActionsSection extends ConsumerWidget {
                   icon: Icons.person_add,
                   label: 'New Member',
                   color: Colors.blue,
-                  onTap: () => showMemberFormSheet(context),
+                  onTap: () => showMemberFormDialog(context),
                 ),
               ],
             ),
