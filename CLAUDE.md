@@ -280,6 +280,41 @@ return ScaffoldMessenger(
 - Controllers: `*_controller.dart`
 - Models: `*_model.dart` or entity name
 
+## Git Workflow
+
+### Branch Protection Rules
+
+**CRITICAL: NEVER push directly to `main` or `staging` branches.**
+
+- `main` and `staging` are protected branches
+- Always create a feature or fix branch for any changes
+- All changes must go through a Pull Request to `staging`
+
+### Branch Naming Convention
+
+- Features: `feat/<short-description>` (e.g., `feat/member-registration`)
+- Bug fixes: `fix/<short-description>` (e.g., `fix/login-validation`)
+- Chores/refactoring: `chore/<short-description>` (e.g., `chore/update-dependencies`)
+
+### Workflow
+
+1. Create a new branch from `staging`:
+   ```bash
+   git checkout staging
+   git pull origin staging
+   git checkout -b feat/your-feature-name
+   ```
+
+2. Make your changes and commit
+
+3. Push your branch and create a PR to `staging`:
+   ```bash
+   git push -u origin feat/your-feature-name
+   gh pr create --base staging
+   ```
+
+4. After PR is merged to `staging`, `main` will be updated separately (production releases)
+
 ## Pull Requests
 
 - **All PRs must target the `staging` branch**, not `main`.
