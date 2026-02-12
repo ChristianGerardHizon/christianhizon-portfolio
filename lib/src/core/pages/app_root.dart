@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../features/pos/presentation/cart_controller.dart';
 import '../../features/settings/presentation/controllers/current_branch_controller.dart';
 import '../routing/routes/dashboard.routes.dart';
 import '../routing/routes/organization.routes.dart';
@@ -109,9 +108,6 @@ class _AppRootState extends ConsumerState<AppRoot> {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize cart controller early to load any active cart
-    ref.watch(cartControllerProvider);
-
     final isMobile = Breakpoints.isMobile(context);
 
     return PopScope(
