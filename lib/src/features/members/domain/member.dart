@@ -29,6 +29,7 @@ class Member with MemberMappable {
   const Member({
     required this.id,
     required this.name,
+    this.photo,
     this.mobileNumber,
     this.dateOfBirth,
     this.address,
@@ -47,6 +48,9 @@ class Member with MemberMappable {
 
   /// Member name.
   final String name;
+
+  /// Profile photo URL (optional).
+  final String? photo;
 
   /// Mobile/phone number (optional).
   final String? mobileNumber;

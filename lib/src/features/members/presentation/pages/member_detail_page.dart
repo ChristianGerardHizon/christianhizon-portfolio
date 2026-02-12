@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/routing/routes/sales_history.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../../../core/utils/currency_format.dart';
+import '../../../../core/widgets/cached_avatar.dart';
 import '../../../../core/widgets/form_feedback.dart';
+import '../../data/repositories/member_repository.dart';
 import '../../../memberships/domain/member_membership.dart';
 import '../../../memberships/presentation/controllers/member_memberships_controller.dart';
 import '../../../memberships/presentation/widgets/purchase_membership_dialog.dart';
@@ -30,6 +35,7 @@ class MemberDetailPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final memberAsync = ref.watch(memberProvider(memberId));
     final isTablet = Breakpoints.isTabletOrLarger(context);
+    final isUploading = useState(false);
 
     return memberAsync.when(
       data: (member) {
@@ -96,6 +102,45 @@ class MemberDetailPage extends HookConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(
+                        children: [
+                          _buildAvatar(
+                            context,
+                            theme,
+                            ref,
+                            isUploading,
+                            photoUrl: member.photo,
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  member.name,
+                                  style:
+                                      theme.textTheme.headlineSmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                if (member.mobileNumber != null &&
+                                    member.mobileNumber!.isNotEmpty)
+                                  Text(
+                                    member.mobileNumber!,
+                                    style:
+                                        theme.textTheme.bodyMedium?.copyWith(
+                                      color:
+                                          theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      const Divider(height: 1),
+                      const SizedBox(height: 16),
                       Text(
                         'Member Information',
                         style: theme.textTheme.titleMedium,
@@ -228,6 +273,109 @@ class MemberDetailPage extends HookConsumerWidget {
         body: Center(child: Text('Error: $error')),
       ),
     );
+  }
+
+  Widget _buildAvatar(
+    BuildContext context,
+    ThemeData theme,
+    WidgetRef ref,
+    ValueNotifier<bool> isUploading, {
+    String? photoUrl,
+    double radius = 40,
+  }) {
+    return Stack(
+      children: [
+        CachedAvatar(
+          imageUrl: photoUrl,
+          radius: radius,
+        ),
+        Positioned(
+          right: 0,
+          bottom: 0,
+          child: GestureDetector(
+            onTap: isUploading.value
+                ? null
+                : () => _pickAndUploadImage(context, ref, isUploading),
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: theme.colorScheme.surface,
+                  width: 2,
+                ),
+              ),
+              child: isUploading.value
+                  ? SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    )
+                  : Icon(
+                      Icons.camera_alt,
+                      size: 16,
+                      color: theme.colorScheme.onPrimary,
+                    ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _pickAndUploadImage(
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<bool> isUploading,
+  ) async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 800,
+      maxHeight: 800,
+      imageQuality: 85,
+    );
+
+    if (image == null) return;
+
+    isUploading.value = true;
+
+    try {
+      final bytes = await image.readAsBytes();
+      final file = http.MultipartFile.fromBytes(
+        'photo',
+        bytes,
+        filename: image.name,
+      );
+
+      final repository = ref.read(memberRepositoryProvider);
+      final result = await repository.updatePhoto(memberId, file);
+
+      result.fold(
+        (failure) {
+          if (context.mounted) {
+            showErrorSnackBar(context, message: failure.message);
+          }
+        },
+        (updatedMember) {
+          ref.invalidate(memberProvider(memberId));
+          ref.read(membersControllerProvider.notifier).refresh();
+          if (context.mounted) {
+            showSuccessSnackBar(context, message: 'Photo updated successfully');
+          }
+        },
+      );
+    } catch (e) {
+      if (context.mounted) {
+        showErrorSnackBar(context, message: 'Failed to upload photo');
+      }
+    } finally {
+      isUploading.value = false;
+    }
   }
 
   void _showEditSheet(BuildContext context, WidgetRef ref) async {

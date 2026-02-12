@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/routing/routes/members.routes.dart';
+import '../../../../core/widgets/cached_avatar.dart';
 import '../../domain/member.dart';
 import '../controllers/members_controller.dart';
 import 'member_form_dialog.dart';
@@ -136,12 +137,9 @@ class _MemberListTile extends StatelessWidget {
     final theme = Theme.of(context);
 
     return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: theme.colorScheme.primaryContainer,
-        child: Icon(
-          Icons.person,
-          color: theme.colorScheme.onPrimaryContainer,
-        ),
+      leading: CachedAvatar(
+        imageUrl: member.photo,
+        radius: 20,
       ),
       title: Text(member.name),
       subtitle: member.mobileNumber != null && member.mobileNumber!.isNotEmpty

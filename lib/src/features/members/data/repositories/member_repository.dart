@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:http/http.dart' as http;
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -32,6 +33,9 @@ abstract class MemberRepository {
 
   /// Searches members by name or mobile number.
   FutureEither<List<Member>> search(String query, {List<String>? fields});
+
+  /// Updates a member's photo image.
+  FutureEither<Member> updatePhoto(String id, http.MultipartFile file);
 
   /// Invalidates the member list cache.
   void invalidateCache();
@@ -77,7 +81,7 @@ class MemberRepositoryImpl implements MemberRepository {
   }
 
   Member _toEntity(RecordModel record) {
-    return MemberDto.fromRecord(record).toEntity();
+    return MemberDto.fromRecord(record).toEntity(baseUrl: _pb.baseURL);
   }
 
   @override
@@ -203,6 +207,18 @@ class MemberRepositoryImpl implements MemberRepository {
         );
 
         return records.map(_toEntity).toList();
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<Member> updatePhoto(String id, http.MultipartFile file) async {
+    return TaskEither.tryCatch(
+      () async {
+        final record = await _collection.update(id, files: [file]);
+        invalidateCache();
+        return _toEntity(record);
       },
       Failure.handle,
     ).run();

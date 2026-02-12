@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/routing/routes/members.routes.dart';
+import '../../../../core/widgets/cached_avatar.dart';
 import '../controllers/dashboard_members_controller.dart';
 
 /// Section displaying all members with membership expiration tags.
@@ -132,15 +133,9 @@ class _DashboardMemberTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
-              CircleAvatar(
+              CachedAvatar(
+                imageUrl: member.photo,
                 radius: 18,
-                backgroundColor:
-                    theme.colorScheme.primaryContainer.withValues(alpha: 0.5),
-                child: Icon(
-                  Icons.person,
-                  size: 20,
-                  color: theme.colorScheme.onPrimaryContainer,
-                ),
               ),
               const SizedBox(width: 10),
               Expanded(

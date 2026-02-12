@@ -13,6 +13,7 @@ class MemberDto with MemberDtoMappable {
   final String collectionId;
   final String collectionName;
   final String name;
+  final String? photo;
   final String? mobileNumber;
   final String? dateOfBirth;
   final String? address;
@@ -30,6 +31,7 @@ class MemberDto with MemberDtoMappable {
     required this.collectionId,
     required this.collectionName,
     required this.name,
+    this.photo,
     this.mobileNumber,
     this.dateOfBirth,
     this.address,
@@ -50,6 +52,7 @@ class MemberDto with MemberDtoMappable {
       collectionId: record.collectionId,
       collectionName: record.collectionName,
       name: record.getStringValue('name'),
+      photo: record.getStringValue('photo'),
       mobileNumber: record.getStringValue('mobileNumber'),
       dateOfBirth: record.get<String>('dateOfBirth'),
       address: record.getStringValue('address'),
@@ -65,10 +68,11 @@ class MemberDto with MemberDtoMappable {
   }
 
   /// Converts the DTO to a domain Member entity.
-  Member toEntity() {
+  Member toEntity({String? baseUrl}) {
     return Member(
       id: id,
       name: name,
+      photo: _buildPhotoUrl(baseUrl),
       mobileNumber:
           mobileNumber != null && mobileNumber!.isNotEmpty ? mobileNumber : null,
       dateOfBirth: parseToLocal(dateOfBirth),
@@ -85,6 +89,11 @@ class MemberDto with MemberDtoMappable {
       created: parseToLocal(created),
       updated: parseToLocal(updated),
     );
+  }
+
+  String? _buildPhotoUrl(String? baseUrl) {
+    if (photo == null || photo!.isEmpty || baseUrl == null) return null;
+    return '$baseUrl/api/files/$collectionName/$id/$photo';
   }
 
   static MemberSex? _parseSex(String? value) {

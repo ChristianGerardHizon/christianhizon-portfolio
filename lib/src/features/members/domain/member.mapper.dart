@@ -76,6 +76,12 @@ class MemberMapper extends ClassMapperBase<Member> {
   static const Field<Member, String> _f$id = Field('id', _$id);
   static String _$name(Member v) => v.name;
   static const Field<Member, String> _f$name = Field('name', _$name);
+  static String? _$photo(Member v) => v.photo;
+  static const Field<Member, String> _f$photo = Field(
+    'photo',
+    _$photo,
+    opt: true,
+  );
   static String? _$mobileNumber(Member v) => v.mobileNumber;
   static const Field<Member, String> _f$mobileNumber = Field(
     'mobileNumber',
@@ -143,6 +149,7 @@ class MemberMapper extends ClassMapperBase<Member> {
   final MappableFields<Member> fields = const {
     #id: _f$id,
     #name: _f$name,
+    #photo: _f$photo,
     #mobileNumber: _f$mobileNumber,
     #dateOfBirth: _f$dateOfBirth,
     #address: _f$address,
@@ -160,6 +167,7 @@ class MemberMapper extends ClassMapperBase<Member> {
     return Member(
       id: data.dec(_f$id),
       name: data.dec(_f$name),
+      photo: data.dec(_f$photo),
       mobileNumber: data.dec(_f$mobileNumber),
       dateOfBirth: data.dec(_f$dateOfBirth),
       address: data.dec(_f$address),
@@ -223,6 +231,7 @@ abstract class MemberCopyWith<$R, $In extends Member, $Out>
   $R call({
     String? id,
     String? name,
+    String? photo,
     String? mobileNumber,
     DateTime? dateOfBirth,
     String? address,
@@ -248,6 +257,7 @@ class _MemberCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Member, $Out>
   $R call({
     String? id,
     String? name,
+    Object? photo = $none,
     Object? mobileNumber = $none,
     Object? dateOfBirth = $none,
     Object? address = $none,
@@ -263,6 +273,7 @@ class _MemberCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Member, $Out>
     FieldCopyWithData({
       if (id != null) #id: id,
       if (name != null) #name: name,
+      if (photo != $none) #photo: photo,
       if (mobileNumber != $none) #mobileNumber: mobileNumber,
       if (dateOfBirth != $none) #dateOfBirth: dateOfBirth,
       if (address != $none) #address: address,
@@ -280,6 +291,7 @@ class _MemberCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Member, $Out>
   Member $make(CopyWithData data) => Member(
     id: data.get(#id, or: $value.id),
     name: data.get(#name, or: $value.name),
+    photo: data.get(#photo, or: $value.photo),
     mobileNumber: data.get(#mobileNumber, or: $value.mobileNumber),
     dateOfBirth: data.get(#dateOfBirth, or: $value.dateOfBirth),
     address: data.get(#address, or: $value.address),

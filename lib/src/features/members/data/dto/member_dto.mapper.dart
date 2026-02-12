@@ -35,6 +35,12 @@ class MemberDtoMapper extends ClassMapperBase<MemberDto> {
   );
   static String _$name(MemberDto v) => v.name;
   static const Field<MemberDto, String> _f$name = Field('name', _$name);
+  static String? _$photo(MemberDto v) => v.photo;
+  static const Field<MemberDto, String> _f$photo = Field(
+    'photo',
+    _$photo,
+    opt: true,
+  );
   static String? _$mobileNumber(MemberDto v) => v.mobileNumber;
   static const Field<MemberDto, String> _f$mobileNumber = Field(
     'mobileNumber',
@@ -104,6 +110,7 @@ class MemberDtoMapper extends ClassMapperBase<MemberDto> {
     #collectionId: _f$collectionId,
     #collectionName: _f$collectionName,
     #name: _f$name,
+    #photo: _f$photo,
     #mobileNumber: _f$mobileNumber,
     #dateOfBirth: _f$dateOfBirth,
     #address: _f$address,
@@ -123,6 +130,7 @@ class MemberDtoMapper extends ClassMapperBase<MemberDto> {
       collectionId: data.dec(_f$collectionId),
       collectionName: data.dec(_f$collectionName),
       name: data.dec(_f$name),
+      photo: data.dec(_f$photo),
       mobileNumber: data.dec(_f$mobileNumber),
       dateOfBirth: data.dec(_f$dateOfBirth),
       address: data.dec(_f$address),
@@ -201,6 +209,7 @@ abstract class MemberDtoCopyWith<$R, $In extends MemberDto, $Out>
     String? collectionId,
     String? collectionName,
     String? name,
+    String? photo,
     String? mobileNumber,
     String? dateOfBirth,
     String? address,
@@ -230,6 +239,7 @@ class _MemberDtoCopyWithImpl<$R, $Out>
     String? collectionId,
     String? collectionName,
     String? name,
+    Object? photo = $none,
     Object? mobileNumber = $none,
     Object? dateOfBirth = $none,
     Object? address = $none,
@@ -247,6 +257,7 @@ class _MemberDtoCopyWithImpl<$R, $Out>
       if (collectionId != null) #collectionId: collectionId,
       if (collectionName != null) #collectionName: collectionName,
       if (name != null) #name: name,
+      if (photo != $none) #photo: photo,
       if (mobileNumber != $none) #mobileNumber: mobileNumber,
       if (dateOfBirth != $none) #dateOfBirth: dateOfBirth,
       if (address != $none) #address: address,
@@ -266,6 +277,7 @@ class _MemberDtoCopyWithImpl<$R, $Out>
     collectionId: data.get(#collectionId, or: $value.collectionId),
     collectionName: data.get(#collectionName, or: $value.collectionName),
     name: data.get(#name, or: $value.name),
+    photo: data.get(#photo, or: $value.photo),
     mobileNumber: data.get(#mobileNumber, or: $value.mobileNumber),
     dateOfBirth: data.get(#dateOfBirth, or: $value.dateOfBirth),
     address: data.get(#address, or: $value.address),
