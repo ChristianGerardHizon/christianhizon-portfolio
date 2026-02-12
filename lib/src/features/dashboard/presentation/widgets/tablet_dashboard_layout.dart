@@ -3,8 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import 'dashboard_footer.dart';
+import 'expiring_memberships_section.dart';
 import 'inventory_alerts_section.dart';
-import 'kanban_board_section.dart';
 import 'kpi_summary_section.dart';
 import 'quick_actions_section.dart';
 
@@ -71,8 +71,8 @@ class TabletDashboardLayout extends HookConsumerWidget {
           const KpiSummarySection(),
           const SizedBox(height: 24),
 
-          // Order Board (Kanban)
-          const KanbanBoardSection(),
+          // Expiring Memberships Section
+          const ExpiringMembershipsSection(),
           const SizedBox(height: 24),
 
           // Inventory Alerts Section
