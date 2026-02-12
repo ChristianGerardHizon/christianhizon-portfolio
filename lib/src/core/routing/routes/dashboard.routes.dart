@@ -7,9 +7,11 @@ import '../../../features/dashboard/presentation/controllers/dashboard_kpi_provi
 import '../../../features/dashboard/presentation/controllers/expiring_memberships_controller.dart';
 import '../../../features/dashboard/presentation/controllers/inventory_alerts_controller.dart';
 import '../../../features/dashboard/presentation/controllers/new_members_controller.dart';
+import '../../../features/dashboard/presentation/controllers/dashboard_members_controller.dart';
 import '../../../features/dashboard/presentation/controllers/todays_checkins_controller.dart';
 import '../../../features/dashboard/presentation/controllers/todays_sales_controller.dart';
 import '../../../features/dashboard/presentation/controllers/top_selling_controller.dart';
+import '../../../features/dashboard/presentation/widgets/dashboard_members_section.dart';
 import '../../../features/dashboard/presentation/widgets/expiring_memberships_section.dart';
 import '../../../features/dashboard/presentation/widgets/inventory_alerts_section.dart';
 import '../../../features/dashboard/presentation/widgets/kpi_summary_section.dart';
@@ -66,6 +68,7 @@ class DashboardPage extends ConsumerWidget {
           ref.invalidate(activeMembersCountProvider);
           ref.invalidate(todaysNewMembersCountProvider);
           ref.invalidate(expiringMembershipsProvider);
+          ref.invalidate(dashboardMembersProvider);
           ref.invalidate(productsNearExpirationCountProvider);
           ref.invalidate(productsExpiredCountProvider);
           ref.invalidate(lowStockProductsCountProvider);
@@ -86,6 +89,10 @@ class DashboardPage extends ConsumerWidget {
 
               // Quick Actions Section
               const QuickActionsSection(),
+              const SizedBox(height: 24),
+
+              // Members Section
+              const DashboardMembersSection(),
               const SizedBox(height: 24),
 
               // Top Selling Products Section

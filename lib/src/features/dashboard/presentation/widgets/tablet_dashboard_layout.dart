@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../settings/presentation/controllers/current_branch_controller.dart';
 import 'dashboard_footer.dart';
+import 'dashboard_members_section.dart';
 import 'expiring_memberships_section.dart';
 import 'inventory_alerts_section.dart';
 import 'kpi_summary_section.dart';
@@ -65,6 +66,10 @@ class TabletDashboardLayout extends HookConsumerWidget {
 
           // Quick Actions Section
           const QuickActionsSection(),
+          const SizedBox(height: 24),
+
+          // Members Section
+          const DashboardMembersSection(),
           const SizedBox(height: 24),
 
           // KPI Summary Section
