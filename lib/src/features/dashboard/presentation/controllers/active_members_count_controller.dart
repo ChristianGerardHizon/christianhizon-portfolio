@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../../settings/presentation/controllers/current_branch_controller.dart';
@@ -14,12 +15,14 @@ part 'active_members_count_controller.g.dart';
 Future<int> activeMembersCount(Ref ref) async {
   final branchId = ref.watch(currentBranchIdProvider);
   final pb = ref.read(pocketbaseProvider);
-  final now = DateTime.now().toUtc().toIso8601String();
+  final now = DateTime.now();
 
-  String filter =
-      'status = "active" && startDate <= "$now" && endDate >= "$now"';
+  final filter = PBFilter()
+      .equals('status', 'active')
+      .lessOrEqual('startDate', now)
+      .greaterOrEqual('endDate', now);
   if (branchId != null) {
-    filter += ' && branch = "$branchId"';
+    filter.relation('branch', branchId);
   }
 
   final result = await pb
@@ -27,7 +30,7 @@ Future<int> activeMembersCount(Ref ref) async {
       .getList(
         page: 1,
         perPage: 1,
-        filter: filter,
+        filter: filter.buildOrEmpty(),
       );
 
   return result.totalItems;

@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 
@@ -15,12 +16,14 @@ Future<int> todaysNewMembersCount(Ref ref) async {
   final now = DateTime.now();
   final startOfToday = DateTime(now.year, now.month, now.day);
 
+  final filter = PBFilter().after('created', startOfToday);
+
   final result = await pb
       .collection(PocketBaseCollections.members)
       .getList(
         page: 1,
         perPage: 1,
-        filter: 'created >= "${startOfToday.toUtc().toIso8601String()}"',
+        filter: filter.buildOrEmpty(),
       );
 
   return result.totalItems;

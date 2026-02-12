@@ -59,4 +59,4 @@ final class ExpiringMembershipsProvider extends $FunctionalProvider<
 }
 
 String _$expiringMembershipsHash() =>
-    r'd1d1ea28c14249f007bfe908bcaf8b76469ea771';
+    r'f8ae560f239cb8d03dd6dbd337dece06ee3ede10';

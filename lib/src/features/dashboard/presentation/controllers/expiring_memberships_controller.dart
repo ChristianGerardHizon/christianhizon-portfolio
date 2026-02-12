@@ -1,9 +1,9 @@
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
-import '../../../../core/utils/date_utils.dart';
 import '../../../memberships/data/dto/member_membership_dto.dart';
 import '../../../memberships/domain/member_membership.dart';
 import '../../../settings/presentation/controllers/current_branch_controller.dart';
@@ -21,13 +21,12 @@ Future<List<MemberMembership>> expiringMemberships(Ref ref) async {
   final now = DateTime.now();
   final sevenDaysLater = now.add(const Duration(days: 7));
 
-  final nowUtc = now.toUtcIso8601();
-  final laterUtc = sevenDaysLater.toUtcIso8601();
-
-  String filter =
-      'status = "active" && endDate >= "$nowUtc" && endDate <= "$laterUtc"';
+  final filter = PBFilter()
+      .equals('status', 'active')
+      .greaterOrEqual('endDate', now)
+      .lessOrEqual('endDate', sevenDaysLater);
   if (branchId != null) {
-    filter += ' && branch = "$branchId"';
+    filter.relation('branch', branchId);
   }
 
   final result = await pb
@@ -35,7 +34,7 @@ Future<List<MemberMembership>> expiringMemberships(Ref ref) async {
       .getList(
         page: 1,
         perPage: 10,
-        filter: filter,
+        filter: filter.buildOrEmpty(),
         sort: 'endDate',
         expand: 'member,membership',
       );

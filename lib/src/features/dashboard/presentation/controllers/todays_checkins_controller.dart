@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/packages/pocketbase/pb_filter.dart';
 import '../../../../core/packages/pocketbase/pocketbase_collections.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../../settings/presentation/controllers/current_branch_controller.dart';
@@ -14,9 +15,9 @@ Future<int> todaysCheckInsCount(Ref ref) async {
   final now = DateTime.now();
   final startOfToday = DateTime(now.year, now.month, now.day);
 
-  String filter = 'checkInTime >= "${startOfToday.toUtc().toIso8601String()}"';
+  final filter = PBFilter().after('checkInTime', startOfToday);
   if (branchId != null) {
-    filter += ' && branch = "$branchId"';
+    filter.relation('branch', branchId);
   }
 
   final result = await pb
@@ -24,7 +25,7 @@ Future<int> todaysCheckInsCount(Ref ref) async {
       .getList(
         page: 1,
         perPage: 1,
-        filter: filter,
+        filter: filter.buildOrEmpty(),
       );
 
   return result.totalItems;

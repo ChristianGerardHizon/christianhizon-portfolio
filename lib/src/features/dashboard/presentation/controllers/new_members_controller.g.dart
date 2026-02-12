@@ -54,4 +54,4 @@ final class TodaysNewMembersCountProvider
 }
 
 String _$todaysNewMembersCountHash() =>
-    r'67ecd477d2bc390af5d981c0ef81a4489e5b799b';
+    r'52fbc35d5aaf52a91b147e30dc9b90e819bd953d';

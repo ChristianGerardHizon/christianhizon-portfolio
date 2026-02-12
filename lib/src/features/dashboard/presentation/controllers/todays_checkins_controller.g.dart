@@ -45,4 +45,4 @@ final class TodaysCheckInsCountProvider
 }
 
 String _$todaysCheckInsCountHash() =>
-    r'7c4e664bdaa9433249a59b63bd35515e4af09d9e';
+    r'a4dc7f9ae52e034e1abd55f4f0e1cb6480725fef';
