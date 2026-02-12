@@ -103,7 +103,6 @@ class CurrentBranchController extends _$CurrentBranchController {
     ref.invalidate(todaySalesProvider);
     ref.invalidate(inventoryAlertsSummaryProvider);
     ref.invalidate(topSellingProductsProvider);
-    ref.invalidate(topSellingServicesProvider);
 
     // Invalidate report providers
     ref.invalidate(salesReportProvider);

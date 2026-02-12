@@ -1,0 +1,61 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'dashboard_members_controller.dart';
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+/// All members with their latest active membership attached.
+///
+/// Members with expiring-soon memberships are sorted first,
+/// then active, then no membership.
+
+@ProviderFor(dashboardMembers)
+final dashboardMembersProvider = DashboardMembersProvider._();
+
+/// All members with their latest active membership attached.
+///
+/// Members with expiring-soon memberships are sorted first,
+/// then active, then no membership.
+
+final class DashboardMembersProvider extends $FunctionalProvider<
+        AsyncValue<List<DashboardMember>>,
+        List<DashboardMember>,
+        FutureOr<List<DashboardMember>>>
+    with
+        $FutureModifier<List<DashboardMember>>,
+        $FutureProvider<List<DashboardMember>> {
+  /// All members with their latest active membership attached.
+  ///
+  /// Members with expiring-soon memberships are sorted first,
+  /// then active, then no membership.
+  DashboardMembersProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'dashboardMembersProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$dashboardMembersHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<DashboardMember>> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<DashboardMember>> create(Ref ref) {
+    return dashboardMembers(ref);
+  }
+}
+
+String _$dashboardMembersHash() => r'9586a43cbb8ed0daf6f04bed179082e78c7f12a7';

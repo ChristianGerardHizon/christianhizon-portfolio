@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/routing/routes/check_in.routes.dart';
 import '../../../../core/routing/routes/sales.routes.dart';
-import '../../../customers/presentation/widgets/customer_form_sheet.dart';
+import '../../../members/presentation/widgets/member_form_dialog.dart';
 
 /// Section displaying quick action buttons on the dashboard.
 ///
@@ -48,6 +49,13 @@ class QuickActionsSection extends ConsumerWidget {
                   const SizedBox(width: 12),
                 ],
                 _QuickActionButton(
+                  icon: Icons.how_to_reg,
+                  label: 'Check-In',
+                  color: Colors.teal,
+                  onTap: () => const CheckInRoute().go(context),
+                ),
+                const SizedBox(width: 12),
+                _QuickActionButton(
                   icon: Icons.point_of_sale,
                   label: 'New Sale',
                   color: Colors.green,
@@ -56,9 +64,9 @@ class QuickActionsSection extends ConsumerWidget {
                 const SizedBox(width: 12),
                 _QuickActionButton(
                   icon: Icons.person_add,
-                  label: 'New Customer',
+                  label: 'New Member',
                   color: Colors.blue,
-                  onTap: () => showCustomerFormSheet(context),
+                  onTap: () => showMemberFormDialog(context),
                 ),
               ],
             ),

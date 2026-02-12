@@ -9,10 +9,8 @@ import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../settings/presentation/controllers/current_branch_controller.dart';
 import '../../products/data/repositories/product_lot_repository.dart';
 import '../../products/data/repositories/product_repository.dart';
-import '../../services/domain/sale_service_item.dart';
 import '../data/repositories/payment_repository.dart';
 import '../data/repositories/sales_repository.dart';
-import '../domain/order_status.dart';
 import '../domain/payment_method.dart';
 import '../domain/payment_type.dart';
 import '../domain/sale.dart';
@@ -92,21 +90,7 @@ class CheckoutController extends _$CheckoutController {
       );
     }).toList();
 
-    // Convert cart service items to sale service items
-    final saleServiceItems = cartState.serviceItems.map((cartServiceItem) {
-      final service = cartServiceItem.service;
-      return SaleServiceItem(
-        id: '',
-        saleId: '',
-        serviceId: cartServiceItem.serviceId,
-        serviceName: service?.name ?? 'Unknown Service',
-        quantity: cartServiceItem.quantity,
-        unitPrice: cartServiceItem.effectivePrice,
-        subtotal: cartServiceItem.total,
-      );
-    }).toList();
-
-    // Create the sale with initial orderStatus: pending
+    // Create the sale
     final sale = Sale(
       id: '', // Will be assigned by backend
       receiptNumber: receiptNumber,
@@ -114,7 +98,6 @@ class CheckoutController extends _$CheckoutController {
       cashierId: cashierId,
       totalAmount: cartState.total,
       status: 'pending',
-      orderStatus: OrderStatus.pending,
       isPaid: false, // Will be updated when payment is recorded
       customerId: customerId,
       customerName: customerName,
@@ -132,7 +115,6 @@ class CheckoutController extends _$CheckoutController {
     final result = await salesRepo.createSale(
       sale,
       saleItems,
-      serviceItems: saleServiceItems,
     );
 
     return result.fold(
