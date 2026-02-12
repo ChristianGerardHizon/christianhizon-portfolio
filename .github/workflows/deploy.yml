@@ -129,8 +129,8 @@ jobs:
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/android/app/upload-keystore.jks
 
       # BUILD WEB & APK
-      - name: Build Web (WASM)
-        run: flutter build web --wasm --release --build-name=${{ env.STAGING_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
+      - name: Build Web
+        run: flutter build web --release --build-name=${{ env.STAGING_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
       - name: Build APK (Release)
         env:
