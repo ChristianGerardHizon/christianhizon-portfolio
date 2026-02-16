@@ -128,52 +128,36 @@ class SaleHighlightBanner extends StatelessWidget {
       );
     }
 
-    // Priority 3: Pending + Unpaid
-    if (status == 'pending' && !isPaid) {
+    // Priority 3: Pending
+    if (status == 'pending') {
+      return _HighlightInfo(
+        color: Colors.grey,
+        icon: Icons.schedule,
+        title: 'Pending',
+        description: 'This sale is pending.',
+      );
+    }
+
+    // Priority 4: Awaiting Payment
+    if (status == 'awaitingpayment') {
       return _HighlightInfo(
         color: Colors.amber.shade700,
-        icon: Icons.schedule,
-        title: 'Pending - Payment pending',
-        description: 'Sale is pending and payment has not been received.',
-        secondaryInfo: 'Payment pending',
+        icon: Icons.payment,
+        title: 'Awaiting Payment',
+        description: 'This sale is awaiting full payment.',
+        secondaryInfo: 'Partial payment received',
         secondaryIcon: Icons.pending,
         secondaryColor: Colors.orange,
       );
     }
 
-    // Priority 4: Pending + Paid
-    if (status == 'pending' && isPaid) {
-      return _HighlightInfo(
-        color: Colors.amber.shade700,
-        icon: Icons.schedule,
-        title: 'Pending - Payment received',
-        description: 'Sale is pending but payment has been received.',
-        secondaryInfo: 'Payment received',
-        secondaryIcon: Icons.check_circle,
-        secondaryColor: Colors.green,
-      );
-    }
-
-    // Priority 5: Completed + Unpaid (unusual case)
-    if (status == 'completed' && !isPaid) {
-      return _HighlightInfo(
-        color: Colors.red.shade600,
-        icon: Icons.warning,
-        title: 'Completed - Awaiting Payment',
-        description: 'Sale is completed but payment is still pending.',
-        secondaryInfo: 'Payment required',
-        secondaryIcon: Icons.error,
-        secondaryColor: Colors.red,
-      );
-    }
-
-    // Priority 6: Completed + Paid
-    if (status == 'completed' && isPaid) {
+    // Priority 5: Paid
+    if (status == 'paid' || (status == 'completed' && isPaid)) {
       return _HighlightInfo(
         color: Colors.green,
         icon: Icons.task_alt,
-        title: 'Completed',
-        description: 'Sale is completed and fully paid.',
+        title: 'Paid',
+        description: 'This sale has been fully paid.',
         secondaryInfo: 'Fully paid',
         secondaryIcon: Icons.paid,
         secondaryColor: Colors.green,

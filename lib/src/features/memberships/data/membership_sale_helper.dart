@@ -42,7 +42,7 @@ Future<Either<Failure, Sale>> createMembershipSale({
     branchId: branchId,
     cashierId: cashierId,
     totalAmount: totalAmount,
-    status: 'pending',
+    status: 'awaitingPayment',
     isPaid: false,
     customerId: memberId,
     customerName: memberName,

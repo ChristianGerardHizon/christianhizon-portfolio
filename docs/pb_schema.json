@@ -3603,10 +3603,12 @@
                 "system": false,
                 "type": "select",
                 "values": [
+                    "pending",
+                    "awaitingPayment",
+                    "paid",
                     "completed",
                     "refunded",
-                    "voided",
-                    "pending"
+                    "voided"
                 ]
             },
             {
