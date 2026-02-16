@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../controllers/members_controller.dart';
+import '../controllers/paginated_members_controller.dart';
 import 'member_list_panel.dart';
 
 /// Two-pane tablet layout for members.
 ///
-/// Left pane: Member list with search
+/// Left pane: Member list with search, sort, filter
 /// Right pane: Member detail from router or empty state
 class TabletMembersLayout extends ConsumerWidget {
   const TabletMembersLayout({
@@ -20,7 +20,7 @@ class TabletMembersLayout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final membersAsync = ref.watch(membersControllerProvider);
+    final membersAsync = ref.watch(paginatedMembersControllerProvider);
 
     // Get selected member ID from current route
     final routerState = GoRouterState.of(context);
@@ -37,19 +37,25 @@ class TabletMembersLayout extends ConsumerWidget {
             Text('Error: ${error.toString()}'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () =>
-                  ref.read(membersControllerProvider.notifier).refresh(),
+              onPressed: () => ref
+                  .read(paginatedMembersControllerProvider.notifier)
+                  .refresh(),
               child: const Text('Retry'),
             ),
           ],
         ),
       ),
-      data: (members) => Row(
+      data: (paginatedState) => Row(
         children: [
           // List panel
           SizedBox(
             width: 320,
-            child: MemberListPanel(members: members),
+            child: MemberListPanel(
+              members: paginatedState.items,
+              totalCount: paginatedState.totalItems,
+              hasMore: paginatedState.hasMore,
+              isLoadingMore: paginatedState.isLoadingMore,
+            ),
           ),
           const VerticalDivider(width: 1),
           // Detail panel from router

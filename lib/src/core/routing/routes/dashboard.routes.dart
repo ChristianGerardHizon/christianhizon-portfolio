@@ -12,7 +12,6 @@ import '../../../features/dashboard/presentation/controllers/todays_checkins_con
 import '../../../features/dashboard/presentation/controllers/todays_sales_controller.dart';
 import '../../../features/dashboard/presentation/controllers/top_selling_controller.dart';
 import '../../../features/dashboard/presentation/widgets/dashboard_members_section.dart';
-import '../../../features/dashboard/presentation/widgets/expiring_memberships_section.dart';
 import '../../../features/dashboard/presentation/widgets/inventory_alerts_section.dart';
 import '../../../features/dashboard/presentation/widgets/kpi_summary_section.dart';
 import '../../../features/dashboard/presentation/widgets/quick_actions_section.dart';
@@ -101,10 +100,6 @@ class DashboardPage extends ConsumerWidget {
                 icon: Icons.inventory_2,
                 provider: topSellingProductsProvider,
               ),
-              const SizedBox(height: 24),
-
-              // Expiring Memberships Section
-              const ExpiringMembershipsSection(),
               const SizedBox(height: 24),
 
               // Inventory Alerts Section

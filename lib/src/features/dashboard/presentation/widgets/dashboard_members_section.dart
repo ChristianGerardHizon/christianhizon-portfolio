@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -6,28 +7,36 @@ import '../../../../core/routing/routes/members.routes.dart';
 import '../../../../core/widgets/cached_avatar.dart';
 import '../controllers/dashboard_members_controller.dart';
 
-/// Section displaying all members with membership expiration tags.
-///
-/// Shows member name, membership plan, and an expiration chip:
-/// - Red: expires today/tomorrow
-/// - Orange: expires within 7 days
-/// - Green: active membership (>7 days)
-/// - Grey: no active membership
-class DashboardMembersSection extends ConsumerWidget {
-  const DashboardMembersSection({super.key});
+/// Number of members to show initially and per "load more" batch.
+const _pageSize = 20;
 
-  static const _maxVisible = 10;
+/// Section displaying all members as a grid of photo cards on the dashboard.
+///
+/// Shows near-expiration members first. Includes search and lazy loading.
+class DashboardMembersSection extends HookConsumerWidget {
+  const DashboardMembersSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final membersAsync = ref.watch(dashboardMembersProvider);
+    final searchQuery = useState('');
+    final visibleCount = useState(_pageSize);
 
     return membersAsync.when(
       data: (members) {
         if (members.isEmpty) return const SizedBox.shrink();
 
-        final visible = members.take(_maxVisible).toList();
-        final hasMore = members.length > _maxVisible;
+        // Filter by search query
+        final filtered = searchQuery.value.isEmpty
+            ? members
+            : members.where((dm) {
+                final query = searchQuery.value.toLowerCase();
+                return dm.member.name.toLowerCase().contains(query);
+              }).toList();
+
+        // Paginate
+        final visible = filtered.take(visibleCount.value).toList();
+        final hasMore = filtered.length > visibleCount.value;
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -78,18 +87,74 @@ class DashboardMembersSection extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              // Member list
-              ...visible.map(
-                (dm) => _DashboardMemberTile(dashboardMember: dm),
+              // Search bar
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'Search member...',
+                  prefixIcon: const Icon(Icons.search, size: 20),
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onChanged: (value) {
+                  searchQuery.value = value;
+                  // Reset pagination when search changes
+                  visibleCount.value = _pageSize;
+                },
               ),
+              const SizedBox(height: 12),
+              // Member photo grid
+              if (filtered.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24),
+                  child: Center(
+                    child: Text(
+                      'No members found',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant,
+                          ),
+                    ),
+                  ),
+                )
+              else
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final crossAxisCount =
+                        constraints.maxWidth > 600 ? 4 : 3;
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: 0.75,
+                      ),
+                      itemCount: visible.length,
+                      itemBuilder: (context, index) {
+                        return _DashboardMemberCard(
+                          dashboardMember: visible[index],
+                        );
+                      },
+                    );
+                  },
+                ),
+              // Load more button
               if (hasMore)
                 Padding(
-                  padding: const EdgeInsets.only(top: 4),
+                  padding: const EdgeInsets.only(top: 12),
                   child: Center(
-                    child: TextButton(
-                      onPressed: () => const MembersRoute().go(context),
-                      child: Text(
-                        '+ ${members.length - _maxVisible} more members',
+                    child: TextButton.icon(
+                      onPressed: () {
+                        visibleCount.value += _pageSize;
+                      },
+                      icon: const Icon(Icons.expand_more, size: 18),
+                      label: Text(
+                        'Show more (${filtered.length - visibleCount.value} remaining)',
                       ),
                     ),
                   ),
@@ -112,8 +177,10 @@ class DashboardMembersSection extends ConsumerWidget {
   }
 }
 
-class _DashboardMemberTile extends StatelessWidget {
-  const _DashboardMemberTile({required this.dashboardMember});
+/// A card showing a member's photo with an expiration badge overlay
+/// and their name below.
+class _DashboardMemberCard extends StatelessWidget {
+  const _DashboardMemberCard({required this.dashboardMember});
 
   final DashboardMember dashboardMember;
 
@@ -122,109 +189,125 @@ class _DashboardMemberTile extends StatelessWidget {
     final theme = Theme.of(context);
     final member = dashboardMember.member;
     final membership = dashboardMember.activeMembership;
+    final latestMembership = dashboardMember.latestMembership;
     final days = dashboardMember.daysUntilExpiry;
+    final isExpired = dashboardMember.isExpired;
+
+    // Determine which membership to show date for
+    final displayMembership = membership ?? latestMembership;
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 6),
       clipBehavior: Clip.antiAlias,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: isExpired
+            ? BorderSide(color: theme.colorScheme.error, width: 2)
+            : BorderSide.none,
+      ),
       child: InkWell(
         onTap: () => MemberDetailRoute(id: member.id).go(context),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Row(
-            children: [
-              CachedAvatar(
-                imageUrl: member.photo,
-                radius: 18,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      member.name,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Photo with days left badge overlay
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  CachedImage(imageUrl: member.photo),
+                  if (isExpired)
+                    Positioned(
+                      top: 6,
+                      left: 6,
+                      child: _DaysLeftBadge(days: 0),
+                    )
+                  else if (days != null && days <= 7)
+                    Positioned(
+                      top: 6,
+                      left: 6,
+                      child: _DaysLeftBadge(days: days),
                     ),
-                    Text(
-                      membership?.membershipName ?? 'No active membership',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                ],
+              ),
+            ),
+            // Member name and expiry date
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              child: Column(
+                children: [
+                  Text(
+                    member.name,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
-                  ],
-                ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    displayMembership?.endDate != null
+                        ? DateFormat('MMM d, y')
+                            .format(displayMembership!.endDate)
+                        : 'No membership',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: isExpired
+                          ? theme.colorScheme.error
+                          : theme.colorScheme.onSurfaceVariant,
+                      fontSize: 10,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              _ExpirationChip(days: days, endDate: membership?.endDate),
-              const SizedBox(width: 4),
-              Icon(
-                Icons.chevron_right,
-                size: 18,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _ExpirationChip extends StatelessWidget {
-  const _ExpirationChip({required this.days, this.endDate});
+/// A compact badge showing how many days are left until expiration.
+class _DaysLeftBadge extends StatelessWidget {
+  const _DaysLeftBadge({required this.days});
 
   final int? days;
-  final DateTime? endDate;
 
   @override
   Widget build(BuildContext context) {
     final String label;
     final Color backgroundColor;
-    final Color foregroundColor;
 
     if (days == null) {
-      // No active membership
       label = 'No membership';
-      backgroundColor = Colors.grey.shade200;
-      foregroundColor = Colors.grey.shade700;
+      backgroundColor = Colors.grey.shade700;
     } else if (days! <= 0) {
-      label = 'Expires today';
-      backgroundColor = Colors.red.shade100;
-      foregroundColor = Colors.red.shade800;
+      label = 'Expired';
+      backgroundColor = Colors.red.shade700;
     } else if (days == 1) {
-      label = 'Expires tomorrow';
-      backgroundColor = Colors.red.shade100;
-      foregroundColor = Colors.red.shade800;
-    } else if (days! <= 7) {
-      label = 'Expires in $days days';
-      backgroundColor = Colors.orange.shade100;
-      foregroundColor = Colors.orange.shade800;
+      label = '1 day left';
+      backgroundColor = Colors.red.shade700;
     } else {
-      // > 7 days — show date
-      final dateStr = DateFormat.MMMd().format(endDate!);
-      label = 'Expires $dateStr';
-      backgroundColor = Colors.green.shade100;
-      foregroundColor = Colors.green.shade800;
+      label = '$days days left';
+      backgroundColor = days! <= 3 ? Colors.red.shade700 : Colors.orange.shade700;
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
+        color: backgroundColor.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: foregroundColor,
+              color: Colors.white,
               fontWeight: FontWeight.w600,
+              fontSize: 9,
             ),
       ),
     );

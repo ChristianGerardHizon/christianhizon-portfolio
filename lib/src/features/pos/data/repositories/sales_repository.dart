@@ -92,7 +92,7 @@ class SalesRepositoryImpl implements SalesRepository {
           'totalAmount': sale.totalAmount,
           'status': sale.status,
           'isPaid': sale.isPaid,
-          'customer': sale.customerId,
+          'member': sale.customerId,
           'customerName': sale.customerName,
           'notes': sale.notes,
         };
@@ -273,7 +273,7 @@ class SalesRepositoryImpl implements SalesRepository {
     return TaskEither.tryCatch(
       () async {
         final records = await _sales.getFullList(
-          filter: 'customer = "$customerId"',
+          filter: 'member = "$customerId"',
           sort: '-created',
         );
         return records.map(_toSaleEntity).toList();

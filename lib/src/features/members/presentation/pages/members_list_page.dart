@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../controllers/members_controller.dart';
+import '../controllers/paginated_members_controller.dart';
 import '../widgets/member_list_panel.dart';
 
 /// Members list page for mobile view.
@@ -10,10 +10,15 @@ class MembersListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final membersAsync = ref.watch(membersControllerProvider);
+    final membersAsync = ref.watch(paginatedMembersControllerProvider);
 
     return membersAsync.when(
-      data: (members) => MemberListPanel(members: members),
+      data: (paginatedState) => MemberListPanel(
+        members: paginatedState.items,
+        totalCount: paginatedState.totalItems,
+        hasMore: paginatedState.hasMore,
+        isLoadingMore: paginatedState.isLoadingMore,
+      ),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(
         child: Column(
@@ -24,7 +29,8 @@ class MembersListPage extends ConsumerWidget {
             Text('Error loading members: $error'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => ref.invalidate(membersControllerProvider),
+              onPressed: () =>
+                  ref.invalidate(paginatedMembersControllerProvider),
               child: const Text('Retry'),
             ),
           ],

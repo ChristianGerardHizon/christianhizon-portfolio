@@ -13,7 +13,9 @@ This document contains all entities (domain models) in the project with their fi
 | Organization | Branch | `branches` | Business branches/locations |
 | Member | Member | `members` | Gym members |
 | Membership | Membership | `memberships` | Membership plan templates |
+| Membership | MembershipAddOn | `membershipAddOns` | Add-on options for membership plans |
 | Membership | MemberMembership | `memberMemberships` | Member subscriptions |
+| Membership | MemberMembershipAddOn | `memberMembershipAddOns` | Selected add-ons on purchased memberships |
 | Check-In | CheckIn | `checkIns` | Member check-in records |
 | Product | Product | `products` | Products/inventory items |
 | Product | ProductCategory | `productCategories` | Product categories (hierarchical) |
@@ -187,7 +189,32 @@ Membership plan templates.
 
 **Collection:** `memberships`
 
-**Referenced by:** MemberMembership
+**Referenced by:** MemberMembership, MembershipAddOn
+
+---
+
+### MembershipAddOn
+
+Add-on options for membership plans (e.g., "Treadmill Access", "Coach/Instructor", "Pool Access").
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | String | Yes | PocketBase record ID |
+| `membership` | String (FK) | Yes | FK to Membership plan |
+| `name` | String | Yes | Add-on name |
+| `description` | String | No | Add-on description |
+| `price` | num | Yes | Price in PHP |
+| `isActive` | bool | No | Whether currently offered |
+| `isDeleted` | bool | No | Soft delete flag |
+| `created` | DateTime | No | Creation timestamp |
+| `updated` | DateTime | No | Last update timestamp |
+
+**Collection:** `membershipAddOns`
+
+**Relationships:**
+- `membership` -> Membership (cascadeDelete)
+
+**Referenced by:** MemberMembershipAddOn
 
 ---
 
@@ -223,6 +250,28 @@ Member subscriptions linking members to membership plans.
 - `isCurrentlyActive` - Status is active and current date is within start/end range
 - `isExpired` - Current date is past end date
 - `daysRemaining` - Days until expiry (0 if expired)
+
+---
+
+### MemberMembershipAddOn
+
+Records of add-ons selected by a member when purchasing a membership. Stores snapshots of add-on name and price at time of purchase.
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | String | Yes | PocketBase record ID |
+| `memberMembership` | String (FK) | Yes | FK to MemberMembership |
+| `membershipAddOn` | String (FK) | Yes | FK to MembershipAddOn |
+| `addOnName` | String | Yes | Snapshot of add-on name at purchase |
+| `price` | num | Yes | Snapshot of add-on price at purchase (PHP) |
+| `created` | DateTime | No | Creation timestamp |
+| `updated` | DateTime | No | Last update timestamp |
+
+**Collection:** `memberMembershipAddOns`
+
+**Relationships:**
+- `memberMembership` -> MemberMembership (cascadeDelete)
+- `membershipAddOn` -> MembershipAddOn
 
 ---
 
@@ -391,7 +440,7 @@ Cashier layout groups per branch.
 
 ## Summary
 
-**Total Collections:** 17 (+ 9 view collections)
+**Total Collections:** 19 (+ 9 view collections)
 
 **Enums:**
 
