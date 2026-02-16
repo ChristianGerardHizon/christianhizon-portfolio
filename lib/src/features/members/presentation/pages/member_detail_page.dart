@@ -497,7 +497,11 @@ class _MemberMembershipsSection extends ConsumerWidget {
           separatorBuilder: (_, __) => const Divider(height: 1),
           itemBuilder: (context, index) {
             final mm = memberships[index];
-            final statusColor = _statusColor(mm.status);
+            final effectiveExpired = mm.isExpired &&
+                mm.status == MemberMembershipStatus.active;
+            final statusColor = effectiveExpired
+                ? Colors.orange
+                : _statusColor(mm.status);
 
             return ListTile(
               contentPadding: EdgeInsets.zero,
@@ -528,7 +532,9 @@ class _MemberMembershipsSection extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      mm.status.displayName,
+                      effectiveExpired
+                          ? 'Expired'
+                          : mm.status.displayName,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: statusColor,
                         fontWeight: FontWeight.w600,

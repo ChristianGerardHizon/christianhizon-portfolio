@@ -1,3 +1,4 @@
+import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/repositories/member_repository.dart';
@@ -36,6 +37,21 @@ class MembersController extends _$MembersController {
   /// Creates a new member.
   Future<Member?> createMember(Member member) async {
     final result = await _repository.create(member);
+    return result.fold(
+      (failure) => null,
+      (created) {
+        refresh();
+        return created;
+      },
+    );
+  }
+
+  /// Creates a new member with an optional photo.
+  Future<Member?> createMemberWithPhoto(
+    Member member, {
+    http.MultipartFile? photo,
+  }) async {
+    final result = await _repository.createWithPhoto(member, photo: photo);
     return result.fold(
       (failure) => null,
       (created) {

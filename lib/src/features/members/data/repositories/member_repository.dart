@@ -35,6 +35,10 @@ abstract class MemberRepository {
   /// Searches members by name or mobile number.
   FutureEither<List<Member>> search(String query, {List<String>? fields});
 
+  /// Creates a new member with an optional photo.
+  FutureEither<Member> createWithPhoto(Member member,
+      {http.MultipartFile? photo});
+
   /// Updates a member's photo image.
   FutureEither<Member> updatePhoto(String id, http.MultipartFile file);
 
@@ -167,6 +171,37 @@ class MemberRepositoryImpl implements MemberRepository {
         };
 
         final record = await _collection.create(body: body);
+        invalidateCache();
+        return _toEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<Member> createWithPhoto(
+    Member member, {
+    http.MultipartFile? photo,
+  }) async {
+    return TaskEither.tryCatch(
+      () async {
+        final body = <String, dynamic>{
+          'name': member.name,
+          'mobileNumber': member.mobileNumber,
+          'dateOfBirth': member.dateOfBirth?.toUtcIso8601(),
+          'address': member.address,
+          'sex': member.sex?.name,
+          'remarks': member.remarks,
+          'addedBy': member.addedBy,
+          'rfidCardId': member.rfidCardId,
+          'email': member.email,
+          'emergencyContact': member.emergencyContact,
+        };
+
+        final record = await _collection.create(
+          body: body,
+          files: photo != null ? [photo] : [],
+        );
         invalidateCache();
         return _toEntity(record);
       },

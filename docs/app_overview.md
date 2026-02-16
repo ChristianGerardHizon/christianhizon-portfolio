@@ -69,8 +69,9 @@ Membership plan management for gym subscriptions.
   - Membership plans list with search
   - Plan detail with duration, price, active/inactive status
   - Create/edit plans via bottom sheet form
-  - Purchase membership flow from member detail page
-- **Key Models**: `Membership`, `MemberMembership`, `MemberMembershipStatus`
+  - **Add-ons per plan** (e.g., Treadmill Access, Coach/Instructor, Locker, Pool Access) — each with its own price, managed from the plan detail page
+  - Purchase membership flow from member detail page with optional add-on selection — total cost = base price + selected add-ons
+- **Key Models**: `Membership`, `MembershipAddOn`, `MemberMembership`, `MemberMembershipAddOn`, `MemberMembershipStatus`
 - **Master-Detail Layout**: Tablet shows list + detail side-by-side
 
 #### Products (`/products`)
@@ -494,6 +495,7 @@ lib/src/
 
 | Date | Feature | Description |
 |------|---------|-------------|
+| Feb 16 | Membership Add-Ons | Add-on options per membership plan (e.g., Treadmill, Coach, Pool) with pricing, selectable during purchase |
 | Feb 12 | Dashboard Adaptation | Replaced laundry metrics with gym KPIs (sales, check-ins, active members, new members), added expiring memberships section |
 | Feb 12 | Check-In Feature | Created full check-in system with member search, membership validation, and recent check-ins list |
 | Feb 12 | Memberships Feature | Created membership plans CRUD, member subscriptions, purchase flow from member detail page |
