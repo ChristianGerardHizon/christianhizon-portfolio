@@ -93,7 +93,12 @@ class MemberDto with MemberDtoMappable {
 
   String? _buildPhotoUrl(String? baseUrl) {
     if (photo == null || photo!.isEmpty || baseUrl == null) return null;
-    return '$baseUrl/api/files/$collectionName/$id/$photo';
+    final url = '$baseUrl/api/files/$collectionName/$id/$photo';
+    // Append updated timestamp to bust CachedNetworkImage cache on re-upload
+    if (updated != null && updated!.isNotEmpty) {
+      return '$url?t=$updated';
+    }
+    return url;
   }
 
   static MemberSex? _parseSex(String? value) {

@@ -51,7 +51,7 @@ class SaleDto with SaleDtoMappable {
       totalAmount: record.getDoubleValue('totalAmount'),
       status: record.getStringValue('status'),
       isPaid: record.getBoolValue('isPaid'),
-      customer: record.getStringValue('customer'),
+      customer: record.getStringValue('member'),
       customerName: record.getStringValue('customerName'),
       notes: record.getStringValue('notes'),
       created: record.get<String>('created'),

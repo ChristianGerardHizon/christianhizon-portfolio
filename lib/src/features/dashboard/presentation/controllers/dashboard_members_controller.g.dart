@@ -10,16 +10,14 @@ part of 'dashboard_members_controller.dart';
 // ignore_for_file: type=lint, type=warning
 /// All members with their latest active membership attached.
 ///
-/// Members with expiring-soon memberships are sorted first,
-/// then active, then no membership.
+/// Sorted with near-expiration members first, then active, then no membership.
 
 @ProviderFor(dashboardMembers)
 final dashboardMembersProvider = DashboardMembersProvider._();
 
 /// All members with their latest active membership attached.
 ///
-/// Members with expiring-soon memberships are sorted first,
-/// then active, then no membership.
+/// Sorted with near-expiration members first, then active, then no membership.
 
 final class DashboardMembersProvider extends $FunctionalProvider<
         AsyncValue<List<DashboardMember>>,
@@ -30,8 +28,7 @@ final class DashboardMembersProvider extends $FunctionalProvider<
         $FutureProvider<List<DashboardMember>> {
   /// All members with their latest active membership attached.
   ///
-  /// Members with expiring-soon memberships are sorted first,
-  /// then active, then no membership.
+  /// Sorted with near-expiration members first, then active, then no membership.
   DashboardMembersProvider._()
       : super(
           from: null,

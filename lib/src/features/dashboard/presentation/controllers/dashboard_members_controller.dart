@@ -28,8 +28,7 @@ class DashboardMember {
 
 /// All members with their latest active membership attached.
 ///
-/// Members with expiring-soon memberships are sorted first,
-/// then active, then no membership.
+/// Sorted with near-expiration members first, then active, then no membership.
 @riverpod
 Future<List<DashboardMember>> dashboardMembers(Ref ref) async {
   final branchId = ref.watch(currentBranchIdProvider);
@@ -76,7 +75,7 @@ Future<List<DashboardMember>> dashboardMembers(Ref ref) async {
     );
   }).toList();
 
-  // 5. Sort: expiring soon first, then active, then no membership
+  // 5. Sort: expiring soon first, then active, then no membership last
   dashboardMembers.sort((a, b) {
     final aDays = a.daysUntilExpiry;
     final bDays = b.daysUntilExpiry;
