@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/constants/constants.dart';
 import '../../../../core/foundation/failure.dart';
 import '../../../../core/foundation/type_defs.dart';
 import '../../../../core/packages/pocketbase/pb_filter.dart';
@@ -36,6 +37,24 @@ abstract class MemberRepository {
 
   /// Updates a member's photo image.
   FutureEither<Member> updatePhoto(String id, http.MultipartFile file);
+
+  /// Fetches members with pagination.
+  FutureEitherPaginated<Member> fetchPaginated({
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+    String? filter,
+    String? sort,
+  });
+
+  /// Searches members with pagination.
+  FutureEitherPaginated<Member> searchPaginated(
+    String query, {
+    List<String>? fields,
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+    String? sort,
+    String? filter,
+  });
 
   /// Invalidates the member list cache.
   void invalidateCache();
@@ -219,6 +238,69 @@ class MemberRepositoryImpl implements MemberRepository {
         final record = await _collection.update(id, files: [file]);
         invalidateCache();
         return _toEntity(record);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEitherPaginated<Member> fetchPaginated({
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+    String? filter,
+    String? sort,
+  }) async {
+    return TaskEither.tryCatch(
+      () async {
+        final result = await _collection.getList(
+          page: page,
+          perPage: perPage,
+          filter: filter,
+          sort: sort ?? 'name',
+        );
+
+        return PaginatedResult<Member>(
+          items: result.items.map(_toEntity).toList(),
+          page: result.page,
+          totalItems: result.totalItems,
+          totalPages: result.totalPages,
+        );
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEitherPaginated<Member> searchPaginated(
+    String query, {
+    List<String>? fields,
+    int page = 1,
+    int perPage = Pagination.defaultPageSize,
+    String? sort,
+    String? filter,
+  }) async {
+    return TaskEither.tryCatch(
+      () async {
+        final searchFields = fields ?? ['name', 'mobileNumber'];
+        final searchFilter =
+            PBFilter().searchFields(query, searchFields).build();
+
+        final combinedFilter =
+            filter != null ? '$searchFilter && $filter' : searchFilter;
+
+        final result = await _collection.getList(
+          page: page,
+          perPage: perPage,
+          filter: combinedFilter,
+          sort: sort ?? 'name',
+        );
+
+        return PaginatedResult<Member>(
+          items: result.items.map(_toEntity).toList(),
+          page: result.page,
+          totalItems: result.totalItems,
+          totalPages: result.totalPages,
+        );
       },
       Failure.handle,
     ).run();

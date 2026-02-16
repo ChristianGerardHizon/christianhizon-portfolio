@@ -10,6 +10,7 @@ import '../../../../core/widgets/form/form_dialog_scaffold.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../domain/member.dart';
 import '../controllers/members_controller.dart';
+import '../controllers/paginated_members_controller.dart';
 
 /// Shows a dialog form for creating or editing a member.
 ///
@@ -84,6 +85,9 @@ class MemberFormDialog extends HookConsumerWidget {
         final created = await controller.createMember(memberData);
         success = created != null;
       }
+
+      // Also refresh paginated list
+      ref.read(paginatedMembersControllerProvider.notifier).refresh();
 
       isSaving.value = false;
 

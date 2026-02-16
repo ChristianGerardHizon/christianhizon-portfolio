@@ -20,6 +20,7 @@ import '../../../pos/data/repositories/sales_repository.dart';
 import '../../../pos/domain/sale.dart';
 import '../controllers/member_provider.dart';
 import '../controllers/members_controller.dart';
+import '../controllers/paginated_members_controller.dart';
 import '../widgets/member_form_dialog.dart';
 
 /// Member detail page showing member information and sales history.
@@ -364,6 +365,7 @@ class MemberDetailPage extends HookConsumerWidget {
         (updatedMember) {
           ref.invalidate(memberProvider(memberId));
           ref.read(membersControllerProvider.notifier).refresh();
+          ref.read(paginatedMembersControllerProvider.notifier).refresh();
           if (context.mounted) {
             showSuccessSnackBar(context, message: 'Photo updated successfully');
           }
@@ -390,6 +392,7 @@ class MemberDetailPage extends HookConsumerWidget {
     if (result == true) {
       ref.invalidate(memberProvider(memberId));
       ref.read(membersControllerProvider.notifier).refresh();
+      ref.read(paginatedMembersControllerProvider.notifier).refresh();
     }
   }
 
@@ -424,8 +427,9 @@ class MemberDetailPage extends HookConsumerWidget {
 
       if (confirmed == true && context.mounted) {
         final success = await ref
-            .read(membersControllerProvider.notifier)
+            .read(paginatedMembersControllerProvider.notifier)
             .deleteMember(id);
+        ref.read(membersControllerProvider.notifier).refresh();
         if (success && context.mounted) {
           showSuccessSnackBar(context, message: 'Member deleted');
           context.pop();

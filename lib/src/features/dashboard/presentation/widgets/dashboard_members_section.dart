@@ -189,13 +189,21 @@ class _DashboardMemberCard extends StatelessWidget {
     final theme = Theme.of(context);
     final member = dashboardMember.member;
     final membership = dashboardMember.activeMembership;
+    final latestMembership = dashboardMember.latestMembership;
     final days = dashboardMember.daysUntilExpiry;
+    final isExpired = dashboardMember.isExpired;
+
+    // Determine which membership to show date for
+    final displayMembership = membership ?? latestMembership;
 
     return Card(
       clipBehavior: Clip.antiAlias,
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
+        side: isExpired
+            ? BorderSide(color: theme.colorScheme.error, width: 2)
+            : BorderSide.none,
       ),
       child: InkWell(
         onTap: () => MemberDetailRoute(id: member.id).go(context),
@@ -208,7 +216,13 @@ class _DashboardMemberCard extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   CachedImage(imageUrl: member.photo),
-                  if (days != null && days <= 7)
+                  if (isExpired)
+                    Positioned(
+                      top: 6,
+                      left: 6,
+                      child: _DaysLeftBadge(days: 0),
+                    )
+                  else if (days != null && days <= 7)
                     Positioned(
                       top: 6,
                       left: 6,
@@ -233,11 +247,14 @@ class _DashboardMemberCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    membership?.endDate != null
-                        ? DateFormat('MMM d, y').format(membership!.endDate)
+                    displayMembership?.endDate != null
+                        ? DateFormat('MMM d, y')
+                            .format(displayMembership!.endDate)
                         : 'No membership',
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                      color: isExpired
+                          ? theme.colorScheme.error
+                          : theme.colorScheme.onSurfaceVariant,
                       fontSize: 10,
                     ),
                     maxLines: 1,
