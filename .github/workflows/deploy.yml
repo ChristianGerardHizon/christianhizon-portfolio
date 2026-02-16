@@ -156,41 +156,24 @@ jobs:
         run: |
           rsync -avz --delete \
             build/web/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry-staging/pb_public/
-
-      - name: "[DEBUG] Verify pb_public after web deploy"
-        run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            'echo "=== pb_public contents ===" && ls -la /opt/pocketbase/hizonelaundry-staging/pb_public/ && echo "=== file count ===" && find /opt/pocketbase/hizonelaundry-staging/pb_public/ -type f | wc -l'
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/ebegym-staging/pb_public/
 
       - name: Deploy migrations to staging server
         run: |
           rsync -avz --delete \
             server/pb_migrations/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry-staging/pb_migrations/
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/ebegym-staging/pb_migrations/
 
       - name: Deploy hooks to staging server
         run: |
           rsync -avz --delete \
             server/pb_hooks/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry-staging/pb_hooks/
-
-      - name: "[DEBUG] Verify pb_public after migrations and hooks deploy"
-        run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            'echo "=== pb_public contents ===" && ls -la /opt/pocketbase/hizonelaundry-staging/pb_public/ && echo "=== file count ===" && find /opt/pocketbase/hizonelaundry-staging/pb_public/ -type f | wc -l'
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/ebegym-staging/pb_hooks/
 
       - name: Restart PocketBase staging service
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            'sudo systemctl restart pocketbase_hizonelaundry-staging.service'
-
-      - name: "[DEBUG] Verify pb_public after PocketBase restart"
-        run: |
-          echo "Waiting 5 seconds for PocketBase to fully start..."
-          sleep 5
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            'echo "=== pb_public contents ===" && ls -la /opt/pocketbase/hizonelaundry-staging/pb_public/ && echo "=== file count ===" && find /opt/pocketbase/hizonelaundry-staging/pb_public/ -type f | wc -l && echo "=== PocketBase service status ===" && sudo systemctl status pocketbase_hizonelaundry-staging.service --no-pager -l | tail -20 && echo "=== PocketBase service command ===" && systemctl show pocketbase_hizonelaundry-staging.service --property=ExecStart --no-pager'
+            'sudo systemctl restart pocketbase_ebegym-staging.service'
       # --- SSH DEPLOY END ---
 
       # RELEASE
@@ -339,24 +322,24 @@ jobs:
         run: |
           rsync -avz --delete \
             build/web/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry/pb_public/
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/ebegym/pb_public/
 
       - name: Deploy migrations to production server
         run: |
           rsync -avz --delete \
             server/pb_migrations/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry/pb_migrations/
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/ebegym/pb_migrations/
 
       - name: Deploy hooks to production server
         run: |
           rsync -avz --delete \
             server/pb_hooks/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/hizonelaundry/pb_hooks/
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/pocketbase/ebegym/pb_hooks/
 
       - name: Restart PocketBase production service
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            'sudo systemctl restart pocketbase_hizonelaundry.service'
+            'sudo systemctl restart pocketbase_ebegym.service'
       # --- SSH DEPLOY END ---
 
       # UPLOAD & DEPLOY
