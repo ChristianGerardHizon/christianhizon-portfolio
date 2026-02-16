@@ -3480,6 +3480,21 @@
             },
             {
                 "hidden": false,
+                "id": "select_itemtype",
+                "maxSelect": 1,
+                "name": "itemType",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "product",
+                    "membership",
+                    "addon"
+                ]
+            },
+            {
+                "hidden": false,
                 "id": "autodate2990389176",
                 "name": "created",
                 "onCreate": true,

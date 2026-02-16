@@ -28,6 +28,7 @@ abstract class MemberMembershipRepository {
     required DateTime startDate,
     required DateTime endDate,
     required String branchId,
+    String? saleId,
     String? soldBy,
     String? notes,
   });
@@ -147,6 +148,7 @@ class MemberMembershipRepositoryImpl implements MemberMembershipRepository {
     required DateTime startDate,
     required DateTime endDate,
     required String branchId,
+    String? saleId,
     String? soldBy,
     String? notes,
   }) async {
@@ -159,6 +161,7 @@ class MemberMembershipRepositoryImpl implements MemberMembershipRepository {
           'endDate': endDate.toUtcIso8601(),
           'status': 'active',
           'branch': branchId,
+          if (saleId != null) 'saleId': saleId,
           'soldBy': soldBy,
           'notes': notes,
         };
