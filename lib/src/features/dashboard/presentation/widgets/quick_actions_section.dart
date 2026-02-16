@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/routing/routes/check_in.routes.dart';
 import '../../../../core/routing/routes/sales.routes.dart';
 import '../../../members/presentation/widgets/member_form_dialog.dart';
+import '../../../sales/presentation/widgets/record_payment_sheet.dart';
 
 /// Section displaying quick action buttons on the dashboard.
 ///
@@ -66,7 +67,18 @@ class QuickActionsSection extends ConsumerWidget {
                   icon: Icons.person_add,
                   label: 'New Member',
                   color: Colors.blue,
-                  onTap: () => showMemberFormDialog(context),
+                  onTap: () async {
+                    final result = await showMemberFormDialog(context);
+                    if (result?.sale != null &&
+                        result?.totalPrice != null &&
+                        context.mounted) {
+                      await showRecordPaymentSheet(
+                        context,
+                        sale: result!.sale!,
+                        balanceDue: result.totalPrice!,
+                      );
+                    }
+                  },
                 ),
               ],
             ),

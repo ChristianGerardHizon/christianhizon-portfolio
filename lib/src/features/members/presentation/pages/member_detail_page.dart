@@ -18,6 +18,7 @@ import '../../../memberships/presentation/widgets/purchase_membership_dialog.dar
 import '../../../check_in/presentation/controllers/member_check_ins_controller.dart';
 import '../../../pos/data/repositories/sales_repository.dart';
 import '../../../pos/domain/sale.dart';
+import '../../../sales/presentation/widgets/record_payment_sheet.dart';
 import '../controllers/member_provider.dart';
 import '../controllers/members_controller.dart';
 import '../controllers/paginated_members_controller.dart';
@@ -205,11 +206,18 @@ class MemberDetailPage extends HookConsumerWidget {
                                 memberId: memberId,
                                 memberName: member.name,
                               );
-                              if (result == true) {
+                              if (result != null) {
                                 ref.invalidate(
                                   memberMembershipsControllerProvider(
                                       memberId),
                                 );
+                                if (context.mounted) {
+                                  await showRecordPaymentSheet(
+                                    context,
+                                    sale: result.sale,
+                                    balanceDue: result.totalPrice,
+                                  );
+                                }
                               }
                             },
                             icon: const Icon(Icons.add, size: 18),
@@ -389,7 +397,7 @@ class MemberDetailPage extends HookConsumerWidget {
       member: member,
     );
 
-    if (result == true) {
+    if (result != null) {
       ref.invalidate(memberProvider(memberId));
       ref.read(membersControllerProvider.notifier).refresh();
       ref.read(paginatedMembersControllerProvider.notifier).refresh();

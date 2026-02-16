@@ -112,6 +112,9 @@ class SalesRepositoryImpl implements SalesRepository {
             itemBody['productLot'] = item.productLotId;
             itemBody['lotNumber'] = item.lotNumber;
           }
+          if (item.itemType != null && item.itemType!.isNotEmpty) {
+            itemBody['itemType'] = item.itemType;
+          }
           await _saleItems.create(body: itemBody);
         }
 

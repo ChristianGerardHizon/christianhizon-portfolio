@@ -7,16 +7,21 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/hooks/use_form_dirty_guard.dart';
+import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/cached_avatar.dart';
 import '../../../../core/widgets/dialog/dialog_constraints.dart';
 import '../../../../core/widgets/dialog_close_handler.dart';
 import '../../../../core/widgets/form/form_dialog_scaffold.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/widgets/step_indicator.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../memberships/data/membership_sale_helper.dart';
 import '../../../memberships/data/repositories/member_membership_add_on_repository.dart';
 import '../../../memberships/data/repositories/member_membership_repository.dart';
+import '../../../pos/domain/sale.dart';
 import '../../../memberships/domain/membership.dart';
 import '../../../memberships/domain/membership_add_on.dart';
 import '../../../memberships/presentation/widgets/membership_purchase_content.dart';
@@ -25,18 +30,30 @@ import '../../domain/member.dart';
 import '../controllers/members_controller.dart';
 import '../controllers/paginated_members_controller.dart';
 
+/// Result from the member form dialog.
+class MemberFormResult {
+  const MemberFormResult({this.sale, this.totalPrice});
+
+  /// The sale created during membership purchase (null if no membership).
+  final Sale? sale;
+
+  /// Total price of the membership + add-ons.
+  final num? totalPrice;
+}
+
 /// Shows a dialog form for creating or editing a member.
 ///
 /// - **Create mode** (`member == null`): 3-step wizard
 ///   (Details → Photo → Membership). All data saved at the end.
 /// - **Edit mode** (`member != null`): Single-step form (unchanged).
 ///
-/// Returns `true` if the member was saved successfully.
-Future<bool?> showMemberFormDialog(
+/// Returns a [MemberFormResult] if the member was saved successfully,
+/// or `null` if the dialog was dismissed.
+Future<MemberFormResult?> showMemberFormDialog(
   BuildContext context, {
   Member? member,
 }) {
-  return showConstrainedDialog<bool>(
+  return showConstrainedDialog<MemberFormResult>(
     context: context,
     fullScreen: true,
     builder: (context) => MemberFormDialog(member: member),
@@ -123,7 +140,7 @@ class _MemberEditForm extends HookConsumerWidget {
           message: 'Member updated',
           useRootMessenger: false,
         );
-        Navigator.of(context).pop(true);
+        Navigator.of(context).pop(const MemberFormResult());
       } else if (context.mounted) {
         showErrorSnackBar(
           context,
@@ -223,12 +240,39 @@ class _MemberCreateWizard extends HookConsumerWidget {
       }
 
       // 2. Purchase membership if selected
+      Sale? createdSale;
       if (selectedMembership.value != null) {
         final plan = selectedMembership.value!;
         final branchId = ref.read(currentBranchIdProvider) ?? '';
+        final auth = ref.read(currentAuthProvider);
         final startDate = DateTime.now();
         final endDate = startDate.add(Duration(days: plan.durationDays));
 
+        // 2a. Create a Sale record for this membership purchase
+        final saleResult = await createMembershipSale(
+          ref: ref,
+          memberId: created.id,
+          memberName: created.name,
+          plan: plan,
+          addOns: selectedAddOns.value,
+          branchId: branchId,
+        );
+        saleResult.fold(
+          (failure) {
+            // Sale failed — warn but continue with membership creation
+            if (context.mounted) {
+              showErrorSnackBar(
+                context,
+                message: 'Member created but failed to record sale',
+                useRootMessenger: false,
+              );
+            }
+          },
+          (sale) => createdSale = sale,
+        );
+        final saleId = createdSale?.id;
+
+        // 2b. Create MemberMembership record linked to the sale
         final membershipRepo =
             ref.read(memberMembershipRepositoryProvider);
         final result = await membershipRepo.create(
@@ -237,36 +281,40 @@ class _MemberCreateWizard extends HookConsumerWidget {
           startDate: startDate,
           endDate: endDate,
           branchId: branchId,
+          saleId: saleId,
+          soldBy: auth?.user.id,
         );
 
-        result.fold(
-          (failure) {
-            // Member created but membership failed — still a partial success
-            if (context.mounted) {
-              showErrorSnackBar(
-                context,
-                message:
-                    'Member created but failed to purchase membership',
-                useRootMessenger: false,
+        final createdMembership = result.fold(
+          (failure) => null,
+          (membership) => membership,
+        );
+
+        if (createdMembership == null) {
+          // Member created but membership failed — still a partial success
+          if (context.mounted) {
+            showErrorSnackBar(
+              context,
+              message:
+                  'Member created but failed to purchase membership',
+              useRootMessenger: false,
+            );
+          }
+        } else {
+          // 2c. Create add-on records
+          if (selectedAddOns.value.isNotEmpty) {
+            final addOnRepo =
+                ref.read(memberMembershipAddOnRepositoryProvider);
+            for (final addOn in selectedAddOns.value) {
+              await addOnRepo.create(
+                memberMembershipId: createdMembership.id,
+                membershipAddOnId: addOn.id,
+                addOnName: addOn.name,
+                price: addOn.price,
               );
             }
-          },
-          (createdMembership) async {
-            // Create add-on records
-            if (selectedAddOns.value.isNotEmpty) {
-              final addOnRepo =
-                  ref.read(memberMembershipAddOnRepositoryProvider);
-              for (final addOn in selectedAddOns.value) {
-                await addOnRepo.create(
-                  memberMembershipId: createdMembership.id,
-                  membershipAddOnId: addOn.id,
-                  addOnName: addOn.name,
-                  price: addOn.price,
-                );
-              }
-            }
-          },
-        );
+          }
+        }
       }
 
       // 3. Refresh and close
@@ -280,7 +328,20 @@ class _MemberCreateWizard extends HookConsumerWidget {
           message: 'Member created',
           useRootMessenger: false,
         );
-        Navigator.of(context).pop(true);
+
+        if (context.mounted) {
+          num? totalPrice;
+          if (createdSale != null) {
+            final addOnTotal = selectedAddOns.value
+                .fold<num>(0, (sum, a) => sum + a.price);
+            totalPrice =
+                (selectedMembership.value?.price ?? 0) + addOnTotal;
+          }
+          Navigator.of(context).pop(MemberFormResult(
+            sale: createdSale,
+            totalPrice: totalPrice,
+          ));
+        }
       }
     }
 
@@ -291,7 +352,7 @@ class _MemberCreateWizard extends HookConsumerWidget {
             if (currentStep.value == 0) {
               return dirtyGuard.confirmDiscard(ctx);
             }
-            // On steps 1-2, check if user has made selections
+            // On steps 1-3, check if user has made selections
             if (selectedPhoto.value != null ||
                 selectedMembership.value != null) {
               return await showDialog<bool>(
@@ -331,7 +392,9 @@ class _MemberCreateWizard extends HookConsumerWidget {
             },
             child: ConstrainedDialogContent(
               fullScreen: true,
-              child: Column(
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: Column(
                 children: [
                   // Header
                   Padding(
@@ -372,7 +435,7 @@ class _MemberCreateWizard extends HookConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: StepIndicator(
                       currentStep: currentStep.value,
-                      steps: const ['Details', 'Photo', 'Membership'],
+                      steps: const ['Details', 'Photo', 'Membership', 'Review'],
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -400,15 +463,26 @@ class _MemberCreateWizard extends HookConsumerWidget {
                         _MembershipStep(
                           selectedMembership: selectedMembership,
                           selectedAddOns: selectedAddOns,
+                          onNext: () => currentStep.value = 3,
+                          onSkip: () => currentStep.value = 3,
+                          onBack: () => currentStep.value = 1,
+                        ),
+
+                        // Step 3: Review
+                        _ReviewStep(
+                          formKey: formKey,
+                          photoBytes: photoBytes,
+                          selectedMembership: selectedMembership,
+                          selectedAddOns: selectedAddOns,
                           isSaving: isSaving.value,
                           onSave: handleFinish,
-                          onSkip: handleFinish,
-                          onBack: () => currentStep.value = 1,
+                          onBack: () => currentStep.value = 2,
                         ),
                       ],
                     ),
                   ),
                 ],
+              ),
               ),
             ),
           ),
@@ -586,18 +660,42 @@ class _MembershipStep extends StatelessWidget {
   const _MembershipStep({
     required this.selectedMembership,
     required this.selectedAddOns,
-    required this.isSaving,
-    required this.onSave,
+    required this.onNext,
     required this.onSkip,
     required this.onBack,
   });
 
   final ValueNotifier<Membership?> selectedMembership;
   final ValueNotifier<Set<MembershipAddOn>> selectedAddOns;
-  final bool isSaving;
-  final VoidCallback onSave;
+  final VoidCallback onNext;
   final VoidCallback onSkip;
   final VoidCallback onBack;
+
+  Future<void> _confirmSkip(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('No membership selected'),
+        content: const Text(
+          'This member will be created without a membership plan. '
+          'You can always add one later.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Go Back'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Continue'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      onSkip();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -618,36 +716,277 @@ class _MembershipStep extends StatelessWidget {
           child: Row(
             children: [
               OutlinedButton(
-                onPressed: isSaving ? null : onBack,
+                onPressed: onBack,
                 child: const Text('Back'),
               ),
               const Spacer(),
               if (selectedMembership.value == null)
-                FilledButton(
-                  onPressed: isSaving ? null : onSkip,
-                  child: isSaving
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Save'),
+                TextButton(
+                  onPressed: () => _confirmSkip(context),
+                  child: const Text('Skip'),
                 )
               else
                 FilledButton(
-                  onPressed: isSaving ? null : onSave,
-                  child: isSaving
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Save'),
+                  onPressed: onNext,
+                  child: const Text('Next'),
                 ),
             ],
           ),
         ),
       ],
+    );
+  }
+}
+
+// =============================================================================
+// Step 3: Review
+// =============================================================================
+
+class _ReviewStep extends StatelessWidget {
+  const _ReviewStep({
+    required this.formKey,
+    required this.photoBytes,
+    required this.selectedMembership,
+    required this.selectedAddOns,
+    required this.isSaving,
+    required this.onSave,
+    required this.onBack,
+  });
+
+  final GlobalKey<FormBuilderState> formKey;
+  final ValueNotifier<Uint8List?> photoBytes;
+  final ValueNotifier<Membership?> selectedMembership;
+  final ValueNotifier<Set<MembershipAddOn>> selectedAddOns;
+  final bool isSaving;
+  final VoidCallback onSave;
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final values = formKey.currentState?.value ?? {};
+    final name = values['name'] as String? ?? '';
+    final mobile = values['mobileNumber'] as String?;
+    final email = values['email'] as String?;
+    final dob = values['dateOfBirth'] as DateTime?;
+    final sex = values['sex'] as MemberSex?;
+    final address = values['address'] as String?;
+    final emergencyContact = values['emergencyContact'] as String?;
+    final remarks = values['remarks'] as String?;
+    final plan = selectedMembership.value;
+    final addOns = selectedAddOns.value;
+
+    final dateFormat = DateFormat.yMMMd();
+
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 16),
+
+                // Photo + Name header
+                Center(
+                  child: Column(
+                    children: [
+                      if (photoBytes.value != null)
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundImage: MemoryImage(photoBytes.value!),
+                        )
+                      else
+                        const CachedAvatar(radius: 40),
+                      const SizedBox(height: 12),
+                      Text(
+                        name,
+                        style: theme.textTheme.titleLarge,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Personal details
+                Text(
+                  'Personal Details',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const Divider(),
+                if (mobile != null && mobile.isNotEmpty)
+                  _ReviewRow(label: 'Mobile', value: mobile),
+                if (email != null && email.isNotEmpty)
+                  _ReviewRow(label: 'Email', value: email),
+                if (dob != null)
+                  _ReviewRow(label: 'Date of Birth', value: dateFormat.format(dob)),
+                if (sex != null)
+                  _ReviewRow(label: 'Sex', value: sex.displayName),
+                if (address != null && address.isNotEmpty)
+                  _ReviewRow(label: 'Address', value: address),
+                if (emergencyContact != null && emergencyContact.isNotEmpty)
+                  _ReviewRow(label: 'Emergency Contact', value: emergencyContact),
+                if (remarks != null && remarks.isNotEmpty)
+                  _ReviewRow(label: 'Remarks', value: remarks),
+                if ([mobile, email, address, emergencyContact, remarks]
+                    .every((v) => v == null || v.isEmpty) && dob == null && sex == null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      'No additional details provided',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+
+                const SizedBox(height: 16),
+
+                // Membership
+                Text(
+                  'Membership',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const Divider(),
+                if (plan != null) ...[
+                  Card(
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: theme.colorScheme.primaryContainer,
+                        child: Icon(
+                          Icons.card_membership,
+                          color: theme.colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                      title: Text(plan.name),
+                      subtitle: Text(plan.durationDisplay),
+                      trailing: Text(
+                        plan.price.toCurrency(),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (addOns.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    ...addOns.map((addOn) => ListTile(
+                          dense: true,
+                          leading: const Icon(Icons.extension, size: 20),
+                          title: Text(addOn.name),
+                          trailing: Text(addOn.price.toCurrency()),
+                        )),
+                    const Divider(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Total',
+                            style: theme.textTheme.titleSmall
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            (plan.price +
+                                    addOns.fold<num>(
+                                        0, (sum, a) => sum + a.price))
+                                .toCurrency(),
+                            style: theme.textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ] else
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          size: 18,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'No membership selected',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                const SizedBox(height: 24),
+              ],
+            ),
+          ),
+        ),
+
+        // Bottom nav
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              OutlinedButton(
+                onPressed: isSaving ? null : onBack,
+                child: const Text('Back'),
+              ),
+              const Spacer(),
+              FilledButton(
+                onPressed: isSaving ? null : onSave,
+                child: isSaving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Save'),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ReviewRow extends StatelessWidget {
+  const _ReviewRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 130,
+            child: Text(
+              label,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+          Expanded(child: Text(value)),
+        ],
+      ),
     );
   }
 }

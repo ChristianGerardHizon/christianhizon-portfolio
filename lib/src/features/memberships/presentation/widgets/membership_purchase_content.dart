@@ -4,7 +4,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/form_feedback.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../pos/domain/sale.dart';
 import '../../../settings/presentation/controllers/current_branch_controller.dart';
+import '../../data/membership_sale_helper.dart';
 import '../../data/repositories/member_membership_add_on_repository.dart';
 import '../../data/repositories/member_membership_repository.dart';
 import '../../domain/membership.dart';
@@ -37,7 +40,8 @@ class MembershipPurchaseContent extends HookConsumerWidget {
   final String memberName;
 
   /// Called after a successful purchase (standalone mode only).
-  final VoidCallback? onPurchased;
+  /// Receives the created [Sale] and total price.
+  final void Function(Sale sale, num totalPrice)? onPurchased;
 
   /// When true, only manages selection state without executing purchase.
   final bool collectOnly;
@@ -83,9 +87,41 @@ class MembershipPurchaseContent extends HookConsumerWidget {
       isPurchasing.value = true;
 
       final branchId = ref.read(currentBranchIdProvider) ?? '';
+      final auth = ref.read(currentAuthProvider);
       final startDate = DateTime.now();
       final endDate = startDate.add(Duration(days: plan.durationDays));
 
+      // 1. Create a Sale record for this membership purchase
+      final saleResult = await createMembershipSale(
+        ref: ref,
+        memberId: memberId,
+        memberName: memberName,
+        plan: plan,
+        addOns: addOnsState.value,
+        branchId: branchId,
+      );
+
+      Sale? createdSale;
+      saleResult.fold(
+        (failure) {},
+        (sale) => createdSale = sale,
+      );
+
+      if (createdSale == null) {
+        isPurchasing.value = false;
+        if (context.mounted) {
+          showErrorSnackBar(
+            context,
+            message: 'Failed to create sale for membership',
+            useRootMessenger: false,
+          );
+        }
+        return;
+      }
+
+      final saleId = createdSale!.id;
+
+      // 2. Create MemberMembership record linked to the sale
       final repo = ref.read(memberMembershipRepositoryProvider);
       final result = await repo.create(
         memberId: memberId,
@@ -93,46 +129,51 @@ class MembershipPurchaseContent extends HookConsumerWidget {
         startDate: startDate,
         endDate: endDate,
         branchId: branchId,
+        saleId: saleId,
+        soldBy: auth?.user.id,
       );
 
-      result.fold(
-        (failure) {
-          isPurchasing.value = false;
-          if (context.mounted) {
-            showErrorSnackBar(
-              context,
-              message: 'Failed to purchase membership',
-              useRootMessenger: false,
-            );
-          }
-        },
-        (createdMembership) async {
-          // Create add-on records for each selected add-on
-          if (addOnsState.value.isNotEmpty) {
-            final addOnRepo =
-                ref.read(memberMembershipAddOnRepositoryProvider);
-            for (final addOn in addOnsState.value) {
-              await addOnRepo.create(
-                memberMembershipId: createdMembership.id,
-                membershipAddOnId: addOn.id,
-                addOnName: addOn.name,
-                price: addOn.price,
-              );
-            }
-          }
-
-          isPurchasing.value = false;
-
-          if (context.mounted) {
-            showSuccessSnackBar(
-              context,
-              message: 'Membership purchased for $memberName',
-              useRootMessenger: false,
-            );
-            onPurchased?.call();
-          }
-        },
+      final createdMembership = result.fold(
+        (failure) => null,
+        (membership) => membership,
       );
+
+      if (createdMembership == null) {
+        isPurchasing.value = false;
+        if (context.mounted) {
+          showErrorSnackBar(
+            context,
+            message: 'Failed to purchase membership',
+            useRootMessenger: false,
+          );
+        }
+        return;
+      }
+
+      // 3. Create add-on records for each selected add-on
+      if (addOnsState.value.isNotEmpty) {
+        final addOnRepo =
+            ref.read(memberMembershipAddOnRepositoryProvider);
+        for (final addOn in addOnsState.value) {
+          await addOnRepo.create(
+            memberMembershipId: createdMembership.id,
+            membershipAddOnId: addOn.id,
+            addOnName: addOn.name,
+            price: addOn.price,
+          );
+        }
+      }
+
+      isPurchasing.value = false;
+
+      if (context.mounted) {
+        showSuccessSnackBar(
+          context,
+          message: 'Membership purchased for $memberName',
+          useRootMessenger: false,
+        );
+        onPurchased?.call(createdSale!, totalPrice);
+      }
     }
 
     return Column(

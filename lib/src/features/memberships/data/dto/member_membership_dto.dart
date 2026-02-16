@@ -63,7 +63,7 @@ class MemberMembershipDto with MemberMembershipDtoMappable {
       endDate: record.get<String>('endDate'),
       status: record.getStringValue('status'),
       branch: record.getStringValue('branch'),
-      sale: record.getStringValue('sale'),
+      sale: record.getStringValue('saleId'),
       soldBy: record.getStringValue('soldBy'),
       notes: record.getStringValue('notes'),
       created: record.get<String>('created'),
