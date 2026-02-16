@@ -61,9 +61,13 @@ class MembershipPurchaseContent extends HookConsumerWidget {
     final membershipState = selectedMembership ?? localMembership;
     final addOnsState = selectedAddOns ?? localAddOns;
 
-    // Reset add-on selections when membership changes
+    // Reset add-on selections when membership changes.
+    // Scheduled post-frame to avoid setState during build when using
+    // external ValueNotifiers from a parent widget.
     useEffect(() {
-      addOnsState.value = {};
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        addOnsState.value = {};
+      });
       return null;
     }, [membershipState.value?.id]);
 
