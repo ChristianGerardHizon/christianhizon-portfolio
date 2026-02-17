@@ -73,6 +73,18 @@ class CheckInPage extends HookConsumerWidget {
       final member = selectedMember.value;
       if (member == null) return;
 
+      // Block check-in if member has no active membership
+      if (activeMembership.value == null) {
+        if (context.mounted) {
+          showErrorSnackBar(
+            context,
+            message:
+                '${member.name} has no active membership. Only members with an active membership can check in.',
+          );
+        }
+        return;
+      }
+
       isCheckingIn.value = true;
 
       final checkIn = await ref
@@ -85,6 +97,9 @@ class CheckInPage extends HookConsumerWidget {
       isCheckingIn.value = false;
 
       if (checkIn != null && context.mounted) {
+        // Capture before resetting
+        final hadActiveMembership = activeMembership.value != null;
+
         // Reset search
         selectedMember.value = null;
         activeMembership.value = null;
@@ -93,7 +108,7 @@ class CheckInPage extends HookConsumerWidget {
         await showCheckInSuccessDialog(
           context,
           memberName: member.name,
-          hasActiveMembership: activeMembership.value != null,
+          hasActiveMembership: hadActiveMembership,
         );
       } else if (context.mounted) {
         showErrorSnackBar(context, message: 'Failed to check in');
@@ -197,31 +212,53 @@ class CheckInPage extends HookConsumerWidget {
             const SizedBox(height: 16),
 
             // Check-in button
-            SizedBox(
-              height: 56,
-              child: FilledButton.icon(
-                onPressed:
-                    isCheckingIn.value ? null : handleCheckIn,
-                icon: isCheckingIn.value
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
+            if (activeMembership.value == null)
+              Card(
+                color: Colors.red.shade50,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: [
+                      Icon(Icons.block, color: Colors.red.shade700, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'This member has no active membership and cannot check in.',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.red.shade700,
+                          ),
                         ),
-                      )
-                    : const Icon(Icons.how_to_reg, size: 24),
-                label: Text(
-                  isCheckingIn.value
-                      ? 'Checking in...'
-                      : 'Check In',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: theme.colorScheme.onPrimary,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else
+              SizedBox(
+                height: 56,
+                child: FilledButton.icon(
+                  onPressed:
+                      isCheckingIn.value ? null : handleCheckIn,
+                  icon: isCheckingIn.value
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(Icons.how_to_reg, size: 24),
+                  label: Text(
+                    isCheckingIn.value
+                        ? 'Checking in...'
+                        : 'Check In',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ],
       );
@@ -422,7 +459,7 @@ class _SelectedMemberCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: hasActiveMembership
                     ? Colors.green.withValues(alpha: 0.1)
-                    : Colors.orange.withValues(alpha: 0.1),
+                    : Colors.red.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -430,8 +467,8 @@ class _SelectedMemberCard extends StatelessWidget {
                   Icon(
                     hasActiveMembership
                         ? Icons.verified
-                        : Icons.warning_amber_rounded,
-                    color: hasActiveMembership ? Colors.green : Colors.orange,
+                        : Icons.cancel_outlined,
+                    color: hasActiveMembership ? Colors.green : Colors.red,
                     size: 20,
                   ),
                   const SizedBox(width: 8),
@@ -448,7 +485,7 @@ class _SelectedMemberCard extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             color: hasActiveMembership
                                 ? Colors.green
-                                : Colors.orange,
+                                : Colors.red,
                           ),
                         ),
                         if (hasActiveMembership)
