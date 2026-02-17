@@ -92,7 +92,7 @@ class RecordPaymentDialog extends HookConsumerWidget {
       }
     }
 
-    Future<void> handleSave() async {
+    Future<void> handleSave(BuildContext dialogContext) async {
       if (!formKey.currentState!.saveAndValidate()) return;
 
       final values = formKey.currentState!.value;
@@ -128,17 +128,17 @@ class RecordPaymentDialog extends HookConsumerWidget {
 
       isSaving.value = false;
 
-      if (!context.mounted) return;
+      if (!dialogContext.mounted) return;
 
       if (payment != null) {
         // Refresh the sale to get updated isPaid status
         ref.invalidate(saleProvider(sale.id));
-        Navigator.of(context).pop(true);
-        showSuccessSnackBar(context,
+        Navigator.of(dialogContext).pop(true);
+        showSuccessSnackBar(dialogContext,
             message: 'Payment recorded successfully',
             useRootMessenger: false);
       } else {
-        showErrorSnackBar(context,
+        showErrorSnackBar(dialogContext,
             message: 'Failed to record payment', useRootMessenger: false);
       }
     }
@@ -147,9 +147,7 @@ class RecordPaymentDialog extends HookConsumerWidget {
     final showReferenceField =
         selectedPaymentType.value == PaymentType.deposit;
 
-    return ScaffoldMessenger(
-      child: Builder(
-        builder: (context) => FormDialogScaffold(
+    return FormDialogScaffold(
           title: 'Record Payment',
           formKey: formKey,
           dirtyGuard: dirtyGuard,
@@ -331,8 +329,6 @@ class RecordPaymentDialog extends HookConsumerWidget {
               ),
             ],
           ),
-        ),
-      ),
     );
   }
 }
