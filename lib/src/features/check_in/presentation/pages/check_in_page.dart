@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/routing/routes/members.routes.dart';
+import '../../../../core/utils/breakpoints.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../members/data/repositories/member_repository.dart';
 import '../../../members/domain/member.dart';
@@ -11,6 +12,7 @@ import '../../../memberships/data/repositories/member_membership_repository.dart
 import '../../../memberships/domain/member_membership.dart';
 import '../controllers/check_in_controller.dart';
 import '../widgets/check_in_success_dialog.dart';
+import '../widgets/last_check_in_panel.dart';
 import '../widgets/recent_check_ins_list.dart';
 
 /// Main check-in page.
@@ -105,146 +107,133 @@ class CheckInPage extends HookConsumerWidget {
       searchResults.value = [];
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Check-In'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                ref.read(checkInControllerProvider.notifier).refresh(),
-            tooltip: 'Refresh',
-          ),
-        ],
-      ),
-      body: Column(
+    // Shared check-in form widgets
+    Widget buildCheckInForm() {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Search + member card section
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Search bar
-                TextField(
-                  controller: searchController,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    hintText: 'Search member by name or mobile...',
-                    border: const OutlineInputBorder(),
-                    isDense: true,
-                    suffixIcon: searchController.text.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: clearSelection,
-                          )
-                        : null,
-                  ),
-                  onChanged: (query) {
-                    if (selectedMember.value != null) {
-                      selectedMember.value = null;
-                      activeMembership.value = null;
-                    }
-                    searchMembers(query);
-                  },
-                ),
+          // Search bar
+          TextField(
+            controller: searchController,
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.search),
+              hintText: 'Search member by name or mobile...',
+              border: const OutlineInputBorder(),
+              isDense: true,
+              suffixIcon: searchController.text.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: clearSelection,
+                    )
+                  : null,
+            ),
+            onChanged: (query) {
+              if (selectedMember.value != null) {
+                selectedMember.value = null;
+                activeMembership.value = null;
+              }
+              searchMembers(query);
+            },
+          ),
 
-                // Search results dropdown
-                if (searchResults.value.isNotEmpty &&
-                    selectedMember.value == null)
-                  Card(
-                    margin: const EdgeInsets.only(top: 4),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxHeight: 200),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: searchResults.value.length,
-                        itemBuilder: (context, index) {
-                          final member = searchResults.value[index];
-                          return ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor:
-                                  theme.colorScheme.primaryContainer,
-                              child: Icon(
-                                Icons.person,
-                                color:
-                                    theme.colorScheme.onPrimaryContainer,
-                                size: 20,
-                              ),
-                            ),
-                            title: Text(member.name),
-                            subtitle: member.mobileNumber != null &&
-                                    member.mobileNumber!.isNotEmpty
-                                ? Text(member.mobileNumber!)
-                                : null,
-                            dense: true,
-                            onTap: () => selectMember(member),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-
-                if (isSearching.value)
-                  const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Center(
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                    ),
-                  ),
-
-                // Selected member card
-                if (selectedMember.value != null) ...[
-                  const SizedBox(height: 16),
-                  _SelectedMemberCard(
-                    member: selectedMember.value!,
-                    activeMembership: activeMembership.value,
-                    onViewProfile: () => MemberDetailRoute(
-                      id: selectedMember.value!.id,
-                    ).go(context),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Check-in button
-                  SizedBox(
-                    height: 56,
-                    child: FilledButton.icon(
-                      onPressed:
-                          isCheckingIn.value ? null : handleCheckIn,
-                      icon: isCheckingIn.value
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Icon(Icons.how_to_reg, size: 24),
-                      label: Text(
-                        isCheckingIn.value
-                            ? 'Checking in...'
-                            : 'Check In',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: theme.colorScheme.onPrimary,
+          // Search results dropdown
+          if (searchResults.value.isNotEmpty &&
+              selectedMember.value == null)
+            Card(
+              margin: const EdgeInsets.only(top: 4),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 200),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: searchResults.value.length,
+                  itemBuilder: (context, index) {
+                    final member = searchResults.value[index];
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor:
+                            theme.colorScheme.primaryContainer,
+                        child: Icon(
+                          Icons.person,
+                          color:
+                              theme.colorScheme.onPrimaryContainer,
+                          size: 20,
                         ),
                       ),
-                    ),
-                  ),
-                ],
-              ],
+                      title: Text(member.name),
+                      subtitle: member.mobileNumber != null &&
+                              member.mobileNumber!.isNotEmpty
+                          ? Text(member.mobileNumber!)
+                          : null,
+                      dense: true,
+                      onTap: () => selectMember(member),
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
 
-          const Divider(height: 1),
+          if (isSearching.value)
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Center(
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
+            ),
 
-          // Recent check-ins header
+          // Selected member card
+          if (selectedMember.value != null) ...[
+            const SizedBox(height: 16),
+            _SelectedMemberCard(
+              member: selectedMember.value!,
+              activeMembership: activeMembership.value,
+              onViewProfile: () => MemberDetailRoute(
+                id: selectedMember.value!.id,
+              ).go(context),
+            ),
+            const SizedBox(height: 16),
+
+            // Check-in button
+            SizedBox(
+              height: 56,
+              child: FilledButton.icon(
+                onPressed:
+                    isCheckingIn.value ? null : handleCheckIn,
+                icon: isCheckingIn.value
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(Icons.how_to_reg, size: 24),
+                label: Text(
+                  isCheckingIn.value
+                      ? 'Checking in...'
+                      : 'Check In',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.colorScheme.onPrimary,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      );
+    }
+
+    // Shared recent check-ins section
+    Widget buildRecentCheckIns() {
+      return Column(
+        children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               children: [
                 Icon(
@@ -262,13 +251,101 @@ class CheckInPage extends HookConsumerWidget {
               ],
             ),
           ),
+          const Divider(height: 1),
+          const Expanded(child: RecentCheckInsList()),
+        ],
+      );
+    }
 
-          // Recent check-ins list
-          const Expanded(
-            child: RecentCheckInsList(),
+    final isMobile = Breakpoints.isMobile(context);
+    final todaysCheckIns = ref.watch(checkInControllerProvider).value ?? [];
+    final latestCheckIn =
+        todaysCheckIns.isNotEmpty ? todaysCheckIns.first : null;
+
+    // Sidebar for tablet/desktop: last check-in details
+    Widget buildSidebar() {
+      if (latestCheckIn == null) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.how_to_reg_outlined,
+                size: 64,
+                color: theme.colorScheme.onSurfaceVariant
+                    .withValues(alpha: 0.3),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'No check-ins yet today',
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Check in a member to see details here',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+
+      return LastCheckInPanel(checkIn: latestCheckIn);
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Check-In'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () =>
+                ref.read(checkInControllerProvider.notifier).refresh(),
+            tooltip: 'Refresh',
           ),
         ],
       ),
+      body: isMobile
+          // Mobile: stacked vertical layout
+          ? Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: buildCheckInForm(),
+                ),
+                const Divider(height: 1),
+                Expanded(child: buildRecentCheckIns()),
+              ],
+            )
+          // Tablet/Desktop: side-by-side layout with last check-in sidebar
+          : Row(
+              children: [
+                // Left: form + today's check-ins
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: buildCheckInForm(),
+                      ),
+                      const Divider(height: 1),
+                      Expanded(child: buildRecentCheckIns()),
+                    ],
+                  ),
+                ),
+                const VerticalDivider(width: 1),
+                // Right: last check-in details sidebar
+                Expanded(
+                  flex: 2,
+                  child: buildSidebar(),
+                ),
+              ],
+            ),
     );
   }
 }
