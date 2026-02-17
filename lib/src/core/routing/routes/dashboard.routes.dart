@@ -10,14 +10,12 @@ import '../../../features/dashboard/presentation/controllers/new_members_control
 import '../../../features/dashboard/presentation/controllers/dashboard_members_controller.dart';
 import '../../../features/dashboard/presentation/controllers/todays_checkins_controller.dart';
 import '../../../features/dashboard/presentation/controllers/todays_sales_controller.dart';
-import '../../../features/dashboard/presentation/controllers/top_selling_controller.dart';
 import '../../../features/dashboard/presentation/widgets/dashboard_members_section.dart';
 import '../../../features/dashboard/presentation/widgets/inventory_alerts_section.dart';
 import '../../../features/dashboard/presentation/widgets/kpi_summary_section.dart';
 import '../../../features/dashboard/presentation/widgets/quick_actions_section.dart';
 import '../../../features/dashboard/presentation/widgets/tablet_dashboard_layout.dart';
 import '../../../features/dashboard/presentation/widgets/dashboard_footer.dart';
-import '../../../features/dashboard/presentation/widgets/top_selling_section.dart';
 import '../../../features/settings/presentation/controllers/current_branch_controller.dart';
 import '../../utils/breakpoints.dart';
 
@@ -92,14 +90,6 @@ class DashboardPage extends ConsumerWidget {
 
               // Members Section
               const DashboardMembersSection(),
-              const SizedBox(height: 24),
-
-              // Top Selling Products Section
-              TopSellingSection(
-                title: 'Top Selling Products',
-                icon: Icons.inventory_2,
-                provider: topSellingProductsProvider,
-              ),
               const SizedBox(height: 24),
 
               // Inventory Alerts Section

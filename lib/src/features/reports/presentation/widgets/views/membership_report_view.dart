@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../dashboard/presentation/widgets/kpi_card.dart';
 import '../../../domain/membership_report.dart';
 import '../../controllers/membership_report_controller.dart';
 import '../charts/bar_chart_widget.dart';
 import '../charts/line_chart_widget.dart';
 import '../charts/pie_chart_widget.dart';
+import '../report_kpi_card.dart';
+import '../report_kpi_grid.dart';
 
 /// View displaying the membership report with charts and tables.
 class MembershipReportView extends ConsumerWidget {
@@ -102,44 +103,44 @@ class MembershipReportView extends ConsumerWidget {
   }
 
   Widget _buildKpiSection(BuildContext context, MembershipReport report) {
-    return Wrap(
-      spacing: 12,
-      runSpacing: 12,
+    return ReportKpiGrid(
+      crossAxisCount: 3,
       children: [
-        KpiCard(
+        ReportKpiCard(
           title: 'New Members',
           value: report.totalNewMembers.toString(),
-          icon: Icons.person_add,
+          icon: Icons.person_add_outlined,
           color: Colors.blue,
-          compact: true,
+          subtitle: 'Registered this period',
         ),
-        KpiCard(
+        ReportKpiCard(
           title: 'Active Memberships',
           value: report.activeMemberships.toString(),
-          icon: Icons.card_membership,
+          icon: Icons.card_membership_outlined,
           color: Colors.green,
-          compact: true,
+          subtitle: 'Currently active',
         ),
-        KpiCard(
+        ReportKpiCard(
           title: 'Expired / Cancelled',
           value: report.expiredCancelledMemberships.toString(),
-          icon: Icons.cancel,
+          icon: Icons.cancel_outlined,
           color: Colors.red,
-          compact: true,
+          subtitle: 'In selected period',
         ),
-        KpiCard(
+        ReportKpiCard(
           title: 'Membership Revenue',
           value: _currencyFormat.format(report.membershipRevenue),
           icon: Icons.attach_money,
           color: Colors.teal,
-          compact: true,
+          subtitle: 'From plan subscriptions',
+          featured: true,
         ),
-        KpiCard(
+        ReportKpiCard(
           title: 'Add-on Revenue',
           value: _currencyFormat.format(report.addOnRevenue),
-          icon: Icons.add_circle,
+          icon: Icons.add_circle_outline,
           color: Colors.orange,
-          compact: true,
+          subtitle: 'From add-on purchases',
         ),
       ],
     );
