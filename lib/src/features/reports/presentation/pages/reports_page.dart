@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../widgets/report_period_selector.dart';
 import '../widgets/views/inventory_report_view.dart';
+import '../widgets/views/membership_report_view.dart';
 import '../widgets/views/sales_report_view.dart';
 
 /// Main reports page with tabbed navigation for different report types.
@@ -12,7 +13,7 @@ class ReportsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tabController = useTabController(initialLength: 2);
+    final tabController = useTabController(initialLength: 3);
 
     return Scaffold(
       appBar: AppBar(
@@ -29,6 +30,10 @@ class ReportsPage extends HookConsumerWidget {
             Tab(
               icon: Icon(Icons.inventory_2),
               text: 'Inventory',
+            ),
+            Tab(
+              icon: Icon(Icons.card_membership),
+              text: 'Members & Memberships',
             ),
           ],
         ),
@@ -49,6 +54,7 @@ class ReportsPage extends HookConsumerWidget {
         children: const [
           SalesReportView(),
           InventoryReportView(),
+          MembershipReportView(),
         ],
       ),
     );

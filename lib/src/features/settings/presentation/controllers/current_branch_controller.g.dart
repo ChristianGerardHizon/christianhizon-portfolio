@@ -46,7 +46,7 @@ final class CurrentBranchControllerProvider
 }
 
 String _$currentBranchControllerHash() =>
-    r'345b148546874f422c819aa11372724d11852e7f';
+    r'93cc2977b0672215c7dfbb55dd3d3d7c180dfa52';
 
 /// Controller for managing the current working branch.
 ///
