@@ -36,15 +36,17 @@ Home screen with gym metrics and quick actions.
 Member check-in system for tracking gym visits.
 
 - **Features**:
+  - Card scan input (RFID/barcode) for quick check-in via member cards
   - Member search by name or mobile number
   - Active membership status display
   - Manual check-in with membership validation
   - Warning for members without active membership
   - Recent check-ins list for today
   - Success dialog with membership status
+  - Backward compatibility with legacy `rfidCardId` field on members
 - **Key Models**: `CheckIn`, `CheckInMethod`
 - **Controllers**:
-  - `checkInController` - Today's check-ins list + manual check-in action
+  - `checkInController` - Today's check-ins list + manual/card check-in actions
   - `memberCheckIns` - Check-in history for a specific member
 
 #### Members (`/members`)
@@ -54,12 +56,13 @@ Member management with membership and check-in tracking.
   - Members list with search by name or phone
   - Member detail with info and tabbed sections
   - Create/edit member via bottom sheet form
-- **Member Detail Tabs**:
+- **Member Detail Sections**:
   - Overview: name, contact, DOB, sex, address, remarks, RFID
+  - ID Cards: physical cards (RFID/barcode) with status management (add, deactivate, report lost, delete)
   - Memberships: active/expired memberships, purchase button
   - Check-ins: check-in history
   - Sales History: past product purchases
-- **Key Models**: `Member`
+- **Key Models**: `Member`, `MemberCard`, `MemberCardStatus`
 - **Master-Detail Layout**: Tablet shows list + detail side-by-side; mobile navigates between pages
 
 #### Memberships (`/memberships`)
@@ -207,6 +210,11 @@ Located in `/lib/src/core/`
 | Collection | Description |
 |------------|-------------|
 | `members` | Gym members with contact info, RFID |
+
+#### Member Card Domain (1 collection)
+| Collection | Description |
+|------------|-------------|
+| `memberCards` | Physical ID cards linked to members for check-in |
 
 #### Membership Domain (2 collections)
 | Collection | Description |
@@ -495,6 +503,7 @@ lib/src/
 
 | Date | Feature | Description |
 |------|---------|-------------|
+| Feb 17 | Member Cards | Physical ID cards (RFID/barcode) linked to members with status management; card scan check-in on check-in page with backward compatibility for legacy rfidCardId |
 | Feb 16 | Membership Add-Ons | Add-on options per membership plan (e.g., Treadmill, Coach, Pool) with pricing, selectable during purchase |
 | Feb 12 | Dashboard Adaptation | Replaced laundry metrics with gym KPIs (sales, check-ins, active members, new members), added expiring memberships section |
 | Feb 12 | Check-In Feature | Created full check-in system with member search, membership validation, and recent check-ins list |

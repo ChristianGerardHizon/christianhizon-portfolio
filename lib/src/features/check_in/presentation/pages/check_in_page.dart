@@ -28,6 +28,9 @@ class CheckInPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final cardScanController = useTextEditingController();
+    final cardScanFocusNode = useFocusNode();
+    final isCardScanning = useState(false);
     final searchController = useTextEditingController();
     final searchResults = useState<List<Member>>([]);
     final selectedMember = useState<Member?>(null);
@@ -115,6 +118,34 @@ class CheckInPage extends HookConsumerWidget {
       }
     }
 
+    Future<void> handleCardScan(String cardValue) async {
+      if (cardValue.trim().isEmpty) return;
+
+      isCardScanning.value = true;
+
+      final result = await ref
+          .read(checkInControllerProvider.notifier)
+          .cardCheckIn(cardValue: cardValue.trim());
+
+      isCardScanning.value = false;
+      cardScanController.clear();
+      cardScanFocusNode.requestFocus();
+
+      if (result != null && context.mounted) {
+        await showCheckInSuccessDialog(
+          context,
+          memberName: result.memberName,
+          hasActiveMembership: true,
+        );
+      } else if (context.mounted) {
+        showErrorSnackBar(
+          context,
+          message:
+              'Card not recognized or member has no active membership.',
+        );
+      }
+    }
+
     void clearSelection() {
       selectedMember.value = null;
       activeMembership.value = null;
@@ -127,6 +158,51 @@ class CheckInPage extends HookConsumerWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Card scan input
+          TextField(
+            controller: cardScanController,
+            focusNode: cardScanFocusNode,
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.credit_card),
+              hintText: 'Scan card or enter card ID...',
+              border: const OutlineInputBorder(),
+              isDense: true,
+              suffixIcon: isCardScanning.value
+                  ? const Padding(
+                      padding: EdgeInsets.all(12),
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    )
+                  : null,
+            ),
+            enabled: !isCardScanning.value,
+            onSubmitted: handleCardScan,
+            textInputAction: TextInputAction.go,
+          ),
+
+          // Divider between card scan and manual search
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              children: [
+                const Expanded(child: Divider()),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    'or search manually',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+                const Expanded(child: Divider()),
+              ],
+            ),
+          ),
+
           // Search bar
           TextField(
             controller: searchController,
