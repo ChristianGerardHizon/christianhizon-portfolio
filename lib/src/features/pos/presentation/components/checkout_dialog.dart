@@ -73,15 +73,6 @@ class CheckoutDialog extends HookConsumerWidget {
     final cartIsEmpty = cartState.value?.isEmpty ?? true;
 
     Future<void> handleCheckout() async {
-      // Validate member is selected
-      if (selectedMember.value == null) {
-        showFormErrorDialog(
-          context,
-          errors: ['Please select a member before completing the sale'],
-        );
-        return;
-      }
-
       final isValid = formKey.currentState!.saveAndValidate();
       if (!isValid) {
         final errors = formKey.currentState?.errors ?? {};
@@ -210,7 +201,7 @@ class CheckoutDialog extends HookConsumerWidget {
                       _buildOrderSummary(context, cartItems, total),
                       const SizedBox(height: 24),
 
-                      // Member section (required)
+                      // Member section (optional)
                       _MemberSelectionCard(
                         selectedMember: selectedMember,
                         ref: ref,
@@ -478,7 +469,7 @@ class _MemberSelectionCard extends HookConsumerWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Member *',
+                  'Member (Optional)',
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),

@@ -27,6 +27,7 @@ abstract class PocketBaseCollections {
 
   // Members
   static const String members = 'members';
+  static const String memberCards = 'memberCards';
 
   // Memberships
   static const String memberships = 'memberships';

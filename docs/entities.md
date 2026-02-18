@@ -12,6 +12,7 @@ This document contains all entities (domain models) in the project with their fi
 | Organization | UserRole | `userRoles` | Role definitions and permissions |
 | Organization | Branch | `branches` | Business branches/locations |
 | Member | Member | `members` | Gym members |
+| Member | MemberCard | `memberCards` | Physical ID cards for members |
 | Membership | Membership | `memberships` | Membership plan templates |
 | Membership | MembershipAddOn | `membershipAddOns` | Add-on options for membership plans |
 | Membership | MemberMembership | `memberMemberships` | Member subscriptions |
@@ -275,6 +276,37 @@ Records of add-ons selected by a member when purchasing a membership. Stores sna
 
 ---
 
+## Member Card Domain
+
+### MemberCard
+
+Physical ID cards linked to gym members for RFID/barcode check-in. Members can have multiple cards.
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | String | Yes | PocketBase record ID |
+| `member` | String (FK) | Yes | FK to Member |
+| `cardValue` | String | Yes | Unique identifier on the physical card |
+| `label` | String | No | Human-readable name (e.g., "Primary Card") |
+| `status` | MemberCardStatus | Yes | Current card status |
+| `deactivatedAt` | DateTime | No | When card was deactivated/reported lost |
+| `notes` | String | No | Optional notes |
+| `created` | DateTime | No | Creation timestamp (also serves as issued date) |
+| `updated` | DateTime | No | Last update timestamp |
+
+**Collection:** `memberCards`
+
+**Relationships:**
+- `member` -> Member (cascadeDelete)
+
+**Enum:** `MemberCardStatus { active, lost, deactivated }`
+
+**Indexes:**
+- Unique index on `cardValue`
+- Index on `member`
+
+---
+
 ## Check-In Domain
 
 ### CheckIn
@@ -440,12 +472,13 @@ Cashier layout groups per branch.
 
 ## Summary
 
-**Total Collections:** 19 (+ 9 view collections)
+**Total Collections:** 20 (+ 9 view collections)
 
 **Enums:**
 
 | Enum | Values |
 |------|--------|
+| MemberCardStatus | active, lost, deactivated |
 | MemberMembershipStatus | active, expired, cancelled, voided |
 | CheckInMethod | manual, rfid |
 | SaleStatus | pending, completed, refunded, voided |

@@ -52,7 +52,7 @@ class MembershipFormDialog extends HookConsumerWidget {
       initialValues: initialValues,
     );
 
-    Future<void> handleSave() async {
+    Future<void> handleSave(BuildContext dialogContext) async {
       if (!formKey.currentState!.saveAndValidate()) return;
 
       isSaving.value = true;
@@ -84,18 +84,18 @@ class MembershipFormDialog extends HookConsumerWidget {
 
       isSaving.value = false;
 
-      if (success && context.mounted) {
+      if (success && dialogContext.mounted) {
         showSuccessSnackBar(
-          context,
+          dialogContext,
           message: isEditing
               ? 'Membership plan updated'
               : 'Membership plan created',
           useRootMessenger: false,
         );
-        Navigator.of(context).pop(true);
-      } else if (context.mounted) {
+        Navigator.of(dialogContext).pop(true);
+      } else if (dialogContext.mounted) {
         showErrorSnackBar(
-          context,
+          dialogContext,
           message: isEditing
               ? 'Failed to update membership plan'
               : 'Failed to create membership plan',
@@ -104,9 +104,7 @@ class MembershipFormDialog extends HookConsumerWidget {
       }
     }
 
-    return ScaffoldMessenger(
-      child: Builder(
-        builder: (context) => FormDialogScaffold(
+    return FormDialogScaffold(
           title: isEditing ? 'Edit Membership Plan' : 'New Membership Plan',
           formKey: formKey,
           dirtyGuard: dirtyGuard,
@@ -175,8 +173,6 @@ class MembershipFormDialog extends HookConsumerWidget {
               ),
             ],
           ),
-        ),
-      ),
     );
   }
 }

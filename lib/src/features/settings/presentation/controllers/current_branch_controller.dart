@@ -8,6 +8,7 @@ import '../../../dashboard/presentation/controllers/todays_sales_controller.dart
 import '../../../dashboard/presentation/controllers/top_selling_controller.dart';
 import '../../../products/presentation/controllers/paginated_products_controller.dart';
 import '../../../reports/presentation/controllers/inventory_report_controller.dart';
+import '../../../reports/presentation/controllers/membership_report_controller.dart';
 import '../../../reports/presentation/controllers/sales_report_controller.dart';
 import '../../../sales/presentation/controllers/paginated_sales_controller.dart';
 import '../../../users/presentation/controllers/user_provider.dart';
@@ -109,6 +110,7 @@ class CurrentBranchController extends _$CurrentBranchController {
     // Invalidate report providers
     ref.invalidate(salesReportProvider);
     ref.invalidate(inventoryReportProvider);
+    ref.invalidate(membershipReportProvider);
   }
 }
 

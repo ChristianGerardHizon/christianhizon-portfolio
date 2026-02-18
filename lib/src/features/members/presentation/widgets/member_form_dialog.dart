@@ -106,7 +106,7 @@ class _MemberEditForm extends HookConsumerWidget {
       initialValues: initialValues,
     );
 
-    Future<void> handleSave() async {
+    Future<void> handleSave(BuildContext dialogContext) async {
       if (!formKey.currentState!.saveAndValidate()) return;
 
       isSaving.value = true;
@@ -134,34 +134,30 @@ class _MemberEditForm extends HookConsumerWidget {
 
       isSaving.value = false;
 
-      if (success && context.mounted) {
+      if (success && dialogContext.mounted) {
         showSuccessSnackBar(
-          context,
+          dialogContext,
           message: 'Member updated',
           useRootMessenger: false,
         );
-        Navigator.of(context).pop(const MemberFormResult());
-      } else if (context.mounted) {
+        Navigator.of(dialogContext).pop(const MemberFormResult());
+      } else if (dialogContext.mounted) {
         showErrorSnackBar(
-          context,
+          dialogContext,
           message: 'Failed to update member',
           useRootMessenger: false,
         );
       }
     }
 
-    return ScaffoldMessenger(
-      child: Builder(
-        builder: (context) => FormDialogScaffold(
-          title: 'Edit Member',
-          formKey: formKey,
-          dirtyGuard: dirtyGuard,
-          isSaving: isSaving.value,
-          onSave: handleSave,
-          fullScreen: true,
-          child: _MemberFormFields(member: member),
-        ),
-      ),
+    return FormDialogScaffold(
+      title: 'Edit Member',
+      formKey: formKey,
+      dirtyGuard: dirtyGuard,
+      isSaving: isSaving.value,
+      onSave: handleSave,
+      fullScreen: true,
+      child: _MemberFormFields(member: member),
     );
   }
 }

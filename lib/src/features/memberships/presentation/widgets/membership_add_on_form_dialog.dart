@@ -59,7 +59,7 @@ class MembershipAddOnFormDialog extends HookConsumerWidget {
       initialValues: initialValues,
     );
 
-    Future<void> handleSave() async {
+    Future<void> handleSave(BuildContext dialogContext) async {
       if (!formKey.currentState!.saveAndValidate()) return;
 
       isSaving.value = true;
@@ -88,16 +88,16 @@ class MembershipAddOnFormDialog extends HookConsumerWidget {
 
       isSaving.value = false;
 
-      if (success && context.mounted) {
+      if (success && dialogContext.mounted) {
         showSuccessSnackBar(
-          context,
+          dialogContext,
           message: isEditing ? 'Add-on updated' : 'Add-on created',
           useRootMessenger: false,
         );
-        Navigator.of(context).pop(true);
-      } else if (context.mounted) {
+        Navigator.of(dialogContext).pop(true);
+      } else if (dialogContext.mounted) {
         showErrorSnackBar(
-          context,
+          dialogContext,
           message: isEditing
               ? 'Failed to update add-on'
               : 'Failed to create add-on',
@@ -106,9 +106,7 @@ class MembershipAddOnFormDialog extends HookConsumerWidget {
       }
     }
 
-    return ScaffoldMessenger(
-      child: Builder(
-        builder: (context) => FormDialogScaffold(
+    return FormDialogScaffold(
           title: isEditing ? 'Edit Add-On' : 'New Add-On',
           formKey: formKey,
           dirtyGuard: dirtyGuard,
@@ -160,8 +158,6 @@ class MembershipAddOnFormDialog extends HookConsumerWidget {
               ),
             ],
           ),
-        ),
-      ),
     );
   }
 }

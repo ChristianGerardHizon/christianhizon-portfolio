@@ -276,9 +276,11 @@ class _SaleDetailContent extends HookConsumerWidget {
   Widget _buildSaleStatusActions(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isUpdating = useState(false);
-    final isRefunded = sale.status.toLowerCase() == 'refunded';
-    final isVoided = sale.status.toLowerCase() == 'voided';
-    final isPending = sale.status.toLowerCase() == 'pending';
+    final statusLower = sale.status.toLowerCase();
+    final isRefunded = statusLower == 'refunded';
+    final isVoided = statusLower == 'voided';
+    final isPending = statusLower == 'pending';
+    final isAwaitingPayment = statusLower == 'awaitingpayment';
 
     // Don't show actions for voided sales
     if (isVoided) {
@@ -286,18 +288,32 @@ class _SaleDetailContent extends HookConsumerWidget {
     }
 
     Future<void> updateSaleStatus(String newStatus) async {
-      // Show confirmation dialog
+      final (title, content, confirmLabel, confirmColor) = switch (newStatus) {
+        'refunded' => (
+            'Refund Sale?',
+            'Are you sure you want to mark this sale as refunded?',
+            'Refund',
+            Colors.orange,
+          ),
+        'voided' => (
+            'Void Sale?',
+            'Are you sure you want to void this sale? This action cannot be undone.',
+            'Void',
+            Colors.red,
+          ),
+        _ => (
+            'Update Status?',
+            'Are you sure you want to update this sale status?',
+            'Update',
+            Colors.green,
+          ),
+      };
+
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(
-            newStatus == 'refunded' ? 'Refund Sale?' : 'Remove Refund?',
-          ),
-          content: Text(
-            newStatus == 'refunded'
-                ? 'Are you sure you want to mark this sale as refunded? This will update the sale status.'
-                : 'Are you sure you want to remove the refund status and mark this sale as $newStatus?',
-          ),
+          title: Text(title),
+          content: Text(content),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -305,11 +321,8 @@ class _SaleDetailContent extends HookConsumerWidget {
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              style: FilledButton.styleFrom(
-                backgroundColor:
-                    newStatus == 'refunded' ? Colors.orange : Colors.green,
-              ),
-              child: Text(newStatus == 'refunded' ? 'Refund' : 'Remove Refund'),
+              style: FilledButton.styleFrom(backgroundColor: confirmColor),
+              child: Text(confirmLabel),
             ),
           ],
         ),
@@ -329,16 +342,21 @@ class _SaleDetailContent extends HookConsumerWidget {
           showErrorSnackBar(context, message: failure.messageString);
         },
         (_) {
-          showSuccessSnackBar(
-            context,
-            message: newStatus == 'refunded'
-                ? 'Sale marked as refunded'
-                : 'Refund status removed',
-          );
+          showSuccessSnackBar(context, message: 'Sale status updated');
           ref.invalidate(saleProvider(sale.id));
         },
       );
     }
+
+    // Determine chip color and label
+    final (chipColor, chipLabel) = switch (statusLower) {
+      'pending' => (Colors.grey, 'Pending'),
+      'awaitingpayment' => (Colors.amber, 'Awaiting Payment'),
+      'paid' => (Colors.green, 'Paid'),
+      'completed' => (Colors.green, 'Completed'),
+      'refunded' => (Colors.orange, 'Refunded'),
+      _ => (Colors.grey, sale.status),
+    };
 
     return Card(
       child: Padding(
@@ -363,25 +381,15 @@ class _SaleDetailContent extends HookConsumerWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: isRefunded
-                    ? Colors.orange.withValues(alpha: 0.1)
-                    : isPending
-                        ? Colors.amber.withValues(alpha: 0.1)
-                        : Colors.green.withValues(alpha: 0.1),
+                color: chipColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
-                isRefunded
-                    ? 'Refunded'
-                    : isPending
-                        ? 'Pending'
-                        : 'Completed',
+                chipLabel,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: isRefunded
-                      ? Colors.orange
-                      : isPending
-                          ? Colors.amber.shade700
-                          : Colors.green,
+                  color: chipColor == Colors.amber
+                      ? Colors.amber.shade700
+                      : chipColor,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -397,17 +405,11 @@ class _SaleDetailContent extends HookConsumerWidget {
                     )
                   : const Icon(Icons.more_vert),
               enabled: !isUpdating.value,
-              onSelected: (value) {
-                if (value == 'refund') {
-                  updateSaleStatus('refunded');
-                } else if (value == 'unrefund') {
-                  updateSaleStatus('pending');
-                }
-              },
+              onSelected: (value) => updateSaleStatus(value),
               itemBuilder: (context) => [
                 if (isRefunded)
                   const PopupMenuItem<String>(
-                    value: 'unrefund',
+                    value: 'pending',
                     child: ListTile(
                       leading: Icon(Icons.undo, color: Colors.green),
                       title: Text('Remove Refund'),
@@ -415,16 +417,28 @@ class _SaleDetailContent extends HookConsumerWidget {
                       visualDensity: VisualDensity.compact,
                     ),
                   )
-                else
-                  const PopupMenuItem<String>(
-                    value: 'refund',
-                    child: ListTile(
-                      leading: Icon(Icons.replay, color: Colors.orange),
-                      title: Text('Mark as Refunded'),
-                      contentPadding: EdgeInsets.zero,
-                      visualDensity: VisualDensity.compact,
+                else ...[
+                  if (!isRefunded)
+                    const PopupMenuItem<String>(
+                      value: 'refunded',
+                      child: ListTile(
+                        leading: Icon(Icons.replay, color: Colors.orange),
+                        title: Text('Mark as Refunded'),
+                        contentPadding: EdgeInsets.zero,
+                        visualDensity: VisualDensity.compact,
+                      ),
                     ),
-                  ),
+                  if (isPending || isAwaitingPayment)
+                    const PopupMenuItem<String>(
+                      value: 'voided',
+                      child: ListTile(
+                        leading: Icon(Icons.cancel, color: Colors.red),
+                        title: Text('Void Sale'),
+                        contentPadding: EdgeInsets.zero,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ),
+                ],
               ],
             ),
           ],

@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-/// Shows a success dialog after a check-in.
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+
+/// Shows a success dialog after a check-in that auto-closes after 3 seconds.
 Future<void> showCheckInSuccessDialog(
   BuildContext context, {
   required String memberName,
@@ -8,6 +11,7 @@ Future<void> showCheckInSuccessDialog(
 }) {
   return showDialog(
     context: context,
+    barrierDismissible: false,
     builder: (context) => _CheckInSuccessDialog(
       memberName: memberName,
       hasActiveMembership: hasActiveMembership,
@@ -15,7 +19,7 @@ Future<void> showCheckInSuccessDialog(
   );
 }
 
-class _CheckInSuccessDialog extends StatelessWidget {
+class _CheckInSuccessDialog extends HookWidget {
   const _CheckInSuccessDialog({
     required this.memberName,
     required this.hasActiveMembership,
@@ -24,12 +28,25 @@ class _CheckInSuccessDialog extends StatelessWidget {
   final String memberName;
   final bool hasActiveMembership;
 
+  static const _autoCloseDuration = 3;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final secondsRemaining = useState(_autoCloseDuration);
+
+    useEffect(() {
+      final timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        secondsRemaining.value--;
+        if (secondsRemaining.value <= 0) {
+          Navigator.of(context).pop();
+        }
+      });
+      return timer.cancel;
+    }, []);
 
     return AlertDialog(
-      icon: Icon(
+      icon: const Icon(
         Icons.check_circle,
         color: Colors.green,
         size: 48,
@@ -48,7 +65,8 @@ class _CheckInSuccessDialog extends StatelessWidget {
           const SizedBox(height: 8),
           if (!hasActiveMembership)
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.orange.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
@@ -72,12 +90,19 @@ class _CheckInSuccessDialog extends StatelessWidget {
                 ],
               ),
             ),
+          const SizedBox(height: 12),
+          Text(
+            'Closing in ${secondsRemaining.value}s...',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
         ],
       ),
       actions: [
         FilledButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('OK'),
+          child: Text('OK (${secondsRemaining.value})'),
         ),
       ],
     );

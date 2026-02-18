@@ -90,6 +90,16 @@ class CheckoutController extends _$CheckoutController {
       );
     }).toList();
 
+    // Determine initial status based on payment
+    final String initialStatus;
+    if (payNow && paymentAmount != null && paymentAmount >= cartState.total) {
+      initialStatus = 'paid';
+    } else if (payNow && paymentAmount != null && paymentAmount > 0) {
+      initialStatus = 'awaitingPayment';
+    } else {
+      initialStatus = 'pending';
+    }
+
     // Create the sale
     final sale = Sale(
       id: '', // Will be assigned by backend
@@ -97,8 +107,8 @@ class CheckoutController extends _$CheckoutController {
       branchId: branchId,
       cashierId: cashierId,
       totalAmount: cartState.total,
-      status: 'pending',
-      isPaid: false, // Will be updated when payment is recorded
+      status: initialStatus,
+      isPaid: initialStatus == 'paid',
       customerId: customerId,
       customerName: customerName,
       notes: notes,
