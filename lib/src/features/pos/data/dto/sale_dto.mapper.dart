@@ -74,6 +74,12 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
     _$notes,
     opt: true,
   );
+  static String? _$voidedBy(SaleDto v) => v.voidedBy;
+  static const Field<SaleDto, String> _f$voidedBy = Field(
+    'voidedBy',
+    _$voidedBy,
+    opt: true,
+  );
   static String? _$created(SaleDto v) => v.created;
   static const Field<SaleDto, String> _f$created = Field(
     'created',
@@ -101,6 +107,7 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
     #customer: _f$customer,
     #customerName: _f$customerName,
     #notes: _f$notes,
+    #voidedBy: _f$voidedBy,
     #created: _f$created,
     #updated: _f$updated,
   };
@@ -119,6 +126,7 @@ class SaleDtoMapper extends ClassMapperBase<SaleDto> {
       customer: data.dec(_f$customer),
       customerName: data.dec(_f$customerName),
       notes: data.dec(_f$notes),
+      voidedBy: data.dec(_f$voidedBy),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
     );
@@ -194,6 +202,7 @@ abstract class SaleDtoCopyWith<$R, $In extends SaleDto, $Out>
     String? customer,
     String? customerName,
     String? notes,
+    String? voidedBy,
     String? created,
     String? updated,
   });
@@ -222,6 +231,7 @@ class _SaleDtoCopyWithImpl<$R, $Out>
     Object? customer = $none,
     Object? customerName = $none,
     Object? notes = $none,
+    Object? voidedBy = $none,
     Object? created = $none,
     Object? updated = $none,
   }) => $apply(
@@ -238,6 +248,7 @@ class _SaleDtoCopyWithImpl<$R, $Out>
       if (customer != $none) #customer: customer,
       if (customerName != $none) #customerName: customerName,
       if (notes != $none) #notes: notes,
+      if (voidedBy != $none) #voidedBy: voidedBy,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
     }),
@@ -256,6 +267,7 @@ class _SaleDtoCopyWithImpl<$R, $Out>
     customer: data.get(#customer, or: $value.customer),
     customerName: data.get(#customerName, or: $value.customerName),
     notes: data.get(#notes, or: $value.notes),
+    voidedBy: data.get(#voidedBy, or: $value.voidedBy),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),
   );

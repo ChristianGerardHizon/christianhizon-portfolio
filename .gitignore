@@ -72,3 +72,6 @@ app.*.map.json
 # un-ignore pb_hooks
 !/server/pb_hooks/**
 .grepai/
+
+# Firebase migration scripts (one-time use)
+/firebase/

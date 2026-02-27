@@ -7,10 +7,12 @@ import '../../../../core/routing/routes/members.routes.dart';
 import '../../../../core/routing/routes/sales_history.routes.dart';
 import '../../../../core/widgets/form_feedback.dart';
 import '../../../../core/utils/breakpoints.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../pos/data/repositories/sales_repository.dart';
 import '../../../pos/domain/payment_type.dart';
 import '../../../pos/domain/sale.dart';
 import '../../../pos/presentation/payments_controller.dart';
+import '../../../users/presentation/controllers/user_provider.dart';
 import '../controllers/sale_items_provider.dart';
 import '../controllers/sale_provider.dart';
 import '../widgets/record_payment_dialog.dart';
@@ -282,9 +284,9 @@ class _SaleDetailContent extends HookConsumerWidget {
     final isPending = statusLower == 'pending';
     final isAwaitingPayment = statusLower == 'awaitingpayment';
 
-    // Don't show actions for voided sales
+    // Show voided info card instead of actions
     if (isVoided) {
-      return const SizedBox.shrink();
+      return _buildVoidedInfoCard(context, ref, theme);
     }
 
     Future<void> updateSaleStatus(String newStatus) async {
@@ -332,7 +334,14 @@ class _SaleDetailContent extends HookConsumerWidget {
 
       isUpdating.value = true;
       final repo = ref.read(salesRepositoryProvider);
-      final result = await repo.updateSaleStatus(sale.id, newStatus);
+
+      // When voiding, also set voidedBy to the current user
+      final result = newStatus == 'voided'
+          ? await repo.updateSale(sale.id, {
+              'status': 'voided',
+              'voidedBy': ref.read(currentAuthProvider)?.user.id,
+            })
+          : await repo.updateSaleStatus(sale.id, newStatus);
       isUpdating.value = false;
 
       if (!context.mounted) return;
@@ -440,6 +449,52 @@ class _SaleDetailContent extends HookConsumerWidget {
                     ),
                 ],
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVoidedInfoCard(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+  ) {
+    final voidedByAsync = sale.voidedById != null
+        ? ref.watch(userProvider(sale.voidedById!))
+        : null;
+
+    final voidedByName = voidedByAsync?.value?.name;
+
+    return Card(
+      color: Colors.red.withValues(alpha: 0.05),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            const Icon(Icons.cancel, color: Colors.red, size: 20),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Voided',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.red,
+                    ),
+                  ),
+                  if (voidedByName != null)
+                    Text(
+                      'By $voidedByName',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.red.shade300,
+                      ),
+                    ),
+                ],
+              ),
             ),
           ],
         ),

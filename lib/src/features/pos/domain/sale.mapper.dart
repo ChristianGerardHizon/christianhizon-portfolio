@@ -67,6 +67,12 @@ class SaleMapper extends ClassMapperBase<Sale> {
     _$notes,
     opt: true,
   );
+  static String? _$voidedById(Sale v) => v.voidedById;
+  static const Field<Sale, String> _f$voidedById = Field(
+    'voidedById',
+    _$voidedById,
+    opt: true,
+  );
   static DateTime? _$created(Sale v) => v.created;
   static const Field<Sale, DateTime> _f$created = Field(
     'created',
@@ -92,6 +98,7 @@ class SaleMapper extends ClassMapperBase<Sale> {
     #customerId: _f$customerId,
     #customerName: _f$customerName,
     #notes: _f$notes,
+    #voidedById: _f$voidedById,
     #created: _f$created,
     #updated: _f$updated,
   };
@@ -108,6 +115,7 @@ class SaleMapper extends ClassMapperBase<Sale> {
       customerId: data.dec(_f$customerId),
       customerName: data.dec(_f$customerName),
       notes: data.dec(_f$notes),
+      voidedById: data.dec(_f$voidedById),
       created: data.dec(_f$created),
       updated: data.dec(_f$updated),
     );
@@ -170,6 +178,7 @@ abstract class SaleCopyWith<$R, $In extends Sale, $Out>
     String? customerId,
     String? customerName,
     String? notes,
+    String? voidedById,
     DateTime? created,
     DateTime? updated,
   });
@@ -194,6 +203,7 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
     Object? customerId = $none,
     Object? customerName = $none,
     Object? notes = $none,
+    Object? voidedById = $none,
     Object? created = $none,
     Object? updated = $none,
   }) => $apply(
@@ -208,6 +218,7 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
       if (customerId != $none) #customerId: customerId,
       if (customerName != $none) #customerName: customerName,
       if (notes != $none) #notes: notes,
+      if (voidedById != $none) #voidedById: voidedById,
       if (created != $none) #created: created,
       if (updated != $none) #updated: updated,
     }),
@@ -224,6 +235,7 @@ class _SaleCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Sale, $Out>
     customerId: data.get(#customerId, or: $value.customerId),
     customerName: data.get(#customerName, or: $value.customerName),
     notes: data.get(#notes, or: $value.notes),
+    voidedById: data.get(#voidedById, or: $value.voidedById),
     created: data.get(#created, or: $value.created),
     updated: data.get(#updated, or: $value.updated),
   );
