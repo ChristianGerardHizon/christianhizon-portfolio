@@ -18,6 +18,7 @@ class Sale with SaleMappable {
     this.customerId,
     this.customerName,
     this.notes,
+    this.voidedById,
     this.created,
     this.updated,
   });
@@ -51,6 +52,9 @@ class Sale with SaleMappable {
 
   /// Internal notes.
   final String? notes;
+
+  /// User ID of whoever voided this sale (null if not voided).
+  final String? voidedById;
 
   /// Creation timestamp.
   final DateTime? created;

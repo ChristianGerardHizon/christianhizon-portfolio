@@ -20,6 +20,7 @@ class SaleDto with SaleDtoMappable {
   final String? customer;
   final String? customerName;
   final String? notes;
+  final String? voidedBy;
   final String? created;
   final String? updated;
 
@@ -36,6 +37,7 @@ class SaleDto with SaleDtoMappable {
     this.customer,
     this.customerName,
     this.notes,
+    this.voidedBy,
     this.created,
     this.updated,
   });
@@ -54,6 +56,7 @@ class SaleDto with SaleDtoMappable {
       customer: record.getStringValue('member'),
       customerName: record.getStringValue('customerName'),
       notes: record.getStringValue('notes'),
+      voidedBy: record.getStringValue('voidedBy'),
       created: record.get<String>('created'),
       updated: record.get<String>('updated'),
     );
@@ -71,6 +74,7 @@ class SaleDto with SaleDtoMappable {
       customerId: customer != null && customer!.isNotEmpty ? customer : null,
       customerName: customerName != null && customerName!.isNotEmpty ? customerName : null,
       notes: notes,
+      voidedById: voidedBy != null && voidedBy!.isNotEmpty ? voidedBy : null,
       created: parseToLocal(created),
       updated: parseToLocal(updated),
     );
