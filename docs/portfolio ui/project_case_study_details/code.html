@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Flutter Project Detail - Christian Hizon</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0288d1","primary-light": "#e1f5fe","accent-blue": "#81d4fa","background-light": "#ffffff",
+                        "surface-light": "#f8fafc","surface-blue": "#e1f5fe","text-dark": "#1e293b","text-medium": "#475569","border-light": "#e2e8f0",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-white text-text-dark font-display transition-colors duration-200 min-h-screen flex flex-col">
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-border-light bg-white/90 backdrop-blur-md px-6 md:px-10 py-3">
+<div class="flex items-center gap-4">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined !text-2xl">flutter_dash</span>
+</div>
+<h2 class="text-text-dark text-lg font-bold leading-tight tracking-tight">Christian Hizon</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-text-medium hover:text-primary text-sm font-medium transition-colors" href="#">Projects</a>
+<a class="text-text-medium hover:text-primary text-sm font-medium transition-colors" href="#">Skills</a>
+<a class="text-text-medium hover:text-primary text-sm font-medium transition-colors" href="#">About</a>
+<a class="text-text-medium hover:text-primary text-sm font-medium transition-colors" href="#">Contact</a>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded bg-primary hover:bg-sky-600 transition-colors h-10 px-6 text-white text-sm font-bold leading-normal tracking-wide">
+<span class="truncate">Hire Me</span>
+</button>
+</div>
+<button class="md:hidden text-text-dark">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<main class="flex-grow w-full max-w-[1200px] mx-auto px-4 md:px-6 py-8">
+<div class="w-full mb-12 md:mb-20">
+<div class="relative w-full aspect-video md:aspect-[21/9] overflow-hidden rounded-lg bg-surface-light group shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Modern mobile app interface mockup showing financial data" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD8wzhOrEw7aQN6c4oeVdaEjL2aydXD_QXPIW86FS1UjPJZbLEup4Qxx5yyzbF5L5kIMAxDEDnXLYDnO03TKIv_M6Gw0N2X1VQnZqZzFI90FUSr7HfOT2ua-5CaRlAr729Kq82anvFr8-2k7bemAvjZo_Bjxbl1_sI2lLsM5UalNYhsGsT9XPFD0-xogwTVmsnotpNiF6pQ2423DRdO15XM4uMbGVNkmMBYCia_D06Ti_4ulb1QbmL8hgchNGlYSu5MXROPmpTx-wuM');">
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6 md:p-12 w-full max-w-4xl">
+<h1 class="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-4 tracking-tight leading-tight">
+                    FinFlow: <br/> High-Performance Cross-Platform Banking
+                </h1>
+<p class="text-lg md:text-xl text-slate-100 font-medium max-w-2xl">
+                    A robust Flutter application delivering native performance and a seamless banking experience across iOS and Android from a single codebase.
+                </p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20">
+<div class="lg:col-span-8 space-y-12">
+<div class="prose max-w-none text-text-medium">
+<div class="flex flex-col gap-8">
+<div class="flex items-start gap-4">
+<div class="mt-1 p-2 rounded bg-surface-blue border border-sky-100 text-primary">
+<span class="material-symbols-outlined">bug_report</span>
+</div>
+<div>
+<h2 class="text-2xl font-bold text-text-dark mb-3">The Challenge</h2>
+<p class="leading-relaxed text-lg">
+                                The client needed to replace two separate legacy codebases (Swift and Kotlin) that had diverged significantly in features and UI. The main challenge was to unify the experience without sacrificing performance or the native "feel" on either platform. Additionally, the app required complex real-time data synchronization and heavy chart rendering which often causes jank in hybrid frameworks.
+                            </p>
+</div>
+</div>
+<div class="w-full h-px bg-border-light my-2"></div>
+<div class="flex items-start gap-4">
+<div class="mt-1 p-2 rounded bg-surface-blue border border-sky-100 text-primary">
+<span class="material-symbols-outlined">code_blocks</span>
+</div>
+<div>
+<h2 class="text-2xl font-bold text-text-dark mb-3">Technical Solution</h2>
+<p class="leading-relaxed text-lg mb-4">
+                                I architected a scalable Flutter solution using <strong>Riverpod</strong> for robust state management, ensuring isolation between UI and business logic. To handle the data-heavy dashboard, I implemented strict <strong>Widget Tree Optimization</strong> techniques, using `const` constructors and splitting complex widgets to minimize unnecessary rebuilds.
+                            </p>
+<p class="leading-relaxed text-lg">
+                                For platform-specific features like biometric auth and secure storage, I utilized <strong>Native Bridges (MethodChannels)</strong> to interface directly with iOS and Android APIs. The result is a buttery smooth 60fps experience that feels indistinguishable from a native app.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-4">
+<div class="sticky top-24 rounded-lg border border-border-light bg-surface-light p-6 space-y-6 shadow-sm">
+<div>
+<h3 class="text-xs uppercase tracking-wider font-bold text-slate-500 mb-1">Client</h3>
+<p class="text-text-dark font-medium text-lg">FinTech Solutions Ltd.</p>
+</div>
+<div class="w-full h-px bg-border-light"></div>
+<div>
+<h3 class="text-xs uppercase tracking-wider font-bold text-slate-500 mb-1">Role</h3>
+<p class="text-text-dark font-medium text-lg">Senior Flutter Developer</p>
+</div>
+<div class="w-full h-px bg-border-light"></div>
+<div>
+<h3 class="text-xs uppercase tracking-wider font-bold text-slate-500 mb-1">Tech Stack</h3>
+<div class="flex flex-wrap gap-2 mt-2">
+<span class="inline-flex items-center rounded-full bg-surface-blue px-3 py-1 text-xs font-semibold text-primary border border-sky-100">Flutter 3.10</span>
+<span class="inline-flex items-center rounded-full bg-surface-blue px-3 py-1 text-xs font-semibold text-primary border border-sky-100">Dart</span>
+<span class="inline-flex items-center rounded-full bg-surface-blue px-3 py-1 text-xs font-semibold text-primary border border-sky-100">Riverpod</span>
+<span class="inline-flex items-center rounded-full bg-surface-blue px-3 py-1 text-xs font-semibold text-primary border border-sky-100">Firebase</span>
+</div>
+</div>
+<div class="w-full h-px bg-border-light"></div>
+<div>
+<h3 class="text-xs uppercase tracking-wider font-bold text-slate-500 mb-1">Timeline</h3>
+<p class="text-text-dark font-medium text-lg">4 Months</p>
+</div>
+<button class="w-full mt-6 flex items-center justify-center gap-2 rounded bg-text-dark text-white font-bold py-3 px-4 hover:opacity-90 transition-opacity shadow-lg shadow-slate-200">
+<span>View Repository</span>
+<span class="material-symbols-outlined text-sm">code</span>
+</button>
+</div>
+</div>
+</div>
+<div class="space-y-16 md:space-y-24">
+<div class="group relative overflow-hidden rounded-lg bg-slate-100 shadow-md max-w-4xl mx-auto border border-border-light">
+<img alt="Mobile application interface showing charts and graphs" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Mockup of mobile application login screen on phone" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcJrkefmYETuOdODSgafBN8nh70vDCKRhHLJzBM6sAkscbWxC5K9OBFelJ1O7imYQpTXUDgPsbLjINkq81wNF9l1S2xFtPP7qLe__5SJjlN42OXtW6bAaeieIaaUgiIIQCNeIqkN7XFqExEBW2VoCJokq-4YyBiPZV_nRpSQpvvmw6zMAFHo37qC3BdOB5iGXJEIxNuNKW1c_6k7-b15VOs6Ipp-351i22YGDdNKSk-lNSj1L5uRDSY7F6MxDAFcJhGcxlFkbXsI6H"/>
+<div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<p class="text-white font-medium">Responsive Mobile Dashboard</p>
+</div>
+</div>
+<div class="flex justify-center py-10 md:py-16">
+<div class="w-full rounded-2xl bg-surface-blue p-8 md:p-12 text-center shadow-sm border border-sky-100">
+<div class="max-w-4xl mx-auto">
+<span class="material-symbols-outlined text-6xl text-primary mb-6 opacity-80">terminal</span>
+<h3 class="text-2xl md:text-3xl font-bold text-sky-900 leading-tight mb-8">
+                        "Christian's migration to Flutter was seamless. The app is incredibly responsive, and maintaining a single codebase has cut our feature rollout time in half."
+                    </h3>
+<div class="flex items-center justify-center gap-4">
+<div class="size-12 rounded-full bg-white ring-2 ring-sky-200 overflow-hidden">
+<img alt="Profile picture of James Wilson" class="w-full h-full object-cover" data-alt="Portrait of a smiling professional man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7ZXFyQIQQJrMzkImUmnFRoA1l5gfI3BOG0MkfQE1sE8NbXaVv91nTJaXMqJFg0LefCKTZoX15MG9oZw6-BlmQ3TuKOFsktAp8MO1oYy1xTOvMVSRVZU_kaSdYKgGZTHP1raSpUbgiXCc-5745ugMpCbfNSNasM2js90X-r94bVAFsuEupRozgnFVDaij0ULedJkTsiU9jwRvvWQZMvSOryIbaNvAsjceUWn04WLl8R7_Mh-8Iq-K76u1NB9wHlX_qPWxRfedTm2mW"/>
+</div>
+<div class="text-left">
+<p class="text-base font-bold text-sky-900">David Chen</p>
+<p class="text-sm text-sky-700">VP of Engineering, FinTech Solutions</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+<div class="space-y-6 md:space-y-8">
+<div class="rounded-lg overflow-hidden bg-slate-100 shadow-md group border border-border-light">
+<img alt="Mobile app successful transaction screen" class="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" data-alt="Person holding smartphone showing successful transaction" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8ElVi9mK4XGVS_JwkiC6Cl8VQtZZfLXK2nMqILLQNPYWtaUiCaGqhH5omjQtH-ga43iVI6j3qTpHw-34QX62rRyQVeFx-VK_Uv6YjwWTuAtiyhlgL5EG1ydzQjItjHf51ngajjfrTTxTT7S8u-Zzk4416win7HRrD9E9lrMSGXG-VsQ4owy92P686zgLKz8kKZmpcbaOS5dZ7S9jmIDrU7Ir3cam0rREKHk6mmt3XHN4fT5HwHg9BMSuVRq_BjsvI8UJvXhCIlvRe"/>
+</div>
+<div class="p-6 rounded-lg bg-surface-light border border-border-light shadow-sm">
+<h4 class="text-xl font-bold text-text-dark mb-2">Core Tech Stack</h4>
+<p class="text-text-medium text-sm mb-4">Leveraging the power of Dart and the Flutter ecosystem for maximum efficiency.</p>
+<div class="mt-4 flex flex-col gap-3">
+<div class="flex items-center gap-3 p-2 bg-white rounded border border-border-light">
+<span class="material-symbols-outlined text-primary">layers</span>
+<span class="text-sm font-semibold text-text-dark">Flutter SDK &amp; Dart</span>
+</div>
+<div class="flex items-center gap-3 p-2 bg-white rounded border border-border-light">
+<span class="material-symbols-outlined text-primary">cloud_sync</span>
+<span class="text-sm font-semibold text-text-dark">Firebase Backend</span>
+</div>
+<div class="flex items-center gap-3 p-2 bg-white rounded border border-border-light">
+<span class="material-symbols-outlined text-primary">schema</span>
+<span class="text-sm font-semibold text-text-dark">Riverpod State Mgmt</span>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-6 md:space-y-8 md:mt-12">
+<div class="p-6 rounded-lg bg-surface-light border border-border-light shadow-sm">
+<h4 class="text-xl font-bold text-text-dark mb-2">Performance Metrics</h4>
+<p class="text-text-medium text-sm mb-4">Optimized for low-end devices while maintaining high-fidelity animations.</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="text-center p-4 bg-white rounded border border-border-light">
+<div class="text-3xl font-black text-primary">60</div>
+<div class="text-xs uppercase font-bold text-slate-400 mt-1">FPS Animation</div>
+</div>
+<div class="text-center p-4 bg-white rounded border border-border-light">
+<div class="text-3xl font-black text-primary">&lt;1s</div>
+<div class="text-xs uppercase font-bold text-slate-400 mt-1">App Load Time</div>
+</div>
+<div class="text-center p-4 bg-white rounded border border-border-light">
+<div class="text-3xl font-black text-primary">99%</div>
+<div class="text-xs uppercase font-bold text-slate-400 mt-1">Crash Free</div>
+</div>
+<div class="text-center p-4 bg-white rounded border border-border-light">
+<div class="text-3xl font-black text-primary">-40%</div>
+<div class="text-xs uppercase font-bold text-slate-400 mt-1">Bundle Size</div>
+</div>
+</div>
+</div>
+<div class="rounded-lg overflow-hidden bg-slate-100 shadow-md group border border-border-light">
+<img alt="Mobile app details screen" class="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" data-alt="Close up of mobile payment success screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDK5ELEwxl81FehQkLLboc9Vgl69DiXDiUyXjw3pWwXL_zaqvJmpAm7-Er6EZbMhUfjPiyx1fB0TKzTfYJSd9TXEqTjt_TTq9GpucC1yQydGK9sJt1X1l1FVqXOXdSSnT1TxwZUqOREAWmKTLXnVAlcNsD_mXIch3XZqxZAKmQMFfs2DqM6gp1av5KMHEfjaE2hTr_AvT5KF2pIamnrrovV2nJAa5oIDPq1v2_4Po9Ta6-xry81OMwiRfqkOtNZiZwXD-uEgk8D-OU2"/>
+</div>
+</div>
+</div>
+<div class="rounded-lg overflow-hidden relative min-h-[400px] flex items-center justify-center bg-slate-900 mt-12">
+<div class="absolute inset-0 bg-cover bg-center opacity-40" data-alt="Abstract geometric blue light pattern background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC3n2wupb-qC_zhhcaeZjIcbuktoS7SUKYBvYSJIampe100KDSn09m-TuguVYq8ugTbFv2cQBcBJHT8XSplEytjoLU1qMENiz9w19e9RnFdFzFZW3VCt2fbAyR8dOrztdEsak_5BJ0FGeex0xaCUxAX4aObp5AIVZ7DwRbU3vtwkgkrSI8jrkK5xPsP9scloUuv6aX8Nm7w83jIEn0IFlItYHzac5tTRSI1M3im4A21jAkoPHh3sSGML2tYD8WJLfjko4aX9d51epn2');">
+</div>
+<div class="absolute inset-0 bg-gradient-to-tr from-sky-900/60 to-transparent"></div>
+<div class="relative z-10 text-center max-w-2xl px-6">
+<h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Need a high-performance app?</h2>
+<p class="text-sky-100 text-lg mb-8">Let's build your next cross-platform mobile experience with Flutter.</p>
+<button class="inline-flex items-center justify-center h-12 px-8 rounded bg-primary hover:bg-sky-600 text-white font-bold transition-all transform hover:-translate-y-1 shadow-lg shadow-sky-500/30">
+                    Contact Christian
+                </button>
+</div>
+</div>
+</div>
+</main>
+<footer class="border-t border-border-light bg-surface-light py-12 px-6 md:px-10 mt-auto">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">flutter_dash</span>
+<span class="text-text-dark font-bold">Christian Hizon</span>
+</div>
+<p class="text-slate-500 text-sm">© 2023 Christian Hizon. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="text-slate-500 hover:text-primary transition-colors" href="#">GitHub</a>
+<a class="text-slate-500 hover:text-primary transition-colors" href="#">LinkedIn</a>
+<a class="text-slate-500 hover:text-primary transition-colors" href="#">Stack Overflow</a>
+</div>
+</div>
+</footer>
+</body></html>

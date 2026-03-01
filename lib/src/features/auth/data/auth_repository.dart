@@ -56,7 +56,6 @@ class AuthRepositoryImpl implements AuthRepository {
   });
 
   RecordService get _collection => pb.collection(PocketBaseCollections.users);
-  String get _expand => 'branch';
 
   /// Creates an AuthState from an AuthDto.
   AuthState _createAuthState(AuthDto dto) {
@@ -71,7 +70,7 @@ class AuthRepositoryImpl implements AuthRepository {
         final result = await _collection.authWithPassword(
           username,
           password,
-          expand: _expand,
+
         );
 
         final authDto = AuthDto.fromAuthResult(result);
@@ -98,7 +97,7 @@ class AuthRepositoryImpl implements AuthRepository {
   FutureEither<AuthState> refresh() async {
     return TaskEither.tryCatch(
       () async {
-        final result = await _collection.authRefresh(expand: _expand);
+        final result = await _collection.authRefresh();
 
         final authDto = AuthDto.fromAuthResult(result);
         await authStorage.save(authDto);
@@ -123,7 +122,7 @@ class AuthRepositoryImpl implements AuthRepository {
         pb.authStore.save(savedAuth.token, savedAuth.toRecordModel());
 
         // Refresh to validate token and get latest user data
-        final result = await _collection.authRefresh(expand: _expand);
+        final result = await _collection.authRefresh();
 
         final authDto = AuthDto.fromAuthResult(result);
         await authStorage.save(authDto);
@@ -155,7 +154,7 @@ class AuthRepositoryImpl implements AuthRepository {
   FutureEither<AuthState> refreshInBackground() async {
     return TaskEither.tryCatch(
       () async {
-        final result = await _collection.authRefresh(expand: _expand);
+        final result = await _collection.authRefresh();
 
         final authDto = AuthDto.fromAuthResult(result);
         await authStorage.save(authDto);

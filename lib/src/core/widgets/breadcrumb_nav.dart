@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../i18n/strings.g.dart';
-import '../routing/routes/organization.routes.dart';
-import '../routing/routes/products.routes.dart';
-import '../routing/routes/sales.routes.dart';
-import '../routing/routes/system.routes.dart';
+import '../routing/routes/admin.routes.dart';
 
 /// A breadcrumb item representing a navigation point.
 class BreadcrumbItem {
@@ -21,9 +17,6 @@ class BreadcrumbItem {
 }
 
 /// A breadcrumb navigation bar that generates items from the current GoRouter state.
-///
-/// Automatically parses the current route location and creates a clickable
-/// breadcrumb trail for navigation.
 class BreadcrumbNav extends StatelessWidget {
   const BreadcrumbNav({super.key});
 
@@ -67,7 +60,6 @@ class BreadcrumbNav extends StatelessWidget {
     final theme = Theme.of(context);
 
     if (isLast) {
-      // Current page - not clickable
       return Text(
         item.label,
         style: theme.textTheme.bodyMedium?.copyWith(
@@ -77,7 +69,6 @@ class BreadcrumbNav extends StatelessWidget {
       );
     }
 
-    // Clickable breadcrumb
     return InkWell(
       onTap: item.onTap ?? () => context.go(item.path),
       borderRadius: BorderRadius.circular(4),
@@ -93,94 +84,26 @@ class BreadcrumbNav extends StatelessWidget {
     );
   }
 
-  /// Builds breadcrumb items from the current router state.
   List<BreadcrumbItem> _buildBreadcrumbs(
       BuildContext context, GoRouterState state) {
-    final t = Translations.of(context);
     final location = state.uri.path;
-    final pathParameters = state.pathParameters;
     final items = <BreadcrumbItem>[];
 
-    // Parse the path segments
-    final segments = location.split('/').where((s) => s.isNotEmpty).toList();
-
-    if (segments.isEmpty) {
-      // On dashboard - show just Dashboard
+    if (location.startsWith('/admin/profile')) {
       items.add(BreadcrumbItem(
-        label: t.navigation.dashboard,
-        path: '/',
+        label: 'Profile',
+        path: AdminProfileRoute.path,
+        onTap: () => const AdminProfileRoute().go(context),
       ));
-      return items;
-    }
-
-    // Build breadcrumbs based on path segments
-    String currentPath = '';
-    for (int i = 0; i < segments.length; i++) {
-      final segment = segments[i];
-      currentPath += '/$segment';
-
-      final item = _getItemForSegment(
-        context: context,
-        segment: segment,
-        fullPath: currentPath,
-        segments: segments,
-        index: i,
-        pathParameters: pathParameters,
-        translations: t,
-      );
-
-      if (item != null) {
-        items.add(item);
-      }
+    } else if (location.startsWith('/admin/projects')) {
+      items.add(BreadcrumbItem(
+        label: 'Projects',
+        path: AdminProjectsRoute.path,
+        onTap: () => const AdminProjectsRoute().go(context),
+      ));
     }
 
     return items;
-  }
-
-  BreadcrumbItem? _getItemForSegment({
-    required BuildContext context,
-    required String segment,
-    required String fullPath,
-    required List<String> segments,
-    required int index,
-    required Map<String, String> pathParameters,
-    required Translations translations,
-  }) {
-    final t = translations;
-
-    // Handle known routes
-    switch (segment) {
-      case 'products':
-        return BreadcrumbItem(
-          label: t.navigation.products,
-          path: ProductsRoute.path,
-          onTap: () => const ProductsRoute().go(context),
-        );
-
-      case 'cashier':
-        return BreadcrumbItem(
-          label: t.navigation.sales,
-          path: SalesRoute.path,
-          onTap: () => const SalesRoute().go(context),
-        );
-
-      case 'organization':
-        return BreadcrumbItem(
-          label: t.navigation.organization,
-          path: OrganizationRoute.path,
-          onTap: () => const OrganizationRoute().go(context),
-        );
-
-      case 'system':
-        return BreadcrumbItem(
-          label: t.navigation.system,
-          path: SystemRoute.path,
-          onTap: () => const SystemRoute().go(context),
-        );
-
-      default:
-        return null;
-    }
   }
 }
 

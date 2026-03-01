@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>App Archive - Christian Hizon</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3B82F6","primary-dark": "#1D4ED8",
+                        "background-light": "#ffffff",
+                        "background-dark": "#0f172a",
+                        "surface-light": "#eff6ff",},
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem", "3xl": "1.5rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .project-card:hover .project-image {
+            transform: scale(1.05);
+        }.mobile-frame {
+            border: 8px solid #1e293b;
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            background-color: #000;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased min-h-screen flex flex-col overflow-x-hidden">
+<header class="sticky top-0 z-50 w-full border-b border-slate-100 bg-white/90 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/90">
+<div class="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-6 lg:px-12">
+<div class="flex items-center gap-3">
+<div class="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-2xl">terminal</span>
+</div>
+<h1 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">ChristianH.</h1>
+</div>
+<nav class="hidden md:flex items-center gap-10">
+<a class="text-sm font-medium text-slate-600 hover:text-primary transition-colors dark:text-slate-300 dark:hover:text-primary" href="#">App Archive</a>
+<a class="text-sm font-medium text-slate-600 hover:text-primary transition-colors dark:text-slate-300 dark:hover:text-primary" href="#">Open Source</a>
+<a class="text-sm font-medium text-slate-600 hover:text-primary transition-colors dark:text-slate-300 dark:hover:text-primary" href="#">Experience</a>
+<a class="text-sm font-medium text-slate-600 hover:text-primary transition-colors dark:text-slate-300 dark:hover:text-primary" href="#">Contact</a>
+</nav>
+<button class="hidden md:flex h-11 items-center justify-center rounded bg-primary px-6 text-sm font-bold text-white transition-transform hover:scale-105 active:scale-95 hover:bg-primary-dark">
+                Hire Christian
+            </button>
+<button class="md:hidden p-2 text-slate-600">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<main class="flex-1 w-full mx-auto max-w-[1440px] px-6 lg:px-12 py-12 lg:py-20">
+<div class="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+<div class="max-w-2xl">
+<h2 class="text-5xl font-black leading-[0.9] tracking-tighter text-slate-900 sm:text-6xl md:text-7xl dark:text-white">
+                    Christian's <span class="text-primary">App Archive</span>
+</h2>
+<p class="mt-6 text-lg text-slate-500 md:text-xl dark:text-slate-400 max-w-lg">
+                    A curated collection of my cross-platform applications built with Flutter &amp; Dart. Focusing on performance, pixel-perfect UI, and robust state management.
+                </p>
+</div>
+<div class="flex flex-wrap gap-2 md:justify-end">
+<button class="h-9 px-4 rounded-full border border-primary bg-primary text-xs font-semibold text-white transition-all hover:bg-primary-dark shadow-sm">All Apps</button>
+<button class="h-9 px-4 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-600 transition-all hover:border-primary hover:text-primary dark:border-slate-700 dark:bg-transparent dark:text-slate-400 dark:hover:border-primary">Flutter</button>
+<button class="h-9 px-4 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-600 transition-all hover:border-primary hover:text-primary dark:border-slate-700 dark:bg-transparent dark:text-slate-400 dark:hover:border-primary">iOS</button>
+<button class="h-9 px-4 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-600 transition-all hover:border-primary hover:text-primary dark:border-slate-700 dark:bg-transparent dark:text-slate-400 dark:hover:border-primary">Android</button>
+<button class="h-9 px-4 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-600 transition-all hover:border-primary hover:text-primary dark:border-slate-700 dark:bg-transparent dark:text-slate-400 dark:hover:border-primary">Open Source</button>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-12">
+<div class="group project-card cursor-pointer flex flex-col gap-6">
+<div class="relative w-full aspect-[9/16] rounded-3xl bg-surface-light dark:bg-slate-800 p-6 flex items-center justify-center transition-colors group-hover:bg-blue-50 dark:group-hover:bg-slate-700">
+<div class="mobile-frame h-full w-full relative shadow-2xl transition-transform duration-500 ease-out group-hover:-translate-y-2">
+<div class="project-image absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBSlBJ70eqwXBaR4n-tSquLFFsA_oVb18m4nbZmIItRQCS0rM97U0H3nhdQfanbpD-2SHVVLIBaivMkGGFKI34zwGKronQdo034TS5oCoJsKYQKozN59uMzzcdUqRuxg91Cxlrr_qNXkLSeWYkKGbYadWs2KKUdQCN7Upfh5Q_cdSJ4E6L-qctE9qNhnf4xpu5YGPSnWx9VPAfdjFIEY48eU_gRS9fssgRNlPEPxIZvGwWmuoeCjoHukEeYinH4SW8_hXLeu02VrGBf");'></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-blue-100 text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">Flutter</span>
+<span class="px-2 py-0.5 rounded-md bg-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:bg-slate-800 dark:text-slate-400">Riverpod</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors dark:text-white">Zenith Wellness</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">A holistic health tracking application featuring real-time charts and health kit integration.</p>
+</div>
+</div>
+<div class="group project-card cursor-pointer flex flex-col gap-6">
+<div class="relative w-full aspect-[9/16] rounded-3xl bg-surface-light dark:bg-slate-800 p-6 flex items-center justify-center transition-colors group-hover:bg-blue-50 dark:group-hover:bg-slate-700">
+<div class="mobile-frame h-full w-full relative shadow-2xl transition-transform duration-500 ease-out group-hover:-translate-y-2">
+<div class="project-image absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCrxo7o9f3Gd3WHnT1l1WjyUSEp9TfMpQY7wrzOlQSCqukd1xEV1dUq5TTKhv1pA2UA2Asfn5ZDGXeEp2xyBqo8RilXDh8CI271TD_X1NFTP-qFI7mxZjS-RT3A6CcU5_VPHc2BKL6H7CLtRv9CJmp-HNkSvm9EhGiut73UcyeiDy52z_JEdBNGSsHN8gjqBSV_2GMz5ZoLKjsWS14_xYXoOECV4uz6VipNC-TGhMELTOqAGKLqKNO4ZGhiKkO8Hkoq3MBciOlKlXph");'></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-blue-100 text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">Dart</span>
+<span class="px-2 py-0.5 rounded-md bg-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:bg-slate-800 dark:text-slate-400">Firebase</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors dark:text-white">NeoBank Mobile</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">Secure fintech application with biometric authentication and real-time transaction updates.</p>
+</div>
+</div>
+<div class="group project-card cursor-pointer flex flex-col gap-6">
+<div class="relative w-full aspect-[9/16] rounded-3xl bg-surface-light dark:bg-slate-800 p-6 flex items-center justify-center transition-colors group-hover:bg-blue-50 dark:group-hover:bg-slate-700">
+<div class="mobile-frame h-full w-full relative shadow-2xl transition-transform duration-500 ease-out group-hover:-translate-y-2">
+<div class="project-image absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDe6fQmSwd4UvbRcsruaHFkLgv_RbZTAgz4344NT6BefnPqwVbeX8jrBJ07CAbKVjqwbcFuK6_Tn7tQkMELL2GBcMPMVkl7r8I_bx1Gd83Ye3EmAXHDe8QYCi-LUoIN2iZA7y0ANOyezqPIfKSd4tk5zsJycFYNauncblmc5AYQkRXLhU4_stpUC2gjILEk65Q6qiSpQgAeSznGRwX4A__f_a30XBZFd5xUtuTmNGrTPmtqwTeQfBFp0FsOzfQqP0HkV4VNIaGvqvgi");'></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-blue-100 text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">Flutter</span>
+<span class="px-2 py-0.5 rounded-md bg-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:bg-slate-800 dark:text-slate-400">BLoC</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors dark:text-white">CyberSocial</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">Next-gen social network focused on privacy and decentralized identity.</p>
+</div>
+</div>
+<div class="group project-card cursor-pointer flex flex-col gap-6">
+<div class="relative w-full aspect-[9/16] rounded-3xl bg-surface-light dark:bg-slate-800 p-6 flex items-center justify-center transition-colors group-hover:bg-blue-50 dark:group-hover:bg-slate-700">
+<div class="mobile-frame h-full w-full relative shadow-2xl transition-transform duration-500 ease-out group-hover:-translate-y-2">
+<div class="project-image absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCle4l7kTjRURJfZ89k62UNyYJwGBpVjX1fp4S2fTiB0g_tL9CkPhZoXGyeXgMZRkkyFCDGjBNtFFkSVR-p1Gk7Gkgeoqfk4Sp6s5xPCjau_MuJ11yBU7TeexQ8SS5ixHfPwdr_FO6RAPA8-EN-P_dwh5yRKsbeFEFZ_E7ib2SRLzoaPH3XHoBv0xtqx4nVN-q6Uifmdm1JZxKUzbREvdsP7QxwL8AtOxVO_kfx7zMQzf2zzI1Fm9uaI1k0ZlLDD5E1Wq_ts-aVxjrV");'></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-blue-100 text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">Dart</span>
+<span class="px-2 py-0.5 rounded-md bg-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:bg-slate-800 dark:text-slate-400">GetX</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors dark:text-white">EcoStore Client</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">E-commerce companion app for sustainable shopping with QR scanner features.</p>
+</div>
+</div>
+<div class="group project-card cursor-pointer flex flex-col gap-6">
+<div class="relative w-full aspect-[9/16] rounded-3xl bg-surface-light dark:bg-slate-800 p-6 flex items-center justify-center transition-colors group-hover:bg-blue-50 dark:group-hover:bg-slate-700">
+<div class="mobile-frame h-full w-full relative shadow-2xl transition-transform duration-500 ease-out group-hover:-translate-y-2">
+<div class="project-image absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBRUfqtLf6JnPF4JffGFXUXJj_9s0qtafDAvlkkX9OSeIH5Dsv59Nk3BU_US-BO9rJ4vXkBNWjjw37uPJKBI_QdVA58wAlXsSOc9XQg75ZeeKRs_5SZNXqTy1dJNWeTmgl29qCSwcO7hFCapO3HBacvc63h5xW8H16F5L4Gzr_BYXLGt-iszYjhRPHhsQXKHyd1WvAP-ftvAZL1WmPzZfXP2G3gZwLg1YayRaQHRMjeMKEyBd2QpKIJverrleEojdAmvHrEFPHuh1nC");'></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-blue-100 text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">Flutter</span>
+<span class="px-2 py-0.5 rounded-md bg-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:bg-slate-800 dark:text-slate-400">Charts</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors dark:text-white">Analytics Go</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">Mobile dashboard for SaaS analytics with beautiful interactive graphs.</p>
+</div>
+</div>
+<div class="group project-card cursor-pointer flex flex-col gap-6">
+<div class="relative w-full aspect-[9/16] rounded-3xl bg-surface-light dark:bg-slate-800 p-6 flex items-center justify-center transition-colors group-hover:bg-blue-50 dark:group-hover:bg-slate-700">
+<div class="mobile-frame h-full w-full relative shadow-2xl transition-transform duration-500 ease-out group-hover:-translate-y-2">
+<div class="project-image absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBO9Wk9ush54FfAFrh-xfpNxbCmxi-HxJY6fdEq-5riNwgChWW_mXgGH8JI1Z0ngTM_Iai0w7Q3jvCYJ_f77nV8EZ73SWC8VkM-Tst0L64OlC1xRjNUq1znD7te0XDUqJkCAzhzKr8a1cBcLe7VyldhyP-kCrHQVR8hM4f9A4QWvxPvSTFnooC-g9bTttvm9srhXMreX5NeN3NcpqrkkUJ-nyb_fhvuRQ6Ig6XYgf1Mg4D3y9Scw2pPnIkxUMGDSLag49FKYVJNBxps");'></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-blue-100 text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">Dart</span>
+<span class="px-2 py-0.5 rounded-md bg-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:bg-slate-800 dark:text-slate-400">Animations</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors dark:text-white">Apex Identity</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">Brand guideline explorer app with complex heroic animations and transitions.</p>
+</div>
+</div>
+<div class="group project-card cursor-pointer flex flex-col gap-6">
+<div class="relative w-full aspect-[9/16] rounded-3xl bg-surface-light dark:bg-slate-800 p-6 flex items-center justify-center transition-colors group-hover:bg-blue-50 dark:group-hover:bg-slate-700">
+<div class="mobile-frame h-full w-full relative shadow-2xl transition-transform duration-500 ease-out group-hover:-translate-y-2">
+<div class="project-image absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBOt4qXmYwahms_h1oEip0Ps2n1b-1smx774KqGjr9TBWwX5Hhri7PjdXR3B2_RANefacyng9Q1wJOxTXCzbQjekZCrlIl6GnYbbi9OB4SMQjaMzHciJe20WmGeBr6ZMcdKjqQ9lgXnQgXbIRkPNVBwaFc-gDyU-w_IfonU10t4l80Mb_2ahZuZ9S0PRrZK29dzTUzwAjsf1vmAqzf0vnzwXPnfHlutoFx-N6lQ9xqGVPP-pu6hswDHGyNd-Xjxj4iUgEycplk9VBKy");'></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-blue-100 text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">Flutter</span>
+<span class="px-2 py-0.5 rounded-md bg-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:bg-slate-800 dark:text-slate-400">UI/UX</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors dark:text-white">Vogue Mobile</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">Editorial fashion app with custom scroll physics and magazine-style layout.</p>
+</div>
+</div>
+<div class="group project-card cursor-pointer flex flex-col gap-6">
+<div class="relative w-full aspect-[9/16] rounded-3xl bg-surface-light dark:bg-slate-800 p-6 flex items-center justify-center transition-colors group-hover:bg-blue-50 dark:group-hover:bg-slate-700">
+<div class="mobile-frame h-full w-full relative shadow-2xl transition-transform duration-500 ease-out group-hover:-translate-y-2">
+<div class="project-image absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDReuFewoqU4Xsd1P96WNboOpHgu0UCvcQyjf_4yNS0NDfTCq9606c3nrrPIQVcPZYM-effFcViVP8xu_JBjmtazCy0NFZU4zHac8sPJz1e0Bn4oIcxHFm6srxqrA-SKLdSKwvWdOpeXW3GaepuOinowl5vaKZzIAUKLnNt_EoncWKYSh25ZTBjEm1A3oVd8N1qs3T-1bvA-Iv4Ce2XuGhwVUr4UF5KbtPTDcKMdx9nyrx5Y7L5oEfD_VQqFsRpA-s6leEjUfloyqZ_");'></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-blue-100 text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">Provider</span>
+<span class="px-2 py-0.5 rounded-md bg-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:bg-slate-800 dark:text-slate-400">SQL</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors dark:text-white">Pure Skin Shop</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">Offline-first product catalog for skincare consultants.</p>
+</div>
+</div>
+</div>
+<div class="mt-20 flex items-center justify-center gap-4 border-t border-slate-100 pt-10 dark:border-slate-800">
+<a class="flex size-12 items-center justify-center rounded-full border border-slate-200 text-slate-400 transition-colors hover:border-primary hover:text-primary dark:border-slate-700 dark:hover:border-primary dark:hover:text-primary" href="#">
+<span class="material-symbols-outlined">arrow_back</span>
+</a>
+<div class="flex items-center gap-2">
+<a class="flex size-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-white dark:bg-white dark:text-slate-900" href="#">1</a>
+<a class="flex size-10 items-center justify-center rounded-full text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-primary dark:text-slate-300 dark:hover:bg-slate-800" href="#">2</a>
+<a class="flex size-10 items-center justify-center rounded-full text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-primary dark:text-slate-300 dark:hover:bg-slate-800" href="#">3</a>
+<span class="flex size-10 items-center justify-center text-slate-400">...</span>
+<a class="flex size-10 items-center justify-center rounded-full text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-primary dark:text-slate-300 dark:hover:bg-slate-800" href="#">8</a>
+</div>
+<a class="flex size-12 items-center justify-center rounded-full border border-slate-200 text-slate-900 transition-colors hover:border-primary hover:bg-blue-50 hover:text-primary dark:border-slate-700 dark:text-white dark:hover:border-white dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+</main>
+<footer class="bg-surface-light border-t border-slate-100 py-16 dark:bg-slate-900 dark:border-slate-800">
+<div class="mx-auto max-w-[1440px] px-6 lg:px-12 flex flex-col md:flex-row justify-between items-start gap-12">
+<div class="flex flex-col gap-4 max-w-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl">terminal</span>
+<span class="text-lg font-bold text-slate-900 dark:text-white">Christian Hizon</span>
+</div>
+<p class="text-sm text-slate-500 leading-relaxed dark:text-slate-400">
+                    Flutter Developer building beautiful, natively compiled applications for mobile, web, and desktop from a single codebase.
+                </p>
+</div>
+<div class="flex gap-16 flex-wrap">
+<div class="flex flex-col gap-4">
+<h4 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">Connect</h4>
+<div class="flex flex-col gap-2">
+<a class="text-sm text-slate-500 hover:text-primary transition-colors dark:text-slate-400 dark:hover:text-primary" href="#">GitHub</a>
+<a class="text-sm text-slate-500 hover:text-primary transition-colors dark:text-slate-400 dark:hover:text-primary" href="#">LinkedIn</a>
+<a class="text-sm text-slate-500 hover:text-primary transition-colors dark:text-slate-400 dark:hover:text-primary" href="#">Stack Overflow</a>
+<a class="text-sm text-slate-500 hover:text-primary transition-colors dark:text-slate-400 dark:hover:text-primary" href="#">Pub.dev</a>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">Navigation</h4>
+<div class="flex flex-col gap-2">
+<a class="text-sm text-slate-500 hover:text-primary transition-colors dark:text-slate-400 dark:hover:text-primary" href="#">Home</a>
+<a class="text-sm text-slate-500 hover:text-primary transition-colors dark:text-slate-400 dark:hover:text-primary" href="#">App Archive</a>
+<a class="text-sm text-slate-500 hover:text-primary transition-colors dark:text-slate-400 dark:hover:text-primary" href="#">About Me</a>
+<a class="text-sm text-slate-500 hover:text-primary transition-colors dark:text-slate-400 dark:hover:text-primary" href="#">Contact</a>
+</div>
+</div>
+</div>
+</div>
+<div class="mx-auto max-w-[1440px] px-6 lg:px-12 mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-xs text-slate-400">© 2024 Christian Hizon. All rights reserved.</p>
+<p class="text-xs text-slate-400">Coded with 💙 using Flutter &amp; Tailwind.</p>
+</div>
+</footer>
+
+</body></html>

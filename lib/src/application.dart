@@ -8,7 +8,7 @@ import 'core/packages/pocketbase/pocketbase_provider.dart';
 import 'core/packages/theme/app_themes.dart';
 import 'core/routing/router.dart';
 import 'core/widgets/window_size_listener.dart';
-import 'features/settings/presentation/controllers/theme_controller.dart';
+import 'core/theme/theme_controller.dart';
 
 /// Main application widget.
 ///

@@ -3,23 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../features/settings/presentation/controllers/current_branch_controller.dart';
-import '../routing/routes/check_in.routes.dart';
-import '../routing/routes/dashboard.routes.dart';
-import '../routing/routes/organization.routes.dart';
-import '../routing/routes/products.routes.dart';
-import '../routing/routes/members.routes.dart';
-import '../routing/routes/memberships.routes.dart';
-import '../routing/routes/reports.routes.dart';
-import '../routing/routes/sales.routes.dart';
-import '../routing/routes/sales_history.routes.dart';
-import '../routing/routes/system.routes.dart';
-import '../utils/breakpoints.dart';
+import '../routing/routes/admin.routes.dart';
 import '../widgets/mobile_bottom_nav.dart';
 import '../widgets/mobile_drawer.dart';
 import '../widgets/tablet_nav_rail.dart';
+import '../utils/breakpoints.dart';
 
-/// Main adaptive shell widget that wraps authenticated app content.
+/// Main adaptive shell widget that wraps authenticated admin content.
 ///
 /// Provides responsive navigation:
 /// - Mobile (< 600px): Bottom navigation + drawer
@@ -45,7 +35,6 @@ class _AppRootState extends ConsumerState<AppRoot> {
   @override
   void initState() {
     super.initState();
-    // Dismiss keyboard when entering authenticated shell (e.g., after login)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusManager.instance.primaryFocus?.unfocus();
     });
@@ -53,49 +42,29 @@ class _AppRootState extends ConsumerState<AppRoot> {
 
   /// Route paths in order of navigation index.
   static const _routePaths = [
-    DashboardRoute.path, // 0: /
-    CheckInRoute.path, // 1: /check-in
-    SalesRoute.path, // 2: /cashier
-    SalesHistoryRoute.path, // 3: /sales
-    ProductsRoute.path, // 4: /products
-    MembersRoute.path, // 5: /members
-    MembershipsRoute.path, // 6: /memberships
-    ReportsRoute.path, // 7: /reports
-    OrganizationRoute.path, // 8: /organization
-    SystemRoute.path, // 9: /system
+    AdminProfileRoute.path, // 0: /admin/profile
+    AdminProjectsRoute.path, // 1: /admin/projects
   ];
 
   /// Routes in order of navigation index.
   static const _routes = <GoRouteData>[
-    DashboardRoute(), // 0
-    CheckInRoute(), // 1
-    SalesRoute(), // 2
-    SalesHistoryRoute(), // 3
-    ProductsRoute(), // 4
-    MembersRoute(), // 5
-    MembershipsRoute(), // 6
-    ReportsRoute(), // 7
-    OrganizationRoute(), // 8
-    SystemRoute(), // 9
+    AdminProfileRoute(), // 0
+    AdminProjectsRoute(), // 1
   ];
 
   /// Gets the selected index based on current route location.
   int _getSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
 
-    // Try exact match first
     final index = _routePaths.indexOf(location);
     if (index >= 0) return index;
 
-    // For nested routes, check if location starts with any route path
-    // Skip index 0 ('/') to prevent matching everything
-    for (int i = 1; i < _routePaths.length; i++) {
+    for (int i = 0; i < _routePaths.length; i++) {
       if (location.startsWith(_routePaths[i])) {
         return i;
       }
     }
 
-    // Fallback to dashboard
     return 0;
   }
 
@@ -118,13 +87,11 @@ class _AppRootState extends ConsumerState<AppRoot> {
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
 
-        // Check if the router can pop (i.e. we're on a nested page)
         if (GoRouter.of(context).canPop()) {
           GoRouter.of(context).pop();
           return;
         }
 
-        // We're at a root page — confirm exit
         final shouldExit = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
@@ -154,41 +121,6 @@ class _AppRootState extends ConsumerState<AppRoot> {
     );
   }
 
-  Widget _buildBranchBar(BuildContext context) {
-    final theme = Theme.of(context);
-    final branchAsync = ref.watch(currentBranchControllerProvider);
-
-    return branchAsync.when(
-      data: (branch) {
-        if (branch == null) return const SizedBox.shrink();
-        return Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          color: theme.colorScheme.surfaceContainerHighest,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.store,
-                size: 14,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                branch.name,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-      loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
-    );
-  }
-
   Widget _buildMobileLayout(BuildContext context) {
     final selectedIndex = _getSelectedIndex(context);
 
@@ -201,12 +133,7 @@ class _AppRootState extends ConsumerState<AppRoot> {
       body: SafeArea(
         child: ColoredBox(
           color: Theme.of(context).scaffoldBackgroundColor,
-          child: Column(
-            children: [
-              _buildBranchBar(context),
-              Expanded(child: widget.child),
-            ],
-          ),
+          child: widget.child,
         ),
       ),
       bottomNavigationBar: MobileBottomNav(
@@ -224,26 +151,16 @@ class _AppRootState extends ConsumerState<AppRoot> {
       body: SafeArea(
         child: Row(
           children: [
-            // Navigation Rail
             TabletNavRail(
               selectedIndex: selectedIndex,
               onDestinationSelected: _onDestinationSelected,
             ),
-
             const VerticalDivider(width: 1),
-
-            // Main content area
             Expanded(
               child: Scaffold(
                 body: ColoredBox(
                   color: Theme.of(context).scaffoldBackgroundColor,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildBranchBar(context),
-                      Expanded(child: widget.child),
-                    ],
-                  ),
+                  child: widget.child,
                 ),
               ),
             ),

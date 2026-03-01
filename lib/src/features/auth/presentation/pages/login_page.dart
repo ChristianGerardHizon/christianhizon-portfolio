@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../../core/assets/assets.gen.dart';
 import '../../../../core/i18n/strings.g.dart';
+import '../../../../core/routing/routes/portfolio.routes.dart';
 import '../../../../core/widgets/app_version_indicator.dart';
 import '../controllers/auth_controller.dart';
 
@@ -175,6 +176,14 @@ class LoginPage extends HookConsumerWidget {
                             )
                           : Text(t.auth.loginButton),
                     ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Back to portfolio
+                  TextButton(
+                    onPressed:
+                        isLoading ? null : () => const PortfolioRoute().go(context),
+                    child: const Text('Back to Portfolio'),
                   ),
                   const SizedBox(height: 32),
 
