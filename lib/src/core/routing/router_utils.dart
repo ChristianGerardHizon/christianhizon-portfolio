@@ -5,91 +5,51 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../features/auth/presentation/controllers/auth_controller.dart';
-import 'pending_redirect_provider.dart';
+import 'routes/admin.routes.dart';
 import 'routes/auth.routes.dart';
-import 'routes/dashboard.routes.dart';
+import 'routes/portfolio.routes.dart';
 
 /// Utility functions for router configuration.
 abstract class RouterUtils {
-  /// Routes that should not trigger auth redirects.
-  static const List<String> ignoredRoutes = [
-    '/login',
-    '/splash',
-    '/auth-loading',
-    '/forgot-password',
-  ];
+  /// Routes that require authentication.
+  static bool _isAdminRoute(String path) {
+    return path.startsWith('/admin');
+  }
 
   /// Global redirect function for auth guards.
   ///
-  /// Redirects unauthenticated users to login and
-  /// authenticated users away from login pages.
-  /// Preserves deep link URLs on web by storing them during auth loading.
+  /// - `/` (portfolio) is the landing page, always accessible
+  /// - `/login` is accessible without auth
+  /// - `/admin/*` routes require authentication
   static FutureOr<String?> redirect(
     BuildContext context,
     GoRouterState state,
     Ref ref,
   ) {
-    final currentPath = state.matchedLocation;
-    final fullUri = state.uri.toString();
-
-    // Check if this route should skip auth check
-    final isIgnored = ignoredRoutes.any(
-      (route) => currentPath.startsWith(route),
-    );
+    final currentPath = state.uri.path;
 
     final authAsync = ref.read(authControllerProvider);
+
+    // Don't redirect while auth is still loading — the router will
+    // refresh automatically when the auth state resolves.
+    if (authAsync.isLoading) return null;
+
     final isAuthenticated = authAsync.value != null;
-    final isAuthLoading = authAsync.isLoading;
     final isOnLoginPage = currentPath == LoginRoute.path;
-    final isOnSplashPage = currentPath == SplashRoute.path;
+    final isAdminRoute = _isAdminRoute(currentPath);
 
-    // 1. Still loading auth on splash - stay on splash
-    if (isAuthLoading && isOnSplashPage) {
-      return SplashRoute.path;
+    // Bare /admin path - redirect to /admin/profile or login
+    if (currentPath == '/admin') {
+      return isAuthenticated ? AdminProfileRoute.path : LoginRoute.path;
     }
 
-    // 2. Auth loading + protected route - save URL, go to splash
-    // This prevents login flash and preserves deep links on web
-    if (isAuthLoading && !isIgnored) {
-      // Delay state modification to avoid modifying provider during build
-      Future(() {
-        ref.read(pendingRedirectProvider.notifier).set(fullUri);
-      });
-      return SplashRoute.path;
+    // Login page - redirect to admin if already authenticated
+    if (isOnLoginPage && isAuthenticated) {
+      return AdminProfileRoute.path;
     }
 
-    // 3. Splash complete - redirect based on auth result
-    if (isOnSplashPage && !isAuthLoading) {
-      if (isAuthenticated) {
-        // Read pending URL, then clear it after redirect
-        final pendingUrl = ref.read(pendingRedirectProvider);
-        if (pendingUrl != null) {
-          Future(() {
-            ref.read(pendingRedirectProvider.notifier).clear();
-          });
-        }
-        return pendingUrl ?? '/';
-      }
-      return LoginRoute.path;
-    }
-
-    // 4. Login page - redirect if authenticated
-    if (isOnLoginPage) {
-      if (isAuthenticated) {
-        // Read pending URL, then clear it after redirect
-        final pendingUrl = ref.read(pendingRedirectProvider);
-        if (pendingUrl != null) {
-          Future(() {
-            ref.read(pendingRedirectProvider.notifier).clear();
-          });
-        }
-        return pendingUrl ?? '/';
-      }
-      return null;
-    }
-
-    // 5. Not authenticated + protected route - redirect to login
-    if (!isAuthenticated && !isIgnored) {
+    // Admin route - redirect to login if not authenticated
+    if (isAdminRoute && !isAuthenticated) {
       return LoginRoute.path;
     }
 
@@ -124,7 +84,7 @@ abstract class RouterUtils {
             ),
             const SizedBox(height: 24),
             FilledButton(
-              onPressed: () => const DashboardRoute().go(context),
+              onPressed: () => const PortfolioRoute().go(context),
               child: const Text('Go Home'),
             ),
           ],

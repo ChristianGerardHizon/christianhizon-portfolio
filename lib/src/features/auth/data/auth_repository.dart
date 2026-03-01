@@ -14,8 +14,8 @@ part 'auth_repository.g.dart';
 
 /// Repository interface for authentication operations.
 abstract class AuthRepository {
-  /// Attempts to login with email and password.
-  FutureEither<AuthState> login(String email, String password);
+  /// Attempts to login with username and password.
+  FutureEither<AuthState> login(String username, String password);
 
   /// Logs out the current user.
   FutureEither<void> logout();
@@ -26,11 +26,14 @@ abstract class AuthRepository {
   /// Initializes auth state from storage on app startup.
   FutureEither<AuthState> initialize();
 
+  /// Returns cached auth from storage without network validation.
+  FutureEither<AuthState> getCachedAuth();
+
+  /// Refreshes auth token in the background using the current authStore.
+  FutureEither<AuthState> refreshInBackground();
+
   /// Requests a password reset email.
   FutureEither<void> requestPasswordReset(String email);
-
-  /// Requests email verification.
-  FutureEither<void> requestVerification(String email);
 }
 
 /// Provides the auth repository instance.
@@ -53,7 +56,6 @@ class AuthRepositoryImpl implements AuthRepository {
   });
 
   RecordService get _collection => pb.collection(PocketBaseCollections.users);
-  String get _expand => 'branch';
 
   /// Creates an AuthState from an AuthDto.
   AuthState _createAuthState(AuthDto dto) {
@@ -62,13 +64,13 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  FutureEither<AuthState> login(String email, String password) async {
+  FutureEither<AuthState> login(String username, String password) async {
     return TaskEither.tryCatch(
       () async {
         final result = await _collection.authWithPassword(
-          email,
+          username,
           password,
-          expand: _expand,
+
         );
 
         final authDto = AuthDto.fromAuthResult(result);
@@ -95,7 +97,7 @@ class AuthRepositoryImpl implements AuthRepository {
   FutureEither<AuthState> refresh() async {
     return TaskEither.tryCatch(
       () async {
-        final result = await _collection.authRefresh(expand: _expand);
+        final result = await _collection.authRefresh();
 
         final authDto = AuthDto.fromAuthResult(result);
         await authStorage.save(authDto);
@@ -120,10 +122,43 @@ class AuthRepositoryImpl implements AuthRepository {
         pb.authStore.save(savedAuth.token, savedAuth.toRecordModel());
 
         // Refresh to validate token and get latest user data
-        final result = await _collection.authRefresh(expand: _expand);
+        final result = await _collection.authRefresh();
 
         final authDto = AuthDto.fromAuthResult(result);
         await authStorage.save(authDto);
+        return _createAuthState(authDto);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<AuthState> getCachedAuth() async {
+    return TaskEither.tryCatch(
+      () async {
+        final savedAuth = await authStorage.get();
+        if (savedAuth == null) {
+          throw const NoAuthFailure('No saved authentication', null, 'no_auth');
+        }
+
+        // Restore token to PocketBase authStore so API calls work
+        pb.authStore.save(savedAuth.token, savedAuth.toRecordModel());
+
+        return _createAuthState(savedAuth);
+      },
+      Failure.handle,
+    ).run();
+  }
+
+  @override
+  FutureEither<AuthState> refreshInBackground() async {
+    return TaskEither.tryCatch(
+      () async {
+        final result = await _collection.authRefresh();
+
+        final authDto = AuthDto.fromAuthResult(result);
+        await authStorage.save(authDto);
+        pb.authStore.save(authDto.token, authDto.toRecordModel());
         return _createAuthState(authDto);
       },
       Failure.handle,
@@ -140,13 +175,4 @@ class AuthRepositoryImpl implements AuthRepository {
     ).run();
   }
 
-  @override
-  FutureEither<void> requestVerification(String email) async {
-    return TaskEither.tryCatch(
-      () async {
-        await _collection.requestVerification(email);
-      },
-      Failure.handle,
-    ).run();
-  }
 }

@@ -5,16 +5,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../pages/app_root.dart';
 import 'router_utils.dart';
+import 'routes/admin.routes.dart';
 import 'routes/auth.routes.dart';
-import 'routes/dashboard.routes.dart';
-import 'routes/organization.routes.dart';
-import 'routes/products.routes.dart';
-import 'routes/customers.routes.dart';
-import 'routes/services.routes.dart';
-import 'routes/sales.routes.dart';
-import 'routes/sales_history.routes.dart';
-import 'routes/reports.routes.dart';
-import 'routes/system.routes.dart';
+import 'routes/portfolio.routes.dart';
 
 part 'router.g.dart';
 
@@ -31,7 +24,7 @@ final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 GoRouter router(Ref ref) {
   final router = GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: SplashRoute.path,
+    initialLocation: PortfolioRoute.path,
     debugLogDiagnostics: true,
     redirect: (context, state) => RouterUtils.redirect(context, state, ref),
     errorBuilder: RouterUtils.errorBuilder,
@@ -42,19 +35,17 @@ GoRouter router(Ref ref) {
       $forgotPasswordRoute,
       $authLoadingRoute,
 
-      // Main app shell with navigation
+      // Public portfolio routes (outside shell, no auth required)
+      $portfolioRoute,
+      $allProjectsRoute,
+      $projectDetailRoute,
+
+      // Admin shell with navigation (auth required)
       ShellRoute(
         builder: (context, state, child) => AppRoot(child: child),
         routes: [
-          $dashboardRoute,
-          $productsShellRoute,
-          $servicesShellRoute,
-          $customersShellRoute,
-          $salesRoute,
-          $salesShellRoute,
-          $reportsRoute,
-          $organizationShellRoute,
-          $systemShellRoute,
+          $adminProfileRoute,
+          $adminProjectsShellRoute,
         ],
       ),
     ],
@@ -62,8 +53,6 @@ GoRouter router(Ref ref) {
 
   // Listen to auth state changes and refresh router to re-evaluate redirects
   ref.listen(authControllerProvider, (previous, next) {
-    // Refresh router when auth state changes (loading -> data/error)
-    // This triggers redirect logic to navigate after login success/failure
     router.refresh();
   });
 

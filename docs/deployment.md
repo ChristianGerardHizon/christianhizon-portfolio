@@ -12,11 +12,12 @@ This document describes the GitHub Actions deployment pipeline, branching strate
 4. [Required GitHub Secrets](#required-github-secrets)
 5. [GitHub Environment Setup](#github-environment-setup)
 6. [Server-Side Requirements](#server-side-requirements)
-7. [Build-Time Dart Defines](#build-time-dart-defines)
-8. [Android Signing](#android-signing)
-9. [Version Management](#version-management)
-10. [Build Artifacts & Caching](#build-artifacts--caching)
-11. [Platform Support](#platform-support)
+7. [Initial Server Setup](#initial-server-setup)
+8. [Build-Time Dart Defines](#build-time-dart-defines)
+9. [Android Signing](#android-signing)
+10. [Version Management](#version-management)
+11. [Build Artifacts & Caching](#build-artifacts--caching)
+12. [Platform Support](#platform-support)
 
 ---
 
@@ -62,7 +63,7 @@ PR merged to staging (or manual dispatch)
   │
   ├─ Decode KEYSTORE_BASE64 → upload-keystore.jks
   │
-  ├─ Build Web (WASM, --release)
+  ├─ Build Web (--release)
   │   --dart-define=ENV=staging
   │   --dart-define=API_URL=$POCKETBASE_URL_STAGING
   │
@@ -71,9 +72,10 @@ PR merged to staging (or manual dispatch)
   │   --dart-define=API_URL=$POCKETBASE_URL_STAGING
   │
   ├─ Setup SSH agent + known_hosts
-  ├─ rsync web build → staging server pb_public/
-  ├─ rsync migrations → staging server pb_migrations/
-  ├─ Restart PocketBase staging service
+  ├─ rsync web build → /opt/pocketbase/christianhizon-staging/pb_public/
+  ├─ rsync migrations → /opt/pocketbase/christianhizon-staging/pb_migrations/
+  ├─ rsync hooks → /opt/pocketbase/christianhizon-staging/pb_hooks/
+  ├─ Restart pocketbase_christianhizon-staging.service
   │
   └─ Create GitHub Release (prerelease)
       Tag: staging-X.Y.Z[-build.N]
@@ -100,7 +102,7 @@ PR merged to main
   │   │
   │   ├─ Decode KEYSTORE_BASE64 → upload-keystore.jks
   │   │
-  │   ├─ Build Web (--release, no WASM)
+  │   ├─ Build Web (--release)
   │   │   --dart-define=ENV=prod
   │   │   --dart-define=API_URL=$POCKETBASE_URL_PROD
   │   │
@@ -109,9 +111,10 @@ PR merged to main
   │   │   --dart-define=API_URL=$POCKETBASE_URL_PROD
   │   │
   │   ├─ Setup SSH agent + known_hosts
-  │   ├─ rsync web build → production server pb_public/
-  │   ├─ rsync migrations → production server pb_migrations/
-  │   ├─ Restart PocketBase production service
+  │   ├─ rsync web build → /opt/pocketbase/christianhizon/pb_public/
+  │   ├─ rsync migrations → /opt/pocketbase/christianhizon/pb_migrations/
+  │   ├─ rsync hooks → /opt/pocketbase/christianhizon/pb_hooks/
+  │   ├─ Restart pocketbase_christianhizon.service
   │   │
   │   └─ Upload APK as GitHub Actions artifact
   │
@@ -148,8 +151,8 @@ These must be configured in **Settings → Secrets and variables → Actions**.
 |--------|----------|---------|-------------|
 | `VERSION_MANAGER_URL` | Yes | Staging & Production | PocketBase API endpoint for version tracking |
 | `VERSION_COLLECTION_ID` | Yes | Staging & Production | Record ID in the version collection |
-| `POCKETBASE_URL_STAGING` | Yes | Staging | Staging PocketBase backend URL |
-| `POCKETBASE_URL_PROD` | Yes | Production | Production PocketBase backend URL |
+| `POCKETBASE_URL_STAGING` | Yes | Staging | `https://staging.christianhizon.hznsystems.com` |
+| `POCKETBASE_URL_PROD` | Yes | Production | `https://christianhizon.hznsystems.com` |
 | `KEYSTORE_BASE64` | Yes | Staging & Production | Base64-encoded Android signing keystore (`.jks`) |
 | `KEYSTORE_PASSWORD` | Yes | Staging & Production | Keystore store password |
 | `KEY_ALIAS` | Yes | Staging & Production | Key alias within the keystore |
@@ -175,30 +178,97 @@ This environment acts as an approval gate — production deploys require manual 
 
 ## Server-Side Requirements
 
-Both staging and production deploy to the **same server** via SSH. The following must be configured on the server:
+Both staging and production deploy to the **same server** via SSH.
+
+### URLs
+
+| Environment | URL |
+|-------------|-----|
+| Production | `https://christianhizon.hznsystems.com` |
+| Staging | `https://staging.christianhizon.hznsystems.com` |
 
 ### SSH Access
 - The `SSH_USER` must have `authorized_keys` configured with the public key matching `SSH_PRIVATE_KEY`
 - `rsync` must be installed on the server
 
-### Directory Permissions
+### Directory Structure
 
-The SSH user needs write access to:
+```
+/opt/pocketbase/
+├── pocketbase                       # Shared PocketBase binary
+├── christianhizon/                  # Production (port 8098)
+│   ├── pb_public/                   # Flutter web build
+│   ├── pb_migrations/               # PocketBase migrations
+│   ├── pb_hooks/                    # PocketBase hooks
+│   └── pb_data/                     # PocketBase database
+└── christianhizon-staging/          # Staging (port 8099)
+    ├── pb_public/
+    ├── pb_migrations/
+    ├── pb_hooks/
+    └── pb_data/
+```
 
-| Path | Purpose |
-|------|---------|
-| `/opt/pocketbase/hizonelaundry-staging/pb_public/` | Staging web build |
-| `/opt/pocketbase/hizonelaundry-staging/pb_migrations/` | Staging PocketBase migrations |
-| `/opt/pocketbase/hizonelaundry/pb_public/` | Production web build |
-| `/opt/pocketbase/hizonelaundry/pb_migrations/` | Production PocketBase migrations |
+### Systemd Services
+
+| Service | Port | Directory |
+|---------|------|-----------|
+| `pocketbase_christianhizon.service` | 8094 | `/opt/pocketbase/christianhizon/` |
+| `pocketbase_christianhizon-staging.service` | 8095 | `/opt/pocketbase/christianhizon-staging/` |
+
+Service files are in `server/deploy/`.
+
+### Caddy Reverse Proxy
+
+The Caddy config routes HTTPS traffic to the PocketBase instances:
+
+```
+christianhizon.hznsystems.com {
+    reverse_proxy 127.0.0.1:8098
+}
+
+staging.christianhizon.hznsystems.com {
+    reverse_proxy 127.0.0.1:8099
+}
+```
 
 ### Passwordless Sudo
 
-The SSH user needs passwordless sudo for restarting PocketBase services. Add to `/etc/sudoers.d/deploy`:
+The SSH user needs passwordless sudo for restarting PocketBase services. Configured at `/etc/sudoers.d/deploy-christianhizon`:
 
 ```
-deploy ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart pocketbase_hizonelaundry-staging.service
-deploy ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart pocketbase_hizonelaundry.service
+deploy ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart pocketbase_christianhizon.service
+deploy ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart pocketbase_christianhizon-staging.service
+```
+
+---
+
+## Initial Server Setup
+
+All setup scripts are in `server/deploy/`:
+
+| File | Purpose |
+|------|---------|
+| `setup.sh` | Full server setup (directories, PocketBase binary, systemd, Caddy, sudoers) |
+| `upload-initial-data.sh` | Upload migrations and hooks to both staging and production |
+| `pocketbase_christianhizon.service` | Production systemd unit file |
+| `pocketbase_christianhizon-staging.service` | Staging systemd unit file |
+| `Caddyfile.snippet` | Caddy reverse proxy config to append to `/etc/caddy/Caddyfile` |
+
+### Quick Start
+
+```bash
+# 1. Copy deploy files to server
+scp -r server/deploy/ deploy@your-server:/tmp/christianhizon-deploy/
+
+# 2. Run setup on server (as root)
+ssh deploy@your-server 'sudo bash /tmp/christianhizon-deploy/setup.sh'
+
+# 3. Upload initial migrations and hooks (from project root)
+bash server/deploy/upload-initial-data.sh deploy your-server
+
+# 4. Access PocketBase admin to create superuser
+#    Production: https://christianhizon.hznsystems.com/_/
+#    Staging:    https://staging.christianhizon.hznsystems.com/_/
 ```
 
 ---
@@ -288,7 +358,7 @@ Staging and production have **separate** Flutter build caches to prevent conflic
 | Platform | CI/CD Status | Notes |
 |----------|-------------|-------|
 | Android (APK) | Fully automated | Signed release builds for both environments |
-| Web | Fully automated | WASM for staging, standard for production. Auto-deployed via SSH/rsync to PocketBase `pb_public/`. |
+| Web | Fully automated | Standard builds for both environments. Auto-deployed via SSH/rsync to PocketBase `pb_public/`. |
 | iOS | Not configured | Would require macOS runner + signing certificates |
 | macOS | Not configured | Would require macOS runner |
 | Linux | Not configured | Could use standard Ubuntu runner |
@@ -300,10 +370,14 @@ Staging and production have **separate** Flutter build caches to prevent conflic
 
 | Aspect | Staging | Production |
 |--------|---------|-----------|
+| **URL** | `staging.christianhizon.hznsystems.com` | `christianhizon.hznsystems.com` |
 | **Trigger** | PR merged to `staging` or manual dispatch | PR merged to `main` only |
 | **Manual dispatch** | Yes | No |
 | **Approval gate** | None | "Production" environment approval |
 | **Version suffix** | `-staging` | None |
 | **Release type** | Prerelease | Public release |
-| **Web build** | `--wasm`, deployed via SSH | Standard, deployed via SSH |
+| **Web build** | Standard, deployed via SSH | Standard, deployed via SSH |
 | **Version Manager** | Not updated | Updated after release |
+| **Server path** | `/opt/pocketbase/christianhizon-staging/` | `/opt/pocketbase/christianhizon/` |
+| **PocketBase port** | 8095 | 8094 |
+| **Systemd service** | `pocketbase_christianhizon-staging.service` | `pocketbase_christianhizon.service` |

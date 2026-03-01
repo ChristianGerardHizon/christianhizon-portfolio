@@ -6,10 +6,9 @@ import '../assets/assets.gen.dart';
 import '../i18n/strings.g.dart';
 import '../utils/breakpoints.dart';
 
-/// Navigation rail for tablet and desktop layouts.
+/// Navigation rail for tablet and desktop admin layouts.
 ///
-/// Displays 7 primary navigation destinations with icons.
-/// On larger screens, shows labels alongside icons.
+/// Displays admin navigation destinations: Profile, Projects.
 class TabletNavRail extends ConsumerWidget {
   const TabletNavRail({
     super.key,
@@ -17,10 +16,7 @@ class TabletNavRail extends ConsumerWidget {
     required this.onDestinationSelected,
   });
 
-  /// Currently selected navigation index.
   final int selectedIndex;
-
-  /// Callback when a destination is selected.
   final ValueChanged<int> onDestinationSelected;
 
   @override
@@ -60,51 +56,16 @@ class TabletNavRail extends ConsumerWidget {
                 ),
               ),
             ),
-            destinations: [
+            destinations: const [
               NavigationRailDestination(
-                icon: const Icon(Icons.dashboard_outlined),
-                selectedIcon: const Icon(Icons.dashboard),
-                label: Text(t.navigation.dashboard),
+                icon: Icon(Icons.person_outlined),
+                selectedIcon: Icon(Icons.person),
+                label: Text('Profile'),
               ),
               NavigationRailDestination(
-                icon: const Icon(Icons.point_of_sale_outlined),
-                selectedIcon: const Icon(Icons.point_of_sale),
-                label: Text(t.navigation.sales),
-              ),
-              NavigationRailDestination(
-                icon: const Icon(Icons.receipt_long_outlined),
-                selectedIcon: const Icon(Icons.receipt_long),
-                label: Text(t.navigation.salesHistory),
-              ),
-              NavigationRailDestination(
-                icon: const Icon(Icons.inventory_2_outlined),
-                selectedIcon: const Icon(Icons.inventory_2),
-                label: Text(t.navigation.products),
-              ),
-              NavigationRailDestination(
-                icon: const Icon(Icons.miscellaneous_services_outlined),
-                selectedIcon: const Icon(Icons.miscellaneous_services),
-                label: Text(t.navigation.services),
-              ),
-              NavigationRailDestination(
-                icon: const Icon(Icons.people_outlined),
-                selectedIcon: const Icon(Icons.people),
-                label: Text(t.navigation.customers),
-              ),
-              NavigationRailDestination(
-                icon: const Icon(Icons.analytics_outlined),
-                selectedIcon: const Icon(Icons.analytics),
-                label: Text(t.navigation.reports),
-              ),
-              NavigationRailDestination(
-                icon: const Icon(Icons.business_outlined),
-                selectedIcon: const Icon(Icons.business),
-                label: Text(t.navigation.organization),
-              ),
-              NavigationRailDestination(
-                icon: const Icon(Icons.settings_outlined),
-                selectedIcon: const Icon(Icons.settings),
-                label: Text(t.navigation.system),
+                icon: Icon(Icons.work_outlined),
+                selectedIcon: Icon(Icons.work),
+                label: Text('Projects'),
               ),
             ],
           ),

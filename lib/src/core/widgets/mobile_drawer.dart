@@ -4,15 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../assets/assets.gen.dart';
 import '../i18n/strings.g.dart';
-import '../packages/pocketbase/pocketbase_provider.dart';
-import 'branch_switcher.dart';
 
-/// Mobile drawer with full navigation menu.
-///
-/// Contains all navigation sections:
-/// - Primary: Dashboard, Cashier, Products
-/// - Secondary: Sales History, Reports, Organization, System
-/// - Actions: Logout
+/// Mobile drawer with admin navigation menu.
 class MobileDrawer extends ConsumerWidget {
   const MobileDrawer({
     super.key,
@@ -20,10 +13,7 @@ class MobileDrawer extends ConsumerWidget {
     required this.onDestinationSelected,
   });
 
-  /// Currently selected navigation index.
   final int selectedIndex;
-
-  /// Callback when a destination is selected.
   final ValueChanged<int> onDestinationSelected;
 
   @override
@@ -36,7 +26,6 @@ class MobileDrawer extends ConsumerWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            // Header
             DrawerHeader(
               decoration: BoxDecoration(
                 color: theme.colorScheme.primaryContainer,
@@ -51,98 +40,36 @@ class MobileDrawer extends ConsumerWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Ebe Gym',
+                    'Christian Hizon',
                     style: theme.textTheme.titleLarge,
                   ),
                   Text(
-                    'Gym Management System',
+                    'Portfolio Admin',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onPrimaryContainer.withValues(
                         alpha: 0.7,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    pocketbaseUrl,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onPrimaryContainer.withValues(
-                        alpha: 0.5,
-                      ),
-                      fontFamily: 'monospace',
-                      fontSize: 10,
-                    ),
-                  ),
                 ],
               ),
             ),
 
-            // Branch switcher
-            const BranchSwitcher(),
-
-            // Primary navigation
             _DrawerItem(
-              icon: Icons.dashboard,
-              label: t.navigation.dashboard,
+              icon: Icons.person,
+              label: 'Profile',
               selected: selectedIndex == 0,
               onTap: () => _selectAndClose(context, 0),
             ),
             _DrawerItem(
-              icon: Icons.point_of_sale,
-              label: t.navigation.sales,
+              icon: Icons.work,
+              label: 'Projects',
               selected: selectedIndex == 1,
               onTap: () => _selectAndClose(context, 1),
             ),
-            _DrawerItem(
-              icon: Icons.receipt_long,
-              label: t.navigation.salesHistory,
-              selected: selectedIndex == 2,
-              onTap: () => _selectAndClose(context, 2),
-            ),
-            _DrawerItem(
-              icon: Icons.inventory_2,
-              label: t.navigation.products,
-              selected: selectedIndex == 3,
-              onTap: () => _selectAndClose(context, 3),
-            ),
-            _DrawerItem(
-              icon: Icons.miscellaneous_services,
-              label: t.navigation.services,
-              selected: selectedIndex == 4,
-              onTap: () => _selectAndClose(context, 4),
-            ),
-            _DrawerItem(
-              icon: Icons.people,
-              label: t.navigation.customers,
-              selected: selectedIndex == 5,
-              onTap: () => _selectAndClose(context, 5),
-            ),
 
             const Divider(),
 
-            // Secondary navigation
-            _DrawerItem(
-              icon: Icons.analytics,
-              label: t.navigation.reports,
-              selected: selectedIndex == 6,
-              onTap: () => _selectAndClose(context, 6),
-            ),
-            _DrawerItem(
-              icon: Icons.business,
-              label: t.navigation.organization,
-              selected: selectedIndex == 7,
-              onTap: () => _selectAndClose(context, 7),
-            ),
-            _DrawerItem(
-              icon: Icons.settings,
-              label: t.navigation.system,
-              selected: selectedIndex == 8,
-              onTap: () => _selectAndClose(context, 8),
-            ),
-
-            const Divider(),
-
-            // Logout
             _DrawerItem(
               icon: Icons.logout,
               label: t.auth.logoutButton,

@@ -6,9 +6,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../../core/assets/assets.gen.dart';
 import '../../../../core/i18n/strings.g.dart';
-import '../../../../core/routing/routes/auth.routes.dart';
+import '../../../../core/routing/routes/portfolio.routes.dart';
 import '../../../../core/widgets/app_version_indicator.dart';
-import '../../../../core/widgets/form_feedback.dart';
 import '../controllers/auth_controller.dart';
 
 /// Login page for user authentication.
@@ -33,19 +32,7 @@ class LoginPage extends HookConsumerWidget {
         errorMessage.value = t.failures.invalidCredentials;
       }
 
-      // On success, show verification notification if needed
-      // Navigation is handled by router redirect (with pending URL support)
-      if (next.hasValue && next.value != null) {
-        // Check if user is unverified and show notification
-        if (!next.value!.isVerified) {
-          showWarningSnackBar(
-            context,
-            message: t.auth.verificationEmailSent,
-            duration: const Duration(seconds: 5),
-          );
-        }
-        // Router redirect handles navigation to pending URL or '/'
-      }
+      // On success, navigation is handled by router redirect (with pending URL support)
     });
 
     void handleLogin() {
@@ -54,7 +41,7 @@ class LoginPage extends HookConsumerWidget {
         errorMessage.value = null;
         final values = formKey.currentState!.value;
         ref.read(authControllerProvider.notifier).login(
-              values['email'] as String,
+              values['username'] as String,
               values['password'] as String,
             );
       }
@@ -128,20 +115,19 @@ class LoginPage extends HookConsumerWidget {
                     const SizedBox(height: 16),
                   ],
 
-                  // Email field
+                  // Username field
                   FormBuilderTextField(
-                    name: 'email',
+                    name: 'username',
                     enabled: !isLoading,
                     decoration: InputDecoration(
-                      labelText: t.fields.email,
-                      prefixIcon: const Icon(Icons.email_outlined),
+                      labelText: t.fields.username,
+                      prefixIcon: const Icon(Icons.person_outlined),
                       border: const OutlineInputBorder(),
                     ),
-                    keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
-                      FormBuilderValidators.email(),
+                      FormBuilderValidators.minLength(3),
                     ]),
                   ),
                   const SizedBox(height: 16),
@@ -193,12 +179,11 @@ class LoginPage extends HookConsumerWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  // Forgot password link
+                  // Back to portfolio
                   TextButton(
-                    onPressed: isLoading
-                        ? null
-                        : () => const ForgotPasswordRoute().push(context),
-                    child: Text(t.auth.forgotPassword),
+                    onPressed:
+                        isLoading ? null : () => const PortfolioRoute().go(context),
+                    child: const Text('Back to Portfolio'),
                   ),
                   const SizedBox(height: 32),
 

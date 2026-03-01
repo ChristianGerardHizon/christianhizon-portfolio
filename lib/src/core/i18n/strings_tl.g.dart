@@ -75,7 +75,6 @@ class _TranslationsAuthTl implements TranslationsAuthEn {
 	@override String resetLinkSent({required Object email}) => 'Naipadala na ang password reset link sa ${email}';
 	@override String get signInToContinue => 'Mag-sign in upang magpatuloy';
 	@override String get signingIn => 'Nagsa-sign in...';
-	@override String get verificationEmailSent => 'Naipadala na ang verification email sa iyong email address';
 }
 
 // Path: common
@@ -85,7 +84,7 @@ class _TranslationsCommonTl implements TranslationsCommonEn {
 	final TranslationsTl _root; // ignore: unused_field
 
 	// Translations
-	@override String get appName => 'Ebe Gym';
+	@override String get appName => 'Christian Hizon';
 	@override String get placeholderText => 'N/A';
 	@override String get save => 'I-save';
 	@override String get cancel => 'Kanselahin';
@@ -136,9 +135,9 @@ class _TranslationsFailuresTl implements TranslationsFailuresEn {
 	@override String get conflict => 'May nangyaring conflict. Maaaring umiiral na ang resource.';
 	@override String get timeout => 'Nag-timeout ang request. Pakisubukang muli.';
 	@override String get noInternet => 'Walang koneksyon sa internet.';
-	@override String get invalidCredentials => 'Di-wastong email o password.';
+	@override String get invalidCredentials => 'Di-wastong username o password.';
 	@override String get accountDisabled => 'Ang iyong account ay na-disable.';
-	@override String get emailNotVerified => 'Pakiverify ang iyong email address.';
+	@override String get accountNotVerified => 'Hindi pa na-verify ang iyong account.';
 	@override String get tooManyRequests => 'Masyadong maraming request. Maghintay ng ilang sandali.';
 }
 
@@ -150,6 +149,7 @@ class _TranslationsFieldsTl implements TranslationsFieldsEn {
 
 	// Translations
 	@override String get email => 'Email';
+	@override String get username => 'Username';
 	@override String get password => 'Password';
 	@override String get passwordConfirmation => 'Password confirmation';
 	@override String get name => 'Pangalan';
@@ -191,7 +191,9 @@ class _TranslationsNavigationTl implements TranslationsNavigationEn {
 	@override String get salesHistory => 'Mga Benta';
 	@override String get organization => 'Organisasyon';
 	@override String get services => 'Mga Serbisyo';
-	@override String get customers => 'Mga Customer';
+	@override String get checkIn => 'Check-In';
+	@override String get members => 'Mga Miyembro';
+	@override String get memberships => 'Mga Membership';
 	@override String get system => 'Sistema';
 	@override String get account => 'Account';
 	@override String get noBranch => 'Walang Sangay';
@@ -265,8 +267,7 @@ extension on TranslationsTl {
 			'auth.resetLinkSent' => ({required Object email}) => 'Naipadala na ang password reset link sa ${email}',
 			'auth.signInToContinue' => 'Mag-sign in upang magpatuloy',
 			'auth.signingIn' => 'Nagsa-sign in...',
-			'auth.verificationEmailSent' => 'Naipadala na ang verification email sa iyong email address',
-			'common.appName' => 'Ebe Gym',
+			'common.appName' => 'Christian Hizon',
 			'common.placeholderText' => 'N/A',
 			'common.save' => 'I-save',
 			'common.cancel' => 'Kanselahin',
@@ -308,11 +309,12 @@ extension on TranslationsTl {
 			'failures.conflict' => 'May nangyaring conflict. Maaaring umiiral na ang resource.',
 			'failures.timeout' => 'Nag-timeout ang request. Pakisubukang muli.',
 			'failures.noInternet' => 'Walang koneksyon sa internet.',
-			'failures.invalidCredentials' => 'Di-wastong email o password.',
+			'failures.invalidCredentials' => 'Di-wastong username o password.',
 			'failures.accountDisabled' => 'Ang iyong account ay na-disable.',
-			'failures.emailNotVerified' => 'Pakiverify ang iyong email address.',
+			'failures.accountNotVerified' => 'Hindi pa na-verify ang iyong account.',
 			'failures.tooManyRequests' => 'Masyadong maraming request. Maghintay ng ilang sandali.',
 			'fields.email' => 'Email',
+			'fields.username' => 'Username',
 			'fields.password' => 'Password',
 			'fields.passwordConfirmation' => 'Password confirmation',
 			'fields.name' => 'Pangalan',
@@ -345,7 +347,9 @@ extension on TranslationsTl {
 			'navigation.salesHistory' => 'Mga Benta',
 			'navigation.organization' => 'Organisasyon',
 			'navigation.services' => 'Mga Serbisyo',
-			'navigation.customers' => 'Mga Customer',
+			'navigation.checkIn' => 'Check-In',
+			'navigation.members' => 'Mga Miyembro',
+			'navigation.memberships' => 'Mga Membership',
 			'navigation.system' => 'Sistema',
 			'navigation.account' => 'Account',
 			'navigation.noBranch' => 'Walang Sangay',

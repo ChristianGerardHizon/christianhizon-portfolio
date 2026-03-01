@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ebe_gym/src/core/utils/window_utils.dart';
-import 'package:ebe_gym/src/application.dart';
-import 'package:ebe_gym/src/core/i18n/strings.g.dart';
+import 'package:christianhizon/src/core/utils/window_utils.dart';
+import 'package:christianhizon/src/application.dart';
+import 'package:christianhizon/src/core/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 Future<void> main() async {
@@ -11,9 +11,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   ///
-  /// Set window initial settings
+  /// Set window initial settings (fire-and-forget to avoid blocking app start)
   ///
-  await WindowUtils.register();
+  WindowUtils.register();
 
   ///
   /// Set locale for translations

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 /// App theme definitions for light and dark modes.
 ///
-/// Uses Material 3 with seed-based color schemes.
+/// Uses Material 3 with seed-based color schemes and Inter font.
 class AppThemes {
   AppThemes._();
 
@@ -17,30 +18,42 @@ class AppThemes {
   static const Color seedColor = Colors.blue;
 
   /// Light theme definition.
-  static AppTheme light() => AppTheme(
-        id: lightId,
-        description: 'Light Theme',
-        data: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: seedColor,
-            brightness: Brightness.light,
-          ),
-          useMaterial3: true,
+  static AppTheme light() {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: seedColor,
+      brightness: Brightness.light,
+    );
+    return AppTheme(
+      id: lightId,
+      description: 'Light Theme',
+      data: ThemeData(
+        colorScheme: colorScheme,
+        textTheme: GoogleFonts.interTextTheme(
+          ThemeData(brightness: Brightness.light).textTheme,
         ),
-      );
+        useMaterial3: true,
+      ),
+    );
+  }
 
   /// Dark theme definition.
-  static AppTheme dark() => AppTheme(
-        id: darkId,
-        description: 'Dark Theme',
-        data: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: seedColor,
-            brightness: Brightness.dark,
-          ),
-          useMaterial3: true,
+  static AppTheme dark() {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: seedColor,
+      brightness: Brightness.dark,
+    );
+    return AppTheme(
+      id: darkId,
+      description: 'Dark Theme',
+      data: ThemeData(
+        colorScheme: colorScheme,
+        textTheme: GoogleFonts.interTextTheme(
+          ThemeData(brightness: Brightness.dark).textTheme,
         ),
-      );
+        useMaterial3: true,
+      ),
+    );
+  }
 
   /// All available themes.
   static List<AppTheme> get all => [light(), dark()];

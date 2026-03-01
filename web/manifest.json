@@ -1,11 +1,11 @@
 {
-    "name": "Ebe Gym",
-    "short_name": "Ebe Gym",
+    "name": "Christian Hizon",
+    "short_name": "Christian Hizon",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#hexcode",
-    "theme_color": "#hexcode",
-    "description": "Ebe Gym",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+    "description": "Christian Hizon",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
