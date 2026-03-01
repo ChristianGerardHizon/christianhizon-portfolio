@@ -117,8 +117,8 @@ class TranslationsCommonEn {
 
 	// Translations
 
-	/// en: 'Ebe Gym'
-	String get appName => 'Ebe Gym';
+	/// en: 'Christian Hizon'
+	String get appName => 'Christian Hizon';
 
 	/// en: 'N/A'
 	String get placeholderText => 'N/A';
@@ -519,7 +519,7 @@ extension on Translations {
 			'auth.resetLinkSent' => ({required Object email}) => 'Password reset link has been sent to ${email}',
 			'auth.signInToContinue' => 'Sign in to continue',
 			'auth.signingIn' => 'Signing in...',
-			'common.appName' => 'Ebe Gym',
+			'common.appName' => 'Christian Hizon',
 			'common.placeholderText' => 'N/A',
 			'common.save' => 'Save',
 			'common.cancel' => 'Cancel',
