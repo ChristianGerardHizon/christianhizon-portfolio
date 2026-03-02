@@ -7,7 +7,6 @@ abstract class PortfolioConstants {
     NavLink(label: 'Projects', sectionKey: 'apps', routePath: '/projects'),
     NavLink(label: 'Work', sectionKey: 'about', routePath: '/work-history'),
     NavLink(label: 'Tech Stack', sectionKey: 'tech', routePath: '/tech-stack'),
-    NavLink(label: "Let's Talk", sectionKey: 'contact'),
   ];
 
   /// Development service cards.

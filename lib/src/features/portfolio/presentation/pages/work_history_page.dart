@@ -13,6 +13,7 @@ import '../controllers/work_history_controller.dart';
 import '../widgets/cta_banner_section.dart';
 import '../widgets/portfolio_footer.dart';
 import '../widgets/portfolio_header.dart';
+import '../widgets/scroll_fade_in.dart';
 
 /// Public work history page displayed at `/work-history`.
 class WorkHistoryPage extends HookConsumerWidget {
@@ -67,22 +68,30 @@ class WorkHistoryPage extends HookConsumerWidget {
                                 final item = workItems[index];
                                 final isLast =
                                     index == workItems.length - 1;
-                                return _WorkHistoryCard(
-                                  item: item,
-                                  isLast: isLast,
-                                  isMobile: isMobile,
+                                return ScrollFadeIn(
+                                  delay: Duration(
+                                      milliseconds: 120 * index),
+                                  child: _WorkHistoryCard(
+                                    item: item,
+                                    isLast: isLast,
+                                    isMobile: isMobile,
+                                  ),
                                 );
                               }),
                               // Speaking & Mentorship section
                               if (speakingEvents.isNotEmpty) ...[
                                 const SizedBox(height: 64),
-                                _buildSpeakingSection(
-                                  speakingEvents,
-                                  isMobile,
+                                ScrollFadeIn(
+                                  child: _buildSpeakingSection(
+                                    speakingEvents,
+                                    isMobile,
+                                  ),
                                 ),
                               ],
                               const SizedBox(height: 64),
-                              CtaBannerSection(profile: profile),
+                              ScrollFadeIn(
+                                child: CtaBannerSection(profile: profile),
+                              ),
                               const SizedBox(height: 48),
                             ],
                           ),

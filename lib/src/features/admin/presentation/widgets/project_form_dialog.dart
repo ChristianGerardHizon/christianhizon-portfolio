@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -9,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
+import '../../../../core/widgets/form/string_list_editor.dart';
 import '../../../portfolio/domain/project.dart';
 import '../../../portfolio/presentation/controllers/projects_controller.dart';
 
@@ -24,9 +23,19 @@ class ProjectFormDialog extends HookConsumerWidget {
     final isSaving = useState(false);
     final isEdit = project != null;
 
-    final techStackText = project?.techStack.isNotEmpty == true
-        ? jsonEncode(project!.techStack)
-        : '[]';
+    // List state managed via hooks instead of JSON text fields
+    final techStack = useState<List<String>>(
+      project?.techStack.toList() ?? [],
+    );
+    final features = useState<List<String>>(
+      project?.features.toList() ?? [],
+    );
+    final responsibilities = useState<List<String>>(
+      project?.responsibilities.toList() ?? [],
+    );
+    final platforms = useState<List<String>>(
+      project?.platforms.toList() ?? [],
+    );
 
     final baseUrl = pocketbaseUrl;
 
@@ -36,21 +45,16 @@ class ProjectFormDialog extends HookConsumerWidget {
       isSaving.value = true;
       final values = formKey.currentState!.value;
 
-      // Parse techStack JSON
-      dynamic techStack;
-      try {
-        techStack = jsonDecode(values['techStack'] as String? ?? '[]');
-      } catch (_) {
-        techStack = [];
-      }
-
       final data = <String, dynamic>{
         'title': values['title'],
         'description': values['description'] ?? '',
         'longDescription': values['longDescription'] ?? '',
         'projectUrl': values['projectUrl'] ?? '',
         'sourceUrl': values['sourceUrl'] ?? '',
-        'techStack': techStack,
+        'techStack': techStack.value,
+        'features': features.value,
+        'responsibilities': responsibilities.value,
+        'platforms': platforms.value,
         'category': values['category'] ?? '',
         'status': values['status'] ?? 'active',
         'featured': values['featured'] ?? false,
@@ -239,15 +243,33 @@ class ProjectFormDialog extends HookConsumerWidget {
                       decoration:
                           const InputDecoration(labelText: 'Source URL'),
                     ),
-                    const SizedBox(height: 12),
-                    FormBuilderTextField(
-                      name: 'techStack',
-                      initialValue: techStackText,
-                      decoration: const InputDecoration(
-                        labelText: 'Tech Stack (JSON)',
-                        hintText: '["Flutter", "Dart"]',
-                      ),
-                      maxLines: 2,
+                    const SizedBox(height: 16),
+                    StringListEditor(
+                      label: 'Tech Stack',
+                      items: techStack.value,
+                      hintText: 'e.g. Flutter',
+                      onChanged: (v) => techStack.value = v,
+                    ),
+                    const SizedBox(height: 16),
+                    StringListEditor(
+                      label: 'Key Features',
+                      items: features.value,
+                      hintText: 'e.g. Real-time notifications',
+                      onChanged: (v) => features.value = v,
+                    ),
+                    const SizedBox(height: 16),
+                    StringListEditor(
+                      label: 'Responsibilities',
+                      items: responsibilities.value,
+                      hintText: 'e.g. Led frontend development',
+                      onChanged: (v) => responsibilities.value = v,
+                    ),
+                    const SizedBox(height: 16),
+                    StringListEditor(
+                      label: 'Platforms',
+                      items: platforms.value,
+                      hintText: 'e.g. iOS',
+                      onChanged: (v) => platforms.value = v,
                     ),
                     const SizedBox(height: 12),
                     FormBuilderTextField(

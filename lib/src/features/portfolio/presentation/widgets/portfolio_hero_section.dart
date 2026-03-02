@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -9,7 +10,7 @@ import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../domain/profile.dart';
 
 /// Hero section with gradient name, stats, photo card, and CTA buttons.
-class PortfolioHeroSection extends ConsumerWidget {
+class PortfolioHeroSection extends HookConsumerWidget {
   const PortfolioHeroSection({
     super.key,
     required this.profile,
@@ -26,16 +27,66 @@ class PortfolioHeroSection extends ConsumerWidget {
     final baseUrl = pocketbaseUrl;
     final photoUrl = profile.photoUrl(baseUrl);
 
+    // Page-load entrance animations
+    final textController = useAnimationController(
+      duration: const Duration(milliseconds: 800),
+    );
+    final photoController = useAnimationController(
+      duration: const Duration(milliseconds: 800),
+    );
+
+    final textAnim = useMemoized(
+      () => CurvedAnimation(parent: textController, curve: Curves.easeOutCubic),
+      [textController],
+    );
+    final photoAnim = useMemoized(
+      () =>
+          CurvedAnimation(parent: photoController, curve: Curves.easeOutCubic),
+      [photoController],
+    );
+
+    useEffect(() {
+      textController.forward();
+      Future.delayed(const Duration(milliseconds: 200), () {
+        photoController.forward();
+      });
+      return null;
+    }, []);
+
+    Widget animatedText({required Widget child}) => AnimatedBuilder(
+          animation: textAnim,
+          builder: (context, child) => Opacity(
+            opacity: textAnim.value,
+            child: Transform.translate(
+              offset: Offset(isMobile ? 0 : -30 * (1 - textAnim.value),
+                  isMobile ? 20 * (1 - textAnim.value) : 0),
+              child: child,
+            ),
+          ),
+          child: child,
+        );
+
+    Widget animatedPhoto({required Widget child}) => AnimatedBuilder(
+          animation: photoAnim,
+          builder: (context, child) => Opacity(
+            opacity: photoAnim.value,
+            child: Transform.translate(
+              offset: Offset(isMobile ? 0 : 30 * (1 - photoAnim.value),
+                  isMobile ? 20 * (1 - photoAnim.value) : 0),
+              child: child,
+            ),
+          ),
+          child: child,
+        );
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: isMobile ? 48 : 80),
       child: isMobile
           ? Column(
               children: [
-                if (photoUrl.isNotEmpty) ...[
-                  _buildPhotoCard(photoUrl),
-                  const SizedBox(height: 40),
-                ],
-                _buildTextContent(isMobile: true),
+                animatedPhoto(child: _buildPhotoCard(photoUrl)),
+                const SizedBox(height: 40),
+                animatedText(child: _buildTextContent(isMobile: true)),
               ],
             )
           : Row(
@@ -43,14 +94,13 @@ class PortfolioHeroSection extends ConsumerWidget {
               children: [
                 Expanded(
                   flex: 55,
-                  child: _buildTextContent(isMobile: false),
+                  child: animatedText(
+                      child: _buildTextContent(isMobile: false)),
                 ),
                 const SizedBox(width: 40),
                 Expanded(
                   flex: 45,
-                  child: photoUrl.isNotEmpty
-                      ? _buildPhotoCard(photoUrl)
-                      : const SizedBox.shrink(),
+                  child: animatedPhoto(child: _buildPhotoCard(photoUrl)),
                 ),
               ],
             ),
@@ -235,37 +285,33 @@ class PortfolioHeroSection extends ConsumerWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // Photo
-              CachedNetworkImage(
-                imageUrl: photoUrl,
-                fit: BoxFit.cover,
-                placeholder: (_, __) => Container(
-                  color: const Color(0xFFF1F5F9),
-                  child: const Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.person, size: 48, color: Color(0xFFCBD5E1)),
-                        SizedBox(height: 8),
-                        Text(
-                          'Christian Hizon',
-                          style: TextStyle(
-                            color: Color(0xFFCBD5E1),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+              // Photo from PocketBase (cached for web performance)
+              if (photoUrl.isNotEmpty)
+                CachedNetworkImage(
+                  imageUrl: photoUrl,
+                  fit: BoxFit.cover,
+                  cacheKey: photoUrl,
+                  memCacheHeight: 800,
+                  placeholder: (_, __) => Container(
+                    color: const Color(0xFFF1F5F9),
+                    child: const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
                     ),
                   ),
-                ),
-                errorWidget: (_, __, ___) => Container(
+                  errorWidget: (_, __, ___) => Container(
+                    color: const Color(0xFFF1F5F9),
+                    child: const Center(
+                      child: Icon(Icons.person, size: 48, color: Color(0xFFCBD5E1)),
+                    ),
+                  ),
+                )
+              else
+                Container(
                   color: const Color(0xFFF1F5F9),
                   child: const Center(
                     child: Icon(Icons.person, size: 48, color: Color(0xFFCBD5E1)),
                   ),
                 ),
-              ),
               // Gradient overlay
               Container(
                 decoration: const BoxDecoration(
