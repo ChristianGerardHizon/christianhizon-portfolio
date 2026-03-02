@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../../../core/routing/routes/admin.routes.dart';
 import '../../../../core/utils/breakpoints.dart';
 import '../../../../core/widgets/state/error_state.dart';
@@ -119,6 +121,71 @@ class AdminProjectDetailPage extends ConsumerWidget {
                   children: project.techStack
                       .map((t) => Chip(label: Text(t)))
                       .toList(),
+                ),
+                const SizedBox(height: 16),
+              ],
+              // Thumbnail
+              if (project.thumbnail.isNotEmpty) ...[
+                Text('Thumbnail', style: theme.textTheme.titleSmall),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: CachedNetworkImage(
+                    imageUrl: project.thumbnailUrl(pocketbaseUrl),
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    placeholder: (_, __) => const SizedBox(
+                      height: 200,
+                      child: Center(
+                          child: CircularProgressIndicator(strokeWidth: 2)),
+                    ),
+                    errorWidget: (_, __, ___) => const SizedBox(
+                      height: 200,
+                      child: Center(child: Icon(Icons.broken_image)),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+              // Gallery
+              if (project.gallery.isNotEmpty) ...[
+                Text(
+                  'Gallery (${project.gallery.length} images)',
+                  style: theme.textTheme.titleSmall,
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 120,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: project.gallery.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    itemBuilder: (context, index) {
+                      final urls = project.galleryUrls(pocketbaseUrl);
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: CachedNetworkImage(
+                          imageUrl: urls[index],
+                          width: 160,
+                          height: 120,
+                          fit: BoxFit.cover,
+                          placeholder: (_, __) => const SizedBox(
+                            width: 160,
+                            height: 120,
+                            child: Center(
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2)),
+                          ),
+                          errorWidget: (_, __, ___) => const SizedBox(
+                            width: 160,
+                            height: 120,
+                            child: Center(child: Icon(Icons.broken_image)),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 const SizedBox(height: 16),
               ],

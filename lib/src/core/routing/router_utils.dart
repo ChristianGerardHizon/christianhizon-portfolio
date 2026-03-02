@@ -60,34 +60,64 @@ abstract class RouterUtils {
   /// Error page builder for unknown routes.
   static Widget errorBuilder(BuildContext context, GoRouterState state) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Page Not Found'),
-      ),
+      backgroundColor: Colors.white,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.grey,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              '404',
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Page not found',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 24),
-            FilledButton(
-              onPressed: () => const PortfolioRoute().go(context),
-              child: const Text('Go Home'),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                '404',
+                style: TextStyle(
+                  fontSize: 96,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF02569B),
+                  letterSpacing: -2,
+                  height: 1,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Page not found',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF0F172A),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'The page you\'re looking for doesn\'t exist or has been moved.',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: const Color(0xFF0F172A).withValues(alpha: 0.5),
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              FilledButton(
+                onPressed: () => const PortfolioRoute().go(context),
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFF02569B),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                child: const Text('Back to Home'),
+              ),
+            ],
+          ),
         ),
       ),
     );

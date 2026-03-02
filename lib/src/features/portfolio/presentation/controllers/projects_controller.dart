@@ -1,3 +1,4 @@
+import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/repositories/projects_repository.dart';
@@ -19,9 +20,12 @@ class ProjectsController extends _$ProjectsController {
   }
 
   /// Create a new project.
-  Future<bool> create(Map<String, dynamic> data) async {
+  Future<bool> create(
+    Map<String, dynamic> data, {
+    List<http.MultipartFile> files = const [],
+  }) async {
     final repo = ref.read(projectsRepositoryProvider);
-    final result = await repo.createProject(data);
+    final result = await repo.createProject(data, files: files);
     return result.fold(
       (failure) => false,
       (project) {
@@ -32,9 +36,13 @@ class ProjectsController extends _$ProjectsController {
   }
 
   /// Update an existing project.
-  Future<bool> updateProject(String id, Map<String, dynamic> data) async {
+  Future<bool> updateProject(
+    String id,
+    Map<String, dynamic> data, {
+    List<http.MultipartFile> files = const [],
+  }) async {
     final repo = ref.read(projectsRepositoryProvider);
-    final result = await repo.updateProject(id, data);
+    final result = await repo.updateProject(id, data, files: files);
     return result.fold(
       (failure) => false,
       (project) {

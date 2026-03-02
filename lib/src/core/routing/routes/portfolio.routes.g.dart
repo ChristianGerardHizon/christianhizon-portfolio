@@ -9,6 +9,8 @@ part of 'portfolio.routes.dart';
 List<RouteBase> get $appRoutes => [
       $portfolioRoute,
       $allProjectsRoute,
+      $techStackRoute,
+      $workHistoryRoute,
       $projectDetailRoute,
     ];
 
@@ -52,6 +54,62 @@ mixin $AllProjectsRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
         '/projects',
+      );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $techStackRoute => GoRouteData.$route(
+      path: '/tech-stack',
+      factory: $TechStackRoute._fromState,
+    );
+
+mixin $TechStackRoute on GoRouteData {
+  static TechStackRoute _fromState(GoRouterState state) =>
+      const TechStackRoute();
+
+  @override
+  String get location => GoRouteData.$location(
+        '/tech-stack',
+      );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $workHistoryRoute => GoRouteData.$route(
+      path: '/work-history',
+      factory: $WorkHistoryRoute._fromState,
+    );
+
+mixin $WorkHistoryRoute on GoRouteData {
+  static WorkHistoryRoute _fromState(GoRouterState state) =>
+      const WorkHistoryRoute();
+
+  @override
+  String get location => GoRouteData.$location(
+        '/work-history',
       );
 
   @override

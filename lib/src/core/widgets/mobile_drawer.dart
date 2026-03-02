@@ -34,7 +34,7 @@ class MobileDrawer extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Assets.icons.appIconTransparent.image(
+                  Assets.icons.appIcon.image(
                     width: 48,
                     height: 48,
                   ),

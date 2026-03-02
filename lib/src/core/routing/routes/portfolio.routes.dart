@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../../features/portfolio/presentation/pages/all_projects_page.dart';
 import '../../../features/portfolio/presentation/pages/portfolio_page.dart';
 import '../../../features/portfolio/presentation/pages/project_detail_page.dart';
+import '../../../features/portfolio/presentation/pages/tech_stack_page.dart';
+import '../../../features/portfolio/presentation/pages/work_history_page.dart';
 
 part 'portfolio.routes.g.dart';
 
@@ -30,6 +32,32 @@ class AllProjectsRoute extends GoRouteData with $AllProjectsRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const AllProjectsPage();
+  }
+}
+
+/// Public tech stack page route.
+@TypedGoRoute<TechStackRoute>(path: TechStackRoute.path)
+class TechStackRoute extends GoRouteData with $TechStackRoute {
+  const TechStackRoute();
+
+  static const path = '/tech-stack';
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const TechStackPage();
+  }
+}
+
+/// Public work history page route.
+@TypedGoRoute<WorkHistoryRoute>(path: WorkHistoryRoute.path)
+class WorkHistoryRoute extends GoRouteData with $WorkHistoryRoute {
+  const WorkHistoryRoute();
+
+  static const path = '/work-history';
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const WorkHistoryPage();
   }
 }
 

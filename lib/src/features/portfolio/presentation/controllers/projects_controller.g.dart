@@ -37,7 +37,7 @@ final class ProjectsControllerProvider
 }
 
 String _$projectsControllerHash() =>
-    r'a9968220948200060e433f8b7e33eebead8ac5ce';
+    r'baea04591315fd88e962ee07a92db73580f37bea';
 
 /// Controller for managing portfolio projects list.
 
