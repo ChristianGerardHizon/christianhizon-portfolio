@@ -78,8 +78,8 @@ class ProjectFormDialog extends HookConsumerWidget {
       child: Builder(
         builder: (context) => AlertDialog(
           title: Text(isEdit ? 'Edit Project' : 'New Project'),
-          content: SizedBox(
-            width: 500,
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 500),
             child: SingleChildScrollView(
               child: FormBuilder(
                 key: formKey,
