@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 /// A widget that fades and slides its child into view when it enters the
@@ -35,7 +33,6 @@ class ScrollFadeIn extends HookWidget {
   Widget build(BuildContext context) {
     final controller = useAnimationController(duration: duration);
     final hasTriggered = useRef(false);
-    final widgetKey = useMemoized(() => GlobalKey());
 
     final curved = useMemoized(
       () => CurvedAnimation(parent: controller, curve: curve),
@@ -56,64 +53,87 @@ class ScrollFadeIn extends HookWidget {
       }
     }
 
-    void checkVisibility() {
-      if (hasTriggered.value) return;
-
-      final renderObject = widgetKey.currentContext?.findRenderObject();
-      if (renderObject == null || !renderObject.attached) return;
-
-      final viewport = RenderAbstractViewport.maybeOf(renderObject);
-      if (viewport == null) return;
-
-      final revealOffset = viewport.getOffsetToReveal(renderObject, 0.0);
-      final scrollable = Scrollable.maybeOf(widgetKey.currentContext!);
-      if (scrollable == null) return;
-
-      final scrollPosition = scrollable.position;
-      final viewportHeight = scrollPosition.viewportDimension;
-      final scrollOffset = scrollPosition.pixels;
-
-      // Widget top relative to scroll viewport
-      final widgetTop = revealOffset.offset - scrollOffset;
-
-      // Trigger when the widget top is within the viewport (with a threshold)
-      if (widgetTop < viewportHeight * 0.9) {
-        trigger();
-      }
-    }
-
-    // Store the scroll position for safe cleanup
-    final scrollPositionRef = useRef<ScrollPosition?>(null);
-
-    // Attach a scroll listener to the nearest Scrollable ancestor
-    useEffect(() {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        checkVisibility();
-
-        final scrollable = Scrollable.maybeOf(widgetKey.currentContext!);
-        scrollPositionRef.value = scrollable?.position;
-        scrollPositionRef.value?.addListener(checkVisibility);
-      });
-
-      return () {
-        scrollPositionRef.value?.removeListener(checkVisibility);
-      };
-    }, []);
-
-    return AnimatedBuilder(
-      key: widgetKey,
-      animation: curved,
-      builder: (context, child) => Opacity(
-        opacity: curved.value,
-        child: Transform.translate(
-          offset: Offset(
-            this.offset.dx * (1 - curved.value),
-            this.offset.dy * (1 - curved.value),
+    return _VisibilityObserver(
+      onVisible: trigger,
+      child: AnimatedBuilder(
+        animation: curved,
+        builder: (context, child) => Opacity(
+          opacity: curved.value,
+          child: Transform.translate(
+            offset: Offset(
+              this.offset.dx * (1 - curved.value),
+              this.offset.dy * (1 - curved.value),
+            ),
+            child: child,
           ),
-          child: child,
         ),
+        child: child,
       ),
-      child: child,
     );
+  }
+}
+
+/// Observes when the widget becomes visible in the viewport using
+/// [LayoutBuilder] + post-frame callbacks and scroll listeners.
+class _VisibilityObserver extends StatefulWidget {
+  const _VisibilityObserver({
+    required this.onVisible,
+    required this.child,
+  });
+
+  final VoidCallback onVisible;
+  final Widget child;
+
+  @override
+  State<_VisibilityObserver> createState() => _VisibilityObserverState();
+}
+
+class _VisibilityObserverState extends State<_VisibilityObserver> {
+  ScrollPosition? _scrollPosition;
+  bool _triggered = false;
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Re-attach scroll listener if scrollable ancestor changes
+    _detach();
+    _scrollPosition = Scrollable.maybeOf(context)?.position;
+    _scrollPosition?.addListener(_check);
+
+    // Check visibility after the frame is laid out
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _check();
+    });
+  }
+
+  @override
+  void dispose() {
+    _detach();
+    super.dispose();
+  }
+
+  void _detach() {
+    _scrollPosition?.removeListener(_check);
+  }
+
+  void _check() {
+    if (_triggered || !mounted) return;
+
+    final renderObject = context.findRenderObject();
+    if (renderObject == null || !renderObject.attached) return;
+
+    final renderBox = renderObject as RenderBox;
+    // Get the widget's position relative to the viewport
+    final offset = renderBox.localToGlobal(Offset.zero);
+    final viewportHeight = MediaQuery.sizeOf(context).height;
+
+    // Trigger when the top of the widget is within 90% of the viewport height
+    if (offset.dy < viewportHeight * 0.9) {
+      _triggered = true;
+      widget.onVisible();
+    }
   }
 }
