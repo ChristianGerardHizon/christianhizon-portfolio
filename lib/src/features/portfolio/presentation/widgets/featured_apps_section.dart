@@ -99,33 +99,35 @@ class FeaturedAppsSection extends ConsumerWidget {
             _buildMobileList()
           else
             _buildStaggeredGrid(),
-          // Mobile "View All Apps" button
-          if (isMobile) ...[
-            const SizedBox(height: 40),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () =>
-                    const AllProjectsRoute().go(context),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  side: const BorderSide(color: Color(0xFFCBD5E1)),
+          // "View All Projects" CTA
+          const SizedBox(height: 48),
+          Center(
+            child: SizedBox(
+              width: isMobile ? double.infinity : null,
+              child: FilledButton(
+                onPressed: () => const AllProjectsRoute().go(context),
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFF02569B),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                ),
-                child: const Text(
-                  'VIEW ALL APPS',
-                  style: TextStyle(
-                    color: Color(0xFF0F172A),
+                  textStyle: const TextStyle(
+                    fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    fontSize: 13,
-                    letterSpacing: 1.5,
                   ),
+                  elevation: 4,
+                  shadowColor:
+                      const Color(0xFF02569B).withValues(alpha: 0.3),
                 ),
+                child: const Text('View All Projects'),
               ),
             ),
-          ],
+          ),
         ],
       ),
     );
