@@ -1,11 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/widgets/form/experience_list_editor.dart';
+import '../../../../core/widgets/form/key_value_list_editor.dart';
 import '../../../portfolio/domain/profile.dart';
 import '../../../portfolio/presentation/controllers/profile_controller.dart';
 
@@ -21,60 +21,39 @@ class ProfileForm extends HookConsumerWidget {
     final isSaving = useState(false);
     final theme = Theme.of(context);
 
-    // Serialize skills and experience to editable text
-    final skillsText = profile?.skills.isNotEmpty == true
-        ? jsonEncode(profile!.skills
-            .map((s) => {'name': s.name, 'category': s.category})
-            .toList())
-        : '[]';
+    // List state managed via hooks instead of JSON text fields
+    final stats = useState<List<Map<String, String>>>(
+      profile?.stats
+              .map((s) => {'value': s.value, 'label': s.label})
+              .toList() ??
+          [],
+    );
 
-    final experienceText = profile?.experience.isNotEmpty == true
-        ? jsonEncode(profile!.experience
-            .map((e) => {
-                  'company': e.company,
-                  'role': e.role,
-                  'startDate': e.startDate,
-                  'endDate': e.endDate,
-                  'description': e.description,
-                })
-            .toList())
-        : '[]';
+    final skills = useState<List<Map<String, String>>>(
+      profile?.skills
+              .map((s) => {'name': s.name, 'category': s.category})
+              .toList() ??
+          [],
+    );
 
-    final statsText = profile?.stats.isNotEmpty == true
-        ? jsonEncode(profile!.stats
-            .map((s) => {'value': s.value, 'label': s.label})
-            .toList())
-        : '[]';
+    final experience = useState<List<Map<String, String>>>(
+      profile?.experience
+              .map((e) => {
+                    'company': e.company,
+                    'role': e.role,
+                    'startDate': e.startDate,
+                    'endDate': e.endDate ?? '',
+                    'description': e.description,
+                  })
+              .toList() ??
+          [],
+    );
 
     Future<void> handleSave() async {
       if (!formKey.currentState!.saveAndValidate()) return;
 
       isSaving.value = true;
       final values = formKey.currentState!.value;
-
-      // Parse skills JSON
-      dynamic skills;
-      try {
-        skills = jsonDecode(values['skills'] as String? ?? '[]');
-      } catch (_) {
-        skills = [];
-      }
-
-      // Parse experience JSON
-      dynamic experience;
-      try {
-        experience = jsonDecode(values['experience'] as String? ?? '[]');
-      } catch (_) {
-        experience = [];
-      }
-
-      // Parse stats JSON
-      dynamic stats;
-      try {
-        stats = jsonDecode(values['stats'] as String? ?? '[]');
-      } catch (_) {
-        stats = [];
-      }
 
       final data = <String, dynamic>{
         'name': values['name'],
@@ -88,9 +67,9 @@ class ProfileForm extends HookConsumerWidget {
         'websiteUrl': values['websiteUrl'] ?? '',
         'stackOverflowUrl': values['stackOverflowUrl'] ?? '',
         'availabilityStatus': values['availabilityStatus'] ?? '',
-        'skills': skills,
-        'experience': experience,
-        'stats': stats,
+        'skills': skills.value,
+        'experience': experience.value,
+        'stats': stats.value,
       };
 
       final success = await ref
@@ -231,49 +210,27 @@ class ProfileForm extends HookConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    'Stats — Format: [{"value": "5+", "label": "Years Flutter"}]',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.outline,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  FormBuilderTextField(
-                    name: 'stats',
-                    initialValue: statsText,
-                    decoration:
-                        const InputDecoration(labelText: 'Stats JSON'),
-                    maxLines: 3,
+                  KeyValueListEditor(
+                    label: 'Stats',
+                    items: stats.value,
+                    keyLabel: 'Value',
+                    valueLabel: 'Label',
+                    addButtonLabel: 'Add Stat',
+                    onChanged: (v) => stats.value = v,
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    'Skills — Format: [{"name": "Flutter", "category": "Mobile"}]',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.outline,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  FormBuilderTextField(
-                    name: 'skills',
-                    initialValue: skillsText,
-                    decoration:
-                        const InputDecoration(labelText: 'Skills JSON'),
-                    maxLines: 4,
+                  KeyValueListEditor(
+                    label: 'Skills',
+                    items: skills.value,
+                    keyLabel: 'Name',
+                    valueLabel: 'Category',
+                    addButtonLabel: 'Add Skill',
+                    onChanged: (v) => skills.value = v,
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    'Experience — Format: [{"company": "...", "role": "...", "startDate": "2020", "endDate": "2023", "description": "..."}]',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.outline,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  FormBuilderTextField(
-                    name: 'experience',
-                    initialValue: experienceText,
-                    decoration:
-                        const InputDecoration(labelText: 'Experience JSON'),
-                    maxLines: 6,
+                  ExperienceListEditor(
+                    items: experience.value,
+                    onChanged: (v) => experience.value = v,
                   ),
                 ],
               ),

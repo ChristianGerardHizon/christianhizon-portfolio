@@ -59,22 +59,25 @@ class PortfolioFooter extends StatelessWidget {
           'Powered by ',
           style: TextStyle(
             color: Color(0xFF94A3B8),
-            fontSize: 14,
+            fontSize: 13,
+            letterSpacing: 0.3,
           ),
         ),
         Text(
-          'Flutter Web',
+          'Flutter',
           style: TextStyle(
             color: Color(0xFF02569B),
             fontWeight: FontWeight.w600,
-            fontSize: 14,
+            fontSize: 13,
+            letterSpacing: 0.3,
           ),
         ),
         Text(
-          ' & ',
+          ' and ',
           style: TextStyle(
             color: Color(0xFF94A3B8),
-            fontSize: 14,
+            fontSize: 13,
+            letterSpacing: 0.3,
           ),
         ),
         Text(
@@ -82,7 +85,8 @@ class PortfolioFooter extends StatelessWidget {
           style: TextStyle(
             color: Color(0xFF02569B),
             fontWeight: FontWeight.w600,
-            fontSize: 14,
+            fontSize: 13,
+            letterSpacing: 0.3,
           ),
         ),
       ],

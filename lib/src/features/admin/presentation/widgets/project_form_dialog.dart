@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -9,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
+import '../../../../core/widgets/form/string_list_editor.dart';
 import '../../../portfolio/domain/project.dart';
 import '../../../portfolio/presentation/controllers/projects_controller.dart';
 
@@ -24,21 +23,19 @@ class ProjectFormDialog extends HookConsumerWidget {
     final isSaving = useState(false);
     final isEdit = project != null;
 
-    final techStackText = project?.techStack.isNotEmpty == true
-        ? jsonEncode(project!.techStack)
-        : '[]';
-
-    final featuresText = project?.features.isNotEmpty == true
-        ? jsonEncode(project!.features)
-        : '[]';
-
-    final responsibilitiesText = project?.responsibilities.isNotEmpty == true
-        ? jsonEncode(project!.responsibilities)
-        : '[]';
-
-    final platformsText = project?.platforms.isNotEmpty == true
-        ? jsonEncode(project!.platforms)
-        : '[]';
+    // List state managed via hooks instead of JSON text fields
+    final techStack = useState<List<String>>(
+      project?.techStack.toList() ?? [],
+    );
+    final features = useState<List<String>>(
+      project?.features.toList() ?? [],
+    );
+    final responsibilities = useState<List<String>>(
+      project?.responsibilities.toList() ?? [],
+    );
+    final platforms = useState<List<String>>(
+      project?.platforms.toList() ?? [],
+    );
 
     final baseUrl = pocketbaseUrl;
 
@@ -48,49 +45,16 @@ class ProjectFormDialog extends HookConsumerWidget {
       isSaving.value = true;
       final values = formKey.currentState!.value;
 
-      // Parse techStack JSON
-      dynamic techStack;
-      try {
-        techStack = jsonDecode(values['techStack'] as String? ?? '[]');
-      } catch (_) {
-        techStack = [];
-      }
-
-      // Parse features JSON
-      dynamic features;
-      try {
-        features = jsonDecode(values['features'] as String? ?? '[]');
-      } catch (_) {
-        features = [];
-      }
-
-      // Parse responsibilities JSON
-      dynamic responsibilities;
-      try {
-        responsibilities =
-            jsonDecode(values['responsibilities'] as String? ?? '[]');
-      } catch (_) {
-        responsibilities = [];
-      }
-
-      // Parse platforms JSON
-      dynamic platforms;
-      try {
-        platforms = jsonDecode(values['platforms'] as String? ?? '[]');
-      } catch (_) {
-        platforms = [];
-      }
-
       final data = <String, dynamic>{
         'title': values['title'],
         'description': values['description'] ?? '',
         'longDescription': values['longDescription'] ?? '',
         'projectUrl': values['projectUrl'] ?? '',
         'sourceUrl': values['sourceUrl'] ?? '',
-        'techStack': techStack,
-        'features': features,
-        'responsibilities': responsibilities,
-        'platforms': platforms,
+        'techStack': techStack.value,
+        'features': features.value,
+        'responsibilities': responsibilities.value,
+        'platforms': platforms.value,
         'category': values['category'] ?? '',
         'status': values['status'] ?? 'active',
         'featured': values['featured'] ?? false,
@@ -279,46 +243,33 @@ class ProjectFormDialog extends HookConsumerWidget {
                       decoration:
                           const InputDecoration(labelText: 'Source URL'),
                     ),
-                    const SizedBox(height: 12),
-                    FormBuilderTextField(
-                      name: 'techStack',
-                      initialValue: techStackText,
-                      decoration: const InputDecoration(
-                        labelText: 'Tech Stack (JSON)',
-                        hintText: '["Flutter", "Dart"]',
-                      ),
-                      maxLines: 2,
+                    const SizedBox(height: 16),
+                    StringListEditor(
+                      label: 'Tech Stack',
+                      items: techStack.value,
+                      hintText: 'e.g. Flutter',
+                      onChanged: (v) => techStack.value = v,
                     ),
-                    const SizedBox(height: 12),
-                    FormBuilderTextField(
-                      name: 'features',
-                      initialValue: featuresText,
-                      decoration: const InputDecoration(
-                        labelText: 'Key Features (JSON)',
-                        hintText:
-                            '["Real-time notifications", "Offline mode"]',
-                      ),
-                      maxLines: 3,
+                    const SizedBox(height: 16),
+                    StringListEditor(
+                      label: 'Key Features',
+                      items: features.value,
+                      hintText: 'e.g. Real-time notifications',
+                      onChanged: (v) => features.value = v,
                     ),
-                    const SizedBox(height: 12),
-                    FormBuilderTextField(
-                      name: 'responsibilities',
-                      initialValue: responsibilitiesText,
-                      decoration: const InputDecoration(
-                        labelText: 'Responsibilities (JSON)',
-                        hintText:
-                            '["Led frontend development", "Built CI/CD"]',
-                      ),
-                      maxLines: 3,
+                    const SizedBox(height: 16),
+                    StringListEditor(
+                      label: 'Responsibilities',
+                      items: responsibilities.value,
+                      hintText: 'e.g. Led frontend development',
+                      onChanged: (v) => responsibilities.value = v,
                     ),
-                    const SizedBox(height: 12),
-                    FormBuilderTextField(
-                      name: 'platforms',
-                      initialValue: platformsText,
-                      decoration: const InputDecoration(
-                        labelText: 'Platforms (JSON)',
-                        hintText: '["ios", "android", "web"]',
-                      ),
+                    const SizedBox(height: 16),
+                    StringListEditor(
+                      label: 'Platforms',
+                      items: platforms.value,
+                      hintText: 'e.g. iOS',
+                      onChanged: (v) => platforms.value = v,
                     ),
                     const SizedBox(height: 12),
                     FormBuilderTextField(
