@@ -325,7 +325,7 @@ class PortfolioHeroSection extends HookConsumerWidget {
                   ),
                 ),
               ),
-              // "Latest Build" overlay card
+              // Experience overlay card
               Positioned(
                 bottom: 24,
                 left: 24,
@@ -357,7 +357,7 @@ class PortfolioHeroSection extends HookConsumerWidget {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Icon(
-                              Icons.smartphone,
+                              Icons.code_rounded,
                               size: 20,
                               color: Color(0xFF02569B),
                             ),
@@ -368,7 +368,7 @@ class PortfolioHeroSection extends HookConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Latest Build: v2.4.0',
+                                  '8+ Years in Mobile Development',
                                   style: TextStyle(
                                     color: Color(0xFF0F172A),
                                     fontSize: 14,
@@ -377,7 +377,7 @@ class PortfolioHeroSection extends HookConsumerWidget {
                                 ),
                                 SizedBox(height: 2),
                                 Text(
-                                  'Deployed to TestFlight & Play Store',
+                                  'Flutter, Dart, Cross-Platform Apps',
                                   style: TextStyle(
                                     color: Color(0xFF475569),
                                     fontSize: 12,
