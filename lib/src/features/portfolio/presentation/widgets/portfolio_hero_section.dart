@@ -182,31 +182,31 @@ class PortfolioHeroSection extends ConsumerWidget {
         // Stats row
         if (profile.stats.isNotEmpty) ...[
           const SizedBox(height: 40),
-          Row(
+          Wrap(
+            spacing: 32,
+            runSpacing: 16,
             children: profile.stats.map((stat) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      stat.value,
-                      style: const TextStyle(
-                        color: Color(0xFF0F172A),
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                      ),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    stat.value,
+                    style: const TextStyle(
+                      color: Color(0xFF0F172A),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      stat.label,
-                      style: const TextStyle(
-                        color: Color(0xFF94A3B8),
-                        fontSize: 14,
-                      ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    stat.label,
+                    style: const TextStyle(
+                      color: Color(0xFF94A3B8),
+                      fontSize: 14,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               );
             }).toList(),
           ),

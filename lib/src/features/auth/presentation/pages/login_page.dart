@@ -60,7 +60,7 @@ class LoginPage extends HookConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Logo
-                  Assets.icons.appIconTransparent.image(
+                  Assets.icons.appIcon.image(
                     width: 150,
                     height: 150,
                   ),

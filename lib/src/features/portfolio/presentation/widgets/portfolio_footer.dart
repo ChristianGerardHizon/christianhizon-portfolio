@@ -51,30 +51,37 @@ class PortfolioFooter extends StatelessWidget {
   }
 
   Widget _buildLogo() {
-    return Row(
+    return const Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: 24,
-          height: 24,
-          decoration: BoxDecoration(
-            color: const Color(0xFF02569B),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: const Icon(
-            Icons.flutter_dash,
-            size: 14,
-            color: Colors.white,
+        Text(
+          'Powered by ',
+          style: TextStyle(
+            color: Color(0xFF94A3B8),
+            fontSize: 14,
           ),
         ),
-        const SizedBox(width: 8),
         Text(
-          profile.name.toUpperCase(),
-          style: const TextStyle(
-            color: Color(0xFF0F172A),
-            fontWeight: FontWeight.w700,
+          'Flutter Web',
+          style: TextStyle(
+            color: Color(0xFF02569B),
+            fontWeight: FontWeight.w600,
             fontSize: 14,
-            letterSpacing: -0.3,
+          ),
+        ),
+        Text(
+          ' & ',
+          style: TextStyle(
+            color: Color(0xFF94A3B8),
+            fontSize: 14,
+          ),
+        ),
+        Text(
+          'PocketBase',
+          style: TextStyle(
+            color: Color(0xFF02569B),
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
           ),
         ),
       ],
@@ -110,7 +117,7 @@ class PortfolioFooter extends StatelessWidget {
 
   Widget _buildCopyright() {
     return Text(
-      '\u00a9 ${DateTime.now().year} ${profile.name}. All rights reserved.',
+      '\u00a9 ${DateTime.now().year} All rights reserved.',
       style: const TextStyle(
         color: Color(0xFF94A3B8),
         fontSize: 14,

@@ -202,14 +202,14 @@ class ProjectDetailPage extends HookConsumerWidget {
                                   if (isMobile)
                                     Column(
                                       children: [
-                                        _buildSidebar(project),
-                                        const SizedBox(height: 32),
                                         _buildMainContent(
                                           project,
                                           thumbnailUrl,
                                           galleryUrls,
                                           isMobile,
                                         ),
+                                        const SizedBox(height: 32),
+                                        _buildSidebar(project),
                                       ],
                                     )
                                   else

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/routing/routes/portfolio.routes.dart';
 import '../../domain/portfolio_constants.dart';
 
 /// Development services section with 2x2 card grid.
@@ -28,7 +29,7 @@ class ServicesSection extends HookConsumerWidget {
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildLeftColumn(),
+                _buildLeftColumn(context),
                 const SizedBox(height: 40),
                 _buildServiceCards(isMobile: true),
               ],
@@ -36,7 +37,7 @@ class ServicesSection extends HookConsumerWidget {
           : Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(flex: 1, child: _buildLeftColumn()),
+                Expanded(flex: 1, child: _buildLeftColumn(context)),
                 const SizedBox(width: 48),
                 Expanded(flex: 2, child: _buildServiceCards(isMobile: false)),
               ],
@@ -44,7 +45,7 @@ class ServicesSection extends HookConsumerWidget {
     );
   }
 
-  Widget _buildLeftColumn() {
+  Widget _buildLeftColumn(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -72,7 +73,7 @@ class ServicesSection extends HookConsumerWidget {
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
             onTap: () {
-              // TODO: Scroll to tech stack section or navigate
+              const TechStackRoute().go(context);
             },
             child: const Row(
               mainAxisSize: MainAxisSize.min,

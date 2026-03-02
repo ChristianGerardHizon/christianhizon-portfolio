@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:http/http.dart' as http;
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -112,10 +113,13 @@ class ProjectsRepository {
   }
 
   /// Create a new project.
-  FutureEither<Project> createProject(Map<String, dynamic> data) async {
+  FutureEither<Project> createProject(
+    Map<String, dynamic> data, {
+    List<http.MultipartFile> files = const [],
+  }) async {
     return TaskEither.tryCatch(
       () async {
-        final record = await _collection.create(body: data);
+        final record = await _collection.create(body: data, files: files);
         return _fromRecord(record);
       },
       Failure.handle,
@@ -125,11 +129,12 @@ class ProjectsRepository {
   /// Update an existing project.
   FutureEither<Project> updateProject(
     String id,
-    Map<String, dynamic> data,
-  ) async {
+    Map<String, dynamic> data, {
+    List<http.MultipartFile> files = const [],
+  }) async {
     return TaskEither.tryCatch(
       () async {
-        final record = await _collection.update(id, body: data);
+        final record = await _collection.update(id, body: data, files: files);
         return _fromRecord(record);
       },
       Failure.handle,

@@ -24,38 +24,31 @@ class WorkHistorySection extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header row: title + download resume
-          Row(
+          // Header: title + download resume
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Work History',
-                      style: TextStyle(
-                        color: const Color(0xFF0F172A),
-                        fontSize: isMobile ? 28 : 32,
-                        fontWeight: FontWeight.w700,
-                        height: 1.2,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Professional experience in mobile development',
-                      style: TextStyle(
-                        color: Color(0xFF64748B),
-                        fontSize: 15,
-                        height: 1.5,
-                      ),
-                    ),
-                  ],
+              Text(
+                'Work History',
+                style: TextStyle(
+                  color: const Color(0xFF0F172A),
+                  fontSize: isMobile ? 28 : 32,
+                  fontWeight: FontWeight.w700,
+                  height: 1.2,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Professional experience in mobile development',
+                style: TextStyle(
+                  color: Color(0xFF64748B),
+                  fontSize: 15,
+                  height: 1.5,
                 ),
               ),
               if (profile.resumeUrl.isNotEmpty) ...[
-                const SizedBox(width: 16),
+                const SizedBox(height: 16),
                 _DownloadResumeButton(
                   resumeUrl: profile.resumeFileUrl(pocketbaseUrl),
                 ),

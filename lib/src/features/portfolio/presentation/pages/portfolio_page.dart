@@ -72,6 +72,9 @@ class PortfolioPage extends HookConsumerWidget {
 
           final projects = projectsAsync.value ?? [];
 
+          final screenWidth = MediaQuery.sizeOf(context).width;
+          final isMobile = screenWidth < 768;
+
           return Stack(
             children: [
               // Scrollable content
@@ -85,7 +88,9 @@ class PortfolioPage extends HookConsumerWidget {
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 1200),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isMobile ? 24 : 40,
+                          ),
                           child: Column(
                             children: [
                               PortfolioHeroSection(
