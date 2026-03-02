@@ -104,27 +104,27 @@ class FeaturedAppsSection extends ConsumerWidget {
           Center(
             child: SizedBox(
               width: isMobile ? double.infinity : null,
-              child: FilledButton.icon(
+              child: FilledButton(
                 onPressed: () => const AllProjectsRoute().go(context),
-                icon: const Icon(Icons.apps_rounded, size: 20),
-                label: const Text('View All Projects'),
                 style: FilledButton.styleFrom(
                   backgroundColor: const Color(0xFF02569B),
                   foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isMobile ? 24 : 40,
-                    vertical: 18,
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.3,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  elevation: 2,
+                  textStyle: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  elevation: 4,
+                  shadowColor:
+                      const Color(0xFF02569B).withValues(alpha: 0.3),
                 ),
+                child: const Text('View All Projects'),
               ),
             ),
           ),
