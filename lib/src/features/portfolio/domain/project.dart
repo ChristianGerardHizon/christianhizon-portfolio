@@ -31,6 +31,9 @@ class Project with ProjectMappable {
   final String client;
   final String role;
   final String timeline;
+  final List<String> features;
+  final List<String> responsibilities;
+  final List<String> platforms;
 
   const Project({
     required this.id,
@@ -50,6 +53,9 @@ class Project with ProjectMappable {
     this.client = '',
     this.role = '',
     this.timeline = '',
+    this.features = const [],
+    this.responsibilities = const [],
+    this.platforms = const [],
   });
 
   static const collectionName = 'projects';

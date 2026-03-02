@@ -467,11 +467,96 @@ class _ProjectGridCard extends HookConsumerWidget {
   }
 
   Widget _placeholderImage() {
+    final hash = project.title.hashCode;
+    final gradientColors = _placeholderGradient(hash);
+
     return Container(
-      color: const Color(0xFFF8FAFC),
-      child: const Center(
-        child: Icon(Icons.code, size: 48, color: Color(0xFFCBD5E1)),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: gradientColors,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              _categoryIcon(project.category),
+              size: 40,
+              color: Colors.white.withValues(alpha: 0.9),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              project.title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.95),
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.3,
+              ),
+            ),
+            if (project.techStack.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 6,
+                runSpacing: 6,
+                children: project.techStack.take(3).map((tech) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      tech,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ],
+        ),
       ),
     );
+  }
+
+  static IconData _categoryIcon(String category) {
+    switch (category.toLowerCase()) {
+      case 'mobile app':
+        return Icons.phone_iphone;
+      case 'web app':
+        return Icons.language;
+      case 'website':
+        return Icons.public;
+      case 'ecommerce':
+        return Icons.shopping_bag;
+      default:
+        return Icons.code;
+    }
+  }
+
+  static List<Color> _placeholderGradient(int hash) {
+    const palettes = [
+      [Color(0xFF0F172A), Color(0xFF1E3A5F)],
+      [Color(0xFF1A1A2E), Color(0xFF16213E)],
+      [Color(0xFF0D1B2A), Color(0xFF1B4965)],
+      [Color(0xFF2D3436), Color(0xFF636E72)],
+      [Color(0xFF141E30), Color(0xFF243B55)],
+      [Color(0xFF0F2027), Color(0xFF2C5364)],
+    ];
+    return palettes[hash.abs() % palettes.length];
   }
 }

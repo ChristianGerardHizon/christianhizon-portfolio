@@ -28,6 +28,18 @@ class ProjectFormDialog extends HookConsumerWidget {
         ? jsonEncode(project!.techStack)
         : '[]';
 
+    final featuresText = project?.features.isNotEmpty == true
+        ? jsonEncode(project!.features)
+        : '[]';
+
+    final responsibilitiesText = project?.responsibilities.isNotEmpty == true
+        ? jsonEncode(project!.responsibilities)
+        : '[]';
+
+    final platformsText = project?.platforms.isNotEmpty == true
+        ? jsonEncode(project!.platforms)
+        : '[]';
+
     final baseUrl = pocketbaseUrl;
 
     Future<void> handleSave() async {
@@ -44,6 +56,31 @@ class ProjectFormDialog extends HookConsumerWidget {
         techStack = [];
       }
 
+      // Parse features JSON
+      dynamic features;
+      try {
+        features = jsonDecode(values['features'] as String? ?? '[]');
+      } catch (_) {
+        features = [];
+      }
+
+      // Parse responsibilities JSON
+      dynamic responsibilities;
+      try {
+        responsibilities =
+            jsonDecode(values['responsibilities'] as String? ?? '[]');
+      } catch (_) {
+        responsibilities = [];
+      }
+
+      // Parse platforms JSON
+      dynamic platforms;
+      try {
+        platforms = jsonDecode(values['platforms'] as String? ?? '[]');
+      } catch (_) {
+        platforms = [];
+      }
+
       final data = <String, dynamic>{
         'title': values['title'],
         'description': values['description'] ?? '',
@@ -51,6 +88,9 @@ class ProjectFormDialog extends HookConsumerWidget {
         'projectUrl': values['projectUrl'] ?? '',
         'sourceUrl': values['sourceUrl'] ?? '',
         'techStack': techStack,
+        'features': features,
+        'responsibilities': responsibilities,
+        'platforms': platforms,
         'category': values['category'] ?? '',
         'status': values['status'] ?? 'active',
         'featured': values['featured'] ?? false,
@@ -248,6 +288,37 @@ class ProjectFormDialog extends HookConsumerWidget {
                         hintText: '["Flutter", "Dart"]',
                       ),
                       maxLines: 2,
+                    ),
+                    const SizedBox(height: 12),
+                    FormBuilderTextField(
+                      name: 'features',
+                      initialValue: featuresText,
+                      decoration: const InputDecoration(
+                        labelText: 'Key Features (JSON)',
+                        hintText:
+                            '["Real-time notifications", "Offline mode"]',
+                      ),
+                      maxLines: 3,
+                    ),
+                    const SizedBox(height: 12),
+                    FormBuilderTextField(
+                      name: 'responsibilities',
+                      initialValue: responsibilitiesText,
+                      decoration: const InputDecoration(
+                        labelText: 'Responsibilities (JSON)',
+                        hintText:
+                            '["Led frontend development", "Built CI/CD"]',
+                      ),
+                      maxLines: 3,
+                    ),
+                    const SizedBox(height: 12),
+                    FormBuilderTextField(
+                      name: 'platforms',
+                      initialValue: platformsText,
+                      decoration: const InputDecoration(
+                        labelText: 'Platforms (JSON)',
+                        hintText: '["ios", "android", "web"]',
+                      ),
                     ),
                     const SizedBox(height: 12),
                     FormBuilderTextField(

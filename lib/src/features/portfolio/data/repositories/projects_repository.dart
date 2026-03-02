@@ -55,6 +55,27 @@ class ProjectsRepository {
         break;
     }
 
+    // Parse features JSON
+    List<String> features = [];
+    if (data['features'] is List) {
+      features =
+          (data['features'] as List).map((e) => e.toString()).toList();
+    }
+
+    // Parse responsibilities JSON
+    List<String> responsibilities = [];
+    if (data['responsibilities'] is List) {
+      responsibilities =
+          (data['responsibilities'] as List).map((e) => e.toString()).toList();
+    }
+
+    // Parse platforms JSON
+    List<String> platforms = [];
+    if (data['platforms'] is List) {
+      platforms =
+          (data['platforms'] as List).map((e) => e.toString()).toList();
+    }
+
     return Project(
       id: record.id,
       title: data['title']?.toString() ?? '',
@@ -73,6 +94,9 @@ class ProjectsRepository {
       client: data['client']?.toString() ?? '',
       role: data['role']?.toString() ?? '',
       timeline: data['timeline']?.toString() ?? '',
+      features: features,
+      responsibilities: responsibilities,
+      platforms: platforms,
     );
   }
 
