@@ -301,17 +301,27 @@ class ProjectDetailPage extends HookConsumerWidget {
           child: AspectRatio(
             aspectRatio: 16 / 9,
             child: thumbnailUrl.isNotEmpty
-                ? CachedNetworkImage(
-                    imageUrl: thumbnailUrl,
-                    fit: BoxFit.cover,
-                    placeholder: (_, __) => Container(
-                      color: const Color(0xFFF8FAFC),
-                      child: const Center(
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                ? MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => _openGalleryLightbox(
+                        context,
+                        [thumbnailUrl, ...galleryUrls],
+                        0,
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: thumbnailUrl,
+                        fit: BoxFit.cover,
+                        placeholder: (_, __) => Container(
+                          color: const Color(0xFFF8FAFC),
+                          child: const Center(
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        ),
+                        errorWidget: (_, __, ___) =>
+                            _buildPlaceholder(project),
                       ),
                     ),
-                    errorWidget: (_, __, ___) =>
-                        _buildPlaceholder(project),
                   )
                 : _buildPlaceholder(project),
           ),
