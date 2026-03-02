@@ -38,6 +38,8 @@ GoRouter router(Ref ref) {
       // Public portfolio routes (outside shell, no auth required)
       $portfolioRoute,
       $allProjectsRoute,
+      $techStackRoute,
+      $workHistoryRoute,
       $projectDetailRoute,
 
       // Admin shell with navigation (auth required)

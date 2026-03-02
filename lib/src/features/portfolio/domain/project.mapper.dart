@@ -181,6 +181,27 @@ class ProjectMapper extends ClassMapperBase<Project> {
     opt: true,
     def: '',
   );
+  static List<String> _$features(Project v) => v.features;
+  static const Field<Project, List<String>> _f$features = Field(
+    'features',
+    _$features,
+    opt: true,
+    def: const [],
+  );
+  static List<String> _$responsibilities(Project v) => v.responsibilities;
+  static const Field<Project, List<String>> _f$responsibilities = Field(
+    'responsibilities',
+    _$responsibilities,
+    opt: true,
+    def: const [],
+  );
+  static List<String> _$platforms(Project v) => v.platforms;
+  static const Field<Project, List<String>> _f$platforms = Field(
+    'platforms',
+    _$platforms,
+    opt: true,
+    def: const [],
+  );
 
   @override
   final MappableFields<Project> fields = const {
@@ -201,6 +222,9 @@ class ProjectMapper extends ClassMapperBase<Project> {
     #client: _f$client,
     #role: _f$role,
     #timeline: _f$timeline,
+    #features: _f$features,
+    #responsibilities: _f$responsibilities,
+    #platforms: _f$platforms,
   };
 
   static Project _instantiate(DecodingData data) {
@@ -222,6 +246,9 @@ class ProjectMapper extends ClassMapperBase<Project> {
       client: data.dec(_f$client),
       role: data.dec(_f$role),
       timeline: data.dec(_f$timeline),
+      features: data.dec(_f$features),
+      responsibilities: data.dec(_f$responsibilities),
+      platforms: data.dec(_f$platforms),
     );
   }
 
@@ -284,6 +311,10 @@ abstract class ProjectCopyWith<$R, $In extends Project, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>> get gallery;
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>> get techStack;
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>> get features;
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>
+  get responsibilities;
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>> get platforms;
   $R call({
     String? id,
     String? title,
@@ -302,6 +333,9 @@ abstract class ProjectCopyWith<$R, $In extends Project, $Out>
     String? client,
     String? role,
     String? timeline,
+    List<String>? features,
+    List<String>? responsibilities,
+    List<String>? platforms,
   });
   ProjectCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
@@ -329,6 +363,27 @@ class _ProjectCopyWithImpl<$R, $Out>
         (v) => call(techStack: v),
       );
   @override
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>> get features =>
+      ListCopyWith(
+        $value.features,
+        (v, t) => ObjectCopyWith(v, $identity, t),
+        (v) => call(features: v),
+      );
+  @override
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>
+  get responsibilities => ListCopyWith(
+    $value.responsibilities,
+    (v, t) => ObjectCopyWith(v, $identity, t),
+    (v) => call(responsibilities: v),
+  );
+  @override
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>> get platforms =>
+      ListCopyWith(
+        $value.platforms,
+        (v, t) => ObjectCopyWith(v, $identity, t),
+        (v) => call(platforms: v),
+      );
+  @override
   $R call({
     String? id,
     String? title,
@@ -347,6 +402,9 @@ class _ProjectCopyWithImpl<$R, $Out>
     String? client,
     String? role,
     String? timeline,
+    List<String>? features,
+    List<String>? responsibilities,
+    List<String>? platforms,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
@@ -366,6 +424,9 @@ class _ProjectCopyWithImpl<$R, $Out>
       if (client != null) #client: client,
       if (role != null) #role: role,
       if (timeline != null) #timeline: timeline,
+      if (features != null) #features: features,
+      if (responsibilities != null) #responsibilities: responsibilities,
+      if (platforms != null) #platforms: platforms,
     }),
   );
   @override
@@ -387,6 +448,9 @@ class _ProjectCopyWithImpl<$R, $Out>
     client: data.get(#client, or: $value.client),
     role: data.get(#role, or: $value.role),
     timeline: data.get(#timeline, or: $value.timeline),
+    features: data.get(#features, or: $value.features),
+    responsibilities: data.get(#responsibilities, or: $value.responsibilities),
+    platforms: data.get(#platforms, or: $value.platforms),
   );
 
   @override

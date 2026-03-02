@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/routing/routes/portfolio.routes.dart';
 import '../../domain/portfolio_constants.dart';
+import 'scroll_fade_in.dart';
 
 /// Development services section with 2x2 card grid.
 class ServicesSection extends HookConsumerWidget {
@@ -28,7 +30,7 @@ class ServicesSection extends HookConsumerWidget {
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildLeftColumn(),
+                _buildLeftColumn(context),
                 const SizedBox(height: 40),
                 _buildServiceCards(isMobile: true),
               ],
@@ -36,7 +38,7 @@ class ServicesSection extends HookConsumerWidget {
           : Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(flex: 1, child: _buildLeftColumn()),
+                Expanded(flex: 1, child: _buildLeftColumn(context)),
                 const SizedBox(width: 48),
                 Expanded(flex: 2, child: _buildServiceCards(isMobile: false)),
               ],
@@ -44,7 +46,7 @@ class ServicesSection extends HookConsumerWidget {
     );
   }
 
-  Widget _buildLeftColumn() {
+  Widget _buildLeftColumn(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -72,7 +74,7 @@ class ServicesSection extends HookConsumerWidget {
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
             onTap: () {
-              // TODO: Scroll to tech stack section or navigate
+              const TechStackRoute().go(context);
             },
             child: const Row(
               mainAxisSize: MainAxisSize.min,
@@ -103,12 +105,16 @@ class ServicesSection extends HookConsumerWidget {
   Widget _buildServiceCards({required bool isMobile}) {
     if (isMobile) {
       return Column(
-        children: PortfolioConstants.services
-            .map((service) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _ServiceCard(service: service),
-                ))
-            .toList(),
+        children: [
+          for (var i = 0; i < PortfolioConstants.services.length; i++)
+            ScrollFadeIn(
+              delay: Duration(milliseconds: 100 * i),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _ServiceCard(service: PortfolioConstants.services[i]),
+              ),
+            ),
+        ],
       );
     }
 
@@ -119,11 +125,16 @@ class ServicesSection extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: _ServiceCard(service: PortfolioConstants.services[0]),
+              child: ScrollFadeIn(
+                child: _ServiceCard(service: PortfolioConstants.services[0]),
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: _ServiceCard(service: PortfolioConstants.services[1]),
+              child: ScrollFadeIn(
+                delay: const Duration(milliseconds: 100),
+                child: _ServiceCard(service: PortfolioConstants.services[1]),
+              ),
             ),
           ],
         ),
@@ -132,11 +143,17 @@ class ServicesSection extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: _ServiceCard(service: PortfolioConstants.services[2]),
+              child: ScrollFadeIn(
+                delay: const Duration(milliseconds: 200),
+                child: _ServiceCard(service: PortfolioConstants.services[2]),
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: _ServiceCard(service: PortfolioConstants.services[3]),
+              child: ScrollFadeIn(
+                delay: const Duration(milliseconds: 300),
+                child: _ServiceCard(service: PortfolioConstants.services[3]),
+              ),
             ),
           ],
         ),

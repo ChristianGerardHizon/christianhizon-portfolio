@@ -11,6 +11,7 @@ import '../widgets/featured_apps_section.dart';
 import '../widgets/portfolio_footer.dart';
 import '../widgets/portfolio_header.dart';
 import '../widgets/portfolio_hero_section.dart';
+import '../widgets/scroll_fade_in.dart';
 import '../widgets/services_section.dart';
 import '../widgets/work_history_section.dart';
 
@@ -72,6 +73,9 @@ class PortfolioPage extends HookConsumerWidget {
 
           final projects = projectsAsync.value ?? [];
 
+          final screenWidth = MediaQuery.sizeOf(context).width;
+          final isMobile = screenWidth < 768;
+
           return Stack(
             children: [
               // Scrollable content
@@ -85,7 +89,9 @@ class PortfolioPage extends HookConsumerWidget {
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 1200),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isMobile ? 24 : 40,
+                          ),
                           child: Column(
                             children: [
                               PortfolioHeroSection(
@@ -93,18 +99,26 @@ class PortfolioPage extends HookConsumerWidget {
                                 onViewPortfolio: () =>
                                     scrollToSection('apps'),
                               ),
-                              FeaturedAppsSection(
-                                key: appsKey,
-                                projects: projects,
+                              ScrollFadeIn(
+                                child: FeaturedAppsSection(
+                                  key: appsKey,
+                                  projects: projects,
+                                ),
                               ),
-                              ServicesSection(key: servicesKey),
-                              WorkHistorySection(
-                                key: aboutKey,
-                                profile: profile,
+                              ScrollFadeIn(
+                                child: ServicesSection(key: servicesKey),
                               ),
-                              CtaBannerSection(
-                                key: ctaKey,
-                                profile: profile,
+                              ScrollFadeIn(
+                                child: WorkHistorySection(
+                                  key: aboutKey,
+                                  profile: profile,
+                                ),
+                              ),
+                              ScrollFadeIn(
+                                child: CtaBannerSection(
+                                  key: ctaKey,
+                                  profile: profile,
+                                ),
                               ),
                               const SizedBox(height: 48),
                             ],

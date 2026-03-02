@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:http/http.dart' as http;
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -54,6 +55,27 @@ class ProjectsRepository {
         break;
     }
 
+    // Parse features JSON
+    List<String> features = [];
+    if (data['features'] is List) {
+      features =
+          (data['features'] as List).map((e) => e.toString()).toList();
+    }
+
+    // Parse responsibilities JSON
+    List<String> responsibilities = [];
+    if (data['responsibilities'] is List) {
+      responsibilities =
+          (data['responsibilities'] as List).map((e) => e.toString()).toList();
+    }
+
+    // Parse platforms JSON
+    List<String> platforms = [];
+    if (data['platforms'] is List) {
+      platforms =
+          (data['platforms'] as List).map((e) => e.toString()).toList();
+    }
+
     return Project(
       id: record.id,
       title: data['title']?.toString() ?? '',
@@ -72,6 +94,9 @@ class ProjectsRepository {
       client: data['client']?.toString() ?? '',
       role: data['role']?.toString() ?? '',
       timeline: data['timeline']?.toString() ?? '',
+      features: features,
+      responsibilities: responsibilities,
+      platforms: platforms,
     );
   }
 
@@ -112,10 +137,13 @@ class ProjectsRepository {
   }
 
   /// Create a new project.
-  FutureEither<Project> createProject(Map<String, dynamic> data) async {
+  FutureEither<Project> createProject(
+    Map<String, dynamic> data, {
+    List<http.MultipartFile> files = const [],
+  }) async {
     return TaskEither.tryCatch(
       () async {
-        final record = await _collection.create(body: data);
+        final record = await _collection.create(body: data, files: files);
         return _fromRecord(record);
       },
       Failure.handle,
@@ -125,11 +153,12 @@ class ProjectsRepository {
   /// Update an existing project.
   FutureEither<Project> updateProject(
     String id,
-    Map<String, dynamic> data,
-  ) async {
+    Map<String, dynamic> data, {
+    List<http.MultipartFile> files = const [],
+  }) async {
     return TaskEither.tryCatch(
       () async {
-        final record = await _collection.update(id, body: data);
+        final record = await _collection.update(id, body: data, files: files);
         return _fromRecord(record);
       },
       Failure.handle,

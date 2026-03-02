@@ -5,9 +5,8 @@ abstract class PortfolioConstants {
   /// Navigation links for the portfolio header.
   static const navLinks = [
     NavLink(label: 'Projects', sectionKey: 'apps', routePath: '/projects'),
-    NavLink(label: 'Work', sectionKey: 'about'),
-    NavLink(label: 'Tech Stack', sectionKey: 'tech'),
-    NavLink(label: "Let's Talk", sectionKey: 'contact'),
+    NavLink(label: 'Work', sectionKey: 'about', routePath: '/work-history'),
+    NavLink(label: 'Tech Stack', sectionKey: 'tech', routePath: '/tech-stack'),
   ];
 
   /// Development service cards.
@@ -47,6 +46,39 @@ abstract class PortfolioConstants {
   /// Services section description.
   static const servicesDescription =
       'I specialize in building robust, scalable mobile applications that provide native performance on both iOS and Android using Flutter.';
+
+  /// Maps iconName strings from PocketBase to Material Icons.
+  static const techStackIcons = <String, IconData>{
+    'dart': Icons.code,
+    'flutter': Icons.flutter_dash,
+    'javascript': Icons.javascript,
+    'angular': Icons.change_history,
+    'sql': Icons.storage,
+    'riverpod': Icons.hub,
+    'hooks': Icons.link,
+    'pocketbase': Icons.dns,
+    'firebase': Icons.local_fire_department,
+    'gorouter': Icons.alt_route,
+    'dart_mappable': Icons.transform,
+    'fpdart': Icons.functions,
+    'form_builder': Icons.dynamic_form,
+    'git': Icons.merge_type,
+    'vscode': Icons.edit_note,
+    'github_actions': Icons.play_circle,
+    'bloc': Icons.view_stream,
+    'codemagic': Icons.auto_fix_high,
+    'docker': Icons.inventory_2,
+    'ionic': Icons.phone_android,
+    'nodejs': Icons.memory,
+    'shopify': Icons.shopping_bag,
+    'nopcommerce': Icons.storefront,
+    'opencart': Icons.shopping_cart,
+  };
+
+  /// Returns the icon for a tech stack item, with a fallback.
+  static IconData techStackIcon(String iconName) {
+    return techStackIcons[iconName] ?? Icons.code;
+  }
 }
 
 /// A navigation link for the portfolio header.

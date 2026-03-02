@@ -37,7 +37,7 @@ final class ProjectsControllerProvider
 }
 
 String _$projectsControllerHash() =>
-    r'a9968220948200060e433f8b7e33eebead8ac5ce';
+    r'baea04591315fd88e962ee07a92db73580f37bea';
 
 /// Controller for managing portfolio projects list.
 
@@ -175,4 +175,87 @@ final class ProjectByIdFamily extends $Family
 
   @override
   String toString() => r'projectByIdProvider';
+}
+
+/// Provider for "Other Projects" — all projects except the current one, up to 3.
+
+@ProviderFor(otherProjects)
+final otherProjectsProvider = OtherProjectsFamily._();
+
+/// Provider for "Other Projects" — all projects except the current one, up to 3.
+
+final class OtherProjectsProvider extends $FunctionalProvider<
+        AsyncValue<List<Project>>, List<Project>, FutureOr<List<Project>>>
+    with $FutureModifier<List<Project>>, $FutureProvider<List<Project>> {
+  /// Provider for "Other Projects" — all projects except the current one, up to 3.
+  OtherProjectsProvider._(
+      {required OtherProjectsFamily super.from, required String super.argument})
+      : super(
+          retry: null,
+          name: r'otherProjectsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$otherProjectsHash();
+
+  @override
+  String toString() {
+    return r'otherProjectsProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<List<Project>> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<Project>> create(Ref ref) {
+    final argument = this.argument as String;
+    return otherProjects(
+      ref,
+      argument,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is OtherProjectsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$otherProjectsHash() => r'0437ae6377870f4c0e9d2868de8ca1aef1e1a458';
+
+/// Provider for "Other Projects" — all projects except the current one, up to 3.
+
+final class OtherProjectsFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<List<Project>>, String> {
+  OtherProjectsFamily._()
+      : super(
+          retry: null,
+          name: r'otherProjectsProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  /// Provider for "Other Projects" — all projects except the current one, up to 3.
+
+  OtherProjectsProvider call(
+    String currentId,
+  ) =>
+      OtherProjectsProvider._(argument: currentId, from: this);
+
+  @override
+  String toString() => r'otherProjectsProvider';
 }

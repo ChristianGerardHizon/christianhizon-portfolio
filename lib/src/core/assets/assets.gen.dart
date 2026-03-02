@@ -17,16 +17,8 @@ class $AssetsIconsGen {
   /// File path: assets/icons/app_icon.png
   AssetGenImage get appIcon => const AssetGenImage('assets/icons/app_icon.png');
 
-  /// File path: assets/icons/app_icon_mac.png
-  AssetGenImage get appIconMac =>
-      const AssetGenImage('assets/icons/app_icon_mac.png');
-
-  /// File path: assets/icons/app_icon_transparent.png
-  AssetGenImage get appIconTransparent =>
-      const AssetGenImage('assets/icons/app_icon_transparent.png');
-
   /// List of all assets
-  List<AssetGenImage> get values => [appIcon, appIconMac, appIconTransparent];
+  List<AssetGenImage> get values => [appIcon];
 }
 
 class Assets {

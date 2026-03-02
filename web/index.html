@@ -90,14 +90,22 @@
       animation: text-enter 0.5s ease-out 0.2s both;
     }
 
-    /* Tagline */
-    .splash-tagline {
-      margin-top: 6px;
-      font-size: 13px;
+    /* Powered by Flutter badge */
+    .splash-powered {
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
       font-weight: 500;
       color: #94A3B8;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       animation: text-enter 0.5s ease-out 0.35s both;
+    }
+
+    .splash-powered svg {
+      width: 14px;
+      height: 14px;
     }
 
     @keyframes text-enter {
@@ -145,14 +153,20 @@
 <body>
   <!-- Custom splash screen -->
   <div id="splash-screen">
+    <div class="splash-powered">
+      Powered by
+      <svg viewBox="0 0 24 24" fill="#02569B"><path d="M14.314 0L2.3 12 6 15.7 21.684 0h-7.37zm.014 11.072L7.857 17.53l6.47 6.47H21.7l-6.46-6.468 6.46-6.46h-7.37z"/></svg>
+      <span style="color:#02569B;font-weight:600">Flutter</span> and <span style="color:#02569B;font-weight:600">PocketBase</span>
+    </div>
     <img class="splash-icon" src="icons/Icon-192.png" alt="Christian Hizon">
     <div class="splash-name">CHRISTIAN HIZON</div>
-    <div class="splash-tagline">Flutter Developer</div>
     <div class="splash-loader">
       <div class="splash-loader-bar"></div>
     </div>
   </div>
 
-  <script src="flutter_bootstrap.js" async=""></script>
+  <script>
+    {{flutter_bootstrap_js}}
+  </script>
 </body>
 </html>

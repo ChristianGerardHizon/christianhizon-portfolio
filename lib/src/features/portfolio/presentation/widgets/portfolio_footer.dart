@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../domain/profile.dart';
@@ -51,30 +52,41 @@ class PortfolioFooter extends StatelessWidget {
   }
 
   Widget _buildLogo() {
-    return Row(
+    return const Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: 24,
-          height: 24,
-          decoration: BoxDecoration(
-            color: const Color(0xFF02569B),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: const Icon(
-            Icons.flutter_dash,
-            size: 14,
-            color: Colors.white,
+        Text(
+          'Powered by ',
+          style: TextStyle(
+            color: Color(0xFF94A3B8),
+            fontSize: 13,
+            letterSpacing: 0.3,
           ),
         ),
-        const SizedBox(width: 8),
         Text(
-          profile.name.toUpperCase(),
-          style: const TextStyle(
-            color: Color(0xFF0F172A),
-            fontWeight: FontWeight.w700,
-            fontSize: 14,
-            letterSpacing: -0.3,
+          'Flutter',
+          style: TextStyle(
+            color: Color(0xFF02569B),
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+            letterSpacing: 0.3,
+          ),
+        ),
+        Text(
+          ' and ',
+          style: TextStyle(
+            color: Color(0xFF94A3B8),
+            fontSize: 13,
+            letterSpacing: 0.3,
+          ),
+        ),
+        Text(
+          'PocketBase',
+          style: TextStyle(
+            color: Color(0xFF02569B),
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+            letterSpacing: 0.3,
           ),
         ),
       ],
@@ -110,7 +122,7 @@ class PortfolioFooter extends StatelessWidget {
 
   Widget _buildCopyright() {
     return Text(
-      '\u00a9 ${DateTime.now().year} ${profile.name}. All rights reserved.',
+      '\u00a9 ${DateTime.now().year} All rights reserved.',
       style: const TextStyle(
         color: Color(0xFF94A3B8),
         fontSize: 14,
@@ -126,7 +138,7 @@ class PortfolioFooter extends StatelessWidget {
   }
 }
 
-class _SocialIconButton extends StatelessWidget {
+class _SocialIconButton extends HookWidget {
   const _SocialIconButton({required this.onTap, required this.child});
 
   final VoidCallback onTap;
@@ -134,11 +146,23 @@ class _SocialIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isHovered = useState(false);
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
+      onEnter: (_) => isHovered.value = true,
+      onExit: (_) => isHovered.value = false,
       child: GestureDetector(
         onTap: onTap,
-        child: child,
+        child: AnimatedScale(
+          scale: isHovered.value ? 1.2 : 1.0,
+          duration: const Duration(milliseconds: 200),
+          child: AnimatedOpacity(
+            opacity: isHovered.value ? 1.0 : 0.7,
+            duration: const Duration(milliseconds: 200),
+            child: child,
+          ),
+        ),
       ),
     );
   }

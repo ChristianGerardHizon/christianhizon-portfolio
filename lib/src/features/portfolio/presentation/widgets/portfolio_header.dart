@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/routing/routes/portfolio.routes.dart';
 import '../../domain/portfolio_constants.dart';
@@ -111,25 +112,15 @@ class PortfolioHeader extends StatelessWidget {
         // Nav links
         ...PortfolioConstants.navLinks.map((link) => Padding(
               padding: const EdgeInsets.only(left: 32),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () {
-                    if (link.routePath != null) {
-                      context.go(link.routePath!);
-                    } else {
-                      onNavTap?.call(link.sectionKey);
-                    }
-                  },
-                  child: Text(
-                    link.label,
-                    style: const TextStyle(
-                      color: Color(0xFF475569),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
+              child: _NavLinkItem(
+                label: link.label,
+                onTap: () {
+                  if (link.routePath != null) {
+                    context.go(link.routePath!);
+                  } else {
+                    onNavTap?.call(link.sectionKey);
+                  }
+                },
               ),
             )),
         const SizedBox(width: 32),
@@ -174,5 +165,52 @@ class PortfolioHeader extends StatelessWidget {
       ),
     );
   }
+}
 
+/// Nav link with animated color + underline on hover (GPU-composited).
+class _NavLinkItem extends HookWidget {
+  const _NavLinkItem({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isHovered = useState(false);
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => isHovered.value = true,
+      onExit: (_) => isHovered.value = false,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
+              style: TextStyle(
+                color: isHovered.value
+                    ? const Color(0xFF02569B)
+                    : const Color(0xFF475569),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+              child: Text(label),
+            ),
+            const SizedBox(height: 2),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: 2,
+              width: isHovered.value ? 20 : 0,
+              decoration: BoxDecoration(
+                color: const Color(0xFF02569B),
+                borderRadius: BorderRadius.circular(1),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
