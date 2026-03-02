@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -203,6 +205,7 @@ class ProjectDetailPage extends HookConsumerWidget {
                                     Column(
                                       children: [
                                         _buildMainContent(
+                                          context,
                                           project,
                                           thumbnailUrl,
                                           galleryUrls,
@@ -220,6 +223,7 @@ class ProjectDetailPage extends HookConsumerWidget {
                                         Expanded(
                                           flex: 2,
                                           child: _buildMainContent(
+                                            context,
                                             project,
                                             thumbnailUrl,
                                             galleryUrls,
@@ -269,6 +273,7 @@ class ProjectDetailPage extends HookConsumerWidget {
   }
 
   Widget _buildMainContent(
+    BuildContext context,
     project,
     String thumbnailUrl,
     List<String> galleryUrls,
@@ -279,24 +284,34 @@ class ProjectDetailPage extends HookConsumerWidget {
       children: [
         // Project thumbnail
         if (thumbnailUrl.isNotEmpty) ...[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: CachedNetworkImage(
-                imageUrl: thumbnailUrl,
-                fit: BoxFit.cover,
-                placeholder: (_, __) => Container(
-                  color: const Color(0xFFF8FAFC),
-                  child: const Center(
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                ),
-                errorWidget: (_, __, ___) => Container(
-                  color: const Color(0xFFF8FAFC),
-                  child: const Center(
-                    child:
-                        Icon(Icons.code, size: 48, color: Color(0xFFCBD5E1)),
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () => _showImageViewer(
+                context,
+                [thumbnailUrl, ...galleryUrls],
+                0,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: CachedNetworkImage(
+                    imageUrl: thumbnailUrl,
+                    fit: BoxFit.cover,
+                    placeholder: (_, __) => Container(
+                      color: const Color(0xFFF8FAFC),
+                      child: const Center(
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                    errorWidget: (_, __, ___) => Container(
+                      color: const Color(0xFFF8FAFC),
+                      child: const Center(
+                        child: Icon(Icons.code,
+                            size: 48, color: Color(0xFFCBD5E1)),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -374,13 +389,26 @@ class ProjectDetailPage extends HookConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          _buildGalleryGrid(galleryUrls, isMobile),
+          _buildGalleryGrid(context, thumbnailUrl, galleryUrls, isMobile),
         ],
       ],
     );
   }
 
-  Widget _buildGalleryGrid(List<String> galleryUrls, bool isMobile) {
+  Widget _buildGalleryGrid(
+    BuildContext context,
+    String thumbnailUrl,
+    List<String> galleryUrls,
+    bool isMobile,
+  ) {
+    // All images for the viewer: thumbnail (if any) + gallery
+    final allImages = [
+      if (thumbnailUrl.isNotEmpty) thumbnailUrl,
+      ...galleryUrls,
+    ];
+    // Gallery image offset in allImages (skip thumbnail if present)
+    final galleryOffset = thumbnailUrl.isNotEmpty ? 1 : 0;
+
     final columnCount = isMobile ? 1 : 2;
     final rows = <Widget>[];
 
@@ -388,26 +416,37 @@ class ProjectDetailPage extends HookConsumerWidget {
       final rowChildren = <Widget>[];
       for (var j = 0; j < columnCount; j++) {
         if (i + j < galleryUrls.length) {
+          final imageIndex = i + j;
           rowChildren.add(
             Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: AspectRatio(
-                  aspectRatio: 4 / 3,
-                  child: CachedNetworkImage(
-                    imageUrl: galleryUrls[i + j],
-                    fit: BoxFit.cover,
-                    placeholder: (_, __) => Container(
-                      color: const Color(0xFFF8FAFC),
-                      child: const Center(
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                    ),
-                    errorWidget: (_, __, ___) => Container(
-                      color: const Color(0xFFF8FAFC),
-                      child: const Center(
-                        child: Icon(Icons.image,
-                            size: 32, color: Color(0xFFCBD5E1)),
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => _showImageViewer(
+                    context,
+                    allImages,
+                    imageIndex + galleryOffset,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: AspectRatio(
+                      aspectRatio: 4 / 3,
+                      child: CachedNetworkImage(
+                        imageUrl: galleryUrls[imageIndex],
+                        fit: BoxFit.cover,
+                        placeholder: (_, __) => Container(
+                          color: const Color(0xFFF8FAFC),
+                          child: const Center(
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        ),
+                        errorWidget: (_, __, ___) => Container(
+                          color: const Color(0xFFF8FAFC),
+                          child: const Center(
+                            child: Icon(Icons.image,
+                                size: 32, color: Color(0xFFCBD5E1)),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -536,10 +575,191 @@ class ProjectDetailPage extends HookConsumerWidget {
     );
   }
 
+  void _showImageViewer(
+    BuildContext context,
+    List<String> imageUrls,
+    int initialIndex,
+  ) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black87,
+      builder: (_) => _ImageViewerDialog(
+        imageUrls: imageUrls,
+        initialIndex: initialIndex,
+      ),
+    );
+  }
+
   Future<void> _launchUrl(String url) async {
     final uri = Uri.tryParse(url);
     if (uri != null) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
+  }
+}
+
+class _ImageViewerDialog extends HookWidget {
+  const _ImageViewerDialog({
+    required this.imageUrls,
+    required this.initialIndex,
+  });
+
+  final List<String> imageUrls;
+  final int initialIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    final currentIndex = useState(initialIndex);
+    final pageController = usePageController(initialPage: initialIndex);
+    final hasMultiple = imageUrls.length > 1;
+
+    return KeyboardListener(
+      focusNode: useFocusNode()..requestFocus(),
+      onKeyEvent: (event) {
+        if (event is! KeyDownEvent) return;
+        if (event.logicalKey == LogicalKeyboardKey.escape) {
+          Navigator.of(context).pop();
+        } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
+            hasMultiple) {
+          _goTo(pageController, currentIndex, currentIndex.value - 1);
+        } else if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
+            hasMultiple) {
+          _goTo(pageController, currentIndex, currentIndex.value + 1);
+        }
+      },
+      child: Stack(
+        children: [
+          // Dismiss on background tap
+          GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: const SizedBox.expand(),
+          ),
+          // Image viewer
+          Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.sizeOf(context).width * 0.9,
+                maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+              ),
+              child: PageView.builder(
+                controller: pageController,
+                itemCount: imageUrls.length,
+                onPageChanged: (i) => currentIndex.value = i,
+                itemBuilder: (_, i) => Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrls[i],
+                    fit: BoxFit.contain,
+                    placeholder: (_, __) => const Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    ),
+                    errorWidget: (_, __, ___) => const Center(
+                      child: Icon(Icons.broken_image,
+                          size: 48, color: Colors.white54),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Close button
+          Positioned(
+            top: 16,
+            right: 16,
+            child: IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.close, color: Colors.white, size: 28),
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.black45,
+                shape: const CircleBorder(),
+              ),
+            ),
+          ),
+          // Navigation arrows
+          if (hasMultiple) ...[
+            Positioned(
+              left: 16,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: IconButton(
+                  onPressed: currentIndex.value > 0
+                      ? () => _goTo(
+                          pageController, currentIndex, currentIndex.value - 1)
+                      : null,
+                  icon: const Icon(Icons.chevron_left, size: 32),
+                  color: Colors.white,
+                  disabledColor: Colors.white24,
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.black45,
+                    shape: const CircleBorder(),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              right: 16,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: IconButton(
+                  onPressed: currentIndex.value < imageUrls.length - 1
+                      ? () => _goTo(
+                          pageController, currentIndex, currentIndex.value + 1)
+                      : null,
+                  icon: const Icon(Icons.chevron_right, size: 32),
+                  color: Colors.white,
+                  disabledColor: Colors.white24,
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.black45,
+                    shape: const CircleBorder(),
+                  ),
+                ),
+              ),
+            ),
+            // Image counter
+            Positioned(
+              bottom: 24,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${currentIndex.value + 1} / ${imageUrls.length}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  void _goTo(
+    PageController controller,
+    ValueNotifier<int> currentIndex,
+    int index,
+  ) {
+    if (index < 0 || index >= imageUrls.length) return;
+    controller.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 }
