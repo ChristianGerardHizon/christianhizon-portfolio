@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../domain/profile.dart';
@@ -58,22 +59,25 @@ class PortfolioFooter extends StatelessWidget {
           'Powered by ',
           style: TextStyle(
             color: Color(0xFF94A3B8),
-            fontSize: 14,
+            fontSize: 13,
+            letterSpacing: 0.3,
           ),
         ),
         Text(
-          'Flutter Web',
+          'Flutter',
           style: TextStyle(
             color: Color(0xFF02569B),
             fontWeight: FontWeight.w600,
-            fontSize: 14,
+            fontSize: 13,
+            letterSpacing: 0.3,
           ),
         ),
         Text(
-          ' & ',
+          ' and ',
           style: TextStyle(
             color: Color(0xFF94A3B8),
-            fontSize: 14,
+            fontSize: 13,
+            letterSpacing: 0.3,
           ),
         ),
         Text(
@@ -81,7 +85,8 @@ class PortfolioFooter extends StatelessWidget {
           style: TextStyle(
             color: Color(0xFF02569B),
             fontWeight: FontWeight.w600,
-            fontSize: 14,
+            fontSize: 13,
+            letterSpacing: 0.3,
           ),
         ),
       ],
@@ -133,7 +138,7 @@ class PortfolioFooter extends StatelessWidget {
   }
 }
 
-class _SocialIconButton extends StatelessWidget {
+class _SocialIconButton extends HookWidget {
   const _SocialIconButton({required this.onTap, required this.child});
 
   final VoidCallback onTap;
@@ -141,11 +146,23 @@ class _SocialIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isHovered = useState(false);
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
+      onEnter: (_) => isHovered.value = true,
+      onExit: (_) => isHovered.value = false,
       child: GestureDetector(
         onTap: onTap,
-        child: child,
+        child: AnimatedScale(
+          scale: isHovered.value ? 1.2 : 1.0,
+          duration: const Duration(milliseconds: 200),
+          child: AnimatedOpacity(
+            opacity: isHovered.value ? 1.0 : 0.7,
+            duration: const Duration(milliseconds: 200),
+            child: child,
+          ),
+        ),
       ),
     );
   }

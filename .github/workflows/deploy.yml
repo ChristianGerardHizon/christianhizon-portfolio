@@ -68,10 +68,10 @@ jobs:
           if [ -z "${{ secrets.VERSION_MANAGER_URL }}" ]; then MISSING="$MISSING VERSION_MANAGER_URL"; fi
           if [ -z "${{ secrets.VERSION_COLLECTION_ID }}" ]; then MISSING="$MISSING VERSION_COLLECTION_ID"; fi
           if [ -z "${{ secrets.POCKETBASE_URL_STAGING }}" ]; then MISSING="$MISSING POCKETBASE_URL_STAGING"; fi
-          if [ -z "${{ secrets.KEYSTORE_BASE64 }}" ]; then MISSING="$MISSING KEYSTORE_BASE64"; fi
-          if [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ]; then MISSING="$MISSING KEYSTORE_PASSWORD"; fi
-          if [ -z "${{ secrets.KEY_ALIAS }}" ]; then MISSING="$MISSING KEY_ALIAS"; fi
-          if [ -z "${{ secrets.KEY_PASSWORD }}" ]; then MISSING="$MISSING KEY_PASSWORD"; fi
+          # if [ -z "${{ secrets.KEYSTORE_BASE64 }}" ]; then MISSING="$MISSING KEYSTORE_BASE64"; fi  # mobile only
+          # if [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ]; then MISSING="$MISSING KEYSTORE_PASSWORD"; fi  # mobile only
+          # if [ -z "${{ secrets.KEY_ALIAS }}" ]; then MISSING="$MISSING KEY_ALIAS"; fi  # mobile only
+          # if [ -z "${{ secrets.KEY_PASSWORD }}" ]; then MISSING="$MISSING KEY_PASSWORD"; fi  # mobile only
           if [ -z "${{ secrets.SSH_HOST }}" ]; then MISSING="$MISSING SSH_HOST"; fi
           if [ -z "${{ secrets.SSH_USER }}" ]; then MISSING="$MISSING SSH_USER"; fi
           if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then MISSING="$MISSING SSH_PRIVATE_KEY"; fi
@@ -146,11 +146,11 @@ jobs:
           echo "Resolved staging tag: $TAG"
 
       # --- SETUP & CACHE START ---
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-          cache: 'gradle'
+      # - uses: actions/setup-java@v4
+      #   with:
+      #     distribution: 'zulu'
+      #     java-version: '17'
+      #     cache: 'gradle'
 
       - uses: subosito/flutter-action@v2
         with:
@@ -176,22 +176,23 @@ jobs:
         run: flutter pub get
       # --- SETUP & CACHE END ---
 
-      # DECODE KEYSTORE FOR RELEASE SIGNING
-      - name: Decode Keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/android/app/upload-keystore.jks
+      # DECODE KEYSTORE FOR RELEASE SIGNING (mobile only)
+      # - name: Decode Keystore
+      #   run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/android/app/upload-keystore.jks
 
-      # BUILD WEB & APK
+      # BUILD WEB
       - name: Build Web
         run: flutter build web --release --build-name=${{ env.STAGING_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
-      - name: Build APK (Release)
-        env:
-          CI: "true"
-          CM_KEYSTORE_PATH: ${{ github.workspace }}/android/app/upload-keystore.jks
-          CM_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          CM_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          CM_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: flutter build apk --release --build-name=${{ env.STAGING_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
+      # BUILD APK (mobile only — commented out)
+      # - name: Build APK (Release)
+      #   env:
+      #     CI: "true"
+      #     CM_KEYSTORE_PATH: ${{ github.workspace }}/android/app/upload-keystore.jks
+      #     CM_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      #     CM_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      #     CM_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      #   run: flutter build apk --release --build-name=${{ env.STAGING_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=staging --dart-define=API_URL=${{ secrets.POCKETBASE_URL_STAGING }}
 
       # --- SSH DEPLOY START ---
       - name: Setup SSH agent
@@ -236,7 +237,7 @@ jobs:
           target_commitish: ${{ github.sha }}
           name: ${{ env.STAGING_TAG }}
           prerelease: true
-          files: build/app/outputs/flutter-apk/app-release.apk
+          # files: build/app/outputs/flutter-apk/app-release.apk  # mobile only
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -270,10 +271,10 @@ jobs:
           if [ -z "${{ secrets.VERSION_MANAGER_URL }}" ]; then MISSING="$MISSING VERSION_MANAGER_URL"; fi
           if [ -z "${{ secrets.VERSION_COLLECTION_ID }}" ]; then MISSING="$MISSING VERSION_COLLECTION_ID"; fi
           if [ -z "${{ secrets.POCKETBASE_URL_PROD }}" ]; then MISSING="$MISSING POCKETBASE_URL_PROD"; fi
-          if [ -z "${{ secrets.KEYSTORE_BASE64 }}" ]; then MISSING="$MISSING KEYSTORE_BASE64"; fi
-          if [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ]; then MISSING="$MISSING KEYSTORE_PASSWORD"; fi
-          if [ -z "${{ secrets.KEY_ALIAS }}" ]; then MISSING="$MISSING KEY_ALIAS"; fi
-          if [ -z "${{ secrets.KEY_PASSWORD }}" ]; then MISSING="$MISSING KEY_PASSWORD"; fi
+          # if [ -z "${{ secrets.KEYSTORE_BASE64 }}" ]; then MISSING="$MISSING KEYSTORE_BASE64"; fi  # mobile only
+          # if [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ]; then MISSING="$MISSING KEYSTORE_PASSWORD"; fi  # mobile only
+          # if [ -z "${{ secrets.KEY_ALIAS }}" ]; then MISSING="$MISSING KEY_ALIAS"; fi  # mobile only
+          # if [ -z "${{ secrets.KEY_PASSWORD }}" ]; then MISSING="$MISSING KEY_PASSWORD"; fi  # mobile only
           if [ -z "${{ secrets.SSH_HOST }}" ]; then MISSING="$MISSING SSH_HOST"; fi
           if [ -z "${{ secrets.SSH_USER }}" ]; then MISSING="$MISSING SSH_USER"; fi
           if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then MISSING="$MISSING SSH_PRIVATE_KEY"; fi
@@ -350,11 +351,11 @@ jobs:
       # --- VERSION CHECKS END ---
 
       # --- SETUP & CACHE START ---
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-          cache: 'gradle'
+      # - uses: actions/setup-java@v4
+      #   with:
+      #     distribution: 'zulu'
+      #     java-version: '17'
+      #     cache: 'gradle'
 
       - uses: subosito/flutter-action@v2
         with:
@@ -380,22 +381,23 @@ jobs:
         run: flutter pub get
       # --- SETUP & CACHE END ---
 
-      # DECODE KEYSTORE FOR RELEASE SIGNING
-      - name: Decode Keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/android/app/upload-keystore.jks
+      # DECODE KEYSTORE FOR RELEASE SIGNING (mobile only)
+      # - name: Decode Keystore
+      #   run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/android/app/upload-keystore.jks
 
-      # BUILD WEB & APK
+      # BUILD WEB
       - name: Build Web
         run: flutter build web --release --build-name=${{ env.PROD_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
-      - name: Build APK (Release)
-        env:
-          CI: "true"
-          CM_KEYSTORE_PATH: ${{ github.workspace }}/android/app/upload-keystore.jks
-          CM_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          CM_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          CM_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: flutter build apk --release --build-name=${{ env.PROD_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
+      # BUILD APK (mobile only — commented out)
+      # - name: Build APK (Release)
+      #   env:
+      #     CI: "true"
+      #     CM_KEYSTORE_PATH: ${{ github.workspace }}/android/app/upload-keystore.jks
+      #     CM_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      #     CM_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      #     CM_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      #   run: flutter build apk --release --build-name=${{ env.PROD_VER }} --build-number=${{ github.run_number }} --dart-define=ENV=prod --dart-define=API_URL=${{ secrets.POCKETBASE_URL_PROD }}
 
       # --- SSH DEPLOY START ---
       - name: Setup SSH agent
@@ -432,12 +434,12 @@ jobs:
             'sudo systemctl restart pocketbase_christianhizon.service'
       # --- SSH DEPLOY END ---
 
-      # UPLOAD & DEPLOY
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+      # UPLOAD & DEPLOY (mobile only — commented out)
+      # - name: Upload APK Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: app-release-apk
+      #     path: build/app/outputs/flutter-apk/app-release.apk
 
   # ==========================================
   # JOB 3: RELEASE & SYNC
@@ -448,10 +450,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Download APK
-        uses: actions/download-artifact@v4
-        with:
-          name: app-release-apk
+      # - name: Download APK  # mobile only
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: app-release-apk
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -459,7 +461,7 @@ jobs:
           tag_name: v${{ needs.deploy-production.outputs.prod_ver }}
           target_commitish: ${{ needs.deploy-production.outputs.commit_sha }}
           name: "v${{ needs.deploy-production.outputs.prod_ver }}"
-          files: app-release.apk
+          # files: app-release.apk  # mobile only
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

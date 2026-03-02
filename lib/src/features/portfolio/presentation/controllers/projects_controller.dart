@@ -87,3 +87,17 @@ Future<Project?> projectById(Ref ref, String id) async {
     (project) => project,
   );
 }
+
+/// Provider for "Other Projects" — all projects except the current one, up to 3.
+@riverpod
+Future<List<Project>> otherProjects(Ref ref, String currentId) async {
+  final repo = ref.watch(projectsRepositoryProvider);
+  final result = await repo.getProjects();
+  return result.fold(
+    (_) => [],
+    (projects) => projects
+        .where((p) => p.id != currentId)
+        .take(3)
+        .toList(),
+  );
+}
