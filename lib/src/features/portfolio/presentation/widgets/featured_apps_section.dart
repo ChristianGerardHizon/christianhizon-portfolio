@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/packages/pocketbase/pocketbase_provider.dart';
 import '../../../../core/routing/routes/portfolio.routes.dart';
 import '../../domain/project.dart';
+import 'scroll_fade_in.dart';
 
 /// Featured apps section with staggered 2-column grid.
 class FeaturedAppsSection extends ConsumerWidget {
@@ -132,12 +133,16 @@ class FeaturedAppsSection extends ConsumerWidget {
 
   Widget _buildMobileList() {
     return Column(
-      children: projects
-          .map((project) => Padding(
-                padding: const EdgeInsets.only(bottom: 32),
-                child: _ProjectCard(project: project),
-              ))
-          .toList(),
+      children: [
+        for (var i = 0; i < projects.length; i++)
+          ScrollFadeIn(
+            delay: Duration(milliseconds: 100 * i),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 32),
+              child: _ProjectCard(project: projects[i]),
+            ),
+          ),
+      ],
     );
   }
 
@@ -158,12 +163,16 @@ class FeaturedAppsSection extends ConsumerWidget {
         // Left column
         Expanded(
           child: Column(
-            children: leftProjects
-                .map((project) => Padding(
-                      padding: const EdgeInsets.only(bottom: 32),
-                      child: _ProjectCard(project: project),
-                    ))
-                .toList(),
+            children: [
+              for (var i = 0; i < leftProjects.length; i++)
+                ScrollFadeIn(
+                  delay: Duration(milliseconds: 150 * i),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 32),
+                    child: _ProjectCard(project: leftProjects[i]),
+                  ),
+                ),
+            ],
           ),
         ),
         const SizedBox(width: 32),
@@ -172,12 +181,16 @@ class FeaturedAppsSection extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.only(top: 64),
             child: Column(
-              children: rightProjects
-                  .map((project) => Padding(
-                        padding: const EdgeInsets.only(bottom: 32),
-                        child: _ProjectCard(project: project),
-                      ))
-                  .toList(),
+              children: [
+                for (var i = 0; i < rightProjects.length; i++)
+                  ScrollFadeIn(
+                    delay: Duration(milliseconds: 150 * i + 100),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 32),
+                      child: _ProjectCard(project: rightProjects[i]),
+                    ),
+                  ),
+              ],
             ),
           ),
         ),
