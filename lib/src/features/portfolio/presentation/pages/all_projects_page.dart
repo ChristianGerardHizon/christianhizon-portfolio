@@ -12,6 +12,7 @@ import '../controllers/projects_controller.dart';
 import '../widgets/cta_banner_section.dart';
 import '../widgets/portfolio_footer.dart';
 import '../widgets/portfolio_header.dart';
+import '../widgets/scroll_fade_in.dart';
 
 /// Public page showing all projects with category filtering.
 class AllProjectsPage extends HookConsumerWidget {
@@ -193,7 +194,9 @@ class AllProjectsPage extends HookConsumerWidget {
                               ),
                               const SizedBox(height: 64),
                               // CTA
-                              CtaBannerSection(profile: profile),
+                              ScrollFadeIn(
+                                child: CtaBannerSection(profile: profile),
+                              ),
                               const SizedBox(height: 48),
                             ],
                           ),
@@ -256,6 +259,7 @@ class AllProjectsPage extends HookConsumerWidget {
     // Build rows manually
     final rows = <Widget>[];
     for (var i = 0; i < projects.length; i += columnCount) {
+      final rowIndex = i ~/ columnCount;
       final rowChildren = <Widget>[];
       for (var j = 0; j < columnCount; j++) {
         if (i + j < projects.length) {
@@ -270,11 +274,14 @@ class AllProjectsPage extends HookConsumerWidget {
         }
       }
       rows.add(
-        Padding(
-          padding: const EdgeInsets.only(bottom: 32),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: rowChildren,
+        ScrollFadeIn(
+          delay: Duration(milliseconds: 100 * rowIndex),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 32),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: rowChildren,
+            ),
           ),
         ),
       );

@@ -11,6 +11,7 @@ import '../controllers/tech_stack_controller.dart';
 import '../widgets/cta_banner_section.dart';
 import '../widgets/portfolio_footer.dart';
 import '../widgets/portfolio_header.dart';
+import '../widgets/scroll_fade_in.dart';
 
 /// Public tech stack page displayed at `/tech-stack`.
 class TechStackPage extends HookConsumerWidget {
@@ -86,15 +87,22 @@ class TechStackPage extends HookConsumerWidget {
                               ),
                               const SizedBox(height: 48),
                               // Category groups
-                              ...grouped.entries.map((entry) =>
-                                  _buildCategoryGroup(
-                                    entry.key,
-                                    entry.value,
-                                    isMobile,
-                                    screenWidth,
-                                  )),
+                              ...grouped.entries.toList().asMap().entries.map(
+                                    (entry) => ScrollFadeIn(
+                                      delay: Duration(
+                                          milliseconds: 100 * entry.key),
+                                      child: _buildCategoryGroup(
+                                        entry.value.key,
+                                        entry.value.value,
+                                        isMobile,
+                                        screenWidth,
+                                      ),
+                                    ),
+                                  ),
                               const SizedBox(height: 64),
-                              CtaBannerSection(profile: profile),
+                              ScrollFadeIn(
+                                child: CtaBannerSection(profile: profile),
+                              ),
                               const SizedBox(height: 48),
                             ],
                           ),

@@ -11,6 +11,7 @@ import '../controllers/projects_controller.dart';
 import '../widgets/cta_banner_section.dart';
 import '../widgets/portfolio_footer.dart';
 import '../widgets/portfolio_header.dart';
+import '../widgets/scroll_fade_in.dart';
 
 /// Public page showing a single project's case study details.
 class ProjectDetailPage extends HookConsumerWidget {
@@ -199,43 +200,48 @@ class ProjectDetailPage extends HookConsumerWidget {
                                   ),
                                   const SizedBox(height: 40),
                                   // Main content + sidebar
-                                  if (isMobile)
-                                    Column(
-                                      children: [
-                                        _buildMainContent(
-                                          project,
-                                          thumbnailUrl,
-                                          galleryUrls,
-                                          isMobile,
-                                        ),
-                                        const SizedBox(height: 32),
-                                        _buildSidebar(project),
-                                      ],
-                                    )
-                                  else
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          flex: 2,
-                                          child: _buildMainContent(
-                                            project,
-                                            thumbnailUrl,
-                                            galleryUrls,
-                                            isMobile,
+                                  ScrollFadeIn(
+                                    child: isMobile
+                                        ? Column(
+                                            children: [
+                                              _buildMainContent(
+                                                project,
+                                                thumbnailUrl,
+                                                galleryUrls,
+                                                isMobile,
+                                              ),
+                                              const SizedBox(height: 32),
+                                              _buildSidebar(project),
+                                            ],
+                                          )
+                                        : Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                flex: 2,
+                                                child: _buildMainContent(
+                                                  project,
+                                                  thumbnailUrl,
+                                                  galleryUrls,
+                                                  isMobile,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 40),
+                                              Expanded(
+                                                flex: 1,
+                                                child:
+                                                    _buildSidebar(project),
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                        const SizedBox(width: 40),
-                                        Expanded(
-                                          flex: 1,
-                                          child: _buildSidebar(project),
-                                        ),
-                                      ],
-                                    ),
+                                  ),
                                   const SizedBox(height: 64),
                                   // CTA
-                                  CtaBannerSection(profile: profile),
+                                  ScrollFadeIn(
+                                    child: CtaBannerSection(
+                                        profile: profile),
+                                  ),
                                   const SizedBox(height: 48),
                                 ],
                               ),
