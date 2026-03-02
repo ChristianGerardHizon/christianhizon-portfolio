@@ -99,33 +99,35 @@ class FeaturedAppsSection extends ConsumerWidget {
             _buildMobileList()
           else
             _buildStaggeredGrid(),
-          // Mobile "View All Apps" button
-          if (isMobile) ...[
-            const SizedBox(height: 40),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () =>
-                    const AllProjectsRoute().go(context),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  side: const BorderSide(color: Color(0xFFCBD5E1)),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+          // "View All Projects" CTA
+          const SizedBox(height: 48),
+          Center(
+            child: SizedBox(
+              width: isMobile ? double.infinity : null,
+              child: FilledButton.icon(
+                onPressed: () => const AllProjectsRoute().go(context),
+                icon: const Icon(Icons.apps_rounded, size: 20),
+                label: const Text('View All Projects'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFF02569B),
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 24 : 40,
+                    vertical: 18,
                   ),
-                ),
-                child: const Text(
-                  'VIEW ALL APPS',
-                  style: TextStyle(
-                    color: Color(0xFF0F172A),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    fontSize: 13,
-                    letterSpacing: 1.5,
+                    letterSpacing: 0.3,
                   ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 2,
                 ),
               ),
             ),
-          ],
+          ),
         ],
       ),
     );
